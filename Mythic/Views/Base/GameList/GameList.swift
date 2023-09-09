@@ -1,0 +1,166 @@
+//
+//  test.swift
+//  Mythic
+//
+//  Created by Esiayo Alegbe on 16/9/2023.
+//
+
+import Foundation
+import SwiftUI
+import CachedAsyncImage
+import OSLog
+import SwiftyJSON
+
+struct GameListView: View {
+    
+    @State private var isSettingsPresented: Bool = false
+    @State private var isProgressViewSheetPresented: Bool = true
+    @State private var currentGame: String = ""
+    
+    @State private var installableGames: [String] = []
+    @State private var gameThumbnails: [String: String] = [:]
+    @State private var installedGames: [String] = []
+    
+    @State private var xOffset: CGFloat = 0
+    @State private var yOffset: CGFloat = 0
+    
+    var body: some View {
+        
+        let imageCache = URLCache(memoryCapacity: 512_000_000, diskCapacity: 10_000_000_000)
+        
+        List {
+            ScrollView(.horizontal) {
+                LazyHStack {
+                    ForEach(installableGames, id: \.self) { game in
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.background) // change to reveal rect
+                                .frame(width: 200, height: 325)
+                            VStack {
+                                ZStack {
+                                    // blur effect
+                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                        if case .success(let image) = phase {
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        }
+                                    }
+                                    .frame(width: 200, height: 400/1.5)
+                                    .blur(radius: 30)
+                                    
+                                    // actual image
+                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            ProgressView()
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        case .failure:
+                                            Image(systemName: "network.slash")
+                                        @unknown default:
+                                            Image(systemName: "exclamationmark.triangle")
+                                        }
+                                    }
+                                    .frame(width: 200, height: 400/1.5)
+                                }
+                                
+                                HStack {
+                                    if installedGames.contains(game) {
+                                        Button(action: {
+                                            isProgressViewSheetPresented = true
+                                            
+                                            DispatchQueue.global().async {
+                                                let title = LegendaryJson.getTitleFromAppName(appName: game)
+                                                DispatchQueue.main.async { [self] in
+                                                    currentGame = title
+                                                    isProgressViewSheetPresented = false
+                                                }
+                                            }
+                                            
+                                            isSettingsPresented = true
+                                        }) {
+                                            Image(systemName: "gear")
+                                                .foregroundColor(.gray)
+                                                .padding()
+                                        }
+                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
+                                        .buttonStyle(.plain)
+                                        .controlSize(.large)
+                                        
+                                        Button(action: {
+                                            _ = Legendary.command(args: ["launch", game], useCache: false)
+                                        }) {
+                                            Image(systemName: "play.fill")
+                                                .foregroundColor(.green)
+                                                .padding()
+                                        }
+                                        .shadow(color: .green, radius: 10, x: 1, y: 1)
+                                        .buttonStyle(.plain)
+                                        .controlSize(.large)
+                                        
+                                        Button(action: {
+                                            
+                                        }) {
+                                            Image(systemName: "xmark.bin.fill")
+                                                .foregroundColor(.red)
+                                                .padding()
+                                        }
+                                        .shadow(color: .red, radius: 10, x: 1, y: 1)
+                                        .buttonStyle(.plain)
+                                        .controlSize(.large)
+                                    } else {
+                                        Button(action: {
+                                            
+                                        }) {
+                                            Image(systemName: "arrow.down.to.line")
+                                                .foregroundColor(.gray)
+                                                .padding()
+                                        }
+                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
+                                        .buttonStyle(.plain)
+                                        .controlSize(.large)
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            DispatchQueue.global().async {
+                let games = LegendaryJson.getInstallable()
+                let thumbnails = LegendaryJson.getImages()
+                let installed = LegendaryJson.getGames()
+                DispatchQueue.main.async { [self] in
+                    installableGames = games.appNames
+                    gameThumbnails = thumbnails
+                    installedGames = installed.appNames
+                    isProgressViewSheetPresented = false
+                }
+            }
+        }
+        
+        .sheet(isPresented: $isProgressViewSheetPresented) {
+            ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
+        }
+        
+        .sheet(isPresented: $isSettingsPresented) {
+            GameListView.SettingsView(isPresented: $isSettingsPresented, game: $currentGame)
+                .fixedSize()
+        }
+    }
+}
+
+
+struct GameListView_Previews: PreviewProvider {
+    static var previews: some View {
+        return GameListView()
+    }
+}
