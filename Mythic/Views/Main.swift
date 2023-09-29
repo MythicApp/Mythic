@@ -12,7 +12,7 @@ import SwiftUI
 import Foundation
 import OSLog
 
-/* 
+/*
  colors:
  gradient 1: #4800FF
  midpoint: #7318E0
@@ -21,11 +21,22 @@ import OSLog
 
 struct MainView: View {
     
-    @State var notImplementedAlert: Bool = false
+    @State private var isAuthViewPresented = false
     
     @State private var epicUserAsync: String = "Loading..."
-    @State private var signOutSuccess = false
+    @State private var signedIn: Bool = false
     
+    func updateLegendaryAccountState() {
+        epicUserAsync = "Loading..."
+        DispatchQueue.global().async {
+            let whoAmIOutput = Legendary.whoAmI(useCache: false)
+            DispatchQueue.main.async { [self] in
+                signedIn = Legendary.signedIn(whoAmIOutput: whoAmIOutput)
+                epicUserAsync = whoAmIOutput
+            }
+        }
+    }
+
     var body: some View {
         NavigationView {
             List {
@@ -78,36 +89,45 @@ struct MainView: View {
                         .foregroundColor(.accentColor)
                     Text(epicUserAsync)
                         .onAppear {
-                        DispatchQueue.global().async {
-                            let whoAmIOutput = Legendary.whoAmI()
-                            DispatchQueue.main.async {
-                                self.epicUserAsync = whoAmIOutput
+                            updateLegendaryAccountState()
+                        }
+                }
+                
+                if epicUserAsync != "Loading..." {
+                    if signedIn {
+                        Button(action: {
+                            let cmd = Legendary.command(args: ["auth", "--delete"], useCache: false)
+                            if cmd.stderr.string.contains("User data deleted.") {
+                                updateLegendaryAccountState()
+                            }
+                        }) {
+                            HStack {
+                                Image(systemName: "person.slash")
+                                    .foregroundColor(.accentColor)
+                                Text("Sign Out")
+                            }
+                        }
+                    } else {
+                        Button(action: {
+                            NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                            isAuthViewPresented = true
+                        }) {
+                            HStack {
+                                Image(systemName: "person")
+                                    .foregroundColor(.accentColor)
+                                Text("Sign In")
                             }
                         }
                     }
                 }
                 
-                Button(action: {
-                    let cmd = Legendary.command(args: ["auth", "--delete"], useCache: false)
-                    if cmd.stderr.string.contains("User data deleted.") {
-                        signOutSuccess = true
-                        Legendary.clearCommandCache()
-                    }
-                }) {
-                    HStack {
-                        Image(systemName: "person.slash")
-                            .foregroundColor(.accentColor)
-                        Text("Sign Out")
-                    }
-                }
             }
             
-            .alert(isPresented: $notImplementedAlert) {
-                NotImplementedAlert(isPresented: $notImplementedAlert, warning: "")
-            }
-            
-            .alert("Successfully signed out of Epic Games. Please relaunch.", isPresented: $signOutSuccess) {
-                Button("OK", role: .cancel) { }
+            .sheet(isPresented: $isAuthViewPresented) {
+                AuthView(isPresented: $isAuthViewPresented)
+                    .onDisappear {
+                        updateLegendaryAccountState()
+                    }
             }
             
             /*
@@ -136,6 +156,9 @@ struct MainView: View {
             }
             
             WelcomeView()
+        }
+        .onAppear {
+            updateLegendaryAccountState()
         }
     }
 }

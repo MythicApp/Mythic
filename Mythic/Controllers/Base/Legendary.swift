@@ -158,19 +158,19 @@ struct Legendary {
     }
     
     
-    static func whoAmI() -> String {
+    static func whoAmI(useCache: Bool?) -> String {
         var accountString: String = ""
-        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: true).stdout.data)["account"] {
+        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: useCache ?? false).stdout.data)["account"] {
             accountString = String(describing: account)
         }
         return accountString
     }
     
-    static func signedIn() -> Bool {
-        if whoAmI() == "<not logged in>" {
-            return false
+    static func signedIn(useCache: Bool? = false, whoAmIOutput: String? = nil) -> Bool {
+        if let output = whoAmIOutput {
+            return output != "<not logged in>"
         } else {
-            return true
+            return Legendary.whoAmI(useCache: useCache) != "<not logged in>"
         }
     }
 }
