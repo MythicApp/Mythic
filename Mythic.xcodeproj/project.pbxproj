@@ -164,14 +164,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		6A00F2072AC5F7B90054858A /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				6AD506552AAFF671008A28C1 /* Home.swift */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
 		6A00F2082AC5F7DE0054858A /* ProgressView */ = {
 			isa = PBXGroup;
 			children = (
@@ -201,6 +193,7 @@
 		6A2A824C2AB59BA4008AC036 /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				6A00F20A2AC5F8730054858A /* Auth.swift */,
 				6AF0EB1E2AAD4E0A0044C09C /* Onboarding.swift */,
 				6A00F2082AC5F7DE0054858A /* ProgressView */,
 			);
@@ -274,7 +267,7 @@
 			isa = PBXGroup;
 			children = (
 				6AC25CBA2AAED16800D395CF /* Welcome.swift */,
-				6A00F2072AC5F7B90054858A /* Home */,
+				6AD506552AAFF671008A28C1 /* Home.swift */,
 				6A00F2032AC5F7220054858A /* Library */,
 				6AF0EB292AADE1780044C09C /* Store.swift */,
 				6AC25CBC2AAED24700D395CF /* Settings.swift */,
@@ -288,7 +281,6 @@
 			isa = PBXGroup;
 			children = (
 				6A2A824C2AB59BA4008AC036 /* Base */,
-				6A00F20A2AC5F8730054858A /* Auth.swift */,
 			);
 			path = Sheets;
 			sourceTree = "<group>";
