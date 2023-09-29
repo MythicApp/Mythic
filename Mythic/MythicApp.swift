@@ -6,21 +6,30 @@
 //
 
 import SwiftUI
-import OSLog
+import Sparkle
 
 @main
 struct MythicApp: App {
+    private let updaterController: SPUStandardUpdaterController
     
     init() {
-        DispatchQueue.global().async {
-            
-        }
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     }
     
     var body: some Scene {
         WindowGroup {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
+        }
+        .commands {
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates…", action: updaterController.updater.checkForUpdates)
+                    .disabled(!updaterController.updater.canCheckForUpdates)
+            }
+        }
+        
+        Settings {
+            UpdaterSettingsView(updater: updaterController.updater)
         }
     }
 }
