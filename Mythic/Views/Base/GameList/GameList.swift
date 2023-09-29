@@ -13,7 +13,11 @@ import SwiftyJSON
 
 struct GameListView: View {
     
-    @State private var isSettingsPresented: Bool = false
+    @State private var isSettingsViewPresented: Bool = false
+    @State private var isInstallViewPresented: Bool = false
+    @State private var isUninstallViewPresented: Bool = false
+    @State private var isDownloadViewPresented: Bool = false
+    
     @State private var isProgressViewSheetPresented: Bool = true
     @State private var currentGame: String = ""
     
@@ -23,6 +27,18 @@ struct GameListView: View {
     
     @State private var xOffset: CGFloat = 0
     @State private var yOffset: CGFloat = 0
+    
+    func updateCurrentGame(game: String) {
+        isProgressViewSheetPresented = true
+        
+        DispatchQueue.global().async {
+            let title = LegendaryJson.getTitleFromAppName(appName: game)
+            DispatchQueue.main.async { [self] in
+                currentGame = title
+                isProgressViewSheetPresented = false
+            }
+        }
+    }
     
     var body: some View {
         
@@ -72,17 +88,8 @@ struct GameListView: View {
                                 HStack {
                                     if installedGames.contains(game) {
                                         Button(action: {
-                                            isProgressViewSheetPresented = true
-                                            
-                                            DispatchQueue.global().async {
-                                                let title = LegendaryJson.getTitleFromAppName(appName: game)
-                                                DispatchQueue.main.async { [self] in
-                                                    currentGame = title
-                                                    isProgressViewSheetPresented = false
-                                                }
-                                            }
-                                            
-                                            isSettingsPresented = true
+                                            updateCurrentGame(game: game)
+                                            isSettingsViewPresented = true
                                         }) {
                                             Image(systemName: "gear")
                                                 .foregroundColor(.gray)
@@ -93,6 +100,7 @@ struct GameListView: View {
                                         .controlSize(.large)
                                         
                                         Button(action: {
+                                            updateCurrentGame(game: game)
                                             _ = Legendary.command(args: ["launch", game], useCache: false)
                                         }) {
                                             Image(systemName: "play.fill")
@@ -104,7 +112,8 @@ struct GameListView: View {
                                         .controlSize(.large)
                                         
                                         Button(action: {
-                                            
+                                            updateCurrentGame(game: game)
+                                            isUninstallViewPresented = true
                                         }) {
                                             Image(systemName: "xmark.bin.fill")
                                                 .foregroundColor(.red)
@@ -115,7 +124,8 @@ struct GameListView: View {
                                         .controlSize(.large)
                                     } else {
                                         Button(action: {
-                                            
+                                            updateCurrentGame(game: game)
+                                            isDownloadViewPresented = true
                                         }) {
                                             Image(systemName: "arrow.down.to.line")
                                                 .foregroundColor(.gray)
@@ -151,10 +161,34 @@ struct GameListView: View {
             ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
         }
         
-        .sheet(isPresented: $isSettingsPresented) {
-            GameListView.SettingsView(isPresented: $isSettingsPresented, game: $currentGame)
-                .fixedSize()
+        .sheet(isPresented: $isSettingsViewPresented) {
+            GameListView.SettingsView(
+                isPresented: $isSettingsViewPresented,
+                game: $currentGame
+            )
         }
+        
+        .sheet(isPresented: $isInstallViewPresented) {
+            GameListView.InstallView(
+                isPresented: $isInstallViewPresented,
+                game: $currentGame
+            )
+        }
+        
+        .sheet(isPresented: $isUninstallViewPresented) {
+            GameListView.UninstallView(
+                isPresented: $isUninstallViewPresented,
+                game: $currentGame
+            )
+        }
+        
+        .sheet(isPresented: $isDownloadViewPresented) {
+            GameListView.DownloadView(
+                isPresented: $isDownloadViewPresented,
+                game: $currentGame
+            )
+        }
+        
     }
 }
 

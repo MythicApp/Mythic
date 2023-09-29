@@ -1,22 +1,19 @@
 //
-//  GameSettings.swift
+//  GameUninstall.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 28/9/2023.
+//  Created by Esiayo Alegbe on 29/9/2023.
 //
 
 import SwiftUI
-import SwiftyJSON
 
 extension GameListView {
-    struct SettingsView: View {
+    struct UninstallView: View {
         @Binding var isPresented: Bool
         @Binding var game: String
         
         var body: some View {
-            let installed_games = try! JSON(
-                data: Legendary.command(args: ["list-installed","--json"]).stdout.data
-            )
+            NotImplemented()
             
             VStack {
                 Text(game)
@@ -32,11 +29,10 @@ extension GameListView {
                     }
                 }
             }
-            .padding()
-            .fixedSize()
         }
     }
 }
+
 
 #Preview {
     LibraryView()

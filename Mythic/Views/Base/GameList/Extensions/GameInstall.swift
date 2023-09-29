@@ -8,12 +8,27 @@
 import SwiftUI
 
 extension GameListView {
-    struct GameInstallView: View {
+    struct InstallView: View {
         @Binding var isPresented: Bool
         @Binding var game: String
         
         var body: some View {
-            NotImplemented()
+            VStack {
+                Text(game)
+                    .font(.title)
+                
+                Spacer()
+                
+                HStack {
+                    Button(action: {
+                        isPresented.toggle()
+                    }) {
+                        Text("Close")
+                    }
+                }
+            }
+            .padding()
+            .fixedSize()
         }
     }
 }
