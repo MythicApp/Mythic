@@ -152,12 +152,13 @@ struct Legendary {
         }
     }
     
+    /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
         commandCache = [:]
         log.notice("Cleared legendary command cache successfully.")
     }
     
-    
+    /// Queries the user that is currently signed in.
     static func whoAmI(useCache: Bool?) -> String {
         var accountString: String = ""
         if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: useCache ?? false).stdout.data)["account"] {
@@ -166,6 +167,7 @@ struct Legendary {
         return accountString
     }
     
+    /// Boolean verifier for the user's epic games signin state.
     static func signedIn(useCache: Bool? = false, whoAmIOutput: String? = nil) -> Bool {
         if let output = whoAmIOutput {
             return output != "<not logged in>"
