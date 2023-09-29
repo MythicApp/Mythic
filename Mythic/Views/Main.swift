@@ -36,6 +36,8 @@ struct MainView: View {
             }
         }
     }
+    
+    init() { updateLegendaryAccountState() }
 
     var body: some View {
         NavigationView {
@@ -156,9 +158,6 @@ struct MainView: View {
             }
             
             WelcomeView()
-        }
-        .onAppear {
-            updateLegendaryAccountState()
         }
     }
 }
