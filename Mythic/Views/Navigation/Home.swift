@@ -31,7 +31,7 @@ struct HomeView: View {
         
         .onAppear {
             DispatchQueue.global().async {
-                let checkIfSignedIn = Legendary.signedIn()
+                let checkIfSignedIn = Legendary.signedIn(useCache: true)
                 DispatchQueue.main.async {
                     signedIn = checkIfSignedIn
                     isProgressViewSheetPresented = false

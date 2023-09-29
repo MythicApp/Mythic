@@ -10,7 +10,7 @@ import SwiftyJSON
 
 struct LegendaryJson {
     static func getGames() -> (appNames: [String], appTitles: [String]) {
-        guard Legendary.signedIn() else { return ([], []) }
+        guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
             data: Legendary.command(args: ["list-installed","--json"]).stdout.data
         )
@@ -25,7 +25,7 @@ struct LegendaryJson {
     }
     
     static func getInstallable() -> (appNames: [String], appTitles: [String]) {
-        guard Legendary.signedIn() else { return ([], []) }
+        guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
             data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"]).stdout.data
         )
@@ -39,7 +39,7 @@ struct LegendaryJson {
     }
     
     static func getImages() -> [String: String] {
-        guard Legendary.signedIn() else { return [:] }
+        guard Legendary.signedIn(useCache: true) else { return [:] }
         let json = try? JSON(
             data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"]).stdout.data
         )
