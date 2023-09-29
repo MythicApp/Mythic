@@ -20,6 +20,7 @@
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AACB0892AC705B5007D7CE8 /* GameUninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AACB0882AC705B5007D7CE8 /* GameUninstall.swift */; };
 		6AACB0912AC70DF4007D7CE8 /* GameDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AACB0902AC70DF4007D7CE8 /* GameDownload.swift */; };
+		6AACB0932AC71757007D7CE8 /* UpdaterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AACB0922AC71757007D7CE8 /* UpdaterSettings.swift */; };
 		6AB474992AACBBE900AB9C63 /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB474982AACBBE900AB9C63 /* MythicApp.swift */; };
 		6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */; };
 		6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4749F2AACBBEA00AB9C63 /* Preview Assets.xcassets */; };
@@ -53,6 +54,7 @@
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		6AACB0882AC705B5007D7CE8 /* GameUninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GameUninstall.swift; path = "../../../../../../../../../../Volumes/dingus/mythic_bk (fuck you git!!!!)/GameUninstall.swift"; sourceTree = "<group>"; };
 		6AACB0902AC70DF4007D7CE8 /* GameDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameDownload.swift; sourceTree = "<group>"; };
+		6AACB0922AC71757007D7CE8 /* UpdaterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterSettings.swift; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AB474982AACBBE900AB9C63 /* MythicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicApp.swift; sourceTree = "<group>"; };
 		6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 		6A009E622AB5979E00A1397F /* Base */ = {
 			isa = PBXGroup;
 			children = (
+				6AACB0922AC71757007D7CE8 /* UpdaterSettings.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -380,6 +383,7 @@
 				6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */,
 				6AF0EB2C2AADE2530044C09C /* WebView.swift in Sources */,
 				6AFC02852ABF67F60004AB77 /* Bundle.swift in Sources */,
+				6AACB0932AC71757007D7CE8 /* UpdaterSettings.swift in Sources */,
 				6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */,
 				6A00F2052AC5F7450054858A /* AddGameView.swift in Sources */,
 				6AC25CBB2AAED16800D395CF /* Welcome.swift in Sources */,
@@ -534,7 +538,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 675;
+				CURRENT_PROJECT_VERSION = 679;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_PREVIEWS = YES;
@@ -555,7 +559,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic-hidden";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -570,7 +574,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 675;
+				CURRENT_PROJECT_VERSION = 679;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_PREVIEWS = YES;
@@ -591,7 +595,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic-hidden";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
