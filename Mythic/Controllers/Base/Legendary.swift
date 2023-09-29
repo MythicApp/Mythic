@@ -160,7 +160,7 @@ struct Legendary {
     
     static func whoAmI() -> String {
         var accountString: String = ""
-        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: false).stdout.data)["account"] {
+        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: true).stdout.data)["account"] {
             accountString = String(describing: account)
         }
         return accountString
