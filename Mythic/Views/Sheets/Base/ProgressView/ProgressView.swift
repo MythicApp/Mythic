@@ -47,7 +47,7 @@ struct ProgressViewSheet: View {
         }
         .fixedSize()
         .onAppear {
-            Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { _ in
+            Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { _ in
                 timeoutWarning = true
             }
         }
