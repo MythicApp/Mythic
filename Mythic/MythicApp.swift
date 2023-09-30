@@ -10,15 +10,14 @@ import Sparkle
 
 @main
 struct MythicApp: App {
-    @AppStorage("isAppRunning") private var isAppRunning = false
     private let updaterController: SPUStandardUpdaterController
     
     init() {
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
-        guard !isAppRunning else {
-            exit(0) // app already running, might slap an alert
-        }
-        isAppRunning = true
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true,
+            updaterDelegate: nil,
+            userDriverDelegate: nil
+        )
     }
     
     var body: some Scene {
