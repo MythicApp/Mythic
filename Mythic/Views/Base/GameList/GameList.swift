@@ -42,107 +42,111 @@ struct GameListView: View {
     
     var body: some View {
         
-        let imageCache = URLCache(memoryCapacity: 512_000_000, diskCapacity: 10_000_000_000)
+        let imageCache = URLCache(
+            memoryCapacity: 512_000_000, // 512 MB // RAM MAX
+            diskCapacity: 3_000_000_000 // 3 GB // DISK MAX
+        )
         
-        List {
-            ScrollView(.horizontal) {
-                LazyHStack {
-                    ForEach(installableGames, id: \.self) { game in
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.background) // change to reveal rect
-                                .frame(width: 200, height: 325)
-                            VStack {
-                                ZStack {
-                                    // blur effect
-                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
-                                        if case .success(let image) = phase {
-                                            image
-                                                .resizable()
-                                                .scaledToFit()
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        }
+        ScrollView(.horizontal) {
+            LazyHStack {
+                ForEach(installableGames, id: \.self) { game in
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.background)
+                            .frame(width: 220, height: 325)
+                            .offset(y: -10)
+                        
+                        VStack {
+                            ZStack {
+                                // blur effect
+                                CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                    if case .success(let image) = phase {
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
                                     }
-                                    .frame(width: 200, height: 400/1.5)
-                                    .blur(radius: 30)
-                                    
-                                    // actual image
-                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFit()
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        case .failure:
-                                            Image(systemName: "network.slash")
-                                        @unknown default:
-                                            Image(systemName: "exclamationmark.triangle")
-                                        }
-                                    }
-                                    .frame(width: 200, height: 400/1.5)
                                 }
+                                .frame(width: 200, height: 400/1.5)
+                                .blur(radius: 30)
                                 
-                                HStack {
-                                    if installedGames.contains(game) {
-                                        Button(action: {
-                                            updateCurrentGame(game: game)
-                                            isSettingsViewPresented = true
-                                        }) {
-                                            Image(systemName: "gear")
-                                                .foregroundColor(.gray)
-                                                .padding()
-                                        }
-                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
-                                        
-                                        Button(action: {
-                                            updateCurrentGame(game: game)
-                                            _ = Legendary.command(args: ["launch", game], useCache: false)
-                                        }) {
-                                            Image(systemName: "play.fill")
-                                                .foregroundColor(.green)
-                                                .padding()
-                                        }
-                                        .shadow(color: .green, radius: 10, x: 1, y: 1)
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
-                                        
-                                        Button(action: {
-                                            updateCurrentGame(game: game)
-                                            isUninstallViewPresented = true
-                                        }) {
-                                            Image(systemName: "xmark.bin.fill")
-                                                .foregroundColor(.red)
-                                                .padding()
-                                        }
-                                        .shadow(color: .red, radius: 10, x: 1, y: 1)
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
-                                    } else {
-                                        Button(action: {
-                                            updateCurrentGame(game: game)
-                                            isDownloadViewPresented = true
-                                        }) {
-                                            Image(systemName: "arrow.down.to.line")
-                                                .foregroundColor(.gray)
-                                                .padding()
-                                        }
-                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
+                                // actual image
+                                CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    case .failure:
+                                        Image(systemName: "network.slash")
+                                    @unknown default:
+                                        Image(systemName: "exclamationmark.triangle")
                                     }
+                                }
+                                .frame(width: 200, height: 400/1.5)
+                            }
+                            
+                            HStack {
+                                if installedGames.contains(game) {
+                                    Button(action: {
+                                        updateCurrentGame(game: game)
+                                        isSettingsViewPresented = true
+                                    }) {
+                                        Image(systemName: "gear")
+                                            .foregroundColor(.gray)
+                                            .padding()
+                                    }
+                                    .shadow(color: .gray, radius: 10, x: 1, y: 1)
+                                    .buttonStyle(.plain)
+                                    .controlSize(.large)
+                                    
+                                    Button(action: {
+                                        updateCurrentGame(game: game)
+                                        _ = Legendary.command(args: ["launch", game], useCache: false)
+                                    }) {
+                                        Image(systemName: "play.fill")
+                                            .foregroundColor(.green)
+                                            .padding()
+                                    }
+                                    .shadow(color: .green, radius: 10, x: 1, y: 1)
+                                    .buttonStyle(.plain)
+                                    .controlSize(.large)
+                                    
+                                    Button(action: {
+                                        updateCurrentGame(game: game)
+                                        isUninstallViewPresented = true
+                                    }) {
+                                        Image(systemName: "xmark.bin.fill")
+                                            .foregroundColor(.red)
+                                            .padding()
+                                    }
+                                    .shadow(color: .red, radius: 10, x: 1, y: 1)
+                                    .buttonStyle(.plain)
+                                    .controlSize(.large)
+                                } else {
+                                    Button(action: {
+                                        updateCurrentGame(game: game)
+                                        isDownloadViewPresented = true
+                                    }) {
+                                        Image(systemName: "arrow.down.to.line")
+                                            .foregroundColor(.gray)
+                                            .padding()
+                                    }
+                                    .shadow(color: .gray, radius: 10, x: 1, y: 1)
+                                    .buttonStyle(.plain)
+                                    .controlSize(.large)
                                 }
                             }
-                            .padding()
                         }
+                        .padding()
                     }
                 }
             }
         }
+        
         .onAppear {
             DispatchQueue.global().async {
                 let games = LegendaryJson.getInstallable()
