@@ -55,6 +55,7 @@ struct GameListView: View {
                             .fill(.background)
                             .frame(width: 220, height: 325)
                             .offset(y: -10)
+                            .shadow(radius: 10, x: 1, y: 1)
                         
                         VStack {
                             ZStack {
