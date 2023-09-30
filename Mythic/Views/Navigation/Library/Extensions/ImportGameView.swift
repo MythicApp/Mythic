@@ -12,6 +12,9 @@ extension LibraryView {
         @Binding var isPresented: Bool
         @State private var isProgressViewSheetPresented: Bool = false
         
+        @State private var isErrorPresented: Bool = false
+        @State private var errorContent: Substring = ""
+        
         @State private var installableGames: [String] = []
         
         @State private var selectedGame: String = "" // is initialised onappear
@@ -72,7 +75,6 @@ extension LibraryView {
                         Toggle(isOn: $withDLCs) {
                             Text("Import with DLCs")
                         }
-                        // .toggleStyle(.switch)
                         Spacer()
                     }
                     
@@ -80,8 +82,66 @@ extension LibraryView {
                         Toggle(isOn: $checkIntegrity) {
                             Text("Verify the game's integrity")
                         }
-                        // .toggleStyle(.switch)
                         Spacer()
+                    }
+                    
+                    HStack {
+                        Button("Cancel", role: .cancel) {
+                            isPresented.toggle()
+                        }
+                        
+                        Spacer()
+                        
+                        Button("Done", role: .none) {
+                            var realSelectedPlatform = selectedPlatform
+                            var isError = false
+                            
+                            if selectedPlatform == "macOS" {
+                                realSelectedPlatform = "Mac"
+                            }
+                            
+                            isProgressViewSheetPresented = true
+                            
+                            DispatchQueue.global(qos: .background).async { [self] in
+                                let commandOutput = Legendary.command(
+                                    args: [
+                                        "import",
+                                        checkIntegrity ? nil : "--disable-check",
+                                        withDLCs ? "--with-dlcs" : "--skip-dlcs",
+                                        "--platform", realSelectedPlatform,
+                                        selectedGame,
+                                        gamePath
+                                    ]
+                                        .compactMap { $0 },
+                                    useCache: false
+                                )
+                                
+                                for line in commandOutput.stderr.string.components(separatedBy: "\n") {
+                                    if line.contains("ERROR:") {
+                                        if let range = line.range(of: "ERROR: ") {
+                                            let substring = line[range.upperBound...]
+                                            errorContent = substring
+                                            isError = true
+                                            break // first err
+                                        }
+                                    }
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    isProgressViewSheetPresented = false
+                                    
+                                    if isError {
+                                        isErrorPresented = true
+                                    } else {
+                                        isPresented = false
+                                    }
+                                    
+                                    // errorContent = ""
+                                }
+                            }
+                        }
+                        .disabled(gamePath.isEmpty)
+                        .buttonStyle(.borderedProminent)
                     }
                     
                 } else if selectedGameType == "Local" {
@@ -89,50 +149,37 @@ extension LibraryView {
                         .symbolEffect(.pulse)
                         .imageScale(.large)
                         .padding()
-                }
-                
-                HStack {
+                    
                     Button("Cancel", role: .cancel) {
                         isPresented.toggle()
                     }
-                    
-                    Spacer()
-                    
-                    Button("Done", role: .none) {
-                        isPresented.toggle()
-                        var realSelectedPlatform = selectedPlatform
-                        
-                        if selectedPlatform == "macOS" {
-                            realSelectedPlatform = "Mac"
-                        }
-                        
-                        _ = Legendary.command(
-                            args: [
-                                "import",
-                                checkIntegrity ? nil : "--disable-check",
-                                withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                "--platform", realSelectedPlatform,
-                                selectedGame,
-                                gamePath
-                            ]
-                                .compactMap { $0 }
-                        )
-                    }
-                    .buttonStyle(.borderedProminent)
                 }
             }
+            
             .padding()
+            
             .onAppear {
                 DispatchQueue.global().async {
                     let games = LegendaryJson.getInstallable()
                     DispatchQueue.main.async { [self] in
-                        selectedGame = games.appTitles.first ?? "Error retrieving game list"
+                        selectedGame = games.appTitles.first ?? "Error retrieving game list()"
                         installableGames = games.appTitles
                         isProgressViewSheetPresented = false
                     }
                 }
             }
-            .padding()
+            
+            .sheet(isPresented: $isProgressViewSheetPresented) {
+                ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
+            }
+            
+            .alert(isPresented: $isErrorPresented) {
+                Alert(
+                    title: Text("Error importing game"),
+                    message: Text(errorContent)/*,
+                    dismissButton: .default(Text("Got it!"))*/
+                )
+            }
         }
     }
 }
