@@ -12,7 +12,7 @@ struct LegendaryJson {
     static func getGames() -> (appNames: [String], appTitles: [String]) {
         guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
-            data: Legendary.command(args: ["list-installed","--json"]).stdout.data
+            data: Legendary.command(args: ["list-installed","--json"], useCache: true).stdout.data
         )
         
         var appNames: [String] = []
@@ -27,7 +27,7 @@ struct LegendaryJson {
     static func getInstallable() -> (appNames: [String], appTitles: [String]) {
         guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
-            data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"]).stdout.data
+            data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout.data
         )
         var appNames: [String] = []
         var appTitles: [String] = []
@@ -41,7 +41,7 @@ struct LegendaryJson {
     static func getImages() -> [String: String] {
         guard Legendary.signedIn(useCache: true) else { return [:] }
         let json = try? JSON(
-            data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"]).stdout.data
+            data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout.data
         )
         
         var gamePicURLS: [String: String] = [:]
@@ -60,14 +60,14 @@ struct LegendaryJson {
     
     static func getAppNameFromTitle(appTitle: String) -> String {
         let json = try? JSON(
-            data: Legendary.command(args: ["info", appTitle, "--json"]).stdout.data
+            data: Legendary.command(args: ["info", appTitle, "--json"], useCache: true).stdout.data
         )
         return json!["game"]["app_name"].stringValue
     }
     
     static func getTitleFromAppName(appName: String) -> String {
         let json = try? JSON(
-            data: Legendary.command(args: ["info", appName, "--json"]).stdout.data
+            data: Legendary.command(args: ["info", appName, "--json"], useCache: true).stdout.data
         )
         return json!["game"]["title"].stringValue
     }

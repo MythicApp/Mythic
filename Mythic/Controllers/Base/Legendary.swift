@@ -23,7 +23,7 @@ struct Legendary {
     private static var commandCache: [String: (stdout: (data: Data, string: String), stderr: (data: Data, string: String))] = [:]
 
     /// Run a legendary command, using the included legendary binary.
-    static func command(args: [String], useCache: Bool = true, input: String? = nil) -> (stdout: (data: Data, string: String), stderr: (data: Data, string: String)) {
+    static func command(args: [String], useCache: Bool, input: String? = nil) -> (stdout: (data: Data, string: String), stderr: (data: Data, string: String)) {
         
         /// Conntains instances of the async DispatchQueues
         struct QueueContainer {
@@ -126,7 +126,7 @@ struct Legendary {
                 if output.stderr.string.contains("DEBUG:") {
                     log.debug("\(output.stderr.string)")
                 } else if output.stderr.string.contains("INFO:") {
-                    log.info("\(output.stderr.string)")
+                    log.info("\(output.stderr.string)") 
                 } else if output.stderr.string.contains("WARN:") {
                     log.warning("\(output.stderr.string)")
                 } else if output.stderr.string.contains("ERROR:") {
