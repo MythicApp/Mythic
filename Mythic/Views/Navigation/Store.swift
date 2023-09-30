@@ -71,7 +71,7 @@ struct StoreView: View {
         }
         
         .alert(isPresented: $loadingError) {
-            return Alert(
+            Alert(
                 title: Text("Error"),
                 message: Text("Failed to load the webpage."),
                 primaryButton: .default(Text("Retry")) {
@@ -83,7 +83,9 @@ struct StoreView: View {
             )
         }
         
-        .alert(isPresented: $notImplementedAlert) {NotImplementedAlert(isPresented: $notImplementedAlert)}
+        .alert(isPresented: $notImplementedAlert) {
+            NotImplementedAlert(isPresented: $notImplementedAlert)
+        }
     }
 }
 

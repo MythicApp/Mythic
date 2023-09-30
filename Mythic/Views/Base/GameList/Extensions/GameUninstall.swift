@@ -65,6 +65,7 @@ extension GameListView {
                                     .compactMap { $0 },
                                 useCache: false
                             )
+                            // Returns "[cli] INFO: Game has been uninstalled."
                             
                             isConfirmationPresented = false
                             isPresented = false
