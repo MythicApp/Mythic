@@ -16,6 +16,7 @@ struct LibraryView: View {
     var body: some View {
         
         GameListView()
+        
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
@@ -27,7 +28,7 @@ struct LibraryView: View {
             }
         
             .sheet(isPresented: $addGameModalPresented) {
-                LibraryView.AddGameView(isPresented: $addGameModalPresented)
+                LibraryView.ImportGameView(isPresented: $addGameModalPresented)
                     .fixedSize()
             }
         
