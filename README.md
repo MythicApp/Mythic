@@ -7,4 +7,10 @@ The reason for this project's existence is to create a UI frontend for [Legendar
 
 Mythic has been designed to look as 'macOS' as possible, to ensure coherence with the rest of the macOS environment
 
-<sub>yeah, this is the new repo. blame git for undoing all of my changes (screw you git rebase!!!)</sub>
+<sub>
+yeah, this is the new repo. blame git for undoing all of my changes (screw you git rebase!!!)
+that's also why there's such little commits on such an elaborate project, i got my changes back but lost the .git folder
+(i amended initial instead of committing anyway)
+
+everything so far has been made by @blackxfiied
+</sub>
