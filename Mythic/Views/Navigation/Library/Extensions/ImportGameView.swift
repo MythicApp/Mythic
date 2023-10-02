@@ -94,7 +94,6 @@ extension LibraryView {
                         
                         Button("Done", role: .none) {
                             var realSelectedPlatform = selectedPlatform
-                            var isError = false
                             
                             if selectedPlatform == "macOS" {
                                 realSelectedPlatform = "Mac"
@@ -102,8 +101,8 @@ extension LibraryView {
                             
                             isProgressViewSheetPresented = true
                             
-                            DispatchQueue.global(qos: .background).async { [self] in
-                                let commandOutput = Legendary.command(
+                            DispatchQueue.global(qos: .userInteractive).async { [self] in
+                                let command = Legendary.command(
                                     args: [
                                         "import",
                                         checkIntegrity ? nil : "--disable-check",
@@ -116,28 +115,37 @@ extension LibraryView {
                                     useCache: false
                                 )
                                 
-                                for line in commandOutput.stderr.string.components(separatedBy: "\n") {
-                                    if line.contains("ERROR:") {
-                                        if let range = line.range(of: "ERROR: ") {
-                                            let substring = line[range.upperBound...]
-                                            errorContent = substring
-                                            isError = true
-                                            break // first err
+                                if let commandStderrString = String(data: command.stderr, encoding: .utf8) {
+                                    if !commandStderrString.isEmpty {
+                                        if commandStderrString.contains("INFO: Game \"\(selectedGame)\" has been imported.") {
+                                            isPresented = false
+                                        }
+                                    }
+                                    
+                                    for line in commandStderrString.components(separatedBy: "\n") {
+                                        if line.contains("ERROR:") {
+                                            if let range = line.range(of: "ERROR: ") {
+                                                let substring = line[range.upperBound...]
+                                                errorContent = substring
+                                                isProgressViewSheetPresented = false
+                                                isErrorPresented = true
+                                                break // first err
+                                            }
                                         }
                                     }
                                 }
-                                
-                                DispatchQueue.main.async {
-                                    isProgressViewSheetPresented = false
-                                    
-                                    if isError {
-                                        isErrorPresented = true
-                                    } else {
-                                        isPresented = false
-                                    }
-                                    
-                                    // errorContent = ""
-                                }
+
+                                /*
+                                 Output when importing Genshin Impact
+                                 [Core] INFO: Trying to re-use existing login session...
+                                 [Core] INFO: Downloading latest manifest for "41869934302e4b8cafac2d3c0e7c293d"
+                                 [cli] INFO: Game install appears to be complete.
+                                 [cli] INFO: NOTE: The Game installation will have to be verified before it can be updated with legendary.
+                                 [cli] INFO: Run "legendary repair 41869934302e4b8cafac2d3c0e7c293d" to do so.
+                                 [cli] INFO: Game "Genshin Impact" has been imported.
+                                 
+                                 conclusion: repair still has to be ran for full checksum matching
+                                 */
                             }
                         }
                         .disabled(gamePath.isEmpty)
@@ -159,10 +167,10 @@ extension LibraryView {
             .padding()
             
             .onAppear {
-                DispatchQueue.global().async {
+                DispatchQueue.global(qos: .userInteractive).async {
                     let games = LegendaryJson.getInstallable()
                     DispatchQueue.main.async { [self] in
-                        selectedGame = games.appTitles.first ?? "Error retrieving game list()"
+                        selectedGame = games.appTitles.first ?? "Error retrieving game list"
                         installableGames = games.appTitles
                         isProgressViewSheetPresented = false
                     }
@@ -175,7 +183,7 @@ extension LibraryView {
             
             .alert(isPresented: $isErrorPresented) {
                 Alert(
-                    title: Text("Error importing game"),
+                    title: Text("Error importing game."),
                     message: Text(errorContent)/*,
                     dismissButton: .default(Text("Got it!"))*/
                 )

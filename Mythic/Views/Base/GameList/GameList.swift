@@ -1,5 +1,5 @@
 //
-//  test.swift
+//  GameList.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 16/9/2023.
@@ -33,7 +33,7 @@ struct GameListView: View {
     func updateCurrentGame(game: String) {
         isProgressViewSheetPresented = true
         
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let title = LegendaryJson.getTitleFromAppName(appName: game)
             DispatchQueue.main.async { [self] in
                 currentGame = title
@@ -42,14 +42,14 @@ struct GameListView: View {
         }
     }
     
-    func updateAll() {
+    public func updateAll() {
         isProgressViewSheetPresented = true
         dataFetched = false
         
         let group = DispatchGroup()
         
         group.enter()
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let games = LegendaryJson.getInstallable()
             DispatchQueue.main.async { [self] in
                 installableGames = games.appNames
@@ -58,7 +58,7 @@ struct GameListView: View {
         }
         
         group.enter()
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let thumbnails = LegendaryJson.getImages()
             DispatchQueue.main.async { [self] in
                 gameThumbnails = thumbnails
@@ -67,7 +67,7 @@ struct GameListView: View {
         }
         
         group.enter()
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInteractive).async {
             let installed = LegendaryJson.getGames()
             DispatchQueue.main.async { [self] in
                 installedGames = installed.appNames
@@ -138,7 +138,7 @@ struct GameListView: View {
                                             isSettingsViewPresented = true
                                         }) {
                                             Image(systemName: "gear")
-                                                .foregroundColor(.gray)
+                                                .foregroundStyle(.gray)
                                                 .padding()
                                         }
                                         .shadow(color: .gray, radius: 10, x: 1, y: 1)
@@ -150,7 +150,7 @@ struct GameListView: View {
                                             _ = Legendary.command(args: ["launch", game], useCache: false)
                                         }) {
                                             Image(systemName: "play.fill")
-                                                .foregroundColor(.green)
+                                                .foregroundStyle(.green)
                                                 .padding()
                                         }
                                         .shadow(color: .green, radius: 10, x: 1, y: 1)
@@ -162,7 +162,7 @@ struct GameListView: View {
                                             isUninstallViewPresented = true
                                         }) {
                                             Image(systemName: "xmark.bin.fill")
-                                                .foregroundColor(.red)
+                                                .foregroundStyle(.red)
                                                 .padding()
                                         }
                                         .shadow(color: .red, radius: 10, x: 1, y: 1)
@@ -174,7 +174,7 @@ struct GameListView: View {
                                             isDownloadViewPresented = true
                                         }) {
                                             Image(systemName: "arrow.down.to.line")
-                                                .foregroundColor(.gray)
+                                                .foregroundStyle(.gray)
                                                 .padding()
                                         }
                                         .shadow(color: .gray, radius: 10, x: 1, y: 1)

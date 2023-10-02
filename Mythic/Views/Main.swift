@@ -21,14 +21,17 @@ import OSLog
 
 struct MainView: View {
     
-    @State private var isAuthViewPresented = false
+    @State private var isAuthViewPresented: Bool = false
     
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
     
+    @State private var appVersion: String = ""
+    @State private var buildNumber: Int = 0
+    
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
-        DispatchQueue.global().async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let whoAmIOutput = Legendary.whoAmI(useCache: false)
             DispatchQueue.main.async { [self] in
                 signedIn = Legendary.signedIn(whoAmIOutput: whoAmIOutput)
@@ -88,7 +91,7 @@ struct MainView: View {
                 
                 HStack {
                     Image(systemName: "person")
-                        .foregroundColor(.accentColor)
+                        .foregroundStyle(.accent)
                     Text(epicUserAsync)
                         .onAppear {
                             updateLegendaryAccountState()
@@ -98,14 +101,14 @@ struct MainView: View {
                 if epicUserAsync != "Loading..." {
                     if signedIn {
                         Button(action: {
-                            let cmd = Legendary.command(args: ["auth", "--delete"], useCache: false)
-                            if cmd.stderr.string.contains("User data deleted.") {
+                            let command = Legendary.command(args: ["auth", "--delete"], useCache: false)
+                            if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
                                 updateLegendaryAccountState()
                             }
                         }) {
                             HStack {
                                 Image(systemName: "person.slash")
-                                    .foregroundColor(.accentColor)
+                                    .foregroundStyle(.accent)
                                 Text("Sign Out")
                             }
                         }
@@ -116,13 +119,20 @@ struct MainView: View {
                         }) {
                             HStack {
                                 Image(systemName: "person")
-                                    .foregroundColor(.accentColor)
+                                    .foregroundStyle(.accent)
                                 Text("Sign In")
                             }
                         }
                     }
                 }
                 
+                if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
+                   let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                   let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+                    Text("\(displayName) \(shortVersion) (\(bundleVersion))")
+                        .font(.footnote)
+                        .foregroundStyle(.placeholder)
+                }
             }
             
             .sheet(isPresented: $isAuthViewPresented) {

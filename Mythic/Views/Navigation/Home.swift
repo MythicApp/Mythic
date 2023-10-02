@@ -22,7 +22,7 @@ struct HomeView: View {
         }) {
             HStack {
                 Image(systemName: "person")
-                    .foregroundColor(.accentColor)
+                    .foregroundStyle(.accent)
                 Text("Sign In")
             }
         }
@@ -30,7 +30,7 @@ struct HomeView: View {
         
         
         .onAppear {
-            DispatchQueue.global().async {
+            DispatchQueue.global(qos: .userInteractive).async {
                 let checkIfSignedIn = Legendary.signedIn(useCache: true)
                 DispatchQueue.main.async {
                     signedIn = checkIfSignedIn

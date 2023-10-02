@@ -21,8 +21,9 @@ struct AuthView: View {
             isLoggingIn = true
             progressViewPresented = true
             
-            let cmd = Legendary.command(args: ["auth", "--code", code], useCache: false)
-            if cmd.stderr.string.contains("Successfully logged in as") {
+            let command = Legendary.command(args: ["auth", "--code", code], useCache: false)
+            
+            if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("Successfully logged in as") {
                 $isPresented.wrappedValue = false
                 progressViewPresented = false
             } else {

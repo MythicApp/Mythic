@@ -20,10 +20,10 @@ struct Legendary {
     )
     
     /// Stores legendary command outputs locally, in order to deliver content faster
-    private static var commandCache: [String: (stdout: (data: Data, string: String), stderr: (data: Data, string: String))] = [:]
+    private static var commandCache: [String: (stdout: Data, stderr: Data)] = [:]
 
     /// Run a legendary command, using the included legendary binary.
-    static func command(args: [String], useCache: Bool, input: String? = nil) -> (stdout: (data: Data, string: String), stderr: (data: Data, string: String)) {
+    static func command(args: [String], useCache: Bool, input: String? = nil) -> (stdout: Data, stderr: Data) {
         
         /// Conntains instances of the async DispatchQueues
         struct QueueContainer {
@@ -37,21 +37,17 @@ struct Legendary {
         
         if useCache == true, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }) {
             log.debug("Cached, returning.")
-            DispatchQueue.global().async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 _ = run()
                 log.debug("New cache appended.")
             }
             return cachedOutput
         } else {
-            if useCache == false {
-                log.debug("Cache not enabled for this task.")
-            } else {
-                log.debug("Cache not found, creating.")
-            }
+            log.debug("\(useCache ? "Cache not found, creating" : "Cache disabled for this task.")")
             return run()
         }
         
-        func run() -> (stdout: (data: Data, string: String), stderr: (data: Data, string: String)) {
+        func run() -> (stdout: Data, stderr: Data) {
             let task = Process()
             task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/legendary", ofType: nil)!)
             
@@ -110,38 +106,35 @@ struct Legendary {
             task.waitUntilExit()
             asyncGroup.wait()
             
-            let output: (stdout: (data: Data, string: String), stderr: (data: Data, string: String)) = (
-                (
-                    data.stdout,
-                    String(data: data.stdout, encoding: .utf8) ?? ""
-                ),
-                (
-                    data.stderr,
-                    String(data: data.stderr, encoding: .utf8) ?? ""
-                )
+            let output: (stdout: Data, stderr: Data) = (
+                data.stdout, data.stderr
             )
             
-            if !output.stderr.string.isEmpty {
-                // https://docs.python.org/3/library/logging.html#logging-levels
-                if output.stderr.string.contains("DEBUG:") {
-                    log.debug("\(output.stderr.string)")
-                } else if output.stderr.string.contains("INFO:") {
-                    log.info("\(output.stderr.string)") 
-                } else if output.stderr.string.contains("WARN:") {
-                    log.warning("\(output.stderr.string)")
-                } else if output.stderr.string.contains("ERROR:") {
-                    log.error("\(output.stderr.string)")
-                } else if output.stderr.string.contains("CRITICAL:") {
-                    log.critical("\(output.stderr.string)")
-                } else {
-                    log.log("\(output.stderr.string)")
+            if let stderrString = String(data: output.stderr, encoding: .utf8) {
+                if !stderrString.isEmpty {
+                    // https://docs.python.org/3/library/logging.html#logging-levels
+                    if stderrString.contains("DEBUG:") {
+                        log.debug("\(stderrString)")
+                    } else if stderrString.contains("INFO:") {
+                        log.info("\(stderrString)")
+                    } else if stderrString.contains("WARNING:") { // Legendary just likes being different
+                        log.warning("\(stderrString)")
+                    } else if stderrString.contains("ERROR:") {
+                        log.error("\(stderrString)")
+                    } else if stderrString.contains("CRITICAL:") {
+                        log.critical("\(stderrString)")
+                    } else {
+                        log.log("\(stderrString)")
+                    }
                 }
             } else {
                 log.warning("empty stderr\ncommand key: \(commandKey)")
             }
             
-            if !output.stdout.string.isEmpty {
-                log.debug("\(output.stdout.string)")
+            if let stdoutString = String(data: output.stdout, encoding: .utf8) {
+                if !stdoutString.isEmpty {
+                    log.debug("\(stdoutString)")
+                }
             } else {
                 log.warning("empty stderr\ncommand key: \(commandKey)")
             }
@@ -161,9 +154,30 @@ struct Legendary {
     /// Queries the user that is currently signed in.
     static func whoAmI(useCache: Bool?) -> String {
         var accountString: String = ""
-        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: useCache ?? false).stdout.data)["account"] {
+        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: useCache ?? false).stdout)["account"] {
             accountString = String(describing: account)
         }
+        
+        /*
+         annoying
+         
+        do {
+            if let data = try JSONSerialization.jsonObject(
+                with: Legendary.command(
+                    args: ["status","--json"],
+                    useCache: useCache ?? false
+                )
+                .stdout.data, options: []
+            ) as? [String: Any] {
+                if let account = data["account"] as? String {
+                    accountString = account
+                }
+            }
+        } catch {
+            
+        }
+         */
+        
         return accountString
     }
     

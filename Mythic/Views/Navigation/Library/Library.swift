@@ -33,9 +33,9 @@ struct LibraryView: View {
             }
         
             .onAppear {
-                DispatchQueue.global().async {
+                DispatchQueue.global(qos: .userInteractive).async {
                     let status = try! JSON(
-                        data: Legendary.command(args: ["status","--json"], useCache: true).stdout.data
+                        data: Legendary.command(args: ["status","--json"], useCache: true).stdout
                     )
                     DispatchQueue.main.async {
                         legendaryStatus = status

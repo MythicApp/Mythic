@@ -16,6 +16,10 @@ extension GameListView {
         @State private var skipUninstaller: Bool = false
         
         @State private var isConfirmationPresented = false
+        @State private var isProgressViewSheetPresented = false
+        @State private var isErrorPresented = false
+        
+        @State private var errorContent: Substring = ""
         
         var body: some View {
             VStack {
@@ -50,11 +54,29 @@ extension GameListView {
                     }
                     .buttonStyle(.borderedProminent)
                 }
-                .alert(isPresented: $isConfirmationPresented) {
-                    Alert(
-                        title: Text("Are you sure you want to delete \(game)?"),
-                        primaryButton: .destructive(Text("Delete")) {
-                            _ = Legendary.command(
+            }
+            .padding()
+            
+            .sheet(isPresented: $isProgressViewSheetPresented) {
+                ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
+            }
+            
+            .alert(isPresented: $isErrorPresented) {
+                Alert(
+                    title: Text("Error uninstalling game"),
+                    message: Text(errorContent)/*,
+                                                dismissButton: .default(Text("Got it!"))*/
+                )
+            }
+            
+            .alert(isPresented: $isConfirmationPresented) {
+                Alert(
+                    title: Text("Are you sure you want to delete \(game)?"),
+                    primaryButton: .destructive(Text("Delete")) {
+                        isProgressViewSheetPresented = true
+                        
+                        DispatchQueue.global(qos: .userInteractive).async { [self] in
+                            let commandOutput = Legendary.command(
                                 args: [
                                     "-y",
                                     "uninstall",
@@ -65,18 +87,35 @@ extension GameListView {
                                     .compactMap { $0 },
                                 useCache: false
                             )
-                            // Returns "[cli] INFO: Game has been uninstalled."
                             
-                            isConfirmationPresented = false
-                            isPresented = false
-                        },
-                        secondaryButton: .cancel(Text("Cancel")) {
-                            isConfirmationPresented = false
+                            if let commandStderrString = String(data: commandOutput.stderr, encoding: .utf8) {
+                                if !commandStderrString.isEmpty {
+                                    if commandStderrString.contains("INFO: Game has been uninstalled.") {
+                                        isProgressViewSheetPresented = false
+                                        isPresented = false
+                                    }
+                                }
+                                
+                                for line in commandStderrString.components(separatedBy: "\n") {
+                                    if line.contains("ERROR:") {
+                                        if let range = line.range(of: "ERROR: ") {
+                                            let substring = line[range.upperBound...]
+                                            errorContent = substring
+                                            isProgressViewSheetPresented = false
+                                            isErrorPresented = true
+                                            break // first error only
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    )
-                }
+                    },
+                    secondaryButton: .cancel(Text("Cancel")) {
+                        isConfirmationPresented = false
+                    }
+                )
             }
-            .padding()
+
         }
     }
 }
