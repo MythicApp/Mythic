@@ -15,9 +15,9 @@ extension GameListView {
         @State private var keepFiles: Bool = false
         @State private var skipUninstaller: Bool = false
         
+        @State private var isErrorPresented = false
         @State private var isConfirmationPresented = false
         @State private var isProgressViewSheetPresented = false
-        @State private var isErrorPresented = false
         
         @State private var errorContent: Substring = ""
         
@@ -64,8 +64,7 @@ extension GameListView {
             .alert(isPresented: $isErrorPresented) {
                 Alert(
                     title: Text("Error uninstalling game"),
-                    message: Text(errorContent)/*,
-                                                dismissButton: .default(Text("Got it!"))*/
+                    message: Text(errorContent)
                 )
             }
             
@@ -97,9 +96,13 @@ extension GameListView {
                                 }
                                 
                                 for line in commandStderrString.components(separatedBy: "\n") {
+                                    print("line \(line)")
                                     if line.contains("ERROR:") {
+                                        print("line \(line)")
                                         if let range = line.range(of: "ERROR: ") {
+                                            print("range \(line)")
                                             let substring = line[range.upperBound...]
+                                            print("substring \(substring)")
                                             errorContent = substring
                                             isProgressViewSheetPresented = false
                                             isErrorPresented = true
