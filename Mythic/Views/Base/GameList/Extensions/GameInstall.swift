@@ -11,6 +11,7 @@ extension GameListView {
     struct InstallView: View {
         @Binding var isPresented: Bool
         @Binding var game: String
+        @Binding var isGameListRefreshCalled: Bool
         
         var body: some View {
             VStack {

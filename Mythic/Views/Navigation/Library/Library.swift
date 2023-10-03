@@ -13,9 +13,11 @@ struct LibraryView: View {
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
     
+    @State private var isGameListRefreshCalled: Bool = false
+    
     var body: some View {
         
-        GameListView()
+        GameListView(isRefreshCalled: $isGameListRefreshCalled)
         
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -28,7 +30,10 @@ struct LibraryView: View {
             }
         
             .sheet(isPresented: $addGameModalPresented) {
-                LibraryView.ImportGameView(isPresented: $addGameModalPresented)
+                LibraryView.ImportGameView(
+                    isPresented: $addGameModalPresented,
+                    isGameListRefreshCalled: $isGameListRefreshCalled
+                )
                     .fixedSize()
             }
         

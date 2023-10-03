@@ -10,8 +10,9 @@ import SwiftUI
 extension LibraryView {
     struct ImportGameView: View {
         @Binding var isPresented: Bool
-        @State private var isProgressViewSheetPresented: Bool = false
+        @Binding var isGameListRefreshCalled: Bool
         
+        @State private var isProgressViewSheetPresented: Bool = false
         @State private var isErrorPresented: Bool = false
         @State private var errorContent: Substring = ""
         
@@ -87,7 +88,7 @@ extension LibraryView {
                     
                     HStack {
                         Button("Cancel", role: .cancel) {
-                            isPresented.toggle()
+                            isPresented = false
                         }
                         
                         Spacer()
@@ -119,6 +120,7 @@ extension LibraryView {
                                     if !commandStderrString.isEmpty {
                                         if commandStderrString.contains("INFO: Game \"\(selectedGame)\" has been imported.") {
                                             isPresented = false
+                                            isGameListRefreshCalled = true
                                         }
                                     }
                                     
@@ -159,7 +161,7 @@ extension LibraryView {
                         .padding()
                     
                     Button("Cancel", role: .cancel) {
-                        isPresented.toggle()
+                        isPresented = false
                     }
                 }
             }

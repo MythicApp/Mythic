@@ -10,8 +10,11 @@ import SwiftUI
 import CachedAsyncImage
 import OSLog
 import SwiftyJSON
+import Combine
 
 struct GameListView: View {
+    
+    @Binding var isRefreshCalled: Bool
     
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
@@ -36,45 +39,6 @@ struct GameListView: View {
                 currentGame = title
                 isProgressViewSheetPresented = false
             }
-        }
-    }
-    
-    public func updateAll() {
-        isProgressViewSheetPresented = true
-        dataFetched = false
-        
-        let group = DispatchGroup()
-        
-        group.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            let games = LegendaryJson.getInstallable()
-            DispatchQueue.main.async { [self] in
-                installableGames = games.appNames
-                group.leave()
-            }
-        }
-        
-        group.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            let thumbnails = LegendaryJson.getImages()
-            DispatchQueue.main.async { [self] in
-                gameThumbnails = thumbnails
-                group.leave()
-            }
-        }
-        
-        group.enter()
-        DispatchQueue.global(qos: .userInteractive).async {
-            let installed = LegendaryJson.getGames()
-            DispatchQueue.main.async { [self] in
-                installedGames = installed.appNames
-                group.leave()
-            }
-        }
-        
-        group.notify(queue: .main) {
-            isProgressViewSheetPresented = false
-            dataFetched = true
         }
     }
     
@@ -188,7 +152,56 @@ struct GameListView: View {
         }
         
         .onAppear {
-            updateAll()
+            isRefreshCalled = true
+            Logger.app.debug("refresh called")
+        }
+        
+        .onReceive(Just(isRefreshCalled)) { called in
+            if called {
+                Logger.app.info("Recieved refresh call for GameListView")
+                isProgressViewSheetPresented = true
+                dataFetched = false
+                
+                let group = DispatchGroup()
+                
+                group.enter()
+                DispatchQueue.global(qos: .userInteractive).async {
+                    let games = LegendaryJson.getInstallable()
+                    DispatchQueue.main.async { [self] in
+                        installableGames = games.appNames
+                        Logger.app.debug("games appended")
+                        group.leave()
+                    }
+                }
+                
+                group.enter()
+                DispatchQueue.global(qos: .userInteractive).async {
+                    let thumbnails = LegendaryJson.getImages()
+                    DispatchQueue.main.async { [self] in
+                        gameThumbnails = thumbnails
+                        Logger.app.debug("thumbs appended")
+                        group.leave()
+                    }
+                }
+                
+                group.enter()
+                DispatchQueue.global(qos: .userInteractive).async {
+                    let installed = LegendaryJson.getGames()
+                    DispatchQueue.main.async { [self] in
+                        installedGames = installed.appNames
+                        Logger.app.debug("installed games appended")
+                        group.leave()
+                    }
+                }
+                
+                group.notify(queue: .main) {
+                    Logger.app.debug("all appended")
+                    isProgressViewSheetPresented = false
+                    dataFetched = true
+                }
+                
+                isRefreshCalled = false
+            }
         }
         
         .sheet(isPresented: $isProgressViewSheetPresented) {
@@ -205,21 +218,24 @@ struct GameListView: View {
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: $currentGame
+                game: $currentGame,
+                isGameListRefreshCalled: $isRefreshCalled
             )
         }
         
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: $currentGame
+                game: $currentGame,
+                isGameListRefreshCalled: $isRefreshCalled
             )
         }
         
         .sheet(isPresented: $isDownloadViewPresented) {
             GameListView.DownloadView(
                 isPresented: $isDownloadViewPresented,
-                game: $currentGame
+                game: $currentGame,
+                isGameListRefreshCalled: $isRefreshCalled
             )
         }
         
@@ -228,5 +244,5 @@ struct GameListView: View {
 
 
 #Preview {
-    GameListView()
+    LibraryView()
 }

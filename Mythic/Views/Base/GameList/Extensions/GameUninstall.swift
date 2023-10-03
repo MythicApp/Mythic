@@ -11,6 +11,7 @@ extension GameListView {
     struct UninstallView: View {
         @Binding var isPresented: Bool
         @Binding var game: String
+        @Binding var isGameListRefreshCalled: Bool
         
         @State private var keepFiles: Bool = false
         @State private var skipUninstaller: Bool = false
@@ -44,7 +45,7 @@ extension GameListView {
                 
                 HStack {
                     Button("Cancel", role: .cancel) {
-                        isPresented.toggle()
+                        isPresented = false
                     }
                     
                     Spacer()
@@ -61,7 +62,7 @@ extension GameListView {
                 ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
             }
             
-            .alert(isPresented: $isErrorPresented) {
+            .alert(isPresented: $isErrorPresented) { // not working...
                 Alert(
                     title: Text("Error uninstalling game"),
                     message: Text(errorContent)
@@ -92,6 +93,7 @@ extension GameListView {
                                     if commandStderrString.contains("INFO: Game has been uninstalled.") {
                                         isProgressViewSheetPresented = false
                                         isPresented = false
+                                        isGameListRefreshCalled = true
                                     }
                                 }
                                 
@@ -105,7 +107,7 @@ extension GameListView {
                                             print("substring \(substring)")
                                             errorContent = substring
                                             isProgressViewSheetPresented = false
-                                            isErrorPresented = true
+                                            isErrorPresented = true // only one alert works for some reason (definitely a bug)
                                             break // first error only
                                         }
                                     }
