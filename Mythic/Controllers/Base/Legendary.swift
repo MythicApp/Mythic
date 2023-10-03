@@ -55,8 +55,9 @@ struct Legendary {
             
             /// Contains instances of Pipe, for stderr and stdout
             struct PipeContainer {
-                let stdout: Pipe = Pipe()
-                let stderr: Pipe = Pipe()
+                let stdout = Pipe()
+                let stderr = Pipe()
+                // let stdin = Pipe()
             }
             
             /// Contains instances of Data, for handling pipes
@@ -71,6 +72,7 @@ struct Legendary {
             
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
+            // task.standardInput = pipe.stdin
             task.standardInput = input
             
             task.currentDirectoryURL = URL(fileURLWithPath: Bundle.main.bundlePath)
@@ -146,6 +148,29 @@ struct Legendary {
             return output
         }
     }
+    /* no hable implementatiónes
+    struct Queue {
+        var download: [String] = []
+        var command: [String] = []
+        enum Types {
+            case download
+            case command
+        }
+    }
+    
+    /// Add a legendary function that requires a data lock to a queue of other functions that require a data lock
+    static func addToQueue(queue: Queue, args: [String], useCache: Bool) -> (stdout: Data, stderr: Data) {
+        switch queue {
+        case .command:
+            
+            return
+            
+        case .download:
+            
+            return
+        }
+    }
+     */
     
     /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
@@ -179,8 +204,6 @@ struct Legendary {
             
         }
          */
-         
-        
         return accountString
     }
     
