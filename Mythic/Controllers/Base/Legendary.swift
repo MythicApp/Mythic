@@ -35,7 +35,9 @@ struct Legendary {
         
         let commandKey = String(describing: args)
         
-        if useCache == true, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }) {
+        if useCache,
+           let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }),
+           !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
             DispatchQueue.global(qos: .userInitiated).async {
                 _ = run()
@@ -166,8 +168,8 @@ struct Legendary {
                 with: Legendary.command(
                     args: ["status","--json"],
                     useCache: useCache ?? false
-                )
-                .stdout.data, options: []
+                ).stdout,
+                options: []
             ) as? [String: Any] {
                 if let account = data["account"] as? String {
                     accountString = account
@@ -177,6 +179,7 @@ struct Legendary {
             
         }
          */
+         
         
         return accountString
     }
