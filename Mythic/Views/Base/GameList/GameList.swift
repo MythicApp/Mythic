@@ -27,9 +27,6 @@ struct GameListView: View {
     
     @State private var dataFetched: Bool = false
     
-    @State private var xOffset: CGFloat = 0
-    @State private var yOffset: CGFloat = 0
-    
     func updateCurrentGame(game: String) {
         isProgressViewSheetPresented = true
         
