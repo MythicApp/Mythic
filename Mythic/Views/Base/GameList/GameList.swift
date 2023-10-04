@@ -34,7 +34,7 @@ struct GameListView: View {
         isProgressViewSheetPresented = true
         
         DispatchQueue.global(qos: .userInitiated).async {
-            let title = LegendaryJson.getTitleFromAppName(appName: game)
+            let title = Legendary.getTitleFromAppName(appName: game)
             DispatchQueue.main.async { [self] in
                 currentGame = title
                 isProgressViewSheetPresented = false
@@ -166,7 +166,7 @@ struct GameListView: View {
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let games = LegendaryJson.getInstallable()
+                    let games = Legendary.getInstallable()
                     DispatchQueue.main.async { [self] in
                         installableGames = games.appNames
                         Logger.app.debug("games appended")
@@ -176,7 +176,7 @@ struct GameListView: View {
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = LegendaryJson.getImages()
+                    let thumbnails = Legendary.getTallImages()
                     DispatchQueue.main.async { [self] in
                         gameThumbnails = thumbnails
                         Logger.app.debug("thumbs appended")
@@ -186,7 +186,7 @@ struct GameListView: View {
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let installed = LegendaryJson.getGames()
+                    let installed = Legendary.getInstalledGames()
                     DispatchQueue.main.async { [self] in
                         installedGames = installed.appNames
                         Logger.app.debug("installed games appended")
@@ -203,6 +203,7 @@ struct GameListView: View {
                 isRefreshCalled = false
             }
         }
+        
         
         .sheet(isPresented: $isProgressViewSheetPresented) {
             ProgressViewSheet(isPresented: $isProgressViewSheetPresented)

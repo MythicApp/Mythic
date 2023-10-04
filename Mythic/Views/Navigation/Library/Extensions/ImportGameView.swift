@@ -170,7 +170,7 @@ extension LibraryView {
             
             .onAppear {
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let games = LegendaryJson.getInstallable()
+                    let games = Legendary.getInstallable()
                     DispatchQueue.main.async { [self] in
                         selectedGame = games.appTitles.first ?? "Error retrieving game list"
                         installableGames = games.appTitles

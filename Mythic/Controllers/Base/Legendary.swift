@@ -178,10 +178,10 @@ struct Legendary {
         log.notice("Cleared legendary command cache successfully.")
     }
     
-    /// Queries the user that is currently signed in.
+    /// Queries the user that is currently signed into epic games.
     static func whoAmI(useCache: Bool?) -> String {
         var accountString: String = ""
-        if let account = try? JSON(data: Legendary.command(args: ["status","--json"], useCache: useCache ?? false).stdout)["account"] {
+        if let account = try? JSON(data: command(args: ["status","--json"], useCache: useCache ?? false).stdout)["account"] {
             accountString = String(describing: account)
         }
         
@@ -190,7 +190,7 @@ struct Legendary {
          
         do {
             if let data = try JSONSerialization.jsonObject(
-                with: Legendary.command(
+                with: command(
                     args: ["status","--json"],
                     useCache: useCache ?? false
                 ).stdout,
@@ -212,7 +212,75 @@ struct Legendary {
         if let output = whoAmIOutput {
             return output != "<not logged in>"
         } else {
-            return Legendary.whoAmI(useCache: useCache) != "<not logged in>"
+            return whoAmI(useCache: useCache) != "<not logged in>"
         }
+    }
+    
+    /// Retrieve installed games from epic games services.
+    static func getInstalledGames() -> (appNames: [String], appTitles: [String]) {
+        guard signedIn(useCache: true) else { return ([], []) }
+        let json = try? JSON(
+            data: command(args: ["list-installed","--json"], useCache: true).stdout
+        )
+        
+        var appNames: [String] = []
+        var appTitles: [String] = []
+        for game in json! {
+            appNames.append(String(describing: game.1["app_name"]))
+            appTitles.append(String(describing: game.1["app_title"]))
+        }
+        return (appNames, appTitles)
+    }
+    
+    /// Retrieve installed games from epic games services.
+    static func getInstallable() -> (appNames: [String], appTitles: [String]) {
+        guard signedIn(useCache: true) else { return ([], []) }
+        let json = try? JSON(
+            data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout
+        )
+        var appNames: [String] = []
+        var appTitles: [String] = []
+        for game in json! {
+            appNames.append(String(describing: game.1["app_name"]))
+            appTitles.append(String(describing: game.1["app_title"]))
+        }
+        return (appNames, appTitles)
+    }
+    
+    /// Get game images with "DieselGameBoxTall" metadata. (commonly 1600x1200)
+    static func getTallImages() -> [String: String] {
+        guard signedIn(useCache: true) else { return [:] }
+        let json = try? JSON(
+            data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout
+        )
+        
+        var gamePicURLS: [String: String] = [:]
+        
+        for game in json! {
+            let appName = String(describing: game.1["app_name"])
+            if let keyImages = game.1["metadata"]["keyImages"].array {
+                let dieselGameBoxTallImages = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
+                if let imageUrl = dieselGameBoxTallImages.first?["url"].string {
+                    gamePicURLS[appName] = imageUrl
+                }
+            }
+        }
+        return gamePicURLS
+    }
+    
+    /// Retrieve the game's app\_name from the game's title.
+    static func getAppNameFromTitle(appTitle: String) -> String {
+        let json = try? JSON(
+            data: command(args: ["info", appTitle, "--json"], useCache: true).stdout
+        )
+        return json!["game"]["app_name"].stringValue
+    }
+    
+    /// Retrieve the game's title from the game's app\_name.
+    static func getTitleFromAppName(appName: String) -> String {
+        let json = try? JSON(
+            data: command(args: ["info", appName, "--json"], useCache: true).stdout
+        )
+        return json!["game"]["title"].stringValue
     }
 }
