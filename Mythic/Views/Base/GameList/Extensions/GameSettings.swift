@@ -26,7 +26,7 @@ extension GameListView {
                 
                 HStack {
                     Button(action: {
-                        isPresented.toggle()
+                        isPresented = false
                     }) {
                         Text("Close")
                     }

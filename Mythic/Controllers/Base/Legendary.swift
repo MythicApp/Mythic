@@ -153,8 +153,7 @@ struct Legendary {
         var download: [String] = []
         var command: [String] = []
         enum Types {
-            case download
-            case command
+            case download, command
         }
     }
     

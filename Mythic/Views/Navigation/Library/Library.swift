@@ -22,7 +22,7 @@ struct LibraryView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        addGameModalPresented.toggle()
+                        addGameModalPresented = true
                     }) {
                         Image(systemName: "square.and.arrow.down")
                     }

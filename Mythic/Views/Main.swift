@@ -142,21 +142,6 @@ struct MainView: View {
                     }
             }
             
-            /*
-            .alert(isPresented: $signOutSuccess) {
-                Alert(
-                    title: Text("Alert Title"),
-                    message: Text("This is an alert message."),
-                    primaryButton: .default(Text("OK")) {
-                        signOutSuccess.wrappedValue.toggle()
-                    },
-                    secondaryButton: .cancel(Text("Cancel")) {
-                        
-                    }
-                )
-            }
-            */
-            
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
             .toolbar {

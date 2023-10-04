@@ -78,13 +78,9 @@ struct StoreView: View {
                     _ = NotImplemented()
                 },
                 secondaryButton: .cancel(Text("Cancel")) {
-                    loadingError.toggle()
+                    loadingError = false
                 }
             )
-        }
-        
-        .alert(isPresented: $notImplementedAlert) {
-            NotImplementedAlert(isPresented: $notImplementedAlert)
         }
     }
 }
