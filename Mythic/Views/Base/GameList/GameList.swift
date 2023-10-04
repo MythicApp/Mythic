@@ -19,7 +19,6 @@ struct GameListView: View {
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUninstallViewPresented: Bool = false
-    @State private var isDownloadViewPresented: Bool = false
     
     @State private var isProgressViewSheetPresented: Bool = true
     @State private var currentGame: String = ""
@@ -132,7 +131,7 @@ struct GameListView: View {
                                     } else {
                                         Button(action: {
                                             updateCurrentGame(game: game)
-                                            isDownloadViewPresented = true
+                                            isInstallViewPresented = true
                                         }) {
                                             Image(systemName: "arrow.down.to.line")
                                                 .foregroundStyle(.gray)
@@ -153,7 +152,6 @@ struct GameListView: View {
         
         .onAppear {
             isRefreshCalled = true
-            Logger.app.debug("refresh called")
         }
         
         .onReceive(Just(isRefreshCalled)) { called in
@@ -169,7 +167,6 @@ struct GameListView: View {
                     let games = Legendary.getInstallable()
                     DispatchQueue.main.async { [self] in
                         installableGames = games.appNames
-                        Logger.app.debug("games appended")
                         group.leave()
                     }
                 }
@@ -179,7 +176,6 @@ struct GameListView: View {
                     let thumbnails = Legendary.getTallImages()
                     DispatchQueue.main.async { [self] in
                         gameThumbnails = thumbnails
-                        Logger.app.debug("thumbs appended")
                         group.leave()
                     }
                 }
@@ -189,13 +185,11 @@ struct GameListView: View {
                     let installed = Legendary.getInstalledGames()
                     DispatchQueue.main.async { [self] in
                         installedGames = installed.appNames
-                        Logger.app.debug("installed games appended")
                         group.leave()
                     }
                 }
                 
                 group.notify(queue: .main) {
-                    Logger.app.debug("all appended")
                     isProgressViewSheetPresented = false
                     dataFetched = true
                 }
@@ -231,15 +225,6 @@ struct GameListView: View {
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }
-        
-        .sheet(isPresented: $isDownloadViewPresented) {
-            GameListView.DownloadView(
-                isPresented: $isDownloadViewPresented,
-                game: $currentGame,
-                isGameListRefreshCalled: $isRefreshCalled
-            )
-        }
-        
     }
 }
 
