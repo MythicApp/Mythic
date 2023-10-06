@@ -16,7 +16,6 @@ struct LibraryView: View {
     @State private var isGameListRefreshCalled: Bool = false
     
     var body: some View {
-        
         GameListView(isRefreshCalled: $isGameListRefreshCalled)
         
             .toolbar {
@@ -30,25 +29,12 @@ struct LibraryView: View {
             }
         
             .sheet(isPresented: $addGameModalPresented) {
-                LibraryView.ImportGameView(
+                LibraryView.GameImportView(
                     isPresented: $addGameModalPresented,
                     isGameListRefreshCalled: $isGameListRefreshCalled
                 )
-                    .fixedSize()
+                .fixedSize()
             }
-        
-            .onAppear {
-                DispatchQueue.global(qos: .userInteractive).async {
-                    let status = try! JSON(
-                        data: Legendary.command(args: ["status","--json"], useCache: true).stdout
-                    )
-                    DispatchQueue.main.async {
-                        legendaryStatus = status
-                    }
-                }
-            }
-        
-        //Text("Games available: \(String(describing: legendaryStatus["games_available"])), Games installed: \(String(describing: legendaryStatus["games_installed"]))")
     }
 }
 
