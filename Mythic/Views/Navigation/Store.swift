@@ -26,6 +26,10 @@ struct StoreView: View {
         )
         
         .toolbar {
+            /*
+             KNOWN ISSUE:
+             updateNSView in WebView() is an async function, and the the view is being updated while the page is still loading
+             
             if isLoading {
                 ToolbarItem(placement: .confirmationAction) {
                     ProgressView()
@@ -38,6 +42,7 @@ struct StoreView: View {
                         .symbolEffect(.pulse)
                 }
             }
+             */
             
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
@@ -81,14 +86,6 @@ struct StoreView: View {
                     loadingError = false
                 }
             )
-        }
-    }
-}
-
-extension View {
-    func NavigationLinkWrapper<Content: View>(label: String, @ViewBuilder content: @escaping () -> Content) -> some View {
-        NavigationLink(destination: content()) {
-            Label(label, systemImage: "star")
         }
     }
 }
