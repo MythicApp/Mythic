@@ -18,6 +18,7 @@ struct ProgressViewSheetWithError: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .imageScale(.large)
                 .padding()
+                .fixedSize()
         }
     }
 }
