@@ -32,9 +32,9 @@ struct MainView: View {
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {
-            let whoAmIOutput = Legendary.whoAmI(useCache: false)
+            let whoAmIOutput = Legendary.whoAmI()
             DispatchQueue.main.async { [self] in
-                signedIn = Legendary.signedIn(whoAmIOutput: whoAmIOutput)
+                signedIn = Legendary.signedIn()
                 epicUserAsync = whoAmIOutput
             }
         }

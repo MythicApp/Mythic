@@ -65,12 +65,12 @@ struct GameListView: View {
                                         if case .success(let image) = phase {
                                             image
                                                 .resizable()
-                                                .scaledToFit()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 200, height: 400/1.5)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                .blur(radius: 30)
                                         }
                                     }
-                                    .frame(width: 200, height: 400/1.5)
-                                    .blur(radius: 30)
                                     
                                     // actual image
                                     CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
@@ -80,15 +80,17 @@ struct GameListView: View {
                                         case .success(let image):
                                             image
                                                 .resizable()
-                                                .scaledToFit()
+                                                .aspectRatio(contentMode: .fill)
+                                                .frame(width: 200, height: 400/1.5)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                         case .failure:
                                             Image(systemName: "network.slash")
+                                                .imageScale(.large)
                                         @unknown default:
                                             Image(systemName: "exclamationmark.triangle")
+                                                .imageScale(.large)
                                         }
                                     }
-                                    .frame(width: 200, height: 400/1.5)
                                 }
                                 
                                 HStack {
@@ -173,7 +175,7 @@ struct GameListView: View {
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = Legendary.getTallImages()
+                    let thumbnails = Legendary.getImages(imageType: .tall)
                     DispatchQueue.main.async { [self] in
                         gameThumbnails = thumbnails
                         group.leave()

@@ -5,27 +5,38 @@
 //  Created by Esiayo Alegbe on 21/9/2023.
 //
 
-
 import Foundation
+import SwiftyJSON
 import OSLog
 
-import SwiftyJSON
-
-///  Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. see: https://github.com/derrod/legendary
+/// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 struct Legendary {
     
+    /// Enumeration to specify image types
+    enum ImageType {
+        case normal
+        case tall
+    }
+    
+    /// Logger instance for logging
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "legendary"
     )
     
-    /// Stores legendary command outputs locally, in order to deliver content faster
+    /// Cache for storing command outputs
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = [:]
 
     /// Run a legendary command, using the included legendary binary.
+    ///
+    /// - Parameters:
+    ///   - args: The command arguments.
+    ///   - useCache: Flag indicating whether to use cached output.
+    ///   - input: Optional input string for the command.
+    /// - Returns: A tuple containing stdout and stderr data.
     static func command(args: [String], useCache: Bool, input: String? = nil) -> (stdout: Data, stderr: Data) {
         
-        /// Conntains instances of the async DispatchQueues
+        /// Contains instances of the async DispatchQueues
         struct QueueContainer {
             let cache: DispatchQueue = DispatchQueue(label: "commandCacheQueue")
             let command: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
@@ -35,9 +46,7 @@ struct Legendary {
         
         let commandKey = String(describing: args)
         
-        if useCache,
-           let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }),
-           !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
+        if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
             DispatchQueue.global(qos: .userInitiated).async {
                 _ = run()
@@ -53,11 +62,10 @@ struct Legendary {
             let task = Process()
             task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/legendary", ofType: nil)!)
             
-            /// Contains instances of Pipe, for stderr and stdout
+            /// Contains instances of Pipe, for stderr and stdout.
             struct PipeContainer {
                 let stdout = Pipe()
                 let stderr = Pipe()
-                // let stdin = Pipe()
             }
             
             /// Contains instances of Data, for handling pipes
@@ -72,7 +80,6 @@ struct Legendary {
             
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
-            // task.standardInput = pipe.stdin
             task.standardInput = input
             
             task.currentDirectoryURL = URL(fileURLWithPath: Bundle.main.bundlePath)
@@ -114,27 +121,25 @@ struct Legendary {
                 data.stdout, data.stderr
             )
             
-            if let stderrString = String(data: output.stderr, encoding: .utf8) {
-                if !stderrString.isEmpty {
-                    // https://docs.python.org/3/library/logging.html#logging-levels
-                    if stderrString.contains("DEBUG:") {
-                        log.debug("\(stderrString)")
-                    } else if stderrString.contains("INFO:") {
-                        log.info("\(stderrString)")
-                    } else if stderrString.contains("WARNING:") { // Legendary just likes being different
-                        log.warning("\(stderrString)")
-                    } else if stderrString.contains("ERROR:") {
-                        log.error("\(stderrString)")
-                    } else if stderrString.contains("CRITICAL:") {
-                        log.critical("\(stderrString)")
-                    } else {
-                        log.log("\(stderrString)")
-                    }
+            if let stderrString = String(data: output.stderr, encoding: .utf8), !stderrString.isEmpty {
+                switch true {
+                case stderrString.contains("DEBUG:"):
+                    log.debug("\(stderrString)")
+                case stderrString.contains("INFO:"):
+                    log.info("\(stderrString)")
+                case stderrString.contains("WARNING:"):
+                    log.warning("\(stderrString)")
+                case stderrString.contains("ERROR:"):
+                    log.error("\(stderrString)")
+                case stderrString.contains("CRITICAL:"):
+                    log.critical("\(stderrString)")
+                default:
+                    log.log("\(stderrString)")
                 }
             } else {
-                log.warning("empty stderr\ncommand key: \(commandKey)")
+                log.warning("empty stderr:\ncommand key: \(commandKey)")
             }
-            
+
             if let stdoutString = String(data: output.stdout, encoding: .utf8) {
                 if !stdoutString.isEmpty {
                     log.debug("\(stdoutString)")
@@ -148,6 +153,7 @@ struct Legendary {
             return output
         }
     }
+    
     /* no hable implementatiónes
     struct Queue {
         var download: [String] = []
@@ -178,108 +184,123 @@ struct Legendary {
     }
     
     /// Queries the user that is currently signed into epic games.
-    static func whoAmI(useCache: Bool?) -> String {
-        var accountString: String = ""
-        if let account = try? JSON(data: command(args: ["status","--json"], useCache: useCache ?? false).stdout)["account"] {
-            accountString = String(describing: account)
+    ///  This command has no delay.
+    ///
+    /// - Parameter useCache: Flag indicating whether to use cached output.
+    /// - Returns: The user's account information as a string.
+    static func whoAmI() -> String {
+        let config = "\(Bundle.appHome)/legendary"
+        let user = "\(config)/user.json"
+        var whoIAm: String = ""
+        if FileManager.default.fileExists(atPath: config) {
+            if FileManager.default.fileExists(atPath: user) {
+                if let displayName = try? JSON(data: Data(contentsOf: URL(fileURLWithPath: user)))["displayName"] {
+                    whoIAm = String(describing: displayName)
+                }
+            } else {
+                whoIAm = "Nobody"
+            }
         }
         
-        /*
-         annoying
-         
-        do {
-            if let data = try JSONSerialization.jsonObject(
-                with: command(
-                    args: ["status","--json"],
-                    useCache: useCache ?? false
-                ).stdout,
-                options: []
-            ) as? [String: Any] {
-                if let account = data["account"] as? String {
-                    accountString = account
-                }
-            }
-        } catch {
-            
-        }
-         */
-        return accountString
+        return whoIAm
     }
     
     /// Boolean verifier for the user's epic games signin state.
-    static func signedIn(useCache: Bool? = false, whoAmIOutput: String? = nil) -> Bool {
-        if let output = whoAmIOutput {
-            return output != "<not logged in>"
-        } else {
-            return whoAmI(useCache: useCache) != "<not logged in>"
-        }
+    ///  This command has no delay.
+    ///
+    /// - Parameters:
+    ///   - useCache: Flag indicating whether to use cached output.
+    ///   - whoAmIOutput: Cached output for the `whoAmI` function.
+    /// - Returns: `true` if the user is signed in, otherwise `false`.
+    static func signedIn() -> Bool {
+        return whoAmI() != "Nobody"
     }
     
     /// Retrieve installed games from epic games services.
+    ///
+    /// - Returns: A tuple containing arrays of app names and app titles.
     static func getInstalledGames() -> (appNames: [String], appTitles: [String]) {
-        guard signedIn(useCache: true) else { return ([], []) }
-        let json = try? JSON(
-            data: command(args: ["list-installed","--json"], useCache: true).stdout
-        )
-        
-        var appNames: [String] = []
-        var appTitles: [String] = []
-        for game in json! {
-            appNames.append(String(describing: game.1["app_name"]))
-            appTitles.append(String(describing: game.1["app_title"]))
-        }
-        return (appNames, appTitles)
+        guard signedIn() else { return ([], []) }
+        let json = try? JSON(data: command(args: ["list-installed","--json"], useCache: true).stdout)
+        return extractAppNamesAndTitles(from: json)
     }
     
     /// Retrieve installed games from epic games services.
+    ///
+    /// - Returns: A tuple containing arrays of app names and app titles.
     static func getInstallable() -> (appNames: [String], appTitles: [String]) {
-        guard signedIn(useCache: true) else { return ([], []) }
-        let json = try? JSON(
-            data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout
-        )
-        var appNames: [String] = []
-        var appTitles: [String] = []
-        for game in json! {
-            appNames.append(String(describing: game.1["app_name"]))
-            appTitles.append(String(describing: game.1["app_title"]))
-        }
-        return (appNames, appTitles)
+        guard signedIn() else { return ([], []) }
+        let json = try? JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
+        return extractAppNamesAndTitles(from: json)
     }
     
     /// Get game images with "DieselGameBoxTall" metadata. (commonly 1600x1200)
-    static func getTallImages() -> [String: String] {
-        guard signedIn(useCache: true) else { return [:] }
-        let json = try? JSON(
-            data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout
-        )
+    ///
+    /// - Parameter imageType: The type of images to retrieve (normal or tall).
+    /// - Returns: A dictionary with app names as keys and image URLs as values.
+    static func getImages(imageType: ImageType) -> [String: String] {
+        guard signedIn() else { return [:] }
+        let json = try? JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
         
-        var gamePicURLS: [String: String] = [:]
+        var urls: [String: String] = [:]
         
         for game in json! {
             let appName = String(describing: game.1["app_name"])
             if let keyImages = game.1["metadata"]["keyImages"].array {
-                let dieselGameBoxTallImages = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
-                if let imageUrl = dieselGameBoxTallImages.first?["url"].string {
-                    gamePicURLS[appName] = imageUrl
+                var image: [JSON] = []
+                
+                switch imageType {
+                case .normal:
+                    image = keyImages.filter { $0["type"].string == "DieselGameBox" }
+                case .tall:
+                    image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
+                }
+                
+                if let imageUrl = image.first?["url"].string {
+                    urls[appName] = imageUrl
                 }
             }
         }
-        return gamePicURLS
+        
+        return urls
     }
     
     /// Retrieve the game's app\_name from the game's title.
+    ///
+    /// - Parameter appTitle: The title of the game.
+    /// - Returns: The app name of the game.
     static func getAppNameFromTitle(appTitle: String) -> String {
-        let json = try? JSON(
-            data: command(args: ["info", appTitle, "--json"], useCache: true).stdout
-        )
+        guard signedIn() else { return "" }
+        let json = try? JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout)
         return json!["game"]["app_name"].stringValue
     }
     
     /// Retrieve the game's title from the game's app\_name.
+    ///
+    /// - Parameter appName: The app name of the game.
+    /// - Returns: The title of the game.
     static func getTitleFromAppName(appName: String) -> String {
-        let json = try? JSON(
-            data: command(args: ["info", appName, "--json"], useCache: true).stdout
-        )
+        guard signedIn() else { return "" }
+        let json = try? JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
         return json!["game"]["title"].stringValue
+    }
+    
+    /* // // // // // // // // // // // // // // // //
+     ___   _   _  _  ___ ___ ___   _______  _  _ ___
+     |   \ /_\ | \| |/ __| __| _ \ |_  / _ \| \| | __|
+     | |) / _ \| .` | (_ | _||   /  / / (_) | .` | _|
+     |___/_/ \_\_|\_|\___|___|_|_\ /___\___/|_|\_|___|
+     
+     */ // // // // // // // // // // // // // // // /
+    
+    /// Well, what do you think it does?
+    private static func extractAppNamesAndTitles(from json: JSON?) -> (appNames: [String], appTitles: [String]) {
+        var appNames: [String] = []
+        var appTitles: [String] = []
+        for game in json! {
+            appNames.append(String(describing: game.1["app_name"]))
+            appTitles.append(String(describing: game.1["app_title"]))
+        }
+        return (appNames, appTitles)
     }
 }
