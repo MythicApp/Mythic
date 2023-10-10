@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AuthView: View {
     @Binding var isPresented: Bool
+    @Binding var authSuccessful: Bool
     
     @State private var code: String = ""
     @State private var isLoggingIn: Bool = false
@@ -24,9 +25,11 @@ struct AuthView: View {
             let command = Legendary.command(args: ["auth", "--code", code], useCache: false)
             
             if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("Successfully logged in as") {
+                authSuccessful = true
                 $isPresented.wrappedValue = false
                 progressViewPresented = false
             } else {
+                authSuccessful = false
                 isError = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     code = ""
@@ -37,6 +40,11 @@ struct AuthView: View {
                 }
             }
         }
+    }
+    
+    init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool> = .constant(false)) {
+        _isPresented = isPresented
+        _authSuccessful = authSuccessful
     }
     
     var body: some View {

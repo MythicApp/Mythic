@@ -12,7 +12,10 @@ import Sparkle
 
 @main
 struct MythicApp: App {
+    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
+    
     private let updaterController: SPUStandardUpdaterController
+    @State private var isOnboardingPresented = false
     
     init() {
         updaterController = SPUStandardUpdaterController(
@@ -26,7 +29,18 @@ struct MythicApp: App {
         WindowGroup {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
+                .onAppear {
+                    if isFirstLaunch && !Legendary.signedIn() {
+                        isOnboardingPresented = true
+                    }
+                }
+                .sheet(isPresented: $isOnboardingPresented) {
+                    OnboardingView(isPresented: $isOnboardingPresented, isFirstLaunch: $isFirstLaunch)
+                        .fixedSize()
+                        .interactiveDismissDisabled()
+                }
         }
+        
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates…", action: updaterController.updater.checkForUpdates)
