@@ -12,12 +12,6 @@ import OSLog
 /// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 struct Legendary {
     
-    /// Enumeration to specify image types
-    enum ImageType {
-        case normal
-        case tall
-    }
-    
     /// Logger instance for logging
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
@@ -26,15 +20,17 @@ struct Legendary {
     
     /// Cache for storing command outputs
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = [:]
-
+    
     /// Run a legendary command, using the included legendary binary.
     ///
     /// - Parameters:
     ///   - args: The command arguments.
     ///   - useCache: Flag indicating whether to use cached output.
     ///   - input: Optional input string for the command.
+    ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
+    ///   - halt: Optional semaphore to halt script execution.
     /// - Returns: A tuple containing stdout and stderr data.
-    static func command(args: [String], useCache: Bool, input: String? = nil) -> (stdout: Data, stderr: Data) {
+    static func command(args: [String], useCache: Bool, input: String? = nil, inputIf: InputIfCondition? = nil, halt: DispatchSemaphore? = nil) -> (stdout: Data, stderr: Data) {
         
         /// Contains instances of the async DispatchQueues
         struct QueueContainer {
@@ -66,6 +62,7 @@ struct Legendary {
             struct PipeContainer {
                 let stdout = Pipe()
                 let stderr = Pipe()
+                let stdin = Pipe()
             }
             
             /// Contains instances of Data, for handling pipes
@@ -78,9 +75,11 @@ struct Legendary {
             var data = DataContainer()
             let asyncGroup = DispatchGroup()
             
+            // initialise legendary cli and config env
+            
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
-            task.standardInput = input
+            task.standardInput = input?.isEmpty != true ? nil : pipe.stdin
             
             task.currentDirectoryURL = URL(fileURLWithPath: Bundle.main.bundlePath)
             task.arguments = args
@@ -91,31 +90,77 @@ struct Legendary {
             
             log.debug("executing \(fullCommand)")
             
-            // Asynchronous output
+            // async stdout appending
             queue.command.async(group: asyncGroup) {
                 while true {
                     let availableData = pipe.stdout.fileHandleForReading.availableData
-                    if availableData.isEmpty {
-                        break
-                    }
+                    if availableData.isEmpty { break }
                     data.stdout.append(availableData)
+                    
+                    if let inputIf = inputIf, inputIf.stream == .stdout {
+                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+                            if let inputData = input?.data(using: .utf8) {
+                                pipe.stdin.fileHandleForWriting.write(inputData)
+                                pipe.stdin.fileHandleForWriting.closeFile()
+                            }
+                        }
+                    }
+                    
+                    if let halt = halt, halt.wait(timeout: .now()) == .success {
+                        log.debug("stdout output async stopped due to halt sephamore being signalled.")
+                        return
+                    }
                 }
             }
             
+            // async stderr appending
             queue.command.async(group: asyncGroup) {
                 while true {
                     let availableData = pipe.stderr.fileHandleForReading.availableData
-                    if availableData.isEmpty {
-                        break
-                    }
+                    if availableData.isEmpty { break }
                     data.stderr.append(availableData)
+                    
+                    if let inputIf = inputIf, inputIf.stream == .stderr {
+                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+                            if let inputData = input?.data(using: .utf8) {
+                                pipe.stderr.fileHandleForWriting.write(inputData)
+                                pipe.stderr.fileHandleForWriting.closeFile()
+                            }
+                        }
+                    }
+                    
+                    if let halt = halt, halt.wait(timeout: .now()) == .success {
+                        log.debug("stderr output async stopped due to halt sephamore being signalled.")
+                        return
+                    }
                 }
             }
             
-            try! task.run()
+            if let input = input, !input.isEmpty && inputIf == nil {
+                if let inputData = input.data(using: .utf8) {
+                    pipe.stdin.fileHandleForWriting.write(inputData)
+                    pipe.stdin.fileHandleForWriting.closeFile()
+                }
+            }
             
-            task.waitUntilExit()
-            asyncGroup.wait()
+            if let halt = halt, halt.wait(timeout: .now()) == .success {
+                log.debug("Halt signal fired.")
+                return (Data(), Data())
+            }
+            
+            // run
+            
+            do {
+                try task.run()
+                
+                task.waitUntilExit()
+                asyncGroup.wait()
+            } catch {
+                log.fault("Legendary fault: \(error.localizedDescription)")
+                return (Data(), Data())
+            }
+            
+            // output (stderr/out) handler
             
             let output: (stdout: Data, stderr: Data) = (
                 data.stdout, data.stderr
@@ -184,9 +229,8 @@ struct Legendary {
     }
     
     /// Queries the user that is currently signed into epic games.
-    ///  This command has no delay.
+    /// This command has no delay.
     ///
-    /// - Parameter useCache: Flag indicating whether to use cached output.
     /// - Returns: The user's account information as a string.
     static func whoAmI() -> String {
         let config = "\(Bundle.appHome)/legendary"
@@ -206,15 +250,10 @@ struct Legendary {
     }
     
     /// Boolean verifier for the user's epic games signin state.
-    ///  This command has no delay.
+    /// This command has no delay.
     ///
-    /// - Parameters:
-    ///   - useCache: Flag indicating whether to use cached output.
-    ///   - whoAmIOutput: Cached output for the `whoAmI` function.
     /// - Returns: `true` if the user is signed in, otherwise `false`.
-    static func signedIn() -> Bool {
-        return whoAmI() != "Nobody"
-    }
+    static func signedIn() -> Bool { return whoAmI() != "Nobody" }
     
     /// Retrieve installed games from epic games services.
     ///
