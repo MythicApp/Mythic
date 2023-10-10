@@ -13,13 +13,13 @@
 		6A00F20B2AC5F8730054858A /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20A2AC5F8730054858A /* Auth.swift */; };
 		6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
-		6A0C66912ABD27BA004B0755 /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A0C66902ABD27BA004B0755 /* legendary */; };
 		6A38B64C2ACDB972004EC2E4 /* Local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* Local.swift */; };
 		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
 		6A82830E2AC71DAF005CA9AC /* GameUninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* GameUninstall.swift */; };
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* Legendary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* Legendary.swift */; };
 		6AA6CCE72AD571C500F664A5 /* LegendaryExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryExt.swift */; };
+		6AA6CD852AD5816700F664A5 /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6AA6CD842AD5816700F664A5 /* legendary */; };
 		6AACB0932AC71757007D7CE8 /* UpdaterSettings[TEST].swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AACB0922AC71757007D7CE8 /* UpdaterSettings[TEST].swift */; };
 		6AB474992AACBBE900AB9C63 /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB474982AACBBE900AB9C63 /* MythicApp.swift */; };
 		6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */; };
@@ -47,13 +47,13 @@
 		6A00F2042AC5F7450054858A /* GameImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameImport.swift; sourceTree = "<group>"; };
 		6A00F20A2AC5F8730054858A /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewWithError.swift; sourceTree = "<group>"; };
-		6A0C66902ABD27BA004B0755 /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A38B64B2ACDB972004EC2E4 /* Local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Local.swift; sourceTree = "<group>"; };
 		6A4C396D2AC5DA4D002F943B /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* GameUninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUninstall.swift; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		6AA6CCE22AD52B2600F664A5 /* Legendary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Legendary.swift; sourceTree = "<group>"; };
 		6AA6CCE62AD571C500F664A5 /* LegendaryExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendaryExt.swift; sourceTree = "<group>"; };
+		6AA6CD842AD5816700F664A5 /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6AACB0922AC71757007D7CE8 /* UpdaterSettings[TEST].swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UpdaterSettings[TEST].swift"; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AB474982AACBBE900AB9C63 /* MythicApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MythicApp.swift; sourceTree = "<group>"; };
@@ -239,7 +239,7 @@
 				6A009E602AB596D400A1397F /* Controllers */,
 				6A0C668A2ABC5235004B0755 /* Extensions */,
 				6A009E612AB596E300A1397F /* Other */,
-				6A0C66902ABD27BA004B0755 /* legendary */,
+				6AA6CD842AD5816700F664A5 /* legendary */,
 				6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */,
 				6AB474A12AACBBEA00AB9C63 /* Mythic.entitlements */,
 				6AB4749E2AACBBEA00AB9C63 /* Preview Content */,
@@ -364,7 +364,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A0C66912ABD27BA004B0755 /* legendary in Resources */,
+				6AA6CD852AD5816700F664A5 /* legendary in Resources */,
 				6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */,
 				6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */,
 			);
@@ -540,7 +540,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1043;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -556,6 +556,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Mythic/cli",
+					"$(PROJECT_DIR)/Mythic/cli/cryptography/hazmat/bindings",
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.blackxfiied.Mythic;
@@ -578,7 +583,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1039;
+				CURRENT_PROJECT_VERSION = 1043;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -594,6 +599,11 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Mythic/cli",
+					"$(PROJECT_DIR)/Mythic/cli/cryptography/hazmat/bindings",
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.blackxfiied.Mythic;

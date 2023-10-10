@@ -56,7 +56,7 @@ struct Legendary {
         
         func run() -> (stdout: Data, stderr: Data) {
             let task = Process()
-            task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/legendary", ofType: nil)!)
+            task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
             
             /// Contains instances of Pipe, for stderr and stdout.
             struct PipeContainer {
