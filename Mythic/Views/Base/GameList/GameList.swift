@@ -24,20 +24,71 @@ struct GameListView: View {
     @State private var currentGame: String = ""
     
     @State private var installableGames: [String] = []
-    @State private var gameThumbnails: [String: String] = [:]
     @State private var installedGames: [String] = []
+    
+    @State private var gameThumbnails: [String: String] = [:]
+    @State private var optionalPacks: [String: String] = [:]
     
     @State private var dataFetched: Bool = false
     
-    func updateCurrentGame(game: String) {
+    enum UpdateCurrentGameMode {
+        case normal
+        case optionalPacks
+    }
+    
+    func updateCurrentGame(game: String, mode: UpdateCurrentGameMode) {
         isProgressViewSheetPresented = true
         
+        let group = DispatchGroup()
+        
+        group.enter()
         DispatchQueue.global(qos: .userInitiated).async {
             let title = Legendary.getTitleFromAppName(appName: game)
             DispatchQueue.main.async { [self] in
                 currentGame = title
-                isProgressViewSheetPresented = false
+                group.leave()
             }
+        }
+        
+        if mode == .optionalPacks {
+            let haltCommand = DispatchSemaphore(value: 0)
+            
+            group.enter()
+            DispatchQueue.global(qos: .userInitiated).async {
+                let command = Legendary.command(
+                    args: ["install", game],
+                    useCache: true,
+                    halt: haltCommand
+                )
+                
+                var isParsingOptionalPacks = false
+                
+                for line in String(data: command.stdout, encoding: .utf8)!.components(separatedBy: "\n") {
+                    if isParsingOptionalPacks {
+                        if line.isEmpty || !line.hasPrefix(" * ") { break }
+                        
+                        let cleanedLine = line.trimmingPrefix(" * ")
+                        let components = cleanedLine.split(separator: " - ", maxSplits: 1)
+                            .map { String($0) } // convert the substrings to regular strings
+                        
+                        if components.count >= 2 {
+                            let tag = components[0].trimmingCharacters(in: .whitespaces)
+                            let name = components[1].trimmingCharacters(in: .whitespaces)
+                            optionalPacks[name] = tag
+                        }
+                    } else if line.contains("The following optional packs are available (tag - name):") {
+                        isParsingOptionalPacks = true
+                    }
+                }
+                
+                print("optional packs: \(optionalPacks)")
+                haltCommand.signal()
+                group.leave()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            isProgressViewSheetPresented = false
         }
     }
     
@@ -96,7 +147,7 @@ struct GameListView: View {
                                 HStack {
                                     if installedGames.contains(game) {
                                         Button(action: {
-                                            updateCurrentGame(game: game)
+                                            updateCurrentGame(game: game, mode: .normal)
                                             isSettingsViewPresented = true
                                         }) {
                                             Image(systemName: "gear")
@@ -108,7 +159,7 @@ struct GameListView: View {
                                         .controlSize(.large)
                                         
                                         Button(action: {
-                                            updateCurrentGame(game: game)
+                                            updateCurrentGame(game: game, mode: .normal)
                                             _ = Legendary.command(args: ["launch", game], useCache: false)
                                         }) {
                                             Image(systemName: "play.fill")
@@ -120,7 +171,7 @@ struct GameListView: View {
                                         .controlSize(.large)
                                         
                                         Button(action: {
-                                            updateCurrentGame(game: game)
+                                            updateCurrentGame(game: game, mode: .normal)
                                             isUninstallViewPresented = true
                                         }) {
                                             Image(systemName: "xmark.bin.fill")
@@ -132,7 +183,7 @@ struct GameListView: View {
                                         .controlSize(.large)
                                     } else {
                                         Button(action: {
-                                            updateCurrentGame(game: game)
+                                            updateCurrentGame(game: game, mode: .optionalPacks)
                                             isInstallViewPresented = true
                                         }) {
                                             Image(systemName: "arrow.down.to.line")
@@ -216,6 +267,7 @@ struct GameListView: View {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
                 game: $currentGame,
+                optionalPacks: $optionalPacks,
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }
