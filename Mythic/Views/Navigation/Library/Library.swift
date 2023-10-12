@@ -26,6 +26,14 @@ struct LibraryView: View {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        isGameListRefreshCalled = true
+                        // mythic loves crashing from dispatches, spamming this will crash mythic eventually
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                    }
+                }
             }
         
             .sheet(isPresented: $addGameModalPresented) {
