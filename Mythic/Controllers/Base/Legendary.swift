@@ -244,19 +244,23 @@ class Legendary {
                 
                 var status = Installing.shared._status
                 
+                var lastPercentage: Double = 0.0
                 stderr.enumerateLines { line, _ in
                     if line.contains("[DLManager] INFO:") {
                         if !line.contains("Finished installation process in") {
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
                             if let match = Regex.progress.firstMatch(in: line, options: [], range: range) {
+                                let percentage = Double(line[Range(match.range(at: 1), in: line)!]) ?? 0
                                 status.progress = (
-                                    percentage: max(Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, status.progress?.percentage ?? 0),
+                                    percentage: max(percentage, lastPercentage) /* percentage > lastPercentage ? percentage : lastPercentage */,
                                     downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
                                     total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
                                     runtime: line[Range(match.range(at: 4), in: line)!],
                                     eta: line[Range(match.range(at: 5), in: line)!]
                                 )
+                                
+                                lastPercentage = percentage
                             } else if let match = Regex.download.firstMatch(in: line, options: [], range: range) {
                                 status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
                                     downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,

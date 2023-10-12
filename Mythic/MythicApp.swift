@@ -5,8 +5,6 @@
 //  Created by Esiayo Alegbe on 9/9/2023.
 //
 
-// CX: https://www.codeweavers.com/support/wiki/mac/mactutorial/advconfig
-
 import SwiftUI
 import Sparkle
 
