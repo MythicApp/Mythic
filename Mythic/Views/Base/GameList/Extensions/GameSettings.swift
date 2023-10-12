@@ -14,9 +14,11 @@ extension GameListView {
         @Binding var game: String
         
         var body: some View {
-            let installed_games = try! JSON(
+            /*
+            let installedGames = try! JSON(
                 data: Legendary.command(args: ["list-installed","--json"], useCache: true).stdout
             )
+             */
             
             VStack {
                 Text(game)

@@ -10,7 +10,7 @@ import SwiftyJSON
 import OSLog
 
 /// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
-struct Legendary {
+class Legendary {
     
     /// Logger instance for logging
     private static let log = Logger(
@@ -29,8 +29,16 @@ struct Legendary {
     ///   - input: Optional input string for the command.
     ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
     ///   - halt: Optional semaphore to halt script execution.
+    ///   - handlers: Optional closure that gets output appended to it immediately.
     /// - Returns: A tuple containing stdout and stderr data.
-    static func command(args: [String], useCache: Bool, input: String? = nil, inputIf: InputIfCondition? = nil, halt: DispatchSemaphore? = nil) -> (stdout: Data, stderr: Data) {
+    static func command(
+        args: [String],
+        useCache: Bool,
+        input: String? = nil,
+        inputIf: InputIfCondition? = nil,
+        halt: DispatchSemaphore? = nil,
+        handlers: OutputHandler? = nil
+    ) -> (stdout: Data, stderr: Data) {
         
         /// Contains instances of the async DispatchQueues
         struct QueueContainer {
@@ -106,6 +114,10 @@ struct Legendary {
                         }
                     }
                     
+                    if let handlers = handlers, let outputString = String(data: availableData, encoding: .utf8) {
+                        handlers.stdout(outputString)
+                    }
+                    
                     if let halt = halt, halt.wait(timeout: .now()) == .success {
                         log.debug("stdout output async stopped due to halt sephamore being signalled.")
                         return
@@ -123,10 +135,14 @@ struct Legendary {
                     if let inputIf = inputIf, inputIf.stream == .stderr {
                         if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
                             if let inputData = input?.data(using: .utf8) {
-                                pipe.stderr.fileHandleForWriting.write(inputData)
-                                pipe.stderr.fileHandleForWriting.closeFile()
+                                pipe.stdin.fileHandleForWriting.write(inputData)
+                                pipe.stdin.fileHandleForWriting.closeFile()
                             }
                         }
+                    }
+                    
+                    if let handlers = handlers, let outputString = String(data: availableData, encoding: .utf8) {
+                        handlers.stderr(outputString)
                     }
                     
                     if let halt = halt, halt.wait(timeout: .now()) == .success {
@@ -184,7 +200,7 @@ struct Legendary {
             } else {
                 log.warning("empty stderr:\ncommand key: \(commandKey)")
             }
-
+            
             if let stdoutString = String(data: output.stdout, encoding: .utf8) {
                 if !stdoutString.isEmpty {
                     log.debug("\(stdoutString)")
@@ -199,28 +215,92 @@ struct Legendary {
         }
     }
     
-    /* no hable implementatiónes
-    struct Queue {
-        var download: [String] = []
-        var command: [String] = []
-        enum Types {
-            case download, command
-        }
-    }
-    
-    /// Add a legendary function that requires a data lock to a queue of other functions that require a data lock
-    static func addToQueue(queue: Queue, args: [String], useCache: Bool) -> (stdout: Data, stderr: Data) {
-        switch queue {
-        case .command:
-            
-            return
-            
-        case .download:
-            
+    /// Installs games using legendary, what else?
+    ///
+    /// - Parameters:
+    ///   - game: The game's app\_name
+    ///   - optionalPacks: Optional packs to install along with the base game
+    static func installGame(game: String, optionalPacks: [String]? = nil, cancelSemaphore: DispatchSemaphore? = nil) {
+        guard getInstallable().appNames.contains(game) else {
+            log.error("Game app name doesn't exist: \(game)")
             return
         }
+        
+        dataLockInUse = (true, .installing)
+        Installing.value = true
+        Installing.game = game
+        
+        // thank you gpt 🙏🏾🙏🏾 i am not regexing allat
+        let handlers = OutputHandler(
+            stdout: { _ in },
+            stderr: { stderr in
+                struct Regex {
+                    static let progress = try! NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
+                    static let download = try! NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
+                    static let cache = try! NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
+                    static let downloadAdvanced = try! NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
+                    static let disk = try! NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
+                }
+                
+                var status = Installing.shared._status
+                
+                stderr.enumerateLines { line, _ in
+                    if line.contains("[DLManager] INFO:") {
+                        if !line.contains("Finished installation process in") {
+                            let range = NSRange(line.startIndex..<line.endIndex, in: line)
+                            
+                            if let match = Regex.progress.firstMatch(in: line, options: [], range: range) {
+                                status.progress = (
+                                    percentage: max(Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, status.progress?.percentage ?? 0),
+                                    downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
+                                    total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
+                                    runtime: line[Range(match.range(at: 4), in: line)!],
+                                    eta: line[Range(match.range(at: 5), in: line)!]
+                                )
+                            } else if let match = Regex.download.firstMatch(in: line, options: [], range: range) {
+                                status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
+                                    downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                    written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                )
+                            } else if let match = Regex.cache.firstMatch(in: line, options: [], range: range) {
+                                status.cache = (
+                                    usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
+                                    activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                )
+                            } else if let match = Regex.downloadAdvanced.firstMatch(in: line, options: [], range: range) {
+                                status.downloadAdvanced = ( // MiB/s
+                                    raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                    decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                )
+                            } else if let match = Regex.disk.firstMatch(in: line, options: [], range: range) {
+                                status.disk = ( // MiB/s
+                                    write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                    read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                )
+                            }
+                        } else {
+                            Installing.shared.reset()
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        Installing.shared._status = status
+                        dump(Installing.shared._status)
+                    }
+                }
+            }
+        )
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            _ = command(
+                args: ["--yes", "install", game],
+                useCache: false,
+                input: Array(optionalPacks ?? Array()).joined(separator: ", "),
+                inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
+                halt: cancelSemaphore,
+                handlers: handlers
+            )
+        }
     }
-     */
     
     /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
@@ -273,7 +353,7 @@ struct Legendary {
         return extractAppNamesAndTitles(from: json)
     }
     
-    /// Get game images with "DieselGameBoxTall" metadata. (commonly 1600x1200)
+    /// Get game images with "DieselGameBox" metadata.
     ///
     /// - Parameter imageType: The type of images to retrieve (normal or tall).
     /// - Returns: A dictionary with app names as keys and image URLs as values.
@@ -303,6 +383,8 @@ struct Legendary {
         
         return urls
     }
+    
+    // Later implement: aliases.json checker, isAlias(game: String), returns string with alias of game
     
     /// Retrieve the game's app\_name from the game's title.
     ///
@@ -336,9 +418,11 @@ struct Legendary {
     private static func extractAppNamesAndTitles(from json: JSON?) -> (appNames: [String], appTitles: [String]) {
         var appNames: [String] = []
         var appTitles: [String] = []
-        for game in json! {
-            appNames.append(String(describing: game.1["app_name"]))
-            appTitles.append(String(describing: game.1["app_title"]))
+        if json?.exists() == true {
+            for game in json! {
+                appNames.append(String(describing: game.1["app_name"]))
+                appTitles.append(String(describing: game.1["app_title"]))
+            }
         }
         return (appNames, appTitles)
     }

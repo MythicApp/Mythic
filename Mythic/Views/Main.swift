@@ -11,13 +11,15 @@
 import SwiftUI
 import Foundation
 import OSLog
+import Combine
+import CachedAsyncImage
 
 /*
  colors:
  gradient 1: #4800FF
  midpoint: #7318E0
  gradient 2: #9D30C1
-*/
+ */
 
 struct MainView: View {
     
@@ -28,6 +30,14 @@ struct MainView: View {
     
     @State private var appVersion: String = ""
     @State private var buildNumber: Int = 0
+    
+    @State private var gameInstalling: Bool = false
+    @State private var gameBeingInstalled: String = String()
+    @State private var installPercentage: Double = 0.0
+    
+    @State private var gameThumbnails: [String: String] = [:]
+    
+    @StateObject private var installing = Legendary.Installing.shared
     
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
@@ -41,7 +51,7 @@ struct MainView: View {
     }
     
     init() { updateLegendaryAccountState() }
-
+    
     var body: some View {
         NavigationView {
             List {
@@ -86,6 +96,60 @@ struct MainView: View {
                 }
                 
                 Spacer()
+                
+                if installing._value == true {
+                    Divider()
+                    
+                    /*
+                     ZStack {
+                        CachedAsyncImage(url: URL(string: gameThumbnails[installing._game] ?? String())) { phase in
+                            if case .success(let image) = phase {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .blur(radius: 20)
+                            }
+                    }
+                     */
+                    
+                    VStack {
+                        Text("INSTALLING")
+                            .fontWeight(.bold)
+                            .font(.system(size: 8))
+                            .offset(x: -2, y: 0)
+                        Text(installing._game.isEmpty ? "Loading..." : Legendary.getTitleFromAppName(appName: installing._game))
+                        
+                        HStack {
+                            Button(action: {
+                                
+                            }) {
+                                if installing._status.progress?.percentage == nil {
+                                    ProgressView()
+                                        .progressViewStyle(.linear)
+                                } else {
+                                    ProgressView(value: installing._status.progress?.percentage, total: 100)
+                                        .progressViewStyle(.linear)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            
+                            
+                            Button(action: {
+                                Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
+                            }) {
+                                Image(systemName: "stop.fill")
+                                    .foregroundStyle(.red)
+                                    .padding()
+                            }
+                            .shadow(color: .red, radius: 10, x: 1, y: 1)
+                            .buttonStyle(.plain)
+                            .frame(width: 8, height: 8)
+                            .controlSize(.mini)
+                        }
+                    }
+                    
+                    // }
+                }
                 
                 Divider()
                 
@@ -152,30 +216,29 @@ struct MainView: View {
                 }
             }
             
+            .onAppear {
+                DispatchQueue.global(qos: .userInteractive).async {
+                    let thumbnails = Legendary.getImages(imageType: .tall)
+                    DispatchQueue.main.async { [self] in
+                        gameThumbnails = thumbnails
+                    }
+                }
+            }
+            
             WelcomeView()
         }
     }
 }
 
-// Wrapper instead of manually doing NavigationLink
-/*
-extension View {
-    func NavigationLinkWrapper(label: String, systemImage: String) -> some View {
-        NavigationLink(destination: getViewForLabel(label)) {
-            Label(label, systemImage: systemImage)
-        }
-    }
-    
-    func getViewForLabel(_ label: String) -> some View {
-        let viewName = label + "View"
-        if let viewType = NSClassFromString(viewName) as? any View.Type {
-            return AnyView(viewType()) // womp womp
-        } else {
-            return AnyView(Text("Unknown View"))
+extension MainView {
+    struct InstallStatusView {
+        @Binding var installing: Legendary.Installing
+        
+        var body: some View {
+            Text("")
         }
     }
 }
-*/
 
 func toggleSidebar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)

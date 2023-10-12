@@ -15,6 +15,7 @@
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A38B64C2ACDB972004EC2E4 /* Local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* Local.swift */; };
 		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
+		6A6923522AD6D83D00157E3E /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6923512AD6D83D00157E3E /* Global.swift */; };
 		6A82830E2AC71DAF005CA9AC /* GameUninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* GameUninstall.swift */; };
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* Legendary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* Legendary.swift */; };
@@ -49,6 +50,7 @@
 		6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewWithError.swift; sourceTree = "<group>"; };
 		6A38B64B2ACDB972004EC2E4 /* Local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Local.swift; sourceTree = "<group>"; };
 		6A4C396D2AC5DA4D002F943B /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
+		6A6923512AD6D83D00157E3E /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* GameUninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameUninstall.swift; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		6AA6CCE22AD52B2600F664A5 /* Legendary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Legendary.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				6AA6CCE62AD571C500F664A5 /* LegendaryExt.swift */,
 				6A009E5E2AB5816A00A1397F /* Logger.swift */,
 				6AFC02842ABF67F60004AB77 /* Bundle.swift */,
+				6A6923512AD6D83D00157E3E /* Global.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				6AC4745D2AC07F0D00188D38 /* ProgressView.swift in Sources */,
 				6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */,
 				6AB474A82AACBC0100AB9C63 /* Main.swift in Sources */,
+				6A6923522AD6D83D00157E3E /* Global.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -540,7 +544,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1043;
+				CURRENT_PROJECT_VERSION = 1269;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -583,7 +587,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1043;
+				CURRENT_PROJECT_VERSION = 1269;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
