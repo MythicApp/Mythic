@@ -25,6 +25,7 @@ struct GameListView: View {
     
     @State private var installableGames: [String] = []
     @State private var installedGames: [String] = []
+    @StateObject private var installing = Legendary.Installing.shared
     
     @State private var gameThumbnails: [String: String] = [:]
     @State private var optionalPacks: [String: String] = [:]
@@ -110,37 +111,31 @@ struct GameListView: View {
                                 .offset(y: -10)
                             
                             VStack {
-                                ZStack {
-                                    // blur effect
-                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
-                                        if case .success(let image) = phase {
+                                CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        ProgressView()
+                                    case .success(let image):
+                                        ZStack {
                                             image
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                                 .blur(radius: 30)
-                                        }
-                                    }
-                                    
-                                    // actual image
-                                    CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                        case .success(let image):
+                                            
                                             image
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        case .failure:
-                                            Image(systemName: "network.slash")
-                                                .imageScale(.large)
-                                        @unknown default:
-                                            Image(systemName: "exclamationmark.triangle")
-                                                .imageScale(.large)
                                         }
+                                    case .failure:
+                                        Image(systemName: "network.slash")
+                                            .imageScale(.large)
+                                    @unknown default:
+                                        Image(systemName: "exclamationmark.triangle")
+                                            .imageScale(.large)
                                     }
                                 }
                                 
@@ -182,17 +177,44 @@ struct GameListView: View {
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                     } else {
-                                        Button(action: {
-                                            updateCurrentGame(game: game, mode: .optionalPacks)
-                                            isInstallViewPresented = true
-                                        }) {
-                                            Image(systemName: "arrow.down.to.line")
-                                                .foregroundStyle(.gray)
-                                                .padding()
+                                        if installing._value && installing._game == game {
+                                            if installing._status.progress?.percentage == nil {
+                                                ProgressView()
+                                                    .progressViewStyle(.linear)
+                                            } else {
+                                                ProgressView(value: installing._status.progress?.percentage, total: 100)
+                                                    .progressViewStyle(.linear)
+                                                    .onChange(of: installing._status.progress?.percentage) { _, newValue in
+                                                        if newValue == 100 {
+                                                            isRefreshCalled = true
+                                                        }
+                                                    }
+                                            }
+                                            
+                                            Button(action: {
+                                                Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
+                                            }) {
+                                                Image(systemName: "stop.fill")
+                                                    .foregroundStyle(.red)
+                                                    .padding()
+                                            }
+                                            .shadow(color: .red, radius: 10, x: 1, y: 1)
+                                            .buttonStyle(.plain)
+                                            .controlSize(.regular)
+                                            
+                                        } else {
+                                            Button(action: {
+                                                updateCurrentGame(game: game, mode: .optionalPacks)
+                                                isInstallViewPresented = true
+                                            }) {
+                                                Image(systemName: "arrow.down.to.line")
+                                                    .foregroundStyle(.gray)
+                                                    .padding()
+                                            }
+                                            .shadow(color: .accent, radius: 10, x: 1, y: 1)
+                                            .buttonStyle(.plain)
+                                            .controlSize(.large)
                                         }
-                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
                                     }
                                 }
                             }

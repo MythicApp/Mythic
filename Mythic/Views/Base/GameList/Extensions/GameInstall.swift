@@ -56,6 +56,10 @@ extension GameListView {
                     }
                     
                     Button(action: {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            Legendary.installGame(game: Legendary.getAppNameFromTitle(appTitle: game), optionalPacks: Array(optionalPacks.values))
+                        }
+                        isGameListRefreshCalled = true
                         isPresented = false
                     }) {
                         Text("Install")
