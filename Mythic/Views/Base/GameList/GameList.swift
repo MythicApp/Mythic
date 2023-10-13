@@ -52,14 +52,11 @@ struct GameListView: View {
         }
         
         if mode == .optionalPacks {
-            let haltCommand = DispatchSemaphore(value: 0)
-            
             group.enter()
             DispatchQueue.global(qos: .userInitiated).async {
                 let command = Legendary.command(
                     args: ["install", game],
-                    useCache: true,
-                    halt: haltCommand
+                    useCache: true
                 )
                 
                 var isParsingOptionalPacks = false
@@ -83,7 +80,6 @@ struct GameListView: View {
                 }
                 
                 print("optional packs: \(optionalPacks)")
-                haltCommand.signal()
                 group.leave()
             }
         }
@@ -259,7 +255,7 @@ struct GameListView: View {
                 DispatchQueue.global(qos: .userInteractive).async {
                     let installed = Legendary.getInstalledGames()
                     DispatchQueue.main.async { [self] in
-                        installedGames = installed.appNames
+                        installedGames = Array(installed.keys) // app_names are keys
                         group.leave()
                     }
                 }
