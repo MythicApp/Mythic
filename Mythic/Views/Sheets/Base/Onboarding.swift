@@ -46,6 +46,7 @@ struct OnboardingView: View {
         .onReceive(Just(authSuccessful)) { success in
             if success {
                 isPresented = false
+                isFirstLaunch = false
             }
         }
     }
