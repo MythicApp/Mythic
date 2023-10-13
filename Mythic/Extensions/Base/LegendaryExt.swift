@@ -8,6 +8,7 @@
 import Foundation
 
 extension Legendary {
+    
     /// Enumeration to specify image types
     enum ImageType {
         case normal

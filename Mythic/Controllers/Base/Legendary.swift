@@ -12,6 +12,9 @@ import OSLog
 /// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 class Legendary {
     
+    /// The file location for legendary's configuration files.
+    static let configLocation = "\(Bundle.appHome)/legendary"
+    
     /// Logger instance for logging
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
@@ -19,7 +22,7 @@ class Legendary {
     )
     
     /// Cache for storing command outputs
-    private static var commandCache: [String: (stdout: Data, stderr: Data)] = [:]
+    private static var commandCache: [String: (stdout: Data, stderr: Data)] = Dictionary()
     
     /// Run a legendary command, using the included legendary binary.
     ///
@@ -28,16 +31,15 @@ class Legendary {
     ///   - useCache: Flag indicating whether to use cached output.
     ///   - input: Optional input string for the command.
     ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
-    ///   - halt: Optional semaphore to halt script execution.
-    ///   - handlers: Optional closure that gets output appended to it immediately.
+    ///   ~~- halt: Optional semaphore to halt script execution.~~
+    ///   - asyncOutput: Optional closure that gets output appended to it immediately.
     /// - Returns: A tuple containing stdout and stderr data.
     static func command(
         args: [String],
         useCache: Bool,
         input: String? = nil,
         inputIf: InputIfCondition? = nil,
-        halt: DispatchSemaphore? = nil,
-        handlers: OutputHandler? = nil
+        asyncOutput: OutputHandler? = nil
     ) -> (stdout: Data, stderr: Data) {
         
         /// Contains instances of the async DispatchQueues
@@ -114,13 +116,8 @@ class Legendary {
                         }
                     }
                     
-                    if let handlers = handlers, let outputString = String(data: availableData, encoding: .utf8) {
-                        handlers.stdout(outputString)
-                    }
-                    
-                    if let halt = halt, halt.wait(timeout: .now()) == .success {
-                        log.debug("stdout output async stopped due to halt sephamore being signalled.")
-                        return
+                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                        asyncOutput.stdout(outputString)
                     }
                 }
             }
@@ -141,13 +138,8 @@ class Legendary {
                         }
                     }
                     
-                    if let handlers = handlers, let outputString = String(data: availableData, encoding: .utf8) {
-                        handlers.stderr(outputString)
-                    }
-                    
-                    if let halt = halt, halt.wait(timeout: .now()) == .success {
-                        log.debug("stderr output async stopped due to halt sephamore being signalled.")
-                        return
+                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                        asyncOutput.stderr(outputString)
                     }
                 }
             }
@@ -157,11 +149,6 @@ class Legendary {
                     pipe.stdin.fileHandleForWriting.write(inputData)
                     pipe.stdin.fileHandleForWriting.closeFile()
                 }
-            }
-            
-            if let halt = halt, halt.wait(timeout: .now()) == .success {
-                log.debug("Halt signal fired.")
-                return (Data(), Data())
             }
             
             // run
@@ -232,16 +219,16 @@ class Legendary {
         
         // thank you gpt 🙏🏾🙏🏾 i am not regexing allat
         struct Regex {
-            static let progress = try! NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
-            static let download = try! NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
-            static let cache = try! NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
-            static let downloadAdvanced = try! NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
-            static let disk = try! NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
+            static let progress = try? NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
+            static let download = try? NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
+            static let cache = try? NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
+            static let downloadAdvanced = try? NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
+            static let disk = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
         }
         
         var status = Installing.shared._status
         
-        let handlers = OutputHandler(
+        let asyncOutput = OutputHandler(
             stdout: { _ in },
             stderr: { output in
                 output.enumerateLines { line, _ in
@@ -249,7 +236,7 @@ class Legendary {
                         if !line.contains("Finished installation process in") {
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
-                            if let match = Regex.progress.firstMatch(in: line, options: [], range: range) {
+                            if let match = Regex.progress?.firstMatch(in: line, options: [], range: range) {
                                 status.progress = (
                                     percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
@@ -257,22 +244,22 @@ class Legendary {
                                     runtime: line[Range(match.range(at: 4), in: line)!],
                                     eta: line[Range(match.range(at: 5), in: line)!]
                                 )
-                            } else if let match = Regex.download.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.download?.firstMatch(in: line, options: [], range: range) {
                                 status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
                                     downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.cache.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.cache?.firstMatch(in: line, options: [], range: range) {
                                 status.cache = (
                                     usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
                                     activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.downloadAdvanced.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, options: [], range: range) {
                                 status.downloadAdvanced = ( // MiB/s
                                     raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.disk.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.disk?.firstMatch(in: line, options: [], range: range) {
                                 status.disk = ( // MiB/s
                                     write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
@@ -296,15 +283,15 @@ class Legendary {
                 useCache: false,
                 input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
                 inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
-                halt: cancelSemaphore,
-                handlers: handlers
+                // halt: cancelSemaphore,
+                asyncOutput: asyncOutput
             )
         }
     }
     
     /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
-        commandCache = [:]
+        commandCache = Dictionary()
         log.notice("Cleared legendary command cache successfully.")
     }
     
@@ -325,7 +312,6 @@ class Legendary {
                 whoIAm = "Nobody"
             }
         }
-        
         return whoIAm
     }
     
@@ -337,19 +323,41 @@ class Legendary {
     
     /// Retrieve installed games from epic games services.
     ///
-    /// - Returns: A tuple containing arrays of app names and app titles.
-    static func getInstalledGames() -> (appNames: [String], appTitles: [String]) {
-        guard signedIn() else { return ([], []) }
-        let json = try? JSON(data: command(args: ["list-installed","--json"], useCache: true).stdout)
-        return extractAppNamesAndTitles(from: json)
+    /// - Returns: A dictionary containing app\_names as keys and titles as values.
+    static func getInstalledGames() -> [String: String] {
+        guard signedIn() else { return Dictionary() }
+        
+        do {
+            let installedGames = try JSONSerialization.jsonObject( // stupid json dependency is stupid
+                with: Data(contentsOf: URL(fileURLWithPath: "\(configLocation)/installed.json")), options: []
+            ) as? [String: [String: Any]]
+            
+            var apps: [String: String] = [:]
+            
+            if let installedGames = installedGames {
+                for (appName, gameInfo) in installedGames {
+                    if let title = gameInfo["title"] as? String {
+                        apps[appName] = title
+                    }
+                }
+            } else { log.error("Failed to parse JSON data from the installed.json file.") }
+            
+            return apps
+        } catch {
+            log.error("Error while reading or parsing the installed.json file: \(error)")
+            return Dictionary()
+        }
     }
     
     /// Retrieve installed games from epic games services.
     ///
     /// - Returns: A tuple containing arrays of app names and app titles.
-    static func getInstallable() -> (appNames: [String], appTitles: [String]) {
-        guard signedIn() else { return ([], []) }
-        let json = try? JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
+    static func getInstallable() -> (appNames: [String], appTitles: [String]) { // (would use legendary/metadata, but online updating is crucial)
+        guard signedIn() else { return (Array(), Array()) }
+        
+        var json: JSON = JSON()
+        do { json = try JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) }
+        catch { log.error("Unable to get installable games from legendary: \(error.localizedDescription)") }
         return extractAppNamesAndTitles(from: json)
     }
     
@@ -358,33 +366,61 @@ class Legendary {
     /// - Parameter imageType: The type of images to retrieve (normal or tall).
     /// - Returns: A dictionary with app names as keys and image URLs as values.
     static func getImages(imageType: ImageType) -> [String: String] {
-        guard signedIn() else { return [:] }
-        let json = try? JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
+        guard signedIn() else { return Dictionary() }
         
-        var urls: [String: String] = [:]
+        var urls: [String: String] = Dictionary()
         
-        for game in json! {
-            let appName = String(describing: game.1["app_name"])
-            if let keyImages = game.1["metadata"]["keyImages"].array {
-                var image: [JSON] = []
-                
-                switch imageType {
-                case .normal:
-                    image = keyImages.filter { $0["type"].string == "DieselGameBox" }
-                case .tall:
-                    image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
-                }
-                
-                if let imageUrl = image.first?["url"].string {
-                    urls[appName] = imageUrl
+        do {
+            let json = try JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
+            
+            for game in json {
+                let appName = String(describing: game.1["app_name"])
+                if let keyImages = game.1["metadata"]["keyImages"].array {
+                    var image: [JSON] = []
+                    
+                    switch imageType {
+                    case .normal:
+                        image = keyImages.filter { $0["type"].string == "DieselGameBox" }
+                    case .tall:
+                        image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
+                    }
+                    
+                    if let imageUrl = image.first?["url"].string {
+                        urls[appName] = imageUrl
+                    }
                 }
             }
+        } catch {
+            log.error("Unable to get legendary images: \(error.localizedDescription)")
         }
         
         return urls
     }
     
-    // Later implement: aliases.json checker, isAlias(game: String), returns string with alias of game
+    /// Checks if an alias of a game exists.
+    ///
+    /// - Parameter game: Any string that may return an aliased output
+    /// - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name)
+    static func isAlias(game: String) -> (Bool?, of: String?) {
+        guard signedIn() else { return (nil, of: nil) }
+        let aliases = "\(configLocation)/aliases.json"
+        
+        if FileManager.default.fileExists(atPath: configLocation) {
+            if FileManager.default.fileExists(atPath: aliases) {
+                if let json = try? JSON(data: Data(contentsOf: URL(fileURLWithPath: aliases))) {
+                    for (appName, dict) in json {
+                        if appName == game { return (true, of: appName) }
+                        
+                        var values: [String] = []
+                        for value in dict { values.append(value.1.rawValue as? String ?? String()) }
+                        if values.contains(game) { return (true, of: appName) }
+                    }
+                } else { log.error("Failed to create JSON Object for config.json") }
+            } else { log.error("Unable to access config.json"); return (nil, of: nil) }
+        } else { log.error("Unable to access legendary's config (likely no command has been run yet.)"); return (nil, of: nil) }
+        
+        return (nil, of: nil)
+    }
     
     /// Retrieve the game's app\_name from the game's title.
     ///
@@ -392,15 +428,18 @@ class Legendary {
     /// - Returns: The app name of the game.
     static func getAppNameFromTitle(appTitle: String) -> String {
         guard signedIn() else { return "" }
-        let json = try? JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout)
-        return json!["game"]["app_name"].stringValue
+        
+        var json: JSON = JSON()
+        do { json = try JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout) }
+        catch {  }
+        return json["game"]["app_name"].stringValue
     }
     
     /// Retrieve the game's title from the game's app\_name.
     ///
     /// - Parameter appName: The app name of the game.
     /// - Returns: The title of the game.
-    static func getTitleFromAppName(appName: String) -> String {
+    static func getTitleFromAppName(appName: String) -> String { // can use jsons inside legendary/metadata
         guard signedIn() else { return "" }
         let json = try? JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
         return json!["game"]["title"].stringValue
@@ -416,10 +455,10 @@ class Legendary {
     
     /// Well, what do you think it does?
     private static func extractAppNamesAndTitles(from json: JSON?) -> (appNames: [String], appTitles: [String]) {
-        var appNames: [String] = []
-        var appTitles: [String] = []
-        if json?.exists() == true {
-            for game in json! {
+        var appNames: [String] = Array()
+        var appTitles: [String] = Array()
+        if let json = json {
+            for game in json {
                 appNames.append(String(describing: game.1["app_name"]))
                 appTitles.append(String(describing: game.1["app_title"]))
             }

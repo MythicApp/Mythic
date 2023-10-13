@@ -58,8 +58,7 @@ struct GameListView: View {
             DispatchQueue.global(qos: .userInitiated).async {
                 let command = Legendary.command(
                     args: ["install", game],
-                    useCache: true,
-                    halt: haltCommand
+                    useCache: true
                 )
                 
                 var isParsingOptionalPacks = false
@@ -259,7 +258,7 @@ struct GameListView: View {
                 DispatchQueue.global(qos: .userInteractive).async {
                     let installed = Legendary.getInstalledGames()
                     DispatchQueue.main.async { [self] in
-                        installedGames = installed.appNames
+                        installedGames = Array(installed.keys) // app_names are keys
                         group.leave()
                     }
                 }
