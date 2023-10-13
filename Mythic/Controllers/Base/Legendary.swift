@@ -220,7 +220,7 @@ class Legendary {
     /// - Parameters:
     ///   - game: The game's app\_name
     ///   - optionalPacks: Optional packs to install along with the base game
-    static func installGame(game: String, optionalPacks: [String]? = nil, cancelSemaphore: DispatchSemaphore? = nil) {
+    static func installGame(game: String, optionalPacks: [String]? = nil, cancelSemaphore: DispatchSemaphore = DispatchSemaphore(value: 0)) {
         guard getInstallable().appNames.contains(game) else {
             log.error("Game app name doesn't exist: \(game)")
             return
@@ -231,36 +231,32 @@ class Legendary {
         Installing.game = game
         
         // thank you gpt 🙏🏾🙏🏾 i am not regexing allat
+        struct Regex {
+            static let progress = try! NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
+            static let download = try! NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
+            static let cache = try! NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
+            static let downloadAdvanced = try! NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
+            static let disk = try! NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
+        }
+        
+        var status = Installing.shared._status
+        
         let handlers = OutputHandler(
             stdout: { _ in },
-            stderr: { stderr in
-                struct Regex {
-                    static let progress = try! NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
-                    static let download = try! NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
-                    static let cache = try! NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
-                    static let downloadAdvanced = try! NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
-                    static let disk = try! NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
-                }
-                
-                var status = Installing.shared._status
-                
-                var lastPercentage: Double = 0.0
-                stderr.enumerateLines { line, _ in
+            stderr: { output in
+                output.enumerateLines { line, _ in
                     if line.contains("[DLManager] INFO:") {
                         if !line.contains("Finished installation process in") {
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
                             if let match = Regex.progress.firstMatch(in: line, options: [], range: range) {
-                                let percentage = Double(line[Range(match.range(at: 1), in: line)!]) ?? 0
                                 status.progress = (
-                                    percentage: max(percentage, lastPercentage) /* percentage > lastPercentage ? percentage : lastPercentage */,
+                                    percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
                                     total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
                                     runtime: line[Range(match.range(at: 4), in: line)!],
                                     eta: line[Range(match.range(at: 5), in: line)!]
                                 )
-                                
-                                lastPercentage = percentage
                             } else if let match = Regex.download.firstMatch(in: line, options: [], range: range) {
                                 status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
                                     downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
