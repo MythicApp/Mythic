@@ -78,8 +78,8 @@ extension GameListView {
                     )
                 case .confirmation:
                     Alert(
-                        title: Text("Are you sure you want to delete \(game)?"),
-                        primaryButton: .destructive(Text("Delete")) {
+                        title: Text("Are you sure you want to uninstall \(game)?"),
+                        primaryButton: .destructive(Text("Uninstall")) {
                             isProgressViewSheetPresented = true
                             
                             DispatchQueue.global(qos: .userInteractive).async { [self] in
@@ -108,11 +108,11 @@ extension GameListView {
                                         if line.contains("ERROR:") {
                                             if let range = line.range(of: "ERROR: ") {
                                                 let substring = line[range.upperBound...]
-                                                Logger.app.error("Error found when attempting to delete game.")
                                                 errorContent = substring
                                                 isProgressViewSheetPresented = false
                                                 activeAlert = .error
                                                 isAlertPresented = true
+                                                Logger.app.error("Uninstall error: \(errorContent)")
                                                 break // first error only
                                             }
                                         }
