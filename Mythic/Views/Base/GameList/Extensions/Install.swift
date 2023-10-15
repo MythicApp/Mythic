@@ -57,6 +57,7 @@ extension GameListView {
                     
                     Button(action: {
                         Task(priority: .userInitiated) { await Legendary.installGame(game: game, optionalPacks: Array(optionalPacks.values)) }
+                        optionalPacks.removeAll()
                         isGameListRefreshCalled = true
                         isPresented = false
                     }) {

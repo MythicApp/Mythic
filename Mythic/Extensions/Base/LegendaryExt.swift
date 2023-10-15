@@ -61,19 +61,29 @@ extension Legendary {
         case windows
     }
     
-    struct NotSignedInError: Error { }
+    /// Error when legendary is signed out on a command that enforces signin.
+    struct NotSignedInError: Error { } // Plans to deprecate this eventually.
     
+    /// Error for image errors
     enum ImageError: Error {
+        /// Failure to get an image from source.
         case get
+        
+        /// Failure to load an image to Mythic or storage.
         case load
     }
     
+    /* Until more validation errors become available.
     enum UserValidationError: Error {
         case notSignedIn
     }
+     */
     
+    /// Your father.
     enum DoesNotExistError: Error {
         case game
+        case aliases
+        case file(file: URL)
     }
     
     /// Whether legendary is currently modifying (installing, removing, moving) a game/service.

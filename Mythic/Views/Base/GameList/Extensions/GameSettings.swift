@@ -1,5 +1,5 @@
 //
-//  GameSettings.swift
+//  GameSettings.swift // Name is not settings, settings is reserved for swift compiler or something
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 28/9/2023.
