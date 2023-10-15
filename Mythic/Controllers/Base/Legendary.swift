@@ -207,11 +207,15 @@ class Legendary {
     /// - Parameters:
     ///   - game: The game's app\_name
     ///   - optionalPacks: Optional packs to install along with the base game
-    static func installGame(game: String, optionalPacks: [String]? = nil, cancelSemaphore: DispatchSemaphore = DispatchSemaphore(value: 0)) {
-        guard getInstallable().appNames.contains(game) else {
-            log.error("Game app name doesn't exist: \(game)")
-            return
-        }
+    /// - Throws: A NotSignedInError.
+    static func installGame(
+        game: Game,
+        optionalPacks: [String]? = nil,
+        basePath: String? = nil,
+        gameFolder: String? = nil,
+        platform: GamePlatform? = nil
+    ) {
+        // basePath, gameFolder, platform not implemented
         
         dataLockInUse = (true, .installing)
         Installing.value = true
@@ -234,6 +238,7 @@ class Legendary {
                 output.enumerateLines { line, _ in
                     if line.contains("[DLManager] INFO:") {
                         if !line.contains("Finished installation process in") {
+                            
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
                             if let match = Regex.progress?.firstMatch(in: line, options: [], range: range) {
@@ -264,6 +269,13 @@ class Legendary {
                                     write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
+                            } else if line.contains("All done! Download manager quitting...") {
+                                DispatchQueue.main.async {
+                                    Installing.shared._finished = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // come back to later, issue creates spamability
+                                        Installing.shared._finished = false
+                                    }
+                                }
                             }
                         } else {
                             Installing.shared.reset()
@@ -279,7 +291,7 @@ class Legendary {
         
         DispatchQueue.global(qos: .userInitiated).async {
             _ = command(
-                args: ["--yes", "install", game],
+                args: ["--yes", "install", game.appName],
                 useCache: false,
                 input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
                 inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
@@ -323,37 +335,36 @@ class Legendary {
     
     /// Retrieve installed games from epic games services.
     ///
-    /// - Returns: A dictionary containing app\_names as keys and titles as values.
-    static func getInstalledGames() -> [String: String] {
-        guard signedIn() else { return Dictionary() }
+    /// - Returns: A dictionary containing `Legendary.Game` objects.
+    static func getInstalledGames() throws -> [Game] {
+        guard signedIn() else { throw NotSignedInError() }
         
         do {
             let installedGames = try JSONSerialization.jsonObject( // stupid json dependency is stupid
                 with: Data(contentsOf: URL(fileURLWithPath: "\(configLocation)/installed.json")), options: []
             ) as? [String: [String: Any]]
             
-            var apps: [String: String] = [:]
+            var apps: [Game] = Array()
             
             if let installedGames = installedGames {
                 for (appName, gameInfo) in installedGames {
                     if let title = gameInfo["title"] as? String {
-                        apps[appName] = title
+                        apps.append(Game(appName: appName, title: title))
                     }
                 }
             } else { log.error("Failed to parse JSON data from the installed.json file.") }
-            
             return apps
         } catch {
             log.error("Error while reading or parsing the installed.json file: \(error)")
-            return Dictionary()
+            throw error
         }
     }
     
     /// Retrieve installed games from epic games services.
     ///
     /// - Returns: A tuple containing arrays of app names and app titles.
-    static func getInstallable() -> (appNames: [String], appTitles: [String]) { // (would use legendary/metadata, but online updating is crucial)
-        guard signedIn() else { return (Array(), Array()) }
+    static func getInstallable() throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
+        guard signedIn() else { throw NotSignedInError() }
         
         var json: JSON = JSON()
         do { json = try JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) }
@@ -364,9 +375,10 @@ class Legendary {
     /// Get game images with "DieselGameBox" metadata.
     ///
     /// - Parameter imageType: The type of images to retrieve (normal or tall).
+    /// - Throws: A NotSignedInError.
     /// - Returns: A dictionary with app names as keys and image URLs as values.
-    static func getImages(imageType: ImageType) -> [String: String] {
-        guard signedIn() else { return Dictionary() }
+    static func getImages(imageType: ImageType) throws -> [String: String] {
+        guard signedIn() else { throw NotSignedInError() }
         
         var urls: [String: String] = Dictionary()
         
@@ -390,8 +402,10 @@ class Legendary {
                     }
                 }
             }
+            
         } catch {
             log.error("Unable to get legendary images: \(error.localizedDescription)")
+            throw ImageError.get
         }
         
         return urls
@@ -422,6 +436,13 @@ class Legendary {
         return (nil, of: nil)
     }
     
+    static func needsVerification(game: String) {
+        
+    }
+    
+    /*
+     !!! DEPRECATIÓN !!! (im not frenh)
+    
     /// Retrieve the game's app\_name from the game's title.
     ///
     /// - Parameter appTitle: The title of the game.
@@ -444,6 +465,7 @@ class Legendary {
         let json = try? JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
         return json!["game"]["title"].stringValue
     }
+     */
     
     /* // // // // // // // // // // // // // // // //
      ___   _   _  _  ___ ___ ___   _______  _  _ ___
@@ -454,15 +476,20 @@ class Legendary {
      */ // // // // // // // // // // // // // // // /
     
     /// Well, what do you think it does?
-    private static func extractAppNamesAndTitles(from json: JSON?) -> (appNames: [String], appTitles: [String]) {
-        var appNames: [String] = Array()
-        var appTitles: [String] = Array()
+    private static func extractAppNamesAndTitles(from json: JSON?) -> [Game] {
+        var games: [Game] = Array()
+        
         if let json = json {
             for game in json {
-                appNames.append(String(describing: game.1["app_name"]))
-                appTitles.append(String(describing: game.1["app_title"]))
+                games.append(
+                    Game(
+                        appName: game.1["app_name"].string ?? String(),
+                        title: game.1["app_title"].string ?? String()
+                    )
+                )
             }
         }
-        return (appNames, appTitles)
+        
+        return games
     }
 }

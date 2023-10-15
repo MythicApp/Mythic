@@ -31,11 +31,7 @@ struct MainView: View {
     @State private var appVersion: String = ""
     @State private var buildNumber: Int = 0
     
-    @State private var gameInstalling: Bool = false
-    @State private var gameBeingInstalled: String = String()
-    @State private var installPercentage: Double = 0.0
-    
-    @State private var gameThumbnails: [String: String] = [:]
+    @State private var gameThumbnails: [String: String] = Dictionary()
     
     @StateObject private var installing = Legendary.Installing.shared
     
@@ -117,7 +113,7 @@ struct MainView: View {
                             .fontWeight(.bold)
                             .font(.system(size: 8))
                             .offset(x: -2, y: 0)
-                        Text(installing._game.isEmpty ? "Loading..." : Legendary.getTitleFromAppName(appName: installing._game))
+                        Text(installing._game == nil ? "Loading..." : installing._game!.title)
                         
                         HStack {
                             Button(action: {
@@ -132,6 +128,10 @@ struct MainView: View {
                                 }
                             }
                             .buttonStyle(.plain)
+                            
+                            .onChange(of: installing._finished) { _, newValue in
+                                installing._value = !newValue
+                            }
                             
                             
                             Button(action: {
@@ -218,9 +218,9 @@ struct MainView: View {
             
             .onAppear {
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = Legendary.getImages(imageType: .tall)
+                    let thumbnails = (try? Legendary.getImages(imageType: .tall)) ?? Dictionary()
                     DispatchQueue.main.async { [self] in
-                        gameThumbnails = thumbnails
+                        if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                     }
                 }
             }

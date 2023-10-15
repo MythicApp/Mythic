@@ -14,11 +14,11 @@ extension LibraryView {
         
         @State private var isProgressViewSheetPresented: Bool = false
         @State private var isErrorPresented: Bool = false
-        @State private var errorContent: Substring = ""
+        @State private var errorContent: Substring = Substring()
         
-        @State private var installableGames: [String] = []
+        @State private var installableGames: [Legendary.Game] = Array()
         
-        @State private var selectedGame: String = "" // is initialised onappear
+        @State private var selectedGame: Legendary.Game? = nil // is initialised onappear
         @State private var selectedGameType: String = "Epic"
         @State private var selectedPlatform: String = "macOS"
         @State private var withDLCs: Bool = true
@@ -45,7 +45,7 @@ extension LibraryView {
                 if selectedGameType == "Epic" {
                     Picker("Select a game:", selection: $selectedGame) {
                         ForEach(installableGames, id: \.self) {
-                            Text($0)
+                            Text($0.title)
                         }
                     }
                     
@@ -103,35 +103,46 @@ extension LibraryView {
                             isProgressViewSheetPresented = true
                             
                             DispatchQueue.global(qos: .userInteractive).async { [self] in
-                                let command = Legendary.command(
-                                    args: [
-                                        "import",
-                                        checkIntegrity ? nil : "--disable-check",
-                                        withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                        "--platform", realSelectedPlatform,
-                                        selectedGame,
-                                        gamePath
-                                    ]
-                                        .compactMap { $0 },
-                                    useCache: false
-                                )
+                                var command: (stdout: Data, stderr: Data)? = nil
                                 
-                                if let commandStderrString = String(data: command.stderr, encoding: .utf8) {
-                                    if !commandStderrString.isEmpty {
-                                        if commandStderrString.contains("INFO: Game \"\(selectedGame)\" has been imported.") {
-                                            isPresented = false
-                                            isGameListRefreshCalled = true
+                                if let selectedGame = selectedGame {
+                                    command = Legendary.command(
+                                        args: [
+                                            "import",
+                                            checkIntegrity ? nil : "--disable-check",
+                                            withDLCs ? "--with-dlcs" : "--skip-dlcs",
+                                            "--platform", realSelectedPlatform,
+                                            selectedGame.appName,
+                                            gamePath
+                                        ]
+                                            .compactMap { $0 },
+                                        useCache: false
+                                    )
+                                }
+                                if command != nil {
+                                    if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
+                                        if !commandStderrString.isEmpty {
+                                            if let selectedGame = selectedGame {
+                                                if commandStderrString.contains("INFO: Game \"\(selectedGame.title)\" has been imported.") {
+                                                    isPresented = false
+                                                    isGameListRefreshCalled = true
+                                                }
+                                            }
                                         }
-                                    }
-                                    
-                                    for line in commandStderrString.components(separatedBy: "\n") {
-                                        if line.contains("ERROR:") {
-                                            if let range = line.range(of: "ERROR: ") {
-                                                let substring = line[range.upperBound...]
-                                                errorContent = substring
-                                                isProgressViewSheetPresented = false
-                                                isErrorPresented = true
-                                                break // first err
+                                        
+                                        for line in commandStderrString.components(separatedBy: "\n") {
+                                            if line.contains("ERROR:") {
+                                                if let range = line.range(of: "ERROR: ") {
+                                                    let substring = line[range.upperBound...]
+                                                    errorContent = substring
+                                                    isProgressViewSheetPresented = false
+                                                    isErrorPresented = true
+                                                    break // first err
+                                                }
+                                            }
+                                            
+                                            if line.contains("Some files are missing from the game installation, install may not match latest Epic Games Store version or might be corrupted.") { // legendary/cli.py line 1372 as of hash 4507842
+                                                
                                             }
                                         }
                                     }
@@ -170,10 +181,10 @@ extension LibraryView {
             
             .onAppear {
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let games = Legendary.getInstallable()
+                    let games = (try? Legendary.getInstallable()) ?? Array()
                     DispatchQueue.main.async { [self] in
-                        selectedGame = games.appTitles.first ?? "Error retrieving game list"
-                        installableGames = games.appTitles
+                        if !games.isEmpty { selectedGame = games.first! }
+                        installableGames = games
                         isProgressViewSheetPresented = false
                     }
                 }

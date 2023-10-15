@@ -10,7 +10,7 @@ import SwiftUI
 extension GameListView {
     struct InstallView: View {
         @Binding var isPresented: Bool
-        @Binding var game: String
+        @Binding var game: Legendary.Game
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
         
@@ -18,7 +18,7 @@ extension GameListView {
         
         var body: some View {
             VStack {
-                Text("Install \(game)")
+                Text("Install \(game.title)")
                     .font(.title)
                 if !optionalPacks.isEmpty {
                     Text("(supports selective downloads.)")
@@ -57,7 +57,7 @@ extension GameListView {
                     
                     Button(action: {
                         DispatchQueue.global(qos: .userInitiated).async {
-                            Legendary.installGame(game: Legendary.getAppNameFromTitle(appTitle: game), optionalPacks: Array(optionalPacks.values))
+                            Legendary.installGame(game: game, optionalPacks: Array(optionalPacks.values))
                         }
                         isGameListRefreshCalled = true
                         isPresented = false

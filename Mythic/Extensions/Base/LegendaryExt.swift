@@ -9,7 +9,14 @@ import Foundation
 
 extension Legendary {
     
-    /// Enumeration to specify image types
+    /// Struct to store games.
+    struct Game: Hashable {
+        var appName: String
+        var title: String
+    }
+
+    
+    /// Enumeration to specify image types.
     enum ImageType {
         case normal
         case tall
@@ -46,6 +53,27 @@ extension Legendary {
         case removing
         case moving
         case none
+    }
+    
+    /// Enumeration containing the two different platforms legendary can download games for.
+    enum GamePlatform {
+        case macOS
+        case windows
+    }
+    
+    struct NotSignedInError: Error { }
+    
+    enum ImageError: Error {
+        case get
+        case load
+    }
+    
+    enum UserValidationError: Error {
+        case notSignedIn
+    }
+    
+    enum DoesNotExistError: Error {
+        case game
     }
     
     /// Whether legendary is currently modifying (installing, removing, moving) a game/service.
@@ -91,11 +119,12 @@ extension Legendary {
     /// Class  with information on if legendary is currently installing a game/service.
     class Installing: ObservableObject {
         @Published var _value: Bool = false
-        @Published var _game: String = String()
+        @Published var _finished: Bool = false
+        @Published var _game: Game? = nil
         @Published var _status: InstallStatus = InstallStatus()
 
         static var shared = Installing()
-
+        
         static var value: Bool {
             get { return shared._value }
             set {
@@ -104,8 +133,17 @@ extension Legendary {
                 }
             }
         }
+        
+        static var finished: Bool {
+            get { return shared._finished }
+            set {
+                DispatchQueue.main.async {
+                    shared._value = newValue
+                }
+            }
+        }
 
-        static var game: String {
+        static var game: Game? {
             get { return shared._game }
             set {
                 DispatchQueue.main.async {
@@ -126,7 +164,7 @@ extension Legendary {
         func reset() {
             Legendary.dataLockInUse = (false, .none)
             Installing.value = false
-            Installing.game = String()
+            Installing.game = nil
             Installing.installStatus = InstallStatus()
         }
     }

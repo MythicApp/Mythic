@@ -21,14 +21,14 @@ struct GameListView: View {
     @State private var isUninstallViewPresented: Bool = false
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: String = ""
+    @State private var currentGame: Legendary.Game = .init(appName: String(), title: String())
     
-    @State private var installableGames: [String] = []
-    @State private var installedGames: [String] = []
+    @State private var installableGames: [Legendary.Game] = Array()
+    @State private var installedGames: [Legendary.Game] = Array()
     @StateObject private var installing = Legendary.Installing.shared
     
-    @State private var gameThumbnails: [String: String] = [:]
-    @State private var optionalPacks: [String: String] = [:]
+    @State private var gameThumbnails: [String: String] = Dictionary()
+    @State private var optionalPacks: [String: String] = Dictionary()
     
     @State private var dataFetched: Bool = false
     
@@ -37,16 +37,15 @@ struct GameListView: View {
         case optionalPacks
     }
     
-    func updateCurrentGame(game: String, mode: UpdateCurrentGameMode) {
+    func updateCurrentGame(game: Legendary.Game, mode: UpdateCurrentGameMode) {
         isProgressViewSheetPresented = true
         
         let group = DispatchGroup()
         
         group.enter()
         DispatchQueue.global(qos: .userInitiated).async {
-            let title = Legendary.getTitleFromAppName(appName: game)
             DispatchQueue.main.async { [self] in
-                currentGame = title
+                currentGame = game
                 group.leave()
             }
         }
@@ -55,7 +54,7 @@ struct GameListView: View {
             group.enter()
             DispatchQueue.global(qos: .userInitiated).async {
                 let command = Legendary.command(
-                    args: ["install", game],
+                    args: ["install", game.appName],
                     useCache: true
                 )
                 
@@ -107,7 +106,7 @@ struct GameListView: View {
                                 .offset(y: -10)
                             
                             VStack {
-                                CachedAsyncImage(url: URL(string: gameThumbnails[game]!), urlCache: imageCache) { phase in
+                                CachedAsyncImage(url: URL(string: gameThumbnails[game.appName]!), urlCache: imageCache) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
@@ -151,7 +150,7 @@ struct GameListView: View {
                                         
                                         Button(action: {
                                             updateCurrentGame(game: game, mode: .normal)
-                                            _ = Legendary.command(args: ["launch", game], useCache: false)
+                                            _ = Legendary.command(args: ["launch", game.appName], useCache: false)
                                         }) {
                                             Image(systemName: "play.fill")
                                                 .foregroundStyle(.green)
@@ -180,11 +179,6 @@ struct GameListView: View {
                                             } else {
                                                 ProgressView(value: installing._status.progress?.percentage, total: 100)
                                                     .progressViewStyle(.linear)
-                                                    .onChange(of: installing._status.progress?.percentage) { _, newValue in
-                                                        if newValue == 100 {
-                                                            isRefreshCalled = true
-                                                        }
-                                                    }
                                             }
                                             
                                             Button(action: {
@@ -197,6 +191,12 @@ struct GameListView: View {
                                             .shadow(color: .red, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
+                                            
+                                            .onChange(of: installing._finished) { _, newValue in
+                                                if newValue == true {
+                                                    isRefreshCalled = true
+                                                }
+                                            }
                                             
                                         } else {
                                             Button(action: {
@@ -235,27 +235,27 @@ struct GameListView: View {
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let games = Legendary.getInstallable()
+                    let games = (try? Legendary.getInstallable()) ?? Array()
                     DispatchQueue.main.async { [self] in
-                        installableGames = games.appNames
+                        if !games.isEmpty { installableGames = games }
                         group.leave()
                     }
                 }
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = Legendary.getImages(imageType: .tall)
+                    let thumbnails = (try? Legendary.getImages(imageType: .tall)) ?? Dictionary()
                     DispatchQueue.main.async { [self] in
-                        gameThumbnails = thumbnails
+                        if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                         group.leave()
                     }
                 }
                 
                 group.enter()
                 DispatchQueue.global(qos: .userInteractive).async {
-                    let installed = Legendary.getInstalledGames()
+                    let installed = (try? Legendary.getInstalledGames()) ?? Array()
                     DispatchQueue.main.async { [self] in
-                        installedGames = Array(installed.keys) // app_names are keys
+                        if !installed.isEmpty { installedGames = installed }
                         group.leave()
                     }
                 }

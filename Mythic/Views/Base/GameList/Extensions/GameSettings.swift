@@ -11,11 +11,11 @@ import SwiftyJSON
 extension GameListView {
     struct SettingsView: View {
         @Binding var isPresented: Bool
-        @Binding var game: String
+        @Binding var game: Legendary.Game
         
-        var body: some View {
+        var body: some View { // TO IMPLEMENT LATER: IMPLEMENT REPAIR BUTTON IF IF NEEDS VERIFICATION IS TRUE IN INSTALLED.JSON
             VStack {
-                Text(game)
+                Text(game.title)
                     .font(.title)
                 
                 Spacer()

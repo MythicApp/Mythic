@@ -11,7 +11,7 @@ import OSLog
 extension GameListView {
     struct UninstallView: View {
         @Binding var isPresented: Bool
-        @Binding var game: String
+        @Binding var game: Legendary.Game
         @Binding var isGameListRefreshCalled: Bool
         
         enum ActiveAlert {
@@ -30,7 +30,7 @@ extension GameListView {
         
         var body: some View {
             VStack {
-                Text("Uninstall \(game)")
+                Text("Uninstall \(game.title)")
                     .font(.title)
                 
                 Spacer()
@@ -78,7 +78,7 @@ extension GameListView {
                     )
                 case .confirmation:
                     Alert(
-                        title: Text("Are you sure you want to uninstall \(game)?"),
+                        title: Text("Are you sure you want to uninstall \(game.title)?"),
                         primaryButton: .destructive(Text("Uninstall")) {
                             isProgressViewSheetPresented = true
                             
@@ -89,7 +89,7 @@ extension GameListView {
                                         "uninstall",
                                         keepFiles ? "--keep-files" : nil,
                                         skipUninstaller ? "--skip-uninstaller" : nil,
-                                        game
+                                        game.appName
                                     ]
                                         .compactMap { $0 },
                                     useCache: false
