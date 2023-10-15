@@ -19,6 +19,7 @@ struct GameListView: View {
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUninstallViewPresented: Bool = false
+    @State private var isPlayDefaultViewPresented: Bool = false
     
     @State private var isProgressViewSheetPresented: Bool = true
     @State private var currentGame: Legendary.Game = .init(appName: String(), title: String())
@@ -294,9 +295,9 @@ struct GameListView: View {
             )
         }
         
-        .sheet(isPresented: $isUninstallViewPresented) {
+        .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
-                isPresented: $isUninstallViewPresented,
+                isPresented: $isPlayDefaultViewPresented,
                 game: $currentGame,
                 isGameListRefreshCalled: $isRefreshCalled
             )
