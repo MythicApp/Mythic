@@ -15,7 +15,8 @@ extension GameListView {
         @Binding var isGameListRefreshCalled: Bool
         
         enum ActiveAlert {
-            case error, confirmation
+            case error
+            case confirmation
         }
         
         @State private var keepFiles: Bool = false

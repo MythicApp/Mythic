@@ -230,16 +230,6 @@ struct MainView: View {
     }
 }
 
-extension MainView {
-    struct InstallStatusView {
-        @Binding var installing: Legendary.Installing
-        
-        var body: some View {
-            Text("")
-        }
-    }
-}
-
 func toggleSidebar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
 }

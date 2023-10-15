@@ -14,7 +14,16 @@ extension GameListView {
         @Binding var isGameListRefreshCalled: Bool
         
         var body: some View {
-            Text("")//Circle().foregroundColor(isAppInstalled(bundleIdentifier: "com.isaacmarovitz.Whisky") ? .green : .red)
+            HStack {
+                if isAppInstalled(bundleIdentifier: "com.isaacmarovitz.Whisky") {
+                    Circle().foregroundColor(.green)
+                    Text("Whisky installed!")
+                } else {
+                    Circle().foregroundColor(.red)
+                    Text("Whisky is not installed!")
+                }
+            }
+            .padding()
         }
     }
 }

@@ -29,7 +29,6 @@ struct LibraryView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
                         isGameListRefreshCalled = true
-                        // mythic loves crashing from dispatches, spamming this will crash mythic eventually
                     }) {
                         Image(systemName: "arrow.clockwise")
                     }
