@@ -84,6 +84,7 @@ extension Legendary {
         case game
         case aliases
         case file(file: URL)
+        case directory(directory: String)
     }
     
     /// Whether legendary is currently modifying (installing, removing, moving) a game/service.

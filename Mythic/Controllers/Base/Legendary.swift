@@ -302,7 +302,7 @@ class Legendary {
         )
     }
     
-    /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
+    /// Wipe legendary's command cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
         commandCache = Dictionary()
         log.notice("Cleared legendary command cache successfully.")
@@ -311,7 +311,7 @@ class Legendary {
     /// Queries the user that is currently signed into epic games.
     /// This command has no delay.
     ///
-    /// - Returns: The user's account information as a string.
+    /// - Returns: The user's account information as a `String`.
     static func whoAmI() -> String {
         let userJSONFileURL = URL(fileURLWithPath: "\(configLocation)/user.json")
         
@@ -331,7 +331,8 @@ class Legendary {
     
     /// Retrieve installed games from epic games services.
     ///
-    /// - Returns: A dictionary containing `Legendary.Game` objects.
+    /// - Returns: A dictionary containing ``Legendary.Game`` objects.
+    /// - Throws: A ``NotSignedInError``.
     static func getInstalledGames() throws -> [Game] {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -358,7 +359,7 @@ class Legendary {
     
     /// Retrieve installed games from epic games services.
     ///
-    /// - Returns: A tuple containing arrays of app names and app titles.
+    /// - Returns: An `Array` of ``Game`` objects,
     static func getInstallable() async throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
         guard signedIn() else { throw NotSignedInError() }
         
@@ -369,11 +370,33 @@ class Legendary {
         return extractAppNamesAndTitles(from: json)
     }
     
+    /// Retrieve game metadata as a JSON.
+    ///
+    /// - Parameter game: A ``Game`` object.
+    /// - Throws: A ``DoesNotExistError`` if the metadata directory doesn't exist.
+    /// - Returns: An optional `JSON` with either the metadata or `nil`.
+    static func getGameMetadata(game: Game) async throws -> JSON? {
+        let metadataDirectoryString = "\(configLocation)/metadata"
+        
+        guard let metadataDirectoryContents = try? FileManager.default.contentsOfDirectory(atPath: metadataDirectoryString) else {
+            throw DoesNotExistError.directory(directory: metadataDirectoryString)
+        }
+        
+        if let metadataFileName = metadataDirectoryContents.first(where: { $0.hasSuffix(".json") && String($0.dropLast(5)) == game.appName }),
+           let data = try? Data(contentsOf: URL(fileURLWithPath: "\(metadataDirectoryString)/\(metadataFileName)")),
+           let json = try? JSON(data: data) {
+            return json
+        }
+        
+        return nil
+    }
+    
+    
     /// Get game images with "DieselGameBox" metadata.
     ///
     /// - Parameter imageType: The type of images to retrieve (normal or tall).
-    /// - Throws: A NotSignedInError.
-    /// - Returns: A dictionary with app names as keys and image URLs as values.
+    /// - Throws: A ``NotSignedInError``.
+    /// - Returns: A `Dictionary` with app names as keys and image URLs as values.
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -406,7 +429,7 @@ class Legendary {
     
     /// Checks if an alias of a game exists.
     ///
-    /// - Parameter game: Any string that may return an aliased output
+    /// - Parameter game: Any `String` that may return an aliased output
     /// - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name)
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
         guard signedIn() else { throw NotSignedInError() }
@@ -430,13 +453,15 @@ class Legendary {
         return (nil, of: nil)
     }
     
+    /*
     static func needsVerification(game: Game) {
         
     }
     
-    static func canLaunch(game: Game) {
+    static func canLaunch(game: Game) -> Bool {
         
     }
+     */
     
     /*
      !!! DEPRECATIÓN !!! (im not frenh)
