@@ -313,19 +313,14 @@ class Legendary {
     ///
     /// - Returns: The user's account information as a string.
     static func whoAmI() -> String {
-        let config = "\(Bundle.appHome)/legendary"
-        let user = "\(config)/user.json"
-        var whoIAm: String = ""
-        if FileManager.default.fileExists(atPath: config) {
-            if FileManager.default.fileExists(atPath: user) {
-                if let displayName = try? JSON(data: Data(contentsOf: URL(fileURLWithPath: user)))["displayName"] {
-                    whoIAm = String(describing: displayName)
-                }
-            } else {
-                whoIAm = "Nobody"
-            }
-        }
-        return whoIAm
+        let userJSONFileURL = URL(fileURLWithPath: "\(configLocation)/user.json")
+        
+        guard 
+            FileManager.default.fileExists(atPath: userJSONFileURL.path),
+            let json = try? JSON(data: Data(contentsOf: userJSONFileURL))
+        else { return "Nobody" }
+        
+        return String(describing: json["displayName"])
     }
     
     /// Boolean verifier for the user's epic games signin state.
@@ -340,25 +335,25 @@ class Legendary {
     static func getInstalledGames() throws -> [Game] {
         guard signedIn() else { throw NotSignedInError() }
         
-        do {
-            let installedGames = try JSONSerialization.jsonObject( // stupid json dependency is stupid
-                with: Data(contentsOf: URL(fileURLWithPath: "\(configLocation)/installed.json")), options: []
-            ) as? [String: [String: Any]]
-            
-            var apps: [Game] = Array()
-            
-            if let installedGames = installedGames {
-                for (appName, gameInfo) in installedGames {
-                    if let title = gameInfo["title"] as? String {
-                        apps.append(Game(appName: appName, title: title))
-                    }
-                }
-            } else { log.error("Failed to parse JSON data from the installed.json file.") }
-            return apps
-        } catch {
-            log.error("Error while reading or parsing the installed.json file: \(error)")
-            throw error
+        let installedJSONFileURL: URL = URL(fileURLWithPath: "\(configLocation)/installed.json")
+        
+        guard let installedData = try? Data(contentsOf: installedJSONFileURL) else {
+            throw DoesNotExistError.file(file: installedJSONFileURL)
         }
+        
+        guard let installedGames = try JSONSerialization.jsonObject(with: installedData, options: []) as? [String: [String: Any]] else { // stupid json dependency is stupid
+            return Array()
+        }
+        
+        var apps: [Game] = Array()
+        
+        for (appName, gameInfo) in installedGames {
+            if let title = gameInfo["title"] as? String {
+                apps.append(Game(appName: appName, title: title))
+            }
+        }
+        
+        return apps
     }
     
     /// Retrieve installed games from epic games services.
@@ -367,9 +362,10 @@ class Legendary {
     static func getInstallable() async throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
         guard signedIn() else { throw NotSignedInError() }
         
-        var json: JSON = JSON()
-        do { json = try await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) }
-        catch { log.error("Unable to get installable games from legendary: \(error.localizedDescription)") }
+        guard let json = try? await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) else {
+            return Array()
+        }
+        
         return extractAppNamesAndTitles(from: json)
     }
     
@@ -381,32 +377,28 @@ class Legendary {
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
+        guard let json = try? await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) else {
+            return Dictionary()
+        }
+        
         var urls: [String: String] = Dictionary()
         
-        do {
-            let json = try await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
-            
-            for game in json {
-                let appName = String(describing: game.1["app_name"])
-                if let keyImages = game.1["metadata"]["keyImages"].array {
-                    var image: [JSON] = []
-                    
-                    switch imageType {
-                    case .normal:
-                        image = keyImages.filter { $0["type"].string == "DieselGameBox" }
-                    case .tall:
-                        image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
-                    }
-                    
-                    if let imageUrl = image.first?["url"].string {
-                        urls[appName] = imageUrl
-                    }
+        for game in json {
+            let appName = String(describing: game.1["app_name"])
+            if let keyImages = game.1["metadata"]["keyImages"].array {
+                var image: [JSON] = []
+                
+                switch imageType {
+                case .normal:
+                    image = keyImages.filter { $0["type"].string == "DieselGameBox" }
+                case .tall:
+                    image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
+                }
+                
+                if let imageURL = image.first?["url"].string {
+                    urls[appName] = imageURL
                 }
             }
-            
-        } catch {
-            log.error("Unable to get legendary images: \(error.localizedDescription)")
-            throw ImageError.get
         }
         
         return urls
@@ -416,28 +408,33 @@ class Legendary {
     ///
     /// - Parameter game: Any string that may return an aliased output
     /// - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name)
-    static func isAlias(game: String) -> (Bool?, of: String?) {
-        guard signedIn() else { return (nil, of: nil) }
-        let aliases = "\(configLocation)/aliases.json"
+    static func isAlias(game: String) throws -> (Bool?, of: String?) {
+        guard signedIn() else { throw NotSignedInError() }
         
-        if FileManager.default.fileExists(atPath: configLocation) {
-            if FileManager.default.fileExists(atPath: aliases) {
-                if let json = try? JSON(data: Data(contentsOf: URL(fileURLWithPath: aliases))) {
-                    for (appName, dict) in json {
-                        if appName == game { return (true, of: appName) }
-                        
-                        var values: [String] = []
-                        for value in dict { values.append(value.1.rawValue as? String ?? String()) }
-                        if values.contains(game) { return (true, of: appName) }
-                    }
-                } else { log.error("Failed to create JSON Object for config.json") }
-            } else { log.error("Unable to access config.json"); return (nil, of: nil) }
-        } else { log.error("Unable to access legendary's config (likely no command has been run yet.)"); return (nil, of: nil) }
+        let aliasesJSONFileURL: URL = URL(fileURLWithPath: "\(configLocation)/aliases.json")
         
+        guard let aliasesData = try? Data(contentsOf: aliasesJSONFileURL) else {
+            throw DoesNotExistError.file(file: aliasesJSONFileURL)
+        }
+        
+        guard let json = try? JSON(data: aliasesData) else {
+            return (nil, of: nil)
+        }
+
+        for (appName, dict) in json {
+            if appName == game || dict.compactMap({ $0.1.rawString() }).contains(game) {
+                return (true, of: appName)
+            }
+        }
+
         return (nil, of: nil)
     }
     
-    static func needsVerification(game: String) {
+    static func needsVerification(game: Game) {
+        
+    }
+    
+    static func canLaunch(game: Game) {
         
     }
     

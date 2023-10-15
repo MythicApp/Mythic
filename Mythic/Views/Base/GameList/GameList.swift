@@ -293,6 +293,14 @@ struct GameListView: View {
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }
+        
+        .sheet(isPresented: $isUninstallViewPresented) {
+            GameListView.PlayDefaultView(
+                isPresented: $isUninstallViewPresented,
+                game: $currentGame,
+                isGameListRefreshCalled: $isRefreshCalled
+            )
+        }
     }
 }
 
