@@ -17,12 +17,12 @@ struct AuthView: View {
     @State private var isProgressViewSheetPresented = false
     @State private var isError = false
     
-    func submitToLegendary() {
+    func submitToLegendary() async {
         if !code.isEmpty {
             isLoggingIn = true
             progressViewPresented = true
             
-            let command = Legendary.command(args: ["auth", "--code", code], useCache: false)
+            let command = await Legendary.command(args: ["auth", "--code", code], useCache: false)
             
             if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("Successfully logged in as") {
                 authSuccessful = true
@@ -51,12 +51,12 @@ struct AuthView: View {
         HStack {
             TextField("Enter auth key...", text: $code)
                 .onSubmit {
-                    submitToLegendary()
+                    Task { await submitToLegendary() }
                 }
                 .frame(width: 350, alignment: .center)
             
             Button(action:{
-                submitToLegendary()
+                Task { await submitToLegendary() }
             }) {
                 Text("Submit")
             }

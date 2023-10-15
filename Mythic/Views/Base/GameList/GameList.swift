@@ -52,8 +52,8 @@ struct GameListView: View {
         
         if mode == .optionalPacks {
             group.enter()
-            DispatchQueue.global(qos: .userInitiated).async {
-                let command = Legendary.command(
+            Task(priority: .userInitiated) {
+                let command = await Legendary.command(
                     args: ["install", game.appName],
                     useCache: true
                 )
@@ -149,8 +149,10 @@ struct GameListView: View {
                                         .controlSize(.large)
                                         
                                         Button(action: {
-                                            updateCurrentGame(game: game, mode: .normal)
-                                            _ = Legendary.command(args: ["launch", game.appName], useCache: false)
+                                            Task(priority: .userInitiated) {
+                                                updateCurrentGame(game: game, mode: .normal)
+                                                _ = await Legendary.command(args: ["launch", game.appName], useCache: false)
+                                            }
                                         }) {
                                             Image(systemName: "play.fill")
                                                 .foregroundStyle(.green)
@@ -234,30 +236,24 @@ struct GameListView: View {
                 let group = DispatchGroup()
                 
                 group.enter()
-                DispatchQueue.global(qos: .userInteractive).async {
-                    let games = (try? Legendary.getInstallable()) ?? Array()
-                    DispatchQueue.main.async { [self] in
-                        if !games.isEmpty { installableGames = games }
-                        group.leave()
-                    }
+                Task(priority: .userInitiated) {
+                    let games = (try? await Legendary.getInstallable()) ?? Array()
+                    if !games.isEmpty { installableGames = games }
+                    group.leave()
                 }
                 
                 group.enter()
-                DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = (try? Legendary.getImages(imageType: .tall)) ?? Dictionary()
-                    DispatchQueue.main.async { [self] in
-                        if !thumbnails.isEmpty { gameThumbnails = thumbnails }
-                        group.leave()
-                    }
+                Task(priority: .userInitiated) {
+                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? Dictionary()
+                    if !thumbnails.isEmpty { gameThumbnails = thumbnails }
+                    group.leave()
                 }
                 
                 group.enter()
-                DispatchQueue.global(qos: .userInteractive).async {
+                Task(priority: .userInitiated) {
                     let installed = (try? Legendary.getInstalledGames()) ?? Array()
-                    DispatchQueue.main.async { [self] in
-                        if !installed.isEmpty { installedGames = installed }
-                        group.leave()
-                    }
+                    if !installed.isEmpty { installedGames = installed }
+                    group.leave()
                 }
                 
                 group.notify(queue: .main) {

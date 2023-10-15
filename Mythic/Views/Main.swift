@@ -165,9 +165,11 @@ struct MainView: View {
                 if epicUserAsync != "Loading..." {
                     if signedIn {
                         Button(action: {
-                            let command = Legendary.command(args: ["auth", "--delete"], useCache: false)
-                            if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
-                                updateLegendaryAccountState()
+                            Task(priority: .high) {
+                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false)
+                                if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
+                                    updateLegendaryAccountState()
+                                }
                             }
                         }) {
                             HStack {
@@ -217,11 +219,9 @@ struct MainView: View {
             }
             
             .onAppear {
-                DispatchQueue.global(qos: .userInteractive).async {
-                    let thumbnails = (try? Legendary.getImages(imageType: .tall)) ?? Dictionary()
-                    DispatchQueue.main.async { [self] in
-                        if !thumbnails.isEmpty { gameThumbnails = thumbnails }
-                    }
+                Task(priority: .userInitiated) {
+                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? Dictionary()
+                    if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                 }
             }
             

@@ -40,7 +40,7 @@ class Legendary {
         input: String? = nil,
         inputIf: InputIfCondition? = nil,
         asyncOutput: OutputHandler? = nil
-    ) -> (stdout: Data, stderr: Data) {
+    ) async -> (stdout: Data, stderr: Data) {
         
         /// Contains instances of the async DispatchQueues
         struct QueueContainer {
@@ -54,17 +54,18 @@ class Legendary {
         
         if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
-            DispatchQueue.global(qos: .userInitiated).async {
-                _ = run()
-                log.debug("New cache appended.")
+            Task {
+                _ = await run()
+                log.debug("Cache returned, and new cache successfully appended.")
             }
             return cachedOutput
         } else {
             log.debug("\(useCache ? "Cache not found, creating" : "Cache disabled for this task.")")
-            return run()
+            return await run()
         }
         
-        func run() -> (stdout: Data, stderr: Data) {
+        @Sendable
+        func run() async -> (stdout: Data, stderr: Data) {
             let task = Process()
             task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
             
@@ -83,7 +84,6 @@ class Legendary {
             
             let pipe = PipeContainer()
             var data = DataContainer()
-            let asyncGroup = DispatchGroup()
             
             // initialise legendary cli and config env
             
@@ -101,11 +101,12 @@ class Legendary {
             log.debug("executing \(fullCommand)")
             
             // async stdout appending
-            queue.command.async(group: asyncGroup) {
+            queue.command.async(qos: .utility) {
                 while true {
                     let availableData = pipe.stdout.fileHandleForReading.availableData
                     if availableData.isEmpty { break }
-                    data.stdout.append(availableData)
+                    
+                    data.stdout.append(availableData) // no idea how to fix
                     
                     if let inputIf = inputIf, inputIf.stream == .stdout {
                         if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
@@ -123,11 +124,12 @@ class Legendary {
             }
             
             // async stderr appending
-            queue.command.async(group: asyncGroup) {
+            queue.command.async(qos: .utility) {
                 while true {
                     let availableData = pipe.stderr.fileHandleForReading.availableData
                     if availableData.isEmpty { break }
-                    data.stderr.append(availableData)
+                    
+                    data.stderr.append(availableData) // no idea how to fix
                     
                     if let inputIf = inputIf, inputIf.stream == .stderr {
                         if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
@@ -141,6 +143,7 @@ class Legendary {
                     if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
                         asyncOutput.stderr(outputString)
                     }
+                    
                 }
             }
             
@@ -157,7 +160,7 @@ class Legendary {
                 try task.run()
                 
                 task.waitUntilExit()
-                asyncGroup.wait()
+                // asyncGroup.wait()
             } catch {
                 log.fault("Legendary fault: \(error.localizedDescription)")
                 return (Data(), Data())
@@ -214,7 +217,7 @@ class Legendary {
         basePath: String? = nil,
         gameFolder: String? = nil,
         platform: GamePlatform? = nil
-    ) {
+    ) async {
         // basePath, gameFolder, platform not implemented
         
         dataLockInUse = (true, .installing)
@@ -281,7 +284,7 @@ class Legendary {
                             Installing.shared.reset()
                         }
                     }
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.sync { // no async!!
                         Installing.shared._status = status
                         dump(Installing.shared._status)
                     }
@@ -289,16 +292,14 @@ class Legendary {
             }
         )
         
-        DispatchQueue.global(qos: .userInitiated).async {
-            _ = command(
-                args: ["--yes", "install", game.appName],
-                useCache: false,
-                input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
-                inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
-                // halt: cancelSemaphore,
-                asyncOutput: asyncOutput
-            )
-        }
+        _ = await command(
+            args: ["--yes", "install", game.appName],
+            useCache: false,
+            input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
+            inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
+            // halt: cancelSemaphore,
+            asyncOutput: asyncOutput
+        )
     }
     
     /// Wipe legendary's commands cache. This will slow most legendary commands until cache is rebuilt.
@@ -363,11 +364,11 @@ class Legendary {
     /// Retrieve installed games from epic games services.
     ///
     /// - Returns: A tuple containing arrays of app names and app titles.
-    static func getInstallable() throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
+    static func getInstallable() async throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
         guard signedIn() else { throw NotSignedInError() }
         
         var json: JSON = JSON()
-        do { json = try JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) }
+        do { json = try await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) }
         catch { log.error("Unable to get installable games from legendary: \(error.localizedDescription)") }
         return extractAppNamesAndTitles(from: json)
     }
@@ -377,13 +378,13 @@ class Legendary {
     /// - Parameter imageType: The type of images to retrieve (normal or tall).
     /// - Throws: A NotSignedInError.
     /// - Returns: A dictionary with app names as keys and image URLs as values.
-    static func getImages(imageType: ImageType) throws -> [String: String] {
+    static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
         var urls: [String: String] = Dictionary()
         
         do {
-            let json = try JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
+            let json = try await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout)
             
             for game in json {
                 let appName = String(describing: game.1["app_name"])

@@ -102,11 +102,11 @@ extension LibraryView {
                             
                             isProgressViewSheetPresented = true
                             
-                            DispatchQueue.global(qos: .userInteractive).async { [self] in
+                            Task(priority: .userInitiated) {
                                 var command: (stdout: Data, stderr: Data)? = nil
                                 
                                 if let selectedGame = selectedGame {
-                                    command = Legendary.command(
+                                    command = await Legendary.command(
                                         args: [
                                             "import",
                                             checkIntegrity ? nil : "--disable-check",
@@ -180,13 +180,11 @@ extension LibraryView {
             .padding()
             
             .onAppear {
-                DispatchQueue.global(qos: .userInteractive).async {
-                    let games = (try? Legendary.getInstallable()) ?? Array()
-                    DispatchQueue.main.async { [self] in
-                        if !games.isEmpty { selectedGame = games.first! }
-                        installableGames = games
-                        isProgressViewSheetPresented = false
-                    }
+                Task(priority: .userInitiated) {
+                    let games = (try? await Legendary.getInstallable()) ?? Array()
+                    if !games.isEmpty { selectedGame = games.first! }
+                    installableGames = games
+                    isProgressViewSheetPresented = false
                 }
             }
             

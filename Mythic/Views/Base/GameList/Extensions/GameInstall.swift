@@ -56,9 +56,7 @@ extension GameListView {
                     }
                     
                     Button(action: {
-                        DispatchQueue.global(qos: .userInitiated).async {
-                            Legendary.installGame(game: game, optionalPacks: Array(optionalPacks.values))
-                        }
+                        Task(priority: .userInitiated) { await Legendary.installGame(game: game, optionalPacks: Array(optionalPacks.values)) }
                         isGameListRefreshCalled = true
                         isPresented = false
                     }) {

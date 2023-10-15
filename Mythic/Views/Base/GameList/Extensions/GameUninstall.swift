@@ -82,8 +82,8 @@ extension GameListView {
                         primaryButton: .destructive(Text("Uninstall")) {
                             isProgressViewSheetPresented = true
                             
-                            DispatchQueue.global(qos: .userInteractive).async { [self] in
-                                let commandOutput = Legendary.command(
+                            Task {
+                                let commandOutput = await Legendary.command(
                                     args: [
                                         "-y",
                                         "uninstall",
