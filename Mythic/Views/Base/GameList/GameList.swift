@@ -97,7 +97,7 @@ struct GameListView: View {
         )
         
         ScrollView(.horizontal) {
-            LazyHStack {
+            LazyHGrid(rows: [GridItem(.adaptive(minimum: 325))]) {
                 if dataFetched {
                     ForEach(installableGames, id: \.self) { game in
                         ZStack {
