@@ -1,29 +1,60 @@
-# Mythic
-![mythic_bk][mythic_background]
+<h1 align="center">
+  <br>
+  <a href="https://mythic.blackxfiied.xyz"><img src="" width="150"></a>
+  <br>
+  Mythic
+  <br>
+</h1>
 
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+<h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
 
-An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.
+<p align="center">
+  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-white.svg"
+         alt="License Shield">
+  </a>
+  <a href="https://discord.gg/dvznkkDVUY">
+    <img src="https://img.shields.io/discord/1154998702650425397?logo=discord"
+         alt="Discord Shield">
+  </a>
+</p>
 
-The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using wine-crossover and d3dmetal (game porting toolkit).
+The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using D3DMetal (apple's windows game porting toolkit) (This is currently implemented through [Whisky](https://github.com/Whisky-App/Whisky)).
 
-Mythic has been designed to look as 'macOS' as possible, to ensure coherence with the rest of the macOS environment
+Mythic has been designed to look as 'macOS' as possible, to ensure coherence with the rest of the macOS environment.
+
+## Features
+
+* Coming soon!
+
+## Download
+
+Coming soon!
+
+## Dependencies
+
+Mythic uses these Swift dependencies:
+
+- [Sparkle](https://github.com/sparkle-project/Sparkle)
+- [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image)
+- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
+
+## License
+
+This work is licensed under a
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+<p align="center">
+  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+    <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png"
+         alt="License"
+         style="width: 20%; height: 20%;">
+  </a>
+</p>
 
 <sub>
-yeah, this is the new repo. blame git for undoing all of my changes (screw you git rebase!!!)
-that's also why there's such little commits on such an elaborate project, i got my changes back but lost the .git folder
+yeah, this is the new repo. blame git.
 (i amended initial instead of committing anyway)
 
 everything so far has been made by @blackxfiied
 </sub>
-
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License][cc-by-nc-sa].
-
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-image]][cc-by-nc-sa]
-
-
-[mythic_background]: https://github.com/blackxfiied/Mythic/assets/41133734/70ce7391-86e5-4c89-9915-b4dde6f29126
-[cc-by-nc-sa]: http://creativecommons.org/licenses/by-nc-sa/4.0/
-[cc-by-nc-sa-image]: https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png
-[cc-by-nc-sa-shield]: https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg
