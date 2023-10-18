@@ -1,9 +1,12 @@
 <h1 align="center">
   <br>
-  <a href="https://mythic.blackxfiied.xyz"><img src="" width="150"></a>
-  <br>
+  <a href="https://mythic.blackxfiied.xyz">
+    <img src="https://github.com/blackxfiied/Mythic/assets/41133734/8ab23dae-c840-4945-b115-cb421a6b50ae" 
+      alt="Mythic Logo"
+      style="width: 20%; height: 20%;">
+  </a>
+  
   Mythic
-  <br>
 </h1>
 
 <h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
