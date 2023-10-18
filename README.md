@@ -2,16 +2,11 @@
   <br>
   <a href="https://mythic.blackxfiied.xyz">
     <img src="https://github.com/blackxfiied/Mythic/assets/41133734/8ab23dae-c840-4945-b115-cb421a6b50ae" 
-      alt="Mythic Logo"
       style="width: 20%; height: 20%;">
   </a>
   
   Mythic
-</h1>
-
-<h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
-
-<p align="center">
+  <p align="center">
   <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
     <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-white.svg"
          alt="License Shield">
@@ -21,6 +16,9 @@
          alt="Discord Shield">
   </a>
 </p>
+</h1>
+
+<h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
 
 The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using D3DMetal (apple's windows game porting toolkit) (This is currently implemented through [Whisky](https://github.com/Whisky-App/Whisky)).
 
