@@ -28,7 +28,7 @@ struct MainView: View {
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
     
-    @State private var appVersion: String = ""
+    @State private var appVersion: String = String()
     @State private var buildNumber: Int = 0
     
     @State private var gameThumbnails: [String: String] = Dictionary()

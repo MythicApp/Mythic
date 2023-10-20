@@ -33,13 +33,15 @@ class Legendary {
     ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
     ///   ~~- halt: Optional semaphore to halt script execution.~~
     ///   - asyncOutput: Optional closure that gets output appended to it immediately.
+    ///   - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
     /// - Returns: A tuple containing stdout and stderr data.
     static func command(
         args: [String],
         useCache: Bool,
         input: String? = nil,
         inputIf: InputIfCondition? = nil,
-        asyncOutput: OutputHandler? = nil
+        asyncOutput: OutputHandler? = nil,
+        additionalEnvironmentVariables: [String: String]? = nil
     ) async -> (stdout: Data, stderr: Data) {
         
         /// Contains instances of the async DispatchQueues
@@ -67,7 +69,7 @@ class Legendary {
         @Sendable
         func run() async -> (stdout: Data, stderr: Data) {
             let task = Process()
-            task.executableURL = URL(fileURLWithPath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
+            task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
             
             /// Contains instances of Pipe, for stderr and stdout.
             struct PipeContainer {
@@ -91,12 +93,16 @@ class Legendary {
             task.standardOutput = pipe.stdout
             task.standardInput = input?.isEmpty != true ? nil : pipe.stdin
             
-            task.currentDirectoryURL = URL(fileURLWithPath: Bundle.main.bundlePath)
+            task.currentDirectoryURL = URL(filePath: Bundle.main.bundlePath)
             task.arguments = args
-            task.environment = ["XDG_CONFIG_HOME": Bundle.appHome]
-            log.debug("Legendary configuration environment: \(task.environment?["XDG_CONFIG_HOME"] ?? "nil")")
             
-            let fullCommand = "\(task.executableURL?.path ?? "") \(task.arguments?.joined(separator: " ") ?? "")"
+            var environment = ["XDG_CONFIG_HOME": Bundle.appHome]
+            if let additionalEnvironmentVariables = additionalEnvironmentVariables {
+                environment.merge(additionalEnvironmentVariables) { (_, new) in new }
+            }
+            task.environment = environment
+            
+            let fullCommand = "\((environment.map { "\($0.key)=\($0.value)" }).joined(separator: " ")) \(task.executableURL?.path ?? String()) \(task.arguments?.joined(separator: " ") ?? String())"
             
             log.debug("executing \(fullCommand)")
             
@@ -211,14 +217,14 @@ class Legendary {
     ///   - game: The game's app\_name
     ///   - optionalPacks: Optional packs to install along with the base game
     /// - Throws: A NotSignedInError.
-    static func installGame(
+    static func install(
         game: Game,
         optionalPacks: [String]? = nil,
-        basePath: String? = nil,
-        gameFolder: String? = nil,
+        basePath: URL? = nil,
+        gameFolder: URL? = nil,
         platform: GamePlatform? = nil
     ) async {
-        // basePath, gameFolder, platform not implemented
+        //gameFolder not implemented
         
         dataLockInUse = (true, .installing)
         Installing.value = true
@@ -233,7 +239,7 @@ class Legendary {
             static let disk = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
         }
         
-        var status = Installing.shared._status
+        var status = Installing.shared._status 
         
         let asyncOutput = OutputHandler(
             stdout: { _ in },
@@ -244,7 +250,7 @@ class Legendary {
                             
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
-                            if let match = Regex.progress?.firstMatch(in: line, options: [], range: range) {
+                            if let match = Regex.progress?.firstMatch(in: line, range: range) {
                                 status.progress = (
                                     percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
@@ -252,22 +258,22 @@ class Legendary {
                                     runtime: line[Range(match.range(at: 4), in: line)!],
                                     eta: line[Range(match.range(at: 5), in: line)!]
                                 )
-                            } else if let match = Regex.download?.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.download?.firstMatch(in: line, range: range) {
                                 status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
                                     downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.cache?.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
                                 status.cache = (
                                     usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
                                     activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
                                 status.downloadAdvanced = ( // MiB/s
                                     raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
-                            } else if let match = Regex.disk?.firstMatch(in: line, options: [], range: range) {
+                            } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
                                 status.disk = ( // MiB/s
                                     write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
@@ -292,12 +298,30 @@ class Legendary {
             }
         )
         
+        var argBuilder = ["--yes", "install", game.appName]
+        
+        if let platform = platform {
+            switch platform {
+            case .macOS:
+                argBuilder += ["--platform", "Mac"]
+            case .windows:
+                argBuilder += ["--platform", "windows"]
+            }
+        }
+            
+        if let basePath = basePath, FileManager.default.fileExists(atPath: basePath.path) {
+            argBuilder += ["--base-path", basePath.absoluteString]
+        }
+        
+        if let gameFolder = gameFolder, FileManager.default.fileExists(atPath: gameFolder.path) {
+            argBuilder += ["--game-folder", gameFolder.absoluteString]
+        }
+        
         _ = await command(
-            args: ["--yes", "install", game.appName],
+            args: argBuilder,
             useCache: false,
             input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
             inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
-            // halt: cancelSemaphore,
             asyncOutput: asyncOutput
         )
     }
@@ -313,7 +337,7 @@ class Legendary {
     ///
     /// - Returns: The user's account information as a `String`.
     static func whoAmI() -> String {
-        let userJSONFileURL = URL(fileURLWithPath: "\(configLocation)/user.json")
+        let userJSONFileURL = URL(filePath: "\(configLocation)/user.json")
         
         guard 
             FileManager.default.fileExists(atPath: userJSONFileURL.path),
@@ -336,13 +360,13 @@ class Legendary {
     static func getInstalledGames() throws -> [Game] {
         guard signedIn() else { throw NotSignedInError() }
         
-        let installedJSONFileURL: URL = URL(fileURLWithPath: "\(configLocation)/installed.json")
+        let installedJSONFileURL: URL = URL(filePath: "\(configLocation)/installed.json")
         
         guard let installedData = try? Data(contentsOf: installedJSONFileURL) else {
             throw DoesNotExistError.file(file: installedJSONFileURL)
         }
         
-        guard let installedGames = try JSONSerialization.jsonObject(with: installedData, options: []) as? [String: [String: Any]] else { // stupid json dependency is stupid
+        guard let installedGames = try JSONSerialization.jsonObject(with: installedData) as? [String: [String: Any]] else { // stupid json dependency is stupid
             return Array()
         }
         
@@ -383,7 +407,7 @@ class Legendary {
         }
         
         if let metadataFileName = metadataDirectoryContents.first(where: { $0.hasSuffix(".json") && String($0.dropLast(5)) == game.appName }),
-           let data = try? Data(contentsOf: URL(fileURLWithPath: "\(metadataDirectoryString)/\(metadataFileName)")),
+           let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
            let json = try? JSON(data: data) {
             return json
         }
@@ -409,7 +433,7 @@ class Legendary {
         for game in json {
             let appName = String(describing: game.1["app_name"])
             if let keyImages = game.1["metadata"]["keyImages"].array {
-                var image: [JSON] = []
+                var image: [JSON] = Array()
                 
                 switch imageType {
                 case .normal:
@@ -434,7 +458,7 @@ class Legendary {
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
         guard signedIn() else { throw NotSignedInError() }
         
-        let aliasesJSONFileURL: URL = URL(fileURLWithPath: "\(configLocation)/aliases.json")
+        let aliasesJSONFileURL: URL = URL(filePath: "\(configLocation)/aliases.json")
         
         guard let aliasesData = try? Data(contentsOf: aliasesJSONFileURL) else {
             throw DoesNotExistError.file(file: aliasesJSONFileURL)
@@ -471,7 +495,7 @@ class Legendary {
     /// - Parameter appTitle: The title of the game.
     /// - Returns: The app name of the game.
     static func getAppNameFromTitle(appTitle: String) -> String {
-        guard signedIn() else { return "" }
+        guard signedIn() else { return String() }
         
         var json: JSON = JSON()
         do { json = try JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout) }
@@ -484,7 +508,7 @@ class Legendary {
     /// - Parameter appName: The app name of the game.
     /// - Returns: The title of the game.
     static func getTitleFromAppName(appName: String) -> String { // can use jsons inside legendary/metadata
-        guard signedIn() else { return "" }
+        guard signedIn() else { return String() }
         let json = try? JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
         return json!["game"]["title"].stringValue
     }

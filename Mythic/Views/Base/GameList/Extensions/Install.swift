@@ -14,7 +14,7 @@ extension GameListView {
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
         
-        @State private var isToggledDictionary: [String: Bool] = [:]
+        @State private var isToggledDictionary: [String: Bool] = Dictionary()
         
         var body: some View {
             VStack {
@@ -57,7 +57,7 @@ extension GameListView {
                     
                     Button(action: {
                         Task(priority: .userInitiated) {
-                            await Legendary.installGame(game: game, optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys))
+                            await Legendary.install(game: game, optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys))
                             isToggledDictionary.removeAll()
                             optionalPacks.removeAll()
                         }

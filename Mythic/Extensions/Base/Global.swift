@@ -27,7 +27,7 @@ class EventManager {
 
     func subscribe(_ event: String, _ callback: @escaping (Any) -> Void) {
         if events[event] == nil {
-            events[event] = []
+            events[event] = Array()
         }
         events[event]?.append(callback)
     }

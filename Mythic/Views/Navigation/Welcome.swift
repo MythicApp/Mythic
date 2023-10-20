@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @State private var appVersion = ""
-    @State private var buildNumber = ""
+    @State private var appVersion: String = String()
+    @State private var buildNumber: String = String()
     
     var body: some View {
         VStack {

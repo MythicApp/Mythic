@@ -25,7 +25,7 @@ extension LibraryView {
         @State private var checkIntegrity: Bool = true
         
         
-        @State private var gamePath: String = ""
+        @State private var gamePath: String = String()
         
         var body: some View {
             VStack {
@@ -35,7 +35,7 @@ extension LibraryView {
                 
                 Divider()
                 
-                Picker("", selection: $selectedGameType) {
+                Picker(String(), selection: $selectedGameType) {
                     ForEach(["Epic", "Local"], id: \.self) {
                         Text($0)
                     }

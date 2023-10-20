@@ -27,7 +27,7 @@ extension GameListView {
         @State private var isAlertPresented = false
         @State private var activeAlert: ActiveAlert = .confirmation
         
-        @State private var errorContent: Substring = ""
+        @State private var errorContent: Substring = Substring()
         
         var body: some View {
             VStack {
