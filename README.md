@@ -20,7 +20,7 @@
 
 <h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
 
-The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using D3DMetal (apple's windows game porting toolkit) (This is currently implemented through [Whisky](https://github.com/Whisky-App/Whisky)).
+The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using D3DMetal (apple's windows game porting toolkit).
 
 Mythic has been designed to look as 'macOS' as possible, to ensure coherence with the rest of the macOS environment.
 
@@ -39,6 +39,7 @@ Mythic uses these Swift dependencies:
 - [Sparkle](https://github.com/sparkle-project/Sparkle)
 - [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image)
 - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
+- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation)
 
 ## License
 
