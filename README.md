@@ -45,7 +45,7 @@ Mythic uses these Swift dependencies:
 This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
-If this license scares you, **don't worry!** you are allowed to make contributions on github without marking your changes.
+If this license scares you, **don't worry!**
 If you have any questions about the license, or contributing, feel free to contact me on discord. I know the license might seem strict but it's mainly to stop people from using it to generate revenue (although extremely unlikely).
 
 <p align="center">
