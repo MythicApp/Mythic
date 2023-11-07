@@ -11,7 +11,7 @@ import SwiftyJSON
 extension GameListView {
     struct SettingsView: View {
         @Binding var isPresented: Bool
-        @Binding var game: Legendary.Game
+        public var game: Legendary.Game
         
         var body: some View { // TO IMPLEMENT LATER: IMPLEMENT REPAIR BUTTON IF IF NEEDS VERIFICATION IS TRUE IN INSTALLED.JSON
             VStack {

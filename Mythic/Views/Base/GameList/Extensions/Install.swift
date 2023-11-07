@@ -10,9 +10,14 @@ import SwiftUI
 extension GameListView {
     struct InstallView: View {
         @Binding var isPresented: Bool
-        @Binding var game: Legendary.Game
+        public var game: Legendary.Game
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
+        
+        @Binding var isAlertPresented: Bool
+        @Binding var activeAlert: GameListView.ActiveAlert
+        @Binding var installationErrorMessage: String
+        @Binding var failedGame: Legendary.Game?
         
         @State private var isToggledDictionary: [String: Bool] = Dictionary()
         
@@ -55,16 +60,29 @@ extension GameListView {
                         isPresented = false
                     }
                     
-                    Button(action: {
+                    Button("Install") {
                         Task(priority: .userInitiated) {
-                            await Legendary.install(game: game, optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys))
-                            isToggledDictionary.removeAll()
-                            optionalPacks.removeAll()
+                            isPresented = false
+                            do {
+                                try await Legendary.install(
+                                    game: game,
+                                    optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys)
+                                )
+                                
+                                isGameListRefreshCalled = true
+                            }
+                            catch {
+                                switch error {
+                                case let error as Legendary.InstallationError:
+                                    failedGame = game
+                                    installationErrorMessage = error.message
+                                    activeAlert = .installError
+                                    isAlertPresented = true
+                                default:
+                                    print()
+                                }
+                            }
                         }
-                        isGameListRefreshCalled = true
-                        isPresented = false
-                    }) {
-                        Text("Install")
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -77,6 +95,10 @@ extension GameListView {
                         isToggledDictionary[tag] = false
                     }
                 }
+            }
+            .onDisappear {
+                isToggledDictionary.removeAll()
+                optionalPacks.removeAll()
             }
         }
     }

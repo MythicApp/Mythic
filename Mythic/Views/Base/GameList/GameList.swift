@@ -21,6 +21,14 @@ struct GameListView: View {
     @State private var isUninstallViewPresented: Bool = false
     @State private var isPlayDefaultViewPresented: Bool = false
     
+    enum ActiveAlert { case installError, uninstallError }
+    @State private var activeAlert: ActiveAlert = .installError
+    @State private var isAlertPresented: Bool = false
+    
+    @State private var installationErrorMessage: String = String()
+    @State private var uninstallationErrorMessage: Substring = Substring()
+    @State private var failedGame: Legendary.Game? = nil
+    
     @State private var isProgressViewSheetPresented: Bool = true
     @State private var currentGame: Legendary.Game = .init(appName: String(), title: String())
     
@@ -274,33 +282,56 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: $currentGame
+                game: currentGame
             )
         }
         
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: $currentGame,
+                game: currentGame,
                 optionalPacks: $optionalPacks,
-                isGameListRefreshCalled: $isRefreshCalled
+                isGameListRefreshCalled: $isRefreshCalled,
+                isAlertPresented: $isAlertPresented,
+                activeAlert: $activeAlert,
+                installationErrorMessage: $installationErrorMessage,
+                failedGame: $failedGame
             )
         }
         
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: $currentGame,
-                isGameListRefreshCalled: $isRefreshCalled
+                game: currentGame,
+                isGameListRefreshCalled: $isRefreshCalled,
+                activeAlert: $activeAlert,
+                isAlertPresented: $isAlertPresented,
+                failedGame: $failedGame,
+                uninstallationErrorMessage: $uninstallationErrorMessage
             )
         }
         
         .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
                 isPresented: $isPlayDefaultViewPresented,
-                game: $currentGame,
+                game: currentGame,
                 isGameListRefreshCalled: $isRefreshCalled
             )
+        }
+        
+        .alert(isPresented: $isAlertPresented) {
+            switch activeAlert {
+            case .installError:
+                Alert(
+                    title: Text("Error installing \(failedGame?.title ?? "game")."),
+                    message: Text(installationErrorMessage)
+                )
+            case .uninstallError:
+                Alert(
+                    title: Text("Error uninstalling \(failedGame?.title ?? "game")."),
+                    message: Text(uninstallationErrorMessage)
+                )
+            }
         }
     }
 }

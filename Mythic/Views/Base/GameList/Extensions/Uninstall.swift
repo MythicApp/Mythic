@@ -11,23 +11,20 @@ import OSLog
 extension GameListView {
     struct UninstallView: View {
         @Binding var isPresented: Bool
-        @Binding var game: Legendary.Game
+        public var game: Legendary.Game
         @Binding var isGameListRefreshCalled: Bool
         
-        enum ActiveAlert {
-            case error
-            case confirmation
-        }
+        @Binding var activeAlert: GameListView.ActiveAlert
+        @Binding var isAlertPresented: Bool
+        @Binding var failedGame: Legendary.Game?
+        
+        @Binding var uninstallationErrorMessage: Substring
         
         @State private var keepFiles: Bool = false
         @State private var skipUninstaller: Bool = false
         
         @State private var isProgressViewSheetPresented = false
-        
-        @State private var isAlertPresented = false
-        @State private var activeAlert: ActiveAlert = .confirmation
-        
-        @State private var errorContent: Substring = Substring()
+        @State private var isConfirmationPresented = false
         
         var body: some View {
             VStack {
@@ -58,8 +55,7 @@ extension GameListView {
                     Spacer()
                     
                     Button("Uninstall") {
-                        activeAlert = .confirmation
-                        isAlertPresented = true
+                        isConfirmationPresented = true
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -70,62 +66,56 @@ extension GameListView {
                 ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
             }
             
-            .alert(isPresented: $isAlertPresented) {
-                switch activeAlert {
-                case .error:
-                    Alert(
-                        title: Text("Error uninstalling game"),
-                        message: Text(errorContent)
-                    )
-                case .confirmation:
-                    Alert(
-                        title: Text("Are you sure you want to uninstall \(game.title)?"),
-                        primaryButton: .destructive(Text("Uninstall")) {
-                            isProgressViewSheetPresented = true
+            .alert(isPresented: $isConfirmationPresented) {
+                Alert(
+                    title: Text("Are you sure you want to uninstall \(game.title)?"),
+                    primaryButton: .destructive(Text("Uninstall")) {
+                        isPresented = false
+                        isProgressViewSheetPresented = true
+                        
+                        Task {
+                            let commandOutput = await Legendary.command(
+                                args: [
+                                    "-y", "uninstall",
+                                    keepFiles ? "--keep-files" : nil,
+                                    skipUninstaller ? "--skip-uninstaller" : nil,
+                                    game.appName
+                                ]
+                                    .compactMap { $0 },
+                                useCache: false
+                            )
                             
-                            Task {
-                                let commandOutput = await Legendary.command(
-                                    args: [
-                                        "-y",
-                                        "uninstall",
-                                        keepFiles ? "--keep-files" : nil,
-                                        skipUninstaller ? "--skip-uninstaller" : nil,
-                                        game.appName
-                                    ]
-                                        .compactMap { $0 },
-                                    useCache: false
-                                )
-                                
-                                if let commandStderrString = String(data: commandOutput.stderr, encoding: .utf8) {
-                                    if !commandStderrString.isEmpty {
-                                        if commandStderrString.contains("INFO: Game has been uninstalled.") {
+                            if let commandStderrString = String(data: commandOutput.stderr, encoding: .utf8) {
+                                for line in commandStderrString.components(separatedBy: "\n") {
+                                    if line.contains("ERROR:") {
+                                        if let range = line.range(of: "ERROR: ") {
+                                            let substring = line[range.upperBound...]
                                             isProgressViewSheetPresented = false
-                                            isPresented = false
-                                            isGameListRefreshCalled = true
-                                        }
-                                    }
-                                    
-                                    for line in commandStderrString.components(separatedBy: "\n") {
-                                        if line.contains("ERROR:") {
-                                            if let range = line.range(of: "ERROR: ") {
-                                                let substring = line[range.upperBound...]
-                                                errorContent = substring
-                                                isProgressViewSheetPresented = false
-                                                activeAlert = .error
-                                                isAlertPresented = true
-                                                Logger.app.error("Uninstall error: \(errorContent)")
-                                                break // first error only
-                                            }
+                                            uninstallationErrorMessage = substring
+                                            failedGame = game
+                                            activeAlert = .uninstallError
+                                            isAlertPresented = true
+                                            Logger.app.error("Uninstall error: \(substring)")
+                                            return // first error only
                                         }
                                     }
                                 }
+                                
+                                if !commandStderrString.isEmpty {
+                                    if commandStderrString.contains("INFO: Game has been uninstalled.") {
+                                        isProgressViewSheetPresented = false
+                                        isPresented = false
+                                    }
+                                }
                             }
-                        },
-                        secondaryButton: .cancel(Text("Cancel")) {
-                            isAlertPresented = false
                         }
-                    )
-                }
+                        
+                        isGameListRefreshCalled = true
+                    },
+                    secondaryButton: .cancel(Text("Cancel")) {
+                        isAlertPresented = false
+                    }
+                )
             }
         }
     }

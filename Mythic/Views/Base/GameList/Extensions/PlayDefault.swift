@@ -10,7 +10,7 @@ import SwiftUI
 extension GameListView {
     struct PlayDefaultView: View {
         @Binding var isPresented: Bool
-        @Binding var game: Legendary.Game
+        public var game: Legendary.Game
         @Binding var isGameListRefreshCalled: Bool
         
         var body: some View {
