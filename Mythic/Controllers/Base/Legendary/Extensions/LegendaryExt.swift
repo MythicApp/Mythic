@@ -61,6 +61,7 @@ extension Legendary {
         case windows
     }
     
+    @available(*, message: "will be deprecated soon")
     /// Error when legendary is signed out on a command that enforces signin.
     struct NotSignedInError: Error { } // Plans to deprecate this eventually.
     

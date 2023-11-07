@@ -13,14 +13,13 @@ import OSLog
 extension Logger {
     private static var subsystem = Bundle.main.bundleIdentifier!
     
-    /// For custom logs that aren't worthy of being defined in an extension.
     static func custom(category: String) -> Logger {
         return Logger(subsystem: subsystem, category: category)
     }
     
-    /// For app-related logs.
-    static let app = Logger(subsystem: subsystem, category: "app")
+    static let network = custom(category: "network")
     
-    /// For file-related logs.
-    static let file = Logger(subsystem: subsystem, category: "file")
+    static let app = custom(category: "app")
+    
+    static let file = custom(category: "file")
 }

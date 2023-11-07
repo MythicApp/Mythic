@@ -46,7 +46,7 @@ func isAppInstalled(bundleIdentifier: String) -> Bool {
     process.launchPath = "/usr/bin/env"
     process.arguments = [
         "bash", "-c",
-        "mdfind \"kMDItemCFBundleIdentifier=='\(bundleIdentifier)'\""
+        "mdfind \"kMDItemCFBundleIdentifier == '\(bundleIdentifier)'\""
     ]
     
     let stdout = Pipe()

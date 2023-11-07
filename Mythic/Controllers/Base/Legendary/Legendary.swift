@@ -13,7 +13,7 @@ import OSLog
 class Legendary {
     
     /// The file location for legendary's configuration files.
-    static let configLocation = "\(Bundle.appHome)/legendary"
+    static let configLocation = "\(Bundle.appHome!.path)/legendary"
     
     /// Logger instance for logging
     private static let log = Logger(
@@ -93,16 +93,15 @@ class Legendary {
             task.standardOutput = pipe.stdout
             task.standardInput = input?.isEmpty != true ? nil : pipe.stdin
             
-            task.currentDirectoryURL = URL(filePath: Bundle.main.bundlePath)
             task.arguments = args
             
-            var environment = ["XDG_CONFIG_HOME": Bundle.appHome]
+            var environment = ["XDG_CONFIG_HOME": Bundle.appHome!.path]
             if let additionalEnvironmentVariables = additionalEnvironmentVariables {
                 environment.merge(additionalEnvironmentVariables) { (_, new) in new }
             }
             task.environment = environment
             
-            let fullCommand = "\((environment.map { "\($0.key)=\($0.value)" }).joined(separator: " ")) \(task.executableURL?.path ?? String()) \(task.arguments?.joined(separator: " ") ?? String())"
+            let fullCommand = "\((environment.map { "\($0.key)=\($0.value)" }).joined(separator: " ")) \(task.executableURL!.relativePath) \(task.arguments!.joined(separator: " "))"
             
             log.debug("executing \(fullCommand)")
             
@@ -323,6 +322,78 @@ class Legendary {
             input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
             inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
             asyncOutput: asyncOutput
+        )
+    }
+    
+    static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
+        var environmentVariables: [String: String] = Dictionary()
+        environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
+        
+        if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
+            if let dxvk = dxvkConfig["dxvk"] as? Bool {
+                print("dxvk: \(dxvk)")
+            }
+            if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
+                print("dxvkAsync: \(dxvkAsync)")
+            }
+            if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
+                if let fps = dxvkHud["fps"] as? [String: Any] {
+                    print("fps: \(fps)")
+                }
+            }
+        }
+        
+        if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
+            if let major = fileVersion["major"] as? Int {
+                print("fileVersion major: \(major)")
+            }
+            if let minor = fileVersion["minor"] as? Int {
+                print("fileVersion minor: \(minor)")
+            }
+        }
+        
+        if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
+            if let metalHud = metalConfig["metalHud"] as? Bool,
+               metalHud == true {
+                environmentVariables["MTL_HUD_ENABLED"] = "1"
+            }
+            if let metalTrace = metalConfig["metalTrace"] as? Bool {
+                
+            }
+        }
+        
+        if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
+            if let msync = wineConfig["msync"] as? Bool,
+               msync == true {
+                environmentVariables["WINEMSYNC"] = "1"
+            }
+            
+            if let windowsVersion = wineConfig["windowsVersion"] as? String {
+                print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
+            }
+            
+            if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
+                if let major = wineVersion["major"] as? Int {
+                    print("wineVersion major: \(major)")
+                }
+                if let minor = wineVersion["minor"] as? Int {
+                    print("wineVersion minor: \(minor)")
+                }
+                if let patch = wineVersion["patch"] as? Int {
+                    print("wineVersion patch: \(patch)")
+                }
+            }
+        }
+        
+        _ = await command(args: [
+            "launch",
+            game.appName,
+            "--wine",
+            "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
+        ]
+            .compactMap { $0 },
+                          useCache: false,
+                          additionalEnvironmentVariables: environmentVariables
         )
     }
     
