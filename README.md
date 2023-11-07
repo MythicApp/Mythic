@@ -47,6 +47,9 @@ This work is licensed under a
 [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 If this license scares you, **don't worry!**
+
+I give you explicit permission to ignore the BY component of this license if creating a pull request or fork of this repository (because github monitors changes automatically)
+
 If you have any questions about the license, or contributing, feel free to contact me on discord. I know the license might seem strict but it's mainly to stop people from using it to generate revenue (although extremely unlikely).
 
 <p align="center">
