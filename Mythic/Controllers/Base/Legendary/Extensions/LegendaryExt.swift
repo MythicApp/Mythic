@@ -15,7 +15,6 @@ extension Legendary {
         var title: String
     }
 
-    
     /// Enumeration to specify image types.
     enum ImageType {
         case normal
@@ -61,9 +60,18 @@ extension Legendary {
         case windows
     }
     
-    @available(*, message: "will be deprecated soon")
+    @available(*, message: "This error will be deprecated soon, in favour of UserValidationError")
     /// Error when legendary is signed out on a command that enforces signin.
-    struct NotSignedInError: Error { } // Plans to deprecate this eventually.
+    struct NotSignedInError: Error { }
+    
+    /// Installation error with message, see ``Legendary.install()``
+    struct InstallationError: Error {
+        let message: String
+        
+        init(_ message: String) {
+            self.message = message
+        }
+    }
     
     /// Error for image errors
     enum ImageError: Error {

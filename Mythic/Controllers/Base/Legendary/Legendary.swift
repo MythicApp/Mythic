@@ -9,6 +9,9 @@ import Foundation
 import SwiftyJSON
 import OSLog
 
+private let files = FileManager.default
+private let defaults = UserDefaults.standard
+
 /// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 class Legendary {
     
@@ -25,13 +28,13 @@ class Legendary {
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = Dictionary()
     
     /// Run a legendary command, using the included legendary binary.
+    /// No, I do not want to make command() something global. Id rather keep wine and legendary separate
     ///
     /// - Parameters:
     ///   - args: The command arguments.
     ///   - useCache: Flag indicating whether to use cached output.
     ///   - input: Optional input string for the command.
     ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
-    ///   ~~- halt: Optional semaphore to halt script execution.~~
     ///   - asyncOutput: Optional closure that gets output appended to it immediately.
     ///   - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
     /// - Returns: A tuple containing stdout and stderr data.
@@ -62,7 +65,7 @@ class Legendary {
             }
             return cachedOutput
         } else {
-            log.debug("\(useCache ? "Cache not found, creating" : "Cache disabled for this task.")")
+            log.debug("\( useCache ? "Cache not found, creating" : "Cache disabled for this task." )")
             return await run()
         }
         
@@ -91,7 +94,7 @@ class Legendary {
             
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
-            task.standardInput = input?.isEmpty != true ? nil : pipe.stdin
+            task.standardInput = input != nil ? pipe.stdin : nil
             
             task.arguments = args
             
@@ -101,7 +104,7 @@ class Legendary {
             }
             task.environment = environment
             
-            let fullCommand = "\((environment.map { "\($0.key)=\($0.value)" }).joined(separator: " ")) \(task.executableURL!.relativePath) \(task.arguments!.joined(separator: " "))"
+            let fullCommand = "\((environment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath) \(task.arguments!.joined(separator: " "))"
             
             log.debug("executing \(fullCommand)")
             
@@ -137,10 +140,12 @@ class Legendary {
                     data.stderr.append(availableData) // no idea how to fix
                     
                     if let inputIf = inputIf, inputIf.stream == .stderr {
-                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
-                            if let inputData = input?.data(using: .utf8) {
-                                pipe.stdin.fileHandleForWriting.write(inputData)
-                                pipe.stdin.fileHandleForWriting.closeFile()
+                        if let availableData = String(data: availableData, encoding: .utf8) {
+                            if availableData.contains(inputIf.string) {
+                                if let inputData = input?.data(using: .utf8) {
+                                    pipe.stdin.fileHandleForWriting.write(inputData)
+                                    pipe.stdin.fileHandleForWriting.closeFile()
+                                }
                             }
                         }
                     }
@@ -210,20 +215,32 @@ class Legendary {
         }
     }
     
+    var basePath: URL? {
+        get {
+            if let value = defaults.object(forKey: "gamesPath") as? URL {
+                return value
+            } else { return Bundle.appGames }
+        }
+        set { defaults.set(newValue, forKey: "gamesPath") }
+    }
+    
     /// Installs games using legendary, what else?
     ///
     /// - Parameters:
     ///   - game: The game's app\_name
-    ///   - optionalPacks: Optional packs to install along with the base game
-    /// - Throws: A NotSignedInError.
+    ///   - optionalPacks: Optional packs to install along with the base game.
+    ///   - basePath: A custom path for the game to install to
+    /// - Throws: A ``NotSignedInError`` or an ``InstallationError``.
     static func install(
         game: Game,
         optionalPacks: [String]? = nil,
-        basePath: URL? = nil,
+        basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // userdefaults implementation
         gameFolder: URL? = nil,
         platform: GamePlatform? = nil
-    ) async {
-        //gameFolder not implemented
+    ) async throws {
+        // MAKE SURE TO EXECUTE INSTALLING.SHARED.RESET() WHENEVER THROWING //
+        guard signedIn() else { throw NotSignedInError() }
+        // if dataLockInUse.value == true { throw NSError() } // not implemented error, for data lock
         
         dataLockInUse = (true, .installing)
         Installing.value = true
@@ -239,9 +256,16 @@ class Legendary {
         }
         
         var status = Installing.shared._status 
+        var errorThrownExternally: Error? = nil
         
         let asyncOutput = OutputHandler(
-            stdout: { _ in },
+            stdout: { output in
+                output.enumerateLines { line, _ in
+                    if line.contains("Failure:") {
+                        errorThrownExternally = InstallationError(String(line.trimmingPrefix(" ! Failure: ")))
+                    }
+                }
+            },
             stderr: { output in
                 output.enumerateLines { line, _ in
                     if line.contains("[DLManager] INFO:") {
@@ -289,7 +313,7 @@ class Legendary {
                             Installing.shared.reset()
                         }
                     }
-                    DispatchQueue.main.sync { // no async!!
+                    DispatchQueue.main.sync {
                         Installing.shared._status = status
                         dump(Installing.shared._status)
                     }
@@ -297,7 +321,7 @@ class Legendary {
             }
         )
         
-        var argBuilder = ["--yes", "install", game.appName]
+        var argBuilder = ["-y", "install", game.appName]
         
         if let platform = platform {
             switch platform {
@@ -308,23 +332,33 @@ class Legendary {
             }
         }
             
-        if let basePath = basePath, FileManager.default.fileExists(atPath: basePath.path) {
+        if let basePath = basePath, files.fileExists(atPath: basePath.path) {
             argBuilder += ["--base-path", basePath.absoluteString]
         }
         
-        if let gameFolder = gameFolder, FileManager.default.fileExists(atPath: gameFolder.path) {
+        if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
             argBuilder += ["--game-folder", gameFolder.absoluteString]
         }
+        
+        let input = "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n"
         
         _ = await command(
             args: argBuilder,
             useCache: false,
-            input: "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n",
-            inputIf: .init(stream: .stderr, string: "Additional packs [Enter to confirm]:"),
+            input: input,
+            inputIf: .init(
+                stream: .stdout,
+                string: "Additional packs [Enter to confirm]:"
+            ),
             asyncOutput: asyncOutput
         )
+        
+        // This exists because throwing an error inside of an OutputHandler isn't possible directly.
+        // Throwing an error directly to install() is preferable.
+        if let error = errorThrownExternally { Installing.shared.reset(); throw error }
     }
     
+    /*
     static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
         var environmentVariables: [String: String] = Dictionary()
         environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
@@ -358,7 +392,7 @@ class Legendary {
                 environmentVariables["MTL_HUD_ENABLED"] = "1"
             }
             if let metalTrace = metalConfig["metalTrace"] as? Bool {
-                
+                print("metal trace: \(metalTrace)")
             }
         }
         
@@ -396,11 +430,12 @@ class Legendary {
                           additionalEnvironmentVariables: environmentVariables
         )
     }
+     */
     
     /// Wipe legendary's command cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
         commandCache = Dictionary()
-        log.notice("Cleared legendary command cache successfully.")
+        log.notice("Cleared legendary command cache.")
     }
     
     /// Queries the user that is currently signed into epic games.
@@ -411,7 +446,7 @@ class Legendary {
         let userJSONFileURL = URL(filePath: "\(configLocation)/user.json")
         
         guard 
-            FileManager.default.fileExists(atPath: userJSONFileURL.path),
+            files.fileExists(atPath: userJSONFileURL.path),
             let json = try? JSON(data: Data(contentsOf: userJSONFileURL))
         else { return "Nobody" }
         
@@ -473,7 +508,7 @@ class Legendary {
     static func getGameMetadata(game: Game) async throws -> JSON? {
         let metadataDirectoryString = "\(configLocation)/metadata"
         
-        guard let metadataDirectoryContents = try? FileManager.default.contentsOfDirectory(atPath: metadataDirectoryString) else {
+        guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
             throw DoesNotExistError.directory(directory: metadataDirectoryString)
         }
         
@@ -548,42 +583,37 @@ class Legendary {
         return (nil, of: nil)
     }
     
-    /*
-    static func needsVerification(game: Game) {
-        
+    @available(*, unavailable, message: "Not implemented")
+    static func needsVerification(game: Game) -> Bool {
+        return false // not implemented
     }
     
+    @available(*, unavailable, message: "Not implemented")
     static func canLaunch(game: Game) -> Bool {
-        
+        return false // not implemented
     }
-     */
-    
-    /*
-     !!! DEPRECATIÓN !!! (im not frenh)
     
     /// Retrieve the game's app\_name from the game's title.
     ///
     /// - Parameter appTitle: The title of the game.
     /// - Returns: The app name of the game.
-    static func getAppNameFromTitle(appTitle: String) -> String {
+    @available(*, deprecated, message: "Made redundant by Legendary.Game")
+    static func getAppNameFromTitle(appTitle: String) async -> String? {
         guard signedIn() else { return String() }
-        
-        var json: JSON = JSON()
-        do { json = try JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout) }
-        catch {  }
-        return json["game"]["app_name"].stringValue
+        let json = try? await JSON(data: command(args: ["info", appTitle, "--json"], useCache: true).stdout)
+        return json?["game"]["app_name"].stringValue
     }
     
     /// Retrieve the game's title from the game's app\_name.
     ///
     /// - Parameter appName: The app name of the game.
     /// - Returns: The title of the game.
-    static func getTitleFromAppName(appName: String) -> String { // can use jsons inside legendary/metadata
+    @available(*, deprecated, message: "Made redundant by Legendary.Game")
+    static func getTitleFromAppName(appName: String) async -> String? { // can use jsons inside legendary/metadata
         guard signedIn() else { return String() }
-        let json = try? JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
-        return json!["game"]["title"].stringValue
+        let json = try? await JSON(data: command(args: ["info", appName, "--json"], useCache: true).stdout)
+        return json?["game"]["title"].stringValue
     }
-     */
     
     /* // // // // // // // // // // // // // // // //
      ___   _   _  _  ___ ___ ___   _______  _  _ ___
