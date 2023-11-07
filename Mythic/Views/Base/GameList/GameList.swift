@@ -218,7 +218,7 @@ struct GameListView: View {
                                                     .foregroundStyle(.gray)
                                                     .padding()
                                             }
-                                            .shadow(color: .accent, radius: 10, x: 1, y: 1)
+                                            .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
                                         }
