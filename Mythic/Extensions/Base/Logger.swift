@@ -18,8 +18,6 @@ extension Logger {
     }
     
     static let network = custom(category: "network")
-    
     static let app = custom(category: "app")
-    
     static let file = custom(category: "file")
 }

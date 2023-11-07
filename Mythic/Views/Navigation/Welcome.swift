@@ -8,27 +8,8 @@
 import SwiftUI
 
 struct WelcomeView: View {
-    @State private var appVersion: String = String()
-    @State private var buildNumber: String = String()
-    
     var body: some View {
-        VStack {
-            Text("App version: \(appVersion)")
-            Text("Build number: \(buildNumber)")
-        }
-        .onAppear {
-            if let appVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-                self.appVersion = appVersion
-            } else {
-                self.appVersion = "Version not available"
-            }
-            
-            if let buildNumber = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-                self.buildNumber = buildNumber
-            } else {
-                self.buildNumber = "Build number not available"
-            }
-        }
+        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 

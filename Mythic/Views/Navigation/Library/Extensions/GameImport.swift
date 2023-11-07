@@ -194,7 +194,7 @@ extension LibraryView {
             
             .alert(isPresented: $isErrorPresented) {
                 Alert(
-                    title: Text("Error importing game."),
+                    title: Text("Error importing game"),
                     message: Text(errorContent)
                 )
             }
