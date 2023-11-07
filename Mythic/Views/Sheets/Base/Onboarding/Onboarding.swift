@@ -12,8 +12,10 @@ struct OnboardingView: View {
     @Binding var isPresented: Bool
     @Binding var isFirstLaunch: Bool
     
+    @Binding var isInstallViewPresented: Bool
+    
     @State private var isAuthViewPresented = false
-    @State private var authSuccessful: Bool = false
+    @State private var authSuccessful: Bool? = nil
     
     var body: some View {
         VStack {
@@ -22,17 +24,30 @@ struct OnboardingView: View {
             
             Divider()
             
-            Text("Welcome to Mythic. To get started, sign in to epic games.")
+            Text("Welcome to Mythic. To get started, sign in to epic games."
+                + "\nOtherwise, just click next."
+            )
+                .multilineTextAlignment(.center)
             
             HStack {
-                Button("Close") {
-                    isPresented = false
-                    isFirstLaunch = false
+                if Libraries.isInstalled() == true {
+                    Button("Close") {
+                        isPresented = false
+                        isFirstLaunch = false
+                    }
                 }
                 
-                Button("Sign In") {
-                    NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
-                    isAuthViewPresented = true
+                if Legendary.signedIn() == false && authSuccessful != true {
+                    Button("Sign In") {
+                        NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                        isAuthViewPresented = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                
+                Button("Next") {
+                    isPresented = false
+                    isInstallViewPresented = true
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -43,12 +58,14 @@ struct OnboardingView: View {
             AuthView(isPresented: $isAuthViewPresented, authSuccessful: $authSuccessful)
         }
         
+        /*
         .onReceive(Just(authSuccessful)) { success in
             if success {
                 isPresented = false
                 isFirstLaunch = false
             }
         }
+         */
     }
 }
 

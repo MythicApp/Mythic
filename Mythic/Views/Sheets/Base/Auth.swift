@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AuthView: View {
     @Binding var isPresented: Bool
-    @Binding var authSuccessful: Bool
+    @Binding var authSuccessful: Bool?
     
     @State private var code: String = String()
     @State private var isLoggingIn: Bool = false
@@ -42,7 +42,7 @@ struct AuthView: View {
         }
     }
     
-    init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool> = .constant(false)) {
+    init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool?> = .constant(false)) {
         _isPresented = isPresented
         _authSuccessful = authSuccessful
     }
