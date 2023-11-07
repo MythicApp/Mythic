@@ -71,3 +71,13 @@ struct WebView: NSViewRepresentable {
         
     }
 }
+
+#Preview {
+    WebView(
+        loadingError: .constant(false),
+        canGoBack: .constant(false),
+        canGoForward: .constant(false),
+        isLoading: .constant(false),
+        urlString: "https://example.com"
+    )
+}
