@@ -10,12 +10,18 @@ import Sparkle
 
 @main
 struct MythicApp: App {
-    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
+    @State private var isFirstLaunch: Bool
     
     private let updaterController: SPUStandardUpdaterController
     @State private var isOnboardingPresented = false
     
+    @State private var isInstallViewPresented: Bool = false
+    
     init() {
+        self._isFirstLaunch = State(
+            initialValue: UserDefaults.standard.bool(forKey: "isFirstLaunch")
+        )
+        
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: nil,
@@ -28,14 +34,27 @@ struct MythicApp: App {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
                 .onAppear {
-                    if isFirstLaunch && !Legendary.signedIn() {
+                    if isFirstLaunch || !Legendary.signedIn() {
                         isOnboardingPresented = true
+                    } else if !Libraries.isInstalled() {
+                        isInstallViewPresented = true
                     }
                 }
+            
                 .sheet(isPresented: $isOnboardingPresented) {
-                    OnboardingView(isPresented: $isOnboardingPresented, isFirstLaunch: $isFirstLaunch)
+                    ///*
+                    OnboardingView(
+                        isPresented: $isOnboardingPresented,
+                        isFirstLaunch: $isFirstLaunch,
+                        isInstallViewPresented: $isInstallViewPresented
+                    )
                         .fixedSize()
-                        .interactiveDismissDisabled()
+                     //*/
+                    // OnboardingView.InstallView()
+                }
+            
+                .sheet(isPresented: $isInstallViewPresented) {
+                    OnboardingView.InstallView(isPresented: $isInstallViewPresented)
                 }
         }
         
@@ -43,6 +62,10 @@ struct MythicApp: App {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates…", action: updaterController.updater.checkForUpdates)
                     .disabled(!updaterController.updater.canCheckForUpdates)
+                
+                Button("Restart Onboarding…") {
+                    isOnboardingPresented = true
+                }
             }
         }
         
