@@ -89,3 +89,7 @@ struct StoreView: View {
         }
     }
 }
+
+#Preview {
+    StoreView()
+}

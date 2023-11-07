@@ -72,5 +72,8 @@ struct AuthView: View {
 }
 
 #Preview {
-    HomeView()
+    AuthView(
+        isPresented: .constant(true),
+        authSuccessful: .constant(nil)
+    )
 }

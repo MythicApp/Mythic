@@ -143,5 +143,5 @@ extension OnboardingView {
 }
 
 #Preview {
-    OnboardingView.InstallView(isPresented: Binding(get: { return true }, set: {_ in })) // just for viewing purposes
+    OnboardingView.InstallView(isPresented: .constant(true))
 }

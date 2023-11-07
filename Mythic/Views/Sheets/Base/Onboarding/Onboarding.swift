@@ -70,5 +70,9 @@ struct OnboardingView: View {
 }
 
 #Preview {
-    MainView()
+    OnboardingView(
+        isPresented: .constant(true),
+        isFirstLaunch: .constant(true),
+        isInstallViewPresented: .constant(false)
+    )
 }

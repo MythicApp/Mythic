@@ -27,3 +27,14 @@ extension GameListView {
         }
     }
 }
+
+#Preview {
+    GameListView.PlayDefaultView(
+        isPresented: .constant(true),
+        game: .init(
+            appName: "[appName]",
+            title: "[title]"
+        ),
+        isGameListRefreshCalled: .constant(false)
+    )
+}

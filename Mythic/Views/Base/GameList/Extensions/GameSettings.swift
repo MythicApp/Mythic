@@ -35,5 +35,11 @@ extension GameListView {
 }
 
 #Preview {
-    LibraryView()
+    GameListView.SettingsView(
+        isPresented: .constant(true),
+        game: .init(
+            appName: "[appName]",
+            title: "[title]"
+        )
+    )
 }

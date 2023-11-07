@@ -46,5 +46,5 @@ struct LibraryView: View {
 }
 
 #Preview {
-    LibraryView()
+    GameListView(isRefreshCalled: .constant(false))
 }

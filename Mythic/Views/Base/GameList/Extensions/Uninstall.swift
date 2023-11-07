@@ -96,6 +96,7 @@ extension GameListView {
                                             activeAlert = .uninstallError
                                             isAlertPresented = true
                                             Logger.app.error("Uninstall error: \(substring)")
+                                            isGameListRefreshCalled = true
                                             return // first error only
                                         }
                                     }
@@ -108,9 +109,9 @@ extension GameListView {
                                     }
                                 }
                             }
+                            
+                            isGameListRefreshCalled = true
                         }
-                        
-                        isGameListRefreshCalled = true
                     },
                     secondaryButton: .cancel(Text("Cancel")) {
                         isAlertPresented = false
@@ -123,5 +124,19 @@ extension GameListView {
 
 
 #Preview {
-    LibraryView()
+    GameListView.UninstallView(
+        isPresented: .constant(true),
+        game: .init(
+            appName: "[appName]",
+            title: "[title]"
+        ),
+        isGameListRefreshCalled: .constant(false),
+        activeAlert: .constant(.installError), isAlertPresented: .constant(false),
+        failedGame: .constant(
+            .init(
+                appName: "[appName]",
+                title: "[title]"
+            )
+        ), uninstallationErrorMessage: .constant(Substring())
+    )
 }

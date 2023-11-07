@@ -204,5 +204,8 @@ extension LibraryView {
 
 
 #Preview {
-    LibraryView()
+    LibraryView.GameImportView(
+        isPresented: .constant(true),
+        isGameListRefreshCalled: .constant(false)
+    )
 }
