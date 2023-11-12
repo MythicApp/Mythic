@@ -18,7 +18,7 @@ extension LibraryView {
         
         @State private var installableGames: [Legendary.Game] = Array()
         
-        @State private var selectedGame: Legendary.Game? = nil // is initialised onappear
+        @State private var selectedGame: Legendary.Game = .init(appName: String(), title: String())
         @State private var selectedGameType: String = "Epic"
         @State private var selectedPlatform: String = "macOS"
         @State private var withDLCs: Bool = true
@@ -44,9 +44,12 @@ extension LibraryView {
                 
                 if selectedGameType == "Epic" {
                     Picker("Select a game:", selection: $selectedGame) {
-                        ForEach(installableGames, id: \.self) {
-                            Text($0.title)
+                        ForEach(installableGames, id: \.self) { game in
+                            Text(game.title)
                         }
+                    }
+                    .onHover {_ in
+                        print("\(selectedGame)")
                     }
                     
                     HStack {
@@ -95,7 +98,7 @@ extension LibraryView {
                         
                         Button("Done", role: .none) {
                             var realSelectedPlatform = selectedPlatform
-                            
+                            print("seel \(selectedGame)")
                             if selectedPlatform == "macOS" {
                                 realSelectedPlatform = "Mac"
                             }
@@ -105,7 +108,7 @@ extension LibraryView {
                             Task(priority: .userInitiated) {
                                 var command: (stdout: Data, stderr: Data)? = nil
                                 
-                                if let selectedGame = selectedGame {
+                                if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
                                     command = await Legendary.command(
                                         args: [
                                             "import",
@@ -122,7 +125,7 @@ extension LibraryView {
                                 if command != nil {
                                     if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
                                         if !commandStderrString.isEmpty {
-                                            if let selectedGame = selectedGame {
+                                            if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
                                                 if commandStderrString.contains("INFO: Game \"\(selectedGame.title)\" has been imported.") {
                                                     isPresented = false
                                                     isGameListRefreshCalled = true
@@ -181,9 +184,9 @@ extension LibraryView {
             
             .onAppear {
                 Task(priority: .userInitiated) {
-                    let games = (try? await Legendary.getInstallable()) ?? Array()
-                    if !games.isEmpty { selectedGame = games.first! }
-                    installableGames = games
+                    let games = try? await Legendary.getInstallable()
+                    if let games = games, !games.isEmpty { selectedGame = games.first! }
+                    installableGames = games ?? installableGames
                     isProgressViewSheetPresented = false
                 }
             }
