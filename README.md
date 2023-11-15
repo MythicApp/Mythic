@@ -6,16 +6,9 @@
   </a>
   
   Mythic
-  <p align="center">
-  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-white.svg"
-         alt="License Shield">
-  </a>
-  <a href="https://discord.gg/dvznkkDVUY">
-    <img src="https://img.shields.io/discord/1154998702650425397?logo=discord"
-         alt="Discord Shield">
-  </a>
-</p>
+  
+  ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic)
+  [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.gg/dvznkkDVUY)
 </h1>
 
 <h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
@@ -43,26 +36,4 @@ Mythic uses these Swift dependencies:
 
 ## License
 
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-If this license scares you, **don't worry!**
-
-I give you explicit permission to ignore the BY component of this license if creating a pull request or fork of this repository (because github monitors changes automatically)
-
-If you have any questions about the license, or contributing, feel free to contact me on discord. I know the license might seem strict but it's mainly to stop people from using it to generate revenue (although extremely unlikely).
-
-<p align="center">
-  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-    <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png"
-         alt="License"
-         style="width: 20%; height: 20%;">
-  </a>
-</p>
-
-<sub>
-yeah, this is the new repo. blame git.
-(i amended initial instead of committing anyway)
-
-everything so far has been made by @blackxfiied
-</sub>
+This work is licensed under the GNU General Public License v3.
