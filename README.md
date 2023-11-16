@@ -6,6 +6,7 @@
   </a>
   
   Mythic
+
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
 </h1>
