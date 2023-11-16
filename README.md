@@ -6,8 +6,8 @@
   </a>
   
   Mythic
-  
-  ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic)
+  <!--- Use my repo's license (same as yours) until your repo becomes public --->
+  ![GitHub License](https://img.shields.io/github/license/zprolegend007/brunch-mac) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.gg/dvznkkDVUY)
 </h1>
 
