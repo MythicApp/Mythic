@@ -11,7 +11,7 @@
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
 </h1>
 
-<h4 align="center">An open-source Epic Games Launcher alternative and normal game launcher for macOS written in Swift.</h4>
+<h4><b>An open-source Epic Games Launcher alternative and normal game launcher for macOS written in Swift.</b></h4>
 
 We started this project to create a GUI frontend for [Legendary](https://github.com/derrod/legendary) and to play Windows games using Apple's game porting toolkit. Our has been designed to look as native as possible, to ensure coherence with the rest of the macOS environment.
 
