@@ -30,9 +30,10 @@ Mythic uses the following Swift dependencies:
 - [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift 
 
 ## License
-This work is licensed under the GNU General Public License v3.
+Copyright © 2023 blackxfiied, Jecta
 
-### What does this mean for me?
-The GNU GPL v3.0 is an open-source license that ensures anyone can view, modify, and distribute this software. If you use or modify this project, any derivative work must also be licensed under GPL v3.0, ensuring continued openness and collaboration.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-For more details, refer to our LICENSE file.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
