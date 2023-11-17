@@ -34,9 +34,9 @@ extension OnboardingView {
                 Divider()
                 
                 Text("In order to launch windows games, Mythic must download"
-                     + "\na special translator to convert windows code to macOS."
+                     + "\na special translator by Apple to convert Windows code to macOS."
                      + "\n"
-                     + "\nIt's around 1.8GB in size, but the download is around 600MB."
+                     + "\nIt's around 1.8GB in size, but the download is around 600MB due to compression."
                 )
                 .multilineTextAlignment(.center)
                 

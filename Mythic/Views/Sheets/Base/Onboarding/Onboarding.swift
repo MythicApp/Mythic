@@ -19,13 +19,13 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-            Text("Hey there!")
+            Text("Welcome to Mythic!")
                 .font(.title)
             
             Divider()
             
-            Text("Welcome to Mythic. To get started, sign in to epic games."
-                + "\nOtherwise, just click next."
+            Text("Let's get started by signing in to Epic Games."
+                + "\nIf you do not want to use Epic Games, just click next."
             )
                 .multilineTextAlignment(.center)
             
