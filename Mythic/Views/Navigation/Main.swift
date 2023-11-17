@@ -46,6 +46,7 @@ struct MainView: View {
             List {
                 NavigationLink(destination: WelcomeView()) {
                     Label("Welcome", systemImage: "star")
+                        .foregroundStyle(.primary)
                 }
                 
                 Spacer()
@@ -57,13 +58,16 @@ struct MainView: View {
                 Group{
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
+                            .foregroundStyle(.primary)
                     }
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
+                            .foregroundStyle(.primary)
                             
                     }
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
+                            .foregroundStyle(.primary)
                     }
                 }
                 
@@ -76,12 +80,15 @@ struct MainView: View {
                 Group {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
+                            .foregroundStyle(.primary)
                     }
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")
+                            .foregroundStyle(.primary)
                     }
                     NavigationLink(destination: SupportView()) {
                         Label("Support", systemImage: "questionmark.bubble")
+                            .foregroundStyle(.primary)
                     }
                 }
                 
@@ -149,7 +156,7 @@ struct MainView: View {
                 
                 HStack {
                     Image(systemName: "person")
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(.primary)
                     Text(epicUserAsync)
                         .onAppear {
                             updateLegendaryAccountState()
@@ -168,7 +175,7 @@ struct MainView: View {
                         }) {
                             HStack {
                                 Image(systemName: "person.slash")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.primary)
                                 Text("Sign Out")
                             }
                         }
@@ -179,7 +186,7 @@ struct MainView: View {
                         }) {
                             HStack {
                                 Image(systemName: "person")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.primary)
                                 Text("Sign In")
                             }
                         }
