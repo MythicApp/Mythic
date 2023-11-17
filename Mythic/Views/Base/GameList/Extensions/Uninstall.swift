@@ -131,12 +131,14 @@ extension GameListView {
             title: "[title]"
         ),
         isGameListRefreshCalled: .constant(false),
-        activeAlert: .constant(.installError), isAlertPresented: .constant(false),
+        activeAlert: .constant(.installError),
+        isAlertPresented: .constant(false),
         failedGame: .constant(
             .init(
                 appName: "[appName]",
                 title: "[title]"
             )
-        ), uninstallationErrorMessage: .constant(Substring())
+        ),
+        uninstallationErrorMessage: .constant(Substring())
     )
 }

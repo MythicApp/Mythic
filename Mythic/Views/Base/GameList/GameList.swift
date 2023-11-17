@@ -111,8 +111,8 @@ struct GameListView: View {
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.background)
-                                .frame(width: 220, height: 325)
-                                .offset(y: -10)
+                                .frame(width: 220, height: 335)
+                                .offset(y: -5)
                             
                             VStack {
                                 CachedAsyncImage(url: URL(string: gameThumbnails[game.appName]!), urlCache: imageCache) { phase in
@@ -153,7 +153,7 @@ struct GameListView: View {
                                                 .foregroundStyle(.gray)
                                                 .padding()
                                         }
-                                        .shadow(color: .gray, radius: 10, x: 1, y: 1)
+                                        // .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                         
@@ -167,7 +167,7 @@ struct GameListView: View {
                                                 .foregroundStyle(.green)
                                                 .padding()
                                         }
-                                        .shadow(color: .green, radius: 10, x: 1, y: 1)
+                                        // .shadow(color: .green, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                         
@@ -179,7 +179,7 @@ struct GameListView: View {
                                                 .foregroundStyle(.red)
                                                 .padding()
                                         }
-                                        .shadow(color: .red, radius: 10, x: 1, y: 1)
+                                        // .shadow(color: .red, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                     } else {
@@ -199,7 +199,7 @@ struct GameListView: View {
                                                     .foregroundStyle(.red)
                                                     .padding()
                                             }
-                                            .shadow(color: .red, radius: 10, x: 1, y: 1)
+                                            // .shadow(color: .red, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
                                             

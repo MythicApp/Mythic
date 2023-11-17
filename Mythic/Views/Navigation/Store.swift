@@ -73,6 +73,13 @@ struct StoreView: View {
                     Image(systemName: "arrow.clockwise.circle.fill")
                 }
             }
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    NSWorkspace.shared.open(URL(string: urlString)!)
+                }) {
+                    Image(systemName: "globe.europe.africa.fill")
+                }
+            }
         }
         
         .alert(isPresented: $loadingError) {
