@@ -14,13 +14,6 @@ import OSLog
 import Combine
 import CachedAsyncImage
 
-/*
- colors:
- gradient 1: #4800FF
- midpoint: #7318E0
- gradient 2: #9D30C1
- */
-
 struct MainView: View {
     
     @State private var isAuthViewPresented: Bool = false
@@ -53,6 +46,7 @@ struct MainView: View {
             List {
                 NavigationLink(destination: WelcomeView()) {
                     Label("Welcome", systemImage: "star")
+                        .foregroundStyle(.white)
                 }
                 
                 Spacer()
@@ -64,12 +58,15 @@ struct MainView: View {
                 Group{
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
+                            .foregroundStyle(.white)
                     }
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
+                            .foregroundStyle(.white)
                     }
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
+                            .foregroundStyle(.white)
                     }
                 }
                 
@@ -82,12 +79,15 @@ struct MainView: View {
                 Group {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
+                            .foregroundStyle(.white)
                     }
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")
+                            .foregroundStyle(.white)
                     }
                     NavigationLink(destination: SupportView()) {
                         Label("Support", systemImage: "questionmark.bubble")
+                            .foregroundStyle(.white)
                     }
                 }
                 
@@ -117,7 +117,7 @@ struct MainView: View {
                         
                         HStack {
                             Button(action: {
-                                
+                                // Not implemented
                             }) {
                                 if installing._status.progress?.percentage == nil {
                                     ProgressView()
@@ -155,7 +155,7 @@ struct MainView: View {
                 
                 HStack {
                     Image(systemName: "person")
-                        .foregroundStyle(.accent)
+                        .foregroundStyle(.white)
                     Text(epicUserAsync)
                         .onAppear {
                             updateLegendaryAccountState()
@@ -174,7 +174,7 @@ struct MainView: View {
                         }) {
                             HStack {
                                 Image(systemName: "person.slash")
-                                    .foregroundStyle(.accent)
+                                    .foregroundStyle(.white)
                                 Text("Sign Out")
                             }
                         }
