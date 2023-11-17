@@ -105,7 +105,7 @@ struct GameListView: View {
         )
         
         ScrollView(.horizontal) {
-            LazyHGrid(rows: [GridItem(.adaptive(minimum: 325))]) {
+            LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))]) {
                 if dataFetched {
                     ForEach(installableGames, id: \.self) { game in
                         ZStack {
@@ -126,7 +126,7 @@ struct GameListView: View {
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .blur(radius: 30)
+                                                .blur(radius: 20)
                                             
                                             image
                                                 .resizable()
