@@ -54,7 +54,7 @@ class Libraries {
         let installProgress = Progress(totalUnitCount: 100)
         
         let download = session.downloadTask(
-            with: URL(string: "https://nightly.link/blackxfiied/MythicGPTKBuilder/workflows/build-gptk/main/Libraries.zip")!
+            with: URL(string: "https://nightly.link/MythicApp/GPTKBuilder/workflows/build-gptk/main/Libraries.zip")!
         ) { (file, response, error) in
             guard error == nil else {
                 Logger.network.error("Error with GPTK download: \(error)")
