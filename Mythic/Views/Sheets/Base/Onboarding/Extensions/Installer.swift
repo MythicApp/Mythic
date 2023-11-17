@@ -16,8 +16,10 @@ extension OnboardingView {
         
         @State private var isDownloadSheetPresented: Bool = false
         @State private var isInstallSheetPresented: Bool = false
-        @State private var isCloseConfirmationPresented: Bool = false
-        @State private var isInstallErrorAlertPresented: Bool = false
+        
+        enum ActiveAlert { case closeConfirmation, installError }
+        @State private var activeAlert: ActiveAlert = .closeConfirmation
+        @State private var isAlertPresented: Bool = false
         
         @State private var downloadProgressEstimate: Double = 0
         @State private var installProgress: Double = 0
@@ -42,7 +44,8 @@ extension OnboardingView {
                     Button("Close") {
                         if /* alreadyShownCloseConfirmation == false || */ Libraries.isInstalled() == false {
                             // alreadyShownCloseConfirmation = true
-                            isCloseConfirmationPresented = true
+                            activeAlert = .closeConfirmation
+                            isAlertPresented = true
                         } else {
                             isPresented = false
                         }
@@ -126,17 +129,18 @@ extension OnboardingView {
                 }
             }
             
-            .alert(isPresented: $isCloseConfirmationPresented) {
-                Alert(
-                    title: Text("Are you sure you want to cancel GPTK installation?"),
-                    message: Text("Doing this means you can only play macOS-supported games, imported games, or use Whisky."),
-                    primaryButton: .destructive(Text("OK")) { isPresented = false },
-                    secondaryButton: .cancel(Text("Cancel")) { isCloseConfirmationPresented = false }
-                )
-            }
-            
-            .alert(isPresented: $isInstallErrorAlertPresented) {
-                Alert(title: Text("Error installing GPTK."))
+            .alert(isPresented: $isAlertPresented) {
+                switch activeAlert {
+                case .closeConfirmation:
+                    Alert(
+                        title: Text("Are you sure you want to cancel GPTK installation?"),
+                        message: Text("Doing this means you can only play macOS-supported games, imported games, or use Whisky."),
+                        primaryButton: .destructive(Text("OK")) { isPresented = false },
+                        secondaryButton: .cancel(Text("Cancel")) { isAlertPresented = false }
+                    )
+                case .installError:
+                    Alert(title: Text("Error installing GPTK."))
+                }
             }
         }
     }
