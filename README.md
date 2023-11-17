@@ -1,68 +1,39 @@
 <h1 align="center">
   <br>
-  <a href="https://mythic.blackxfiied.xyz">
-    <img src="https://github.com/blackxfiied/Mythic/assets/41133734/8ab23dae-c840-4945-b115-cb421a6b50ae" 
+  <a href="https://getmythic.app">
+    <img src="https://github.com/MythicApp/Branding-Assets/blob/main/Macos_Icons/icon_256x256.png" 
       style="width: 20%; height: 20%;">
   </a>
   
   Mythic
-  <p align="center">
-  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-    <img src="https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-white.svg"
-         alt="License Shield">
-  </a>
-  <a href="https://discord.gg/dvznkkDVUY">
-    <img src="https://img.shields.io/discord/1154998702650425397?logo=discord"
-         alt="Discord Shield">
-  </a>
-</p>
+
+  ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
+  [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
 </h1>
 
-<h4 align="center">An open-source macOS Epic Games Launcher (and normal game launcher) alternative coded in SwiftUI.</h4>
+<h4><b>An open-source Epic Games Launcher alternative and normal game launcher for macOS written in Swift.</b></h4>
 
-The reason for this project's existence is to create a UI frontend for [Legendary](https://github.com/derrod/legendary) and to play windows games using D3DMetal (apple's windows game porting toolkit).
-
-Mythic has been designed to look as 'macOS' as possible, to ensure coherence with the rest of the macOS environment.
+We started this project to create a GUI frontend for [Legendary](https://github.com/derrod/legendary) and to play Windows games using Apple's game porting toolkit. Our has been designed to look as native as possible, to ensure coherence with the rest of the macOS environment.
 
 ## Features
-
 * Coming soon!
 
 ## Download
-
-Coming soon!
+We are actively working on getting our product out, for now sign up for the [waitlist](https://getmythic.app).
 
 ## Dependencies
+Mythic uses the following Swift dependencies:
 
-Mythic uses these Swift dependencies:
-
-- [Sparkle](https://github.com/sparkle-project/Sparkle)
-- [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image)
-- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
-- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation)
+- [Sparkle](https://github.com/sparkle-project/Sparkle) - A software update framework for macOS.
+- [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image) - CachedAsyncImage is the simplest way to add cache to your AsyncImage.
+- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) - The better way to deal with JSON data in Swift. 
+- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift 
 
 ## License
+Copyright © 2023 blackxfiied, Jecta
 
-This work is licensed under a
-[Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-If this license scares you, **don't worry!**
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
-I give you explicit permission to ignore the BY component of this license if creating a pull request or fork of this repository (because github monitors changes automatically)
-
-If you have any questions about the license, or contributing, feel free to contact me on discord. I know the license might seem strict but it's mainly to stop people from using it to generate revenue (although extremely unlikely).
-
-<p align="center">
-  <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-    <img src="https://mirrors.creativecommons.org/presskit/buttons/88x31/png/by-nc-sa.png"
-         alt="License"
-         style="width: 20%; height: 20%;">
-  </a>
-</p>
-
-<sub>
-yeah, this is the new repo. blame git.
-(i amended initial instead of committing anyway)
-
-everything so far has been made by @blackxfiied
-</sub>
+You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
