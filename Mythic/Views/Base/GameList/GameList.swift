@@ -105,9 +105,9 @@ struct GameListView: View {
         )
         
         ScrollView(.horizontal) {
-            LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))]) {
+            LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) {
                 if dataFetched {
-                    ForEach(installableGames, id: \.self) { game in
+                    ForEach(Array(installableGames.enumerated()), id: \.element.self) { index, game in
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.background)
@@ -227,6 +227,7 @@ struct GameListView: View {
                             }
                             .padding()
                         }
+                        .padding(.leading, index == 0 ? 15 : 0)
                     }
                 }
             }
