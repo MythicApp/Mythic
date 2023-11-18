@@ -48,26 +48,41 @@ struct AuthView: View {
     }
     
     var body: some View {
-        HStack {
-            TextField("Enter auth key...", text: $code)
-                .onSubmit {
-                    Task { await submitToLegendary() }
-                }
-                .frame(width: 350, alignment: .center)
+        VStack {
+            Text("Sign in to Epic Games")
+                .font(.title)
             
-            Button(action:{
-                Task { await submitToLegendary() }
-            }) {
-                Text("Submit")
+            Divider()
+            
+            HStack {
+                Text("A link should've opened in your browser. If not, click")
+                Link("here.", destination: URL(string: "https://legendary.gl/epiclogin")!)
             }
-            .buttonStyle(.borderedProminent)
+            
+            Text("\nEnter the 'authorisationCode' from the JSON response in the field below.")
+            
+            HStack {
+                TextField("Enter authorisation key...", text: $code)
+                    .onSubmit {
+                        Task { await submitToLegendary() }
+                    }
+                    .frame(width: 350, alignment: .center)
+                
+                Button(action:{
+                    Task { await submitToLegendary() }
+                }) {
+                    Text("Submit")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .fixedSize()
+            
+            .sheet(isPresented: $progressViewPresented) {
+                ProgressViewSheetWithError(isError: $isError, isPresented: $isProgressViewSheetPresented)
+            }
         }
         .padding()
         .fixedSize()
-        
-        .sheet(isPresented: $progressViewPresented) {
-            ProgressViewSheetWithError(isError: $isError, isPresented: $isProgressViewSheetPresented)
-        }
     }
 }
 
