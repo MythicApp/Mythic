@@ -7,6 +7,7 @@
 
 import Foundation
 import ZIPFoundation
+import SemanticVersion
 import CryptoKit
 import OSLog
 
@@ -38,7 +39,6 @@ class Libraries {
         return checksum
     }
     
-    @available(*, message: "known issue: lock is blocking thread, leads to hangs. workaround: DQ async")
     /// Install Libraries, as MythicGPTKBuilder artifacts
     static func install(
         downloadProgressHandler: @escaping (Double) -> Void,
@@ -47,9 +47,7 @@ class Libraries {
     ) { // storage check later?
         guard !isInstalled() else { completion(.failure(AlreadyInstalledError())); return }
         
-        dataLock.lock()
-        
-        let session = URLSession(configuration: URLSessionConfiguration.default)
+        let session = URLSession(configuration: .default)
         
         let installProgress = Progress(totalUnitCount: 100)
         
@@ -58,12 +56,14 @@ class Libraries {
         ) { (file, response, error) in
             guard error == nil else {
                 Logger.network.error("Error with GPTK download: \(error)")
-                 completion(.failure(error!))
+                completion(.failure(error!))
                 return
             }
             
+            dataLock.lock()
+            defer { dataLock.unlock() }
+            
             if let file = file {
-                defer { dataLock.unlock() }
                 do {
                     Logger.file.notice("Installing libraries...")
                     try files.unzipItem(at: file, to: directory, progress: installProgress)
@@ -104,21 +104,74 @@ class Libraries {
         return
             files.fileExists(atPath: directory.path) &&
             checksum() == UserDefaults.standard.string(forKey: "LibrariesChecksum")
-        ? true: false
+        ? true : false
     }
     
-    static func remove() -> Result<Bool, Error> {
-        guard isInstalled() else { return .failure(NSError()) }
+    static func getVersion() -> SemanticVersion? {
+        guard isInstalled() else { return nil }
+        
+        guard
+            let versionData = try? Data(contentsOf: directory.appending(path: "version.plist")),
+            let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: versionData)["version"]
+        else {
+            log.error("Unable to get installed GPTK version")
+            return nil
+        }
+        
+        return version
+    }
+    
+    static func fetchLatestVersion() -> SemanticVersion? {
+        guard let currentVersion = getVersion() else {
+            return nil
+        }
+        
+        let session = URLSession(configuration: .default)
+        let group = DispatchGroup()
+        var latestVersion: SemanticVersion = currentVersion
+        
+        group.enter()
+        session.dataTask(
+            with: URL(string: "https://raw.githubusercontent.com/MythicApp/GPTKBuilder/main/version.plist")!
+        ) { (data, response, error) in
+            defer { group.leave() }
+            
+            guard error == nil else {
+                log.error("Unable to check for new GPTK version: \(error)")
+                return
+            }
+            
+            guard let data = data else {
+                return
+            }
+            
+            do { latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"] ?? latestVersion }
+            catch { log.error("Unable to decode upstream GPTK version.") }
+        }
+        .resume()
+        group.wait()
+        
+        return latestVersion
+    }
+    
+    
+    static func remove(completion: @escaping (Result<Bool, Error>) -> Void) {
         defer { dataLock.unlock() }
+        
+        guard isInstalled() else {
+            completion(.failure(NotInstalledError()))
+            return
+        }
         
         dataLock.lock()
         
         do {
             try files.removeItem(at: directory)
-            return .success(true)
+            completion(.success(true))
         } catch {
             Logger.file.error("Unable to remove libraries: \(error)")
-            return .failure(error)
+            completion(.failure(error))
         }
     }
+    
 }

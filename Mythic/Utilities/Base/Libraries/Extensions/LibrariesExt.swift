@@ -8,3 +8,4 @@
 import Foundation
 
 struct AlreadyInstalledError: Error { }
+struct NotInstalledError: Error { }

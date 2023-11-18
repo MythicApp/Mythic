@@ -11,11 +11,11 @@ import Sparkle
 @main
 struct MythicApp: App {
     @State private var isFirstLaunch: Bool
+    @State private var isOnboardingPresented: Bool = false
+    @State private var isInstallViewPresented: Bool = false
+    @State private var isUpdatePromptPresented: Bool = false
     
     private let updaterController: SPUStandardUpdaterController
-    @State private var isOnboardingPresented = false
-    
-    @State private var isInstallViewPresented: Bool = false
     
     init() {
         self._isFirstLaunch = State(
@@ -38,23 +38,35 @@ struct MythicApp: App {
                         isOnboardingPresented = true
                     } else if !Libraries.isInstalled() {
                         isInstallViewPresented = true
+                    } else {
+                        if let latestVersion = Libraries.fetchLatestVersion(),
+                           let currentVersion = Libraries.getVersion(),
+                           latestVersion > currentVersion {
+                            isUpdatePromptPresented = true
+                        }
                     }
                 }
             
                 .sheet(isPresented: $isOnboardingPresented) {
-                    ///*
                     OnboardingView(
                         isPresented: $isOnboardingPresented,
                         isFirstLaunch: $isFirstLaunch,
                         isInstallViewPresented: $isInstallViewPresented
                     )
-                        .fixedSize()
-                     //*/
-                    // OnboardingView.InstallView()
+                    .fixedSize()
                 }
             
                 .sheet(isPresented: $isInstallViewPresented) {
                     OnboardingView.InstallView(isPresented: $isInstallViewPresented)
+                }
+            
+                .alert(isPresented: $isUpdatePromptPresented) {
+                    Alert(
+                        title: Text("Time for an update!"),
+                        message: Text("The backend that allows you to play Windows games on macOS just got an update."),
+                        primaryButton: .default(Text("Update")),
+                        secondaryButton: .cancel(Text("Later"))
+                    )
                 }
         }
         
