@@ -32,6 +32,7 @@
 		6AA6CCE72AD571C500F664A5 /* LegendaryExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryExt.swift */; };
 		6AA6CD852AD5816700F664A5 /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6AA6CD842AD5816700F664A5 /* legendary */; };
 		6AACB0932AC71757007D7CE8 /* UpdaterSettings[TEST].swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AACB0922AC71757007D7CE8 /* UpdaterSettings[TEST].swift */; };
+		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
 		6AB474992AACBBE900AB9C63 /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AB474982AACBBE900AB9C63 /* MythicApp.swift */; };
 		6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */; };
 		6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6AB4749F2AACBBEA00AB9C63 /* Preview Assets.xcassets */; };
@@ -106,6 +107,7 @@
 			files = (
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
+				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
 				6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */,
 				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
 			);
@@ -432,6 +434,7 @@
 				6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */,
 				6AFC02802ABE02970004AB77 /* Sparkle */,
 				6A371B582AE7DFBF0054BF7A /* ZIPFoundation */,
+				6AAD31142B08693D0035FA69 /* SemanticVersion */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -466,6 +469,7 @@
 				6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				6AFC027F2ABE02970004AB77 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -665,13 +669,13 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Mythic/Mythic.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1962;
+				CURRENT_PROJECT_VERSION = 2001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
-				DEVELOPMENT_TEAM = VUV7YRN5FS;
+				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -704,13 +708,13 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Mythic/Mythic.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1966;
+				CURRENT_PROJECT_VERSION = 2001;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
-				DEVELOPMENT_TEAM = VUV7YRN5FS;
+				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -775,6 +779,14 @@
 				minimumVersion = 0.9.17;
 			};
 		};
+		6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftPackageIndex/SemanticVersion";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.8;
+			};
+		};
 		6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
@@ -803,6 +815,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		6AAD31142B08693D0035FA69 /* SemanticVersion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */;
+			productName = SemanticVersion;
 		};
 		6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;

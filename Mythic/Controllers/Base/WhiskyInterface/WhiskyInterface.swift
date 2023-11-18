@@ -45,7 +45,7 @@ class WhiskyInterface {
     }
     
     static func getBottleMetadata(bottleURL: URL) -> [String: Any]? {
-        if let metadata = try? Data(contentsOf: bottleURL.appendingPathComponent("Metadata.plist")),
+        if let metadata = try? Data(contentsOf: bottleURL.appending(path: "Metadata.plist")),
            let plist = try? PropertyListSerialization.propertyList(from: metadata, format: nil) {
             print("plist is\n \(plist as? [String: Any])")
             return plist as? [String: Any]
