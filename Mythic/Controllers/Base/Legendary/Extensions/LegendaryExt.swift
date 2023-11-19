@@ -145,10 +145,12 @@ extension Legendary {
 
     /// Class  with information on if legendary is currently installing a game/service.
     class Installing: ObservableObject {
+        // swiftlint:disable identifier_name
         @Published var _value: Bool = false
         @Published var _finished: Bool = false
         @Published var _game: Game?
         @Published var _status: InstallStatus = InstallStatus()
+        // swiftlint:enable identifier_name
 
         static var shared = Installing()
 

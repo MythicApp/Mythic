@@ -143,7 +143,9 @@ extension LibraryView {
                                                 }
                                             }
 
-                                            if line.contains("Some files are missing from the game installation, install may not match latest Epic Games Store version or might be corrupted.") { // legendary/cli.py line 1372 as of hash 4507842
+                                            // legendary/cli.py line 1372 as of hash 4507842
+                                            if line.contains("Some files are missing from the game installation, install may not" +
+                                                             " match latest Epic Games Store version or might be corrupted.") {
 
                                             }
                                         }

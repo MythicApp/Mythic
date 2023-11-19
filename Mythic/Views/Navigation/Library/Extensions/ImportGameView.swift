@@ -123,15 +123,14 @@ extension LibraryView {
                                         }
                                     }
 
-                                    for line in commandStderrString.components(separatedBy: "\n") {
-                                        if line.contains("ERROR:") {
-                                            if let range = line.range(of: "ERROR: ") {
-                                                let substring = line[range.upperBound...]
-                                                errorContent = substring
-                                                isProgressViewSheetPresented = false
-                                                isErrorPresented = true
-                                                break // first err
-                                            }
+                                    for line in commandStderrString.components(separatedBy: "\n")
+                                    where line.contains("ERROR:") {
+                                        if let range = line.range(of: "ERROR: ") {
+                                            let substring = line[range.upperBound...]
+                                            errorContent = substring
+                                            isProgressViewSheetPresented = false
+                                            isErrorPresented = true
+                                            break // first err
                                         }
                                     }
                                 }

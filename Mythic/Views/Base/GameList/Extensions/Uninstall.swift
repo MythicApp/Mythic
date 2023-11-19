@@ -86,19 +86,18 @@ extension GameListView {
                             )
 
                             if let commandStderrString = String(data: commandOutput.stderr, encoding: .utf8) {
-                                for line in commandStderrString.components(separatedBy: "\n") {
-                                    if line.contains("ERROR:") {
-                                        if let range = line.range(of: "ERROR: ") {
-                                            let substring = line[range.upperBound...]
-                                            isProgressViewSheetPresented = false
-                                            uninstallationErrorMessage = substring
-                                            failedGame = game
-                                            activeAlert = .uninstallError
-                                            isAlertPresented = true
-                                            Logger.app.error("Uninstall error: \(substring)")
-                                            isGameListRefreshCalled = true
-                                            return // first error only
-                                        }
+                                for line in commandStderrString.components(separatedBy: "\n")
+                                where line.contains("ERROR:") {
+                                    if let range = line.range(of: "ERROR: ") {
+                                        let substring = line[range.upperBound...]
+                                        isProgressViewSheetPresented = false
+                                        uninstallationErrorMessage = substring
+                                        failedGame = game
+                                        activeAlert = .uninstallError
+                                        isAlertPresented = true
+                                        Logger.app.error("Uninstall error: \(substring)")
+                                        isGameListRefreshCalled = true
+                                        return // first error only
                                     }
                                 }
 
