@@ -105,7 +105,7 @@ extension LibraryView {
                             isProgressViewSheetPresented = true
 
                             Task(priority: .userInitiated) {
-                                var command: (stdout: Data, stderr: Data)? = nil
+                                var command: (stdout: Data, stderr: Data)?
 
                                 if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
                                     command = await Legendary.command(
@@ -144,7 +144,7 @@ extension LibraryView {
                                             }
 
                                             if line.contains("Some files are missing from the game installation, install may not match latest Epic Games Store version or might be corrupted.") { // legendary/cli.py line 1372 as of hash 4507842
-                                                
+
                                             }
                                         }
                                     }

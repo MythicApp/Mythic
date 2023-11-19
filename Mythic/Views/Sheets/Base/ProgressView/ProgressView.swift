@@ -28,16 +28,16 @@ struct ProgressViewSheet: View {
                 .padding()
 
                 HStack {
-                    Button(action: {
+                    Button {
                         isPresented = false
-                    }) {
+                    } label: {
                         Text("Dismiss loading")
                     }
 
-                    Button(action: {
+                    Button {
                         timeoutWarning = false
                         dismissableWithEsc = true
-                    }) {
+                    } label: {
                         Text("Keep waiting (dismissable with esc)")
                     }
                     .buttonStyle(.borderedProminent)

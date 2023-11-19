@@ -10,22 +10,25 @@ import OSLog
 
 private let files = FileManager.default
 
-/// Add some much-needed extensions to Bundle, including references to a dedicated application support folder for Mythic.
+/// Add some much-needed extensions to Bundle,
+/// including references to a dedicated application support folder for Mythic.
 extension Bundle {
 
     /// Dedicated 'Mythic' Application Support Folder.
     /// (Force-unwrappable)
     static let appHome: URL? = {
         if let userApplicationSupport = FileLocations.userApplicationSupport {
-            let homeURL = userApplicationSupport.appending(path: Bundle.main.infoDictionary?["CFBundleDisplayName"] as! String)
+            let homeURL = userApplicationSupport.appending(
+                path: Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "")
             let homePath = homeURL.path
 
             if !files.fileExists(atPath: homePath) {
                 do {
                     try files.createDirectory(atPath: homePath, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating application support directory")
+                } catch {
+                    Logger.app.error("Error creating application support directory: \(error)")
                 }
-                catch { Logger.app.error("Error creating application support directory: \(error)") }
             }
 
             return homeURL
@@ -37,16 +40,18 @@ extension Bundle {
     /// Dedicated 'Mythic' Container Folder. (Mythic is a sandboxed application.)
     /// (Force-unwrappable)
     static let appContainer: URL? = {
-        if let userContainers = FileLocations.userContainers {
-            let containerURL = userContainers.appending(path: Bundle.main.bundleIdentifier!)
+        if let userContainers = FileLocations.userContainers,
+           let bundleID = Bundle.main.bundleIdentifier {
+            let containerURL = userContainers.appending(path: bundleID)
             let containerPath = containerURL.path
 
             if !files.fileExists(atPath: containerPath) {
                 do {
                     try files.createDirectory(atPath: containerPath, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating Containers directory")
+                } catch {
+                    Logger.app.error("Error creating Containers directory: \(error)")
                 }
-                catch { Logger.app.error("Error creating Containers directory: \(error)") }
             }
 
             return containerURL
@@ -66,8 +71,9 @@ extension Bundle {
                     withIntermediateDirectories: false
                 )
                 return appGamesURL
+            } catch {
+                Logger.file.error("Unable to get games directory: \(error)")
             }
-            catch { Logger.file.error("Unable to get games directory: \(error)") }
         } // no else block, error is handled already
 
         return nil

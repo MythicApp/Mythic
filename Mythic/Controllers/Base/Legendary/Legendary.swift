@@ -12,7 +12,8 @@ import OSLog
 private let files = FileManager.default
 private let defaults = UserDefaults.standard
 
-/// Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
+/// Controls the function of the "legendary" cli,
+/// the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 class Legendary {
 
     /// The file location for legendary's configuration files.
@@ -255,7 +256,7 @@ class Legendary {
             static let disk = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
         }
 
-        var status = Installing.shared._status 
+        var status = Installing.shared._status
         var errorThrownExternally: Error?
 
         let asyncOutput = OutputHandler(
@@ -274,7 +275,7 @@ class Legendary {
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
 
                             if let match = Regex.progress?.firstMatch(in: line, range: range) {
-                                status.progress = (
+                                status.progress =  Progress(
                                     percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
                                     total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
@@ -282,22 +283,22 @@ class Legendary {
                                     eta: line[Range(match.range(at: 5), in: line)!]
                                 )
                             } else if let match = Regex.download?.firstMatch(in: line, range: range) {
-                                status.download = ( // MiB | 1 MB = (10^6/2^20) MiB
+                                status.download = Download( // MiB | 1 MB = (10^6/2^20) MiB
                                     downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
                             } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
-                                status.cache = (
+                                status.cache = Cache(
                                     usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
                                     activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
                             } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
-                                status.downloadAdvanced = ( // MiB/s
+                                status.downloadAdvanced = DownloadAdvanced( // MiB/s
                                     raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
                             } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
-                                status.disk = ( // MiB/s
+                                status.disk = Disk( // MiB/s
                                     write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                     read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                 )
@@ -493,7 +494,12 @@ class Legendary {
     static func getInstallable() async throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
         guard signedIn() else { throw NotSignedInError() }
 
-        guard let json = try? await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) else {
+        guard let json = try? await JSON(data: command(args: [
+            "list",
+            "--platform",
+            "Windows",
+            "--third-party",
+            "--json"], useCache: true).stdout) else {
             return Array()
         }
 
@@ -529,7 +535,12 @@ class Legendary {
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
 
-        guard let json = try? await JSON(data: command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout) else {
+        guard let json = try? await JSON(data: command(args: [
+            "list",
+            "--platform",
+            "Windows",
+            "--third-party",
+            "--json"], useCache: true).stdout) else {
             return Dictionary()
         }
 

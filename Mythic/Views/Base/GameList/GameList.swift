@@ -26,7 +26,7 @@ struct GameListView: View {
 
     @State private var installationErrorMessage: String = String()
     @State private var uninstallationErrorMessage: Substring = Substring()
-    @State private var failedGame: Legendary.Game? = nil
+    @State private var failedGame: Legendary.Game?
 
     @State private var isProgressViewSheetPresented: Bool = true
     @State private var currentGame: Legendary.Game = .init(appName: String(), title: String())
@@ -144,10 +144,10 @@ struct GameListView: View {
 
                                 HStack {
                                     if installedGames.contains(game) {
-                                        Button(action: {
+                                        Button {
                                             updateCurrentGame(game: game, mode: .normal)
                                             isSettingsViewPresented = true
-                                        }) {
+                                        } label: {
                                             Image(systemName: "gear")
                                                 .foregroundStyle(.gray)
                                                 .padding()
@@ -156,12 +156,12 @@ struct GameListView: View {
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
 
-                                        Button(action: {
+                                        Button {
                                             Task(priority: .userInitiated) {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 _ = await Legendary.command(args: ["launch", game.appName], useCache: false)
                                             }
-                                        }) {
+                                        } label: {
                                             Image(systemName: "play.fill")
                                                 .foregroundStyle(.green)
                                                 .padding()
@@ -170,10 +170,10 @@ struct GameListView: View {
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
 
-                                        Button(action: {
+                                        Button {
                                             updateCurrentGame(game: game, mode: .normal)
                                             isUninstallViewPresented = true
-                                        }) {
+                                        } label: {
                                             Image(systemName: "xmark.bin.fill")
                                                 .foregroundStyle(.red)
                                                 .padding()
@@ -191,9 +191,9 @@ struct GameListView: View {
                                                     .progressViewStyle(.linear)
                                             }
 
-                                            Button(action: {
+                                            Button {
                                                 Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
-                                            }) {
+                                            } label: {
                                                 Image(systemName: "stop.fill")
                                                     .foregroundStyle(.red)
                                                     .padding()
@@ -209,10 +209,10 @@ struct GameListView: View {
                                             }
 
                                         } else {
-                                            Button(action: {
+                                            Button {
                                                 updateCurrentGame(game: game, mode: .optionalPacks)
                                                 isInstallViewPresented = true
-                                            }) {
+                                            } label: {
                                                 Image(systemName: "arrow.down.to.line")
                                                     .foregroundStyle(.gray)
                                                     .padding()

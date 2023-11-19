@@ -11,10 +11,15 @@ import OSLog
 private let files = FileManager.default
 
 class FileLocations {
-
     static let globalApplications: URL? = {
-        do { return try files.url(for: .applicationDirectory, in: .localDomainMask, appropriateFor: nil, create: false) }
-        catch { Logger.file.error("Unable to get global Applications directory: \(error)") }
+        do {
+            return try files.url(for: .applicationDirectory,
+                                 in: .localDomainMask,
+                                 appropriateFor: nil,
+                                 create: false)
+        } catch {
+            Logger.file.error("Unable to get global Applications directory: \(error)")
+        }
 
         return nil
     }()
@@ -30,18 +35,25 @@ class FileLocations {
                     withIntermediateDirectories: false
                 )
                 return gamesURL
+            } catch {
+                Logger.file.error("Unable to get games directory: \(error)")
             }
-            catch { Logger.file.error("Unable to get games directory: \(error)") }
         } // no else block, error is handled already
-        
+
         return nil
     }()
 
     /// The current user's Application Support directory.
     /// (Force-unwrappable)
     static let userApplicationSupport: URL? = {
-        do { return try files.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false) }
-        catch { Logger.file.error("Unable to get Application Support directory: \(error)") }
+        do {
+            return try files.url(for: .applicationSupportDirectory,
+                                 in: .userDomainMask,
+                                 appropriateFor: nil,
+                                 create: false)
+        } catch {
+            Logger.file.error("Unable to get Application Support directory: \(error)")
+        }
 
         return nil
     }()
@@ -50,10 +62,14 @@ class FileLocations {
     /// (Force-unwrappable)
     static let userContainers: URL? = {
         do {
-            return try files.url(for: .libraryDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+            return try files.url(for: .libraryDirectory,
+                                 in: .userDomainMask,
+                                 appropriateFor: nil,
+                                 create: false)
                 .appending(path: "Containers")
+        } catch {
+            Logger.file.error("Unable to get Containers directory: \(error)")
         }
-        catch { Logger.file.error("Unable to get Containers directory: \(error)") }
 
         return nil
     }()

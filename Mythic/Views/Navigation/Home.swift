@@ -51,7 +51,7 @@ struct HomeView: View {
                                                         Gradient.Stop(color: Color(white: 0, opacity: 0),
                                                                       location: 0.65),
                                                         Gradient.Stop(color: Color(white: 0, opacity: 1),
-                                                                      location: 0.8),
+                                                                      location: 0.8)
                                                     ]), startPoint: .top, endPoint: .bottom)
                                                 )
                                         )
@@ -60,7 +60,7 @@ struct HomeView: View {
                                                 Gradient.Stop(color: Color(white: 0, opacity: 0),
                                                               location: 0.6),
                                                 Gradient.Stop(color: Color(white: 0, opacity: 0.25),
-                                                              location: 1),
+                                                              location: 1)
                                             ]), startPoint: .top, endPoint: .bottom)
                                         )
                                 }
@@ -93,11 +93,11 @@ struct HomeView: View {
 
                                         Spacer()
 
-                                        Button(action: {
+                                        Button {
 
-                                        }) {
+                                        } label: {
                                             Image(systemName: "play.fill")
-                                            //.foregroundStyle(.background)
+                                            //  .foregroundStyle(.background)
                                                 .padding()
                                         }
                                         // .shadow(color: .green, radius: 10, x: 1, y: 1)

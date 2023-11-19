@@ -27,8 +27,9 @@ struct StoreView: View {
         .toolbar {
             /*
              KNOWN ISSUE:
-             updateNSView in WebView() is an async function, and the the view is being updated while the page is still loading
-             
+             updateNSView in WebView() is an async function, 
+             and the the view is being updated while the page is still loading
+
             if isLoading {
                 ToolbarItem(placement: .confirmationAction) {
                     ProgressView()
@@ -44,38 +45,40 @@ struct StoreView: View {
              */
 
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     if canGoBack {
                         urlString = "javascript:history.back();"
                     }
-                }) {
+                } label: {
                     Image(systemName: "arrow.left.circle")
                 }
                 .disabled(!canGoBack)
             }
 
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     if canGoForward {
                         urlString = "javascript:history.forward();"
                     }
-                }) {
+                } label: {
                     Image(systemName: "arrow.right.circle")
                 }
                 .disabled(!canGoForward)
             }
 
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     urlString = "javascript:location.reload();"
-                }) {
+                } label: {
                     Image(systemName: "arrow.clockwise.circle.fill")
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    NSWorkspace.shared.open(URL(string: urlString)!)
-                }) {
+                Button {
+                    if let url = URL(string: urlString) {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
                     Image(systemName: "globe.europe.africa.fill")
                 }
             }

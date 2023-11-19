@@ -68,9 +68,9 @@ struct AuthView: View {
                     }
                     .frame(width: 350, alignment: .center)
 
-                Button(action:{
+                Button {
                     Task { await submitToLegendary() }
-                }) {
+                } label: {
                     Text("Submit")
                 }
                 .buttonStyle(.borderedProminent)

@@ -9,6 +9,8 @@ import SwiftUI
 import Combine
 
 extension OnboardingView {
+    enum ActiveAlert { case closeConfirmation, installError }
+
     struct InstallView: View {
         @Binding var isPresented: Bool
 
@@ -17,7 +19,6 @@ extension OnboardingView {
         @State private var isDownloadSheetPresented: Bool = false
         @State private var isInstallSheetPresented: Bool = false
 
-        enum ActiveAlert { case closeConfirmation, installError }
         @State private var activeAlert: ActiveAlert = .closeConfirmation
         @State private var isAlertPresented: Bool = false
 
@@ -60,8 +61,9 @@ extension OnboardingView {
                                     if !isDownloadSheetPresented {
                                         isDownloadSheetPresented = true
                                     }
+                                } else {
+                                    isDownloadSheetPresented = false
                                 }
-                                else { isDownloadSheetPresented = false }
                             },
                             installProgressHandler: { progress in
                                 installProgress = progress
@@ -70,14 +72,15 @@ extension OnboardingView {
                                     if !isInstallSheetPresented {
                                         isInstallSheetPresented = true
                                     }
+                                } else {
+                                    isInstallSheetPresented = false
                                 }
-                                else { isInstallSheetPresented = false }
                             },
                             completion: { completion in
                                 switch completion {
-                                case .success(_):
+                                case .success:
                                     installComplete = true
-                                case .failure(_):
+                                case .failure:
                                     installError = true
                                 }
                             }

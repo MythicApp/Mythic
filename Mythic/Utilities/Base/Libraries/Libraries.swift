@@ -29,8 +29,11 @@ class Libraries {
 
         if let enumerator = FileManager.default.enumerator(atPath: directory.path) {
             for case let fileURL as URL in enumerator {
-                do { try dataAggregate.append(Data(contentsOf: fileURL)) }
-                catch { Logger.file.error("Error reading libraries and generating a checksum: \(error)") }
+                do {
+                    try dataAggregate.append(Data(contentsOf: fileURL))
+                } catch {
+                    Logger.file.error("Error reading libraries and generating a checksum: \(error)")
+                }
             }
         }
 
@@ -53,7 +56,7 @@ class Libraries {
 
         let download = session.downloadTask(
             with: URL(string: "https://nightly.link/MythicApp/GPTKBuilder/workflows/build-gptk/main/Libraries.zip")!
-        ) { (file, response, error) in
+        ) { (file, _, error) in
             guard error == nil else {
                 Logger.network.error("Error with GPTK download: \(error)")
                 completion(.failure(error!))
@@ -85,7 +88,7 @@ class Libraries {
 
         queue.async {
             while !download.progress.isFinished {
-                downloadProgressHandler(((Double(download.countOfBytesReceived) / Double(600137702)))) // rough estimate as of 235579c
+                downloadProgressHandler(Double(download.countOfBytesReceived) / Double(600137702)) // rough estimate as of 235579c
                 Thread.sleep(forTimeInterval: 0.1)
             }
         }
@@ -133,7 +136,7 @@ class Libraries {
         group.enter()
         session.dataTask(
             with: URL(string: "https://raw.githubusercontent.com/MythicApp/GPTKBuilder/main/version.plist")!
-        ) { (data, response, error) in
+        ) { (data, _, error) in
             defer { group.leave() }
 
             guard error == nil else {
@@ -145,8 +148,11 @@ class Libraries {
                 return
             }
 
-            do { latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"] ?? latestVersion }
-            catch { log.error("Unable to decode upstream GPTK version.") }
+            do {
+                latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"] ?? latestVersion
+            } catch {
+                log.error("Unable to decode upstream GPTK version.")
+            }
         }
         .resume()
         group.wait()

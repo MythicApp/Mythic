@@ -24,7 +24,7 @@ struct NotImplementedView: View {
     }
 }
 
-func NotImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
+func notImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
     return Alert(
         title: Text("Not implemented"),
         primaryButton: .default(Text("OK!")) {

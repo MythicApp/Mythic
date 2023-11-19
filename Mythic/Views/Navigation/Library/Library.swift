@@ -19,16 +19,16 @@ struct LibraryView: View {
 
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
+                    Button {
                         addGameModalPresented = true
-                    }) {
+                    } label: {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
+                    Button {
                         isGameListRefreshCalled = true
-                    }) {
+                    } label: {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
