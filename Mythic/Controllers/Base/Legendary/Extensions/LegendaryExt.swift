@@ -8,11 +8,9 @@
 import Foundation
 
 extension Legendary {
-    
-    /// Struct to store games.
-    struct Game: Hashable {
-        var appName: String
-        var title: String
+    enum Stream {
+        case stdout
+        case stderr
     }
 
     /// Enumeration to specify image types.
@@ -20,32 +18,7 @@ extension Legendary {
         case normal
         case tall
     }
-    
-    /// A struct to hold closures for handling stdout and stderr output.
-    struct OutputHandler {
-        /// A closure to handle stdout output.
-        let stdout: (String) -> Void
-        
-        /// A closure to handle stderr output.
-        let stderr: (String) -> Void
-    }
-    
-    
-    /// Represents a condition to be checked for in the output streams before input is appended.
-    struct InputIfCondition {
-        enum Stream {
-            case stdout
-            case stderr
-        }
-        
-        /// The stream to be checked (stdout or stderr).
-        let stream: Stream
-        
-        /// The string pattern to be matched in the selected stream's output.
-        let string: String
-    }
-    
-    
+
     /// Enumeration containing the activities legendary does that require a data lock.
     enum DataLockUse {
         case installing
@@ -53,41 +26,28 @@ extension Legendary {
         case moving
         case none
     }
-    
+
     /// Enumeration containing the two different platforms legendary can download games for.
     enum GamePlatform {
         case macOS
         case windows
     }
-    
-    @available(*, message: "This error will be deprecated soon, in favour of UserValidationError")
-    /// Error when legendary is signed out on a command that enforces signin.
-    struct NotSignedInError: Error { }
-    
-    /// Installation error with message, see ``Legendary.install()``
-    struct InstallationError: Error {
-        let message: String
-        
-        init(_ message: String) {
-            self.message = message
-        }
-    }
-    
+
     /// Error for image errors
     enum ImageError: Error {
         /// Failure to get an image from source.
         case get
-        
+
         /// Failure to load an image to Mythic or storage.
         case load
     }
-    
+
     /* Until more validation errors become available.
-    enum UserValidationError: Error {
-        case notSignedIn
-    }
+     enum UserValidationError: Error {
+     case notSignedIn
+     }
      */
-    
+
     /// Your father.
     enum DoesNotExistError: Error {
         case game
@@ -95,38 +55,85 @@ extension Legendary {
         case file(file: URL)
         case directory(directory: String)
     }
-    
+
+    /// Struct to store games.
+    struct Game: Hashable {
+        var appName: String
+        var title: String
+    }
+
+    /// A struct to hold closures for handling stdout and stderr output.
+    struct OutputHandler {
+        /// A closure to handle stdout output.
+        let stdout: (String) -> Void
+
+        /// A closure to handle stderr output.
+        let stderr: (String) -> Void
+    }
+
+    /// Represents a condition to be checked for in the output streams before input is appended.
+    struct InputIfCondition {
+        /// The stream to be checked (stdout or stderr).
+        let stream: Stream
+
+        /// The string pattern to be matched in the selected stream's output.
+        let string: String
+    }
+
+    @available(*, message: "This error will be deprecated soon, in favour of UserValidationError")
+    /// Error when legendary is signed out on a command that enforces signin.
+    struct NotSignedInError: Error { }
+
+    /// Installation error with message, see ``Legendary.install()``
+    struct InstallationError: Error {
+        let message: String
+
+        init(_ message: String) {
+            self.message = message
+        }
+    }
+
     /// Whether legendary is currently modifying (installing, removing, moving) a game/service.
     static var dataLockInUse: (value: Bool, inUse: DataLockUse) = (true, .installing) // temporarily
-    
+
     // Installing
-    
+
+    struct Progress {
+        var percentage: Double
+        var downloaded: Int
+        var total: Int
+        var runtime: Substring
+        var eta: Substring
+    }
+
+    struct Download {
+        var downloaded: Double
+        var written: Double
+    }
+
+    struct Cache {
+        var usage: Double
+        var activeTasks: Int
+    }
+
+    struct DownloadAdvanced {
+        var raw: Double
+        var decompressed: Double
+    }
+
+    struct Disk {
+        var write: Double
+        var read: Double
+    }
+
     /// Structure to define legendary's installing output status.
     struct InstallStatus {
-        var progress: (
-            percentage: Double,
-            downloaded: Int,
-            total: Int,
-            runtime: Substring,
-            eta: Substring
-        )?
-        var download: (
-            downloaded: Double,
-            written: Double
-        )?
-        var cache: (
-            usage: Double,
-            activeTasks: Int
-        )?
-        var downloadAdvanced: (
-            raw: Double,
-            decompressed: Double
-        )?
-        var disk: (
-            write: Double,
-            read: Double
-        )?
-        
+        var progress: Progress?
+        var download: Download?
+        var cache: Cache?
+        var downloadAdvanced: DownloadAdvanced?
+        var disk: Disk?
+
         init() {
             self.progress = nil
             self.download = nil
@@ -135,16 +142,18 @@ extension Legendary {
             self.disk = nil
         }
     }
-    
+
     /// Class  with information on if legendary is currently installing a game/service.
     class Installing: ObservableObject {
+        // swiftlint:disable identifier_name
         @Published var _value: Bool = false
         @Published var _finished: Bool = false
-        @Published var _game: Game? = nil
+        @Published var _game: Game?
         @Published var _status: InstallStatus = InstallStatus()
+        // swiftlint:enable identifier_name
 
         static var shared = Installing()
-        
+
         static var value: Bool {
             get { return shared._value }
             set {
@@ -153,7 +162,7 @@ extension Legendary {
                 }
             }
         }
-        
+
         static var finished: Bool {
             get { return shared._finished }
             set {

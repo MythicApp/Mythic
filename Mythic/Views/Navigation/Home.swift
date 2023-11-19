@@ -10,14 +10,13 @@ import Cocoa
 import CachedAsyncImage
 
 struct HomeView: View {
-    
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var notImplementedAlert = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
-    
+
     let gradient = LinearGradient(
         gradient: Gradient(stops: [
             .init(color: .purple, location: 0),
@@ -26,7 +25,7 @@ struct HomeView: View {
         startPoint: .bottom,
         endPoint: .top
     )
-    
+
     var body: some View {
         HStack {
             VStack {
@@ -52,7 +51,7 @@ struct HomeView: View {
                                                         Gradient.Stop(color: Color(white: 0, opacity: 0),
                                                                       location: 0.65),
                                                         Gradient.Stop(color: Color(white: 0, opacity: 1),
-                                                                      location: 0.8),
+                                                                      location: 0.8)
                                                     ]), startPoint: .top, endPoint: .bottom)
                                                 )
                                         )
@@ -61,7 +60,7 @@ struct HomeView: View {
                                                 Gradient.Stop(color: Color(white: 0, opacity: 0),
                                                               location: 0.6),
                                                 Gradient.Stop(color: Color(white: 0, opacity: 0.25),
-                                                              location: 1),
+                                                              location: 1)
                                             ]), startPoint: .top, endPoint: .bottom)
                                         )
                                 }
@@ -79,26 +78,26 @@ struct HomeView: View {
                             ZStack(alignment: .bottom) {
                                 VStack {
                                     Spacer()
-                                    
+
                                     HStack {
                                         VStack {
                                             Text("RECENTLY PLAYED")
                                                 .frame(alignment: .leading)
                                                 .font(.footnote)
                                                 .foregroundStyle(.placeholder)
-                                            
+
                                             Text("Fortnite")
                                                 .font(.title)
                                                 .frame(alignment: .leading)
                                         }
-                                        
+
                                         Spacer()
-                                        
-                                        Button(action: {
-                                            
-                                        }) {
+
+                                        Button {
+
+                                        } label: {
                                             Image(systemName: "play.fill")
-                                            //.foregroundStyle(.background)
+                                            //  .foregroundStyle(.background)
                                                 .padding()
                                         }
                                         // .shadow(color: .green, radius: 10, x: 1, y: 1)
@@ -114,7 +113,7 @@ struct HomeView: View {
             }
             .background(.background)
             .cornerRadius(10)
-            
+
             VStack {
                 VStack {
                     HStack {
@@ -136,7 +135,7 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .cornerRadius(10)
-                
+
                 VStack {
                     WebView(
                         loadingError: $loadingError,

@@ -15,19 +15,18 @@ import Combine
 import CachedAsyncImage
 
 struct MainView: View {
-    
     @State private var isAuthViewPresented: Bool = false
-    
+
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
-    
+
     @State private var appVersion: String = String()
     @State private var buildNumber: Int = 0
-    
+
     @State private var gameThumbnails: [String: String] = Dictionary()
-    
+
     @StateObject private var installing = Legendary.Installing.shared
-    
+
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {
@@ -38,9 +37,9 @@ struct MainView: View {
             }
         }
     }
-    
+
     init() { updateLegendaryAccountState() }
-    
+
     var body: some View {
         NavigationView {
             List {
@@ -48,14 +47,14 @@ struct MainView: View {
                     Label("Welcome", systemImage: "star")
                         .foregroundStyle(.primary)
                 }
-                
+
                 Spacer()
-                
+
                 Text("DASHBOARD")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
-                
-                Group{
+
+                Group {
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
                             .foregroundStyle(.primary)
@@ -63,20 +62,19 @@ struct MainView: View {
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
                             .foregroundStyle(.primary)
-                            
                     }
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
                             .foregroundStyle(.primary)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 Text("MANAGEMENT")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
-                
+
                 Group {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
@@ -91,12 +89,12 @@ struct MainView: View {
                             .foregroundStyle(.primary)
                     }
                 }
-                
+
                 Spacer()
-                
+
                 if installing._value == true {
                     Divider()
-                    
+
                     /*
                      ZStack {
                         CachedAsyncImage(url: URL(string: gameThumbnails[installing._game] ?? String())) { phase in
@@ -108,18 +106,18 @@ struct MainView: View {
                             }
                     }
                      */
-                    
+
                     VStack {
                         Text("INSTALLING")
                             .fontWeight(.bold)
                             .font(.system(size: 8))
                             .offset(x: -2, y: 0)
                         Text(installing._game == nil ? "Loading..." : installing._game!.title)
-                        
+
                         HStack {
-                            Button(action: {
+                            Button {
                                 // Not implemented
-                            }) {
+                            } label: {
                                 if installing._status.progress?.percentage == nil {
                                     ProgressView()
                                         .progressViewStyle(.linear)
@@ -129,15 +127,13 @@ struct MainView: View {
                                 }
                             }
                             .buttonStyle(.plain)
-                            
                             .onChange(of: installing._finished) { _, newValue in
                                 installing._value = !newValue
                             }
-                            
-                            
-                            Button(action: {
+
+                            Button {
                                 Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
-                            }) {
+                            } label: {
                                 Image(systemName: "stop.fill")
                                     .foregroundStyle(.red)
                                     .padding()
@@ -148,12 +144,10 @@ struct MainView: View {
                             .controlSize(.mini)
                         }
                     }
-                    
-                    // }
                 }
-                
+
                 Divider()
-                
+
                 HStack {
                     Image(systemName: "person")
                         .foregroundStyle(.primary)
@@ -162,17 +156,17 @@ struct MainView: View {
                             updateLegendaryAccountState()
                         }
                 }
-                
+
                 if epicUserAsync != "Loading..." {
                     if signedIn {
-                        Button(action: {
+                        Button {
                             Task(priority: .high) {
                                 let command = await Legendary.command(args: ["auth", "--delete"], useCache: false)
                                 if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
                                     updateLegendaryAccountState()
                                 }
                             }
-                        }) {
+                        } label: {
                             HStack {
                                 Image(systemName: "person.slash")
                                     .foregroundStyle(.primary)
@@ -180,10 +174,10 @@ struct MainView: View {
                             }
                         }
                     } else {
-                        Button(action: {
+                        Button {
                             NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
                             isAuthViewPresented = true
-                        }) {
+                        } label: {
                             HStack {
                                 Image(systemName: "person")
                                     .foregroundStyle(.primary)
@@ -192,7 +186,7 @@ struct MainView: View {
                         }
                     }
                 }
-                
+
                 if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
                    let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
                    let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
@@ -201,14 +195,12 @@ struct MainView: View {
                         .foregroundStyle(.placeholder)
                 }
             }
-            
             .sheet(isPresented: $isAuthViewPresented) {
                 AuthView(isPresented: $isAuthViewPresented)
                     .onDisappear {
                         updateLegendaryAccountState()
                     }
             }
-            
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
             .toolbar {
@@ -218,14 +210,13 @@ struct MainView: View {
                     })
                 }
             }
-            
             .onAppear {
                 Task(priority: .userInitiated) {
                     let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? Dictionary()
                     if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                 }
             }
-            
+
             WelcomeView()
         }
     }

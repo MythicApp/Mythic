@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct StoreView: View {
-    
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var notImplementedAlert = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
-    
+
     var body: some View {
         WebView(
             loadingError: $loadingError,
@@ -24,12 +23,13 @@ struct StoreView: View {
             isLoading: $isLoading,
             urlString: urlString
         )
-        
+
         .toolbar {
             /*
              KNOWN ISSUE:
-             updateNSView in WebView() is an async function, and the the view is being updated while the page is still loading
-             
+             updateNSView in WebView() is an async function, 
+             and the the view is being updated while the page is still loading
+
             if isLoading {
                 ToolbarItem(placement: .confirmationAction) {
                     ProgressView()
@@ -43,45 +43,47 @@ struct StoreView: View {
                 }
             }
              */
-            
+
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     if canGoBack {
                         urlString = "javascript:history.back();"
                     }
-                }) {
+                } label: {
                     Image(systemName: "arrow.left.circle")
                 }
                 .disabled(!canGoBack)
             }
-            
+
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     if canGoForward {
                         urlString = "javascript:history.forward();"
                     }
-                }) {
+                } label: {
                     Image(systemName: "arrow.right.circle")
                 }
                 .disabled(!canGoForward)
             }
-            
+
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
+                Button {
                     urlString = "javascript:location.reload();"
-                }) {
+                } label: {
                     Image(systemName: "arrow.clockwise.circle.fill")
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button(action: {
-                    NSWorkspace.shared.open(URL(string: urlString)!)
-                }) {
+                Button {
+                    if let url = URL(string: urlString) {
+                        NSWorkspace.shared.open(url)
+                    }
+                } label: {
                     Image(systemName: "globe.europe.africa.fill")
                 }
             }
         }
-        
+
         .alert(isPresented: $loadingError) {
             Alert(
                 title: Text("Error"),

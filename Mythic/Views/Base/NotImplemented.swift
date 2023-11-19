@@ -17,14 +17,14 @@ struct NotImplementedView: View {
                 .frame(width: 35, height: 35)
                 .font(.system(.caption, design: .rounded))
                 .symbolEffect(.pulse)
-            
+
             Text("Sorry, this isn't implemented yet!")
         }
         .padding()
     }
 }
 
-func NotImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
+func notImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
     return Alert(
         title: Text("Not implemented"),
         primaryButton: .default(Text("OK!")) {

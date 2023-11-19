@@ -12,7 +12,7 @@ extension GameListView {
         @Binding var isPresented: Bool
         public var game: Legendary.Game
         @Binding var isGameListRefreshCalled: Bool
-        
+
         var body: some View {
             HStack {
                 if isAppInstalled(bundleIdentifier: "com.isaacmarovitz.Whisky") {

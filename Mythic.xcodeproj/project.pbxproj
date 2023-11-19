@@ -423,6 +423,7 @@
 				6AB474912AACBBE900AB9C63 /* Sources */,
 				6AB474922AACBBE900AB9C63 /* Frameworks */,
 				6AB474932AACBBE900AB9C63 /* Resources */,
+				6E47429A2B0A85C4004FA8A8 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -492,6 +493,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6E47429A2B0A85C4004FA8A8 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ -z \"$FASTLANE\" ]]; then\n    export PATH=\"$PATH:/opt/homebrew/bin\"\n    if which swiftlint > /dev/null; then\n        swiftlint\n    else\n        echo \"error: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\n        exit -1\n    fi\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6AB474912AACBBE900AB9C63 /* Sources */ = {
@@ -678,7 +701,7 @@
 				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Mythic/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
@@ -717,7 +740,7 @@
 				DEVELOPMENT_TEAM = 67ZBY275P8;
 				ENABLE_HARDENED_RUNTIME = NO;
 				ENABLE_PREVIEWS = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Mythic/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;

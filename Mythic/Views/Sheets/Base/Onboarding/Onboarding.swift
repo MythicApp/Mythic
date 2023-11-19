@@ -11,24 +11,24 @@ import Combine
 struct OnboardingView: View {
     @Binding var isPresented: Bool
     @Binding var isFirstLaunch: Bool
-    
+
     @Binding var isInstallViewPresented: Bool
-    
+
     @State private var isAuthViewPresented = false
-    @State private var authSuccessful: Bool? = nil
-    
+    @State private var authSuccessful: Bool?
+
     var body: some View {
         VStack {
             Text("Welcome to Mythic!")
                 .font(.title)
-            
+
             Divider()
-            
+
             Text("Let's get started by signing in to Epic Games."
                 + "\nIf you do not want to use Epic Games, just click next."
             )
                 .multilineTextAlignment(.center)
-            
+
             HStack {
                 if Libraries.isInstalled() == true {
                     Button("Close") {
@@ -36,7 +36,7 @@ struct OnboardingView: View {
                         isFirstLaunch = false
                     }
                 }
-                
+
                 if Legendary.signedIn() == false && authSuccessful != true {
                     Button("Sign In") {
                         NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
@@ -44,7 +44,7 @@ struct OnboardingView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
-                
+
                 Button("Next") {
                     isPresented = false
                     isInstallViewPresented = true
@@ -53,11 +53,11 @@ struct OnboardingView: View {
             }
         }
         .padding()
-        
+
         .sheet(isPresented: $isAuthViewPresented) {
             AuthView(isPresented: $isAuthViewPresented, authSuccessful: $authSuccessful)
         }
-        
+
         /*
         .onReceive(Just(authSuccessful)) { success in
             if success {

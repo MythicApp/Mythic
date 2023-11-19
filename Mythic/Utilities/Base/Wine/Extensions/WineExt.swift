@@ -7,8 +7,8 @@
 
 import Foundation
 
-fileprivate let files = FileManager.default
+private let files = FileManager.default
 
 extension Wine {
-    
+
 }

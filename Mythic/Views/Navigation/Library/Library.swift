@@ -9,32 +9,31 @@ import SwiftUI
 import SwiftyJSON
 
 struct LibraryView: View {
-    
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
-    
+
     @State private var isGameListRefreshCalled: Bool = false
-    
+
     var body: some View {
         GameListView(isRefreshCalled: $isGameListRefreshCalled)
-        
+
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
+                    Button {
                         addGameModalPresented = true
-                    }) {
+                    } label: {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(action: {
+                    Button {
                         isGameListRefreshCalled = true
-                    }) {
+                    } label: {
                         Image(systemName: "arrow.clockwise")
                     }
                 }
             }
-        
+
             .sheet(isPresented: $addGameModalPresented) {
                 LibraryView.GameImportView(
                     isPresented: $addGameModalPresented,

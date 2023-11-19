@@ -13,14 +13,14 @@ extension GameListView {
         public var game: Legendary.Game
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
-        
+
         @Binding var isAlertPresented: Bool
         @Binding var activeAlert: GameListView.ActiveAlert
         @Binding var installationErrorMessage: String
         @Binding var failedGame: Legendary.Game?
-        
+
         @State private var isToggledDictionary: [String: Bool] = Dictionary()
-        
+
         var body: some View {
             VStack {
                 Text("Install \(game.title)")
@@ -30,9 +30,9 @@ extension GameListView {
                         .font(.footnote)
                         .foregroundStyle(.placeholder)
                 }
-                
+
                 Divider()
-                
+
                 if !optionalPacks.isEmpty {
                     ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { name, tag in
                         HStack {
@@ -43,7 +43,7 @@ extension GameListView {
                                     .foregroundStyle(.placeholder)
                                     .multilineTextAlignment(.leading)
                             }
-                            
+
                             Spacer()
                             Toggle(
                                 isOn: Binding(
@@ -54,12 +54,12 @@ extension GameListView {
                         }
                     }
                 }
-                
+
                 HStack {
                     Button("Close") {
                         isPresented = false
                     }
-                    
+
                     Button("Install") {
                         Task(priority: .userInitiated) {
                             isPresented = false
@@ -68,10 +68,9 @@ extension GameListView {
                                     game: game,
                                     optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys)
                                 )
-                                
+
                                 isGameListRefreshCalled = true
-                            }
-                            catch {
+                            } catch {
                                 switch error {
                                 case let error as Legendary.InstallationError:
                                     failedGame = game
@@ -103,7 +102,6 @@ extension GameListView {
         }
     }
 }
-
 
 #Preview {
     GameListView.InstallView(
