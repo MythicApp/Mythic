@@ -12,14 +12,14 @@ extension GameListView {
         @Binding var isPresented: Bool
         @Binding var game: String
         @Binding var isGameListRefreshCalled: Bool
-        
+
         var body: some View {
             VStack {
                 Text(game)
                     .font(.title)
-                
+
                 Spacer()
-                
+
                 HStack {
                     Button(action: {
                         isPresented.toggle()

@@ -337,7 +337,6 @@ struct GameListView: View {
     }
 }
 
-
 #Preview {
     GameListView(isRefreshCalled: .constant(false))
 }
