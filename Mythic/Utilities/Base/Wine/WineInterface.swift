@@ -23,8 +23,9 @@ class Wine {
             do {
                 try files.createDirectory(at: directory, withIntermediateDirectories: false)
                 Logger.file.info("Creating bottles directory")
+            } catch {
+                Logger.app.error("Error creating Bottles directory: \(error)")
             }
-            catch { Logger.app.error("Error creating Bottles directory: \(error)") }
         }
 
         return directory

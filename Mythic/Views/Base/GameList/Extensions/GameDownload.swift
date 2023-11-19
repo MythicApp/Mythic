@@ -21,9 +21,9 @@ extension GameListView {
                 Spacer()
 
                 HStack {
-                    Button(action: {
+                    Button {
                         isPresented.toggle()
-                    }) {
+                    } label: {
                         Text("Close")
                     }
                 }

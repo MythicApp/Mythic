@@ -70,8 +70,7 @@ extension GameListView {
                                 )
 
                                 isGameListRefreshCalled = true
-                            }
-                            catch {
+                            } catch {
                                 switch error {
                                 case let error as Legendary.InstallationError:
                                     failedGame = game

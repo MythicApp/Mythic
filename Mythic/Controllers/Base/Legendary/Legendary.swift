@@ -15,7 +15,6 @@ private let defaults = UserDefaults.standard
 /// Controls the function of the "legendary" cli,
 /// the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 class Legendary {
-
     /// The file location for legendary's configuration files.
     static let configLocation = "\(Bundle.appHome!.path)/legendary"
 
@@ -446,7 +445,7 @@ class Legendary {
     static func whoAmI() -> String {
         let userJSONFileURL = URL(filePath: "\(configLocation)/user.json")
 
-        guard 
+        guard
             files.fileExists(atPath: userJSONFileURL.path),
             let json = try? JSON(data: Data(contentsOf: userJSONFileURL))
         else { return "Nobody" }
@@ -518,7 +517,9 @@ class Legendary {
             throw DoesNotExistError.directory(directory: metadataDirectoryString)
         }
 
-        if let metadataFileName = metadataDirectoryContents.first(where: { $0.hasSuffix(".json") && String($0.dropLast(5)) == game.appName }),
+        if let metadataFileName = metadataDirectoryContents.first(where: {
+               $0.hasSuffix(".json") && String($0.dropLast(5)) == game.appName
+           }),
            let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
            let json = try? JSON(data: data) {
             return json
