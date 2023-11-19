@@ -30,7 +30,7 @@ struct MythicApp: App {
     }
     
     var body: some Scene {
-        WindowGroup {
+        Window("Mythic", id: "main") {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
                 .onAppear {
