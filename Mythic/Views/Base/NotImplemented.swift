@@ -8,7 +8,7 @@
 import SwiftUI
 import OSLog
 
-struct NotImplemented: View {
+struct NotImplementedView: View {
     var body: some View {
         VStack {
             Image(systemName: "calendar.badge.clock")
@@ -17,6 +17,8 @@ struct NotImplemented: View {
                 .frame(width: 35, height: 35)
                 .font(.system(.caption, design: .rounded))
                 .symbolEffect(.pulse)
+            
+            Text("Sorry, this isn't implemented yet!")
         }
         .padding()
     }
@@ -35,5 +37,5 @@ func NotImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> 
 }
 
 #Preview {
-    NotImplemented()
+    NotImplementedView()
 }

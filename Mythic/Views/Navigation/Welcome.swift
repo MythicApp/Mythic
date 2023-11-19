@@ -9,7 +9,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     var body: some View {
-        Text("Under construction")
+        NotImplementedView()
     }
 }
 

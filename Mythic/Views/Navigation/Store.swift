@@ -87,7 +87,7 @@ struct StoreView: View {
                 title: Text("Error"),
                 message: Text("Failed to load the webpage."),
                 primaryButton: .default(Text("Retry")) {
-                    _ = NotImplemented()
+                    _ = NotImplementedView()
                 },
                 secondaryButton: .cancel(Text("Cancel")) {
                     loadingError = false
