@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct StoreView: View {
-    
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var notImplementedAlert = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
-    
+
     var body: some View {
         WebView(
             loadingError: $loadingError,
@@ -24,7 +23,7 @@ struct StoreView: View {
             isLoading: $isLoading,
             urlString: urlString
         )
-        
+
         .toolbar {
             /*
              KNOWN ISSUE:
@@ -43,7 +42,7 @@ struct StoreView: View {
                 }
             }
              */
-            
+
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     if canGoBack {
@@ -54,7 +53,7 @@ struct StoreView: View {
                 }
                 .disabled(!canGoBack)
             }
-            
+
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     if canGoForward {
@@ -65,7 +64,7 @@ struct StoreView: View {
                 }
                 .disabled(!canGoForward)
             }
-            
+
             ToolbarItem(placement: .confirmationAction) {
                 Button(action: {
                     urlString = "javascript:location.reload();"
@@ -81,7 +80,7 @@ struct StoreView: View {
                 }
             }
         }
-        
+
         .alert(isPresented: $loadingError) {
             Alert(
                 title: Text("Error"),

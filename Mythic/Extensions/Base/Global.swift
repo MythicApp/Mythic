@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// A class that allows for cross-script variables and communication
-/// Example usage:
+// A class that allows for cross-script variables and communication
+// Example usage:
 /*
  EventManager.shared.subscribe("test") { data in
      if let value = data as? String {
@@ -48,11 +48,11 @@ func isAppInstalled(bundleIdentifier: String) -> Bool {
         "bash", "-c",
         "mdfind \"kMDItemCFBundleIdentifier == '\(bundleIdentifier)'\""
     ]
-    
+
     let stdout = Pipe()
     process.standardOutput = stdout
     process.launch()
-    
+
     let data = stdout.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? String()
 

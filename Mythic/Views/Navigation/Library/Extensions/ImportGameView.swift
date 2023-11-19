@@ -11,97 +11,96 @@ extension LibraryView {
     struct ImportGameView: View {
         @Binding var isPresented: Bool
         @Binding var isGameListRefreshCalled: Bool
-        
+
         @State private var isProgressViewSheetPresented: Bool = false
         @State private var isErrorPresented: Bool = false
         @State private var errorContent: Substring = ""
-        
+
         @State private var installableGames: [String] = []
-        
+
         @State private var selectedGame: String = "" // is initialised onappear
         @State private var selectedGameType: String = "Epic"
         @State private var selectedPlatform: String = "macOS"
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
-        
-        
+
         @State private var gamePath: String = ""
-        
+
         var body: some View {
             VStack {
                 Text("Import a Game")
                     .font(.title)
                     .multilineTextAlignment(.leading)
-                
+
                 Divider()
-                
+
                 Picker("", selection: $selectedGameType) {
                     ForEach(["Epic", "Local"], id: \.self) {
                         Text($0)
                     }
                 }
                 .pickerStyle(.segmented)
-                
+
                 if selectedGameType == "Epic" {
                     Picker("Select a game:", selection: $selectedGame) {
                         ForEach(installableGames, id: \.self) {
                             Text($0)
                         }
                     }
-                    
+
                     HStack {
                         TextField("Enter game path or click \"Browse...\"", text: $gamePath)
                             .frame(width: 300)
-                        
+
                         Button("Browse...") {
                             let openPanel = NSOpenPanel()
                             openPanel.allowedContentTypes = [.exe, .application]
                             openPanel.canChooseDirectories = true
                             openPanel.allowsMultipleSelection = false
-                            
+
                             if openPanel.runModal() == .OK {
                                 gamePath = openPanel.urls.first!.path
                             }
                         }
                     }
-                    
+
                     Picker("Choose the game's native platform:", selection: $selectedPlatform) {
                         ForEach(["macOS", "Windows"], id: \.self) {
                             Text($0)
                         }
                     }
                     .pickerStyle(.segmented)
-                    
+
                     HStack {
                         Toggle(isOn: $withDLCs) {
                             Text("Import with DLCs")
                         }
                         Spacer()
                     }
-                    
+
                     HStack {
                         Toggle(isOn: $checkIntegrity) {
                             Text("Verify the game's integrity")
                         }
                         Spacer()
                     }
-                    
+
                     HStack {
                         Button("Cancel", role: .cancel) {
                             isPresented = false
                         }
-                        
+
                         Spacer()
-                        
+
                         Button("Done", role: .none) {
                             var realSelectedPlatform = selectedPlatform
-                            
+
                             if selectedPlatform == "macOS" {
                                 realSelectedPlatform = "Mac"
                             }
-                            
+
                             isProgressViewSheetPresented = true
-                            
+
                             DispatchQueue.global(qos: .userInteractive).async { [self] in
                                 let command = Legendary.command(
                                     args: [
@@ -115,7 +114,7 @@ extension LibraryView {
                                         .compactMap { $0 },
                                     useCache: false
                                 )
-                                
+
                                 if let commandStderrString = String(data: command.stderr, encoding: .utf8) {
                                     if !commandStderrString.isEmpty {
                                         if commandStderrString.contains("INFO: Game \"\(selectedGame)\" has been imported.") {
@@ -123,7 +122,7 @@ extension LibraryView {
                                             isGameListRefreshCalled = true
                                         }
                                     }
-                                    
+
                                     for line in commandStderrString.components(separatedBy: "\n") {
                                         if line.contains("ERROR:") {
                                             if let range = line.range(of: "ERROR: ") {
@@ -153,21 +152,21 @@ extension LibraryView {
                         .disabled(gamePath.isEmpty)
                         .buttonStyle(.borderedProminent)
                     }
-                    
+
                 } else if selectedGameType == "Local" {
                     Image(systemName: "pencil.and.scribble")
                         .symbolEffect(.pulse)
                         .imageScale(.large)
                         .padding()
-                    
+
                     Button("Cancel", role: .cancel) {
                         isPresented = false
                     }
                 }
             }
-            
+
             .padding()
-            
+
             .onAppear {
                 DispatchQueue.global(qos: .userInteractive).async {
                     let games = Legendary.getInstallable()
@@ -178,11 +177,11 @@ extension LibraryView {
                     }
                 }
             }
-            
+
             .sheet(isPresented: $isProgressViewSheetPresented) {
                 ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
             }
-            
+
             .alert(isPresented: $isErrorPresented) {
                 Alert(
                     title: Text("Error importing game."),
@@ -192,7 +191,6 @@ extension LibraryView {
         }
     }
 }
-
 
 #Preview {
     LibraryView()

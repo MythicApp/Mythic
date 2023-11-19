@@ -15,19 +15,18 @@ import Combine
 import CachedAsyncImage
 
 struct MainView: View {
-    
     @State private var isAuthViewPresented: Bool = false
-    
+
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
-    
+
     @State private var appVersion: String = String()
     @State private var buildNumber: Int = 0
-    
+
     @State private var gameThumbnails: [String: String] = Dictionary()
-    
+
     @StateObject private var installing = Legendary.Installing.shared
-    
+
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {

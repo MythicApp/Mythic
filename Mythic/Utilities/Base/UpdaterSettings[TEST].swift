@@ -17,16 +17,16 @@ import Sparkle
 
 struct UpdaterSettingsView: View {
     private let updater: SPUUpdater
-    
+
     @State private var automaticallyChecksForUpdates: Bool
     @State private var automaticallyDownloadsUpdates: Bool
-    
+
     init(updater: SPUUpdater) {
         self.updater = updater
         self._automaticallyChecksForUpdates = State(initialValue: updater.automaticallyChecksForUpdates)
         self._automaticallyDownloadsUpdates = State(initialValue: updater.automaticallyDownloadsUpdates)
     }
-    
+
     var body: some View {
         VStack {
             Toggle("Automatically check for updates", isOn: Binding(
@@ -36,7 +36,7 @@ struct UpdaterSettingsView: View {
                     updater.automaticallyChecksForUpdates = newValue
                 }
             ))
-            
+
             Toggle("Automatically download updates", isOn: Binding(
                 get: { automaticallyDownloadsUpdates },
                 set: { newValue in

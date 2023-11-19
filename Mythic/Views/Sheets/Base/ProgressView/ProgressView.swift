@@ -17,23 +17,23 @@ struct ProgressViewSheet: View {
             ProgressView()
                 .padding()
                 .interactiveDismissDisabled(!dismissableWithEsc)
-            
+
             if timeoutWarning {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .imageScale(.large)
-                    
+
                     Text("It seems loading's taking a while.")
                 }
                 .padding()
-                
+
                 HStack {
                     Button(action: {
                         isPresented = false
                     }) {
                         Text("Dismiss loading")
                     }
-                    
+
                     Button(action: {
                         timeoutWarning = false
                         dismissableWithEsc = true

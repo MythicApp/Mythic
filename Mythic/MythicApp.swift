@@ -14,21 +14,21 @@ struct MythicApp: App {
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUpdatePromptPresented: Bool = false
-    
+
     private let updaterController: SPUStandardUpdaterController
-    
+
     init() {
         self._isFirstLaunch = State(
             initialValue: UserDefaults.standard.bool(forKey: "isFirstLaunch")
         )
-        
+
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: nil,
             userDriverDelegate: nil
         )
     }
-    
+
     var body: some Scene {
         Window("Mythic", id: "main") {
             MainView()
@@ -46,7 +46,7 @@ struct MythicApp: App {
                         }
                     }
                 }
-            
+
                 .sheet(isPresented: $isOnboardingPresented) {
                     OnboardingView(
                         isPresented: $isOnboardingPresented,
@@ -55,11 +55,11 @@ struct MythicApp: App {
                     )
                     .fixedSize()
                 }
-            
+
                 .sheet(isPresented: $isInstallViewPresented) {
                     OnboardingView.InstallView(isPresented: $isInstallViewPresented)
                 }
-            
+
                 .alert(isPresented: $isUpdatePromptPresented) {
                     Alert(
                         title: Text("Time for an update!"),
@@ -69,18 +69,18 @@ struct MythicApp: App {
                     )
                 }
         }
-        
+
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates…", action: updaterController.updater.checkForUpdates)
                     .disabled(!updaterController.updater.canCheckForUpdates)
-                
+
                 Button("Restart Onboarding…") {
                     isOnboardingPresented = true
                 }
             }
         }
-        
+
         Settings {
             UpdaterSettingsView(updater: updaterController.updater)
         }

@@ -12,9 +12,9 @@ struct LegendaryJson {
     static func getGames() -> (appNames: [String], appTitles: [String]) {
         guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
-            data: Legendary.command(args: ["list-installed","--json"], useCache: true).stdout
+            data: Legendary.command(args: ["list-installed", "--json"], useCache: true).stdout
         )
-        
+
         var appNames: [String] = []
         var appTitles: [String] = []
         for game in json! {
@@ -23,7 +23,7 @@ struct LegendaryJson {
         }
         return (appNames, appTitles)
     }
-    
+
     static func getInstallable() -> (appNames: [String], appTitles: [String]) {
         guard Legendary.signedIn(useCache: true) else { return ([], []) }
         let json = try? JSON(
@@ -37,15 +37,15 @@ struct LegendaryJson {
         }
         return (appNames, appTitles)
     }
-    
+
     static func getImages() -> [String: String] {
         guard Legendary.signedIn(useCache: true) else { return [:] }
         let json = try? JSON(
             data: Legendary.command(args: ["list","--platform","Windows","--third-party","--json"], useCache: true).stdout
         )
-        
+
         var gamePicURLS: [String: String] = [:]
-        
+
         for game in json! {
             let appName = String(describing: game.1["app_name"])
             if let keyImages = game.1["metadata"]["keyImages"].array {
@@ -57,14 +57,14 @@ struct LegendaryJson {
         }
         return gamePicURLS
     }
-    
+
     static func getAppNameFromTitle(appTitle: String) -> String {
         let json = try? JSON(
             data: Legendary.command(args: ["info", appTitle, "--json"], useCache: true).stdout
         )
         return json!["game"]["app_name"].stringValue
     }
-    
+
     static func getTitleFromAppName(appName: String) -> String {
         let json = try? JSON(
             data: Legendary.command(args: ["info", appName, "--json"], useCache: true).stdout
