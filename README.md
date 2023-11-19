@@ -33,7 +33,8 @@ Mythic uses the following Swift dependencies:
 - [Sparkle](https://github.com/sparkle-project/Sparkle) - A software update framework for macOS.
 - [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image) - CachedAsyncImage is the simplest way to add cache to your AsyncImage.
 - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) - The better way to deal with JSON data in Swift. 
-- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift 
+- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift
+- [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) - Semantic version structuring & parsing
 
 ## License
 Copyright © 2023 blackxfiied, Jecta
