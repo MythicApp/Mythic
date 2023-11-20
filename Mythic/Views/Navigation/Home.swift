@@ -85,14 +85,11 @@ struct HomeView: View {
                                                 Text("RECENTLY PLAYED")
                                                     .font(.footnote)
                                                     .foregroundStyle(.placeholder)
-                                                
                                                 Spacer()
                                             }
-                                            
                                             HStack {
                                                 Text("Rocket League")
                                                     .font(.title)
-                                                
                                                 Spacer()
                                             }
                                         }
@@ -129,7 +126,20 @@ struct HomeView: View {
                 .cornerRadius(10)
 
                 VStack {
-                    NotImplementedView()
+                    Image(systemName: "person.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                        .background(
+                            Circle()
+                                .foregroundColor(.accent)
+                                .frame(width: 40, height: 40)
+                                .shadow(color: .accent, radius: 10)
+                        )
+                        .foregroundColor(.white)
+                        .padding()
+                    Text("Welcome to Mythic\n")
+                    Text(Legendary.whoAmI())
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
