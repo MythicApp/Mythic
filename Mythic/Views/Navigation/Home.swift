@@ -31,7 +31,7 @@ struct HomeView: View {
             VStack {
                 ZStack {
                     HStack {
-                        CachedAsyncImage(url: URL(string: "https://cdn1.epicgames.com/item/fn/26BR_C4S4_EGS_Launcher_Blade_1200x1600_1200x1600-72d477839e2f1e1a9b3847d0998f50bc")) { phase in
+                        CachedAsyncImage(url: URL(string: "https://cdn1.epicgames.com/item/9773aa1aa54f4f7b80e44bef04986cea/EGS_RocketLeague_PsyonixLLC_S2_1200x1600-ebcb79b7c8aa2432c3ce52dfd4fc4ae0")) { phase in
                             switch phase {
                             case .empty:
                                 ProgressView()
@@ -81,14 +81,20 @@ struct HomeView: View {
 
                                     HStack {
                                         VStack {
-                                            Text("RECENTLY PLAYED")
-                                                .frame(alignment: .leading)
-                                                .font(.footnote)
-                                                .foregroundStyle(.placeholder)
-
-                                            Text("Fortnite")
-                                                .font(.title)
-                                                .frame(alignment: .leading)
+                                            HStack {
+                                                Text("RECENTLY PLAYED")
+                                                    .font(.footnote)
+                                                    .foregroundStyle(.placeholder)
+                                                
+                                                Spacer()
+                                            }
+                                            
+                                            HStack {
+                                                Text("Rocket League")
+                                                    .font(.title)
+                                                
+                                                Spacer()
+                                            }
                                         }
 
                                         Spacer()
@@ -116,34 +122,14 @@ struct HomeView: View {
 
             VStack {
                 VStack {
-                    HStack {
-                        if isAppInstalled(bundleIdentifier: "com.isaacmarovitz.Whisky") {
-                            Circle()
-                                .foregroundColor(.green)
-                                .frame(width: 10, height: 10)
-                                .shadow(color: .green, radius: 10, x: 1, y: 1)
-                            Text("Whisky installed!")
-                        } else {
-                            Circle()
-                                .foregroundColor(.red)
-                                .frame(width: 10, height: 10)
-                                .shadow(color: .red, radius: 10, x: 1, y: 1)
-                            Text("Whisky is not installed!")
-                        }
-                    }
+                    NotImplementedView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .cornerRadius(10)
 
                 VStack {
-                    WebView(
-                        loadingError: $loadingError,
-                        canGoBack: $canGoBack,
-                        canGoForward: $canGoForward,
-                        isLoading: $isLoading,
-                        urlString: urlString
-                    )
+                    NotImplementedView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
