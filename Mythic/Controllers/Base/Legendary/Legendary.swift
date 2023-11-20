@@ -18,8 +18,8 @@ class Legendary {
     /// The file location for legendary's configuration files.
     static let configLocation = "\(Bundle.appHome!.path)/legendary"
 
-    /// Logger instance for logging
-    private static let log = Logger(
+    /// Logger instance for legendary
+    public static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "legendary"
     )

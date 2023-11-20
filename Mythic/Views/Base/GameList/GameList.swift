@@ -85,8 +85,6 @@ struct GameListView: View {
                         isParsingOptionalPacks = true
                     }
                 }
-
-                print("optional packs: \(optionalPacks)")
                 group.leave()
             }
         }

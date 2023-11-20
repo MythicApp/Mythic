@@ -47,9 +47,6 @@ extension LibraryView {
                             Text(game.title)
                         }
                     }
-                    .onHover {_ in
-                        print("\(selectedGame)")
-                    }
 
                     HStack {
                         TextField("Enter game path or click \"Browse...\"", text: $gamePath)
@@ -97,7 +94,6 @@ extension LibraryView {
 
                         Button("Done", role: .none) {
                             var realSelectedPlatform = selectedPlatform
-                            print("seel \(selectedGame)")
                             if selectedPlatform == "macOS" {
                                 realSelectedPlatform = "Mac"
                             }

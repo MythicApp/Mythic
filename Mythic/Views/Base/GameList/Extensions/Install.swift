@@ -78,7 +78,7 @@ extension GameListView {
                                     activeAlert = .installError
                                     isAlertPresented = true
                                 default:
-                                    print()
+                                    do { }
                                 }
                             }
                         }

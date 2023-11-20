@@ -17,7 +17,7 @@ import Foundation
      }
  }
 
- EventManager.shared.publish("test", "real")
+ EventManager.shared.publish("test", "real?")
  */
 
 class EventManager {
