@@ -43,13 +43,6 @@ struct MainView: View {
     var body: some View {
         NavigationView {
             List {
-                NavigationLink(destination: WelcomeView()) {
-                    Label("Welcome", systemImage: "star")
-                        .foregroundStyle(.primary)
-                }
-
-                Spacer()
-
                 Text("DASHBOARD")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
@@ -217,7 +210,7 @@ struct MainView: View {
                 }
             }
 
-            WelcomeView()
+            HomeView()
         }
     }
 }
