@@ -112,7 +112,7 @@ struct GameListView: View {
                                 .offset(y: -5)
 
                             VStack {
-                                CachedAsyncImage(url: URL(string: gameThumbnails[game.appName]!), urlCache: imageCache) { phase in
+                                CachedAsyncImage(url: URL(string: gameThumbnails[game.appName] ?? String()), urlCache: imageCache) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
