@@ -9,6 +9,7 @@ import Foundation
 import ZIPFoundation
 import SemanticVersion
 import CryptoKit
+import SwiftyJSON
 import OSLog
 
 private let files = FileManager.default
@@ -18,15 +19,15 @@ class Libraries {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Libraries"
     )
-
+    
     static let directory = Bundle.appHome!.appending(path: "Libraries")
-
+    
     private static let dataLock = NSLock()
-
+    
     /// Check the Libraries folder's checksum.
     static func checksum() -> String {
         var dataAggregate = Data()
-
+        
         if let enumerator = FileManager.default.enumerator(atPath: directory.path) {
             for case let fileURL as URL in enumerator {
                 do {
@@ -36,46 +37,73 @@ class Libraries {
                 }
             }
         }
-
+        
         let checksum = dataAggregate.hash.map { String(format: "%02hhx", $0) }.joined()
-
+        
         return checksum
     }
-
-    /// Install Libraries, as MythicGPTKBuilder artifacts
+    
     static func install(
         downloadProgressHandler: @escaping (Double) -> Void,
         installProgressHandler: @escaping (Double) -> Void,
         completion: @escaping (Result<Bool, Error>) -> Void
-    ) { // storage check later?
-        guard !isInstalled() else { completion(.failure(AlreadyInstalledError())); return }
-
+    ) {
+        guard !isInstalled() else {
+            completion(.failure(AlreadyInstalledError()))
+            return
+        }
+        
         let session = URLSession(configuration: .default)
-
         let installProgress = Progress(totalUnitCount: 100)
-
-        let download = session.downloadTask(
-            with: URL(string: "https://nightly.link/MythicApp/GPTKBuilder/workflows/build-gptk/main/Libraries.zip")!
-        ) { (file, _, error) in
+        let group = DispatchGroup()
+        
+        var latestArtifact: [String: Any]?
+        
+        group.enter()
+        session.dataTask(with: URL(string: "https://api.github.com/repos/MythicApp/CompiledLibraries/actions/artifacts")!) { (data, _, error) in
+            defer { group.leave() }
+            
             guard error == nil else {
-                Logger.network.error("Error with GPTK download: \(error)")
+                Logger.network.error("Error retrieving latest GPTK build: \(error!)")
                 completion(.failure(error!))
                 return
             }
-
+            
             dataLock.lock()
             defer { dataLock.unlock() }
-
+            
+            if let data = data,
+               let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let artifacts = json["artifacts"] as? [[String: Any]],
+               let artifact = artifacts.first {
+                latestArtifact = artifact
+            }
+        }.resume()
+        
+        group.wait()
+        
+        let download = session.downloadTask(
+            with: URL(string: "https://nightly.link/MythicApp/CompiledLibraries/workflows/build-gptk/main/Libraries.zip")!
+        ) { (file, _, error) in
+            guard error == nil else {
+                Logger.network.error("Error with GPTK download: \(error!)")
+                completion(.failure(error!))
+                return
+            }
+            
+            dataLock.lock()
+            defer { dataLock.unlock() }
+            
             if let file = file {
                 do {
                     Logger.file.notice("Installing libraries...")
                     try files.unzipItem(at: file, to: directory, progress: installProgress)
                     Logger.file.notice("Finished downloading and installing libraries.")
-
+                    
                     let checksum = checksum()
                     UserDefaults.standard.set(checksum, forKey: "LibrariesChecksum")
                     Logger.file.notice("Libraries checksum is: \(checksum)")
-
+                    
                     completion(.success(true))
                 } catch {
                     Logger.file.error("Unable to install libraries to \(directory.relativePath): \(error)")
@@ -83,36 +111,38 @@ class Libraries {
                 }
             }
         }
-
+        
         let queue = DispatchQueue(label: "InstallProgress")
-
+        
         queue.async {
             while !download.progress.isFinished {
-                downloadProgressHandler(Double(download.countOfBytesReceived) / Double(600137702)) // rough estimate as of 235579c
+                downloadProgressHandler(Double(download.countOfBytesReceived) / (latestArtifact?["size_in_bytes"] as? Double ?? -1))
+                print("download progress:\nrecv \(Double(download.countOfBytesReceived))\ntotal: \((latestArtifact?["size_in_bytes"] as? Double ?? -1))")
                 Thread.sleep(forTimeInterval: 0.1)
             }
+            
+            downloadProgressHandler(1.0)
         }
-
+        
         queue.async {
             while !installProgress.isFinished {
                 installProgressHandler(installProgress.fractionCompleted)
                 Thread.sleep(forTimeInterval: 0.1)
             }
+            
+            installProgressHandler(1.0)
         }
-
+        
         download.resume()
     }
-
+    
     static func isInstalled() -> Bool {
-        return
-            files.fileExists(atPath: directory.path) &&
-            checksum() == UserDefaults.standard.string(forKey: "LibrariesChecksum")
-        ? true : false
+        return files.fileExists(atPath: directory.path) && checksum() == UserDefaults.standard.string(forKey: "LibrariesChecksum") ? true : false
     }
-
+    
     static func getVersion() -> SemanticVersion? {
         guard isInstalled() else { return nil }
-
+        
         guard
             let versionData = try? Data(contentsOf: directory.appending(path: "version.plist")),
             let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: versionData)["version"]
@@ -120,34 +150,34 @@ class Libraries {
             log.error("Unable to get installed GPTK version")
             return nil
         }
-
+        
         return version
     }
-
+    
     static func fetchLatestVersion() -> SemanticVersion? {
         guard let currentVersion = getVersion() else {
             return nil
         }
-
+        
         let session = URLSession(configuration: .default)
         let group = DispatchGroup()
         var latestVersion: SemanticVersion = currentVersion
-
+        
         group.enter()
         session.dataTask(
             with: URL(string: "https://raw.githubusercontent.com/MythicApp/GPTKBuilder/main/version.plist")!
         ) { (data, _, error) in
             defer { group.leave() }
-
+            
             guard error == nil else {
                 log.error("Unable to check for new GPTK version: \(error)")
                 return
             }
-
+            
             guard let data = data else {
                 return
             }
-
+            
             do {
                 latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"] ?? latestVersion
             } catch {
@@ -156,20 +186,20 @@ class Libraries {
         }
         .resume()
         group.wait()
-
+        
         return latestVersion
     }
-
+    
     static func remove(completion: @escaping (Result<Bool, Error>) -> Void) {
         defer { dataLock.unlock() }
-
+        
         guard isInstalled() else {
             completion(.failure(NotInstalledError()))
             return
         }
-
+        
         dataLock.lock()
-
+        
         do {
             try files.removeItem(at: directory)
             completion(.success(true))

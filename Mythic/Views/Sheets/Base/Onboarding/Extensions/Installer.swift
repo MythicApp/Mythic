@@ -10,37 +10,37 @@ import Combine
 
 extension OnboardingView {
     enum ActiveAlert { case closeConfirmation, installError }
-
+    
     struct InstallView: View {
         @Binding var isPresented: Bool
-
+        
         // @AppStorage("alreadyShownCloseConfirmation") var alreadyShownCloseConfirmation: Bool = false
-
+        
         @State private var isDownloadSheetPresented: Bool = false
         @State private var isInstallSheetPresented: Bool = false
-
+        
         @State private var activeAlert: ActiveAlert = .closeConfirmation
         @State private var isAlertPresented: Bool = false
-
+        
         @State private var downloadProgressEstimate: Double = 0
         @State private var installProgress: Double = 0
         @State private var installComplete: Bool = false
         @State private var installError: Bool = false
-
+        
         var body: some View {
             VStack {
                 Text("Install Game Porting Toolkit")
                     .font(.title)
-
+                
                 Divider()
-
+                
                 Text("In order to launch windows games, Mythic must download"
                      + "\na special translator by Apple to convert Windows code to macOS."
                      + "\n"
                      + "\nIt's around 1.8GB in size, but the download is around 600MB due to compression."
                 )
                 .multilineTextAlignment(.center)
-
+                
                 HStack {
                     Button("Close") {
                         if /* alreadyShownCloseConfirmation == false || */ Libraries.isInstalled() == false {
@@ -51,12 +51,12 @@ extension OnboardingView {
                             isPresented = false
                         }
                     }
-
+                    
                     Button(Libraries.isInstalled() ? "Installed" : "Install") {
                         Libraries.install(
                             downloadProgressHandler: { progress in
                                 downloadProgressEstimate = progress
-
+                                
                                 if progress < 1 {
                                     if !isDownloadSheetPresented {
                                         isDownloadSheetPresented = true
@@ -65,9 +65,10 @@ extension OnboardingView {
                                     isDownloadSheetPresented = false
                                 }
                             },
+                            
                             installProgressHandler: { progress in
                                 installProgress = progress
-
+                                
                                 if progress < 1 {
                                     if !isInstallSheetPresented {
                                         isInstallSheetPresented = true
@@ -76,6 +77,7 @@ extension OnboardingView {
                                     isInstallSheetPresented = false
                                 }
                             },
+                            
                             completion: { completion in
                                 switch completion {
                                 case .success:
@@ -91,47 +93,54 @@ extension OnboardingView {
                 }
             }
             .padding()
-
+            
             .sheet(isPresented: $isDownloadSheetPresented) {
                 VStack {
                     Text("Downloading Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
-
+                    
                     HStack {
-                        Text("\(Int(downloadProgressEstimate * 100))%")
-
-                        ProgressView(value: downloadProgressEstimate, total: 1)
-                            .progressViewStyle(.linear)
+                        if downloadProgressEstimate > 0 {
+                            Text("\(Int(downloadProgressEstimate * 100))%")
+                        }
+                        
+                        if downloadProgressEstimate > 0 {
+                            ProgressView(value: downloadProgressEstimate, total: 1)
+                                .progressViewStyle(.linear)
+                        } else {
+                            ProgressView()
+                                .progressViewStyle(.linear)
+                        }
                     }
                 }
                 .padding()
                 .fixedSize()
-
+                
                 .onDisappear {
                     // implement action if download incomplete
                 }
             }
-
+            
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
                     Text("Installing Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
-
+                    
                     HStack {
                         Text("\(Int(installProgress * 100))%")
-
+                        
                         ProgressView(value: installProgress, total: 1)
                             .progressViewStyle(.linear)
                     }
                 }
                 .padding()
                 .fixedSize()
-
+                
                 .onDisappear {
                     // implement action if install incomplete
                 }
             }
-
+            
             .alert(isPresented: $isAlertPresented) {
                 switch activeAlert {
                 case .closeConfirmation:
