@@ -28,8 +28,8 @@ class EventManager {
     /// Event storage
     private var events = [String: [(Any) -> Void]]()
 
-    /// Subscribe to events within the event manager
-    /// - Parameter event: The event to subscribe to.
+    /// Subscribe to events within the event manager.
+    /// - Parameter event: The name of the event to subscribe to.
     public func subscribe(_ event: String, _ callback: @escaping (Any) -> Void) {
         if events[event] == nil {
             events[event] = Array()
@@ -37,8 +37,10 @@ class EventManager {
         events[event]?.append(callback)
     }
     
-    /// Publish new values to events
-    ///  -
+    /// Publish new values to events.
+    ///  - Parameters:
+    ///    - event: The event to publish to.
+    ///    - data: The data to publish to the event,
     public func publish(_ event: String, _ data: Any) {
         if let callbacks = events[event] {
             for callback in callbacks {
