@@ -16,6 +16,7 @@ import CachedAsyncImage
 
 struct MainView: View {
     @State private var isAuthViewPresented: Bool = false
+    @State private var isInstallStatusViewPresented: Bool = false
 
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
@@ -109,7 +110,7 @@ struct MainView: View {
 
                         HStack {
                             Button {
-                                // Not implemented
+                                isInstallStatusViewPresented = true
                             } label: {
                                 if installing._status.progress?.percentage == nil {
                                     ProgressView()
@@ -193,6 +194,10 @@ struct MainView: View {
                     .onDisappear {
                         updateLegendaryAccountState()
                     }
+            }
+            
+            .sheet(isPresented: $isInstallStatusViewPresented) {
+                InstallStatusView(isPresented: $isInstallStatusViewPresented)
             }
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)

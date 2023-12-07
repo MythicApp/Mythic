@@ -34,6 +34,8 @@ struct GameListView: View {
     @State private var installableGames: [Legendary.Game] = Array()
     @State private var installedGames: [Legendary.Game] = Array()
     @StateObject private var installing = Legendary.Installing.shared
+    
+    @State private var isInstallStatusViewPresented: Bool = false
 
     @State private var gameThumbnails: [String: String] = Dictionary()
     @State private var optionalPacks: [String: String] = Dictionary()
@@ -181,13 +183,18 @@ struct GameListView: View {
                                         .controlSize(.large)
                                     } else {
                                         if installing._value && installing._game == game {
-                                            if installing._status.progress?.percentage == nil {
-                                                ProgressView()
-                                                    .progressViewStyle(.linear)
-                                            } else {
-                                                ProgressView(value: installing._status.progress?.percentage, total: 100)
-                                                    .progressViewStyle(.linear)
+                                            Button {
+                                                isInstallStatusViewPresented = true
+                                            } label: {
+                                                if installing._status.progress?.percentage == nil {
+                                                    ProgressView()
+                                                        .progressViewStyle(.linear)
+                                                } else {
+                                                    ProgressView(value: installing._status.progress?.percentage, total: 100)
+                                                        .progressViewStyle(.linear)
+                                                }
                                             }
+                                            .buttonStyle(.plain)
 
                                             Button {
                                                 Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
@@ -314,6 +321,10 @@ struct GameListView: View {
                 game: currentGame,
                 isGameListRefreshCalled: $isRefreshCalled
             )
+        }
+        
+        .sheet(isPresented: $isInstallStatusViewPresented) {
+            InstallStatusView(isPresented: $isInstallStatusViewPresented)
         }
 
         .alert(isPresented: $isAlertPresented) {
