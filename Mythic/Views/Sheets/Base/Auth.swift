@@ -22,7 +22,7 @@ struct AuthView: View {
             isLoggingIn = true
             progressViewPresented = true
 
-            let command = await Legendary.command(args: ["auth", "--code", code], useCache: false)
+            let command = await Legendary.command(args: ["auth", "--code", code], useCache: false, identifier: "signIn")
 
             if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("Successfully logged in as") {
                 authSuccessful = true

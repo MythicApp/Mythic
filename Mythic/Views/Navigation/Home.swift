@@ -12,7 +12,6 @@ import CachedAsyncImage
 struct HomeView: View {
     @State private var loadingError = false
     @State private var isLoading = false
-    @State private var notImplementedAlert = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"

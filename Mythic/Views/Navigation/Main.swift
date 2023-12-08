@@ -17,6 +17,12 @@ import CachedAsyncImage
 struct MainView: View {
     @State private var isAuthViewPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
+    
+    enum ActiveAlert {
+        case stopDownloadWarning
+    }
+    @State private var activeAlert: ActiveAlert? = .none
+    @State private var isAlertPresented: Bool = false
 
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
@@ -126,7 +132,8 @@ struct MainView: View {
                             }
 
                             Button {
-                                Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
+                                activeAlert = .stopDownloadWarning
+                                isAlertPresented = true
                             } label: {
                                 Image(systemName: "stop.fill")
                                     .foregroundStyle(.red)
@@ -155,7 +162,7 @@ struct MainView: View {
                     if signedIn {
                         Button {
                             Task(priority: .high) {
-                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false)
+                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
                                 if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
                                     updateLegendaryAccountState()
                                 }
@@ -198,6 +205,22 @@ struct MainView: View {
             
             .sheet(isPresented: $isInstallStatusViewPresented) {
                 InstallStatusView(isPresented: $isInstallStatusViewPresented)
+            }
+            .alert(isPresented: $isAlertPresented) {
+                switch activeAlert {
+                case .stopDownloadWarning:
+                    return stopDownloadAlert(isPresented: $isAlertPresented, game: Legendary.Installing.game)
+                case nil:
+                    Logger.app.error("no activeAlert supplied. resultantly, there's no alert to be presented.")
+                    return Alert(
+                        title: .init("An error occurred."),
+                        message: .init(
+                            "\(Text("[ActiveAlert Fault]]").italic())"
+                            + "If this error appears, please consult support."
+                            + "\nMake sure to include what you were doing when the error occured."
+                        )
+                    )
+                }
             }
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)

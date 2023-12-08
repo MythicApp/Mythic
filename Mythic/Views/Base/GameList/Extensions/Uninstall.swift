@@ -82,7 +82,8 @@ extension GameListView {
                                     game.appName
                                 ]
                                     .compactMap { $0 },
-                                useCache: false
+                                useCache: false,
+                                identifier: "uninstall"
                             )
 
                             if let commandStderrString = String(data: commandOutput.stderr, encoding: .utf8) {

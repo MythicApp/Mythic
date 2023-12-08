@@ -20,7 +20,7 @@ struct GameListView: View {
     @State private var isUninstallViewPresented: Bool = false
     @State private var isPlayDefaultViewPresented: Bool = false
 
-    enum ActiveAlert { case installError, uninstallError }
+    enum ActiveAlert { case installError, uninstallError, stopDownloadWarning }
     @State private var activeAlert: ActiveAlert = .installError
     @State private var isAlertPresented: Bool = false
 
@@ -65,7 +65,8 @@ struct GameListView: View {
             Task(priority: .userInitiated) {
                 let command = await Legendary.command(
                     args: ["install", game.appName],
-                    useCache: true
+                    useCache: true,
+                    identifier: "parseOptionalPacks"
                 )
 
                 var isParsingOptionalPacks = false
@@ -159,7 +160,7 @@ struct GameListView: View {
                                         Button {
                                             Task(priority: .userInitiated) {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                _ = await Legendary.command(args: ["launch", game.appName], useCache: false)
+                                                _ = await Legendary.command(args: ["launch", game.appName], useCache: false, identifier: "launch")
                                             }
                                         } label: {
                                             Image(systemName: "play.fill")
@@ -197,7 +198,8 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
 
                                             Button {
-                                                Logger.app.warning("Stop install not implemented yet; execute \"killall cli\" lol")
+                                                activeAlert = .stopDownloadWarning
+                                                isAlertPresented = true
                                             } label: {
                                                 Image(systemName: "stop.fill")
                                                     .foregroundStyle(.red)
@@ -339,6 +341,8 @@ struct GameListView: View {
                     title: Text("Error uninstalling \(failedGame?.title ?? "game")."),
                     message: Text(uninstallationErrorMessage)
                 )
+            case .stopDownloadWarning:
+                stopDownloadAlert(isPresented: $isAlertPresented, game: Legendary.Installing.game)
             }
         }
     }

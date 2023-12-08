@@ -114,7 +114,8 @@ extension LibraryView {
                                             gamePath
                                         ]
                                             .compactMap { $0 },
-                                        useCache: false
+                                        useCache: false,
+                                        identifier: "gameImport"
                                     )
                                 }
                                 if command != nil {
