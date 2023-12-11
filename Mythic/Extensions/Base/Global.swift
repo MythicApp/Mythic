@@ -20,13 +20,13 @@ func isAppInstalled(bundleIdentifier: String) -> Bool {
         "bash", "-c",
         "mdfind \"kMDItemCFBundleIdentifier == '\(bundleIdentifier)'\""
     ]
-
+    
     let stdout = Pipe()
     process.standardOutput = stdout
     process.launch()
-
+    
     let data = stdout.fileHandleForReading.readDataToEndOfFile()
     let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? String()
-
+    
     return !output.isEmpty
 }

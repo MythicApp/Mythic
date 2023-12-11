@@ -19,7 +19,7 @@ struct StoreView: View {
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
-
+    
     var body: some View {
         WebView(
             loadingError: $loadingError,
@@ -28,27 +28,27 @@ struct StoreView: View {
             isLoading: $isLoading,
             urlString: urlString
         )
-
+        
         .toolbar {
             /*
              KNOWN ISSUE:
              updateNSView in WebView() is an async function, 
              and the the view is being updated while the page is still loading
-
-            if isLoading {
-                ToolbarItem(placement: .confirmationAction) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .controlSize(.small)
-                }
-            } else if loadingError {
-                ToolbarItem(placement: .confirmationAction) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .symbolEffect(.pulse)
-                }
-            }
+             
+             if isLoading {
+             ToolbarItem(placement: .confirmationAction) {
+             ProgressView()
+             .progressViewStyle(.circular)
+             .controlSize(.small)
+             }
+             } else if loadingError {
+             ToolbarItem(placement: .confirmationAction) {
+             Image(systemName: "exclamationmark.triangle.fill")
+             .symbolEffect(.pulse)
+             }
+             }
              */
-
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if canGoBack {
@@ -59,7 +59,7 @@ struct StoreView: View {
                 }
                 .disabled(!canGoBack)
             }
-
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if canGoForward {
@@ -70,7 +70,7 @@ struct StoreView: View {
                 }
                 .disabled(!canGoForward)
             }
-
+            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     urlString = "javascript:location.reload();"
@@ -88,7 +88,7 @@ struct StoreView: View {
                 }
             }
         }
-
+        
         .alert(isPresented: $loadingError) {
             Alert(
                 title: Text("Error"),

@@ -16,7 +16,7 @@ import SwiftUI
 struct ProgressViewSheetWithError: View {
     @Binding var isError: Bool
     @Binding var isPresented: Bool
-
+    
     var body: some View {
         if !isError {
             ProgressViewSheet(isPresented: $isPresented)

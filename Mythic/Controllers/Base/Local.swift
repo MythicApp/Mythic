@@ -14,5 +14,5 @@
 import Foundation
 
 class LocalGames {
-
+    
 }

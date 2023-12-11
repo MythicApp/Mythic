@@ -381,81 +381,81 @@ class Legendary {
         // Throwing an error directly to install() is preferable.
         if let error = errorThrownExternally { Installing.shared.reset(); throw error }
     }
-
+    
     /*
-    static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
-        var environmentVariables: [String: String] = Dictionary()
-        environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
-        
-        if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
-            if let dxvk = dxvkConfig["dxvk"] as? Bool {
-                print("dxvk: \(dxvk)")
-            }
-            if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
-                print("dxvkAsync: \(dxvkAsync)")
-            }
-            if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
-                if let fps = dxvkHud["fps"] as? [String: Any] {
-                    print("fps: \(fps)")
-                }
-            }
-        }
-        
-        if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
-            if let major = fileVersion["major"] as? Int {
-                print("fileVersion major: \(major)")
-            }
-            if let minor = fileVersion["minor"] as? Int {
-                print("fileVersion minor: \(minor)")
-            }
-        }
-        
-        if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
-            if let metalHud = metalConfig["metalHud"] as? Bool,
-               metalHud == true {
-                environmentVariables["MTL_HUD_ENABLED"] = "1"
-            }
-            if let metalTrace = metalConfig["metalTrace"] as? Bool {
-                print("metal trace: \(metalTrace)")
-            }
-        }
-        
-        if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
-            if let msync = wineConfig["msync"] as? Bool,
-               msync == true {
-                environmentVariables["WINEMSYNC"] = "1"
-            }
-            
-            if let windowsVersion = wineConfig["windowsVersion"] as? String {
-                print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
-            }
-            
-            if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
-                if let major = wineVersion["major"] as? Int {
-                    print("wineVersion major: \(major)")
-                }
-                if let minor = wineVersion["minor"] as? Int {
-                    print("wineVersion minor: \(minor)")
-                }
-                if let patch = wineVersion["patch"] as? Int {
-                    print("wineVersion patch: \(patch)")
-                }
-            }
-        }
-        
-        _ = await command(args: [
-            "launch",
-            game.appName,
-            "--wine",
-            "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
-        ]
-            .compactMap { $0 },
-                          useCache: false,
-                          additionalEnvironmentVariables: environmentVariables
-        )
-    }
+     static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
+     var environmentVariables: [String: String] = Dictionary()
+     environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
+     
+     if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
+     if let dxvk = dxvkConfig["dxvk"] as? Bool {
+     print("dxvk: \(dxvk)")
+     }
+     if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
+     print("dxvkAsync: \(dxvkAsync)")
+     }
+     if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
+     if let fps = dxvkHud["fps"] as? [String: Any] {
+     print("fps: \(fps)")
+     }
+     }
+     }
+     
+     if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
+     if let major = fileVersion["major"] as? Int {
+     print("fileVersion major: \(major)")
+     }
+     if let minor = fileVersion["minor"] as? Int {
+     print("fileVersion minor: \(minor)")
+     }
+     }
+     
+     if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
+     if let metalHud = metalConfig["metalHud"] as? Bool,
+     metalHud == true {
+     environmentVariables["MTL_HUD_ENABLED"] = "1"
+     }
+     if let metalTrace = metalConfig["metalTrace"] as? Bool {
+     print("metal trace: \(metalTrace)")
+     }
+     }
+     
+     if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
+     if let msync = wineConfig["msync"] as? Bool,
+     msync == true {
+     environmentVariables["WINEMSYNC"] = "1"
+     }
+     
+     if let windowsVersion = wineConfig["windowsVersion"] as? String {
+     print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
+     }
+     
+     if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
+     if let major = wineVersion["major"] as? Int {
+     print("wineVersion major: \(major)")
+     }
+     if let minor = wineVersion["minor"] as? Int {
+     print("wineVersion minor: \(minor)")
+     }
+     if let patch = wineVersion["patch"] as? Int {
+     print("wineVersion patch: \(patch)")
+     }
+     }
+     }
+     
+     _ = await command(args: [
+     "launch",
+     game.appName,
+     "--wine",
+     "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
+     ]
+     .compactMap { $0 },
+     useCache: false,
+     additionalEnvironmentVariables: environmentVariables
+     )
+     }
      */
-
+    
     /// Wipe legendary's command cache. This will slow most legendary commands until cache is rebuilt.
     static func clearCommandCache() {
         commandCache = Dictionary()
@@ -661,7 +661,7 @@ class Legendary {
     }
     
     /* // // // // // // // // // // // // // // // //
-      ___   _   _  _  ___ ___ ___   _______  _  _ ___
+     ___   _   _  _  ___ ___ ___   _______  _  _ ___
      |   \ /_\ | \| |/ __| __| _ \ |_  / _ \| \| | __|
      | |) / _ \| .` | (_ | _||   /  / / (_) | .` | _|
      |___/_/ \_\_|\_|\___|___|_|_\ /___\___/|_|\_|___|

@@ -17,12 +17,12 @@ import OSLog
 private let files = FileManager.default
 
 class Wine {
-
+    
     @available(*, message: "Not implemented.")
     static func command() {
-
+        
     }
-
+    
     static let bottlesDirectory = {
         let directory = Bundle.appContainer!.appending(path: "Bottles")
         if !files.fileExists(atPath: directory.path) {
@@ -33,10 +33,10 @@ class Wine {
                 Logger.app.error("Error creating Bottles directory: \(error)")
             }
         }
-
+        
         return directory
     }
-
+    
     func createBottle(name: String) {
         guard Libraries.isInstalled() else { return }
         // run wineboot

@@ -21,7 +21,7 @@ struct HomeView: View {
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
-
+    
     let gradient = LinearGradient(
         gradient: Gradient(stops: [
             .init(color: .purple, location: 0),
@@ -30,7 +30,7 @@ struct HomeView: View {
         startPoint: .bottom,
         endPoint: .top
     )
-
+    
     var body: some View {
         HStack {
             VStack {
@@ -83,7 +83,7 @@ struct HomeView: View {
                             ZStack(alignment: .bottom) {
                                 VStack {
                                     Spacer()
-
+                                    
                                     HStack {
                                         VStack {
                                             HStack {
@@ -101,11 +101,11 @@ struct HomeView: View {
                                                 Spacer()
                                             }
                                         }
-
+                                        
                                         Spacer()
-
+                                        
                                         Button {
-
+                                            
                                         } label: {
                                             Image(systemName: "play.fill")
                                             //  .foregroundStyle(.background)
@@ -124,7 +124,7 @@ struct HomeView: View {
             }
             .background(.background)
             .cornerRadius(10)
-
+            
             VStack {
                 VStack {
                     NotImplementedView()
@@ -132,7 +132,7 @@ struct HomeView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .cornerRadius(10)
-
+                
                 VStack {
                     NotImplementedView()
                 }

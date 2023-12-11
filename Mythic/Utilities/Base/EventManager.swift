@@ -17,12 +17,12 @@ import Foundation
 // Example usage:
 /*
  EventManager.shared.subscribe("test") { data in
-     if let value = data as? String {
-         print("chat is this \(value)")
-        
-     }
+ if let value = data as? String {
+ print("chat is this \(value)")
+ 
  }
-
+ }
+ 
  EventManager.shared.publish("test", "real?")
  */
 
@@ -30,10 +30,10 @@ import Foundation
 class EventManager {
     /// The shared instance for events
     static let shared = EventManager()
-
+    
     /// Event storage
     private var events = [String: [(Any) -> Void]]()
-
+    
     /// Subscribe to events within the event manager.
     /// - Parameter event: The name of the event to subscribe to.
     public func subscribe(_ event: String, _ callback: @escaping (Any) -> Void) {

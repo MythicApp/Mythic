@@ -26,10 +26,10 @@ class FileLocations {
         } catch {
             Logger.file.error("Unable to get global Applications directory: \(error)")
         }
-
+        
         return nil
     }()
-
+    
     /// A directory in global applications where games should be located.
     /// (Force-unwrappable)
     static let globalGames: URL? = {
@@ -45,10 +45,10 @@ class FileLocations {
                 Logger.file.error("Unable to get games directory: \(error)")
             }
         } // no else block, error is handled already
-
+        
         return nil
     }()
-
+    
     /// The current user's Application Support directory.
     /// (Force-unwrappable)
     static let userApplicationSupport: URL? = {
@@ -60,10 +60,10 @@ class FileLocations {
         } catch {
             Logger.file.error("Unable to get Application Support directory: \(error)")
         }
-
+        
         return nil
     }()
-
+    
     /// The current user's Containers directory.
     /// (Force-unwrappable)
     static let userContainers: URL? = {
@@ -72,11 +72,11 @@ class FileLocations {
                                  in: .userDomainMask,
                                  appropriateFor: nil,
                                  create: false)
-                .appending(path: "Containers")
+            .appending(path: "Containers")
         } catch {
             Logger.file.error("Unable to get Containers directory: \(error)")
         }
-
+        
         return nil
     }()
 }
