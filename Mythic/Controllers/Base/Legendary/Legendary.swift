@@ -30,13 +30,12 @@ class Legendary {
     /// Dictionary to monitor running commands and their identifiers.
     private static var runningCommands: [String: Process] = Dictionary()
     
-    /// Run a legendary command, using the included legendary binary.
-    /// No, I do not want to make command() something global. Id rather keep wine and legendary separate
+    /// Run a legendary command using the included legendary binary.
     ///
     /// - Parameters:
     ///   - args: The command arguments.
     ///   - useCache: Flag indicating whether to use cached output.
-    ///   - identifier: a string to keep track of individual command functions. (originally UUID-based)
+    ///   - identifier: String to keep track of individual command functions. (originally UUID-based)
     ///   - input: Optional input string for the command.
     ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
     ///   - asyncOutput: Optional closure that gets output appended to it immediately.
@@ -103,7 +102,7 @@ class Legendary {
             
             task.arguments = args
             
-            var environment = ["XDG_CONFIG_HOME": Bundle.appHome!.path]
+            var environment = ["LEGENDARY_CONFIG_PATH": Bundle.appHome!.appending(path: "Config").path]
             if let additionalEnvironmentVariables = additionalEnvironmentVariables {
                 environment.merge(additionalEnvironmentVariables) { (_, new) in new }
             }
@@ -286,6 +285,8 @@ class Legendary {
                 output.enumerateLines { line, _ in
                     if line.contains("[DLManager] INFO:") {
                         if !line.contains("Finished installation process in") {
+                            
+                            EventManager.shared.publish("currentInstallationData", ())
                             
                             let range = NSRange(line.startIndex..<line.endIndex, in: line)
                             
