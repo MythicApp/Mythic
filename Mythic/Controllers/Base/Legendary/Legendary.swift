@@ -16,7 +16,7 @@ private let defaults = UserDefaults.standard
 /// the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
 class Legendary {
     /// The file location for legendary's configuration files.
-    static let configLocation = "\(Bundle.appHome!.path)/legendary"
+    static let configLocation = Bundle.appHome!.appending(path: "Config").path
     
     /// Logger instance for legendary
     public static let log = Logger(
@@ -102,7 +102,7 @@ class Legendary {
             
             task.arguments = args
             
-            var environment = ["LEGENDARY_CONFIG_PATH": Bundle.appHome!.appending(path: "Config").path]
+            var environment = ["LEGENDARY_CONFIG_PATH": configLocation]
             if let additionalEnvironmentVariables = additionalEnvironmentVariables {
                 environment.merge(additionalEnvironmentVariables) { (_, new) in new }
             }

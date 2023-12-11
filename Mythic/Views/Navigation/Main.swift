@@ -20,20 +20,21 @@ struct MainView: View {
     
     enum ActiveAlert {
         case stopDownloadWarning
+        case signOutConfirmation
     }
     @State private var activeAlert: ActiveAlert? = .none
     @State private var isAlertPresented: Bool = false
-
+    
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
-
+    
     @State private var appVersion: String = String()
     @State private var buildNumber: Int = 0
-
+    
     @State private var gameThumbnails: [String: String] = Dictionary()
-
+    
     @StateObject private var installing = Legendary.Installing.shared
-
+    
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {
@@ -44,16 +45,16 @@ struct MainView: View {
             }
         }
     }
-
+    
     init() { updateLegendaryAccountState() }
-
+    
     var body: some View {
         NavigationView {
             List {
                 Text("DASHBOARD")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
-
+                
                 Group {
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
@@ -68,13 +69,13 @@ struct MainView: View {
                             .foregroundStyle(.primary)
                     }
                 }
-
+                
                 Spacer()
-
+                
                 Text("MANAGEMENT")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
-
+                
                 Group {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
@@ -89,31 +90,31 @@ struct MainView: View {
                             .foregroundStyle(.primary)
                     }
                 }
-
+                
                 Spacer()
-
+                
                 if installing._value == true {
                     Divider()
-
+                    
                     /*
                      ZStack {
-                        CachedAsyncImage(url: URL(string: gameThumbnails[installing._game] ?? String())) { phase in
-                            if case .success(let image) = phase {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .blur(radius: 20)
-                            }
-                    }
+                     CachedAsyncImage(url: URL(string: gameThumbnails[installing._game] ?? String())) { phase in
+                     if case .success(let image) = phase {
+                     image
+                     .resizable()
+                     .aspectRatio(contentMode: .fit)
+                     .blur(radius: 20)
+                     }
+                     }
                      */
-
+                    
                     VStack {
                         Text("INSTALLING")
                             .fontWeight(.bold)
                             .font(.system(size: 8))
                             .offset(x: -2, y: 0)
                         Text(installing._game == nil ? "Loading..." : installing._game!.title)
-
+                        
                         HStack {
                             Button {
                                 isInstallStatusViewPresented = true
@@ -130,7 +131,7 @@ struct MainView: View {
                             .onChange(of: installing._finished) { _, newValue in
                                 installing._value = !newValue
                             }
-
+                            
                             Button {
                                 activeAlert = .stopDownloadWarning
                                 isAlertPresented = true
@@ -146,9 +147,9 @@ struct MainView: View {
                         }
                     }
                 }
-
+                
                 Divider()
-
+                
                 HStack {
                     Image(systemName: "person")
                         .foregroundStyle(.primary)
@@ -157,16 +158,12 @@ struct MainView: View {
                             updateLegendaryAccountState()
                         }
                 }
-
+                
                 if epicUserAsync != "Loading..." {
                     if signedIn {
                         Button {
-                            Task(priority: .high) {
-                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
-                                if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
-                                    updateLegendaryAccountState()
-                                }
-                            }
+                            activeAlert = .signOutConfirmation
+                            isAlertPresented = true
                         } label: {
                             HStack {
                                 Image(systemName: "person.slash")
@@ -187,7 +184,7 @@ struct MainView: View {
                         }
                     }
                 }
-
+                
                 if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
                    let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
                    let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
@@ -210,12 +207,29 @@ struct MainView: View {
                 switch activeAlert {
                 case .stopDownloadWarning:
                     return stopDownloadAlert(isPresented: $isAlertPresented, game: Legendary.Installing.game)
+                case .signOutConfirmation:
+                    return Alert(
+                        title: .init("Are you sure you want to sign out?"),
+                        message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
+                        primaryButton: .destructive(.init("Sign Out")) {
+                            Task(priority: .high) { // progress view implementation in future
+                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
+                                if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
+                                    updateLegendaryAccountState()
+                                }
+                            }
+                        },
+                        secondaryButton: .cancel(.init("Cancel")) {
+                            isAlertPresented = false
+                            activeAlert = .none
+                        }
+                    )
                 case nil:
                     Logger.app.error("no activeAlert supplied. resultantly, there's no alert to be presented.")
                     return Alert(
                         title: .init("An error occurred."),
                         message: .init(
-                            "\(Text("[ActiveAlert Fault]]").italic())"
+                            "\(Text("[ActiveAlert Fault]").italic())"
                             + "If this error appears, please consult support."
                             + "\nMake sure to include what you were doing when the error occured."
                         )
@@ -237,7 +251,7 @@ struct MainView: View {
                     if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                 }
             }
-
+            
             HomeView()
         }
     }
