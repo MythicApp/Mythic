@@ -69,11 +69,14 @@ class Legendary {
         
         if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
-            _ = await run()
-            log.debug("Cache returned, and new cache successfully appended.")
+            Task(priority: .background) {
+                _ = await run()
+                log.debug("New cache appended.")
+            }
+            log.debug("Cache returned.")
             return cachedOutput
         } else {
-            log.debug("\( useCache ? "Cache not found, creating" : "Cache disabled for this task." )")
+            log.debug("\( useCache ? "Building new cache" : "Cache disabled for this task." )")
             return await run()
         }
         
