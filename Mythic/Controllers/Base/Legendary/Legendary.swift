@@ -69,10 +69,8 @@ class Legendary {
         
         if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
-            Task {
-                _ = await run()
-                log.debug("Cache returned, and new cache successfully appended.")
-            }
+            _ = await run()
+            log.debug("Cache returned, and new cache successfully appended.")
             return cachedOutput
         } else {
             log.debug("\( useCache ? "Cache not found, creating" : "Cache disabled for this task." )")
@@ -91,16 +89,33 @@ class Legendary {
                 let stdin = Pipe()
             }
             
-            /// Contains instances of Data, for handling pipes
-            struct DataContainer {
-                var stdout = Data()
-                var stderr = Data()
+            actor DataContainer {
+                private var _stdout = Data()
+                private var _stderr = Data()
+                
+                // swiftlint:disable nesting
+                enum Stream {
+                    case stdout, stderr
+                }
+                // swiftlint:enable nesting
+                
+                func append(_ data: Data, to stream: Stream) {
+                    switch stream {
+                    case .stdout:
+                        _stdout.append(data)
+                    case .stderr:
+                        _stderr.append(data)
+                    }
+                }
+                
+                var stdout: Data { return _stdout }
+                var stderr: Data { return _stderr }
             }
             
             let pipe = PipeContainer()
-            var data = DataContainer()
+            let data = DataContainer()
             
-            // initialise legendary cli and config env
+            // initialise legendary and config env
             
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
@@ -120,50 +135,53 @@ class Legendary {
             
             // async stdout appending
             queue.command.async(qos: .utility) {
-                while true {
-                    let availableData = pipe.stdout.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    data.stdout.append(availableData) // no idea how to fix
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stdout {
-                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
-                            if let inputData = input?.data(using: .utf8) {
-                                pipe.stdin.fileHandleForWriting.write(inputData)
-                                pipe.stdin.fileHandleForWriting.closeFile()
-                            }
-                        }
-                    }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stdout(outputString)
-                    }
-                }
-            }
-            
-            // async stderr appending
-            queue.command.async(qos: .utility) {
-                while true {
-                    let availableData = pipe.stderr.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    data.stderr.append(availableData) // no idea how to fix
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stderr {
-                        if let availableData = String(data: availableData, encoding: .utf8) {
-                            if availableData.contains(inputIf.string) {
+                Task {
+                    while true {
+                        let availableData = pipe.stdout.fileHandleForReading.availableData
+                        if availableData.isEmpty { break }
+                        
+                        await data.append(availableData, to: .stdout)
+                        
+                        if let inputIf = inputIf, inputIf.stream == .stdout {
+                            if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
                                 if let inputData = input?.data(using: .utf8) {
                                     pipe.stdin.fileHandleForWriting.write(inputData)
                                     pipe.stdin.fileHandleForWriting.closeFile()
                                 }
                             }
                         }
+                        
+                        if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                            asyncOutput.stdout(outputString)
+                        }
                     }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stderr(outputString)
+                }
+            }
+            
+            // async stderr appending
+            queue.command.async(qos: .utility) {
+                Task {
+                    while true {
+                        let availableData = pipe.stderr.fileHandleForReading.availableData
+                        if availableData.isEmpty { break }
+                        
+                        await data.append(availableData, to: .stderr)
+                        
+                        if let inputIf = inputIf, inputIf.stream == .stderr {
+                            if let availableData = String(data: availableData, encoding: .utf8) {
+                                if availableData.contains(inputIf.string) {
+                                    if let inputData = input?.data(using: .utf8) {
+                                        pipe.stdin.fileHandleForWriting.write(inputData)
+                                        pipe.stdin.fileHandleForWriting.closeFile()
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                            asyncOutput.stderr(outputString)
+                        }
                     }
-                    
                 }
             }
             
@@ -179,8 +197,8 @@ class Legendary {
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
                 
-                try task.run()
                 runningCommands[identifier] = task
+                try task.run()
                 
                 task.waitUntilExit()
             } catch {
@@ -190,7 +208,7 @@ class Legendary {
             
             // output (stderr/out) handler
             
-            let output: (stdout: Data, stderr: Data) = (
+            let output: (stdout: Data, stderr: Data) = await (
                 data.stdout, data.stderr
             )
             
@@ -383,77 +401,77 @@ class Legendary {
     }
     
     /*
-     static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
-     var environmentVariables: [String: String] = Dictionary()
-     environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
-     
-     if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
-     if let dxvk = dxvkConfig["dxvk"] as? Bool {
-     print("dxvk: \(dxvk)")
-     }
-     if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
-     print("dxvkAsync: \(dxvkAsync)")
-     }
-     if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
-     if let fps = dxvkHud["fps"] as? [String: Any] {
-     print("fps: \(fps)")
-     }
-     }
-     }
-     
-     if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
-     if let major = fileVersion["major"] as? Int {
-     print("fileVersion major: \(major)")
-     }
-     if let minor = fileVersion["minor"] as? Int {
-     print("fileVersion minor: \(minor)")
-     }
-     }
-     
-     if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
-     if let metalHud = metalConfig["metalHud"] as? Bool,
-     metalHud == true {
-     environmentVariables["MTL_HUD_ENABLED"] = "1"
-     }
-     if let metalTrace = metalConfig["metalTrace"] as? Bool {
-     print("metal trace: \(metalTrace)")
-     }
-     }
-     
-     if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
-     if let msync = wineConfig["msync"] as? Bool,
-     msync == true {
-     environmentVariables["WINEMSYNC"] = "1"
-     }
-     
-     if let windowsVersion = wineConfig["windowsVersion"] as? String {
-     print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
-     }
-     
-     if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
-     if let major = wineVersion["major"] as? Int {
-     print("wineVersion major: \(major)")
-     }
-     if let minor = wineVersion["minor"] as? Int {
-     print("wineVersion minor: \(minor)")
-     }
-     if let patch = wineVersion["patch"] as? Int {
-     print("wineVersion patch: \(patch)")
-     }
-     }
-     }
-     
-     _ = await command(args: [
-     "launch",
-     game.appName,
-     "--wine",
-     "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
-     ]
-     .compactMap { $0 },
-     useCache: false,
-     additionalEnvironmentVariables: environmentVariables
-     )
-     }
+    static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
+        var environmentVariables: [String: String] = Dictionary()
+        environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
+        
+        if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
+            if let dxvk = dxvkConfig["dxvk"] as? Bool {
+                print("dxvk: \(dxvk)")
+            }
+            if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
+                print("dxvkAsync: \(dxvkAsync)")
+            }
+            if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
+                if let fps = dxvkHud["fps"] as? [String: Any] {
+                    print("fps: \(fps)")
+                }
+            }
+        }
+        
+        if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
+            if let major = fileVersion["major"] as? Int {
+                print("fileVersion major: \(major)")
+            }
+            if let minor = fileVersion["minor"] as? Int {
+                print("fileVersion minor: \(minor)")
+            }
+        }
+        
+        if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
+            if let metalHud = metalConfig["metalHud"] as? Bool,
+               metalHud == true {
+                environmentVariables["MTL_HUD_ENABLED"] = "1"
+            }
+            if let metalTrace = metalConfig["metalTrace"] as? Bool {
+                print("metal trace: \(metalTrace)")
+            }
+        }
+        
+        if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
+            if let msync = wineConfig["msync"] as? Bool,
+               msync == true {
+                environmentVariables["WINEMSYNC"] = "1"
+            }
+            
+            if let windowsVersion = wineConfig["windowsVersion"] as? String {
+                print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
+            }
+            
+            if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
+                if let major = wineVersion["major"] as? Int {
+                    print("wineVersion major: \(major)")
+                }
+                if let minor = wineVersion["minor"] as? Int {
+                    print("wineVersion minor: \(minor)")
+                }
+                if let patch = wineVersion["patch"] as? Int {
+                    print("wineVersion patch: \(patch)")
+                }
+            }
+        }
+        
+        _ = await command(args: [
+            "launch",
+            game.appName,
+            "--wine",
+            "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
+        ]
+            .compactMap { $0 },
+                          useCache: false,
+                          additionalEnvironmentVariables: environmentVariables
+        )
+    }
      */
     
     /// Wipe legendary's command cache. This will slow most legendary commands until cache is rebuilt.
