@@ -2,9 +2,7 @@
 //  Auth.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 29/9/2023.
-//
-
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,16 +11,23 @@
 
 import SwiftUI
 
+// MARK: - AuthView Struct
+/// SwiftUI view for authentication with Epic Games.
 struct AuthView: View {
+    
+    // MARK: - Binding Properties
     @Binding var isPresented: Bool
     @Binding var authSuccessful: Bool?
     
+    // MARK: - State Properties
     @State private var code: String = String()
     @State private var isLoggingIn: Bool = false
     @State private var progressViewPresented = false
     @State private var isProgressViewSheetPresented = false
     @State private var isError = false
     
+    // MARK: - Submit to Legendary
+    /// Submits the authorization code to Legendary for authentication.
     func submitToLegendary() async {
         if !code.isEmpty {
             isLoggingIn = true
@@ -48,11 +53,20 @@ struct AuthView: View {
         }
     }
     
+    // MARK: - Initializer
+    /**
+     Initializes the AuthView.
+    
+     - Parameters:
+       - isPresented: Binding to control the presentation of the view.
+       - authSuccessful: Binding to track the authentication success state.
+     */
     init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool?> = .constant(false)) {
         _isPresented = isPresented
         _authSuccessful = authSuccessful
     }
     
+    // MARK: - Body
     var body: some View {
         VStack {
             Text("Sign in to Epic Games")
@@ -92,6 +106,7 @@ struct AuthView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     AuthView(
         isPresented: .constant(true),

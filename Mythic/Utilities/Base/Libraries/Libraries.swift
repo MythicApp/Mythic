@@ -5,11 +5,14 @@
 //  Created by Esiayo Alegbe on 24/10/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
 
 import Foundation
 import ZIPFoundation
@@ -18,19 +21,25 @@ import CryptoKit
 import SwiftyJSON
 import OSLog
 
-private let files = FileManager.default
-
+// MARK: - Libraries Class
+/// Manages the installation, removal, and versioning of Mythic's libraries. (Mythic Engine)
 class Libraries {
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Libraries"
     )
     
+    /// The directory where Mythic Engine is installed.
     static let directory = Bundle.appHome!.appending(path: "Libraries")
     
     private static let dataLock = NSLock()
     
-    /// Check the Libraries folder's checksum.
+    // MARK: - Checksum Method
+    /**
+     Calculates the checksum of the libraries folder and its contents.
+     
+     - Returns: A string representing the checksum.
+     */
     static func checksum() -> String {
         var dataAggregate = Data()
         
@@ -49,11 +58,22 @@ class Libraries {
         return checksum
     }
     
+    // MARK: - Install Method
+    /**
+     Installs the Mythic Engine.
+    
+     - Parameters:
+       - downloadProgressHandler: A closure to handle the download progress.
+       - installProgressHandler: A closure to handle the installation progress.
+       - completion: A closure to be called upon completion of the installation.
+     */
     static func install(
         downloadProgressHandler: @escaping (Double) -> Void,
         installProgressHandler: @escaping (Double) -> Void,
         completion: @escaping (Result<Bool, Error>) -> Void
     ) {
+        // TODO: Handle installation progress
+        
         guard !isInstalled() else {
             completion(.failure(AlreadyInstalledError()))
             return
@@ -107,7 +127,7 @@ class Libraries {
                     Logger.file.notice("Finished downloading and installing libraries.")
                     
                     let checksum = checksum()
-                    UserDefaults.standard.set(checksum, forKey: "LibrariesChecksum")
+                    defaults.set(checksum, forKey: "librariesChecksum")
                     Logger.file.notice("Libraries checksum is: \(checksum)")
                     
                     completion(.success(true))
@@ -142,10 +162,21 @@ class Libraries {
         download.resume()
     }
     
+    // MARK: - isInstalled Method
+    /**
+     Checks if Mythic Engine is installed.
+    
+     - Returns: `true` if installed, `false` otherwise.
+     */
     static func isInstalled() -> Bool {
-        return files.fileExists(atPath: directory.path) && checksum() == UserDefaults.standard.string(forKey: "LibrariesChecksum") ? true : false
+        return files.fileExists(atPath: directory.path) && checksum() == defaults.string(forKey: "librariesChecksum") ? true : false
     }
     
+    // MARK: - getVersion Method
+    /** Gets the version of the installed Mythic Engine.
+    
+     - Returns: The semantic version of the installed libraries.
+     */
     static func getVersion() -> SemanticVersion? {
         guard isInstalled() else { return nil }
         
@@ -160,6 +191,12 @@ class Libraries {
         return version
     }
     
+    // MARK: - fetchLatestVersion Method
+    /**
+     Fetches the latest version of Mythic Engine.
+    
+     - Returns: The semantic version of the latest libraries.
+     */
     static func fetchLatestVersion() -> SemanticVersion? {
         guard let currentVersion = getVersion() else {
             return nil
@@ -196,6 +233,12 @@ class Libraries {
         return latestVersion
     }
     
+    // MARK: - Remove Method
+    /**
+     Removes Mythic Engine.
+    
+     - Parameter completion: A closure to be called upon completion of the removal.
+     */
     static func remove(completion: @escaping (Result<Bool, Error>) -> Void) {
         defer { dataLock.unlock() }
         

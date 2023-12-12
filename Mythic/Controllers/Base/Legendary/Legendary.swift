@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 21/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -15,38 +16,44 @@ import Foundation
 import SwiftyJSON
 import OSLog
 
-private let files = FileManager.default
-private let defaults = UserDefaults.standard
-
-/// Controls the function of the "legendary" cli,
-/// the backbone of the launcher's EGS capabilities. See: https://github.com/derrod/legendary
+// MARK: - Legendary Class
+/**
+ Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities.
+ 
+ [Legendary GitHub Repository](https://github.com/derrod/legendary)
+ */
 class Legendary {
+    // MARK: - Properties
+    
     /// The file location for legendary's configuration files.
     static let configLocation = Bundle.appHome!.appending(path: "Config").path
     
-    /// Logger instance for legendary
-    public static let log = Logger(
-        subsystem: Bundle.main.bundleIdentifier!,
-        category: "legendary"
-    )
+    /// Logger instance for legendary.
+    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendary")
     
-    /// Cache for storing command outputs
+    /// Cache for storing command outputs.
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = Dictionary()
     
     /// Dictionary to monitor running commands and their identifiers.
     private static var runningCommands: [String: Process] = Dictionary()
     
-    /// Run a legendary command using the included legendary binary.
-    ///
-    /// - Parameters:
-    ///   - args: The command arguments.
-    ///   - useCache: Flag indicating whether to use cached output.
-    ///   - identifier: String to keep track of individual command functions. (originally UUID-based)
-    ///   - input: Optional input string for the command.
-    ///   - inputIf: Optional condition to be checked for in the output streams before input is appended.
-    ///   - asyncOutput: Optional closure that gets output appended to it immediately.
-    ///   - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
-    /// - Returns: A tuple containing stdout and stderr data.
+    // MARK: - Methods
+    
+    // MARK: - Command Method
+    /**
+     Run a legendary command using the included legendary binary.
+     
+     - Parameters:
+     - args: The command arguments.
+     - useCache: Flag indicating whether to use cached output.
+     - identifier: String to keep track of individual command functions. (originally UUID-based)
+     - input: Optional input string for the command.
+     - inputIf: Optional condition to be checked for in the output streams before input is appended.
+     - asyncOutput: Optional closure that gets output appended to it immediately.
+     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
+     
+     - Returns: A tuple containing stdout and stderr data.
+     */
     static func command(
         args: [String],
         useCache: Bool,
@@ -57,7 +64,7 @@ class Legendary {
         additionalEnvironmentVariables: [String: String]? = nil
     ) async -> (stdout: Data, stderr: Data) {
         
-        /// Contains instances of the async DispatchQueues
+        // MARK: - Queue Container
         struct QueueContainer {
             let cache: DispatchQueue = DispatchQueue(label: "commandCacheQueue")
             let command: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
@@ -80,12 +87,13 @@ class Legendary {
             return await run()
         }
         
+        // MARK: - Run Method
         @Sendable
         func run() async -> (stdout: Data, stderr: Data) {
             let task = Process()
             task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
             
-            /// Contains instances of Pipe, for stderr and stdout.
+            // MARK: - Pipe Container
             struct PipeContainer {
                 let stdout = Pipe()
                 let stderr = Pipe()
@@ -96,11 +104,7 @@ class Legendary {
                 private var _stdout = Data()
                 private var _stderr = Data()
                 
-                // swiftlint:disable nesting
-                enum Stream {
-                    case stdout, stderr
-                }
-                // swiftlint:enable nesting
+                // MARK: - Stream Enum
                 
                 func append(_ data: Data, to stream: Stream) {
                     switch stream {
@@ -119,7 +123,6 @@ class Legendary {
             let data = DataContainer()
             
             // initialise legendary and config env
-            
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
             task.standardInput = input != nil ? pipe.stdin : nil
@@ -136,7 +139,7 @@ class Legendary {
             
             log.debug("executing \(fullCommand)")
             
-            // async stdout appending
+            // MARK: - Async stdout Appending
             queue.command.async(qos: .utility) {
                 Task {
                     while true {
@@ -161,7 +164,7 @@ class Legendary {
                 }
             }
             
-            // async stderr appending
+            // MARK: - Async stderr Appending
             queue.command.async(qos: .utility) {
                 Task {
                     while true {
@@ -195,8 +198,7 @@ class Legendary {
                 }
             }
             
-            // run
-            
+            // MARK: - Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
                 
@@ -209,8 +211,7 @@ class Legendary {
                 return (Data(), Data())
             }
             
-            // output (stderr/out) handler
-            
+            // MARK: - Output (stderr/out) Handler
             let output: (stdout: Data, stderr: Data) = await (
                 data.stdout, data.stderr
             )
@@ -242,12 +243,18 @@ class Legendary {
                 log.warning("empty stderr\ncommand key: \(commandKey)")
             }
             
-            queue.cache.sync { commandCache[commandKey] = output } // store output in cache
+            queue.cache.sync { commandCache[commandKey] = output }
             
             return output
         }
     }
     
+    // MARK: - Stop Command Method
+    /**
+     Stops the execution of a command based on its identifier.
+     
+     - Parameter identifier: The unique identifier of the command to be stopped.
+     */
     static func stopCommand(identifier: String) {
         if let task = runningCommands[identifier] {
             task.terminate()
@@ -257,6 +264,12 @@ class Legendary {
         }
     }
     
+    // MARK: - Base Path Property
+    /**
+     The file location for legendary's configuration files.
+     
+     This property represents the base path for games.
+     */
     var basePath: URL? {
         get {
             if let value = defaults.object(forKey: "gamesPath") as? URL {
@@ -266,23 +279,29 @@ class Legendary {
         set { defaults.set(newValue, forKey: "gamesPath") }
     }
     
-    /// Installs games using legendary, what else?
-    ///
-    /// - Parameters:
-    ///   - game: The game's app\_name
-    ///   - optionalPacks: Optional packs to install along with the base game.
-    ///   - basePath: A custom path for the game to install to
-    /// - Throws: A ``NotSignedInError`` or an ``InstallationError``.
+    // MARK: - Install Method
+    /**
+     Installs games using legendary.
+     
+     - Parameters:
+     - game: The game's `app_name`.
+     - optionalPacks: Optional packs to install along with the base game.
+     - basePath: A custom path for the game to install to.
+     - gameFolder: The folder where the game should be installed.
+     - platform: The platform for which the game should be installed.
+     
+     - Throws: A `NotSignedInError` or an `InstallationError`.
+     */
     static func install(
         game: Game,
         optionalPacks: [String]? = nil,
-        basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // userdefaults implementation
+        basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
         gameFolder: URL? = nil,
         platform: GamePlatform? = nil
     ) async throws {
-        // MAKE SURE TO EXECUTE INSTALLING.SHARED.RESET() WHENEVER THROWING //
+        // TODO: EXECUTE INSTALLING.SHARED.RESET() WHENEVER THROWING !!!
         guard signedIn() else { throw NotSignedInError() }
-        // if dataLockInUse.value == true { throw NSError() } // not implemented error, for data lock
+        // if dataLockInUse.value == true { throw NSError() } // TODO: not implemented error, for data lock
         
         dataLockInUse = (true, .installing)
         Installing.value = true
@@ -404,89 +423,95 @@ class Legendary {
     }
     
     /*
-    static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
-        var environmentVariables: [String: String] = Dictionary()
-        environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
-        
-        if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
-            if let dxvk = dxvkConfig["dxvk"] as? Bool {
-                print("dxvk: \(dxvk)")
-            }
-            if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
-                print("dxvkAsync: \(dxvkAsync)")
-            }
-            if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
-                if let fps = dxvkHud["fps"] as? [String: Any] {
-                    print("fps: \(fps)")
-                }
-            }
-        }
-        
-        if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
-            if let major = fileVersion["major"] as? Int {
-                print("fileVersion major: \(major)")
-            }
-            if let minor = fileVersion["minor"] as? Int {
-                print("fileVersion minor: \(minor)")
-            }
-        }
-        
-        if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
-            if let metalHud = metalConfig["metalHud"] as? Bool,
-               metalHud == true {
-                environmentVariables["MTL_HUD_ENABLED"] = "1"
-            }
-            if let metalTrace = metalConfig["metalTrace"] as? Bool {
-                print("metal trace: \(metalTrace)")
-            }
-        }
-        
-        if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
-            if let msync = wineConfig["msync"] as? Bool,
-               msync == true {
-                environmentVariables["WINEMSYNC"] = "1"
-            }
-            
-            if let windowsVersion = wineConfig["windowsVersion"] as? String {
-                print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
-            }
-            
-            if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
-                if let major = wineVersion["major"] as? Int {
-                    print("wineVersion major: \(major)")
-                }
-                if let minor = wineVersion["minor"] as? Int {
-                    print("wineVersion minor: \(minor)")
-                }
-                if let patch = wineVersion["patch"] as? Int {
-                    print("wineVersion patch: \(patch)")
-                }
-            }
-        }
-        
-        _ = await command(args: [
-            "launch",
-            game.appName,
-            "--wine",
-            "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
-        ]
-            .compactMap { $0 },
-                          useCache: false,
-                          additionalEnvironmentVariables: environmentVariables
-        )
-    }
+     static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
+     var environmentVariables: [String: String] = Dictionary()
+     environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
+     
+     if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
+     if let dxvk = dxvkConfig["dxvk"] as? Bool {
+     print("dxvk: \(dxvk)")
+     }
+     if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
+     print("dxvkAsync: \(dxvkAsync)")
+     }
+     if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
+     if let fps = dxvkHud["fps"] as? [String: Any] {
+     print("fps: \(fps)")
+     }
+     }
+     }
+     
+     if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
+     if let major = fileVersion["major"] as? Int {
+     print("fileVersion major: \(major)")
+     }
+     if let minor = fileVersion["minor"] as? Int {
+     print("fileVersion minor: \(minor)")
+     }
+     }
+     
+     if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
+     if let metalHud = metalConfig["metalHud"] as? Bool,
+     metalHud == true {
+     environmentVariables["MTL_HUD_ENABLED"] = "1"
+     }
+     if let metalTrace = metalConfig["metalTrace"] as? Bool {
+     print("metal trace: \(metalTrace)")
+     }
+     }
+     
+     if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
+     if let msync = wineConfig["msync"] as? Bool,
+     msync == true {
+     environmentVariables["WINEMSYNC"] = "1"
+     }
+     
+     if let windowsVersion = wineConfig["windowsVersion"] as? String {
+     print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
+     }
+     
+     if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
+     if let major = wineVersion["major"] as? Int {
+     print("wineVersion major: \(major)")
+     }
+     if let minor = wineVersion["minor"] as? Int {
+     print("wineVersion minor: \(minor)")
+     }
+     if let patch = wineVersion["patch"] as? Int {
+     print("wineVersion patch: \(patch)")
+     }
+     }
+     }
+     
+     _ = await command(args: [
+     "launch",
+     game.appName,
+     "--wine",
+     "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
+     ]
+     .compactMap { $0 },
+     useCache: false,
+     additionalEnvironmentVariables: environmentVariables
+     )
+     }
      */
     
-    /// Wipe legendary's command cache. This will slow most legendary commands until cache is rebuilt.
+    // MARK: - Clear Command Cache Method
+    /**
+     Wipes legendary's command cache. This will slow most legendary commands until the cache is rebuilt.
+     */
     static func clearCommandCache() {
         commandCache = Dictionary()
         log.notice("Cleared legendary command cache.")
     }
     
-    /// Queries the user that is currently signed into epic games.
-    /// This command has no delay.
-    ///
-    /// - Returns: The user's account information as a `String`.
+    // MARK: - Who Am I Method
+    /**
+     Queries the user that is currently signed into epic games.
+     This command has no delay.
+     
+     - Returns: The user's account information as a `String`.
+     */
     static func whoAmI() -> String {
         let userJSONFileURL = URL(filePath: "\(configLocation)/user.json")
         
@@ -498,16 +523,22 @@ class Legendary {
         return String(describing: json["displayName"])
     }
     
-    /// Boolean verifier for the user's epic games signin state.
-    /// This command has no delay.
-    ///
-    /// - Returns: `true` if the user is signed in, otherwise `false`.
+    // MARK: - Signed In Method
+    /**
+     Boolean verifier for the user's epic games signin state.
+     This command has no delay.
+     
+     - Returns: `true` if the user is signed in, otherwise `false`.
+     */
     static func signedIn() -> Bool { return whoAmI() != "Nobody" }
     
-    /// Retrieve installed games from epic games services.
-    ///
-    /// - Returns: A dictionary containing ``Legendary.Game`` objects.
-    /// - Throws: A ``NotSignedInError``.
+    // MARK: - Get Installed Games Method
+    /**
+     Retrieve installed games from epic games services.
+     
+     - Returns: A dictionary containing ``Legendary.Game`` objects.
+     - Throws: A ``NotSignedInError``.
+     */
     static func getInstalledGames() throws -> [Game] {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -532,10 +563,13 @@ class Legendary {
         return apps
     }
     
-    /// Retrieve installed games from epic games services.
-    ///
-    /// - Returns: An `Array` of ``Game`` objects,
-    static func getInstallable() async throws -> [Game] { // (would use legendary/metadata, but online updating is crucial)
+    // MARK: - Get Installable Method
+    /**
+     Retrieve installed games from epic games services.
+     
+     - Returns: An `Array` of ``Game`` objects.
+     */
+    static func getInstallable() async throws -> [Game] { // TODO: use files in Config/metadata and use command to update in the background
         guard signedIn() else { throw NotSignedInError() }
         
         guard let json = try? await JSON(data: command(
@@ -555,11 +589,14 @@ class Legendary {
         return extractAppNamesAndTitles(from: json)
     }
     
-    /// Retrieve game metadata as a JSON.
-    ///
-    /// - Parameter game: A ``Game`` object.
-    /// - Throws: A ``DoesNotExistError`` if the metadata directory doesn't exist.
-    /// - Returns: An optional `JSON` with either the metadata or `nil`.
+    // MARK: - Get Game Metadata Method
+    /**
+     Retrieve game metadata as a JSON.
+     
+     - Parameter game: A ``Game`` object.
+     - Throws: A ``DoesNotExistError`` if the metadata directory doesn't exist.
+     - Returns: An optional `JSON` with either the metadata or `nil`.
+     */
     static func getGameMetadata(game: Game) async throws -> JSON? {
         let metadataDirectoryString = "\(configLocation)/metadata"
         
@@ -578,11 +615,14 @@ class Legendary {
         return nil
     }
     
-    /// Get game images with "DieselGameBox" metadata.
-    ///
-    /// - Parameter imageType: The type of images to retrieve (normal or tall).
-    /// - Throws: A ``NotSignedInError``.
-    /// - Returns: A `Dictionary` with app names as keys and image URLs as values.
+    // MARK: - Get Images Method
+    /**
+     Get game images with "DieselGameBox" metadata.
+     
+     - Parameter imageType: The type of images to retrieve (normal or tall).
+     - Throws: A ``NotSignedInError``.
+     - Returns: A `Dictionary` with app names as keys and image URLs as values.
+     */
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -623,10 +663,13 @@ class Legendary {
         return urls
     }
     
-    /// Checks if an alias of a game exists.
-    ///
-    /// - Parameter game: Any `String` that may return an aliased output
-    /// - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name)
+    // MARK: - Is Alias Method
+    /**
+     Checks if an alias of a game exists.
+     
+     - Parameter game: Any `String` that may return an aliased output.
+     - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name).
+     */
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -649,47 +692,37 @@ class Legendary {
         return (nil, of: nil)
     }
     
-    @available(*, unavailable, message: "Not implemented")
-    static func needsVerification(game: Game) -> Bool {
-        return false // not implemented
-    }
-    
-    @available(*, unavailable, message: "Not implemented")
-    static func canLaunch(game: Game) -> Bool {
-        return false // not implemented
-    }
-    
-    /// Retrieve the game's app\_name from the game's title.
-    ///
-    /// - Parameter appTitle: The title of the game.
-    /// - Returns: The app name of the game.
+    // MARK: - Deprecated Methods
+    /**
+     Retrieve the game's app\_name from the game's title.
+     
+     - Parameter appTitle: The title of the game.
+     - Returns: The app name of the game.
+     */
     @available(*, deprecated, message: "Made redundant by Legendary.Game")
-    static func getAppNameFromTitle(appTitle: String) async -> String? {
+    static func getAppNameFromTitle(appTitle: String) async -> String? { // TODO: full removal before launch
         guard signedIn() else { return String() }
         let json = try? await JSON(data: command(args: ["info", appTitle, "--json"], useCache: true, identifier: "getAppNameFromTitle").stdout)
         return json?["game"]["app_name"].stringValue
     }
     
-    /// Retrieve the game's title from the game's app\_name.
-    ///
-    /// - Parameter appName: The app name of the game.
-    /// - Returns: The title of the game.
+    /**
+     Retrieve the game's title from the game's app\_name.
+     
+     - Parameter appName: The app name of the game.
+     - Returns: The title of the game.
+     */
     @available(*, deprecated, message: "Made redundant by Legendary.Game")
-    static func getTitleFromAppName(appName: String) async -> String? { // can use jsons inside legendary/metadata
+    static func getTitleFromAppName(appName: String) async -> String? { // TODO: full removal before launch
         guard signedIn() else { return String() }
         let json = try? await JSON(data: command(args: ["info", appName, "--json"], useCache: true, identifier: "getTitleFromAppName").stdout)
         return json?["game"]["title"].stringValue
     }
     
-    /* // // // // // // // // // // // // // // // //
-     ___   _   _  _  ___ ___ ___   _______  _  _ ___
-     |   \ /_\ | \| |/ __| __| _ \ |_  / _ \| \| | __|
-     | |) / _ \| .` | (_ | _||   /  / / (_) | .` | _|
-     |___/_/ \_\_|\_|\___|___|_|_\ /___\___/|_|\_|___|
-     
-     */ // // // // // // // // // // // // // // // /
-    
-    /// Well, what do you think it does?
+    // MARK: - Extract App Names and Titles Method
+    /**
+     Well, what do you think it does?
+     */
     private static func extractAppNamesAndTitles(from json: JSON?) -> [Game] {
         var games: [Game] = Array()
         

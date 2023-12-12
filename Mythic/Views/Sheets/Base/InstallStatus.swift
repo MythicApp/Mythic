@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 3/12/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,14 +14,22 @@
 
 import SwiftUI
 import Foundation
-import Charts // TBA
+import Charts // TODO: TODO
+
+// MARK: - InstallStatusView Struct
+/// A view displaying the installation status of a game.
 
 struct InstallStatusView: View {
-    private let status: Legendary.InstallStatus = Legendary.Installing.installStatus
+    // MARK: - Binding Variables
     @Binding var isPresented: Bool
     
+    // MARK: - Variables
+    private let status: Legendary.InstallStatus = Legendary.Installing.installStatus
+    
+    // MARK: - Body
     var body: some View {
         VStack {
+            // MARK: Title
             Text("Downloading \(Legendary.Installing.game?.title ?? "[unknown]")…")
                 .font(.title)
             
@@ -31,6 +40,7 @@ struct InstallStatusView: View {
             }
             .fixedSize()
             
+            // MARK: Close Button
             Button("Close") { isPresented = false }
                 .buttonStyle(.borderedProminent)
                 .foregroundStyle(.accent)
@@ -39,6 +49,7 @@ struct InstallStatusView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     InstallStatusView(isPresented: .constant(true))
 }

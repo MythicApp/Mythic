@@ -5,33 +5,40 @@
 //  Created by Esiayo Alegbe on 29/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import SwiftUI
 import OSLog
 
 extension GameListView {
+    // MARK: - UninstallView Struct
+    /// An extension of the `GameListView` that defines the `UninstallView` SwiftUI view for uninstalling games.
     struct UninstallView: View {
+        
+        // MARK: - Bindings
         @Binding var isPresented: Bool
         public var game: Legendary.Game
         @Binding var isGameListRefreshCalled: Bool
-        
         @Binding var activeAlert: GameListView.ActiveAlert
         @Binding var isAlertPresented: Bool
         @Binding var failedGame: Legendary.Game?
-        
         @Binding var uninstallationErrorMessage: Substring
         
+        // MARK: - State Variables
+        /// State variable to determine whether to keep files during uninstallation.
         @State private var keepFiles: Bool = false
         @State private var skipUninstaller: Bool = false
-        
         @State private var isProgressViewSheetPresented = false
         @State private var isConfirmationPresented = false
         
+        // MARK: - Body View
         var body: some View {
             VStack {
                 Text("Uninstall \(game.title)")
@@ -68,6 +75,8 @@ extension GameListView {
             }
             .padding()
             
+            // MARK: - Other Properties
+            
             .sheet(isPresented: $isProgressViewSheetPresented) {
                 ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
             }
@@ -87,7 +96,7 @@ extension GameListView {
                                     skipUninstaller ? "--skip-uninstaller" : nil,
                                     game.appName
                                 ]
-                                    .compactMap { $0 },
+                                .compactMap { $0 },
                                 useCache: false,
                                 identifier: "uninstall"
                             )
@@ -128,6 +137,7 @@ extension GameListView {
     }
 }
 
+// MARK: - Preview
 #Preview {
     GameListView.UninstallView(
         isPresented: .constant(true),

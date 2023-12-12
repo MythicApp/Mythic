@@ -5,6 +5,14 @@ disabled_rules:
   - file_length
   - cyclomatic_complexity
   - trailing_whitespace
+  - todo
+
+opt_in_rules:
+  - toggle_bool
+
+analyzer_rules:
+ - unused_import
+ - unused_declaration
 
 excluded:
   - .build

@@ -5,24 +5,34 @@
 //  Created by Esiayo Alegbe on 5/11/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
-
+//
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import Foundation
 import OSLog
 
-private let files = FileManager.default
-
+// MARK: - File Locations Class
 class FileLocations {
+    
+    // MARK: - Global Applications Directory
+    /** The global Applications directory.
+     
+     - Returns: An optional URL representing the global Applications directory.
+     */
     static let globalApplications: URL? = {
         do {
-            return try files.url(for: .applicationDirectory,
-                                 in: .localDomainMask,
-                                 appropriateFor: nil,
-                                 create: false)
+            return try files.url(
+                for: .applicationDirectory,
+                in: .localDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
         } catch {
             Logger.file.error("Unable to get global Applications directory: \(error)")
         }
@@ -30,11 +40,15 @@ class FileLocations {
         return nil
     }()
     
-    /// A directory in global applications where games should be located.
-    /// (Force-unwrappable)
+    // MARK: - Global Games Directory
+    /** A directory in global applications where games should be located.
+     (Force-unwrappable)
+     
+     - Returns: An optional URL representing the global Games directory.
+     */
     static let globalGames: URL? = {
         if let globalApplications = globalApplications {
-            let gamesURL = globalApplications.appending(path: "Games")
+            let gamesURL = globalApplications.appendingPathComponent("Games")
             do {
                 try files.createDirectory(
                     at: gamesURL,
@@ -49,14 +63,21 @@ class FileLocations {
         return nil
     }()
     
-    /// The current user's Application Support directory.
-    /// (Force-unwrappable)
+    // MARK: - User Application Support Directory
+    /** The current user's Application Support directory.
+     
+     (Force-unwrappable)
+     
+     - Returns: An optional URL representing the current user's Application Support directory.
+     */
     static let userApplicationSupport: URL? = {
         do {
-            return try files.url(for: .applicationSupportDirectory,
-                                 in: .userDomainMask,
-                                 appropriateFor: nil,
-                                 create: false)
+            return try files.url(
+                for: .applicationSupportDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
         } catch {
             Logger.file.error("Unable to get Application Support directory: \(error)")
         }
@@ -64,15 +85,22 @@ class FileLocations {
         return nil
     }()
     
-    /// The current user's Containers directory.
-    /// (Force-unwrappable)
+    // MARK: - User Containers Directory
+    /** The current user's Containers directory.
+     
+     (Force-unwrappable)
+     
+     - Returns: An optional URL representing the current user's Containers directory.
+     */
     static let userContainers: URL? = {
         do {
-            return try files.url(for: .libraryDirectory,
-                                 in: .userDomainMask,
-                                 appropriateFor: nil,
-                                 create: false)
-            .appending(path: "Containers")
+            return try files.url(
+                for: .libraryDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+            .appendingPathComponent("Containers")
         } catch {
             Logger.file.error("Unable to get Containers directory: \(error)")
         }

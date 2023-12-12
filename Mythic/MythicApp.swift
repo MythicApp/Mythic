@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 9/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -14,15 +15,19 @@
 import SwiftUI
 import Sparkle
 
+// MARK: - Where it all begins!
 @main
 struct MythicApp: App {
+    // MARK: - State Properties
     @State private var isFirstLaunch: Bool
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUpdatePromptPresented: Bool = false
     
+    // MARK: - Updater Controller
     private let updaterController: SPUStandardUpdaterController
     
+    // MARK: - Initialization
     init() {
         self._isFirstLaunch = State(
             initialValue: UserDefaults.standard.bool(forKey: "isFirstLaunch")
@@ -35,6 +40,7 @@ struct MythicApp: App {
         )
     }
     
+    // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
             MainView()
@@ -52,6 +58,8 @@ struct MythicApp: App {
                         }
                     }
                 }
+            
+            // MARK: - Other Properties
             
                 .sheet(isPresented: $isOnboardingPresented) {
                     OnboardingView(
@@ -87,6 +95,7 @@ struct MythicApp: App {
             }
         }
         
+        // MARK: - Settings View
         Settings {
             UpdaterSettingsView(updater: updaterController.updater)
         }

@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 12/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -14,16 +15,22 @@
 import SwiftUI
 import SwiftyJSON
 
+// MARK: - LibraryView Struct
+/// A view displaying the user's library of games.
 struct LibraryView: View {
+    // MARK: - State Variables
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
-    
     @State private var isGameListRefreshCalled: Bool = false
     
+    // MARK: - Body
     var body: some View {
+        // MARK: - Game List
         GameListView(isRefreshCalled: $isGameListRefreshCalled)
         
+        // MARK: - Toolbar
             .toolbar {
+                // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         addGameModalPresented = true
@@ -31,6 +38,8 @@ struct LibraryView: View {
                         Image(systemName: "square.and.arrow.down")
                     }
                 }
+                
+                // MARK: Refresh Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         isGameListRefreshCalled = true
@@ -39,6 +48,8 @@ struct LibraryView: View {
                     }
                 }
             }
+        
+        // MARK: - Other Properties
         
             .sheet(isPresented: $addGameModalPresented) {
                 LibraryView.GameImportView(
@@ -51,5 +62,6 @@ struct LibraryView: View {
 }
 
 #Preview {
+    // MARK: - Game List Preview
     GameListView(isRefreshCalled: .constant(false))
 }

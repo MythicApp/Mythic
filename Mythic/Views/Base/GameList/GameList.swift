@@ -5,11 +5,14 @@
 //  Created by Esiayo Alegbe on 16/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
 
 import Foundation
 import SwiftUI
@@ -18,15 +21,26 @@ import OSLog
 import SwiftyJSON
 import Combine
 
+// MARK: - GameListView Struct
+/// A SwiftUI view for displaying a list of installable games.
 struct GameListView: View {
+    
+    // MARK: - Properties
+    
+    /// Binding to track if a refresh is called.
     @Binding var isRefreshCalled: Bool
+    
+    // MARK: - State Properties
     
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUninstallViewPresented: Bool = false
     @State private var isPlayDefaultViewPresented: Bool = false
     
-    enum ActiveAlert { case installError, uninstallError, stopDownloadWarning }
+    enum ActiveAlert {
+        case installError, uninstallError, stopDownloadWarning
+    }
+    
     @State private var activeAlert: ActiveAlert = .installError
     @State private var isAlertPresented: Bool = false
     
@@ -48,11 +62,20 @@ struct GameListView: View {
     
     @State private var dataFetched: Bool = false
     
+    // MARK: - UpdateCurrentGameMode Enumeration
+    /// Enumeration for updating the current game.
     enum UpdateCurrentGameMode {
         case normal
         case optionalPacks
     }
     
+    // MARK: - UpdateCurrentGame Method
+    /**
+     Updates the current game based on the specified mode.
+     
+     - Parameter game: The game to set as the current game.
+     - Parameter mode: The mode for updating the current game.
+     */
     func updateCurrentGame(game: Legendary.Game, mode: UpdateCurrentGameMode) {
         isProgressViewSheetPresented = true
         
@@ -103,13 +126,9 @@ struct GameListView: View {
         }
     }
     
+    // MARK: - Body View
+    
     var body: some View {
-        
-        let imageCache = URLCache(
-            memoryCapacity: 512_000_000, // 512 MB // RAM MAX
-            diskCapacity: 3_000_000_000 // 3 GB // DISK MAX
-        )
-        
         ScrollView(.horizontal) {
             LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) {
                 if dataFetched {
@@ -121,7 +140,10 @@ struct GameListView: View {
                                 .offset(y: -5)
                             
                             VStack {
-                                CachedAsyncImage(url: URL(string: gameThumbnails[game.appName] ?? String()), urlCache: imageCache) { phase in
+                                CachedAsyncImage(
+                                    url: URL(string: gameThumbnails[game.appName] ?? String()),
+                                    urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+                                ) { phase in
                                     switch phase {
                                     case .empty:
                                         ProgressView()
@@ -159,7 +181,6 @@ struct GameListView: View {
                                                 .foregroundStyle(.gray)
                                                 .padding()
                                         }
-                                        // .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                         
@@ -173,7 +194,6 @@ struct GameListView: View {
                                                 .foregroundStyle(.green)
                                                 .padding()
                                         }
-                                        // .shadow(color: .green, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                         
@@ -185,7 +205,6 @@ struct GameListView: View {
                                                 .foregroundStyle(.red)
                                                 .padding()
                                         }
-                                        // .shadow(color: .red, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.plain)
                                         .controlSize(.large)
                                     } else {
@@ -211,7 +230,6 @@ struct GameListView: View {
                                                     .foregroundStyle(.red)
                                                     .padding()
                                             }
-                                            // .shadow(color: .red, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
                                             
@@ -251,7 +269,7 @@ struct GameListView: View {
         
         .onReceive(Just(isRefreshCalled)) { called in
             if called {
-                Logger.app.info("Recieved refresh call for GameListView")
+                Logger.app.info("Received refresh call for GameListView")
                 isProgressViewSheetPresented = true
                 dataFetched = false
                 
@@ -286,6 +304,8 @@ struct GameListView: View {
                 isRefreshCalled = false
             }
         }
+        
+        // MARK: - Other Properties
         
         .sheet(isPresented: $isProgressViewSheetPresented) {
             ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
@@ -354,6 +374,7 @@ struct GameListView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     GameListView(isRefreshCalled: .constant(false))
 }

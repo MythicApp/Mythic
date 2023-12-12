@@ -8,6 +8,7 @@
 //  https://github.com/1998code/SwiftUI2-MacSidebar
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -20,7 +21,10 @@ import OSLog
 import Combine
 import CachedAsyncImage
 
+// MARK: - MainView Struct
 struct MainView: View {
+    
+    // MARK: - State Variables
     @State private var isAuthViewPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
     
@@ -41,6 +45,7 @@ struct MainView: View {
     
     @StateObject private var installing = Legendary.Installing.shared
     
+    // MARK: - Functions
     func updateLegendaryAccountState() {
         epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {
@@ -52,12 +57,14 @@ struct MainView: View {
         }
     }
     
+    // MARK: - Initializer
     init() { updateLegendaryAccountState() }
     
+    // MARK: - Body
     var body: some View {
         NavigationView {
             List {
-                Text("DASHBOARD")
+                Text("DASHBOARD")
                     .font(.system(size: 10))
                     .fontWeight(.bold)
                 
@@ -101,18 +108,6 @@ struct MainView: View {
                 
                 if installing._value == true {
                     Divider()
-                    
-                    /*
-                     ZStack {
-                     CachedAsyncImage(url: URL(string: gameThumbnails[installing._game] ?? String())) { phase in
-                     if case .success(let image) = phase {
-                     image
-                     .resizable()
-                     .aspectRatio(contentMode: .fit)
-                     .blur(radius: 20)
-                     }
-                     }
-                     */
                     
                     VStack {
                         Text("INSTALLING")
@@ -218,7 +213,7 @@ struct MainView: View {
                         title: .init("Are you sure you want to sign out?"),
                         message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
                         primaryButton: .destructive(.init("Sign Out")) {
-                            Task(priority: .high) { // progress view implementation in future
+                            Task(priority: .high) { // TODO: possible progress view implementation
                                 let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
                                 if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
                                     updateLegendaryAccountState()
@@ -263,10 +258,12 @@ struct MainView: View {
     }
 }
 
+// MARK: - Sidebar Toggle Function
 func toggleSidebar() {
     NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
 }
 
+// MARK: - Preview
 #Preview {
     MainView()
 }

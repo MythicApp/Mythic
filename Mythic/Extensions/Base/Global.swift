@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 11/10/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,6 +14,20 @@
 
 import Foundation
 
+// MARK: - Global Constants
+/// A simpler alias of `FileManager.default`.
+let files = FileManager.default
+
+/// A simpler alias of `UserDefaults.standard`.
+let defaults = UserDefaults.standard
+
+// MARK: - App Install Checker
+/**
+ Checks if an app with the given bundle identifier is installed on the system.
+
+ - Parameter bundleIdentifier: The bundle identifier of the app.
+ - Returns: `true` if the app is installed; otherwise, `false`.
+ */
 func isAppInstalled(bundleIdentifier: String) -> Bool {
     let process = Process()
     process.launchPath = "/usr/bin/env"

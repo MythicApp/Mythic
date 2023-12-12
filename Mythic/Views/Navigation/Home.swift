@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 12/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -15,13 +16,20 @@ import SwiftUI
 import Cocoa
 import CachedAsyncImage
 
+// MARK: - HomeView Struct
+/**
+ The main view displaying the home screen of the Mythic app.
+ */
 struct HomeView: View {
+    // MARK: - State Variables
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
     
+    // MARK: - Gradient
+    /// The gradient used in the background.
     let gradient = LinearGradient(
         gradient: Gradient(stops: [
             .init(color: .purple, location: 0),
@@ -31,23 +39,28 @@ struct HomeView: View {
         endPoint: .top
     )
     
+    // MARK: - Body
     var body: some View {
         HStack {
+            // MARK: - Recent Game Display
             VStack {
                 ZStack {
                     HStack {
-                        CachedAsyncImage(url: URL(string: "https://cdn1.epicgames.com/item/9773aa1aa54f4f7b80e44bef04986cea/EGS_RocketLeague_PsyonixLLC_S2_1200x1600-ebcb79b7c8aa2432c3ce52dfd4fc4ae0")) { phase in
+                        // MARK: Image
+                        AsyncImage(url: URL(string: UserDefaults.standard.object(forKey: "recentGame") as? String ?? "")) { phase in
                             switch phase {
                             case .empty:
                                 ProgressView()
                             case .success(let image):
                                 ZStack {
+                                    // MARK: Main Image
                                     image
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                         .frame(maxHeight: .infinity)
                                         .clipped()
                                         .overlay(
+                                            // MARK: Blurred Overlay
                                             image
                                                 .resizable()
                                                 .blur(radius: 10, opaque: true)
@@ -61,6 +74,7 @@ struct HomeView: View {
                                                 )
                                         )
                                         .overlay(
+                                            // MARK: Gradient Overlay (masked on blur)
                                             LinearGradient(gradient: Gradient(stops: [
                                                 Gradient.Stop(color: Color(white: 0, opacity: 0),
                                                               location: 0.6),
@@ -95,6 +109,7 @@ struct HomeView: View {
                                             }
                                             
                                             HStack {
+                                                // MARK: Game Title
                                                 Text("Rocket League")
                                                     .font(.title)
                                                 
@@ -105,13 +120,12 @@ struct HomeView: View {
                                         Spacer()
                                         
                                         Button {
-                                            
+                                            // TODO: - Handle Play Button
                                         } label: {
+                                            // MARK: Play Button
                                             Image(systemName: "play.fill")
-                                            //  .foregroundStyle(.background)
                                                 .padding()
                                         }
-                                        // .shadow(color: .green, radius: 10, x: 1, y: 1)
                                         .buttonStyle(.bordered)
                                         .controlSize(.extraLarge)
                                     }
@@ -125,7 +139,9 @@ struct HomeView: View {
             .background(.background)
             .cornerRadius(10)
             
+            // MARK: - Side Views
             VStack {
+                // MARK: View 1 (Top)
                 VStack {
                     NotImplementedView()
                 }
@@ -133,6 +149,7 @@ struct HomeView: View {
                 .background(.background)
                 .cornerRadius(10)
                 
+                // MARK: View 2 (Bottom)
                 VStack {
                     NotImplementedView()
                 }
@@ -145,6 +162,7 @@ struct HomeView: View {
     }
 }
 
+// MARK: - Preview
 #Preview {
     HomeView()
 }

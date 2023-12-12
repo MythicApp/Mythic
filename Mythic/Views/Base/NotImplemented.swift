@@ -2,9 +2,7 @@
 //  NotImplemented.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 10/9/2023.
-//
-
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -14,7 +12,11 @@
 import SwiftUI
 import OSLog
 
+// MARK: - NotImplementedView Struct
+/// SwiftUI view representing a "Not Implemented" warning.
 struct NotImplementedView: View {
+    
+    // MARK: - Body
     var body: some View {
         VStack {
             Image(systemName: "calendar.badge.clock")
@@ -30,6 +32,14 @@ struct NotImplementedView: View {
     }
 }
 
+// MARK: - Not Implemented Alert
+/** Creates and returns an alert for not implemented functionality.
+
+ - Parameters:
+   - isPresented: Binding to control the presentation of the alert.
+   - warning: Optional warning message to display in the alert.
+ - Returns: An Alert instance.
+ */
 func notImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
     return Alert(
         title: Text("Not implemented"),
@@ -42,6 +52,7 @@ func notImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> 
     )
 }
 
+// MARK: - Preview
 #Preview {
     NotImplementedView()
 }

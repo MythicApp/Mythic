@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 24/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,17 +14,25 @@
 
 import SwiftUI
 
+// MARK: - ProgressViewSheet Struct
+/// A view displaying a progress indicator that may include a timeout warning.
 struct ProgressViewSheet: View {
+    // MARK: - Binding Variables
     @Binding var isPresented: Bool
+    
+    // MARK: - State Variables
     @State private var timeoutWarning = false
     @State private var dismissableWithEsc = false
     
+    // MARK: - Body
     var body: some View {
         VStack {
+            // MARK: ProgressView
             ProgressView()
                 .padding()
                 .interactiveDismissDisabled(!dismissableWithEsc)
             
+            // MARK: Timeout Warning
             if timeoutWarning {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
@@ -34,12 +43,14 @@ struct ProgressViewSheet: View {
                 .padding()
                 
                 HStack {
+                    // MARK: Dismiss Button
                     Button {
                         isPresented = false
                     } label: {
                         Text("Dismiss loading")
                     }
                     
+                    // MARK: Keep Waiting Button
                     Button {
                         timeoutWarning = false
                         dismissableWithEsc = true

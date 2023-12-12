@@ -30,22 +30,20 @@ struct StoreView: View {
         )
         
         .toolbar {
+            
+            // FIXME: Loading view update creates race condition with webview
             /*
-             KNOWN ISSUE:
-             updateNSView in WebView() is an async function, 
-             and the the view is being updated while the page is still loading
-             
              if isLoading {
-             ToolbarItem(placement: .confirmationAction) {
-             ProgressView()
-             .progressViewStyle(.circular)
-             .controlSize(.small)
-             }
+                ToolbarItem(placement: .confirmationAction) {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                        .controlSize(.small)
+                }
              } else if loadingError {
-             ToolbarItem(placement: .confirmationAction) {
-             Image(systemName: "exclamationmark.triangle.fill")
-             .symbolEffect(.pulse)
-             }
+                ToolbarItem(placement: .confirmationAction) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .symbolEffect(.pulse)
+                }
              }
              */
             

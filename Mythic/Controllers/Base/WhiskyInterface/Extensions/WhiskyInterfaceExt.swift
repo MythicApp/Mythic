@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 17/10/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,9 +14,19 @@
 
 import Foundation
 
+// MARK: - WhiskyInterface Extension
 extension WhiskyInterface {
+    // MARK: - Bottle Structure
+    /**
+     A structure representing a Whisky bottle.
+     
+     - Note: This structure is defined as an extension of `WhiskyInterface`.
+     */
     struct Bottle {
+        /// The path of the bottle.
         var path: String
+        
+        /// The metadata associated with the bottle.
         var metadata: [String: Any]
     }
 }

@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 29/9/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -14,24 +15,28 @@
 import SwiftUI
 
 extension LibraryView {
+    
+    // MARK: - GameImportView Struct
     struct GameImportView: View {
+        
+        // MARK: - Binding Variables
         @Binding var isPresented: Bool
         @Binding var isGameListRefreshCalled: Bool
         
+        // MARK: - State Variables
         @State private var isProgressViewSheetPresented: Bool = false
         @State private var isErrorPresented: Bool = false
         @State private var errorContent: Substring = Substring()
         
         @State private var installableGames: [Legendary.Game] = Array()
-        
         @State private var selectedGame: Legendary.Game = .init(appName: String(), title: String())
         @State private var selectedGameType: String = "Epic"
         @State private var selectedPlatform: String = "macOS"
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
-        
         @State private var gamePath: String = String()
         
+        // MARK: - Body
         var body: some View {
             VStack {
                 Text("Import a Game")
@@ -119,11 +124,12 @@ extension LibraryView {
                                             selectedGame.appName,
                                             gamePath
                                         ]
-                                            .compactMap { $0 },
+                                        .compactMap { $0 },
                                         useCache: false,
                                         identifier: "gameImport"
                                     )
                                 }
+                                
                                 if command != nil {
                                     if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
                                         if !commandStderrString.isEmpty {
@@ -147,25 +153,15 @@ extension LibraryView {
                                             }
                                             
                                             // legendary/cli.py line 1372 as of hash 4507842
-                                            if line.contains("Some files are missing from the game installation, install may not" +
-                                                             " match latest Epic Games Store version or might be corrupted.") {
-                                                
+                                            if line.contains(
+                                                "Some files are missing from the game installation, install may not"
+                                                + " match latest Epic Games Store version or might be corrupted."
+                                            ) {
+                                                // TODO: implement
                                             }
                                         }
                                     }
                                 }
-                                
-                                /*
-                                 Output when importing Genshin Impact
-                                 [Core] INFO: Trying to re-use existing login session...
-                                 [Core] INFO: Downloading latest manifest for "41869934302e4b8cafac2d3c0e7c293d"
-                                 [cli] INFO: Game install appears to be complete.
-                                 [cli] INFO: NOTE: The Game installation will have to be verified before it can be updated with legendary.
-                                 [cli] INFO: Run "legendary repair 41869934302e4b8cafac2d3c0e7c293d" to do so.
-                                 [cli] INFO: Game "Genshin Impact" has been imported.
-                                 
-                                 conclusion: repair still has to be ran for full checksum matching
-                                 */
                             }
                         }
                         .disabled(gamePath.isEmpty)

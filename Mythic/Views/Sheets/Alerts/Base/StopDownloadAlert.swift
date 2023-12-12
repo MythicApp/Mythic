@@ -2,9 +2,7 @@
 //  StopDownloadAlert.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 8/12/2023.
-//
-
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -13,6 +11,15 @@
 
 import SwiftUI
 
+// MARK: - StopDownloadAlert Function
+/**
+ Creates an alert for stopping the download.
+ 
+ - Parameters:
+    - isPresented: Binding to control the presentation of the alert.
+    - game: The game for which the download is stopped.
+ - Returns: An `Alert` instance.
+ */
 func stopDownloadAlert(isPresented: Binding<Bool>, game: Legendary.Game?) -> Alert {
     return Alert(
         title: Text("Are you sure you want to stop downloading \(game?.title ?? "your game")?"),

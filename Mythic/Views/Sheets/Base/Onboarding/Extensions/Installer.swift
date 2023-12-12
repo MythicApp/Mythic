@@ -5,6 +5,7 @@
 //  Created by Esiayo Alegbe on 24/10/2023.
 //
 
+// MARK: - Copyright
 // Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -15,31 +16,42 @@ import SwiftUI
 import Combine
 
 extension OnboardingView {
-    enum ActiveAlert { case closeConfirmation, installError }
-    
+    // MARK: - InstallView Struct
+    /// A view guiding the user through the installation of the Game Porting Toolkit.
     struct InstallView: View {
+        
+        // MARK: - Binding Variables
         @Binding var isPresented: Bool
         
-        // @AppStorage("alreadyShownCloseConfirmation") var alreadyShownCloseConfirmation: Bool = false
+        // MARK: - Enumerations
+        // swiftlint:disable nesting
+        enum ActiveAlert {
+            case closeConfirmation,
+                 installError
+        }
+        // swiftlint:enable nesting
         
+        // MARK: - State Variables
         @State private var isDownloadSheetPresented: Bool = false
         @State private var isInstallSheetPresented: Bool = false
-        
         @State private var activeAlert: ActiveAlert = .closeConfirmation
         @State private var isAlertPresented: Bool = false
-        
         @State private var downloadProgressEstimate: Double = 0
         @State private var installProgress: Double = 0
         @State private var installComplete: Bool = false
         @State private var installError: Bool = false
         
+        // MARK: - Body
         var body: some View {
             VStack {
+                // MARK: Title Text
                 Text("Install Game Porting Toolkit")
                     .font(.title)
                 
+                // MARK: Divider
                 Divider()
                 
+                // MARK: Installation Instructions
                 Text("In order to launch windows games, Mythic must download"
                      + "\na special translator by Apple to convert Windows code to macOS."
                      + "\n"
@@ -47,7 +59,9 @@ extension OnboardingView {
                 )
                 .multilineTextAlignment(.center)
                 
+                // MARK: Action Buttons
                 HStack {
+                    // MARK: Close Button
                     Button("Close") {
                         if /* alreadyShownCloseConfirmation == false || */ Libraries.isInstalled() == false {
                             // alreadyShownCloseConfirmation = true
@@ -58,6 +72,7 @@ extension OnboardingView {
                         }
                     }
                     
+                    // MARK: Install Button
                     Button(Libraries.isInstalled() ? "Installed" : "Install") {
                         Libraries.install(
                             downloadProgressHandler: { progress in
@@ -100,11 +115,14 @@ extension OnboardingView {
             }
             .padding()
             
+            // MARK: Download Sheet
             .sheet(isPresented: $isDownloadSheetPresented) {
                 VStack {
+                    // MARK: Downloading Text
                     Text("Downloading Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
+                    // MARK: Download Progress
                     HStack {
                         if downloadProgressEstimate > 0 {
                             Text("\(Int(downloadProgressEstimate * 100))%")
@@ -122,16 +140,20 @@ extension OnboardingView {
                 .padding()
                 .fixedSize()
                 
+                // MARK: Action on Disappear
                 .onDisappear {
-                    // implement action if download incomplete
+                    // TODO: action if download is incomplete
                 }
             }
             
+            // MARK: Install Sheet
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
+                    // MARK: Installing Text
                     Text("Installing Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
+                    // MARK: Install Progress
                     HStack {
                         Text("\(Int(installProgress * 100))%")
                         
@@ -142,14 +164,18 @@ extension OnboardingView {
                 .padding()
                 .fixedSize()
                 
+                // MARK: Action on Disappear
                 .onDisappear {
-                    // implement action if install incomplete
+                    // TODO: action if install is incomplete
                 }
             }
+            
+            // MARK: - Other Properties
             
             .alert(isPresented: $isAlertPresented) {
                 switch activeAlert {
                 case .closeConfirmation:
+                    // MARK: Close Confirmation Alert
                     Alert(
                         title: Text("Are you sure you want to cancel GPTK installation?"),
                         message: Text("Doing this means you can only play macOS-supported games, imported games, or use Whisky."),
@@ -157,6 +183,7 @@ extension OnboardingView {
                         secondaryButton: .cancel(Text("Cancel")) { isAlertPresented = false }
                     )
                 case .installError:
+                    // MARK: Installation Error Alert
                     Alert(title: Text("Error installing GPTK."))
                 }
             }
@@ -165,5 +192,6 @@ extension OnboardingView {
 }
 
 #Preview {
+    // MARK: - Preview
     OnboardingView.InstallView(isPresented: .constant(true))
 }
