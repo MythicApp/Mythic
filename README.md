@@ -16,12 +16,14 @@
 We started this project to create a GUI frontend for [Legendary](https://github.com/derrod/legendary) and to play Windows games using Apple's game porting toolkit. Our has been designed to look as native as possible, to ensure coherence with the rest of the macOS environment.
 
 ## Features
-- [Windows Game Support](https://github.com/MythicApp/Engine)
-- Epic Games Support
-- Manual Game Imports
-- Game management
-- Whisky Intergration
-  
+- [x] [Windows Game Support](https://github.com/MythicApp/Engine)
+- [x] Epic Games Support
+- [x] Manual Game Imports
+- [x] Game management
+- [x] Whisky Intergration
+- [ ] Steam Support
+- [ ] Discord Intergration
+
 We have way more big things coming for our full release, see our [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2). If you think something is missing from our plans join our [Discord](https://discord.com/invite/58NZ7fFqPy) to suggest.
 
 ## Download
