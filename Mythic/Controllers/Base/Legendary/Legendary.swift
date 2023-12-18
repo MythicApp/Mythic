@@ -12,6 +12,8 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import Foundation
 import SwiftyJSON
 import OSLog
@@ -44,13 +46,13 @@ class Legendary {
      Run a legendary command using the included legendary binary.
      
      - Parameters:
-     - args: The command arguments.
-     - useCache: Flag indicating whether to use cached output.
-     - identifier: String to keep track of individual command functions. (originally UUID-based)
-     - input: Optional input string for the command.
-     - inputIf: Optional condition to be checked for in the output streams before input is appended.
-     - asyncOutput: Optional closure that gets output appended to it immediately.
-     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
+        - args: The command arguments.
+        - useCache: Flag indicating whether to use cached output.
+        - identifier: String to keep track of individual command functions. (originally UUID-based)
+        - input: Optional input string for the command.
+        - inputIf: Optional condition to be checked for in the output streams before input is appended.
+        - asyncOutput: Optional closure that gets output appended to it immediately.
+        - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
      
      - Returns: A tuple containing stdout and stderr data.
      */
@@ -64,7 +66,6 @@ class Legendary {
         additionalEnvironmentVariables: [String: String]? = nil
     ) async -> (stdout: Data, stderr: Data) {
         
-        // MARK: - Queue Container
         struct QueueContainer {
             let cache: DispatchQueue = DispatchQueue(label: "commandCacheQueue")
             let command: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
@@ -93,7 +94,6 @@ class Legendary {
             let task = Process()
             task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
             
-            // MARK: - Pipe Container
             struct PipeContainer {
                 let stdout = Pipe()
                 let stderr = Pipe()
@@ -103,8 +103,6 @@ class Legendary {
             actor DataContainer {
                 private var _stdout = Data()
                 private var _stderr = Data()
-                
-                // MARK: - Stream Enum
                 
                 func append(_ data: Data, to stream: Stream) {
                     switch stream {
@@ -139,7 +137,7 @@ class Legendary {
             
             log.debug("executing \(fullCommand)")
             
-            // MARK: - Async stdout Appending
+            // MARK: Asynchronous stdout Appending
             queue.command.async(qos: .utility) {
                 Task {
                     while true {
@@ -164,7 +162,7 @@ class Legendary {
                 }
             }
             
-            // MARK: - Async stderr Appending
+            // MARK: Asynchronous stderr Appending
             queue.command.async(qos: .utility) {
                 Task {
                     while true {
@@ -198,7 +196,7 @@ class Legendary {
                 }
             }
             
-            // MARK: - Run
+            // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
                 
@@ -284,11 +282,11 @@ class Legendary {
      Installs games using legendary.
      
      - Parameters:
-     - game: The game's `app_name`.
-     - optionalPacks: Optional packs to install along with the base game.
-     - basePath: A custom path for the game to install to.
-     - gameFolder: The folder where the game should be installed.
-     - platform: The platform for which the game should be installed.
+        - game: The game's `app_name`.
+        - optionalPacks: Optional packs to install along with the base game.
+        - basePath: A custom path for the game to install to.
+        - gameFolder: The folder where the game should be installed.
+        - platform: The platform for which the game should be installed.
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */

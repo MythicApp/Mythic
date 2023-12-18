@@ -62,7 +62,7 @@ struct GameListView: View {
     
     @State private var dataFetched: Bool = false
     
-    // MARK: - UpdateCurrentGameMode Enumeration
+    // MARK: - Enumerations
     /// Enumeration for updating the current game.
     enum UpdateCurrentGameMode {
         case normal

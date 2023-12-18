@@ -22,10 +22,10 @@ extension GameListView {
     /// An extension of the `GameListView` that defines the `SettingsView` SwiftUI view for game settings.
     struct SettingsView: View {
         
-        // MARK: Bindings
+        // MARK: - Bindings
         @Binding var isPresented: Bool
         
-        // MARK: Variables
+        // MARK: - Variables
         public var game: Legendary.Game
         
         // MARK: - Body View

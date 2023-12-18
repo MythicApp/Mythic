@@ -12,24 +12,23 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import Foundation
 
 extension Legendary {
-    // MARK: - Stream Enumeration
     /// Enumeration containing the two terminal stream types.
     enum Stream {
         case stdout
         case stderr
     }
 
-    // MARK: - ImageType Enumeration
     /// Enumeration to specify image types.
     enum ImageType {
         case normal
         case tall
     }
 
-    // MARK: - DataLockUse Enumeration
     /// Enumeration containing the activities legendary does that require a data lock.
     enum DataLockUse {
         case installing
@@ -55,7 +54,6 @@ extension Legendary {
         case load
     }
 
-    // MARK: - DoesNotExistError Enumeration
     /// Your father.
     enum DoesNotExistError: Error {
         case game
@@ -64,14 +62,12 @@ extension Legendary {
         case directory(directory: String)
     }
 
-    // MARK: - Game Struct
     /// Struct to store games.
     struct Game: Hashable {
         var appName: String
         var title: String
     }
 
-    // MARK: - OutputHandler Struct
     /// A struct to hold closures for handling stdout and stderr output.
     struct OutputHandler {
         /// A closure to handle stdout output.
@@ -81,7 +77,6 @@ extension Legendary {
         let stderr: (String) -> Void
     }
 
-    // MARK: - InputIfCondition Struct
     /// Represents a condition to be checked for in the output streams before input is appended.
     struct InputIfCondition {
         /// The stream to be checked (stdout or stderr).
@@ -91,12 +86,10 @@ extension Legendary {
         let string: String
     }
 
-    // MARK: - NotSignedInError Struct
     /// Error when legendary is signed out on a command that enforces signin.
     @available(*, message: "This error will be deprecated soon, in favor of UserValidationError")
     struct NotSignedInError: Error {}
 
-    // MARK: - InstallationError Struct
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: Error {
         let message: String
@@ -106,12 +99,10 @@ extension Legendary {
         }
     }
 
-    // MARK: - DataLockInUse Variable
     /// Whether legendary is currently modifying (installing, removing, moving) a game/service.
     static var dataLockInUse: (value: Bool, inUse: DataLockUse) = (true, .installing) // TODO: make datalockinuse variable not always true
 
     // MARK: - Installing
-    // MARK: - Progress Struct
     struct Progress {
         var percentage: Double
         var downloaded: Int
@@ -120,31 +111,26 @@ extension Legendary {
         var eta: Substring
     }
 
-    // MARK: - Download Struct
     struct Download {
         var downloaded: Double
         var written: Double
     }
 
-    // MARK: - Cache Struct
     struct Cache {
         var usage: Double
         var activeTasks: Int
     }
 
-    // MARK: - DownloadAdvanced Struct
     struct DownloadAdvanced {
         var raw: Double
         var decompressed: Double
     }
 
-    // MARK: - Disk Struct
     struct Disk {
         var write: Double
         var read: Double
     }
 
-    // MARK: - InstallStatus Struct
     /// Structure to define legendary's installing output status.
     struct InstallStatus {
         var progress: Progress?

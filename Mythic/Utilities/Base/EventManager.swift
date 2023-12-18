@@ -39,7 +39,8 @@ class EventManager {
     private var events = [String: [(Any) -> Void]]()
     
     // MARK: - Subscribe Method
-    /** Subscribe to events within the event manager.
+    /**
+     Subscribe to events within the event manager.
      
      - Parameter event: The name of the event to subscribe to.
      - Parameter callback: The closure to be called when the event is triggered.
@@ -52,11 +53,12 @@ class EventManager {
     }
     
     // MARK: - Publish Method
-    /** Publish new values to events.
+    /**
+     Publish new values to events.
      
      - Parameters:
-     - event: The event to publish to.
-     - data: The data to publish to the event.
+        - event: The event to publish to.
+        - data: The data to publish to the event.
      */
     public func publish(_ event: String, _ data: Any) {
         if let callbacks = events[event] {

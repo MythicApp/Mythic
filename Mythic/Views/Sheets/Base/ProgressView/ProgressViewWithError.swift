@@ -12,6 +12,8 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import SwiftUI
 
 // MARK: - ProgressViewSheetWithError Struct
@@ -24,10 +26,9 @@ struct ProgressViewSheetWithError: View {
     // MARK: - Body
     var body: some View {
         if !isError {
-            // MARK: Show ProgressViewSheet
             ProgressViewSheet(isPresented: $isPresented)
         } else {
-            // MARK: Show Error Image
+            // MARK: Error
             Image(systemName: "exclamationmark.triangle.fill")
                 .imageScale(.large)
                 .padding()

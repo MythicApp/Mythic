@@ -48,13 +48,13 @@ struct WebView: NSViewRepresentable {
         }
     }
     
-    // MARK: - Make Coordinator
+    // MARK: Coordinator Creation
     /// Creates and returns the Coordinator instance for the WebView.
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
-    // MARK: - Coordinator Class
+    // MARK: Coordinator Class
     /// Coordinator class for handling WebView navigation events.
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: WebView
@@ -63,7 +63,7 @@ struct WebView: NSViewRepresentable {
             self.parent = parent
         }
         
-        // MARK: - Did Fail Provisional Navigation
+        // MARK: Provisional Navigation Failure
         /// Called when a navigation fails.
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
             DispatchQueue.main.async { [self] in
@@ -72,7 +72,7 @@ struct WebView: NSViewRepresentable {
             }
         }
         
-        // MARK: - Did Finish Navigation
+        // MARK: - Provisional Navigation Completion
         /// Called when navigation finishes successfully.
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
             DispatchQueue.main.async { [self] in
@@ -83,7 +83,7 @@ struct WebView: NSViewRepresentable {
             }
         }
         
-        // MARK: - Did Start Provisional Navigation
+        // MARK: - Provisional Navigation Commencing
         /// Called when the WebView starts provisional navigation.
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation) {
             DispatchQueue.main.async { [self] in

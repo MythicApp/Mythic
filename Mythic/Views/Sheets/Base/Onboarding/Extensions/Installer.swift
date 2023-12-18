@@ -12,6 +12,8 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎]
+
 import SwiftUI
 import Combine
 
@@ -44,14 +46,11 @@ extension OnboardingView {
         // MARK: - Body
         var body: some View {
             VStack {
-                // MARK: Title Text
                 Text("Install Game Porting Toolkit")
                     .font(.title)
                 
-                // MARK: Divider
                 Divider()
                 
-                // MARK: Installation Instructions
                 Text("In order to launch windows games, Mythic must download"
                      + "\na special translator by Apple to convert Windows code to macOS."
                      + "\n"
@@ -59,7 +58,6 @@ extension OnboardingView {
                 )
                 .multilineTextAlignment(.center)
                 
-                // MARK: Action Buttons
                 HStack {
                     // MARK: Close Button
                     Button("Close") {
@@ -118,11 +116,9 @@ extension OnboardingView {
             // MARK: Download Sheet
             .sheet(isPresented: $isDownloadSheetPresented) {
                 VStack {
-                    // MARK: Downloading Text
                     Text("Downloading Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
-                    // MARK: Download Progress
                     HStack {
                         if downloadProgressEstimate > 0 {
                             Text("\(Int(downloadProgressEstimate * 100))%")
@@ -140,7 +136,6 @@ extension OnboardingView {
                 .padding()
                 .fixedSize()
                 
-                // MARK: Action on Disappear
                 .onDisappear {
                     // TODO: action if download is incomplete
                 }
@@ -149,11 +144,9 @@ extension OnboardingView {
             // MARK: Install Sheet
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
-                    // MARK: Installing Text
                     Text("Installing Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
-                    // MARK: Install Progress
                     HStack {
                         Text("\(Int(installProgress * 100))%")
                         
@@ -164,7 +157,6 @@ extension OnboardingView {
                 .padding()
                 .fixedSize()
                 
-                // MARK: Action on Disappear
                 .onDisappear {
                     // TODO: action if install is incomplete
                 }
