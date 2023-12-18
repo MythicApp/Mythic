@@ -230,7 +230,7 @@ class Legendary {
                     log.log("\(stderrString)")
                 }
             } else {
-                log.warning("empty stderr:\ncommand key: \(commandKey)")
+                log.warning("empty stderr recieved from [\(commandKey)]")
             }
             
             if let stdoutString = String(data: output.stdout, encoding: .utf8) {
@@ -238,7 +238,7 @@ class Legendary {
                     log.debug("\(stdoutString)")
                 }
             } else {
-                log.warning("empty stderr\ncommand key: \(commandKey)")
+                log.warning("empty stdout recieved from [\(commandKey)]")
             }
             
             queue.cache.sync { commandCache[commandKey] = output }
