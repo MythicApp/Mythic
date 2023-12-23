@@ -232,9 +232,11 @@ struct MainView: View {
                     return Alert(
                         title: .init("An error occurred."),
                         message: .init(
-                            "\(Text("[ActiveAlert Fault]").italic())"
-                            + "If this error appears, please consult support."
-                            + "\nMake sure to include what you were doing when the error occured."
+                            """
+                            \(Text("[ActiveAlert Fault]").italic())
+                            If this error appears, please consult support.
+                            Make sure to include what you were doing when the error occured.
+                            """
                         )
                     )
                 }

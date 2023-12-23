@@ -26,19 +26,18 @@ extension OnboardingView {
         @Binding var isPresented: Bool
         
         // MARK: - Enumerations
-        // swiftlint:disable nesting
+        // swiftlint:disable:next nesting
         enum ActiveAlert {
             case closeConfirmation,
                  installError
         }
-        // swiftlint:enable nesting
         
         // MARK: - State Variables
         @State private var isDownloadSheetPresented: Bool = false
         @State private var isInstallSheetPresented: Bool = false
         @State private var activeAlert: ActiveAlert = .closeConfirmation
         @State private var isAlertPresented: Bool = false
-        @State private var downloadProgressEstimate: Double = 0
+        @State private var downloadProgress: Double = 0
         @State private var installProgress: Double = 0
         @State private var installComplete: Bool = false
         @State private var installError: Bool = false
@@ -51,10 +50,13 @@ extension OnboardingView {
                 
                 Divider()
                 
-                Text("In order to launch windows games, Mythic must download"
-                     + "\na special translator by Apple to convert Windows code to macOS."
-                     + "\n"
-                     + "\nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+                Text(
+                """
+                In order to launch windows games, Mythic must download
+                a special translator by Apple to convert Windows code to macOS.
+                 
+                It's around 1.8GB in size, but the download is around 600MB due to compression.
+                """
                 )
                 .multilineTextAlignment(.center)
                 
@@ -74,7 +76,7 @@ extension OnboardingView {
                     Button(Libraries.isInstalled() ? "Installed" : "Install") {
                         Libraries.install(
                             downloadProgressHandler: { progress in
-                                downloadProgressEstimate = progress
+                                downloadProgress = progress
                                 
                                 if progress < 1 {
                                     if !isDownloadSheetPresented {
@@ -120,12 +122,12 @@ extension OnboardingView {
                         .multilineTextAlignment(.leading)
                     
                     HStack {
-                        if downloadProgressEstimate > 0 {
-                            Text("\(Int(downloadProgressEstimate * 100))%")
+                        if downloadProgress > 0 {
+                            Text("\(Int(downloadProgress * 100))%")
                         }
                         
-                        if downloadProgressEstimate > 0 {
-                            ProgressView(value: downloadProgressEstimate, total: 1)
+                        if downloadProgress > 0 {
+                            ProgressView(value: downloadProgress, total: 1)
                                 .progressViewStyle(.linear)
                         } else {
                             ProgressView()
@@ -135,9 +137,12 @@ extension OnboardingView {
                 }
                 .padding()
                 .fixedSize()
+                .interactiveDismissDisabled()
                 
                 .onDisappear {
-                    // TODO: action if download is incomplete
+                    if downloadProgress < 1 {
+                        // TODO: add alert function to auto show alert
+                    }
                 }
             }
             
@@ -145,7 +150,6 @@ extension OnboardingView {
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
                     Text("Installing Game Porting Toolkit...")
-                        .multilineTextAlignment(.leading)
                     
                     HStack {
                         Text("\(Int(installProgress * 100))%")

@@ -37,8 +37,11 @@ struct OnboardingView: View {
             
             Divider()
             
-            Text("Let's get started by signing in to Epic Games."
-                 + "\nIf you do not want to use Epic Games, just click next."
+            Text(
+                """
+                Let's get started by signing in to Epic Games.
+                If you do not want to use Epic Games, just click next.
+                """
             )
             .multilineTextAlignment(.center)
             

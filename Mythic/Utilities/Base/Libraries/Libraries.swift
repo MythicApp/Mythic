@@ -86,11 +86,11 @@ class Libraries {
         var latestArtifact: [String: Any]?
         
         group.enter()
-        session.dataTask(with: URL(string: "https://api.github.com/repos/MythicApp/CompiledLibraries/actions/artifacts")!) { (data, _, error) in
+        session.dataTask(with: URL(string: "https://api.github.com/repos/MythicApp/Engine/actions/artifacts")!) { (data, _, error) in
             defer { group.leave() }
             
             guard error == nil else {
-                Logger.network.error("Error retrieving latest GPTK build: \(error!)")
+                Logger.network.error("Error retrieving latest GPTK build data: \(error!)")
                 completion(.failure(error!))
                 return
             }
@@ -109,7 +109,7 @@ class Libraries {
         group.wait()
         
         let download = session.downloadTask(
-            with: URL(string: "https://nightly.link/MythicApp/CompiledLibraries/workflows/build-gptk/main/Libraries.zip")!
+            with: URL(string: "https://nightly.link/MythicApp/Engine/workflows/build-gptk/main/Libraries.zip")!
         ) { (file, _, error) in
             guard error == nil else {
                 Logger.network.error("Error with GPTK download: \(error!)")
@@ -121,19 +121,31 @@ class Libraries {
             defer { dataLock.unlock() }
             
             if let file = file {
+                Logger.file.notice("Installing libraries...")
                 do {
-                    Logger.file.notice("Installing libraries...")
                     try files.unzipItem(at: file, to: directory, progress: installProgress)
                     Logger.file.notice("Finished downloading and installing libraries.")
-                    
+                } catch {
+                    Logger.file.error("Unable to install libraries: \(error)")
+                    do {
+                        try files.removeItem(at: file)
+                    } catch {
+                        Logger.file.error(
+                            """
+                            Catastophic error, unable to remove libraries download file.
+                            Please do this manually by executing [sudo rm -rf \(file)] ")
+                            """
+                        )
+                    }
+                    completion(.failure(error))
+                }
+                
+                if files.fileExists(atPath: directory.path) {
                     let checksum = checksum()
                     defaults.set(checksum, forKey: "librariesChecksum")
                     Logger.file.notice("Libraries checksum is: \(checksum)")
                     
                     completion(.success(true))
-                } catch {
-                    Logger.file.error("Unable to install libraries to \(directory.relativePath): \(error)")
-                    completion(.failure(error))
                 }
             }
         }
@@ -143,7 +155,13 @@ class Libraries {
         queue.async {
             while !download.progress.isFinished {
                 downloadProgressHandler(Double(download.countOfBytesReceived) / (latestArtifact?["size_in_bytes"] as? Double ?? -1))
-                print("download progress:\nrecv \(Double(download.countOfBytesReceived))\ntotal: \((latestArtifact?["size_in_bytes"] as? Double ?? -1))")
+                print(
+                    """
+                    download progress:
+                    recv \(Double(download.countOfBytesReceived))
+                    total: \((latestArtifact?["size_in_bytes"] as? Double ?? -1))
+                    """
+                )
                 Thread.sleep(forTimeInterval: 0.1)
             }
             
