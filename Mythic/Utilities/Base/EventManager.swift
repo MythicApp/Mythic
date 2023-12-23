@@ -22,13 +22,24 @@ import Foundation
  
  Example usage:
  ```
- EventManager.shared.subscribe("test") { data in
-    if let value = data as? String {
-        print("chat is this (value)")
-    }
+ let subscription1 = EventManager.shared.subscribe("test") { data in
+     if let value = data as? String {
+         print("Subscription 1: chat is this '\(value)'")
+     }
+ }
+
+ // Another subscription to "test"
+ let subscription2 = EventManager.shared.subscribe("test") { data in
+     if let value = data as? String {
+         print("Subscription 2: chat is this '\(value)'")
+     }
  }
  
  EventManager.shared.publish("test", "real?")
+ 
+ EventManager.shared.unsubscribe("test", id: subscription1) // remotely stop callback 1 from getting any more updates
+ 
+ EventManager.shared.wipe("test") // womp womp, callback 2 should now be nil
  ```
  */
 class EventManager {
@@ -36,20 +47,69 @@ class EventManager {
     static let shared = EventManager()
     
     /// Event storage.
-    private var events = [String: [(Any) -> Void]]()
+    private var events = [String: [UUID: (Any) -> Void]]()
+    
+    /// DispatchQueue for event management, promotes thread safety
+    private let queue = DispatchQueue(label: "EventManager", attributes: .concurrent)
     
     // MARK: - Subscribe Method
     /**
      Subscribe to events within the event manager.
      
-     - Parameter event: The name of the event to subscribe to.
-     - Parameter callback: The closure to be called when the event is triggered.
+     - Parameters:
+        - event: The name of the event to subscribe to.
+        - callback: The closure to be called when the event is triggered.
+     
+     - Returns: The UUID of the subscription created.
      */
-    public func subscribe(_ event: String, _ callback: @escaping (Any) -> Void) {
-        if events[event] == nil {
-            events[event] = Array()
+    @discardableResult
+    public func subscribe(_ event: String, _ callback: @escaping (Any) -> Void) -> UUID {
+        let id: UUID! = .init()
+        
+        queue.sync(flags: .barrier) {
+            self.events[event] = self.events[event] ?? [:]
+            self.events[event]?[id] = callback
         }
-        events[event]?.append(callback)
+        
+        return id
+    }
+    
+    // MARK: - Unsubscrbe Method
+    /**
+     Removes all subscribed callbacks for a specified event.
+
+     - Parameters:
+        - event: The name of the event from which to unsubscribe.
+        - id: The ID of the closure that will unsubscribe.
+     */
+    public func unsubscribe(_ event: String, id: UUID) {
+        queue.async(flags: .barrier) {
+            self.events[event]?[id] = nil
+        }
+    }
+    
+    // MARK: - Unsubscribe All Method
+    /**
+     Removes all callbacks and data of a specific event
+
+     - Parameter event: The name of the event from which to unsubscribe.
+     */
+    public func unsubscribeAll(_ event: String) {
+        queue.async(flags: .barrier) {
+            self.events[event]?.removeAll()
+        }
+    }
+    
+    // MARK: - Wipe Method
+    /**
+     Removes callbacks and data of a specific event.
+
+     - Parameter event: The name of the event from which to wipe.
+     */
+    public func wipe(_ event: String) {
+        queue.async(flags: .barrier) { // .barrier protects other tasks concurrently running, avoids data races
+            self.events[event] = nil
+        }
     }
     
     // MARK: - Publish Method
@@ -61,9 +121,11 @@ class EventManager {
         - data: The data to publish to the event.
      */
     public func publish(_ event: String, _ data: Any) {
-        if let callbacks = events[event] {
-            for callback in callbacks {
-                callback(data)
+        queue.sync {
+            if let callbacks = self.events[event] {
+                for callback in callbacks.values {
+                    callback(data)
+                }
             }
         }
     }
