@@ -127,13 +127,13 @@ class Legendary {
             
             task.arguments = args
             
-            var environment = ["LEGENDARY_CONFIG_PATH": configLocation]
+            var defaultEnvironmentVariables = ["LEGENDARY_CONFIG_PATH": configLocation]
             if let additionalEnvironmentVariables = additionalEnvironmentVariables {
-                environment.merge(additionalEnvironmentVariables) { (_, new) in new }
+                defaultEnvironmentVariables.merge(additionalEnvironmentVariables) { (_, new) in new }
             }
-            task.environment = environment
+            task.environment = defaultEnvironmentVariables
             
-            let fullCommand = "\((environment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath) \(task.arguments!.joined(separator: " "))"
+            let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
             
             log.debug("executing \(fullCommand)")
             
@@ -317,71 +317,6 @@ class Legendary {
         var status = Installing.shared._status
         var errorThrownExternally: Error?
         
-        let asyncOutput = OutputHandler(
-            stdout: { output in
-                output.enumerateLines { line, _ in
-                    if line.contains("Failure:") {
-                        errorThrownExternally = InstallationError(String(line.trimmingPrefix(" ! Failure: ")))
-                    }
-                }
-            },
-            stderr: { output in
-                output.enumerateLines { line, _ in
-                    if line.contains("[DLManager] INFO:") {
-                        if !line.contains("Finished installation process in") {
-                            
-                            EventManager.shared.publish("currentInstallationData", ())
-                            
-                            let range = NSRange(line.startIndex..<line.endIndex, in: line)
-                            
-                            if let match = Regex.progress?.firstMatch(in: line, range: range) {
-                                status.progress =  Progress(
-                                    percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                    downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
-                                    total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
-                                    runtime: line[Range(match.range(at: 4), in: line)!],
-                                    eta: line[Range(match.range(at: 5), in: line)!]
-                                )
-                            } else if let match = Regex.download?.firstMatch(in: line, range: range) {
-                                status.download = Download( // MiB | 1 MB = (10^6/2^20) MiB
-                                    downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                    written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                )
-                            } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
-                                status.cache = Cache(
-                                    usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
-                                    activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                )
-                            } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
-                                status.downloadAdvanced = DownloadAdvanced( // MiB/s
-                                    raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                    decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                )
-                            } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
-                                status.disk = Disk( // MiB/s
-                                    write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                    read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                )
-                            } else if line.contains("All done! Download manager quitting...") {
-                                DispatchQueue.main.async {
-                                    Installing.shared._finished = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // come back to later, issue creates spamability
-                                        Installing.shared._finished = false
-                                    }
-                                }
-                            }
-                        } else {
-                            Installing.shared.reset()
-                        }
-                    }
-                    DispatchQueue.main.sync {
-                        Installing.shared._status = status
-                        dump(Installing.shared._status)
-                    }
-                }
-            }
-        )
-        
         var argBuilder = ["-y", "install", game.appName]
         
         if let platform = platform {
@@ -412,7 +347,70 @@ class Legendary {
                 stream: .stdout,
                 string: "Additional packs [Enter to confirm]:"
             ),
-            asyncOutput: asyncOutput
+            asyncOutput: .init(
+                stdout: { output in
+                    output.enumerateLines { line, _ in
+                        if line.contains("Failure:") {
+                            errorThrownExternally = InstallationError(String(line.trimmingPrefix(" ! Failure: ")))
+                        }
+                    }
+                },
+                stderr: { output in
+                    output.enumerateLines { line, _ in
+                        if line.contains("[DLManager] INFO:") {
+                            if !line.contains("Finished installation process in") {
+                                
+                                EventManager.shared.publish("currentInstallationData", ())
+                                
+                                let range = NSRange(line.startIndex..<line.endIndex, in: line)
+                                
+                                if let match = Regex.progress?.firstMatch(in: line, range: range) {
+                                    status.progress =  Progress(
+                                        percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
+                                        total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
+                                        runtime: line[Range(match.range(at: 4), in: line)!],
+                                        eta: line[Range(match.range(at: 5), in: line)!]
+                                    )
+                                } else if let match = Regex.download?.firstMatch(in: line, range: range) {
+                                    status.download = Download( // MiB | 1 MB = (10^6/2^20) MiB
+                                        downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    )
+                                } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
+                                    status.cache = Cache(
+                                        usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
+                                        activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    )
+                                } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
+                                    status.downloadAdvanced = DownloadAdvanced( // MiB/s
+                                        raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    )
+                                } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
+                                    status.disk = Disk( // MiB/s
+                                        write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    )
+                                } else if line.contains("All done! Download manager quitting...") {
+                                    DispatchQueue.main.async {
+                                        Installing.shared._finished = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // come back to later, issue creates spamability
+                                            Installing.shared._finished = false
+                                        }
+                                    }
+                                }
+                            } else {
+                                Installing.shared.reset()
+                            }
+                        }
+                        DispatchQueue.main.sync {
+                            Installing.shared._status = status
+                            dump(Installing.shared._status)
+                        }
+                    }
+                }
+            )
         )
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
@@ -543,7 +541,7 @@ class Legendary {
         let installedJSONFileURL: URL = URL(filePath: "\(configLocation)/installed.json")
         
         guard let installedData = try? Data(contentsOf: installedJSONFileURL) else {
-            throw DoesNotExistError.file(file: installedJSONFileURL)
+            throw FileLocations.FileDoesNotExistError(installedJSONFileURL)
         }
         
         guard let installedGames = try JSONSerialization.jsonObject(with: installedData) as? [String: [String: Any]] else { // stupid json dependency is stupid
@@ -599,7 +597,7 @@ class Legendary {
         let metadataDirectoryString = "\(configLocation)/metadata"
         
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
-            throw DoesNotExistError.directory(directory: metadataDirectoryString)
+            throw FileLocations.FileDoesNotExistError(URL(filePath: metadataDirectoryString))
         }
         
         if let metadataFileName = metadataDirectoryContents.first(where: {
@@ -674,7 +672,7 @@ class Legendary {
         let aliasesJSONFileURL: URL = URL(filePath: "\(configLocation)/aliases.json")
         
         guard let aliasesData = try? Data(contentsOf: aliasesJSONFileURL) else {
-            throw DoesNotExistError.file(file: aliasesJSONFileURL)
+            throw FileLocations.FileDoesNotExistError(aliasesJSONFileURL)
         }
         
         guard let json = try? JSON(data: aliasesData) else {

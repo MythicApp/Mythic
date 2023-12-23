@@ -17,5 +17,34 @@
 import Foundation
 
 extension Wine {
-    // TODO: implement
+    /// Enumeration containing the two terminal stream types.
+    enum Stream {
+        case stdout
+        case stderr
+    }
+    
+    /// A struct to hold closures for handling stdout and stderr output.
+    struct OutputHandler {
+        /// A closure to handle stdout output.
+        let stdout: (String) -> Void
+
+        /// A closure to handle stderr output.
+        let stderr: (String) -> Void
+    }
+    
+    /// Represents a condition to be checked for in the output streams before input is appended.
+    struct InputIfCondition {
+        /// The stream to be checked (stdout or stderr).
+        let stream: Stream
+
+        /// The string pattern to be matched in the selected stream's output.
+        let string: String
+    }
+    
+    /// Error that signifies that a wineprefix is unable to boot.
+    struct BootError: Error {
+        
+        // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
+        let reason: String? = nil
+    }
 }

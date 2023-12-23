@@ -16,8 +16,10 @@
 
 import Foundation
 
-/// An error indicating that the libraries are already installed.
-struct AlreadyInstalledError: Error { }
-
-/// An error indicating that the libraries are not installed.
-struct NotInstalledError: Error { }
+extension Libraries {
+    /// An error indicating that the libraries are already installed.
+    struct AlreadyInstalledError: Error { }
+    
+    /// An error indicating that the libraries are not installed.
+    struct NotInstalledError: Error { }
+}

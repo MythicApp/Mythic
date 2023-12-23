@@ -58,8 +58,6 @@ extension Legendary {
     enum DoesNotExistError: Error {
         case game
         case aliases
-        case file(file: URL)
-        case directory(directory: String)
     }
 
     /// Struct to store games.
