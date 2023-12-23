@@ -20,6 +20,8 @@ import OSLog
 // MARK: - File Locations Class
 class FileLocations {
     
+    // MARK: - Functions
+    
     // MARK: - Global Applications Directory
     /** The global Applications directory.
      
@@ -107,4 +109,14 @@ class FileLocations {
         
         return nil
     }()
+    
+    // MARK: - Other
+    
+    struct FileDoesNotExistError: Error {
+        init(_ fileURL: URL) {
+            self.fileURL = fileURL
+        }
+        
+        let fileURL: URL
+    }
 }
