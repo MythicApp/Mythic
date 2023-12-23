@@ -19,7 +19,7 @@ import Sparkle
 @main
 struct MythicApp: App {
     // MARK: - State Properties
-    @State private var isFirstLaunch: Bool
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = false
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUpdatePromptPresented: Bool = false
@@ -29,10 +29,6 @@ struct MythicApp: App {
     
     // MARK: - Initialization
     init() {
-        self._isFirstLaunch = State(
-            initialValue: UserDefaults.standard.bool(forKey: "isFirstLaunch")
-        )
-        
         updaterController = SPUStandardUpdaterController(
             startingUpdater: true,
             updaterDelegate: nil,

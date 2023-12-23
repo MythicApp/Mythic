@@ -24,6 +24,7 @@ import CachedAsyncImage
  */
 struct HomeView: View {
     // MARK: - State Variables
+    @AppStorage("recentGame") private var recentGame: String = String()
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var canGoBack = false
@@ -49,7 +50,7 @@ struct HomeView: View {
                 ZStack {
                     HStack {
                         // MARK: Image
-                        AsyncImage(url: URL(string: UserDefaults.standard.object(forKey: "recentGame") as? String ?? "")) { phase in
+                        AsyncImage(url: URL(string: recentGame)) { phase in
                             switch phase {
                             case .empty:
                                 ProgressView()
