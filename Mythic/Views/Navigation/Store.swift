@@ -33,7 +33,7 @@ struct StoreView: View {
         
         .toolbar {
             
-            // FIXME: Loading view update creates race condition with webview
+            // FIXME: Loading view update creates view update race condition with webview
             /*
              if isLoading {
                 ToolbarItem(placement: .confirmationAction) {
