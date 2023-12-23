@@ -18,7 +18,7 @@ import Foundation
 
 // MARK: - EventManager Class
 /**
- A class that allows for cross-script variables and communication.
+ A class that allows for cross-script subscribeable communication.
  
  Example usage:
  ```
@@ -42,6 +42,7 @@ import Foundation
  EventManager.shared.wipe("test") // womp womp, callback 2 should now be nil
  ```
  */
+@available(*, deprecated, message: "Superseded by simpler `VariableManager`")
 class EventManager {
     /// The shared instance for events.
     static let shared = EventManager()
