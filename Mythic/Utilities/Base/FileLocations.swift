@@ -119,4 +119,12 @@ class FileLocations {
         
         let fileURL: URL
     }
+    
+    struct FileNotModifiableError: Error { 
+        init(_ fileURL: URL) {
+            self.fileURL = fileURL
+        }
+        
+        let fileURL: URL
+    }
 }

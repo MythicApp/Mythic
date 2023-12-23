@@ -84,7 +84,7 @@ class Wine {
         
         guard files.isWritableFile(atPath: prefix.path) else {
             log.error("Unable to execure wine command, prefix directory is not writable.")
-            throw NSError() // TODO: what error to call it...
+            throw FileLocations.FileNotModifiableError(prefix)
         }
         
         let queue: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
