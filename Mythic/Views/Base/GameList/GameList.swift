@@ -32,6 +32,8 @@ struct GameListView: View {
     
     // MARK: - State Properties
     
+    @ObservedObject private var variables: VariableManager = .shared
+    
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUninstallViewPresented: Bool = false
@@ -173,40 +175,47 @@ struct GameListView: View {
                                 
                                 HStack {
                                     if installedGames.contains(game) {
-                                        Button {
-                                            updateCurrentGame(game: game, mode: .normal)
-                                            isSettingsViewPresented = true
-                                        } label: {
-                                            Image(systemName: "gear")
-                                                .foregroundStyle(.gray)
-                                                .padding()
-                                        }
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
-                                        
-                                        Button {
-                                            Task(priority: .userInitiated) {
+                                        if variables.getVariable("playing_\(game.title)") != true {
+                                            Button {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                _ = await Legendary.command(args: ["launch", game.appName], useCache: false, identifier: "launch")
+                                                isSettingsViewPresented = true
+                                            } label: {
+                                                Image(systemName: "gear")
+                                                    .foregroundStyle(.gray)
+                                                    .padding()
                                             }
-                                        } label: {
-                                            Image(systemName: "play.fill")
-                                                .foregroundStyle(.green)
+                                            .buttonStyle(.plain)
+                                            .controlSize(.large)
+                                            
+                                            Button {
+                                                Task(priority: .userInitiated) {
+                                                    updateCurrentGame(game: game, mode: .normal)
+                                                    // swiftlint:disable:next force_try
+                                                    try! await Legendary.launch(game: game, bottle: URL(filePath: Wine.defaultBottle.path)) // FIXME: horrible programming; not threadsafe at all
+                                                }
+                                            } label: {
+                                                Image(systemName: "play.fill")
+                                                    .foregroundStyle(.green)
+                                                    .padding()
+                                            }
+                                            .buttonStyle(.plain)
+                                            .controlSize(.large)
+                                            
+                                            Button {
+                                                updateCurrentGame(game: game, mode: .normal)
+                                                isUninstallViewPresented = true
+                                            } label: {
+                                                Image(systemName: "xmark.bin.fill")
+                                                    .foregroundStyle(.red)
+                                                    .padding()
+                                            }
+                                            .buttonStyle(.plain)
+                                            .controlSize(.large)
+                                        } else {
+                                            ProgressView()
+                                                .controlSize(.small)
                                                 .padding()
                                         }
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
-                                        
-                                        Button {
-                                            updateCurrentGame(game: game, mode: .normal)
-                                            isUninstallViewPresented = true
-                                        } label: {
-                                            Image(systemName: "xmark.bin.fill")
-                                                .foregroundStyle(.red)
-                                                .padding()
-                                        }
-                                        .buttonStyle(.plain)
-                                        .controlSize(.large)
                                     } else {
                                         if installing._value && installing._game == game {
                                             Button {

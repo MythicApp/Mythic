@@ -101,6 +101,7 @@ extension Legendary {
     static var dataLockInUse: (value: Bool, inUse: DataLockUse) = (true, .installing) // TODO: make datalockinuse variable not always true
 
     // MARK: - Installing
+    // TODO: replace installing with VariableManager
     struct Progress {
         var percentage: Double
         var downloaded: Int

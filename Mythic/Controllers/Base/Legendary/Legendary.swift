@@ -360,8 +360,6 @@ class Legendary {
                         if line.contains("[DLManager] INFO:") {
                             if !line.contains("Finished installation process in") {
                                 
-                                EventManager.shared.publish("currentInstallationData", ())
-                                
                                 let range = NSRange(line.startIndex..<line.endIndex, in: line)
                                 
                                 if let match = Regex.progress?.firstMatch(in: line, range: range) {
@@ -416,6 +414,29 @@ class Legendary {
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.
         if let error = errorThrownExternally { Installing.shared.reset(); throw error }
+    }
+    
+    static func launch(game: Game, bottle: URL) async throws {
+        guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+        guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
+        
+        VariableManager.shared.setVariable("playing_\(game.title)", value: true)
+        
+        Task {
+            _ = await command(
+                args: [
+                    "launch",
+                    game.title,
+                    "--wine",
+                    Libraries.directory.appending(path: "Wine/bin/wine64").path
+                ],
+                useCache: false,
+                identifier: "launch_\(game.title)",
+                additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
+            )
+            
+            VariableManager.shared.setVariable("playing_\(game.title)", value: false)
+        }
     }
     
     /*
