@@ -21,7 +21,7 @@ class Wine {
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
-    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
+    private static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
     /// Dictionary to monitor running commands and their identifiers.
     private static var runningCommands: [String: Process] = Dictionary()
