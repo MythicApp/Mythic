@@ -41,6 +41,26 @@ class Wine {
         return directory
     }()
     
+    /// The default wineprefix.
+    static let defaultBottle: URL = { // FIXME: halts up main thread becuase of `Legendary.launch()` being unable to work with async vars
+        let defaultBottleURL = bottlesDirectory.appending(path: "Default")
+        let group = DispatchGroup() // make async func behave like sync
+        
+        group.enter()
+        Task { // run "async"
+            defer { group.leave() }
+            
+            do {
+                try await boot(prefix: defaultBottleURL)
+            } catch {
+                print("Boot failed with error: \(error)")
+            }
+        }
+        
+        group.wait()
+        return defaultBottleURL
+    }()
+    
     // MARK: - Methods
     // MARK: - Command Method
     /**
@@ -245,8 +265,16 @@ class Wine {
      
      - Parameter prefix: The URL of the wine prefix to boot.
      */
-    static func boot(prefix: URL) async throws {
+    static func boot(prefix: URL) async throws { // FIXME: Separate prefix booting and creation
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+        
+        if !files.fileExists(atPath: prefix.path) {
+            do {
+                try files.createDirectory(at: prefix, withIntermediateDirectories: true)
+            } catch {
+                log.error("Unable to create prefix directory: \(error)")
+            }
+        }
         
         let output = try await command(
             args: ["wineboot"],

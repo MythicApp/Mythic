@@ -41,10 +41,13 @@ extension Wine {
         let string: String
     }
     
-    /// Error that signifies that a wineprefix is unable to boot.
+    /// Signifies that a wineprefix is unable to boot.
     struct BootError: Error {
         
         // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
         let reason: String? = nil
     }
+    
+    /// Signifies that a wineprefix does not exist at a specified location.
+    struct PrefixDoesNotExistError: Error {  }
 }
