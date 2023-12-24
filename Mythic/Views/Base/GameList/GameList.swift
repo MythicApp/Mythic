@@ -175,7 +175,7 @@ struct GameListView: View {
                                 
                                 HStack {
                                     if installedGames.contains(game) {
-                                        if variables.getVariable("playing_\(game.title)") != true {
+                                        if variables.getVariable("launching_\(game.appName)") != true {
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isSettingsViewPresented = true
@@ -190,11 +190,13 @@ struct GameListView: View {
                                             Button {
                                                 Task(priority: .userInitiated) {
                                                     updateCurrentGame(game: game, mode: .normal)
-                                                    // swiftlint:disable:next force_try
-                                                    try! await Legendary.launch(game: game, bottle: URL(filePath: Wine.defaultBottle.path)) // FIXME: horrible programming; not threadsafe at all
+                                                    try? await Legendary.launch(
+                                                        game: game,
+                                                        bottle: URL(filePath: Wine.defaultBottle.path)
+                                                    ) // FIXME: horrible programming; not threadsafe at all
                                                 }
                                             } label: {
-                                                Image(systemName: "play.fill")
+                                                Image(systemName: "play.fill") // .disabled when game is running
                                                     .foregroundStyle(.green)
                                                     .padding()
                                             }

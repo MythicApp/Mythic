@@ -43,8 +43,6 @@ struct MainView: View {
     @State private var appVersion: String = String()
     @State private var buildNumber: Int = 0
     
-    @State private var gameThumbnails: [String: String] = Dictionary()
-    
     @StateObject private var installing = Legendary.Installing.shared
     
     // MARK: - Functions
@@ -248,12 +246,6 @@ struct MainView: View {
                     Button(action: toggleSidebar, label: {
                         Image(systemName: "sidebar.left")
                     })
-                }
-            }
-            .onAppear {
-                Task(priority: .userInitiated) {
-                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? Dictionary()
-                    if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                 }
             }
             

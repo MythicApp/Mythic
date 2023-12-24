@@ -24,12 +24,21 @@ import CachedAsyncImage
  */
 struct HomeView: View {
     // MARK: - State Variables
-    @AppStorage("recentGame") private var recentGame: String = String()
+    @ObservedObject private var variables: VariableManager = .shared
+    
     @State private var loadingError = false
     @State private var isLoading = false
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
+    
+    @State private var recentlyPlayedImageURL: String = String()
+    
+    // MARK: - Variables
+    private let recentlyPlayedGame: Legendary.Game? = try? PropertyListDecoder().decode(
+        Legendary.Game.self,
+        from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
+    )
     
     // MARK: - Gradient
     /// The gradient used in the background.
@@ -50,14 +59,14 @@ struct HomeView: View {
                 ZStack {
                     HStack {
                         // MARK: Image
-                        AsyncImage(url: URL(string: recentGame)) { phase in
+                        AsyncImage(url: URL(string: recentlyPlayedImageURL)) { phase in
                             switch phase {
                             case .empty:
                                 ProgressView()
                             case .success(let image):
                                 ZStack {
                                     // MARK: Main Image
-                                    image
+                                    image 
                                         .resizable()
                                         .aspectRatio(contentMode: .fill)
                                         .frame(maxHeight: .infinity)
@@ -95,6 +104,14 @@ struct HomeView: View {
                                     .imageScale(.large)
                             }
                         }
+                        .onAppear {
+                            Task(priority: .high) {
+                                recentlyPlayedImageURL = await Legendary.getImage(
+                                    of: recentlyPlayedGame ?? Legendary.placeholderGame,
+                                    type: .tall
+                                )
+                            }
+                        }
                         .cornerRadius(10)
                         .overlay(
                             ZStack(alignment: .bottom) {
@@ -113,7 +130,7 @@ struct HomeView: View {
                                             
                                             HStack {
                                                 // MARK: Game Title
-                                                Text("Rocket League")
+                                                Text(recentlyPlayedGame?.title ?? "Unknown")
                                                     .font(.title)
                                                 
                                                 Spacer()
@@ -123,7 +140,12 @@ struct HomeView: View {
                                         Spacer()
                                         
                                         Button {
-                                            // TODO: - Handle Play Button
+                                            Task(priority: .userInitiated) {
+                                                try? await Legendary.launch(
+                                                    game: recentlyPlayedGame ?? Legendary.placeholderGame,
+                                                    bottle: URL(filePath: Wine.defaultBottle.path)
+                                                ) // FIXME: horrible programming; not threadsafe at all
+                                            }
                                         } label: {
                                             Image(systemName: "play.fill")
                                                 .padding()
