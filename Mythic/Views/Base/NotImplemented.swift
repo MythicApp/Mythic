@@ -25,7 +25,6 @@ struct NotImplementedView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 35, height: 35)
-                .font(.system(.caption, design: .rounded))
                 .symbolEffect(.pulse)
             
             Text("Sorry, this isn't implemented yet!")

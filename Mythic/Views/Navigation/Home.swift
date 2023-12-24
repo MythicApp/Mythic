@@ -34,6 +34,9 @@ struct HomeView: View {
     
     @State private var recentlyPlayedImageURL: String = String()
     
+    @State private var animateStar: Bool = false
+    let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds
+    
     // MARK: - Variables
     private let recentlyPlayedGame: Legendary.Game? = try? PropertyListDecoder().decode(
         Legendary.Game.self,
@@ -63,6 +66,7 @@ struct HomeView: View {
                             switch phase {
                             case .empty:
                                 ProgressView()
+                                    .padding()
                             case .success(let image):
                                 ZStack {
                                     // MARK: Main Image
@@ -130,8 +134,9 @@ struct HomeView: View {
                                             
                                             HStack {
                                                 // MARK: Game Title
-                                                Text(recentlyPlayedGame?.title ?? "Unknown")
+                                                Text(recentlyPlayedGame?.title ?? "Unknown") // TODO: marquee effect
                                                     .font(.title)
+                                                    .scaledToFit()
                                                 
                                                 Spacer()
                                             }
@@ -167,7 +172,19 @@ struct HomeView: View {
             VStack {
                 // MARK: View 1 (Top)
                 VStack {
-                    NotImplementedView()
+                    Image(systemName: animateStar ? "star.fill" : "calendar.badge.clock")
+                        .resizable()
+                        .symbolRenderingMode(.palette)
+                        .symbolEffect(.bounce, value: animateStar)
+                        .contentTransition(.symbolEffect(.replace))
+                        .foregroundStyle(.yellow, .white)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 35, height: 35)
+                        .onReceive(animateStarTimer) { _ in
+                            animateStar.toggle()
+                        }
+                    
+                    Text("Favourites (Not implemented yet)")
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
