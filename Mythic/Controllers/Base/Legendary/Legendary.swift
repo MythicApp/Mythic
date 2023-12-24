@@ -143,7 +143,7 @@ class Legendary {
             
             // MARK: Asynchronous stdout Appending
             queue.command.async(qos: .utility) {
-                Task(priority: .high) {
+                Task(priority: .high) { // already lowered by queue.async qos
                     while true {
                         let availableData = pipe.stdout.fileHandleForReading.availableData
                         if availableData.isEmpty { break }
@@ -168,7 +168,7 @@ class Legendary {
             
             // MARK: Asynchronous stderr Appending
             queue.command.async(qos: .utility) {
-                Task(priority: .high) {
+                Task(priority: .high) { // already lowered by queue.async qos
                     while true {
                         let availableData = pipe.stderr.fileHandleForReading.availableData
                         if availableData.isEmpty { break }
@@ -203,8 +203,9 @@ class Legendary {
             // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
-                runningCommands[identifier] = task // FIXME: EXC_BAD_ACCESS, error unknown + "-[__NSTaggedDate count]: unrecognized selector sent to instance 0x8000000000000000"
+                
                 try task.run()
+                runningCommands[identifier] = task
                 
                 task.waitUntilExit()
             } catch {
