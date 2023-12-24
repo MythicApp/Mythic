@@ -88,7 +88,7 @@ extension GameListView {
                         isPresented = false
                         isProgressViewSheetPresented = true
                         
-                        Task {
+                        Task(priority: .userInitiated) {
                             let commandOutput = await Legendary.command(
                                 args: [
                                     "-y", "uninstall",
@@ -141,19 +141,11 @@ extension GameListView {
 #Preview {
     GameListView.UninstallView(
         isPresented: .constant(true),
-        game: .init(
-            appName: "[appName]",
-            title: "[title]"
-        ),
+        game: Legendary.placeholderGame,
         isGameListRefreshCalled: .constant(false),
         activeAlert: .constant(.installError),
         isAlertPresented: .constant(false),
-        failedGame: .constant(
-            .init(
-                appName: "[appName]",
-                title: "[title]"
-            )
-        ),
+        failedGame: .constant(Legendary.placeholderGame),
         uninstallationErrorMessage: .constant(Substring())
     )
 }

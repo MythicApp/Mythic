@@ -46,10 +46,7 @@ extension GameListView {
 #Preview {
     GameListView.PlayDefaultView(
         isPresented: .constant(true),
-        game: .init(
-            appName: "[appName]",
-            title: "[title]"
-        ),
+        game: Legendary.placeholderGame,
         isGameListRefreshCalled: .constant(false)
     )
 }

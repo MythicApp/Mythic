@@ -158,7 +158,7 @@ class Wine {
         
         // MARK: Asynchronous stdout Appending
         queue.async(qos: .utility) {
-            Task {
+            Task(priority: .high) { // already lowered by queue.async qos
                 while true {
                     let availableData = pipe.stdout.fileHandleForReading.availableData
                     if availableData.isEmpty { break }
@@ -183,7 +183,7 @@ class Wine {
         
         // MARK: Asynchronous stderr Appending
         queue.async(qos: .utility) {
-            Task {
+            Task(priority: .high) { // already lowered by queue.async qos
                 while true {
                     let availableData = pipe.stderr.fileHandleForReading.availableData
                     if availableData.isEmpty { break }

@@ -25,6 +25,10 @@ import OSLog
  [Legendary GitHub Repository](https://github.com/derrod/legendary)
  */
 class Legendary {
+    
+    /// For typesafing and providing examples
+    public static let placeholderGame: Game = .init(appName: "[appName]", title: "[title]")
+    
     // MARK: - Properties
     
     /// The file location for legendary's configuration files.
@@ -139,7 +143,7 @@ class Legendary {
             
             // MARK: Asynchronous stdout Appending
             queue.command.async(qos: .utility) {
-                Task {
+                Task(priority: .high) {
                     while true {
                         let availableData = pipe.stdout.fileHandleForReading.availableData
                         if availableData.isEmpty { break }
@@ -164,7 +168,7 @@ class Legendary {
             
             // MARK: Asynchronous stderr Appending
             queue.command.async(qos: .utility) {
-                Task {
+                Task(priority: .high) {
                     while true {
                         let availableData = pipe.stderr.fileHandleForReading.availableData
                         if availableData.isEmpty { break }
@@ -199,8 +203,7 @@ class Legendary {
             // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
-                
-                runningCommands[identifier] = task
+                runningCommands[identifier] = task // FIXME: EXC_BAD_ACCESS, error unknown + "-[__NSTaggedDate count]: unrecognized selector sent to instance 0x8000000000000000"
                 try task.run()
                 
                 task.waitUntilExit()
@@ -416,27 +419,26 @@ class Legendary {
         if let error = errorThrownExternally { Installing.shared.reset(); throw error }
     }
     
-    static func launch(game: Game, bottle: URL) async throws {
+    static func launch(game: Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
         
-        VariableManager.shared.setVariable("playing_\(game.title)", value: true)
+        VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
+        defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
-        Task {
-            _ = await command(
-                args: [
-                    "launch",
-                    game.title,
-                    "--wine",
-                    Libraries.directory.appending(path: "Wine/bin/wine64").path
-                ],
-                useCache: false,
-                identifier: "launch_\(game.title)",
-                additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
-            )
-            
-            VariableManager.shared.setVariable("playing_\(game.title)", value: false)
-        }
+        _ = await command(
+            args: [
+                "launch",
+                game.title,
+                "--wine",
+                Libraries.directory.appending(path: "Wine/bin/wine64").path
+            ],
+            useCache: false,
+            identifier: "launch_\(game.title)",
+            additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
+        )
+        
+        VariableManager.shared.setVariable("launching_\(game.appName)", value: false)
     }
     
     /*
@@ -622,7 +624,7 @@ class Legendary {
         }
         
         if let metadataFileName = metadataDirectoryContents.first(where: {
-            $0.hasSuffix(".json") && String($0.dropLast(5)) == game.appName
+            $0.hasSuffix(".json") && $0.contains(game.appName)
         }),
            let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
            let json = try? JSON(data: data) {
@@ -632,6 +634,36 @@ class Legendary {
         return nil
     }
     
+    /**
+     Retrieves game thumbnail image from legendary's downloaded metadata.
+     
+     - Parameters:
+        - of: The game to fetch the thumbnail of.
+        - type: The aspect ratio of the image to fetch the thumbnail of.
+     
+     - Returns: The WebURL of the retrieved image.
+     */
+    static func getImage(of game: Game, type: ImageType) async -> String {
+        let metadata = try? await getGameMetadata(game: game)
+        var imageURL = String()
+        
+        if let keyImages = metadata?["metadata"]["keyImages"].array {
+            for image in keyImages {
+                if type == .normal {
+                    if image["type"] == "DieselGameBox" {
+                        imageURL = image["url"].stringValue
+                    }
+                } else if type == .tall {
+                    if image["type"] == "DieselGameBoxTall" {
+                        imageURL = image["url"].stringValue
+                    }
+                }
+            }
+        }
+        
+        return imageURL
+    }
+
     // MARK: - Get Images Method
     /**
      Get game images with "DieselGameBox" metadata.
@@ -640,6 +672,7 @@ class Legendary {
      - Throws: A ``NotSignedInError``.
      - Returns: A `Dictionary` with app names as keys and image URLs as values.
      */
+    @available(*, message: "Soon to be deprecated and replaced by `getImage`")
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         

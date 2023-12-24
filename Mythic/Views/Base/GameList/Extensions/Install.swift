@@ -122,20 +122,12 @@ extension GameListView {
 #Preview {
     GameListView.InstallView(
         isPresented: .constant(true),
-        game: .init(
-            appName: "[appName]",
-            title: "[title]"
-        ),
+        game: Legendary.placeholderGame,
         optionalPacks: .constant(Dictionary()),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),
         activeAlert: .constant(.installError),
         installationErrorMessage: .constant(String()),
-        failedGame: .constant(
-            .init(
-                appName: "[appName]",
-                title: "[title]"
-            )
-        )
+        failedGame: .constant(Legendary.placeholderGame)
     )
 }

@@ -61,7 +61,7 @@ extension Legendary {
     }
 
     /// Struct to store games.
-    struct Game: Hashable {
+    struct Game: Hashable, Codable {
         var appName: String
         var title: String
     }

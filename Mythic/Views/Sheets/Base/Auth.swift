@@ -86,12 +86,12 @@ struct AuthView: View {
             HStack {
                 TextField("Enter authorisation key...", text: $code)
                     .onSubmit {
-                        Task { await submitToLegendary() }
+                        Task(priority: .userInitiated) { await submitToLegendary() }
                     }
                     .frame(width: 350, alignment: .center)
                 
                 Button {
-                    Task { await submitToLegendary() }
+                    Task(priority: .userInitiated) { await submitToLegendary() }
                 } label: {
                     Text("Submit")
                 }
