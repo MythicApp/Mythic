@@ -1,5 +1,5 @@
 //
-//  Legendary.swift
+//  LegendaryInterface.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 21/9/2023.
