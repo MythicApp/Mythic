@@ -26,7 +26,7 @@ import OSLog
  */
 class Legendary {
     
-    /// For typesafing and providing examples
+    /// For threadsafing and providing examples
     public static let placeholderGame: Game = .init(appName: "[appName]", title: "[title]")
     
     // MARK: - Properties
@@ -35,7 +35,7 @@ class Legendary {
     static let configLocation = Bundle.appHome!.appending(path: "Config").path
     
     /// Logger instance for legendary.
-    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendary")
+    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
     
     /// Cache for storing command outputs.
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = .init()

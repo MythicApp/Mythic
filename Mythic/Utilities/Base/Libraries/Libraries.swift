@@ -155,7 +155,7 @@ class Libraries {
         queue.async {
             while !download.progress.isFinished {
                 downloadProgressHandler(Double(download.countOfBytesReceived) / (latestArtifact?["size_in_bytes"] as? Double ?? -1))
-                print(
+                log.debug(
                     """
                     download progress:
                     recv \(Double(download.countOfBytesReceived))
