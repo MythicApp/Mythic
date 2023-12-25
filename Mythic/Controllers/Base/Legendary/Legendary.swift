@@ -40,8 +40,25 @@ class Legendary {
     /// Cache for storing command outputs.
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = Dictionary()
     
+    // MARK: runningCommands
+    private static var _runningCommands: [String: Process] = Dictionary()
+    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
+    
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] = Dictionary()
+    private static var runningCommands: [String: Process] {
+        get {
+            var result: [String: Process]?
+            _runningCommandsQueue.sync {
+                result = _runningCommands
+            }
+            return result ?? [:]
+        }
+        set(newValue) {
+            _runningCommandsQueue.async(flags: .barrier) {
+                _runningCommands = newValue
+            }
+        }
+    }
     
     // MARK: - Methods
     
@@ -71,8 +88,8 @@ class Legendary {
     ) async -> (stdout: Data, stderr: Data) {
         
         struct QueueContainer {
-            let cache: DispatchQueue = DispatchQueue(label: "commandCacheQueue")
-            let command: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
+            let cache: DispatchQueue = DispatchQueue(label: "legendaryCommandCacheQueue")
+            let command: DispatchQueue = DispatchQueue(label: "legendaryCommandQueue", attributes: .concurrent)
         }
         
         let queue = QueueContainer()
