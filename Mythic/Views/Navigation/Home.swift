@@ -32,7 +32,7 @@ struct HomeView: View {
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
     
-    @State private var recentlyPlayedImageURL: String = String()
+    @State private var recentlyPlayedImageURL: String = .init()
     
     @State private var animateStar: Bool = false
     let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds

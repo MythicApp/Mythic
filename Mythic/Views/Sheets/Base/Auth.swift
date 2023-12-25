@@ -22,7 +22,7 @@ struct AuthView: View {
     @Binding var authSuccessful: Bool?
     
     // MARK: - State Properties
-    @State private var code: String = String()
+    @State private var code: String = .init()
     @State private var isLoggingIn: Bool = false
     @State private var progressViewPresented = false
     @State private var isProgressViewSheetPresented = false
@@ -45,7 +45,7 @@ struct AuthView: View {
                 authSuccessful = false
                 isError = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    code = String()
+                    code = .init()
                     progressViewPresented = false
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 /* Just to be safe */) {
                         isError = false

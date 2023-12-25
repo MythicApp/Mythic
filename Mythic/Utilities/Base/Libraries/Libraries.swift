@@ -150,7 +150,7 @@ class Libraries {
             }
         }
         
-        let queue = DispatchQueue(label: "InstallProgress")
+        let queue = DispatchQueue(label: "installProgress")
         
         queue.async {
             while !download.progress.isFinished {

@@ -32,7 +32,7 @@ extension GameListView {
         
         // MARK: - State Properties
         /// Dictionary to track the toggled state of optional packs.
-        @State private var isToggledDictionary: [String: Bool] = Dictionary()
+        @State private var isToggledDictionary: [String: Bool] = .init()
         
         // MARK: - Body View
         var body: some View {
@@ -123,11 +123,11 @@ extension GameListView {
     GameListView.InstallView(
         isPresented: .constant(true),
         game: Legendary.placeholderGame,
-        optionalPacks: .constant(Dictionary()),
+        optionalPacks: .constant(.init()),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),
         activeAlert: .constant(.installError),
-        installationErrorMessage: .constant(String()),
+        installationErrorMessage: .constant(.init()),
         failedGame: .constant(Legendary.placeholderGame)
     )
 }

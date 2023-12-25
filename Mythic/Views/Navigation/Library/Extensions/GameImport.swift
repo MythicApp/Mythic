@@ -28,15 +28,15 @@ extension LibraryView {
         // MARK: - State Variables
         @State private var isProgressViewSheetPresented: Bool = false
         @State private var isErrorPresented: Bool = false
-        @State private var errorContent: Substring = Substring()
+        @State private var errorContent: Substring = .init()
         
-        @State private var installableGames: [Legendary.Game] = Array()
-        @State private var selectedGame: Legendary.Game = .init(appName: String(), title: String())
+        @State private var installableGames: [Legendary.Game] = .init()
+        @State private var selectedGame: Legendary.Game = Legendary.placeholderGame
         @State private var selectedGameType: String = "Epic"
         @State private var selectedPlatform: String = "macOS"
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
-        @State private var gamePath: String = String()
+        @State private var gamePath: String = .init()
         
         // MARK: - Body
         var body: some View {

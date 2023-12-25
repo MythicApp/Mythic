@@ -146,6 +146,6 @@ extension GameListView {
         activeAlert: .constant(.installError),
         isAlertPresented: .constant(false),
         failedGame: .constant(Legendary.placeholderGame),
-        uninstallationErrorMessage: .constant(Substring())
+        uninstallationErrorMessage: .constant(.init())
     )
 }

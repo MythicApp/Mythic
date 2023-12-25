@@ -46,21 +46,21 @@ struct GameListView: View {
     @State private var activeAlert: ActiveAlert = .installError
     @State private var isAlertPresented: Bool = false
     
-    @State private var installationErrorMessage: String = String()
-    @State private var uninstallationErrorMessage: Substring = Substring()
+    @State private var installationErrorMessage: String = .init()
+    @State private var uninstallationErrorMessage: Substring = .init()
     @State private var failedGame: Legendary.Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Legendary.Game = .init(appName: String(), title: String())
+    @State private var currentGame: Legendary.Game = Legendary.placeholderGame
     
-    @State private var installableGames: [Legendary.Game] = Array()
-    @State private var installedGames: [Legendary.Game] = Array()
+    @State private var installableGames: [Legendary.Game] = .init()
+    @State private var installedGames: [Legendary.Game] = .init()
     @StateObject private var installing = Legendary.Installing.shared
     
     @State private var isInstallStatusViewPresented: Bool = false
     
-    @State private var gameThumbnails: [String: String] = Dictionary()
-    @State private var optionalPacks: [String: String] = Dictionary()
+    @State private var gameThumbnails: [String: String] = .init()
+    @State private var optionalPacks: [String: String] = .init()
     
     @State private var dataFetched: Bool = false
     
@@ -143,7 +143,7 @@ struct GameListView: View {
                             
                             VStack {
                                 CachedAsyncImage(
-                                    url: URL(string: gameThumbnails[game.appName] ?? String()),
+                                    url: URL(string: gameThumbnails[game.appName] ?? .init()),
                                     urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
                                 ) { phase in
                                     switch phase {
@@ -288,21 +288,21 @@ struct GameListView: View {
                 
                 group.enter()
                 Task(priority: .userInitiated) {
-                    let games = (try? await Legendary.getInstallable()) ?? Array()
+                    let games = (try? await Legendary.getInstallable()) ?? .init()
                     if !games.isEmpty { installableGames = games }
                     group.leave()
                 }
                 
                 group.enter()
                 Task(priority: .userInitiated) {
-                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? Dictionary()
+                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? .init()
                     if !thumbnails.isEmpty { gameThumbnails = thumbnails }
                     group.leave()
                 }
                 
                 group.enter()
                 Task(priority: .userInitiated) {
-                    let installed = (try? Legendary.getInstalledGames()) ?? Array()
+                    let installed = (try? Legendary.getInstalledGames()) ?? .init()
                     if !installed.isEmpty { installedGames = installed }
                     group.leave()
                 }

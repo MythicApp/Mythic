@@ -51,7 +51,7 @@ class EventManager {
     private var events = [String: [UUID: (Any) -> Void]]()
     
     /// DispatchQueue for event management, promotes thread safety
-    private let queue = DispatchQueue(label: "EventManager", attributes: .concurrent)
+    private let queue = DispatchQueue(label: "eventManager", attributes: .concurrent)
     
     // MARK: - Subscribe Method
     /**

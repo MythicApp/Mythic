@@ -24,7 +24,7 @@ class Wine {
     private static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] = Dictionary()
+    private static var runningCommands: [String: Process] = .init()
     
     /// The directory where all wine prefixes related to Mythic are stored.
     static let bottlesDirectory: URL = {
@@ -107,7 +107,7 @@ class Wine {
             throw FileLocations.FileNotModifiableError(prefix)
         }
         
-        let queue: DispatchQueue = DispatchQueue(label: "commandQueue", attributes: .concurrent)
+        let queue: DispatchQueue = DispatchQueue(label: "wineCommand", attributes: .concurrent)
         
         let commandKey = String(describing: args)
         
@@ -146,7 +146,7 @@ class Wine {
         
         task.arguments = args
         
-        var defaultEnvironmentVariables: [String: String] = ["WINEPREFIX": (prefix.path.isEmpty ? String() : prefix.path)]
+        var defaultEnvironmentVariables: [String: String] = prefix.path.isEmpty ? .init() : ["WINEPREFIX": prefix.path]
         if let additionalEnvironmentVariables = additionalEnvironmentVariables {
             defaultEnvironmentVariables.merge(additionalEnvironmentVariables) { (_, new) in new }
         }

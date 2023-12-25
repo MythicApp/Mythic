@@ -40,7 +40,7 @@ struct MainView: View {
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
     
-    @State private var appVersion: String = String()
+    @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
     
     @StateObject private var installing = Legendary.Installing.shared

@@ -38,10 +38,10 @@ class Legendary {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendary")
     
     /// Cache for storing command outputs.
-    private static var commandCache: [String: (stdout: Data, stderr: Data)] = Dictionary()
+    private static var commandCache: [String: (stdout: Data, stderr: Data)] = .init()
     
     // MARK: runningCommands
-    private static var _runningCommands: [String: Process] = Dictionary()
+    private static var _runningCommands: [String: Process] = .init()
     private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
     
     /// Dictionary to monitor running commands and their identifiers.
@@ -88,8 +88,8 @@ class Legendary {
     ) async -> (stdout: Data, stderr: Data) {
         
         struct QueueContainer {
-            let cache: DispatchQueue = DispatchQueue(label: "legendaryCommandCacheQueue")
-            let command: DispatchQueue = DispatchQueue(label: "legendaryCommandQueue", attributes: .concurrent)
+            let cache: DispatchQueue = DispatchQueue(label: "legendaryCommandCache")
+            let command: DispatchQueue = DispatchQueue(label: "legendaryCommand", attributes: .concurrent)
         }
         
         let queue = QueueContainer()
@@ -356,7 +356,7 @@ class Legendary {
             argBuilder += ["--game-folder", gameFolder.absoluteString]
         }
         
-        let input = "\(Array(optionalPacks ?? Array()).joined(separator: ", "))\n"
+        let input = "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n"
         
         _ = await command(
             args: argBuilder,
@@ -537,7 +537,7 @@ class Legendary {
      Wipes legendary's command cache. This will slow most legendary commands until the cache is rebuilt.
      */
     static func clearCommandCache() {
-        commandCache = Dictionary()
+        commandCache = .init()
         log.notice("Cleared legendary command cache.")
     }
     
@@ -585,10 +585,10 @@ class Legendary {
         }
         
         guard let installedGames = try JSONSerialization.jsonObject(with: installedData) as? [String: [String: Any]] else { // stupid json dependency is stupid
-            return Array()
+            return .init()
         }
         
-        var apps: [Game] = Array()
+        var apps: [Game] = .init()
         
         for (appName, gameInfo) in installedGames {
             if let title = gameInfo["title"] as? String {
@@ -619,7 +619,7 @@ class Legendary {
             useCache: true,
             identifier: "getInstallable"
         ).stdout) else {
-            return Array()
+            return .init()
         }
         
         return extractAppNamesAndTitles(from: json)
@@ -662,7 +662,7 @@ class Legendary {
      */
     static func getImage(of game: Game, type: ImageType) async -> String {
         let metadata = try? await getGameMetadata(game: game)
-        var imageURL = String()
+        var imageURL: String = .init()
         
         if let keyImages = metadata?["metadata"]["keyImages"].array {
             for image in keyImages {
@@ -704,15 +704,15 @@ class Legendary {
             useCache: true,
             identifier: "getImages"
         ).stdout) else {
-            return Dictionary()
+            return .init()
         }
         
-        var urls: [String: String] = Dictionary()
+        var urls: [String: String] = .init()
         
         for game in json {
             let appName = String(describing: game.1["app_name"])
             if let keyImages = game.1["metadata"]["keyImages"].array {
-                var image: [JSON] = Array()
+                var image: [JSON] = .init()
                 
                 switch imageType {
                 case .normal:
@@ -791,14 +791,14 @@ class Legendary {
      Well, what do you think it does?
      */
     private static func extractAppNamesAndTitles(from json: JSON?) -> [Game] {
-        var games: [Game] = Array()
+        var games: [Game] = .init()
         
         if let json = json {
             for game in json {
                 games.append(
                     Game(
-                        appName: game.1["app_name"].string ?? String(),
-                        title: game.1["app_title"].string ?? String()
+                        appName: game.1["app_name"].string ?? .init(),
+                        title: game.1["app_title"].string ?? .init()
                     )
                 )
             }

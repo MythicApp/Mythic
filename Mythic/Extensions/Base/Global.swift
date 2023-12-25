@@ -43,7 +43,7 @@ func isAppInstalled(bundleIdentifier: String) -> Bool {
     process.launch()
     
     let data = stdout.fileHandleForReading.readDataToEndOfFile()
-    let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? String()
+    let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? .init()
     
     return !output.isEmpty
 }
