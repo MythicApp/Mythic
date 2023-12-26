@@ -149,6 +149,7 @@ struct GameListView: View {
                                     switch phase {
                                     case .empty:
                                         ProgressView()
+                                            .frame(width: 200, height: 400/1.5)
                                     case .success(let image):
                                         ZStack {
                                             image
@@ -167,9 +168,11 @@ struct GameListView: View {
                                     case .failure:
                                         Image(systemName: "network.slash")
                                             .imageScale(.large)
+                                            .frame(width: 200, height: 400/1.5)
                                     @unknown default:
                                         Image(systemName: "exclamationmark.triangle")
                                             .imageScale(.large)
+                                            .frame(width: 200, height: 400/1.5)
                                     }
                                 }
                                 

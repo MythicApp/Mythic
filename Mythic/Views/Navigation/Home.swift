@@ -66,7 +66,7 @@ struct HomeView: View {
                             switch phase {
                             case .empty:
                                 ProgressView()
-                                    .padding()
+                                    .frame(maxHeight: .infinity)
                             case .success(let image):
                                 ZStack {
                                     // MARK: Main Image
@@ -103,9 +103,11 @@ struct HomeView: View {
                             case .failure:
                                 Image(systemName: "network.slash")
                                     .imageScale(.large)
+                                    .frame(maxHeight: .infinity)
                             @unknown default:
                                 Image(systemName: "exclamationmark.triangle")
                                     .imageScale(.large)
+                                    .frame(maxHeight: .infinity)
                             }
                         }
                         .onAppear {
