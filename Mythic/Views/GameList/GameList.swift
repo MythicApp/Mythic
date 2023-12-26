@@ -167,10 +167,12 @@ struct GameListView: View {
                                         }
                                     case .failure:
                                         Image(systemName: "network.slash")
+                                            .symbolEffect(.appear)
                                             .imageScale(.large)
                                             .frame(width: 200, height: 400/1.5)
                                     @unknown default:
                                         Image(systemName: "exclamationmark.triangle")
+                                            .symbolEffect(.appear)
                                             .imageScale(.large)
                                             .frame(width: 200, height: 400/1.5)
                                     }

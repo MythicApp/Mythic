@@ -102,10 +102,12 @@ struct HomeView: View {
                                 .aspectRatio(contentMode: .fit)
                             case .failure:
                                 Image(systemName: "network.slash")
+                                    .symbolEffect(.appear)
                                     .imageScale(.large)
                                     .frame(maxHeight: .infinity)
                             @unknown default:
                                 Image(systemName: "exclamationmark.triangle")
+                                    .symbolEffect(.appear)
                                     .imageScale(.large)
                                     .frame(maxHeight: .infinity)
                             }
