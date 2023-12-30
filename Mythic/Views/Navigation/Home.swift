@@ -23,6 +23,15 @@ import CachedAsyncImage
  The main view displaying the home screen of the Mythic app.
  */
 struct HomeView: View {
+    enum ActiveAlert {
+        case launchError
+    }
+    
+    struct LaunchError {
+        static var message: String = .init()
+        static var game: Legendary.Game? = nil // swiftlint:disable:this redundant_optional_initialization
+    }
+    
     // MARK: - State Variables
     @ObservedObject private var variables: VariableManager = .shared
     
@@ -33,6 +42,9 @@ struct HomeView: View {
     @State private var urlString = "https://store.epicgames.com/"
     
     @State private var recentlyPlayedImageURL: String = .init()
+    
+    @State private var isAlertPresented: Bool = false
+    @State private var activeAlert: ActiveAlert = .launchError
     
     @State private var animateStar: Bool = false
     let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds
@@ -148,19 +160,31 @@ struct HomeView: View {
                                         
                                         Spacer()
                                         
-                                        Button {
-                                            Task(priority: .userInitiated) {
-                                                try? await Legendary.launch(
-                                                    game: recentlyPlayedGame ?? Legendary.placeholderGame,
-                                                    bottle: URL(filePath: Wine.defaultBottle.path)
-                                                ) // FIXME: horrible programming; not threadsafe at all
+                                        if variables.getVariable("launching_\(recentlyPlayedGame?.appName ?? .init())") != true {
+                                            Button {
+                                                Task(priority: .userInitiated) {
+                                                    do {
+                                                        try await Legendary.launch(
+                                                            game: recentlyPlayedGame ?? Legendary.placeholderGame,
+                                                            bottle: URL(filePath: Wine.defaultBottle.path)
+                                                        ) // FIXME: horrible programming; not threadsafe at all
+                                                    } catch {
+                                                        LaunchError.game = recentlyPlayedGame
+                                                        LaunchError.message = "\(error)"
+                                                        activeAlert = .launchError
+                                                        isAlertPresented = true
+                                                    }
+                                                }
+                                            } label: {
+                                                Image(systemName: "play.fill")
+                                                    .padding()
                                             }
-                                        } label: {
-                                            Image(systemName: "play.fill")
+                                            .buttonStyle(.bordered)
+                                            .controlSize(.extraLarge)
+                                        } else {
+                                            ProgressView()
                                                 .padding()
                                         }
-                                        .buttonStyle(.bordered)
-                                        .controlSize(.extraLarge)
                                     }
                                     .padding()
                                 }
@@ -181,7 +205,7 @@ struct HomeView: View {
                         .symbolRenderingMode(.palette)
                         .symbolEffect(.bounce, value: animateStar)
                         .contentTransition(.symbolEffect(.replace))
-                        .foregroundStyle(.yellow, .white)
+                        .foregroundStyle(animateStar ? .yellow : .yellow, .white)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 35, height: 35)
                         .onReceive(animateStarTimer) { _ in
@@ -204,6 +228,15 @@ struct HomeView: View {
             }
         }
         .padding()
+        .alert(isPresented: $isAlertPresented) { // TODO: Note, add progressview for homeview play button
+            switch activeAlert {
+            case .launchError:
+                Alert(
+                    title: Text("Error launching \(LaunchError.game?.title ?? "game")."),
+                    message: Text(LaunchError.message)
+                )
+            }
+        }
     }
 }
 

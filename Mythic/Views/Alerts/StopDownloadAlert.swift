@@ -24,10 +24,10 @@ import SwiftUI
  */
 func stopDownloadAlert(isPresented: Binding<Bool>, game: Legendary.Game?) -> Alert {
     return Alert(
-        title: Text("Are you sure you want to stop downloading \(game?.title ?? "your game")?"),
+        title: Text("Are you sure you want to stop downloading \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "finalInstall")
-            Legendary.Installing.shared.reset()
+            VariableManager.shared.removeVariable("installing"); VariableManager.shared.removeVariable("installStatus")
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )

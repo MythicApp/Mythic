@@ -317,13 +317,11 @@ class Legendary {
         gameFolder: URL? = nil,
         platform: GamePlatform? = nil
     ) async throws {
-        // TODO: EXECUTE INSTALLING.SHARED.RESET() WHENEVER THROWING !!!
         guard signedIn() else { throw NotSignedInError() }
-        // if dataLockInUse.value == true { throw NSError() } // TODO: not implemented error, for data lock
+        // TODO: data lock handling
         
-        dataLockInUse = (true, .installing)
-        Installing.value = true
-        Installing.game = game
+        let variables: VariableManager = .shared
+        variables.setVariable("installing", value: game)
         
         // thank you gpt 🙏🏾🙏🏾 i am not regexing allat
         struct Regex {
@@ -334,7 +332,6 @@ class Legendary {
             static let disk = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
         }
         
-        var status = Installing.shared._status
         var errorThrownExternally: Error?
         
         var argBuilder = ["-y", "install", game.appName]
@@ -358,6 +355,8 @@ class Legendary {
         
         let input = "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n"
         
+        var installStatus: [String: [String: Any]] = .init() // MARK: installStatus
+        
         _ = await command(
             args: argBuilder,
             useCache: false,
@@ -378,53 +377,44 @@ class Legendary {
                 stderr: { output in
                     output.enumerateLines { line, _ in
                         if line.contains("[DLManager] INFO:") {
-                            if !line.contains("Finished installation process in") {
-                                
+                            if !line.contains("All done! Download manager quitting...") {
                                 let range = NSRange(line.startIndex..<line.endIndex, in: line)
-                                
                                 if let match = Regex.progress?.firstMatch(in: line, range: range) {
-                                    status.progress =  Progress(
-                                        percentage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        downloaded: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
-                                        total: Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
-                                        runtime: line[Range(match.range(at: 4), in: line)!],
-                                        eta: line[Range(match.range(at: 5), in: line)!]
-                                    )
+                                    installStatus["progress"] = [
+                                        "percentage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        "downloaded": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
+                                        "total": Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
+                                        "runtime": line[Range(match.range(at: 4), in: line)!],
+                                        "eta": line[Range(match.range(at: 5), in: line)!]
+                                    ]
                                 } else if let match = Regex.download?.firstMatch(in: line, range: range) {
-                                    status.download = Download( // MiB | 1 MB = (10^6/2^20) MiB
-                                        downloaded: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        written: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    )
+                                    installStatus["download"] = [ // MiB | 1 MB = (10^6/2^20) MiB
+                                        "downloaded": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        "written": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    ]
                                 } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
-                                    status.cache = Cache(
-                                        usage: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
-                                        activeTasks: Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    )
+                                    installStatus["downloadCache"] = [
+                                        "usage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
+                                        "activeTasks": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    ]
                                 } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
-                                    status.downloadAdvanced = DownloadAdvanced( // MiB/s
-                                        raw: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        decompressed: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    )
+                                    installStatus["downloadAdvanced"] = [ // MiB/s
+                                        "raw": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        "decompressed": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    ]
                                 } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
-                                    status.disk = Disk( // MiB/s
-                                        write: Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        read: Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    )
+                                    installStatus["downloadDisk"] = [ // MiB/s
+                                        "write": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                        "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                                    ]
                                 } else if line.contains("All done! Download manager quitting...") {
-                                    DispatchQueue.main.async {
-                                        Installing.shared._finished = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // come back to later, issue creates spamability
-                                            Installing.shared._finished = false
-                                        }
-                                    }
+                                    installStatus.removeAll()
                                 }
+                                
+                                variables.setVariable("installStatus", value: installStatus)
                             } else {
-                                Installing.shared.reset()
+                                variables.removeVariable("installing")
                             }
-                        }
-                        DispatchQueue.main.sync {
-                            Installing.shared._status = status
-                            dump(Installing.shared._status)
                         }
                     }
                 }
@@ -433,7 +423,7 @@ class Legendary {
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.
-        if let error = errorThrownExternally { Installing.shared.reset(); throw error }
+        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error }
     }
     
     static func launch(game: Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
@@ -446,12 +436,12 @@ class Legendary {
         _ = await command(
             args: [
                 "launch",
-                game.title,
+                game.appName,
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
             ],
             useCache: false,
-            identifier: "launch_\(game.title)",
+            identifier: "launch_\(game.appName)",
             additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
         )
         
@@ -534,7 +524,7 @@ class Legendary {
     
     // MARK: - Clear Command Cache Method
     /**
-     Wipes legendary's command cache. This will slow most legendary commands until the cache is rebuilt.
+     Wipes legendary's command cache. This will slow some legendary commands until the cache is rebuilt.
      */
     static func clearCommandCache() {
         commandCache = .init()

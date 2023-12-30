@@ -37,13 +37,13 @@ struct MainView: View {
     @State private var activeAlert: ActiveAlert? = .none
     @State private var isAlertPresented: Bool = false
     
+    @ObservedObject private var variables: VariableManager = .shared
+    
     @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
     
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
-    
-    @StateObject private var installing = Legendary.Installing.shared
     
     // MARK: - Functions
     func updateLegendaryAccountState() {
@@ -106,7 +106,7 @@ struct MainView: View {
                 
                 Spacer()
                 
-                if installing._value == true {
+                if let installingGame: Legendary.Game = variables.getVariable("installing") {
                     Divider()
                     
                     VStack {
@@ -114,24 +114,22 @@ struct MainView: View {
                             .fontWeight(.bold)
                             .font(.system(size: 8))
                             .offset(x: -2, y: 0)
-                        Text(installing._game == nil ? "Loading..." : installing._game!.title)
+                        Text(installingGame.title)
                         
                         HStack {
                             Button {
                                 isInstallStatusViewPresented = true
                             } label: {
-                                if installing._status.progress?.percentage == nil {
-                                    ProgressView()
+                                if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
+                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double { // FIXME: installing migration
+                                    ProgressView(value: percentage, total: 100)
                                         .progressViewStyle(.linear)
                                 } else {
-                                    ProgressView(value: installing._status.progress?.percentage, total: 100)
+                                    ProgressView()
                                         .progressViewStyle(.linear)
                                 }
                             }
                             .buttonStyle(.plain)
-                            .onChange(of: installing._finished) { _, newValue in
-                                installing._value = !newValue
-                            }
                             
                             Button {
                                 activeAlert = .stopDownloadWarning
@@ -207,7 +205,7 @@ struct MainView: View {
             .alert(isPresented: $isAlertPresented) {
                 switch activeAlert {
                 case .stopDownloadWarning:
-                    return stopDownloadAlert(isPresented: $isAlertPresented, game: Legendary.Installing.game)
+                    return stopDownloadAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing")) // FIXME: installing migration
                 case .signOutConfirmation:
                     return Alert(
                         title: .init("Are you sure you want to sign out?"),

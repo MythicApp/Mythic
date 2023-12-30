@@ -30,6 +30,8 @@ struct GameListView: View {
     /// Binding to track if a refresh is called.
     @Binding var isRefreshCalled: Bool
     
+    let installingGame: Legendary.Game? = VariableManager.shared.getVariable("installing")
+    
     // MARK: - State Properties
     
     @ObservedObject private var variables: VariableManager = .shared
@@ -40,7 +42,15 @@ struct GameListView: View {
     @State private var isPlayDefaultViewPresented: Bool = false
     
     enum ActiveAlert {
-        case installError, uninstallError, stopDownloadWarning
+        case installError,
+             uninstallError,
+             stopDownloadWarning,
+             launchError
+    }
+    
+    struct LaunchError {
+        static var message: String = .init()
+        static var game: Legendary.Game? = nil // swiftlint:disable:this redundant_optional_initialization
     }
     
     @State private var activeAlert: ActiveAlert = .installError
@@ -55,7 +65,6 @@ struct GameListView: View {
     
     @State private var installableGames: [Legendary.Game] = .init()
     @State private var installedGames: [Legendary.Game] = .init()
-    @StateObject private var installing = Legendary.Installing.shared
     
     @State private var isInstallStatusViewPresented: Bool = false
     
@@ -195,10 +204,17 @@ struct GameListView: View {
                                             Button {
                                                 Task(priority: .userInitiated) {
                                                     updateCurrentGame(game: game, mode: .normal)
-                                                    try? await Legendary.launch(
-                                                        game: game,
-                                                        bottle: URL(filePath: Wine.defaultBottle.path)
-                                                    ) // FIXME: horrible programming; not threadsafe at all
+                                                    do {
+                                                        try await Legendary.launch(
+                                                            game: game,
+                                                            bottle: URL(filePath: Wine.defaultBottle.path)
+                                                        )
+                                                    } catch {
+                                                        LaunchError.game = game
+                                                        LaunchError.message = "\(error)"
+                                                        activeAlert = .launchError
+                                                        isAlertPresented = true
+                                                    }
                                                 }
                                             } label: {
                                                 Image(systemName: "play.fill") // .disabled when game is running
@@ -224,15 +240,16 @@ struct GameListView: View {
                                                 .padding()
                                         }
                                     } else {
-                                        if installing._value && installing._game == game {
+                                        if variables.getVariable("installing") == game { // FIXME: installing migration
                                             Button {
                                                 isInstallStatusViewPresented = true
                                             } label: {
-                                                if installing._status.progress?.percentage == nil {
-                                                    ProgressView()
+                                                if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
+                                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double { // FIXME: installing migration
+                                                    ProgressView(value: percentage, total: 100)
                                                         .progressViewStyle(.linear)
                                                 } else {
-                                                    ProgressView(value: installing._status.progress?.percentage, total: 100)
+                                                    ProgressView()
                                                         .progressViewStyle(.linear)
                                                 }
                                             }
@@ -249,12 +266,9 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
                                             
-                                            .onChange(of: installing._finished) { _, newValue in
-                                                if newValue == true {
-                                                    isRefreshCalled = true
-                                                }
+                                            .onChange(of: installingGame) { _, newValue in
+                                                isRefreshCalled = (newValue == nil)
                                             }
-                                            
                                         } else {
                                             Button {
                                                 updateCurrentGame(game: game, mode: .optionalPacks)
@@ -384,7 +398,12 @@ struct GameListView: View {
                     message: Text(uninstallationErrorMessage)
                 )
             case .stopDownloadWarning:
-                stopDownloadAlert(isPresented: $isAlertPresented, game: Legendary.Installing.game)
+                stopDownloadAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing")) // FIXME: installing migration
+            case .launchError:
+                Alert(
+                    title: Text("Error launching \(LaunchError.game?.title ?? "game")."),
+                    message: Text(LaunchError.message)
+                )
             }
         }
     }

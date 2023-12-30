@@ -24,22 +24,26 @@ import Charts // TODO: TODO
 struct InstallStatusView: View {
     // MARK: - Binding Variables
     @Binding var isPresented: Bool
-    
-    // MARK: - Variables
-    private let status: Legendary.InstallStatus = Legendary.Installing.installStatus
+    @ObservedObject private var variables: VariableManager = .shared
     
     // MARK: - Body
     var body: some View {
         VStack {
-            Text("Downloading \(Legendary.Installing.game?.title ?? "[unknown]")…")
-                .font(.title)
-            
-            GroupBox {
+            if let installingGame: Legendary.Game = variables.getVariable("installing") { // FIXME: installing migration
+                Text("Installing \(installingGame.title)…")
+                    .font(.title)
+            } else {
+                Text("Installing [unknown]…")
+                    .font(.title)
+            }
+            /*
+            GroupBox { // FIXME: installing migration
                 Text("Progress: \(Int(status.progress?.percentage ?? 0))% (\(status.progress?.downloaded ?? 0)/\(status.progress?.total ?? 0) objects)")
                 Text("Downloaded \(status.download?.downloaded ?? 0) MiB, Written \(status.download?.written ?? 0)")
                 Text("Elapsed: \("\(status.progress?.runtime ?? "[unknown]")"), ETA: \("\(status.progress?.eta ?? "[unknown]")")")
             }
             .fixedSize()
+             */
             
             // MARK: Close Button
             Button("Close") { isPresented = false }
