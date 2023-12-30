@@ -16,7 +16,7 @@
 
 import Foundation
 
-// MARK: - EventManager Class
+// MARK: - VariableManager Class
 /**
  A flexible class that enables cross-script variables.
  
