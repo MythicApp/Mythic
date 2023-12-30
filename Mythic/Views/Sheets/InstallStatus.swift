@@ -36,14 +36,18 @@ struct InstallStatusView: View {
                 Text("Installing [unknown]…")
                     .font(.title)
             }
-            /*
-            GroupBox { // FIXME: installing migration
-                Text("Progress: \(Int(status.progress?.percentage ?? 0))% (\(status.progress?.downloaded ?? 0)/\(status.progress?.total ?? 0) objects)")
-                Text("Downloaded \(status.download?.downloaded ?? 0) MiB, Written \(status.download?.written ?? 0)")
-                Text("Elapsed: \("\(status.progress?.runtime ?? "[unknown]")"), ETA: \("\(status.progress?.eta ?? "[unknown]")")")
+            
+            GroupBox {
+                if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") {
+                    Text("Progress: \(Int((installStatus["progress"])?["percentage"] as? Double ?? 0))% (\((installStatus["progress"])?["downloaded"] as? Int ?? 0)/\((installStatus["progress"])?["total"] as? Int ?? 0) objects)")
+                    Text("Downloaded \((installStatus["download"])?["downloaded"] as? Double ?? 0) MiB, Written \((installStatus["download"])?["written"] as? Double ?? 0)")
+                    Text("Elapsed: \("\((installStatus["progress"])?["runtime"] ?? "[unknown]")"), ETA: \("\((installStatus["progress"])?["eta"] ?? "[unknown]")")")
+                } else {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .controlSize(.large)
+                }
             }
             .fixedSize()
-             */
             
             // MARK: Close Button
             Button("Close") { isPresented = false }
