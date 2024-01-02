@@ -43,11 +43,9 @@ extension GameListView {
                     Text("(supports selective downloads.)")
                         .font(.footnote)
                         .foregroundStyle(.placeholder)
-                }
-                
-                Divider()
-                
-                if !optionalPacks.isEmpty {
+
+                    Divider()
+                    
                     ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { name, tag in
                         HStack {
                             VStack {
@@ -80,7 +78,7 @@ extension GameListView {
                             isPresented = false
                             do {
                                 try await Legendary.install(
-                                    game: game,
+                                    game: game, platform: .windows,
                                     optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys)
                                 )
                                 

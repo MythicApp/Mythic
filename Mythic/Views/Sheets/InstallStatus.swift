@@ -29,7 +29,7 @@ struct InstallStatusView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            if let installingGame: Legendary.Game = variables.getVariable("installing") { // FIXME: installing migration
+            if let installingGame: Legendary.Game = variables.getVariable("installing") {
                 Text("Installing \(installingGame.title)…")
                     .font(.title)
             } else {

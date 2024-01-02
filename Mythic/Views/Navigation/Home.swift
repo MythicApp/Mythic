@@ -166,8 +166,8 @@ struct HomeView: View {
                                                     do {
                                                         try await Legendary.launch(
                                                             game: recentlyPlayedGame ?? Legendary.placeholderGame,
-                                                            bottle: URL(filePath: Wine.defaultBottle.path)
-                                                        ) // FIXME: horrible programming; not threadsafe at all
+                                                            bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
+                                                        )
                                                     } catch {
                                                         LaunchError.game = recentlyPlayedGame
                                                         LaunchError.message = "\(error)"

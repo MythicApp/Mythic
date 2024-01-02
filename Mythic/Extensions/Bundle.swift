@@ -49,7 +49,7 @@ extension Bundle {
     }()
     
     /**
-     Dedicated 'Mythic' Container Folder. (Mythic is a sandboxed application.)
+     Dedicated 'Mythic' Container Folder.
      (Force-unwrappable)
      */
     static let appContainer: URL? = {

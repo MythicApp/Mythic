@@ -53,7 +53,7 @@ class Wine {
             do {
                 try await boot(prefix: defaultBottleURL)
             } catch {
-                print("Boot failed with error: \(error)")
+                log.error("Boot failed with error: \(error)")
             }
         }
         
@@ -265,7 +265,7 @@ class Wine {
      
      - Parameter prefix: The URL of the wine prefix to boot.
      */
-    static func boot(prefix: URL) async throws { // FIXME: Separate prefix booting and creation
+    static func boot(prefix: URL) async throws { // TODO: Separate prefix booting and creation
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         
         if !files.fileExists(atPath: prefix.path) {
