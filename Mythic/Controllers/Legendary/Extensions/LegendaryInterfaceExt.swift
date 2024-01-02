@@ -44,6 +44,12 @@ extension Legendary {
         case windows
     }
     
+    enum InstallationType {
+        case install
+        case update
+        case repair
+    }
+    
     // MARK: - ImageError Enumeration
     /// Error for image errors.
     enum ImageError: Error {
@@ -54,10 +60,12 @@ extension Legendary {
         case load
     }
     
+    struct UnableToGetPlatformError: Error {  }
+    
     /// Your father.
-    enum DoesNotExistError: Error {
-        case game
-        case aliases
+    struct GameDoesNotExistError: Error {
+        init(_ game: Game) { self.game = game }
+        let game: Game
     }
     
     /// Struct to store games.
@@ -90,10 +98,8 @@ extension Legendary {
     
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: Error {
-        let message: String
+        init(_ message: String) { self.message = message }
         
-        init(_ message: String) {
-            self.message = message
-        }
+        let message: String
     }
 }

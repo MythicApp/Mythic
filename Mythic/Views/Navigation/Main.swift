@@ -32,6 +32,7 @@ struct MainView: View {
     
     enum ActiveAlert {
         case stopDownloadWarning
+        case stopVerificationWarning
         case signOutConfirmation
     }
     @State private var activeAlert: ActiveAlert? = .none
@@ -110,18 +111,17 @@ struct MainView: View {
                     Divider()
                     
                     VStack {
-                        Text("INSTALLING")
-                            .fontWeight(.bold)
-                            .font(.system(size: 8))
-                            .offset(x: -2, y: 0)
-                        Text(installingGame.title)
-                        
+                            Text("INSTALLING")
+                                .fontWeight(.bold)
+                                .font(.system(size: 8))
+                                .offset(x: -2, y: 0)
+                            Text(installingGame.title)
                         HStack {
                             Button {
                                 isInstallStatusViewPresented = true
                             } label: {
                                 if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
-                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double { // FIXME: installing migration
+                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
                                     ProgressView(value: percentage, total: 100)
                                         .progressViewStyle(.linear)
                                 } else {
@@ -133,6 +133,47 @@ struct MainView: View {
                             
                             Button {
                                 activeAlert = .stopDownloadWarning
+                                isAlertPresented = true
+                            } label: {
+                                Image(systemName: "stop.fill")
+                                    .foregroundStyle(.red)
+                                    .padding()
+                            }
+                            .shadow(color: .red, radius: 10, x: 1, y: 1)
+                            .buttonStyle(.plain)
+                            .frame(width: 8, height: 8)
+                            .controlSize(.mini)
+                        }
+                    }
+                }
+                
+                if let verifyingGame: Legendary.Game = variables.getVariable("verifying") {
+                    Divider()
+                    
+                    VStack {
+                        Text("VERIFYING")
+                            .fontWeight(.bold)
+                            .font(.system(size: 8))
+                            .offset(x: -2, y: 0)
+                        Text(verifyingGame.title)
+                        
+                        HStack {
+                            Button {
+                                // FIXME: TODO: ADD VERIFICATION STATUS VIEW
+                            } label: {
+                                if let verificationStatus: [String: Double] = variables.getVariable("verificationStatus"),
+                                   let percentage = verificationStatus["percentage"] {
+                                    ProgressView(value: percentage, total: 100)
+                                        .progressViewStyle(.linear)
+                                } else {
+                                    ProgressView()
+                                        .progressViewStyle(.linear)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Button {
+                                activeAlert = .stopVerificationWarning
                                 isAlertPresented = true
                             } label: {
                                 Image(systemName: "stop.fill")
@@ -205,7 +246,9 @@ struct MainView: View {
             .alert(isPresented: $isAlertPresented) {
                 switch activeAlert {
                 case .stopDownloadWarning:
-                    return stopDownloadAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing")) // FIXME: installing migration
+                    return stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing"))
+                case .stopVerificationWarning:
+                    return stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("verifying"))
                 case .signOutConfirmation:
                     return Alert(
                         title: .init("Are you sure you want to sign out?"),

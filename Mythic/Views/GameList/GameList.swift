@@ -99,14 +99,14 @@ struct GameListView: View {
                 group.leave()
             }
         }
-        
+
         if mode == .optionalPacks {
             group.enter()
             Task(priority: .userInitiated) {
                 let command = await Legendary.command(
                     args: ["install", game.appName],
                     useCache: true,
-                    identifier: "parseOptionalPacks"
+                    identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
                 )
                 
                 var isParsingOptionalPacks = false
@@ -201,28 +201,76 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
                                             
-                                            Button {
-                                                Task(priority: .userInitiated) {
-                                                    updateCurrentGame(game: game, mode: .normal)
-                                                    do {
-                                                        try await Legendary.launch(
-                                                            game: game,
-                                                            bottle: URL(filePath: Wine.defaultBottle.path)
+                                            if Legendary.needsUpdate(game: game) {
+                                                Button {
+                                                    Task(priority: .userInitiated) {
+                                                        updateCurrentGame(game: game, mode: .normal)
+                                    
+                                                        _ = try await Legendary.install(
+                                                            game: game, // TODO: better update implementation; rushing to launch
+                                                            platform: try Legendary.getGamePlatform(game: game)
                                                         )
-                                                    } catch {
-                                                        LaunchError.game = game
-                                                        LaunchError.message = "\(error)"
-                                                        activeAlert = .launchError
-                                                        isAlertPresented = true
+                                                        
+                                                        isRefreshCalled = true
                                                     }
+                                                } label: {
+                                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                                        .foregroundStyle(.blue)
+                                                        .padding()
                                                 }
-                                            } label: {
-                                                Image(systemName: "play.fill") // .disabled when game is running
-                                                    .foregroundStyle(.green)
-                                                    .padding()
+                                                .buttonStyle(.plain)
+                                                .controlSize(.large)
                                             }
-                                            .buttonStyle(.plain)
-                                            .controlSize(.large)
+                                            
+                                            if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
+                                               let needsVerification = json[game.appName]["needs_verification"].bool,
+                                               needsVerification == true {
+                                                Button(action: {
+                                                    updateCurrentGame(game: game, mode: .normal)
+                                                    Task {
+                                                        do {
+                                                            try await Legendary.install(
+                                                                game: game,
+                                                                platform: json[game.appName]["platform"].string == "Mac" ? .macOS : .windows,
+                                                                type: .repair
+                                                            )
+                                                            
+                                                            isRefreshCalled = true
+                                                        } catch {
+                                                            Logger.app.error("Unable to verify \(game.title): \(error)") // TODO: implement visual error
+                                                        }
+                                                    }
+                                                }, label: {
+                                                    Image(systemName: "checkmark.gobackward")
+                                                        .foregroundStyle(.orange)
+                                                        .padding()
+                                                })
+                                                .buttonStyle(.plain)
+                                                .controlSize(.large)
+                                            } else {
+                                                Button {
+                                                    Task(priority: .userInitiated) {
+                                                        updateCurrentGame(game: game, mode: .normal)
+                                                        do {
+                                                            try await Legendary.launch(
+                                                                game: game,
+                                                                bottle: URL(filePath: Wine.defaultBottle.path)
+                                                            )
+                                                        } catch {
+                                                            LaunchError.game = game
+                                                            LaunchError.message = "\(error)"
+                                                            activeAlert = .launchError
+                                                            isAlertPresented = true
+                                                        }
+                                                    }
+                                                } label: {
+                                                    Image(systemName: "play.fill") // .disabled when game is running
+                                                        .foregroundStyle(.green)
+                                                        .padding()
+                                                }
+                                                .buttonStyle(.plain)
+                                                .controlSize(.large)
+                                            }
                                             
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
@@ -240,12 +288,12 @@ struct GameListView: View {
                                                 .padding()
                                         }
                                     } else {
-                                        if variables.getVariable("installing") == game { // FIXME: installing migration
+                                        if variables.getVariable("installing") == game { // TODO: Add for verificationStatus
                                             Button {
                                                 isInstallStatusViewPresented = true
                                             } label: {
                                                 if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
-                                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double { // FIXME: installing migration
+                                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
                                                     ProgressView(value: percentage, total: 100)
                                                         .progressViewStyle(.linear)
                                                 } else {
@@ -387,7 +435,7 @@ struct GameListView: View {
         
         .alert(isPresented: $isAlertPresented) {
             switch activeAlert {
-            case .installError:
+            case .installError: // used in other scripts, will unify (TODO: unify)
                 Alert(
                     title: Text("Error installing \(failedGame?.title ?? "game")."),
                     message: Text(installationErrorMessage)
@@ -398,7 +446,7 @@ struct GameListView: View {
                     message: Text(uninstallationErrorMessage)
                 )
             case .stopDownloadWarning:
-                stopDownloadAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing")) // FIXME: installing migration
+                stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing"))
             case .launchError:
                 Alert(
                     title: Text("Error launching \(LaunchError.game?.title ?? "game")."),

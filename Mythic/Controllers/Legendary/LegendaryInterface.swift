@@ -27,7 +27,7 @@ import OSLog
 class Legendary {
     
     /// For threadsafing and providing examples
-    public static let placeholderGame: Game = .init(appName: "[appName]", title: "[title]")
+    public static let placeholderGame: Game = .init(appName: "[unknown]", title: "game")
     
     // MARK: - Properties
     
@@ -220,7 +220,7 @@ class Legendary {
             // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
-                runningCommands[identifier] = task // FIXME: EXC_BAD_ACCESS, error unknown + "-[__NSTaggedDate count]: unrecognized selector sent to instance 0x8000000000000000"
+                runningCommands[identifier] = task
                 try task.run()
                 
                 task.waitUntilExit()
@@ -299,7 +299,7 @@ class Legendary {
     
     // MARK: - Install Method
     /**
-     Installs games using legendary.
+     Installs, updates, or repairs games using legendary.
      
      - Parameters:
         - game: The game's `app_name`.
@@ -312,56 +312,51 @@ class Legendary {
      */
     static func install(
         game: Game,
+        platform: GamePlatform,
+        type: InstallationType = .install,
         optionalPacks: [String]? = nil,
         basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
-        gameFolder: URL? = nil,
-        platform: GamePlatform? = nil
+        gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
-        variables.setVariable("installing", value: game)
-        
-        // thank you gpt 🙏🏾🙏🏾 i am not regexing allat
-        struct Regex {
-            static let progress = try? NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#)
-            static let download = try? NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#)
-            static let cache = try? NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#)
-            static let downloadAdvanced = try? NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#)
-            static let disk = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#)
-        }
-        
         var errorThrownExternally: Error?
         
-        var argBuilder = ["-y", "install", game.appName]
+        var argBuilder = [
+            "-y",
+            "install",
+            type == .repair ? "--repair" : nil,
+            type == .update ? "--update-only": nil
+        ]
+            .compactMap { $0 }
         
-        if let platform = platform {
+        if type == .install { // MARK: Install-only arguments
             switch platform {
             case .macOS:
                 argBuilder += ["--platform", "Mac"]
             case .windows:
-                argBuilder += ["--platform", "windows"]
+                argBuilder += ["--platform", "Windows"]
+            }
+            
+            if let basePath = basePath, files.fileExists(atPath: basePath.path) {
+                argBuilder += ["--base-path", basePath.absoluteString]
+            }
+            
+            if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
+                argBuilder += ["--game-folder", gameFolder.absoluteString]
             }
         }
         
-        if let basePath = basePath, files.fileExists(atPath: basePath.path) {
-            argBuilder += ["--base-path", basePath.absoluteString]
-        }
-        
-        if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
-            argBuilder += ["--game-folder", gameFolder.absoluteString]
-        }
-        
-        let input = "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n"
-        
         var installStatus: [String: [String: Any]] = .init() // MARK: installStatus
+        var verificationStatus: [String: Double] = .init()
         
         _ = await command(
-            args: argBuilder,
+            args: argBuilder + [game.appName],
             useCache: false,
-            identifier: "finalInstall",
-            input: input,
+            identifier: "install",
+            input: "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n",
             inputIf: .init(
                 stream: .stdout,
                 string: "Additional packs [Enter to confirm]:"
@@ -371,6 +366,22 @@ class Legendary {
                     output.enumerateLines { line, _ in
                         if line.contains("Failure:") {
                             errorThrownExternally = InstallationError(String(line.trimmingPrefix(" ! Failure: ")))
+                        } else if line.contains("Verification progress:") {
+                            variables.setVariable("verifying", value: game) // FIXME: may cause lag when verifying due to rapid, repeated updating
+                            if let regex = try? NSRegularExpression(pattern: #"Verification progress: (\d+)/(\d+) \((\d+\.\d+)%\) \[(\d+\.\d+) MiB/s\]"#),
+                               let match = regex.firstMatch(in: line, options: [], range: NSRange(location: 0, length: line.count)) {
+                                verificationStatus["verifiedFiles"] = Double((line as NSString).substring(with: match.range(at: 1)))
+                                verificationStatus["totalFiles"] = Double((line as NSString).substring(with: match.range(at: 2)))
+                                verificationStatus["percentage"] = Double((line as NSString).substring(with: match.range(at: 3))) // %
+                                verificationStatus["speed"] = Double((line as NSString).substring(with: match.range(at: 4))) // MiB/s
+                                
+                                if verificationStatus["percentage"] == 100 {
+                                    verificationStatus.removeAll()
+                                    variables.removeVariable("verifying")
+                                }
+                                
+                                variables.setVariable("verificationStatus", value: verificationStatus)
+                            }
                         }
                     }
                 },
@@ -378,8 +389,11 @@ class Legendary {
                     output.enumerateLines { line, _ in
                         if line.contains("[DLManager] INFO:") {
                             if !line.contains("All done! Download manager quitting...") {
+                                variables.setVariable("installing", value: game)
+                                
                                 let range = NSRange(line.startIndex..<line.endIndex, in: line)
-                                if let match = Regex.progress?.firstMatch(in: line, range: range) {
+                                if let regex = try? NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#),
+                                   let match = regex.firstMatch(in: line, range: range) {
                                     installStatus["progress"] = [
                                         "percentage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                         "downloaded": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
@@ -387,31 +401,36 @@ class Legendary {
                                         "runtime": line[Range(match.range(at: 4), in: line)!],
                                         "eta": line[Range(match.range(at: 5), in: line)!]
                                     ]
-                                } else if let match = Regex.download?.firstMatch(in: line, range: range) {
+                                } else if let regex = try? NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#),
+                                          let match = regex.firstMatch(in: line, range: range) {
                                     installStatus["download"] = [ // MiB | 1 MB = (10^6/2^20) MiB
                                         "downloaded": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                         "written": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                     ]
-                                } else if let match = Regex.cache?.firstMatch(in: line, range: range) {
+                                } else if let regex = try? NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#),
+                                          let match = regex.firstMatch(in: line, range: range) {
                                     installStatus["downloadCache"] = [
                                         "usage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
                                         "activeTasks": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                     ]
-                                } else if let match = Regex.downloadAdvanced?.firstMatch(in: line, range: range) {
+                                } else if let regex = try? NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#),
+                                          let match = regex.firstMatch(in: line, range: range) {
                                     installStatus["downloadAdvanced"] = [ // MiB/s
                                         "raw": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                         "decompressed": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                     ]
-                                } else if let match = Regex.disk?.firstMatch(in: line, range: range) {
+                                } else if let regex = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#),
+                                          let match = regex.firstMatch(in: line, range: range) {
                                     installStatus["downloadDisk"] = [ // MiB/s
                                         "write": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
                                         "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                     ]
-                                } else if line.contains("All done! Download manager quitting...") {
-                                    installStatus.removeAll()
                                 }
-                                
-                                variables.setVariable("installStatus", value: installStatus)
+                                if line.contains("All done! Download manager quitting...") {
+                                    installStatus.removeAll()
+                                } else {
+                                    variables.setVariable("installStatus", value: installStatus)
+                                }
                             } else {
                                 variables.removeVariable("installing")
                             }
@@ -427,6 +446,11 @@ class Legendary {
     }
     
     static func launch(game: Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
+        guard try Legendary.getInstalledGames().contains(game) else {
+            log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
+            throw GameDoesNotExistError(game)
+        }
+        
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
         
@@ -522,6 +546,43 @@ class Legendary {
      }
      */
     
+    // TODO: DocC
+    static func getGamePlatform(game: Game) throws -> GamePlatform {
+        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName]["platform"].string
+        if platform == "Mac" {
+            return .macOS
+        } else if platform == "Windows" {
+            return .windows
+        } else {
+            throw UnableToGetPlatformError()
+        }
+        
+    }
+    
+    // TODO: DocC
+    static func needsUpdate(game: Game) -> Bool {
+        var needsUpdate: Bool = false
+        
+        do {
+            let metadata = try getGameMetadata(game: game)
+            let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+            
+            if let installedVersion = installed[game.appName]["version"].string,
+               let platform = installed[game.appName]["platform"].string,
+               let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string {
+                if upstreamVersion != installedVersion {
+                    needsUpdate = true
+                }
+            } else {
+                log.error("Unable to compare upstream and installed version of game \"\(game.title)\".")
+            }
+        } catch {
+            log.error("Unable to fetch if \(game.title) needs an update: \(error)")
+        }
+        
+        return needsUpdate
+    }
+    
     // MARK: - Clear Command Cache Method
     /**
      Wipes legendary's command cache. This will slow some legendary commands until the cache is rebuilt.
@@ -595,7 +656,7 @@ class Legendary {
      
      - Returns: An `Array` of ``Game`` objects.
      */
-    static func getInstallable() async throws -> [Game] { // TODO: use files in Config/metadata and use command to update in the background
+    static func getInstallable() async throws -> [Game] { // TODO: use files in Config/metadata and use command to update in the background [IMPORTANT TO UPD IN BKG]
         guard signedIn() else { throw NotSignedInError() }
         
         guard let json = try? await JSON(data: command(
@@ -623,7 +684,7 @@ class Legendary {
      - Throws: A ``DoesNotExistError`` if the metadata directory doesn't exist.
      - Returns: An optional `JSON` with either the metadata or `nil`.
      */
-    static func getGameMetadata(game: Game) async throws -> JSON? {
+    static func getGameMetadata(game: Game) throws -> JSON? {
         let metadataDirectoryString = "\(configLocation)/metadata"
         
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
@@ -651,7 +712,7 @@ class Legendary {
      - Returns: The WebURL of the retrieved image.
      */
     static func getImage(of game: Game, type: ImageType) async -> String {
-        let metadata = try? await getGameMetadata(game: game)
+        let metadata = try? getGameMetadata(game: game)
         var imageURL: String = .init()
         
         if let keyImages = metadata?["metadata"]["keyImages"].array {

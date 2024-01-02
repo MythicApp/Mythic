@@ -1,5 +1,5 @@
 //
-//  StopDownloadAlert.swift
+//  StopGameModificationAlert.swift
 //  Mythic
 //
 // MARK: - Copyright
@@ -13,6 +13,8 @@
 
 import SwiftUI
 
+// @ObservedObject private var variables: VariableManager = .shared // FIXME: Swift: Property wrappers are not yet supported in top-level code
+
 // MARK: - StopDownloadAlert Function
 /**
  Creates an alert for stopping the download.
@@ -22,12 +24,13 @@ import SwiftUI
     - game: The game for which the download is stopped.
  - Returns: An `Alert` instance.
  */
-func stopDownloadAlert(isPresented: Binding<Bool>, game: Legendary.Game?) -> Alert {
+func stopGameModificationAlert(isPresented: Binding<Bool>, game: Legendary.Game?) -> Alert {
     return Alert(
-        title: Text("Are you sure you want to stop downloading \(game?.title ?? "this game")?"),
+        title: Text("Are you sure you want to stop modifying \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
-            Legendary.stopCommand(identifier: "finalInstall")
+            Legendary.stopCommand(identifier: "install")
             VariableManager.shared.removeVariable("installing"); VariableManager.shared.removeVariable("installStatus")
+            VariableManager.shared.removeVariable("verifying"); VariableManager.shared.removeVariable("verificationStatus")
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )
