@@ -1,0 +1,4 @@
+files:
+  - source: /Mythic/Localizable.xcstrings
+    translation: /Mythic/Localizable.xcstrings
+    multilingual: 1
