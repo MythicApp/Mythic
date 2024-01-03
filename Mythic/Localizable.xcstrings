@@ -1,5 +1,301 @@
 {
   "sourceLanguage" : "en",
-  "strings" : {},
+  "strings" : {
+    "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
+
+    },
+    "(supports selective downloads.)" : {
+
+    },
+    "[ActiveAlert Fault]" : {
+
+    },
+    "%@\nIf this error appears, please consult support.\nMake sure to include what you were doing when the error occured." : {
+
+    },
+    "%@ %@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
+    "A link should've opened in your browser. If not, click" : {
+
+    },
+    "An error occurred." : {
+
+    },
+    "Are you sure you want to cancel GPTK installation?" : {
+
+    },
+    "Are you sure you want to sign out?" : {
+
+    },
+    "Are you sure you want to stop modifying %@?" : {
+
+    },
+    "Are you sure you want to uninstall %@?" : {
+
+    },
+    "Automatically check for updates" : {
+
+    },
+    "Automatically download updates" : {
+
+    },
+    "Browse..." : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Check for Updates…" : {
+
+    },
+    "Choose the game's native platform:" : {
+
+    },
+    "Close" : {
+
+    },
+    "Damn." : {
+
+    },
+    "DASHBOARD" : {
+
+    },
+    "Dismiss loading" : {
+
+    },
+    "Doing this means you can only play macOS-supported games, imported games, or use Whisky." : {
+
+    },
+    "Don't run uninstaller" : {
+
+    },
+    "Done" : {
+
+    },
+    "Downloaded %lf MiB, Written %lf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf"
+          }
+        }
+      }
+    },
+    "Downloading Game Porting Toolkit..." : {
+
+    },
+    "Elapsed: %@, ETA: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        }
+      }
+    },
+    "Enter authorisation key..." : {
+
+    },
+    "Enter game path or click \"Browse...\"" : {
+
+    },
+    "Error" : {
+
+    },
+    "Error importing game" : {
+
+    },
+    "Error installing %@." : {
+
+    },
+    "Error installing GPTK." : {
+
+    },
+    "Error launching %@." : {
+
+    },
+    "Error uninstalling %@." : {
+
+    },
+    "Failed to load the webpage." : {
+
+    },
+    "Favourites (Not implemented yet)" : {
+
+    },
+    "here." : {
+
+    },
+    "Home" : {
+
+    },
+    "Import a Game" : {
+
+    },
+    "Import with DLCs" : {
+
+    },
+    "In order to launch windows games, Mythic must download\na special translator by Apple to convert Windows code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+
+    },
+    "Install" : {
+
+    },
+    "Install %@" : {
+
+    },
+    "Install Game Porting Toolkit" : {
+
+    },
+    "Installed" : {
+
+    },
+    "INSTALLING" : {
+
+    },
+    "Installing [unknown]…" : {
+
+    },
+    "Installing %@…" : {
+
+    },
+    "Installing Game Porting Toolkit..." : {
+
+    },
+    "It appears loading's taking a while." : {
+
+    },
+    "Keep files" : {
+
+    },
+    "Keep waiting (dismissable with esc)" : {
+
+    },
+    "Later" : {
+
+    },
+    "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
+
+    },
+    "Library" : {
+
+    },
+    "MANAGEMENT" : {
+
+    },
+    "Mythic" : {
+
+    },
+    "Next" : {
+
+    },
+    "Not implemented" : {
+
+    },
+    "OK" : {
+
+    },
+    "OK!" : {
+
+    },
+    "Progress: %lld%% (%lld/%lld objects)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        }
+      }
+    },
+    "RECENTLY PLAYED" : {
+
+    },
+    "Restart Onboarding…" : {
+
+    },
+    "Retry" : {
+
+    },
+    "Select a game:" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Sign In" : {
+
+    },
+    "Sign in to Epic Games" : {
+
+    },
+    "Sign Out" : {
+
+    },
+    "Sorry, this isn't implemented yet!" : {
+
+    },
+    "Stop" : {
+
+    },
+    "Store" : {
+
+    },
+    "Submit" : {
+
+    },
+    "Support" : {
+
+    },
+    "The backend that allows you to play Windows games on macOS just got an update." : {
+
+    },
+    "This will sign you out of the account \"%@\"." : {
+
+    },
+    "Time for an update!" : {
+
+    },
+    "Uninstall" : {
+
+    },
+    "Uninstall %@" : {
+
+    },
+    "Update" : {
+
+    },
+    "Verify the game's integrity" : {
+
+    },
+    "VERIFYING" : {
+
+    },
+    "Welcome to Mythic!" : {
+
+    },
+    "Whisky installed!" : {
+
+    },
+    "Whisky is not installed!" : {
+
+    },
+    "Wine" : {
+
+    }
+  },
   "version" : "1.0"
 }
