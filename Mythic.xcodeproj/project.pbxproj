@@ -30,6 +30,7 @@
 		6A6923522AD6D83D00157E3E /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6923512AD6D83D00157E3E /* Global.swift */; };
 		6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */; };
 		6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* Uninstall.swift */; };
+		6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */; };
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* LegendaryInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */; };
 		6AA6CCE72AD571C500F664A5 /* LegendaryInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */; };
@@ -80,6 +81,7 @@
 		6A6923512AD6D83D00157E3E /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* Uninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uninstall.swift; sourceTree = "<group>"; };
+		6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegendaryInterface.swift; sourceTree = "<group>"; };
 		6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendaryInterfaceExt.swift; sourceTree = "<group>"; };
@@ -321,6 +323,7 @@
 				6AC3E18A2B374F3C000EB765 /* Deprecated */,
 				6AAF14DE2B271DF4000B1BA2 /* legendary */,
 				6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */,
+				6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */,
 				6AB474A12AACBBEA00AB9C63 /* Mythic.entitlements */,
 				6AB4749E2AACBBEA00AB9C63 /* Preview Content */,
 			);
@@ -476,6 +479,7 @@
 			files = (
 				6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */,
 				6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */,
+				6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */,
 				6AAF14DF2B271DF4000B1BA2 /* legendary in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
