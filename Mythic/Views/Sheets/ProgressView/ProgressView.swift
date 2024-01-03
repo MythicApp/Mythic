@@ -40,7 +40,7 @@ struct ProgressViewSheet: View {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .imageScale(.large)
                     
-                    Text("It seems loading's taking a while.")
+                    Text("It appears loading's taking a while.")
                 }
                 .padding()
                 
