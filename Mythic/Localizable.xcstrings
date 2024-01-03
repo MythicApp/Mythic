@@ -27,10 +27,28 @@
             "value" : "\nΕισάγετε τον 'Κωδικό εξουσιοδότησης' από την απάντηση JSON στο παρακάτω πεδίο."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nIntroduzca el \"authorisationCode\" de la respuesta JSON en el siguiente campo."
+          }
+        },
         "fi" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "\nSyötä JSON vastauksen ”authorisationCode” alla olevaan kenttään."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nSaisissez le \"code d'autorisation\" de la réponse JSON dans le champ ci-dessous."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nÍrja be a JSON-válaszban szereplő \"authorisationCode\" kódot az alábbi mezőbe."
           }
         },
         "it" : {
@@ -43,6 +61,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\n以下のフィールドに、JSON 応答から 'authorisationCode' を入力します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\n아래 필드에 JSON 응답의 'authorisationCode'를 입력합니다."
           }
         },
         "nl" : {
@@ -91,6 +115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "\nAnge 'authorisationCode' från JSON-svaret i fältet nedan."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nJSON yanıtındaki 'authorisationCode' değerini aşağıdaki alana girin."
           }
         },
         "uk" : {
@@ -157,6 +187,12 @@
             "value" : "(supporte les téléchargements sélectifs.)"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(támogatja a szelektív letöltéseket.)"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -167,6 +203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(選択したダウンロードをサポートしています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(선택적 다운로드를 지원합니다.)"
           }
         },
         "nl" : {
@@ -215,6 +257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(stöder selektiva nedladdningar.)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(seçici indirmeleri destekler.)"
           }
         },
         "uk" : {
@@ -281,6 +329,12 @@
             "value" : "[Défaut d'alerte active]"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ActiveAlert hiba]"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -291,6 +345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "format@@0"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[액티브알럿 오류]"
           }
         },
         "nl" : {
@@ -339,6 +399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "[ActiveAlert Fault]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ActiveAlert Arızası]"
           }
         },
         "uk" : {
@@ -405,6 +471,12 @@
             "value" : "%@\nSi cette erreur apparaît, veuillez consulter le support.\nAssurez-vous d'inclure ce que vous faisiez lorsque l'erreur est survenue."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\nHa ez a hiba megjelenik, kérjük, forduljon az ügyfélszolgálathoz.\nFeltétlenül írja meg, hogy mit csinált a hiba megjelenésekor."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -415,6 +487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@\nこのエラーが表示される場合は、サポートにご相談ください。\nエラーが発生したときに行ったことを必ず含めてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\n이 오류가 발생하면 지원팀에 문의하세요.\n오류가 발생했을 때 무엇을 하고 있었는지 알려주세요."
           }
         },
         "nl" : {
@@ -435,6 +513,18 @@
             "value" : "%@\nJeśli ten błąd się pojawi, prosimy o zapoznanie się ze wsparciem.\nUpewnij się, co robisz, gdy wystąpił błąd."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\nSe esse erro aparecer, consulte o suporte.\nNão se esqueça de incluir o que estava fazendo quando o erro ocorreu."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\nSe este erro aparecer, consulte o suporte.\nCertifique-se de que inclui o que estava a fazer quando o erro ocorreu."
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
@@ -451,6 +541,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@\nOm detta fel visas, vänligen konsultera support.\nSe till att inkludera vad du gjorde när felet inträffade."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\nBu hata ortaya çıkarsa, lütfen destek ekibine danışın.\nHata oluştuğunda ne yaptığınızı eklediğinizden emin olun."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\nЯкщо ця помилка з'явилася, зверніться до служби підтримки.\nОбов'язково вкажіть, що ви робили, коли виникла помилка."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@\n如果出现此错误，请咨询技术支持。\n请务必说明错误发生时您正在进行的操作。"
           }
         }
       }
@@ -499,7 +607,19 @@
             "value" : "%1$@ %2$@ (%3$@)"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
         "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "hu" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@ (%3$@)"
@@ -512,6 +632,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@ (%3$@)"
@@ -560,6 +686,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@ (%3$@)"
@@ -629,6 +761,12 @@
             "value" : "%lld%%"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -636,6 +774,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -659,6 +803,18 @@
             "value" : "%lld%%"
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
@@ -672,6 +828,12 @@
           }
         },
         "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        },
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%%"
@@ -741,6 +903,12 @@
             "value" : "Un lien devrait être ouvert dans votre navigateur. Sinon, cliquez sur"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egy linknek meg kellett volna nyílnia a böngésződben. Ha nem, kattintson"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -751,6 +919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "リンクはブラウザで開く必要があります。そうでない場合は、"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "브라우저에서 링크가 열렸을 것입니다. 그렇지 않은 경우"
           }
         },
         "nl" : {
@@ -799,6 +973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "En länk borde ha öppnats i din webbläsare. Om inte, klicka"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tarayıcınızda bir bağlantı açılmış olmalı. Açılmadıysa, tıklayın"
           }
         },
         "uk" : {
@@ -865,6 +1045,12 @@
             "value" : "Une erreur est survenue."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba történt."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -875,6 +1061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "エラーが発生。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류가 발생했습니다."
           }
         },
         "nl" : {
@@ -923,6 +1115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ett fel uppstod."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir hata oluştu."
           }
         },
         "uk" : {
@@ -989,6 +1187,12 @@
             "value" : "Êtes-vous sûr de vouloir annuler l'installation GPTK ?"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biztos, hogy le akarja mondani a GPTK telepítését?"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -999,6 +1203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GPTKインストールをキャンセルしてもよろしいですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPTK 설치를 취소하시겠습니까?"
           }
         },
         "nl" : {
@@ -1047,6 +1257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Är du säker på att du vill avbryta GPTK-installationen?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPTK kurulumunu iptal etmek istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -1113,6 +1329,12 @@
             "value" : "Êtes-vous sûr de vouloir vous déconnecter?"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biztos, hogy ki akarsz jelentkezni?"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1123,6 +1345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サインアウトしてもよろしいですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정말 로그아웃하시겠습니까?"
           }
         },
         "nl" : {
@@ -1171,6 +1399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Är du säker du vill logga ut?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkış yapmak istediğinize emin misiniz?"
           }
         },
         "uk" : {
@@ -1237,6 +1471,12 @@
             "value" : "Êtes-vous sûr de vouloir arrêter de modifier %@?"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biztos, hogy nem akarod tovább módosítani a %@?"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1247,6 +1487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ の変更を中止してもよろしいですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@수정을 중지하시겠습니까?"
           }
         },
         "nl" : {
@@ -1295,6 +1541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Är du säker på att du vill sluta ändra %@?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@adresini değiştirmeyi bırakmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -1361,6 +1613,12 @@
             "value" : "Êtes-vous sûr de vouloir désinstaller %@?"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biztos, hogy a %@oldalt szeretné eltávolítani ?"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1371,6 +1629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ をアンインストールしてもよろしいですか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@를 정말 제거하시겠습니까?"
           }
         },
         "nl" : {
@@ -1419,6 +1683,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Är du säker du vill avinstallera %@?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@adresini kaldırmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -1485,6 +1755,12 @@
             "value" : "Vérifier automatiquement les mises à jour"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatikusan ellenőrizze a frissítéseket"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1495,6 +1771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動的にアップデートを確認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트 자동 확인"
           }
         },
         "nl" : {
@@ -1543,6 +1825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sök automatiskt efter uppdateringar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri otomatik olarak kontrol et"
           }
         },
         "uk" : {
@@ -1609,6 +1897,12 @@
             "value" : "Télécharger automatiquement les mises à jour"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frissítések automatikus letöltése"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1619,6 +1913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アップデートを自動的にダウンロードする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트 자동 다운로드"
           }
         },
         "nl" : {
@@ -1667,6 +1967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hämta uppdateringar automatiskt"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri otomatik olarak indir"
           }
         },
         "uk" : {
@@ -1733,6 +2039,12 @@
             "value" : "Parcourir..."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Böngésszen..."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1743,6 +2055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "参照..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "찾아보기..."
           }
         },
         "nl" : {
@@ -1791,6 +2109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bläddra..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Göz atın..."
           }
         },
         "uk" : {
@@ -1857,6 +2181,12 @@
             "value" : "Abandonner"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Törölje"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1867,6 +2197,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "취소"
           }
         },
         "nl" : {
@@ -1917,6 +2253,12 @@
             "value" : "Avbryt"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İptal"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1957,6 +2299,12 @@
             "value" : "Nach Updates suchen…"
           }
         },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Έλεγχος για ενημερώσεις…"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1975,10 +2323,34 @@
             "value" : "Vérifier les mises à jour…"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frissítések keresése…"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Controlla aggiornamenti…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アップデートの確認…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트 확인…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Controleer op updates…"
           }
         },
         "no" : {
@@ -2021,6 +2393,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sök efter uppdateringar…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemeleri Kontrol Edin…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слідкуйте за оновленнями…"
           }
         },
         "zh-Hans" : {
@@ -2081,6 +2465,12 @@
             "value" : "Choisissez la plateforme native du jeu :"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válassza ki a játék natív platformját:"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2091,6 +2481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームのネイティブプラットフォームを選択してください："
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임의 기본 플랫폼을 선택합니다:"
           }
         },
         "nl" : {
@@ -2139,6 +2535,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj spelets ursprungliga plattform:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun yerel platformunu seçin:"
           }
         },
         "uk" : {
@@ -2205,6 +2607,12 @@
             "value" : "Fermer"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zárja be a"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2215,6 +2623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "閉じる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "닫기"
           }
         },
         "nl" : {
@@ -2263,6 +2677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stäng"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapat"
           }
         },
         "uk" : {
@@ -2329,6 +2749,12 @@
             "value" : "Merde."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fenébe."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2339,6 +2765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "畜生。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "젠장"
           }
         },
         "nl" : {
@@ -2387,6 +2819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fan."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lanet olsun."
           }
         },
         "uk" : {
@@ -2453,6 +2891,12 @@
             "value" : "DASHBOARD"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DASHBOARD"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2463,6 +2907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ダッシュボード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대시보드"
           }
         },
         "nl" : {
@@ -2511,6 +2961,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DASHBOARD"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GÖSTERGE PANOSU"
           }
         },
         "uk" : {
@@ -2577,6 +3033,12 @@
             "value" : "Rejeter le chargement"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elutasítom a rakodást"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2587,6 +3049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み込みを解除"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로딩 해제"
           }
         },
         "nl" : {
@@ -2635,6 +3103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avfärda laddning"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüklemeyi iptal et"
           }
         },
         "uk" : {
@@ -2701,6 +3175,12 @@
             "value" : "Cela signifie que vous ne pouvez jouer que des jeux pris en charge par macOS, des jeux importés ou utiliser Whisky."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ez azt jelenti, hogy csak macOS által támogatott játékokkal, importált játékokkal vagy a Whisky használatával játszhatsz."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2711,6 +3191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "これを行うことは、macOS対応のゲーム、インポートされたゲーム、またはウィスキーのみを使用することができます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이렇게 하면 macOS 지원 게임, 가져온 게임 또는 위스키를 사용할 수 있는 게임만 플레이할 수 있습니다."
           }
         },
         "nl" : {
@@ -2759,6 +3245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Om du gör detta kan du bara spela macOS-stödda spel, importerade spel eller använda Whisky."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bunu yapmak, yalnızca macOS destekli oyunları, içe aktarılan oyunları oynayabileceğiniz veya Whisky'yi kullanabileceğiniz anlamına gelir."
           }
         },
         "uk" : {
@@ -2825,6 +3317,12 @@
             "value" : "Ne pas lancer le désinstallateur"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne futtassa az eltávolítót"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2835,6 +3333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アンインストーラーを実行しない"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제거 프로그램 실행하지 않기"
           }
         },
         "nl" : {
@@ -2883,6 +3387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kör inte avinstallationsprogrammet"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırıcıyı çalıştırmayın"
           }
         },
         "uk" : {
@@ -2949,6 +3459,12 @@
             "value" : "Fait"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kész"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2959,6 +3475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完了"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
           }
         },
         "nl" : {
@@ -3007,6 +3529,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Klar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bitti"
           }
         },
         "uk" : {
@@ -3079,6 +3607,12 @@
             "value" : "%1$lf Mio téléchargé, %2$lf écrit"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letöltve %1$lf MiB, Írva %2$lf"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3089,6 +3623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lf MiBをダウンロードし、 %2$lf を書き込みました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다운로드 %1$lf MiB, 작성 %2$lf"
           }
         },
         "nl" : {
@@ -3137,6 +3677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hämtade %1$lf MiB, Skriven %2$lf"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İndirildi %1$lf MiB, Yazıldı %2$lf"
           }
         },
         "uk" : {
@@ -3203,6 +3749,12 @@
             "value" : "Téléchargement du Kit de Portage de Jeu..."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Porting Toolkit letöltése..."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3213,6 +3765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームポートツールをダウンロードしています..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 포팅 툴킷 다운로드..."
           }
         },
         "nl" : {
@@ -3261,6 +3819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laddar ner Game Porting Toolkit..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Porting Toolkit indiriliyor..."
           }
         },
         "uk" : {
@@ -3333,6 +3897,12 @@
             "value" : "Elapsed: %1$@, ETA: %2$@"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elmúlt: %1$@, ETA: %2$@"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3343,6 +3913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경과 시간: %1$@, 예상 시간: %2$@"
           }
         },
         "nl" : {
@@ -3391,6 +3967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geçen süre: %1$@, ETA: %2$@"
           }
         },
         "uk" : {
@@ -3457,6 +4039,12 @@
             "value" : "Entrez la clé d'autorisation..."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Engedélyezési kulcs megadása..."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3467,6 +4055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "認証キーを入力..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "인증 키 입력..."
           }
         },
         "nl" : {
@@ -3515,6 +4109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ange auktoriseringsnyckel..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yetkilendirme anahtarını girin..."
           }
         },
         "uk" : {
@@ -3581,6 +4181,12 @@
             "value" : "Entrez le chemin de jeu ou cliquez sur \"Parcourir...\""
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adja meg a játék elérési útvonalát, vagy kattintson a \"Tallózás...\" gombra."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3591,6 +4197,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームパスを入力するか、「参照...」をクリックしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 경로를 입력하거나 \"찾아보기...\"를 클릭합니다."
           }
         },
         "nl" : {
@@ -3639,6 +4251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ange spelets sökväg eller klicka på \"Bläddra...\""
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun yolunu girin veya \"Gözat... \"a tıklayın"
           }
         },
         "uk" : {
@@ -3705,6 +4323,12 @@
             "value" : "Erreur"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3715,6 +4339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "エラー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오류"
           }
         },
         "nl" : {
@@ -3763,6 +4393,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hata"
           }
         },
         "uk" : {
@@ -3829,6 +4465,12 @@
             "value" : "Erreur lors de l'importation du jeu"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba a játék importálásában"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3839,6 +4481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームのインポートエラー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 가져오기 오류"
           }
         },
         "nl" : {
@@ -3887,6 +4535,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel vid import av spel"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun içe aktarılırken hata oluştu"
           }
         },
         "uk" : {
@@ -3953,6 +4607,12 @@
             "value" : "Erreur lors de l'installation de %@."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba a %@telepítésében."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3963,6 +4623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ のインストール中にエラーが発生しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@설치 중 오류가 발생했습니다."
           }
         },
         "nl" : {
@@ -4011,6 +4677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel vid installation av %@."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@yüklenirken hata oluştu."
           }
         },
         "uk" : {
@@ -4077,6 +4749,12 @@
             "value" : "Erreur lors de l'installation du GPTK."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba a GPTK telepítésében."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4087,6 +4765,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "GPTK のインストールに失敗しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPTK를 설치하는 동안 오류가 발생했습니다."
           }
         },
         "nl" : {
@@ -4135,6 +4819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel vid installation av GPTK."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "GPTK yüklenirken hata oluştu."
           }
         },
         "uk" : {
@@ -4201,6 +4891,12 @@
             "value" : "Erreur lors du lancement de %@."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba a %@indításakor."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4211,6 +4907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ の起動に失敗しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을 시작하는 동안 오류가 발생했습니다."
           }
         },
         "nl" : {
@@ -4259,6 +4961,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel vid lansering av %@."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@başlatılırken hata oluştu."
           }
         },
         "uk" : {
@@ -4325,6 +5033,12 @@
             "value" : "Erreur lors de la désinstallation de %@."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiba a %@eltávolításában."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4335,6 +5049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ のアンインストールに失敗しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@을(를) 제거하는 동안 오류가 발생했습니다."
           }
         },
         "nl" : {
@@ -4355,6 +5075,18 @@
             "value" : "Błąd podczas odinstalowywania %@."
           }
         },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao desinstalar o site %@."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erro ao desinstalar %@."
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4371,6 +5103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fel vid avinstallation av %@."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@kaldırılırken hata oluştu."
           }
         },
         "uk" : {
@@ -4437,6 +5175,12 @@
             "value" : "Impossible de charger la page Web."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nem sikerült betölteni a weboldalt."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4447,6 +5191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ウェブページの読み込みに失敗しました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "웹 페이지를 로드하지 못했습니다."
           }
         },
         "nl" : {
@@ -4495,6 +5245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det gick inte att ladda webbsidan."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Web sayfası yüklenemedi."
           }
         },
         "uk" : {
@@ -4561,6 +5317,12 @@
             "value" : "Favoris (pas encore implémenté)"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kedvencek (Még nem implementálva)"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4571,6 +5333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "お気に入り（未実装）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "즐겨찾기(아직 구현되지 않음)"
           }
         },
         "nl" : {
@@ -4619,6 +5387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Favoriter (implementeras inte ännu)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoriler (Henüz uygulanmadı)"
           }
         },
         "uk" : {
@@ -4685,6 +5459,12 @@
             "value" : "ici."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "itt."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4695,6 +5475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ここよ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기."
           }
         },
         "nl" : {
@@ -4743,6 +5529,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "här."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Burada."
           }
         },
         "uk" : {
@@ -4809,6 +5601,12 @@
             "value" : "Domicile"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4819,6 +5617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ホーム"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "홈"
           }
         },
         "nl" : {
@@ -4867,6 +5671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hem"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ev"
           }
         },
         "uk" : {
@@ -4933,6 +5743,12 @@
             "value" : "Importer un jeu"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Játék importálása"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4943,6 +5759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームをインポート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 가져오기"
           }
         },
         "nl" : {
@@ -4991,6 +5813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importera ett parti"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyun İçe Aktarma"
           }
         },
         "uk" : {
@@ -5057,6 +5885,12 @@
             "value" : "Importer avec DLC"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importálás DLC-kkel"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5067,6 +5901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DLCでインポート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DLC로 가져오기"
           }
         },
         "nl" : {
@@ -5115,6 +5955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importera med DLCs"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DLC'ler ile içe aktarma"
           }
         },
         "uk" : {
@@ -5175,6 +6021,18 @@
             "value" : "Jotta voidaan käynnistää ikkunoita pelejä, Mythic on ladattava\nerityinen kääntäjä Apple muuntaa Windows-koodi macOS.\n \nKooltaan noin 1,8 Gt, mutta lataus on noin 600 Mt pakkausten vuoksi."
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour pouvoir lancer des jeux Windows, Mythic doit télécharger\n, un traducteur spécial d'Apple pour convertir le code Windows en code macOS.\n \nSa taille est d'environ 1,8 Go, mais le téléchargement est d'environ 600 Mo en raison de la compression."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A windowsos játékok indításához a Mythicnek le kell töltenie a\naz Apple speciális fordítóját, amely a Windows kódot macOS-re konvertálja.\n \nEz körülbelül 1,8GB méretű, de a letöltés a tömörítés miatt 600MB körül van."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5185,6 +6043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Windowsゲームを起動するには、MythicはWindowsコードをmacOSに変換するために、Appleによってformat@@0特別な翻訳者をダウンロードする必要があります。\n\n \n約1.8GBのサイズですが、圧縮のため、ダウンロードは約600MBです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows 게임을 실행하려면 Mythic에서 Windows 코드를 macOS로 변환하는 Apple의 특수 번역기(\n)를 다운로드해야 합니다.\n \n파일 용량은 약 1.8GB이지만 압축으로 인해 다운로드 용량은 약 600MB입니다."
           }
         },
         "nl" : {
@@ -5233,6 +6097,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "För att starta Windows-spel, Mythic måste ladda ner\nen speciell översättare av Apple för att konvertera Windows-kod till macOS.\n \nDet är runt 1,8 GB i storlek, men nedladdningen är runt 600 MB på grund av komprimering."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows oyunlarını başlatmak için Mythic, Windows kodunu macOS'a dönüştürmek için Apple tarafından özel bir çevirmen olan\nadresini indirmelidir.\n \nYaklaşık 1.8GB boyutundadır, ancak sıkıştırma nedeniyle indirme 600MB civarındadır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Щоб запустити ігри для Windows, Mythic має завантажити\n- спеціальний перекладач від Apple для перетворення коду Windows на macOS.\n \nВін має розмір близько 1,8 ГБ, але через стиснення завантажується близько 600 МБ."
           }
         },
         "zh-Hans" : {
@@ -5293,6 +6169,12 @@
             "value" : "Installer"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telepítse a"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5303,6 +6185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치"
           }
         },
         "nl" : {
@@ -5351,6 +6239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installera"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurulum"
           }
         },
         "uk" : {
@@ -5417,6 +6311,12 @@
             "value" : "Installer %@"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telepítse a %@"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5427,6 +6327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ をインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치 %@"
           }
         },
         "nl" : {
@@ -5475,6 +6381,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installera %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@adresini yükleyin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Встановіть %@"
           }
         },
         "zh-Hans" : {
@@ -5535,6 +6453,12 @@
             "value" : "Installer la boîte à outils de portage de jeu"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telepítse a Game Porting Toolkitet"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5545,6 +6469,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームポーティングツールキットをインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 포팅 툴킷 설치"
           }
         },
         "nl" : {
@@ -5593,6 +6523,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installera Game Porting Toolkit"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Porting Toolkit'i yükleyin"
           }
         },
         "uk" : {
@@ -5659,6 +6595,12 @@
             "value" : "Installé"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Telepített"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5669,6 +6611,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インストール済み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치됨"
           }
         },
         "nl" : {
@@ -5717,6 +6665,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installerad"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüklendi"
           }
         },
         "uk" : {
@@ -5783,6 +6737,12 @@
             "value" : "INSTALLATION"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A  HONLAP TELEPÍTÉSE"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5793,6 +6753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "インストール中"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설치"
           }
         },
         "nl" : {
@@ -5841,6 +6807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "INSTALLERAR"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KURULUM"
           }
         },
         "uk" : {
@@ -5907,10 +6879,28 @@
             "value" : "Installation de [unknown]…"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[unknown]…telepítése"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installazione Di [unknown]…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "インストール [unknown]…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없음] 설치 중…"
           }
         },
         "nl" : {
@@ -5959,6 +6949,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installerar [unknown]…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilinmiyor]…yükleniyor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Встановлення [невідомо]…"
           }
         },
         "zh-Hans" : {
@@ -6019,10 +7021,28 @@
             "value" : "Installation de %@…"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A %@…telepítése"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installazione Di %@…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…のインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…설치"
           }
         },
         "nl" : {
@@ -6071,6 +7091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installerar %@…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@…adresini yükleme"
           }
         },
         "uk" : {
@@ -6137,6 +7163,12 @@
             "value" : "Installation du Kit de Portage de Jeu..."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Game Porting Toolkit telepítése..."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6147,6 +7179,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームポートツールをインストールしています..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 포팅 툴킷 설치..."
           }
         },
         "nl" : {
@@ -6195,6 +7233,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installerar Game Porting Toolkit..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Porting Toolkit Yükleniyor..."
           }
         },
         "uk" : {
@@ -6261,6 +7305,12 @@
             "value" : "Il semble que le chargement prenne un certain temps."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Úgy tűnik, a rakodás eltart egy darabig."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6271,6 +7321,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ローディングには時間がかかっているようです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로딩하는 데 시간이 걸리는 것 같습니다."
           }
         },
         "nl" : {
@@ -6319,6 +7375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Det verkar som att lastning tar ett tag."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Görünüşe göre yükleme biraz zaman alıyor."
           }
         },
         "uk" : {
@@ -6385,6 +7447,12 @@
             "value" : "Garder les fichiers"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fájlok megőrzése"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6395,6 +7463,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ファイルを保持"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일 보관"
           }
         },
         "nl" : {
@@ -6443,6 +7517,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Behåll filer"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dosyaları saklayın"
           }
         },
         "uk" : {
@@ -6509,6 +7589,12 @@
             "value" : "Continuer à attendre (effaçable avec esc)"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep waiting (esc-vel elutasítható)"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6519,6 +7605,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "待機状態にする (escで解除可能)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계속 대기(Esc로 해제 가능)"
           }
         },
         "nl" : {
@@ -6567,6 +7659,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fortsätt vänta (avfärdas med esc)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beklemeye devam et (esc ile reddedilebilir)"
           }
         },
         "uk" : {
@@ -6633,6 +7731,12 @@
             "value" : "Plus tard"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Később"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6643,6 +7747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "後で"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나중에"
           }
         },
         "nl" : {
@@ -6691,6 +7801,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Senare"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha sonra"
           }
         },
         "uk" : {
@@ -6751,6 +7867,12 @@
             "value" : "Commençons par vous connecter à Epic Games.\nSi vous ne voulez pas utiliser Epic Games, cliquez sur le bouton suivant."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kezdjük azzal, hogy bejelentkezünk az Epic Gamesbe.\nHa nem akarod használni az Epic Games-t, csak kattints a következő gombra."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6761,6 +7883,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Epic Gamesにサインインしてみましょう。\nEpic Gamesを使用したくない場合は、次をクリックしてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에픽게임즈에 로그인하여 시작하겠습니다.\n에픽게임즈 사용을 원하지 않는다면 다음을 클릭하세요."
           }
         },
         "nl" : {
@@ -6809,6 +7937,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Låt oss komma igång genom att logga in på Epic Games.\nOm du inte vill använda Epic Games, klicka härnäst."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Epic Games'te oturum açarak başlayalım.\nEpic Games'i kullanmak istemiyorsan ileri butonuna tıklaman yeterli."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Почнемо з входу в Epic Games.\nЯкщо ви не хочете використовувати Epic Games, просто натисніть далі."
           }
         },
         "zh-Hans" : {
@@ -6869,6 +8009,12 @@
             "value" : "Bibliothèque"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Könyvtár"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6879,6 +8025,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ライブラリ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "라이브러리"
           }
         },
         "nl" : {
@@ -6927,6 +8079,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bibliotek"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kütüphane"
           }
         },
         "uk" : {
@@ -6993,6 +8151,12 @@
             "value" : "GESTION"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VEZETÉS"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7003,6 +8167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "管理"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "관리"
           }
         },
         "nl" : {
@@ -7051,6 +8221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "MANAGEMENT"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YÖNETİM"
           }
         },
         "uk" : {
@@ -7117,6 +8293,12 @@
             "value" : "Mythique"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mítikus"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7127,6 +8309,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "神話的"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신화"
           }
         },
         "nl" : {
@@ -7175,6 +8363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mytisk"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efsanevi"
           }
         },
         "uk" : {
@@ -7241,6 +8435,12 @@
             "value" : "Suivant"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Következő"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7251,6 +8451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "次へ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음"
           }
         },
         "nl" : {
@@ -7299,6 +8505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nästa"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonraki"
           }
         },
         "uk" : {
@@ -7365,6 +8577,12 @@
             "value" : "Non implémenté"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nincs végrehajtva"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7375,6 +8593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未実装"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구현되지 않음"
           }
         },
         "nl" : {
@@ -7423,6 +8647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inte implementerad"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uygulanmadı"
           }
         },
         "uk" : {
@@ -7489,6 +8719,12 @@
             "value" : "Ok"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7499,6 +8735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
           }
         },
         "nl" : {
@@ -7547,6 +8789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ok"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAMAM."
           }
         },
         "uk" : {
@@ -7613,6 +8861,12 @@
             "value" : "OK!"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OKÉ!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7620,6 +8874,12 @@
           }
         },
         "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK!"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK!"
@@ -7671,6 +8931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TAMAM!"
           }
         },
         "uk" : {
@@ -7731,10 +8997,22 @@
             "value" : "Progreso: %1$lld%% (%2$lld/%3$lld objetos)"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edistyminen: %1$lld%% (%2$lld/%3$lld objektit)"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Progression : %1$lld%% ( objets%2$lld/%3$lld)"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fejlődés: %1$lld%% (%2$lld/%3$lld objektumok)"
           }
         },
         "it" : {
@@ -7747,6 +9025,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "進行状況: %1$lld%% (%2$lld/%3$lld オブジェクト)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중입니다: %1$lld%% (%2$lld/%3$lld 객체)"
           }
         },
         "nl" : {
@@ -7797,10 +9081,22 @@
             "value" : "Förlopp: %1$lld%% (%2$lld/%3$lld objekt)"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İlerleme kaydedildi: %1$lld% (%2$lld/%3$lld nesneler)"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Прогрес: %1$lld%% (%2$lld/%3$lld об'єктів)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进展情况： %1$lld%% (%2$lld/%3$lld 对象)"
           }
         }
       }
@@ -7855,6 +9151,12 @@
             "value" : "JOUÉ récemment"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEMRÉG JÁTSZOTT"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7865,6 +9167,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最近プレイした曲"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최근 플레이"
           }
         },
         "nl" : {
@@ -7915,6 +9223,12 @@
             "value" : "RECENTLIGT SPELADE"
           }
         },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YAKIN ZAMANDA OYNANDI"
+          }
+        },
         "uk" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7955,6 +9269,12 @@
             "value" : "Onboarding… neu starten"
           }
         },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Επανεκκίνηση του Onboarding…"
+          }
+        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7973,10 +9293,34 @@
             "value" : "Redémarrer l'intégration…"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding újraindítása…"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Riavvia Onboarding…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンボーディングの再開…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "온보딩 다시 시작…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding…opnieuw starten"
           }
         },
         "no" : {
@@ -8019,6 +9363,24 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Starta om Onboarding…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding'i yeniden başlatın…"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перезапустити онбордінг…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新启动上机…"
           }
         }
       }
@@ -8073,6 +9435,12 @@
             "value" : "Réessayer"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retry"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8083,6 +9451,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再試行する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재시도"
           }
         },
         "nl" : {
@@ -8131,6 +9505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Försök igen"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden Dene"
           }
         },
         "uk" : {
@@ -8197,6 +9577,12 @@
             "value" : "Sélectionnez une partie :"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válasszon ki egy játékot:"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8207,6 +9593,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームを選択:"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임을 선택합니다:"
           }
         },
         "nl" : {
@@ -8255,6 +9647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välj ett spel:"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir oyun seçin:"
           }
         },
         "uk" : {
@@ -8321,6 +9719,12 @@
             "value" : "Réglages"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beállítások"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8331,6 +9735,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "設定"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "설정"
           }
         },
         "nl" : {
@@ -8379,6 +9789,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inställningar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
           }
         },
         "uk" : {
@@ -8445,6 +9861,12 @@
             "value" : "Se connecter"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bejelentkezés"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8455,6 +9877,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サインイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인"
           }
         },
         "nl" : {
@@ -8503,6 +9931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logga in"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oturum Aç"
           }
         },
         "uk" : {
@@ -8569,6 +10003,12 @@
             "value" : "Connectez-vous à Epic Games"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bejelentkezés az Epic Games rendszerébe"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8579,6 +10019,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Epic Gamesにサインイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에픽게임즈에 로그인"
           }
         },
         "nl" : {
@@ -8627,6 +10073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logga in på Epic Games"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Epic Games'te oturum aç"
           }
         },
         "uk" : {
@@ -8693,6 +10145,12 @@
             "value" : "Déconnexion"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kijelentkezés"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8703,6 +10161,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サインアウト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그아웃"
           }
         },
         "nl" : {
@@ -8751,6 +10215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Logga ut"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çıkış Yapın"
           }
         },
         "uk" : {
@@ -8817,6 +10287,12 @@
             "value" : "Désolé, ce n'est pas encore implémenté !"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sajnálom, ez még nincs implementálva!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8827,6 +10303,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "申し訳ありませんが、これはまだ実装されていません！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "죄송하지만 아직 구현되지 않았습니다!"
           }
         },
         "nl" : {
@@ -8875,6 +10357,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tyvärr, detta är inte implementerat ännu!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üzgünüm, bu henüz uygulanmadı!"
           }
         },
         "uk" : {
@@ -8941,6 +10429,12 @@
             "value" : "Arrêter"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8951,6 +10445,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停止"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지"
           }
         },
         "nl" : {
@@ -8999,6 +10499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stoppa"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dur"
           }
         },
         "uk" : {
@@ -9065,6 +10571,12 @@
             "value" : "Magasin"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áruház"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9075,6 +10587,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ストア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스토어"
           }
         },
         "nl" : {
@@ -9123,6 +10641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Butik"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mağaza"
           }
         },
         "uk" : {
@@ -9189,6 +10713,12 @@
             "value" : "Soumettre"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Küldje be a"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9199,6 +10729,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제출"
           }
         },
         "nl" : {
@@ -9247,6 +10783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Skicka"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gönder"
           }
         },
         "uk" : {
@@ -9313,6 +10855,12 @@
             "value" : "Soutien"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Támogatás"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9323,6 +10871,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サポート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원"
           }
         },
         "nl" : {
@@ -9371,6 +10925,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Stöd"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Destek"
           }
         },
         "uk" : {
@@ -9437,6 +10997,12 @@
             "value" : "Le backend qui vous permet de jouer à des jeux Windows sur macOS vient de recevoir une mise à jour."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az a háttértár, amely lehetővé teszi a Windows-játékok macOS-en való lejátszását, most kapott egy frissítést."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9447,6 +11013,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "あなたがmacOSでWindowsゲームをプレイすることを可能にするバックエンドはちょうどアップデートを得ました。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS에서 Windows 게임을 플레이할 수 있는 백엔드가 방금 업데이트되었습니다."
           }
         },
         "nl" : {
@@ -9495,6 +11067,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Backend som låter dig spela Windows-spel på macOS fick precis en uppdatering."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows oyunlarını macOS üzerinde oynamanızı sağlayan arka uç yeni bir güncelleme aldı."
           }
         },
         "uk" : {
@@ -9561,6 +11139,12 @@
             "value" : "Cela vous déconnectera du compte \"%@\"."
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ezzel kijelentkezik a \"%@\" fiókból."
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9571,6 +11155,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "「%@」アカウントからサインアウトします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그러면 계정 \"%@\"에서 로그아웃됩니다."
           }
         },
         "nl" : {
@@ -9619,6 +11209,18 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Detta kommer att logga ut dig från kontot \"%@\"."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu sizi \"%@\" hesabından çıkaracaktır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Це дозволить вам вийти з облікового запису \"%@\"."
           }
         },
         "zh-Hans" : {
@@ -9679,6 +11281,12 @@
             "value" : "Il est temps de mettre à jour !"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Itt az ideje egy frissítésnek!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9689,6 +11297,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アップデートの時間です！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트 시간입니다!"
           }
         },
         "nl" : {
@@ -9737,6 +11351,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dags för en uppdatering!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme zamanı!"
           }
         },
         "uk" : {
@@ -9803,6 +11423,12 @@
             "value" : "Désinstaller"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A  eltávolítása"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9813,6 +11439,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "アンインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제거"
           }
         },
         "nl" : {
@@ -9861,6 +11493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avinstallera"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaldırma"
           }
         },
         "uk" : {
@@ -9927,6 +11565,12 @@
             "value" : "Désinstaller %@"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A %@eltávolítása"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9937,6 +11581,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ をアンインストール"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@제거"
           }
         },
         "nl" : {
@@ -9985,6 +11635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avinstallera %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@kaldırın"
           }
         },
         "uk" : {
@@ -10051,6 +11707,12 @@
             "value" : "Mise à jour"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frissítés"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10061,6 +11723,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트"
           }
         },
         "nl" : {
@@ -10109,6 +11777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uppdatera"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelleme"
           }
         },
         "uk" : {
@@ -10175,6 +11849,12 @@
             "value" : "Vérifiez l'intégrité du jeu"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ellenőrizze a játék integritását"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10185,6 +11865,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ゲームの整合性を確認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임의 무결성 확인"
           }
         },
         "nl" : {
@@ -10233,6 +11919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifiera spelets integritet"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oyunun bütünlüğünü doğrulayın"
           }
         },
         "uk" : {
@@ -10299,6 +11991,12 @@
             "value" : "VÉRIFIATION"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HITELESÍTÉS"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10309,6 +12007,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "確認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
           }
         },
         "nl" : {
@@ -10357,6 +12061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "VERIFIERAR"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DOĞRULAMA"
           }
         },
         "uk" : {
@@ -10423,6 +12133,12 @@
             "value" : "Bienvenue sur Mythic!"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üdvözöljük a Mythic-nél!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10433,6 +12149,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mythic へようこそ！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신화에 오신 것을 환영합니다!"
           }
         },
         "nl" : {
@@ -10481,6 +12203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Välkommen till Mythic!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic'e hoş geldiniz!"
           }
         },
         "uk" : {
@@ -10547,6 +12275,12 @@
             "value" : "Whisky installé !"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Whisky telepítve!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10557,6 +12291,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Whiskyがインストールされました！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위스키가 설치되었습니다!"
           }
         },
         "nl" : {
@@ -10605,6 +12345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Whisky installerad!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viski yerleştirildi!"
           }
         },
         "uk" : {
@@ -10671,6 +12417,12 @@
             "value" : "Whisky n'est pas installé !"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A whisky nincs telepítve!"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10681,6 +12433,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Whiskyはインストールされていません！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위스키가 설치되지 않았습니다!"
           }
         },
         "nl" : {
@@ -10729,6 +12487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Whisky är inte installerad!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viski takılı değil!"
           }
         },
         "uk" : {
@@ -10795,6 +12559,12 @@
             "value" : "Vin"
           }
         },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bor"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10805,6 +12575,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ワイン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "와인"
           }
         },
         "nl" : {
@@ -10853,6 +12629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vin"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şarap"
           }
         },
         "uk" : {
