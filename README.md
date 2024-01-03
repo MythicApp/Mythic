@@ -9,6 +9,8 @@
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
+  [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
+  
 </h1>
 
 <h4><b>An open-source Epic Games Launcher alternative and normal game launcher for macOS written in Swift.</b></h4>
