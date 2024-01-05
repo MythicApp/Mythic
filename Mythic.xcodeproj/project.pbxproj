@@ -193,9 +193,9 @@
 		6A0C668A2ABC5235004B0755 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				6A6923512AD6D83D00157E3E /* Global.swift */,
 				6A009E5E2AB5816A00A1397F /* Logger.swift */,
 				6AFC02842ABF67F60004AB77 /* Bundle.swift */,
-				6A6923512AD6D83D00157E3E /* Global.swift */,
 				6A371B5C2AE84E340054BF7A /* Data.swift */,
 			);
 			path = Extensions;
@@ -691,7 +691,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2181;
+				CURRENT_PROJECT_VERSION = 2185;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -730,7 +730,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2181;
+				CURRENT_PROJECT_VERSION = 2185;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

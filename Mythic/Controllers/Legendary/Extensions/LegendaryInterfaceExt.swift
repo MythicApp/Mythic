@@ -37,13 +37,6 @@ extension Legendary {
         case none
     }
     
-    // MARK: - GamePlatform Enumeration
-    /// Enumeration containing the two different platforms legendary can download games for.
-    enum GamePlatform {
-        case macOS
-        case windows
-    }
-    
     enum InstallationType {
         case install
         case update

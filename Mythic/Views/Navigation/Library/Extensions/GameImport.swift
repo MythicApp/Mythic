@@ -32,14 +32,19 @@ extension LibraryView {
         
         @State private var installableGames: [Legendary.Game] = .init()
         @State private var selectedGame: Legendary.Game = Legendary.placeholderGame
-        @State private var selectedGameType: String = "Epic"
-        @State private var selectedPlatform: String = "macOS"
+        @State private var selectedGameType: GameType = .epic
+        @State private var selectedPlatform: GamePlatform = .macOS
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
         @State private var gamePath: String = .init()
         
+        @State private var localGameTitle: String = .init()
+        @State private var localGamePath: String = .init()
+        @State private var localSelectedGameType: GameType = .epic
+        @State private var localSelectedPlatform: GamePlatform = .macOS
+        
         // MARK: - Body
-        var body: some View {
+        var body: some View { // TODO: split up epic and local into different view files
             VStack {
                 Text("Import a Game")
                     .font(.title)
@@ -48,27 +53,37 @@ extension LibraryView {
                 Divider()
                 
                 Picker(String(), selection: $selectedGameType) {
-                    ForEach(["Epic", "Local"], id: \.self) {
-                        Text($0)
+                    ForEach(type(of: selectedGameType).allCases, id: \.self) {
+                        Text($0.rawValue)
                     }
                 }
                 .pickerStyle(.segmented)
                 
-                if selectedGameType == "Epic" {
+                if selectedGameType == .epic {
                     Picker("Select a game:", selection: $selectedGame) {
                         ForEach(installableGames, id: \.self) { game in
                             Text(game.title)
                         }
                     }
                     
+                    Picker("Choose the game's native platform:", selection: $selectedPlatform) {
+                        ForEach(type(of: selectedPlatform).allCases, id: \.self) {
+                            Text($0.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
                     HStack {
                         TextField("Enter game path or click \"Browse...\"", text: $gamePath)
-                            .frame(width: 300)
                         
                         Button("Browse...") {
                             let openPanel = NSOpenPanel()
-                            openPanel.allowedContentTypes = [.exe, .application]
-                            openPanel.canChooseDirectories = true
+                            openPanel.allowedContentTypes = [
+                                selectedPlatform == .windows ? .exe : nil,
+                                selectedPlatform == .macOS ? .application : nil
+                            ]
+                                .compactMap { $0 }
+                            openPanel.canChooseDirectories = selectedPlatform == .windows ? true : false // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
                             openPanel.allowsMultipleSelection = false
                             
                             if openPanel.runModal() == .OK {
@@ -76,13 +91,6 @@ extension LibraryView {
                             }
                         }
                     }
-                    
-                    Picker("Choose the game's native platform:", selection: $selectedPlatform) {
-                        ForEach(["macOS", "Windows"], id: \.self) {
-                            Text($0)
-                        }
-                    }
-                    .pickerStyle(.segmented)
                     
                     HStack {
                         Toggle(isOn: $withDLCs) {
@@ -106,11 +114,6 @@ extension LibraryView {
                         Spacer()
                         
                         Button("Done", role: .none) {
-                            var realSelectedPlatform = selectedPlatform
-                            if selectedPlatform == "macOS" {
-                                realSelectedPlatform = "Mac"
-                            }
-                            
                             isProgressViewSheetPresented = true
                             
                             Task(priority: .userInitiated) {
@@ -122,7 +125,7 @@ extension LibraryView {
                                             "import",
                                             checkIntegrity ? nil : "--disable-check",
                                             withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                            "--platform", realSelectedPlatform,
+                                            "--platform", selectedPlatform == .macOS ? "Mac" : selectedPlatform == .windows ? "Windows" : "Mac",
                                             selectedGame.appName,
                                             gamePath
                                         ]
@@ -170,14 +173,48 @@ extension LibraryView {
                         .buttonStyle(.borderedProminent)
                     }
                     
-                } else if selectedGameType == "Local" {
-                    Image(systemName: "pencil.and.scribble")
-                        .symbolEffect(.pulse)
-                        .imageScale(.large)
-                        .padding()
+                } else if selectedGameType == .local {
+                    HStack {
+                        Text("Game title:")
+                        TextField("What should we call this game?", text: $localGameTitle)
+                    }
                     
-                    Button("Cancel", role: .cancel) {
-                        isPresented = false
+                    Picker("Choose the game's native platform:", selection: $localSelectedPlatform) {
+                        ForEach(type(of: localSelectedPlatform).allCases, id: \.self) {
+                            Text($0.rawValue)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    
+                    HStack {
+                        TextField("Enter game path or click \"Browse...\"", text: $localGamePath)
+                        
+                        Button("Browse...") {
+                            let openPanel = NSOpenPanel()
+                            openPanel.allowedContentTypes = [
+                                localSelectedPlatform == .windows ? .exe : nil,
+                                localSelectedPlatform == .macOS ? .application : nil
+                            ]
+                                .compactMap { $0 }
+                            openPanel.canChooseDirectories = localSelectedPlatform == .windows ? true : false // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                            openPanel.allowsMultipleSelection = false
+                            
+                            if openPanel.runModal() == .OK {
+                                gamePath = openPanel.urls.first!.path
+                            }
+                        }
+                    }
+                    
+                    HStack {
+                        Button("Cancel", role: .cancel) {
+                            isPresented = false
+                        }
+                        
+                        Spacer()
+                        
+                        Button("Not Implemented") {  }
+                            .disabled(true)
+                            .buttonStyle(.borderedProminent)
                     }
                 }
             }

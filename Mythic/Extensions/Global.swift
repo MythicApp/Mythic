@@ -23,7 +23,20 @@ let files = FileManager.default
 /// A simpler alias of `UserDefaults.standard`.
 let defaults = UserDefaults.standard
 
-// MARK: - App Install Checker
+// MARK: - Enumerations
+/// Enumeration containing the two different game platforms available.
+enum GamePlatform: String, CaseIterable {
+    case macOS = "macOS"
+    case windows = "Windows"
+}
+
+enum GameType: String, CaseIterable {
+    case epic = "Epic"
+    case local = "Local"
+}
+
+// MARK: - Functions
+// MARK: App Install Checker
 /**
  Checks if an app with the given bundle identifier is installed on the system.
 
