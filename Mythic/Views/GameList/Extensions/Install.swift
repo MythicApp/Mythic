@@ -63,7 +63,7 @@ extension GameListView {
                                     get: { isToggledDictionary[tag] ?? false },
                                     set: { newValue in isToggledDictionary[tag] = newValue }
                                 )
-                            ) { }
+                            ) {  }
                         }
                     }
                 }
@@ -91,7 +91,7 @@ extension GameListView {
                                     activeAlert = .installError
                                     isAlertPresented = true
                                 default:
-                                    do { }
+                                    do {  }
                                 }
                             }
                         }

@@ -87,7 +87,7 @@ extension Legendary {
     
     /// Error when legendary is signed out on a command that enforces signin.
     @available(*, message: "This error will be deprecated soon, in favor of UserValidationError")
-    struct NotSignedInError: Error {}
+    struct NotSignedInError: Error {  }
     
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: Error {

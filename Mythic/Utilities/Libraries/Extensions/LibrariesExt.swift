@@ -18,8 +18,8 @@ import Foundation
 
 extension Libraries {
     /// An error indicating that the libraries are already installed.
-    struct AlreadyInstalledError: Error { }
+    struct AlreadyInstalledError: Error {  }
     
     /// An error indicating that the libraries are not installed.
-    struct NotInstalledError: Error { }
+    struct NotInstalledError: Error {  }
 }

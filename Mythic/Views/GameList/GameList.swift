@@ -21,6 +21,21 @@ import OSLog
 import SwiftyJSON
 import Combine
 
+/// ViewModifier that enables views to have a fade in effect
+struct FadeInModifier: ViewModifier {
+    @State private var opacity: Double = 0
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(opacity)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    opacity = 1
+                }
+            }
+    }
+}
+
 // MARK: - GameListView Struct
 /// A SwiftUI view for displaying a list of installable games.
 struct GameListView: View {
@@ -174,6 +189,7 @@ struct GameListView: View {
                                                 .frame(width: 200, height: 400/1.5)
                                                 .aspectRatio(3/4, contentMode: .fit)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                .modifier(FadeInModifier())
                                         }
                                     case .failure:
                                         Image(systemName: "network.slash")
