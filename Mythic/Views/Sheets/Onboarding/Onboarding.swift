@@ -31,8 +31,12 @@ struct OnboardingView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            Text("Welcome to Mythic!")
+            Text("Welcome to ")
                 .font(.title)
+            
+            Text("Mythic!")
+                .font(.title)
+                .overlay(gradientOverlay)
             
             Divider()
             
@@ -77,6 +81,16 @@ struct OnboardingView: View {
         .sheet(isPresented: $isAuthViewPresented) {
             AuthView(isPresented: $isAuthViewPresented, authSuccessful: $authSuccessful)
         }
+    }
+
+    // MARK: - Gradient Overlay
+    var gradientOverlay: some View {
+        LinearGradient(
+            gradient: Gradient(colors: [Color.purple, Color.purple]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        .mask(Text("Mythic!").font(.title))
     }
 }
 
