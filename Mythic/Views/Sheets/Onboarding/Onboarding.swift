@@ -22,7 +22,6 @@ import Combine
 struct OnboardingView: View {
     // MARK: - Binding Variables
     @Binding var isPresented: Bool
-    @Binding var isFirstLaunch: Bool
     @Binding var isInstallViewPresented: Bool
     
     // MARK: - State Variables
@@ -51,7 +50,6 @@ struct OnboardingView: View {
                 if Libraries.isInstalled() == true {
                     Button("Close") {
                         isPresented = false
-                        isFirstLaunch = false
                     }
                 }
                 
@@ -86,7 +84,6 @@ struct OnboardingView: View {
 #Preview {
     OnboardingView(
         isPresented: .constant(true),
-        isFirstLaunch: .constant(true),
         isInstallViewPresented: .constant(false)
     )
 }

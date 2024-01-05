@@ -19,7 +19,7 @@ import Sparkle
 @main
 struct MythicApp: App {
     // MARK: - State Properties
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = false
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUpdatePromptPresented: Bool = false
@@ -42,16 +42,17 @@ struct MythicApp: App {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
                 .onAppear {
-                    if isFirstLaunch || !Legendary.signedIn() {
+                    if isFirstLaunch {
                         isOnboardingPresented = true
+                        isFirstLaunch = false
                     } else if !Libraries.isInstalled() {
                         isInstallViewPresented = true
-                    } else {
-                        if let latestVersion = Libraries.fetchLatestVersion(),
-                           let currentVersion = Libraries.getVersion(),
-                           latestVersion > currentVersion {
-                            isUpdatePromptPresented = true
-                        }
+                    }
+                    
+                    if let latestVersion = Libraries.fetchLatestVersion(),
+                       let currentVersion = Libraries.getVersion(),
+                       latestVersion > currentVersion {
+                        isUpdatePromptPresented = true
                     }
                 }
             
@@ -60,7 +61,6 @@ struct MythicApp: App {
                 .sheet(isPresented: $isOnboardingPresented) {
                     OnboardingView(
                         isPresented: $isOnboardingPresented,
-                        isFirstLaunch: $isFirstLaunch,
                         isInstallViewPresented: $isInstallViewPresented
                     )
                     .fixedSize()
