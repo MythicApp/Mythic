@@ -9,25 +9,29 @@
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
+  [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
+  
 </h1>
 
-<h4><b>An open-source Epic Games Launcher alternative and normal game launcher for macOS written in Swift.</b></h4>
+<h4><b>A unique open-source game launcher for macOS with Epic Games integration and the ability to run Windows games.</b></h4>
 
-We started this project to create a GUI frontend for [Legendary](https://github.com/derrod/legendary) and to play Windows games using Apple's game porting toolkit. Our has been designed to look as native as possible, to ensure coherence with the rest of the macOS environment.
+Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendary), that keeps coherence with the rest of macOS in mind.
 
 ## Features
-- [x] [Windows Game Support](https://github.com/MythicApp/Engine)
+- [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX11, 12) (64-bit)
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
-- [x] Whisky Intergration
-- [ ] Steam Support
+- [ ] Whisky Intergration
+- [ ] Steam Support (Coming in update 0.2.x)
 - [ ] Discord Intergration
 
-We have way more big things coming for our full release, see our [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2). If you think something is missing from our plans join our [Discord](https://discord.com/invite/58NZ7fFqPy) to suggest.
+
+There are more big things coming your way for Mythic's full release, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
+If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or create a [pull request](https://github.com/MythicApp/Mythic/compare).
 
 ## Download
-Work is being done to release Mythic. For now, sign up for the [waitlist](https://getmythic.app).
+We're working our hardest to release Mythic. For now, sign up for the [waitlist](https://getmythic.app).
 
 ## Dependencies
 Mythic uses the following Swift dependencies:

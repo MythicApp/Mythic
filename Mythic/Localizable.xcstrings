@@ -132,7 +132,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\n在下面的字段中输入 JSON 响应中的 'authorisationCode'。"
+            "value" : "\n在下面输入 JSON 回应中的 'authorisationCode'。"
           }
         }
       }
@@ -416,7 +416,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "[ActiveAlert Faul]"
+            "value" : "[主动警报故障]"
           }
         }
       }
@@ -990,7 +990,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在您的浏览器中打开链接。如果没有，请点击"
+            "value" : "已经在您的浏览器中打开链接。如果没有，请点击"
           }
         }
       }
@@ -1416,7 +1416,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "您确定要退出吗？"
+            "value" : "您确定要登出吗？"
           }
         }
       }
@@ -2978,7 +2978,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DASHBOARD"
+            "value" : "控制面板"
           }
         }
       }
@@ -3120,7 +3120,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在卸载"
+            "value" : "停止加载"
           }
         }
       }
@@ -3262,7 +3262,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这意味着您只能玩支持macOS的游戏，导入的游戏，或使用 Whisky"
+            "value" : "这样做这意味着您只能玩支持macOS的游戏和导入的游戏，或者您可以使用 Whisky"
           }
         }
       }
@@ -3694,7 +3694,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已下载的 %1$lf MiB，写入 %2$lf"
+            "value" : "已下载的 %1$lf MiB，已写入 %2$lf"
           }
         }
       }
@@ -3836,7 +3836,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在下载游戏端口工具包..."
+            "value" : "正在下载游戏移植工具包..."
           }
         }
       }
@@ -3984,7 +3984,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elapsed: %1$@, ETA: %2$@"
+            "value" : "以过去: %1$@, 预计时间: %2$@"
           }
         }
       }
@@ -5972,7 +5972,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 DLCs 导入"
+            "value" : "导入游戏和DLC"
           }
         }
       }
@@ -6114,7 +6114,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要启动窗口游戏，Mythic必须通过 Apple 下载一个\n特殊翻译来将 Windows 代码转换为 macOS。\n \n它的大小约为1.8GB，但由于压缩，下载量约为600MB。"
+            "value" : "如果要运行Windows游戏，Mythic必须通过苹果下载一个将 Windows 代码转换为 macOS的翻译器。\n \n它的大小约为1.8GB，但由于压缩，实际大小约为600MB。"
           }
         }
       }
@@ -6540,7 +6540,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "安装游戏端口工具"
+            "value" : "安装游戏移植工具包"
           }
         }
       }
@@ -7108,7 +7108,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "安装 %@…"
+            "value" : "正在安装 %@…"
           }
         }
       }
@@ -7250,7 +7250,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在安装游戏端口工具包..."
+            "value" : "正在安装游戏移植工具包..."
           }
         }
       }
@@ -7392,7 +7392,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "它似乎需要花一点时间。"
+            "value" : "加载似乎需要花一点时间。"
           }
         }
       }
@@ -7676,7 +7676,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保持等待 (可用 esc 清除)"
+            "value" : "继续等待 (可用 esc 停止)"
           }
         }
       }
@@ -7954,7 +7954,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "让我们先登录史诗游戏开始。\n如果你不想使用史诗游戏，请点击下一步。"
+            "value" : "让我们先登录Epic Games。\n如果你不想使用Epic Games，请点击下一步。"
           }
         }
       }
@@ -8096,7 +8096,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "书库"
+            "value" : "游戏库"
           }
         }
       }
@@ -8380,7 +8380,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "神奇的"
+            "value" : "Mythic"
           }
         }
       }
@@ -8948,7 +8948,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OK!"
+            "value" : "好的！"
           }
         }
       }
@@ -9238,7 +9238,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "刷新游戏"
+            "value" : "最近玩的"
           }
         }
       }
@@ -9380,7 +9380,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新启动上机…"
+            "value" : "重新进入引导教程…"
           }
         }
       }
@@ -10090,7 +10090,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "登录史诗游戏"
+            "value" : "登录Epic Games"
           }
         }
       }
@@ -11226,7 +11226,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这将使您退出帐户 \"%@\"。"
+            "value" : "这将使您退出这个账户 \"%@\"。"
           }
         }
       }
@@ -12220,7 +12220,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "欢迎来到神话！"
+            "value" : "欢迎来到Mythic！"
           }
         }
       }
@@ -12646,7 +12646,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "威尼"
+            "value" : "Wine"
           }
         }
       }
