@@ -163,8 +163,8 @@ struct GameListView: View {
                                         ZStack {
                                             image
                                                 .resizable()
-                                                .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
+                                                .aspectRatio(3/4, contentMode: .fit)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                                 .blur(radius: 20)
                                             
@@ -172,6 +172,7 @@ struct GameListView: View {
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
+                                                .aspectRatio(3/4, contentMode: .fit)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                         }
                                     case .failure:

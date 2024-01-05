@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import OSLog
 
 extension LibraryView {
     
@@ -74,7 +75,7 @@ extension LibraryView {
                     .pickerStyle(.segmented)
                     
                     HStack {
-                        TextField("Enter game path or click \"Browse...\"", text: $gamePath)
+                        TextField("Enter game path or click \"Browse...\"", text: $gamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
                         
                         Button("Browse...") {
                             let openPanel = NSOpenPanel()
@@ -187,7 +188,7 @@ extension LibraryView {
                     .pickerStyle(.segmented)
                     
                     HStack {
-                        TextField("Enter game path or click \"Browse...\"", text: $localGamePath)
+                        TextField("Enter game path or click \"Browse...\"", text: $localGamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
                         
                         Button("Browse...") {
                             let openPanel = NSOpenPanel()
@@ -200,7 +201,7 @@ extension LibraryView {
                             openPanel.allowsMultipleSelection = false
                             
                             if openPanel.runModal() == .OK {
-                                gamePath = openPanel.urls.first!.path
+                                localGamePath = openPanel.urls.first!.path
                             }
                         }
                     }
@@ -212,9 +213,37 @@ extension LibraryView {
                         
                         Spacer()
                         
-                        Button("Not Implemented") {  }
-                            .disabled(true)
-                            .buttonStyle(.borderedProminent)
+                        Button("Done") {
+                            var localGameLibrary: [LocalGames.Game] { // FIXME: is there a way to init it at the top
+                                get {
+                                    return (try? PropertyListDecoder().decode(
+                                        Array.self,
+                                        from: defaults.object(forKey: "localGameLibrary") as? Data ?? Data()
+                                    )) ?? .init() // FIXME: do-catch goes here so local games arent randomly wiped
+                                }
+                                set {
+                                    do {
+                                        defaults.set(
+                                            try PropertyListEncoder().encode(newValue),
+                                            forKey: "localGameLibrary"
+                                        )
+                                    } catch {
+                                        Logger.app.error("Unable to retrieve local game library: \(error)")
+                                    }
+                                }
+                            }
+                            
+                            localGameLibrary.append(.init(
+                                title: localGameTitle,
+                                platform: localSelectedPlatform,
+                                path: localGamePath
+                            ))
+                            
+                            isGameListRefreshCalled = true
+                        }
+                        .disabled(localGamePath.isEmpty)
+                        .disabled(localGameTitle.isEmpty)
+                        .buttonStyle(.borderedProminent)
                     }
                 }
             }
