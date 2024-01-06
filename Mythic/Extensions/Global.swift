@@ -25,7 +25,7 @@ let defaults = UserDefaults.standard
 
 // MARK: - Enumerations
 /// Enumeration containing the two different game platforms available.
-enum GamePlatform: String, CaseIterable {
+enum GamePlatform: String, CaseIterable, Codable {
     case macOS = "macOS"
     case windows = "Windows"
 }

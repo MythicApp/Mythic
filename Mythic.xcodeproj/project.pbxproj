@@ -12,6 +12,7 @@
 		6A00F2052AC5F7450054858A /* GameImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F2042AC5F7450054858A /* GameImport.swift */; };
 		6A00F20B2AC5F8730054858A /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20A2AC5F8730054858A /* Auth.swift */; };
 		6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */; };
+		6A0461BB2B4856C800DDF215 /* LocalGamesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0461BA2B4856C800DDF215 /* LocalGamesExt.swift */; };
 		6A0585482ADEC17300165C3C /* WhiskyInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0585472ADEC17300165C3C /* WhiskyInterface.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1322372B1C98AE0049BB64 /* InstallStatus.swift */; };
@@ -23,7 +24,7 @@
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A371B5B2AE7E93B0054BF7A /* Libraries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B5A2AE7E93B0054BF7A /* Libraries.swift */; };
 		6A371B5D2AE84E340054BF7A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B5C2AE84E340054BF7A /* Data.swift */; };
-		6A38B64C2ACDB972004EC2E4 /* Local.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* Local.swift */; };
+		6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */; };
 		6A3A52552ADBD5E000BD7776 /* PlayDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A52542ADBD5E000BD7776 /* PlayDefault.swift */; };
 		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
 		6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */; };
@@ -65,6 +66,7 @@
 		6A00F2042AC5F7450054858A /* GameImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameImport.swift; sourceTree = "<group>"; };
 		6A00F20A2AC5F8730054858A /* Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewWithError.swift; sourceTree = "<group>"; };
+		6A0461BA2B4856C800DDF215 /* LocalGamesExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGamesExt.swift; sourceTree = "<group>"; };
 		6A0585472ADEC17300165C3C /* WhiskyInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterface.swift; sourceTree = "<group>"; };
 		6A1322372B1C98AE0049BB64 /* InstallStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallStatus.swift; sourceTree = "<group>"; };
 		6A1417B72AF7CCD80022DE24 /* FileLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
@@ -74,7 +76,7 @@
 		6A371B552AE7A5E20054BF7A /* Installer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Installer.swift; sourceTree = "<group>"; };
 		6A371B5A2AE7E93B0054BF7A /* Libraries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Libraries.swift; sourceTree = "<group>"; };
 		6A371B5C2AE84E340054BF7A /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		6A38B64B2ACDB972004EC2E4 /* Local.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Local.swift; sourceTree = "<group>"; };
+		6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGames.swift; sourceTree = "<group>"; };
 		6A3A52542ADBD5E000BD7776 /* PlayDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayDefault.swift; sourceTree = "<group>"; };
 		6A4C396D2AC5DA4D002F943B /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
 		6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrariesExt.swift; sourceTree = "<group>"; };
@@ -132,7 +134,7 @@
 				6A1C6F432AEFD98500F89AE7 /* Wine */,
 				6A634B662AE9514600EAC63C /* Legendary */,
 				6A634B682AE9516400EAC63C /* WhiskyInterface */,
-				6A38B64B2ACDB972004EC2E4 /* Local.swift */,
+				6A0461B82B48568200DDF215 /* LocalGames */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -188,6 +190,23 @@
 				6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */,
 			);
 			path = ProgressView;
+			sourceTree = "<group>";
+		};
+		6A0461B82B48568200DDF215 /* LocalGames */ = {
+			isa = PBXGroup;
+			children = (
+				6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */,
+				6A0461B92B4856A500DDF215 /* Extensions */,
+			);
+			path = LocalGames;
+			sourceTree = "<group>";
+		};
+		6A0461B92B4856A500DDF215 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6A0461BA2B4856C800DDF215 /* LocalGamesExt.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		6A0C668A2ABC5235004B0755 /* Extensions */ = {
@@ -514,7 +533,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */,
-				6A38B64C2ACDB972004EC2E4 /* Local.swift in Sources */,
+				6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */,
 				6AF0EB2A2AADE1780044C09C /* Store.swift in Sources */,
 				6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */,
 				6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */,
@@ -550,6 +569,7 @@
 				6AC3E1892B374D2E000EB765 /* VariableManager.swift in Sources */,
 				6A00F20B2AC5F8730054858A /* Auth.swift in Sources */,
 				6A371B5B2AE7E93B0054BF7A /* Libraries.swift in Sources */,
+				6A0461BB2B4856C800DDF215 /* LocalGamesExt.swift in Sources */,
 				6AC4745D2AC07F0D00188D38 /* ProgressView.swift in Sources */,
 				6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */,
 				6AB474A82AACBC0100AB9C63 /* Main.swift in Sources */,
@@ -691,7 +711,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2185;
+				CURRENT_PROJECT_VERSION = 2216;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -730,7 +750,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2185;
+				CURRENT_PROJECT_VERSION = 2216;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

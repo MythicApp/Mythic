@@ -36,7 +36,7 @@ struct LibraryView: View {
                     Button {
                         addGameModalPresented = true
                     } label: {
-                        Image(systemName: "square.and.arrow.down")
+                        Image(systemName: "plus.app")
                     }
                 }
                 

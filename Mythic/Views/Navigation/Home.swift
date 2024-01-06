@@ -55,17 +55,6 @@ struct HomeView: View {
         from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
     )
     
-    // MARK: - Gradient
-    /// The gradient used in the background.
-    let gradient = LinearGradient(
-        gradient: Gradient(stops: [
-            .init(color: .purple, location: 0),
-            .init(color: .clear, location: 0.4)
-        ]),
-        startPoint: .bottom,
-        endPoint: .top
-    )
-    
     // MARK: - Body
     var body: some View {
         HStack {
@@ -78,14 +67,14 @@ struct HomeView: View {
                             switch phase {
                             case .empty:
                                 ProgressView()
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .aspectRatio(3/4, contentMode: .fit)
                             case .success(let image):
                                 ZStack {
                                     // MARK: Main Image
                                     image 
                                         .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(maxHeight: .infinity)
+                                        .aspectRatio(3/4, contentMode: .fill)
                                         .clipped()
                                         .overlay(
                                             // MARK: Blurred Overlay
@@ -116,12 +105,14 @@ struct HomeView: View {
                                 Image(systemName: "network.slash")
                                     .symbolEffect(.appear)
                                     .imageScale(.large)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .aspectRatio(3/4, contentMode: .fit)
                             @unknown default:
                                 Image(systemName: "exclamationmark.triangle")
                                     .symbolEffect(.appear)
                                     .imageScale(.large)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .aspectRatio(3/4, contentMode: .fit)
                             }
                         }
                         .onAppear {
@@ -132,7 +123,7 @@ struct HomeView: View {
                                 )
                             }
                         }
-                        .cornerRadius(10)
+                        .cornerRadius(20)
                         .overlay(
                             ZStack(alignment: .bottom) {
                                 VStack {
@@ -194,7 +185,7 @@ struct HomeView: View {
                 }
             }
             .background(.background)
-            .cornerRadius(10)
+            .cornerRadius(20)
             
             // MARK: - Side Views
             VStack {
@@ -216,7 +207,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(10)
+                .cornerRadius(20)
                 
                 // MARK: View 2 (Bottom)
                 VStack {
@@ -224,7 +215,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(10)
+                .cornerRadius(20)
             }
         }
         .padding()

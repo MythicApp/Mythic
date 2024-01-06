@@ -1,5 +1,5 @@
 //
-//  Local.swift
+//  LocalGames.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 4/10/2023.
