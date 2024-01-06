@@ -722,7 +722,7 @@
 				INFOPLIST_FILE = Mythic/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
 				"INFOPLIST_KEY_CFBundleDisplayName[sdk=*]" = Mythic;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
