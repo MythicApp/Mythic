@@ -17,6 +17,24 @@
 import SwiftUI
 import Combine
 
+// Add hex support for gradient overlay for "Mythic" text.
+extension NSColor {
+    convenience init?(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
+
+        var rgb: UInt64 = 0
+
+        guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
+
+        let red = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
+        let green = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
+        let blue = CGFloat(rgb & 0x0000FF) / 255.0
+
+        self.init(srgbRed: red, green: green, blue: blue, alpha: 1.0)
+    }
+}
+
 // MARK: - OnboardingView Struct
 /// A view providing onboarding experience for first-time users.
 struct OnboardingView: View {
@@ -27,12 +45,15 @@ struct OnboardingView: View {
     // MARK: - State Variables
     @State private var isAuthViewPresented = false
     @State private var authSuccessful: Bool?
-    
     // MARK: - Body
     var body: some View {
         VStack {
-            Text("Welcome to Mythic!")
+            Text("Welcome to ")
                 .font(.title)
+            
+            Text("Mythic!")
+                .font(.title)
+                .overlay(gradientOverlay)
             
             Divider()
             
@@ -67,7 +88,7 @@ struct OnboardingView: View {
                     isPresented = false
                     isInstallViewPresented = true
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
         }
         .padding()
@@ -78,10 +99,23 @@ struct OnboardingView: View {
             AuthView(isPresented: $isAuthViewPresented, authSuccessful: $authSuccessful)
         }
     }
+    
+    // MARK: - Gradient Overlay
+    var gradientOverlay: some View {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color(NSColor(hex: "#7e0cef")!),
+                Color(NSColor(hex: "#8b01dda")!)
+            ]),
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        .mask(Text("Mythic!").font(.title))
+    }
 }
 
 // MARK: - Preview
-#Preview {
+    #Preview {
     OnboardingView(
         isPresented: .constant(true),
         isInstallViewPresented: .constant(false)
