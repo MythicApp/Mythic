@@ -123,7 +123,7 @@ struct HomeView: View {
                                 )
                             }
                         }
-                        .cornerRadius(20)
+                        .cornerRadius(10)
                         .overlay(
                             ZStack(alignment: .bottom) {
                                 VStack {
@@ -185,7 +185,7 @@ struct HomeView: View {
                 }
             }
             .background(.background)
-            .cornerRadius(20)
+            .cornerRadius(10)
             
             // MARK: - Side Views
             VStack {
@@ -207,7 +207,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(20)
+                .cornerRadius(10)
                 
                 // MARK: View 2 (Bottom)
                 VStack {
@@ -215,7 +215,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(20)
+                .cornerRadius(10)
             }
         }
         .padding()
