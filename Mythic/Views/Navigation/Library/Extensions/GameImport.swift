@@ -75,9 +75,9 @@ extension LibraryView {
                     .pickerStyle(.segmented)
                     
                     HStack {
-                        TextField("Enter game path or click \"Browse...\"", text: $gamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
+                        TextField("Enter game path or click \"Browse…\"", text: $gamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
                         
-                        Button("Browse...") {
+                        Button("Browse…") {
                             let openPanel = NSOpenPanel()
                             openPanel.allowedContentTypes = [
                                 selectedPlatform == .windows ? .exe : nil,
@@ -188,9 +188,9 @@ extension LibraryView {
                     .pickerStyle(.segmented)
                     
                     HStack {
-                        TextField("Enter game path or click \"Browse...\"", text: $localGamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
+                        TextField("Enter game path or click \"Browse…\"", text: $localGamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
                         
-                        Button("Browse...") {
+                        Button("Browse…") {
                             let openPanel = NSOpenPanel()
                             openPanel.allowedContentTypes = [
                                 localSelectedPlatform == .windows ? .exe : nil,

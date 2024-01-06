@@ -388,7 +388,7 @@ class Legendary {
                 stderr: { output in
                     output.enumerateLines { line, _ in
                         if line.contains("[DLManager] INFO:") {
-                            if !line.contains("All done! Download manager quitting...") {
+                            if !line.contains("All done! Download manager quitting...") { // do not add ellipses here
                                 variables.setVariable("installing", value: game)
                                 
                                 let range = NSRange(line.startIndex..<line.endIndex, in: line)
@@ -426,7 +426,7 @@ class Legendary {
                                         "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
                                     ]
                                 }
-                                if line.contains("All done! Download manager quitting...") {
+                                if line.contains("All done! Download manager quitting...") { // do not add ellipses here
                                     installStatus.removeAll()
                                 } else {
                                     variables.setVariable("installStatus", value: installStatus)
