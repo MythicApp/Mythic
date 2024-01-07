@@ -110,7 +110,7 @@ struct MainView: View {
                 if let installingGame: Legendary.Game = variables.getVariable("installing") {
                     Divider()
                     
-                    VStack {
+                    VStack { // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                             Text("INSTALLING")
                                 .fontWeight(.bold)
                                 .font(.system(size: 8))

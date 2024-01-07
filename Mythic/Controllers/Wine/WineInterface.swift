@@ -265,7 +265,7 @@ class Wine {
      
      - Parameter prefix: The URL of the wine prefix to boot.
      */
-    static func boot(prefix: URL) async throws { // TODO: Separate prefix booting and creation
+    static func boot(prefix: URL) async throws { // TODO: Separate prefix booting and creation // TODO: add default wine settings such as high res mode and esync and whatnot, and control it via userdefaults
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         
         if !files.fileExists(atPath: prefix.path) {

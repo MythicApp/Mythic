@@ -305,7 +305,7 @@ struct GameListView: View {
                                                 .padding()
                                         }
                                     } else {
-                                        if variables.getVariable("installing") == game { // TODO: Add for verificationStatus
+                                        if variables.getVariable("installing") == game { // TODO: Add for verificationStatus // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                                             Button {
                                                 isInstallStatusViewPresented = true
                                             } label: {

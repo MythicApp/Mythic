@@ -1990,6 +1990,7 @@
       }
     },
     "Browse..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2130,6 +2131,9 @@
           }
         }
       }
+    },
+    "Browse…" : {
+
     },
     "Cancel" : {
       "localizations" : {
@@ -3552,6 +3556,7 @@
       }
     },
     "Downloaded %lf MiB, Written %lf" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3699,7 +3704,18 @@
         }
       }
     },
+    "Downloaded %lf MiB, Written %lf MiB." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        }
+      }
+    },
     "Downloading Game Porting Toolkit..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3840,6 +3856,9 @@
           }
         }
       }
+    },
+    "Downloading Game Porting Toolkit…" : {
+
     },
     "Elapsed: %@, ETA: %@" : {
       "localizations" : {
@@ -3990,6 +4009,7 @@
       }
     },
     "Enter authorisation key..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4131,7 +4151,11 @@
         }
       }
     },
+    "Enter authorisation key…" : {
+
+    },
     "Enter game path or click \"Browse...\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -4272,6 +4296,9 @@
           }
         }
       }
+    },
+    "Enter game path or click \"Browse…\"" : {
+
     },
     "Error" : {
       "localizations" : {
@@ -7117,6 +7144,7 @@
       }
     },
     "Installing Game Porting Toolkit..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -7257,6 +7285,9 @@
           }
         }
       }
+    },
+    "Installing Game Porting Toolkit…" : {
+
     },
     "It appears loading's taking a while." : {
       "localizations" : {

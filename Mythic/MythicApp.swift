@@ -14,6 +14,7 @@
 
 import SwiftUI
 import Sparkle
+import UserNotifications // TODO: TODO
 
 // MARK: - Where it all begins!
 @main
@@ -23,6 +24,7 @@ struct MythicApp: App {
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isUpdatePromptPresented: Bool = false
+    @State private var isNotificationPermissionsGranted = false
     
     // MARK: - Updater Controller
     private let updaterController: SPUStandardUpdaterController
