@@ -32,7 +32,7 @@ extension LibraryView {
         @State private var errorContent: Substring = .init()
         
         @State private var installableGames: [Game] = .init()
-        @State private var selectedGame: Game = Game(isLegendary: false, title: "Placeholder")
+        @State private var selectedGame: Game = placeholderGame(false)
         @State private var selectedGameType: GameType = .epic
         @State private var selectedPlatform: GamePlatform = .macOS
         @State private var withDLCs: Bool = true
@@ -121,7 +121,7 @@ extension LibraryView {
                             Task(priority: .userInitiated) {
                                 var command: (stdout: Data, stderr: Data)?
                                 
-                                if !selectedGame.appName!.isEmpty && !selectedGame.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
+                                if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
                                     command = await Legendary.command(
                                         args: [
                                             "import",
@@ -140,7 +140,7 @@ extension LibraryView {
                                 if command != nil {
                                     if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
                                         if !commandStderrString.isEmpty {
-                                            if !selectedGame.appName!.isEmpty && !selectedGame.title.isEmpty {
+                                            if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
                                                 if commandStderrString.contains("INFO: Game \"\(selectedGame.title)\" has been imported.") {
                                                     isPresented = false
                                                     isGameListRefreshCalled = true
@@ -215,12 +215,13 @@ extension LibraryView {
                         Spacer()
                         
                         Button("Done") {
-                            LocalGames.library?.append(.init( // FIXME: chance of library returning nil, then what?
+                            LocalGames.library? += [Game( // DO NOT USE .APPEND
                                 isLegendary: false,
                                 title: localGameTitle,
+                                appName: UUID().uuidString,
                                 platform: localSelectedPlatform,
                                 path: localGamePath
-                            ))
+                            )]
                             
                             isGameListRefreshCalled = true
                         }

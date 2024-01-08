@@ -37,16 +37,20 @@ enum GameType: String, CaseIterable {
 
 struct Game: Hashable, Codable {
     var isLegendary: Bool
-    
     var title: String
+    
+    var appName: String
     var imageURL: URL?
-    var appName: String?
     var platform: GamePlatform?
     var path: String?
 }
 
+func placeholderGame(_ isLegendary: Bool) -> Game {
+    return Game(isLegendary: isLegendary, title: .init(), appName: .init())
+}
+
 /// Your father.
-struct GameDoesNotExistError: Error { // FIXME: FIXME
+struct GameDoesNotExistError: Error {
     init(_ game: Mythic.Game) { self.game = game }
     let game: Mythic.Game
 }

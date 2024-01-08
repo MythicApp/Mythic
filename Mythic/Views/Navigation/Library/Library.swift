@@ -25,12 +25,19 @@ struct LibraryView: View {
     @State private var legendaryStatus: JSON = JSON()
     @State private var isGameListRefreshCalled: Bool = false
     
+    @State private var searchText: String = .init()
+    
     // MARK: - Body
     var body: some View {
-        GameListView(isRefreshCalled: $isGameListRefreshCalled)
+        GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
         
         // MARK: - Toolbar
             .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    SearchBar(text: $searchText)
+                        .frame(width: 200)
+                }
+                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -64,5 +71,5 @@ struct LibraryView: View {
 
 #Preview {
     // MARK: - Game List Preview
-    GameListView(isRefreshCalled: .constant(false))
+    GameListView(isRefreshCalled: .constant(false), searchText: .constant(""))
 }

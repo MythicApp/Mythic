@@ -45,6 +45,8 @@ struct GameListView: View {
     /// Binding to track if a refresh is called.
     @Binding var isRefreshCalled: Bool
     
+    @Binding var searchText: String
+    
     let installingGame: Game? = VariableManager.shared.getVariable("installing")
     
     // MARK: - State Properties
@@ -114,12 +116,12 @@ struct GameListView: View {
                 group.leave()
             }
         }
-        if game.isLegendary {
-            if mode == .optionalPacks {
+        
+            if game.isLegendary && mode == .optionalPacks {
                 group.enter()
                 Task(priority: .userInitiated) {
                     let command = await Legendary.command(
-                        args: ["install", game.appName!], // force-unwraps rely on good codebase, don't fumble
+                        args: ["install", game.appName], // force-unwraps rely on good codebase, don't fumble
                         useCache: true,
                         identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
                     )
@@ -146,7 +148,6 @@ struct GameListView: View {
                     group.leave()
                 }
             }
-        }
         
         group.notify(queue: .main) {
             isProgressViewSheetPresented = false
@@ -159,7 +160,9 @@ struct GameListView: View {
         ScrollView(.horizontal) {
             LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) {
                 if dataFetched {
-                    ForEach(Array(installableGames.enumerated()), id: \.element.self) { index, game in
+                    ForEach(Array(installableGames.enumerated().filter {
+                        searchText.isEmpty || $0.element.title.localizedCaseInsensitiveContains(searchText)
+                    }), id: \.element.self) { index, game in
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.background)
@@ -170,7 +173,7 @@ struct GameListView: View {
                                 CachedAsyncImage(
                                     url: URL(
                                         string: game.isLegendary
-                                        ? gameThumbnails[game.appName!] ?? .init()
+                                        ? gameThumbnails[game.appName] ?? .init()
                                         : game.imageURL?.path ?? .init()
                                     ), // FIXME: imageURL
                                     urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
@@ -212,7 +215,7 @@ struct GameListView: View {
                                 HStack {
                                     // MARK: For installed games
                                     if installedGames.contains(game) {
-                                        if variables.getVariable("launching_\(game.appName!)") != true {
+                                        if variables.getVariable("launching_\(game.appName)") != true {
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isSettingsViewPresented = true
@@ -248,7 +251,7 @@ struct GameListView: View {
                                             
                                             if game.isLegendary,
                                                let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
-                                               let needsVerification = json[game.appName!]["needs_verification"].bool, // FIXME: force unwrap
+                                               let needsVerification = json[game.appName]["needs_verification"].bool, // FIXME: force unwrap
                                                needsVerification {
                                                 // MARK: Verification Button
                                                 Button(action: {
@@ -257,7 +260,7 @@ struct GameListView: View {
                                                         do {
                                                             try await Legendary.install(
                                                                 game: game,
-                                                                platform: json[game.appName!]["platform"].string == "Mac" ? .macOS : .windows,
+                                                                platform: json[game.appName]["platform"].string == "Mac" ? .macOS : .windows,
                                                                 type: .repair
                                                             )
                                                             
@@ -400,7 +403,7 @@ struct GameListView: View {
                 group.enter()
                 Task(priority: .userInitiated) {
                     let installed = (try? Legendary.getInstalledGames()) ?? .init()
-                    if !installed.isEmpty { installedGames = installed }
+                    if !installed.isEmpty { installedGames = installed + (LocalGames.library ?? .init())}
                     group.leave()
                 }
                 
@@ -422,7 +425,7 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame! // FIXME: painful force-unwrap
+                game: currentGame! // FIXME: painful force-unwraps
             )
         }
         
@@ -485,9 +488,4 @@ struct GameListView: View {
             }
         }
     }
-}
-
-// MARK: - Preview
-#Preview {
-    GameListView(isRefreshCalled: .constant(false))
 }

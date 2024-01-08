@@ -351,7 +351,7 @@ class Legendary {
         var verificationStatus: [String: Double] = .init()
         
         _ = await command(
-            args: argBuilder + [game.appName!],
+            args: argBuilder + [game.appName],
             useCache: false,
             identifier: "install",
             input: "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n",
@@ -452,22 +452,22 @@ class Legendary {
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
         
-        VariableManager.shared.setVariable("launching_\(game.appName!)", value: true)
+        VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
         _ = await command(
             args: [
                 "launch",
-                game.appName!,
+                game.appName,
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
             ],
             useCache: false,
-            identifier: "launch_\(game.appName!)",
+            identifier: "launch_\(game.appName)",
             additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
         )
         
-        VariableManager.shared.setVariable("launching_\(game.appName!)", value: false)
+        VariableManager.shared.setVariable("launching_\(game.appName)", value: false)
     }
     
     /*
@@ -548,7 +548,7 @@ class Legendary {
     static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
         guard game.isLegendary else { throw IsNotLegendaryError() }
         
-        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName!]["platform"].string
+        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName]["platform"].string
         if platform == "Mac" {
             return .macOS
         } else if platform == "Windows" {
@@ -567,8 +567,8 @@ class Legendary {
             let metadata = try getGameMetadata(game: game)
             let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
             
-            if let installedVersion = installed[game.appName!]["version"].string,
-               let platform = installed[game.appName!]["platform"].string,
+            if let installedVersion = installed[game.appName]["version"].string,
+               let platform = installed[game.appName]["platform"].string,
                let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string {
                 if upstreamVersion != installedVersion {
                     needsUpdate = true
@@ -693,7 +693,7 @@ class Legendary {
         }
         
         if let metadataFileName = metadataDirectoryContents.first(where: {
-            $0.hasSuffix(".json") && $0.contains(game.appName!)
+            $0.hasSuffix(".json") && $0.contains(game.appName)
         }),
            let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
            let json = try? JSON(data: data) {

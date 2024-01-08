@@ -20,6 +20,7 @@ import OSLog
 class LocalGames {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
     
+    // TODO: DocC
     static var library: [Mythic.Game]? { // FIXME: is there a way to init it at the top
         get {
             if let library = defaults.object(forKey: "localGamesLibrary") as? Data {
@@ -31,7 +32,7 @@ class LocalGames {
                 }
             } else {
                 Logger.app.warning("Local games library does not exist, returning blank array")
-                return Array()
+                return .init()
             }
         }
         set {
@@ -48,7 +49,7 @@ class LocalGames {
     
     static func launch(game: Mythic.Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
         guard let library = library,
-                  library.contains(game) else { // FIXME: FIXME
+                  library.contains(game) else {
                       log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
                       throw GameDoesNotExistError(game)
                   }

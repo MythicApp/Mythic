@@ -54,6 +54,6 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: Game(isLegendary: false, title: "Placeholder")
+        game: placeholderGame(false)
     )
 }
