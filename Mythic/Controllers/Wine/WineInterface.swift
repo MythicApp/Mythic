@@ -103,7 +103,7 @@ class Wine {
         }
         
         guard files.isWritableFile(atPath: prefix.path) else {
-            log.error("Unable to execure wine command, prefix directory is not writable.")
+            log.error("Unable to execute wine command, prefix directory is not writable.")
             throw FileLocations.FileNotModifiableError(prefix)
         }
         
