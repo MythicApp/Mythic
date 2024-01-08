@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import SwiftUI
 import OSLog
 
 class LocalGames {
@@ -54,21 +55,38 @@ class LocalGames {
                       throw GameDoesNotExistError(game)
                   }
         
-        guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
-        
-        VariableManager.shared.setVariable("launching_\(game.title)", value: true)
-        defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
-        
-        // WINEPREFIX:
-        
-        _ = try await Wine.command(
-            args: [
-                
-            ],
-            identifier: "launch_\(game.title)",
-            prefix: Wine.defaultBottle // TODO: whichever prefix is set for it or as default
-        )
+        switch game.platform {
+        case .macOS:
+            if FileManager.default.fileExists(atPath: game.path ?? .init()) {
+                NSWorkspace.shared.open(
+                    URL(filePath: game.path ?? .init()),
+                    configuration: NSWorkspace.OpenConfiguration(),
+                    completionHandler: { (_/*game*/, error) in
+                        if let error = error {
+                            log.error("Error launching local macOS game \"\(game.title)\": \(error)")
+                        } else {
+                            log.info("Launched local macOS game \"\(game.title)\": \(error)")
+                        }
+                    }
+                )
+            } else {
+                log.critical("\("The game at \(game.path ?? "[unknown path]") doesn't exist, cannot launch local macOS game!")")
+            }
+        case .windows:
+            guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+            guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
+            
+            VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
+            defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
+            
+            _ = try await Wine.command(
+                args: [game.path!], // FIXME: TODO: more advanced implementation
+                identifier: "launch_\(game.title)",
+                prefix: Wine.defaultBottle // TODO: whichever prefix is set for it or as default
+            )
+            
+        case .none: do {  }
+        }
         
         VariableManager.shared.setVariable("launching_\(game.title)", value: false)
     }

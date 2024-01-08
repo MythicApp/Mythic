@@ -282,10 +282,17 @@ struct GameListView: View {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
-                                                            try await Legendary.launch(
-                                                                game: game,
-                                                                bottle: URL(filePath: Wine.defaultBottle.path)
-                                                            )
+                                                            if game.isLegendary {
+                                                                try await Legendary.launch(
+                                                                    game: game,
+                                                                    bottle: URL(filePath: Wine.defaultBottle.path)
+                                                                )
+                                                            } else {
+                                                                try await LocalGames.launch(
+                                                                    game: game,
+                                                                    bottle: Wine.defaultBottle // TODO: FIXME: Add userdefaults option for prefix, include whether its writeable before creation
+                                                                )
+                                                            }
                                                         } catch {
                                                             LaunchError.game = game
                                                             LaunchError.message = "\(error.localizedDescription)"
@@ -307,7 +314,7 @@ struct GameListView: View {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isUninstallViewPresented = true
                                             } label: {
-                                                Image(systemName: "xmark.bin.fill")
+                                                Image(systemName: "xmark.bin.fill") // TODO: support for uninstalling local games
                                                     .foregroundStyle(.red)
                                                     .padding()
                                             }
