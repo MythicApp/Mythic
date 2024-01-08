@@ -10,7 +10,7 @@ import Foundation
 extension LocalGames {
     struct Game: Codable {
         var title: String
-        var imageURL: URL? = nil
+        var imageURL: URL? // TODO: implement
         var platform: GamePlatform
         var path: String
     }
