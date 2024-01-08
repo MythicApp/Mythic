@@ -45,7 +45,7 @@ struct GameListView: View {
     /// Binding to track if a refresh is called.
     @Binding var isRefreshCalled: Bool
     
-    let installingGame: Legendary.Game? = VariableManager.shared.getVariable("installing")
+    let installingGame: Game? = VariableManager.shared.getVariable("installing")
     
     // MARK: - State Properties
     
@@ -65,7 +65,7 @@ struct GameListView: View {
     
     struct LaunchError {
         static var message: String = .init()
-        static var game: Legendary.Game? = nil // swiftlint:disable:this redundant_optional_initialization
+        static var game: Game? = nil // swiftlint:disable:this redundant_optional_initialization
     }
     
     @State private var activeAlert: ActiveAlert = .installError
@@ -73,13 +73,13 @@ struct GameListView: View {
     
     @State private var installationErrorMessage: String = .init()
     @State private var uninstallationErrorMessage: Substring = .init()
-    @State private var failedGame: Legendary.Game?
+    @State private var failedGame: Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Legendary.Game = Legendary.placeholderGame
+    @State private var currentGame: Game?
     
-    @State private var installableGames: [Legendary.Game] = .init()
-    @State private var installedGames: [Legendary.Game] = .init()
+    @State private var installableGames: [Game] = .init()
+    @State private var installedGames: [Game] = .init()
     
     @State private var isInstallStatusViewPresented: Bool = false
     
@@ -102,7 +102,7 @@ struct GameListView: View {
      - Parameter game: The game to set as the current game.
      - Parameter mode: The mode for updating the current game.
      */
-    func updateCurrentGame(game: Legendary.Game, mode: UpdateCurrentGameMode) {
+    func updateCurrentGame(game: Game, mode: UpdateCurrentGameMode) {
         isProgressViewSheetPresented = true
         
         let group = DispatchGroup()
@@ -114,36 +114,37 @@ struct GameListView: View {
                 group.leave()
             }
         }
-
-        if mode == .optionalPacks {
-            group.enter()
-            Task(priority: .userInitiated) {
-                let command = await Legendary.command(
-                    args: ["install", game.appName],
-                    useCache: true,
-                    identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
-                )
-                
-                var isParsingOptionalPacks = false
-                
-                for line in String(data: command.stdout, encoding: .utf8)!.components(separatedBy: "\n") {
-                    if isParsingOptionalPacks {
-                        if line.isEmpty || !line.hasPrefix(" * ") { break }
-                        
-                        let cleanedLine = line.trimmingPrefix(" * ")
-                        let components = cleanedLine.split(separator: " - ", maxSplits: 1)
-                            .map { String($0) } // convert the substrings to regular strings
-                        
-                        if components.count >= 2 {
-                            let tag = components[0].trimmingCharacters(in: .whitespaces)
-                            let name = components[1].trimmingCharacters(in: .whitespaces)
-                            optionalPacks[name] = tag
+        if game.isLegendary {
+            if mode == .optionalPacks {
+                group.enter()
+                Task(priority: .userInitiated) {
+                    let command = await Legendary.command(
+                        args: ["install", game.appName!], // force-unwraps rely on good codebase, don't fumble
+                        useCache: true,
+                        identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
+                    )
+                    
+                    var isParsingOptionalPacks = false
+                    
+                    for line in String(data: command.stdout, encoding: .utf8)!.components(separatedBy: "\n") {
+                        if isParsingOptionalPacks {
+                            if line.isEmpty || !line.hasPrefix(" * ") { break }
+                            
+                            let cleanedLine = line.trimmingPrefix(" * ")
+                            let components = cleanedLine.split(separator: " - ", maxSplits: 1)
+                                .map { String($0) } // convert the substrings to regular strings
+                            
+                            if components.count >= 2 {
+                                let tag = components[0].trimmingCharacters(in: .whitespaces)
+                                let name = components[1].trimmingCharacters(in: .whitespaces)
+                                optionalPacks[name] = tag
+                            }
+                        } else if line.contains("The following optional packs are available (tag - name):") {
+                            isParsingOptionalPacks = true
                         }
-                    } else if line.contains("The following optional packs are available (tag - name):") {
-                        isParsingOptionalPacks = true
                     }
+                    group.leave()
                 }
-                group.leave()
             }
         }
         
@@ -167,7 +168,11 @@ struct GameListView: View {
                             
                             VStack {
                                 CachedAsyncImage(
-                                    url: URL(string: gameThumbnails[game.appName] ?? .init()),
+                                    url: URL(
+                                        string: game.isLegendary
+                                        ? gameThumbnails[game.appName!] ?? .init()
+                                        : game.imageURL?.path ?? .init()
+                                    ), // FIXME: imageURL
                                     urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
                                 ) { phase in
                                     switch phase {
@@ -205,8 +210,9 @@ struct GameListView: View {
                                 }
                                 
                                 HStack {
+                                    // MARK: For installed games
                                     if installedGames.contains(game) {
-                                        if variables.getVariable("launching_\(game.appName)") != true {
+                                        if variables.getVariable("launching_\(game.appName!)") != true {
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isSettingsViewPresented = true
@@ -218,6 +224,7 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
                                             
+                                            // MARK: Update Button
                                             if Legendary.needsUpdate(game: game) {
                                                 Button {
                                                     Task(priority: .userInitiated) {
@@ -239,22 +246,24 @@ struct GameListView: View {
                                                 .controlSize(.large)
                                             }
                                             
-                                            if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
-                                               let needsVerification = json[game.appName]["needs_verification"].bool,
-                                               needsVerification == true {
+                                            if game.isLegendary,
+                                               let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
+                                               let needsVerification = json[game.appName!]["needs_verification"].bool, // FIXME: force unwrap
+                                               needsVerification {
+                                                // MARK: Verification Button
                                                 Button(action: {
                                                     updateCurrentGame(game: game, mode: .normal)
                                                     Task {
                                                         do {
                                                             try await Legendary.install(
                                                                 game: game,
-                                                                platform: json[game.appName]["platform"].string == "Mac" ? .macOS : .windows,
+                                                                platform: json[game.appName!]["platform"].string == "Mac" ? .macOS : .windows,
                                                                 type: .repair
                                                             )
                                                             
                                                             isRefreshCalled = true
                                                         } catch {
-                                                            Logger.app.error("Unable to verify \(game.title): \(error)") // TODO: implement visual error
+                                                            Logger.app.error("Unable to verify \(game.title): \(error.localizedDescription)") // TODO: implement visual error
                                                         }
                                                     }
                                                 }, label: {
@@ -265,6 +274,7 @@ struct GameListView: View {
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
                                             } else {
+                                                // MARK: Play Button
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
@@ -275,7 +285,7 @@ struct GameListView: View {
                                                             )
                                                         } catch {
                                                             LaunchError.game = game
-                                                            LaunchError.message = "\(error)"
+                                                            LaunchError.message = "\(error.localizedDescription)"
                                                             activeAlert = .launchError
                                                             isAlertPresented = true
                                                         }
@@ -289,6 +299,7 @@ struct GameListView: View {
                                                 .controlSize(.large)
                                             }
                                             
+                                            // MARK: Delete button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isUninstallViewPresented = true
@@ -304,7 +315,8 @@ struct GameListView: View {
                                                 .controlSize(.small)
                                                 .padding()
                                         }
-                                    } else {
+                                    } else { // MARK: For games that aren't installed
+                                        // MARK: Game Installation View
                                         if variables.getVariable("installing") == game { // TODO: Add for verificationStatus // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                                             Button {
                                                 isInstallStatusViewPresented = true
@@ -335,6 +347,7 @@ struct GameListView: View {
                                                 isRefreshCalled = (newValue == nil)
                                             }
                                         } else {
+                                            // MARK: Game Download button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .optionalPacks)
                                                 isInstallViewPresented = true
@@ -373,7 +386,7 @@ struct GameListView: View {
                 group.enter()
                 Task(priority: .userInitiated) {
                     let games = (try? await Legendary.getInstallable()) ?? .init()
-                    if !games.isEmpty { installableGames = games }
+                    if !games.isEmpty { installableGames = games + (LocalGames.library ?? .init()) }
                     group.leave()
                 }
                 
@@ -409,14 +422,14 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame
+                game: currentGame! // FIXME: painful force-unwrap
             )
         }
         
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: currentGame,
+                game: currentGame!,
                 optionalPacks: $optionalPacks,
                 isGameListRefreshCalled: $isRefreshCalled,
                 isAlertPresented: $isAlertPresented,
@@ -429,7 +442,7 @@ struct GameListView: View {
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: currentGame,
+                game: currentGame!,
                 isGameListRefreshCalled: $isRefreshCalled,
                 activeAlert: $activeAlert,
                 isAlertPresented: $isAlertPresented,
@@ -441,7 +454,7 @@ struct GameListView: View {
         .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
                 isPresented: $isPlayDefaultViewPresented,
-                game: currentGame,
+                game: currentGame!,
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }

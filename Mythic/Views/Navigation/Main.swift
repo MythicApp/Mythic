@@ -107,7 +107,7 @@ struct MainView: View {
                 
                 Spacer()
                 
-                if let installingGame: Legendary.Game = variables.getVariable("installing") {
+                if let installingGame: Game = variables.getVariable("installing") {
                     Divider()
                     
                     VStack { // TODO: turn this VStack into a separate view so it's the same in Main and GameList
@@ -147,7 +147,7 @@ struct MainView: View {
                     }
                 }
                 
-                if let verifyingGame: Legendary.Game = variables.getVariable("verifying") {
+                if let verifyingGame: Game = variables.getVariable("verifying") {
                     Divider()
                     
                     VStack {

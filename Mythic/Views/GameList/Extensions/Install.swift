@@ -22,13 +22,13 @@ extension GameListView {
     struct InstallView: View {
         // MARK: - Bindings
         @Binding var isPresented: Bool
-        public var game: Legendary.Game
+        public var game: Game
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
         @Binding var isAlertPresented: Bool
         @Binding var activeAlert: GameListView.ActiveAlert
         @Binding var installationErrorMessage: String
-        @Binding var failedGame: Legendary.Game?
+        @Binding var failedGame: Game?
         
         // MARK: - State Properties
         /// Dictionary to track the toggled state of optional packs.
@@ -120,12 +120,12 @@ extension GameListView {
 #Preview {
     GameListView.InstallView(
         isPresented: .constant(true),
-        game: Legendary.placeholderGame,
+        game: Game(isLegendary: false, title: "Placeholder"),
         optionalPacks: .constant(.init()),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),
         activeAlert: .constant(.installError),
         installationErrorMessage: .constant(.init()),
-        failedGame: .constant(Legendary.placeholderGame)
+        failedGame: .constant(Game(isLegendary: false, title: "Placeholder"))
     )
 }

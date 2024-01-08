@@ -26,7 +26,7 @@ extension GameListView {
         @Binding var isPresented: Bool
         
         // MARK: - Variables
-        public var game: Legendary.Game
+        public var game: Game
         
         // MARK: - Body View
         var body: some View {
@@ -54,6 +54,6 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: Legendary.placeholderGame
+        game: Game(isLegendary: false, title: "Placeholder")
     )
 }

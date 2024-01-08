@@ -23,7 +23,7 @@ extension GameListView {
         
         // MARK: - Bindings
         @Binding var isPresented: Bool
-        public var game: Legendary.Game
+        public var game: Game
         @Binding var isGameListRefreshCalled: Bool
         
         // MARK: - Body View
@@ -46,7 +46,7 @@ extension GameListView {
 #Preview {
     GameListView.PlayDefaultView(
         isPresented: .constant(true),
-        game: Legendary.placeholderGame,
+        game: Game(isLegendary: false, title: "Placeholder"),
         isGameListRefreshCalled: .constant(false)
     )
 }

@@ -35,6 +35,22 @@ enum GameType: String, CaseIterable {
     case local = "Local"
 }
 
+struct Game: Hashable, Codable {
+    var isLegendary: Bool
+    
+    var title: String
+    var imageURL: URL?
+    var appName: String?
+    var platform: GamePlatform?
+    var path: String?
+}
+
+/// Your father.
+struct GameDoesNotExistError: Error { // FIXME: FIXME
+    init(_ game: Mythic.Game) { self.game = game }
+    let game: Mythic.Game
+}
+
 // MARK: - Functions
 // MARK: App Install Checker
 /**

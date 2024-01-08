@@ -55,13 +55,12 @@ extension Legendary {
     
     struct UnableToGetPlatformError: Error {  }
     
-    /// Your father.
-    struct GameDoesNotExistError: Error {
-        init(_ game: Game) { self.game = game }
-        let game: Game
-    }
+    struct IsNotLegendaryError: Error {  }
+    
+    // GameDoesNotExistError unified!
     
     /// Struct to store games.
+    @available(*, deprecated, message: "Replaced by Mythic.Game")
     struct Game: Hashable, Codable {
         var appName: String
         var title: String

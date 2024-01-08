@@ -24,7 +24,7 @@ import SwiftUI
     - game: The game for which the download is stopped.
  - Returns: An `Alert` instance.
  */
-func stopGameModificationAlert(isPresented: Binding<Bool>, game: Legendary.Game?) -> Alert {
+func stopGameModificationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert {
     return Alert(
         title: Text("Are you sure you want to stop modifying \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {

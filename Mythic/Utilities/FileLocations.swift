@@ -36,7 +36,7 @@ class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error("Unable to get global Applications directory: \(error)")
+            Logger.file.error("Unable to get global Applications directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -58,7 +58,7 @@ class FileLocations {
                 )
                 return gamesURL
             } catch {
-                Logger.file.error("Unable to get games directory: \(error)")
+                Logger.file.error("Unable to get games directory: \(error.localizedDescription)")
             }
         } // no else block, error is handled already
         
@@ -81,7 +81,7 @@ class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error("Unable to get Application Support directory: \(error)")
+            Logger.file.error("Unable to get Application Support directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -104,7 +104,7 @@ class FileLocations {
             )
             .appendingPathComponent("Containers")
         } catch {
-            Logger.file.error("Unable to get Containers directory: \(error)")
+            Logger.file.error("Unable to get Containers directory: \(error.localizedDescription)")
         }
         
         return nil

@@ -29,7 +29,7 @@ struct HomeView: View {
     
     struct LaunchError {
         static var message: String = .init()
-        static var game: Legendary.Game? = nil // swiftlint:disable:this redundant_optional_initialization
+        static var game: Game? = nil // swiftlint:disable:this redundant_optional_initialization
     }
     
     // MARK: - State Variables
@@ -50,8 +50,8 @@ struct HomeView: View {
     let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds
     
     // MARK: - Variables
-    private let recentlyPlayedGame: Legendary.Game? = try? PropertyListDecoder().decode(
-        Legendary.Game.self,
+    private let recentlyPlayedGame: Game? = try? PropertyListDecoder().decode(
+        Game.self,
         from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
     )
     
@@ -116,11 +116,13 @@ struct HomeView: View {
                             }
                         }
                         .onAppear {
-                            Task(priority: .high) {
-                                recentlyPlayedImageURL = await Legendary.getImage(
-                                    of: recentlyPlayedGame ?? Legendary.placeholderGame,
-                                    type: .tall
-                                )
+                            if let recentlyPlayedGame = recentlyPlayedGame {
+                                Task(priority: .high) {
+                                    recentlyPlayedImageURL = await Legendary.getImage(
+                                        of: recentlyPlayedGame,
+                                        type: .tall
+                                    )
+                                }
                             }
                         }
                         .cornerRadius(20)
@@ -155,13 +157,15 @@ struct HomeView: View {
                                             Button {
                                                 Task(priority: .userInitiated) {
                                                     do {
-                                                        try await Legendary.launch(
-                                                            game: recentlyPlayedGame ?? Legendary.placeholderGame,
-                                                            bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
-                                                        )
+                                                        if let recentlyPlayedGame = recentlyPlayedGame {
+                                                            try await Legendary.launch(
+                                                                game: recentlyPlayedGame,
+                                                                bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
+                                                            )
+                                                        }
                                                     } catch {
                                                         LaunchError.game = recentlyPlayedGame
-                                                        LaunchError.message = "\(error)"
+                                                        LaunchError.message = "\(error.localizedDescription)"
                                                         activeAlert = .launchError
                                                         isAlertPresented = true
                                                     }

@@ -8,6 +8,7 @@
 import Foundation
 
 extension LocalGames {
+    @available(*, deprecated, message: "Replaced by Mythic.Game")
     struct Game: Codable {
         var title: String
         var imageURL: URL? = nil

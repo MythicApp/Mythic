@@ -24,11 +24,11 @@ extension GameListView {
         
         // MARK: - Bindings
         @Binding var isPresented: Bool
-        public var game: Legendary.Game
+        public var game: Game
         @Binding var isGameListRefreshCalled: Bool
         @Binding var activeAlert: GameListView.ActiveAlert
         @Binding var isAlertPresented: Bool
-        @Binding var failedGame: Legendary.Game?
+        @Binding var failedGame: Game?
         @Binding var uninstallationErrorMessage: Substring
         
         // MARK: - State Variables
@@ -141,11 +141,11 @@ extension GameListView {
 #Preview {
     GameListView.UninstallView(
         isPresented: .constant(true),
-        game: Legendary.placeholderGame,
+        game: Game(isLegendary: false, title: "Placeholder"),
         isGameListRefreshCalled: .constant(false),
         activeAlert: .constant(.installError),
         isAlertPresented: .constant(false),
-        failedGame: .constant(Legendary.placeholderGame),
+        failedGame: .constant(Game(isLegendary: false, title: "Placeholder")),
         uninstallationErrorMessage: .constant(.init())
     )
 }

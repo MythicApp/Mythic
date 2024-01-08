@@ -31,8 +31,8 @@ extension LibraryView {
         @State private var isErrorPresented: Bool = false
         @State private var errorContent: Substring = .init()
         
-        @State private var installableGames: [Legendary.Game] = .init()
-        @State private var selectedGame: Legendary.Game = Legendary.placeholderGame
+        @State private var installableGames: [Game] = .init()
+        @State private var selectedGame: Game = Game(isLegendary: false, title: "Placeholder")
         @State private var selectedGameType: GameType = .epic
         @State private var selectedPlatform: GamePlatform = .macOS
         @State private var withDLCs: Bool = true
@@ -60,6 +60,7 @@ extension LibraryView {
                 }
                 .pickerStyle(.segmented)
                 
+                // MARK: - Import Epic (Legendary) Games
                 if selectedGameType == .epic {
                     Picker("Select a game:", selection: $selectedGame) {
                         ForEach(installableGames, id: \.self) { game in
@@ -120,7 +121,7 @@ extension LibraryView {
                             Task(priority: .userInitiated) {
                                 var command: (stdout: Data, stderr: Data)?
                                 
-                                if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
+                                if !selectedGame.appName!.isEmpty && !selectedGame.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
                                     command = await Legendary.command(
                                         args: [
                                             "import",
@@ -139,7 +140,7 @@ extension LibraryView {
                                 if command != nil {
                                     if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
                                         if !commandStderrString.isEmpty {
-                                            if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
+                                            if !selectedGame.appName!.isEmpty && !selectedGame.title.isEmpty {
                                                 if commandStderrString.contains("INFO: Game \"\(selectedGame.title)\" has been imported.") {
                                                     isPresented = false
                                                     isGameListRefreshCalled = true
@@ -173,7 +174,7 @@ extension LibraryView {
                         .disabled(gamePath.isEmpty)
                         .buttonStyle(.borderedProminent)
                     }
-                    
+                    // MARK: - Import Local Games
                 } else if selectedGameType == .local {
                     HStack {
                         Text("Game title:")
@@ -214,26 +215,8 @@ extension LibraryView {
                         Spacer()
                         
                         Button("Done") {
-                            var localGameLibrary: [LocalGames.Game] { // FIXME: is there a way to init it at the top
-                                get {
-                                    return (try? PropertyListDecoder().decode(
-                                        Array.self,
-                                        from: defaults.object(forKey: "localGameLibrary") as? Data ?? Data()
-                                    )) ?? .init() // FIXME: do-catch goes here so local games arent randomly wiped
-                                }
-                                set {
-                                    do {
-                                        defaults.set(
-                                            try PropertyListEncoder().encode(newValue),
-                                            forKey: "localGameLibrary"
-                                        )
-                                    } catch {
-                                        Logger.app.error("Unable to retrieve local game library: \(error)")
-                                    }
-                                }
-                            }
-                            
-                            localGameLibrary.append(.init(
+                            LocalGames.library?.append(.init( // FIXME: chance of library returning nil, then what?
+                                isLegendary: false,
                                 title: localGameTitle,
                                 platform: localSelectedPlatform,
                                 path: localGamePath

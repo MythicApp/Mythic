@@ -34,7 +34,7 @@ class Wine {
                 try files.createDirectory(at: directory, withIntermediateDirectories: false)
                 Logger.file.info("Creating bottles directory")
             } catch {
-                Logger.app.error("Error creating Bottles directory: \(error)")
+                Logger.app.error("Error creating Bottles directory: \(error.localizedDescription)")
             }
         }
         
@@ -53,7 +53,7 @@ class Wine {
             do {
                 try await boot(prefix: defaultBottleURL)
             } catch {
-                log.error("Boot failed with error: \(error)")
+                log.error("Boot failed with error: \(error.localizedDescription)")
             }
         }
         
@@ -272,7 +272,7 @@ class Wine {
             do {
                 try files.createDirectory(at: prefix, withIntermediateDirectories: true)
             } catch {
-                log.error("Unable to create prefix directory: \(error)")
+                log.error("Unable to create prefix directory: \(error.localizedDescription)")
             }
         }
         
