@@ -18,6 +18,9 @@ import SwiftUI
 struct SettingsView: View {
     var body: some View {
         NotImplementedView()
+        // TODO: purge shader cache, see applegamingwiki
+        // TODO: high resolution mode default
+        // TODO:  
     }
 }
 

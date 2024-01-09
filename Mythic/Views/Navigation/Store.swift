@@ -89,7 +89,7 @@ struct StoreView: View {
             }
         }
         
-        .alert(isPresented: $loadingError) {
+        .alert(isPresented: $loadingError) { // FIXME: Error pops up continuously, making Mythic unusable.
             Alert(
                 title: Text("Error"),
                 message: Text("Failed to load the webpage."),

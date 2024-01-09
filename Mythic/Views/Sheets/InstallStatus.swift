@@ -38,9 +38,9 @@ struct InstallStatusView: View {
             }
             
             GroupBox {
-                if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") {
+                if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") { // TODO: create MiB to MB function
                     Text("Progress: \(Int((installStatus["progress"])?["percentage"] as? Double ?? 0))% (\((installStatus["progress"])?["downloaded"] as? Int ?? 0)/\((installStatus["progress"])?["total"] as? Int ?? 0) objects)")
-                    Text("Downloaded \((installStatus["download"])?["downloaded"] as? Double ?? 0) MiB, Written \((installStatus["download"])?["written"] as? Double ?? 0)")
+                    Text("Downloaded \((installStatus["download"])?["downloaded"] as? Double ?? 0) MiB, Written \((installStatus["download"])?["written"] as? Double ?? 0) MiB.") // TODO: if above 1 GiB, show up as GiB instead of MiB
                     Text("Elapsed: \("\((installStatus["progress"])?["runtime"] ?? "[unknown]")"), ETA: \("\((installStatus["progress"])?["eta"] ?? "[unknown]")")")
                 } else {
                     Image(systemName: "exclamationmark.triangle.fill")

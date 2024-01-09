@@ -40,7 +40,7 @@ struct MainView: View {
     
     @ObservedObject private var variables: VariableManager = .shared
     
-    @State private var epicUserAsync: String = "Loading..."
+    @State private var epicUserAsync: String = "Loading…"
     @State private var signedIn: Bool = false
     
     @State private var appVersion: String = .init()
@@ -48,7 +48,7 @@ struct MainView: View {
     
     // MARK: - Functions
     func updateLegendaryAccountState() {
-        epicUserAsync = "Loading..."
+        epicUserAsync = "Loading…"
         DispatchQueue.global(qos: .userInitiated).async {
             let whoAmIOutput = Legendary.whoAmI()
             DispatchQueue.main.async { [self] in
@@ -110,7 +110,7 @@ struct MainView: View {
                 if let installingGame: Legendary.Game = variables.getVariable("installing") {
                     Divider()
                     
-                    VStack {
+                    VStack { // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                             Text("INSTALLING")
                                 .fontWeight(.bold)
                                 .font(.system(size: 8))
@@ -199,7 +199,7 @@ struct MainView: View {
                         }
                 }
                 
-                if epicUserAsync != "Loading..." {
+                if epicUserAsync != "Loading…" {
                     if signedIn {
                         Button {
                             activeAlert = .signOutConfirmation

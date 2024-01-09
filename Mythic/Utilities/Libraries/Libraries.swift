@@ -121,7 +121,7 @@ class Libraries {
             defer { dataLock.unlock() }
             
             if let file = file {
-                Logger.file.notice("Installing libraries...")
+                Logger.file.notice("Installing libraries…")
                 do {
                     try files.unzipItem(at: file, to: directory, progress: installProgress)
                     Logger.file.notice("Finished downloading and installing libraries.")
