@@ -216,6 +216,7 @@ struct GameListView: View {
                                     // MARK: For installed games
                                     if installedGames.contains(game) {
                                         if variables.getVariable("launching_\(game.appName)") != true {
+                                            // MARK: Settings icon
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isSettingsViewPresented = true
@@ -232,7 +233,7 @@ struct GameListView: View {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
-                                    
+                                                        
                                                         _ = try await Legendary.install(
                                                             game: game, // TODO: better update implementation; rushing to launch
                                                             platform: try Legendary.getGamePlatform(game: game)
@@ -312,7 +313,15 @@ struct GameListView: View {
                                             // MARK: Delete button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                isUninstallViewPresented = true
+                                                if game.isLegendary {
+                                                    isUninstallViewPresented = true
+                                                } else {
+                                                    var library = LocalGames.library
+                                                    library?.removeAll { $0 == game }
+                                                    LocalGames.library = library // FIXME: possible for split second to add new and overwrite one, extremely unlikely though
+                                                    isRefreshCalled = true
+                                                    // TODO: implement functionality for non-legendary game removal.
+                                                }
                                             } label: {
                                                 Image(systemName: "xmark.bin.fill") // TODO: support for uninstalling local games
                                                     .foregroundStyle(.red)
@@ -379,6 +388,7 @@ struct GameListView: View {
                     }
                 }
             }
+            .searchable(text: $searchText, placement: .toolbar)
         }
         
         .onAppear {
@@ -432,7 +442,7 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame! // FIXME: painful force-unwraps
+                game: currentGame ?? placeholderGame(false)
             )
         }
         
@@ -495,4 +505,8 @@ struct GameListView: View {
             }
         }
     }
+}
+
+#Preview {
+    MainView()
 }

@@ -33,11 +33,6 @@ struct LibraryView: View {
         
         // MARK: - Toolbar
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    SearchBar(text: $searchText)
-                        .frame(width: 200)
-                }
-                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {

@@ -99,3 +99,7 @@ struct MythicApp: App {
         }
     }
 }
+
+#Preview {
+    MainView()
+}
