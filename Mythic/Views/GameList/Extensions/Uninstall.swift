@@ -141,11 +141,11 @@ extension GameListView {
 #Preview {
     GameListView.UninstallView(
         isPresented: .constant(true),
-        game: placeholderGame(false),
+        game: placeholderGame(.local),
         isGameListRefreshCalled: .constant(false),
         activeAlert: .constant(.installError),
         isAlertPresented: .constant(false),
-        failedGame: .constant(placeholderGame(false)),
+        failedGame: .constant(placeholderGame(.local)),
         uninstallationErrorMessage: .constant(.init())
     )
 }

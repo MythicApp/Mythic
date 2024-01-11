@@ -45,8 +45,9 @@ struct Game: Hashable, Codable {
     var path: String?
 }
 
-func placeholderGame(_ isLegendary: Bool) -> Game {
-    return Game(isLegendary: isLegendary, title: .init(), appName: .init())
+func placeholderGame(_ platform: GameType) -> Game {
+    // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
+    return Game(isLegendary: platform == .epic, title: .init(), appName: UUID().uuidString)
 }
 
 /// Your father.

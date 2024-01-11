@@ -46,7 +46,7 @@ extension GameListView {
 #Preview {
     GameListView.PlayDefaultView(
         isPresented: .constant(true),
-        game: placeholderGame(false),
+        game: placeholderGame(.local),
         isGameListRefreshCalled: .constant(false)
     )
 }

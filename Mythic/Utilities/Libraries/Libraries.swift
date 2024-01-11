@@ -100,7 +100,7 @@ class Libraries {
             
             if let data = data,
                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let artifacts = json["artifacts"] as? [[String: Any]],
+               let artifacts = json["artifacts"] as? [[String: Any]], // FIXME: NOTE: get the latest artifact from MAIN ONLY; NO BRANCHES
                let artifact = artifacts.first {
                 latestArtifact = artifact
             }

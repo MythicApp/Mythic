@@ -14,6 +14,8 @@
 		6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */; };
 		6A0461BB2B4856C800DDF215 /* LocalGamesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0461BA2B4856C800DDF215 /* LocalGamesExt.swift */; };
 		6A0585482ADEC17300165C3C /* WhiskyInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0585472ADEC17300165C3C /* WhiskyInterface.swift */; };
+		6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */; };
+		6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1322372B1C98AE0049BB64 /* InstallStatus.swift */; };
 		6A1417B82AF7CCD80022DE24 /* FileLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1417B72AF7CCD80022DE24 /* FileLocations.swift */; };
@@ -69,6 +71,8 @@
 		6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressViewWithError.swift; sourceTree = "<group>"; };
 		6A0461BA2B4856C800DDF215 /* LocalGamesExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGamesExt.swift; sourceTree = "<group>"; };
 		6A0585472ADEC17300165C3C /* WhiskyInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterface.swift; sourceTree = "<group>"; };
+		6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImport.swift; sourceTree = "<group>"; };
+		6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicImport.swift; sourceTree = "<group>"; };
 		6A1322372B1C98AE0049BB64 /* InstallStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallStatus.swift; sourceTree = "<group>"; };
 		6A1417B72AF7CCD80022DE24 /* FileLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
 		6A1C6F412AEFD95900F89AE7 /* WineInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WineInterface.swift; sourceTree = "<group>"; };
@@ -181,6 +185,8 @@
 			isa = PBXGroup;
 			children = (
 				6A00F2042AC5F7450054858A /* GameImport.swift */,
+				6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */,
+				6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -541,6 +547,7 @@
 				6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */,
 				6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */,
 				6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */,
+				6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */,
 				6A371B5D2AE84E340054BF7A /* Data.swift in Sources */,
 				6A1C6F422AEFD95900F89AE7 /* WineInterface.swift in Sources */,
 				6ADF47FF2ADECD880039CDC9 /* WhiskyInterfaceExt.swift in Sources */,
@@ -552,6 +559,7 @@
 				6A00F2052AC5F7450054858A /* GameImport.swift in Sources */,
 				6A3A52552ADBD5E000BD7776 /* PlayDefault.swift in Sources */,
 				6AD506562AAFF671008A28C1 /* Home.swift in Sources */,
+				6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */,
 				6A1C6F462AEFD9B100F89AE7 /* WineInterfaceExt.swift in Sources */,
 				6AA6CCE72AD571C500F664A5 /* LegendaryInterfaceExt.swift in Sources */,
 				6AD5065C2AAFF6F0008A28C1 /* Support.swift in Sources */,
@@ -715,7 +723,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2227;
+				CURRENT_PROJECT_VERSION = 2228;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 5495CVAY38;
@@ -754,7 +762,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2227;
+				CURRENT_PROJECT_VERSION = 2228;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 5495CVAY38;

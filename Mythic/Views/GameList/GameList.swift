@@ -200,9 +200,8 @@ struct GameListView: View {
                                                 .modifier(FadeInModifier())
                                         }
                                     case .failure:
-                                        Image(systemName: "network.slash")
-                                            .symbolEffect(.appear)
-                                            .imageScale(.large)
+                                        Text("\(game.title)")
+                                            .font(.largeTitle)
                                             .frame(width: 200, height: 400/1.5)
                                     @unknown default:
                                         Image(systemName: "exclamationmark.triangle")
@@ -442,14 +441,14 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame ?? placeholderGame(false)
+                game: currentGame ?? placeholderGame(.local)
             )
         }
         
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: currentGame!,
+                game: currentGame ?? placeholderGame(.local),
                 optionalPacks: $optionalPacks,
                 isGameListRefreshCalled: $isRefreshCalled,
                 isAlertPresented: $isAlertPresented,
@@ -462,7 +461,7 @@ struct GameListView: View {
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: currentGame!,
+                game: currentGame ?? placeholderGame(.local),
                 isGameListRefreshCalled: $isRefreshCalled,
                 activeAlert: $activeAlert,
                 isAlertPresented: $isAlertPresented,
@@ -474,7 +473,7 @@ struct GameListView: View {
         .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
                 isPresented: $isPlayDefaultViewPresented,
-                game: currentGame!,
+                game: currentGame ?? placeholderGame(.local),
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }

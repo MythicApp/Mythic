@@ -31,18 +31,7 @@ extension LibraryView {
         @State private var isErrorPresented: Bool = false
         @State private var errorContent: Substring = .init()
         
-        @State private var installableGames: [Game] = .init()
-        @State private var selectedGame: Game = placeholderGame(false)
-        @State private var selectedGameType: GameType = .epic
-        @State private var selectedPlatform: GamePlatform = .macOS
-        @State private var withDLCs: Bool = true
-        @State private var checkIntegrity: Bool = true
-        @State private var gamePath: String = .init()
-        
-        @State private var localGameTitle: String = .init()
-        @State private var localGamePath: String = .init()
-        @State private var localSelectedGameType: GameType = .epic
-        @State private var localSelectedPlatform: GamePlatform = .macOS
+        @State private var type: GameType = .epic
         
         // MARK: - Body
         var body: some View { // TODO: split up epic and local into different view files
@@ -53,195 +42,32 @@ extension LibraryView {
                 
                 Divider()
                 
-                Picker(String(), selection: $selectedGameType) {
-                    ForEach(type(of: selectedGameType).allCases, id: \.self) {
+                Picker(String(), selection: $type) {
+                    ForEach(Swift.type(of: type).allCases, id: \.self) {
                         Text($0.rawValue)
                     }
                 }
                 .pickerStyle(.segmented)
                 
                 // MARK: - Import Epic (Legendary) Games
-                if selectedGameType == .epic {
-                    Picker("Select a game:", selection: $selectedGame) {
-                        ForEach(installableGames, id: \.self) { game in
-                            Text(game.title)
-                        }
-                    }
-                    
-                    Picker("Choose the game's native platform:", selection: $selectedPlatform) {
-                        ForEach(type(of: selectedPlatform).allCases, id: \.self) {
-                            Text($0.rawValue)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    
-                    HStack {
-                        TextField("Enter game path or click \"Browse…\"", text: $gamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
-                        
-                        Button("Browse…") {
-                            let openPanel = NSOpenPanel()
-                            openPanel.allowedContentTypes = [
-                                selectedPlatform == .windows ? .exe : nil,
-                                selectedPlatform == .macOS ? .application : nil
-                            ]
-                                .compactMap { $0 }
-                            openPanel.canChooseDirectories = selectedPlatform == .windows ? true : false // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
-                            openPanel.allowsMultipleSelection = false
-                            
-                            if openPanel.runModal() == .OK {
-                                gamePath = openPanel.urls.first!.path
-                            }
-                        }
-                    }
-                    
-                    HStack {
-                        Toggle(isOn: $withDLCs) {
-                            Text("Import with DLCs")
-                        }
-                        Spacer()
-                    }
-                    
-                    HStack {
-                        Toggle(isOn: $checkIntegrity) {
-                            Text("Verify the game's integrity")
-                        }
-                        Spacer()
-                    }
-                    
-                    HStack {
-                        Button("Cancel", role: .cancel) {
-                            isPresented = false
-                        }
-                        
-                        Spacer()
-                        
-                        Button("Done", role: .none) {
-                            isProgressViewSheetPresented = true
-                            
-                            Task(priority: .userInitiated) {
-                                var command: (stdout: Data, stderr: Data)?
-                                
-                                if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
-                                    command = await Legendary.command(
-                                        args: [
-                                            "import",
-                                            checkIntegrity ? nil : "--disable-check",
-                                            withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                            "--platform", selectedPlatform == .macOS ? "Mac" : selectedPlatform == .windows ? "Windows" : "Mac",
-                                            selectedGame.appName,
-                                            gamePath
-                                        ]
-                                        .compactMap { $0 },
-                                        useCache: false,
-                                        identifier: "gameImport"
-                                    )
-                                }
-                                
-                                if command != nil {
-                                    if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
-                                        if !commandStderrString.isEmpty {
-                                            if !selectedGame.appName.isEmpty && !selectedGame.title.isEmpty {
-                                                if commandStderrString.contains("INFO: Game \"\(selectedGame.title)\" has been imported.") {
-                                                    isPresented = false
-                                                    isGameListRefreshCalled = true
-                                                }
-                                            }
-                                        }
-                                        
-                                        for line in commandStderrString.components(separatedBy: "\n") {
-                                            if line.contains("ERROR:") {
-                                                if let range = line.range(of: "ERROR: ") {
-                                                    let substring = line[range.upperBound...]
-                                                    errorContent = substring
-                                                    isProgressViewSheetPresented = false
-                                                    isErrorPresented = true
-                                                    break // first err
-                                                }
-                                            }
-                                            
-                                            // legendary/cli.py line 1372 as of hash 4507842
-                                            if line.contains(
-                                                "Some files are missing from the game installation, install may not"
-                                                + " match latest Epic Games Store version or might be corrupted."
-                                            ) {
-                                                // TODO: implement
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        .disabled(gamePath.isEmpty)
-                        .buttonStyle(.borderedProminent)
-                    }
-                    // MARK: - Import Local Games
-                } else if selectedGameType == .local {
-                    HStack {
-                        Text("Game title:")
-                        TextField("What should we call this game?", text: $localGameTitle)
-                    }
-                    
-                    Picker("Choose the game's native platform:", selection: $localSelectedPlatform) {
-                        ForEach(type(of: localSelectedPlatform).allCases, id: \.self) {
-                            Text($0.rawValue)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    
-                    HStack {
-                        TextField("Enter game path or click \"Browse…\"", text: $localGamePath) // TODO: if game path invalid, disable done and add warning icon with tooltip
-                        
-                        Button("Browse…") {
-                            let openPanel = NSOpenPanel()
-                            openPanel.allowedContentTypes = [
-                                localSelectedPlatform == .windows ? .exe : nil,
-                                localSelectedPlatform == .macOS ? .application : nil
-                            ]
-                                .compactMap { $0 }
-                            openPanel.canChooseDirectories = localSelectedPlatform == .windows ? true : false // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
-                            openPanel.allowsMultipleSelection = false
-                            
-                            if openPanel.runModal() == .OK {
-                                localGamePath = openPanel.urls.first!.path
-                            }
-                        }
-                    }
-                    
-                    HStack {
-                        Button("Cancel", role: .cancel) {
-                            isPresented = false
-                        }
-                        
-                        Spacer()
-                        
-                        Button("Done") {
-                            LocalGames.library? += [Game( // DO NOT USE .APPEND
-                                isLegendary: false,
-                                title: localGameTitle,
-                                appName: UUID().uuidString,
-                                platform: localSelectedPlatform,
-                                path: localGamePath
-                            )]
-                            
-                            isGameListRefreshCalled = true
-                        }
-                        .disabled(localGamePath.isEmpty)
-                        .disabled(localGameTitle.isEmpty)
-                        .buttonStyle(.borderedProminent)
-                    }
+                switch type {
+                case .epic:
+                    LibraryView.GameImportView.Epic(
+                        isPresented: $isPresented,
+                        isProgressViewSheetPresented: $isProgressViewSheetPresented,
+                        isGameListRefreshCalled: $isGameListRefreshCalled,
+                        isErrorPresented: $isErrorPresented,
+                        errorContent: $errorContent
+                    )
+                case .local:
+                    LibraryView.GameImportView.Local(
+                        isPresented: $isPresented,
+                        isGameListRefreshCalled: $isGameListRefreshCalled
+                    )
                 }
             }
             
             .padding()
-            
-            .onAppear {
-                Task(priority: .userInitiated) {
-                    let games = try? await Legendary.getInstallable()
-                    if let games = games, !games.isEmpty { selectedGame = games.first! }
-                    installableGames = games ?? installableGames
-                    isProgressViewSheetPresented = false
-                }
-            }
             
             .sheet(isPresented: $isProgressViewSheetPresented) {
                 ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
