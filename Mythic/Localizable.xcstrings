@@ -421,6 +421,142 @@
         }
       }
     },
+    "%@" : {
+      "localizations" : {
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      }
+    },
     "%@\nIf this error appears, please consult support.\nMake sure to include what you were doing when the error occured." : {
       "localizations" : {
         "ar" : {
@@ -444,7 +580,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@\nWenn dieser Fehler auftaucht, konsultieren Sie bitte die Unterstützung.\nStellen Sie sicher, dass Sie das tun, was Sie getan haben, wenn der Fehler aufgetreten ist."
+            "value" : "%@\nWenn dieser Fehler auftritt, wenden Sie sich bitte an den Support.\nStellen Sie sicher, dass Sie angeben, was Sie getan, als Fehler aufgetreten ist."
           }
         },
         "el" : {
@@ -1302,7 +1438,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sind Sie sicher, dass Sie sich abmelden möchten?"
+            "value" : "Möchten Sie sich wirklich abmelden?"
           }
         },
         "el" : {
@@ -1444,7 +1580,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sind Sie sicher, dass Sie das Ändern von %@ beenden möchten?"
+            "value" : "Möchten Sie wirklich das Ändern von %@ beenden?"
           }
         },
         "el" : {
@@ -1586,7 +1722,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Möchten Sie %@ wirklich deinstallieren?"
+            "value" : "Möchten Sie wirklich %@ deinstallieren?"
           }
         },
         "el" : {
@@ -3149,7 +3285,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laden verwerfen"
+            "value" : "Laden abbrechen"
           }
         },
         "el" : {
@@ -3291,7 +3427,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dies bedeutet, dass Sie nur MacOS-unterstützte Spiele spielen können, importierte Spiele importieren oder Whisky verwenden können."
+            "value" : "Das bedeutet, dass Sie nur Spiele spielen können, die von macOS unterstützt werden, importierte Spiele oder Whisky verwenden können."
           }
         },
         "el" : {
@@ -3866,7 +4002,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lf MiB, Geschrieben %2$lf MiB."
+            "value" : "Heruntergeladen %1$lf MiB, Geschrieben %2$lf MiB."
           }
         },
         "el" : {
@@ -4015,7 +4151,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lade Game-Portierungs-Toolkit herunter..."
+            "value" : "Herunterladen von Game Porting Toolkit..."
           }
         },
         "el" : {
@@ -4157,7 +4293,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Herunterladen von Spiel-Portierungs-Toolkit…"
+            "value" : "Herunterladen von Game Porting Toolkit…"
           }
         },
         "el" : {
@@ -4299,7 +4435,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elapsed: %1$@, ETA: %2$@"
+            "value" : "Verstrichen: %1$@, ETA: %2$@"
           }
         },
         "el" : {
@@ -4448,7 +4584,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berechtigungsschlüssel eingeben..."
+            "value" : "Autorisierungsschlüssel eingeben..."
           }
         },
         "el" : {
@@ -4590,7 +4726,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisierungsschlüssel… eingeben"
+            "value" : "Autorisierungsschlüssel eingeben…"
           }
         },
         "el" : {
@@ -4733,7 +4869,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betrete den Spielpfad oder klicke auf \"Durchsuchen...\""
+            "value" : "Spielpfad eingeben oder auf \"Durchsuchen… \" klicken"
           }
         },
         "el" : {
@@ -4994,6 +5130,148 @@
         }
       }
     },
+    "Enter URL here." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أدخل عنوان URL هنا."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zde zadejte URL."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angiv URL her."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL hier eingeben."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Εισάγετε URL εδώ."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduzca la URL aquí."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kirjoita URL-osoite tähän."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrez l'URL ici."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Írja be az URL-t ide."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci qui l'URL."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここにURLを入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기에 URL을 입력합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vul URL hier in."
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv inn URL her."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wprowadź adres URL tutaj."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite a URL aqui."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite a URL aqui."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduceţi URL-ul aici."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите URL здесь."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ange URL här."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL'yi buraya girin."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введіть URL тут."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此输入URL。"
+          }
+        }
+      }
+    },
     "Error" : {
       "localizations" : {
         "ar" : {
@@ -5159,7 +5437,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fehler beim Import des Spiels"
+            "value" : "Fehler beim Importieren des Spiels"
           }
         },
         "el" : {
@@ -5301,7 +5579,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fehler bei der Installation von %@."
+            "value" : "Fehler beim Installieren von %@."
           }
         },
         "el" : {
@@ -6437,7 +6715,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zuhause"
+            "value" : "Startseite"
           }
         },
         "el" : {
@@ -6863,7 +7141,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Um Windows-Spiele zu starten, muss Mythic\neinen speziellen Übersetzer von Apple herunterladen, um Windows-Code in macOS umzuwandeln.\n \nEs ist etwa 1,8 GB groß, aber der Download liegt aufgrund der Komprimierung bei etwa 600MB groß."
+            "value" : "Um Windows-Spiele zu starten, muss Mythic\neinen speziellen Übersetzer von Apple herunterladen, um Windows-Code in macOS umzuwandeln.\n \nEr ist etwa 1,8 GB groß, aber der Download beträgt aufgrund der Komprimierung etwa 600 MB."
           }
         },
         "el" : {
@@ -7573,7 +7851,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "INSTALLING"
+            "value" : "INSTALLIERE"
           }
         },
         "el" : {
@@ -7715,7 +7993,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installation [unknown]…"
+            "value" : "Installiere [unbekannt]…"
           }
         },
         "el" : {
@@ -7857,7 +8135,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Installation von %@…"
+            "value" : "Installiere %@…"
           }
         },
         "el" : {
@@ -8284,7 +8562,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es scheint, als würde es eine Weile dauern."
+            "value" : "Es scheint, dass das Laden eine Weile dauert."
           }
         },
         "el" : {
@@ -8846,7 +9124,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lass uns loslegen, indem wir uns in epische Spiele einloggen.\nWenn du keine epischen Spiele verwenden möchtest, klicke einfach auf den Weiteren."
+            "value" : "Lass uns loslegen, indem wir uns in Epic Games einloggen.\nWenn du Epic Games nicht verwenden möchtest, klicke einfach auf weiter."
           }
         },
         "el" : {
@@ -9272,7 +9550,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mystik"
+            "value" : "Mystic"
           }
         },
         "el" : {
@@ -9414,7 +9692,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nächste"
+            "value" : "Weiter"
           }
         },
         "el" : {
@@ -9698,7 +9976,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ok"
+            "value" : "OK"
           }
         },
         "el" : {
@@ -10130,7 +10408,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "REZENTLICH SPIELT"
+            "value" : "KÜRZLICH GESPIELT"
           }
         },
         "el" : {
@@ -10414,7 +10692,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wiederholen"
+            "value" : "Erneut versuchen"
           }
         },
         "el" : {
@@ -10529,6 +10807,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "重试"
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البحث"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hledat"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Søg"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suchen"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Αναζήτηση"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etsi"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chercher"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keresés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "検索"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검색"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zoeken"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Søk"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Szukaj"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesquisa"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caută"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Искать"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sök"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arama"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пошук"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "搜索"
           }
         }
       }
@@ -10982,7 +11402,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bei epischen Spielen anmelden"
+            "value" : "Bei Epic Games anmelden"
           }
         },
         "el" : {
@@ -11550,7 +11970,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Shop"
+            "value" : "Store"
           }
         },
         "el" : {
@@ -11692,7 +12112,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Absenden"
+            "value" : "Bestätigen"
           }
         },
         "el" : {
@@ -12118,7 +12538,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dies wird dich vom Konto \"%@ \" abmelden."
+            "value" : "Damit melden Sie sich von dem Konto \"%@\" ab."
           }
         },
         "el" : {
@@ -12233,6 +12653,148 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这将使您退出这个账户 \"%@\"。"
+          }
+        }
+      }
+    },
+    "Thumbnail URL (optional)" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رابط الصورة المصغرة (اختياري)"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL náhledu (volitelné)"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniature-URL (valgfri)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniaturansicht URL (optional)"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Μικρογραφία URL (προαιρετικό)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatura URL (opcional)"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pikkukuvan URL (valinnainen)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL de la miniature (facultatif)"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatűr URL (opcionális)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Url Della Miniatura (Opzionale)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サムネイルURL (任意)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "썸네일 URL(선택 사항)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL van miniatuur (optioneel)"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrbilde URL (valgfritt)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL miniatury (opcjonalnie)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL da miniatura (opcional)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL da miniatura (opcional)"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL miniatură (opțional)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL эскиза (необязательно)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrens URL (valfritt)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Küçük resim URL'si (isteğe bağlı)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL мініатюри (необов'язково)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "缩略图 URL (可选)"
           }
         }
       }
@@ -12828,7 +13390,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Überprüfe die Integrität des Spiels"
+            "value" : "Verifizieren Sie das Spiel"
           }
         },
         "el" : {
@@ -12970,7 +13532,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "VERIFYING"
+            "value" : "VERIFIZIERE"
           }
         },
         "el" : {
@@ -13112,7 +13674,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Willkommen bei Mythisch!"
+            "value" : "Willkommen bei Mythic!"
           }
         },
         "el" : {
@@ -13680,7 +14242,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wein"
+            "value" : "Wine"
           }
         },
         "el" : {
