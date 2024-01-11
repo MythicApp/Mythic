@@ -71,6 +71,7 @@ extension LibraryView.GameImportView {
                                 game.imageURL = URL(string: $0)
                             }
                         ))
+                        .fixedSize()
                     }
                 }
                 
