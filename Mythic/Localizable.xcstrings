@@ -421,6 +421,9 @@
         }
       }
     },
+    "%@" : {
+
+    },
     "%@\nIf this error appears, please consult support.\nMake sure to include what you were doing when the error occured." : {
       "localizations" : {
         "ar" : {
@@ -4298,6 +4301,9 @@
       }
     },
     "Enter game path or click \"Browse…\"" : {
+
+    },
+    "Enter URL here." : {
 
     },
     "Error" : {
@@ -11267,6 +11273,9 @@
           }
         }
       }
+    },
+    "Thumbnail URL (optional)" : {
+
     },
     "Time for an update!" : {
       "localizations" : {
