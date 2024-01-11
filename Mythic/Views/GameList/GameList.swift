@@ -180,8 +180,15 @@ struct GameListView: View {
                                 ) { phase in
                                     switch phase {
                                     case .empty:
-                                        ProgressView()
-                                            .frame(width: 200, height: 400/1.5)
+                                        if let thumbnail = gameThumbnails[game.appName] ?? game.imageURL?.path,
+                                           !thumbnail.isEmpty {
+                                            ProgressView()
+                                                .frame(width: 200, height: 400/1.5)
+                                        } else {
+                                            Text("\(game.title)")
+                                                .font(.largeTitle)
+                                                .frame(width: 200, height: 400/1.5)
+                                        }
                                     case .success(let image):
                                         ZStack {
                                             image
