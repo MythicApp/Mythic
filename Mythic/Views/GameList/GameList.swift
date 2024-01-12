@@ -233,6 +233,7 @@ struct GameListView: View {
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .help("Settings")
                                             
                                             // MARK: Update Button
                                             if Legendary.needsUpdate(game: game) {
@@ -254,6 +255,7 @@ struct GameListView: View {
                                                 }
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .help("You need to update the Game")
                                             }
                                             
                                             if game.isLegendary,
@@ -283,6 +285,7 @@ struct GameListView: View {
                                                 })
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .help("You need to verify this Game before playing")
                                             } else {
                                                 // MARK: Play Button
                                                 Button {
@@ -314,6 +317,7 @@ struct GameListView: View {
                                                 }
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .help("Start the Game")
                                             }
                                             
                                             // MARK: Delete button
@@ -335,6 +339,7 @@ struct GameListView: View {
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .help("Delete the Game")
                                         } else {
                                             ProgressView()
                                                 .controlSize(.small)
@@ -384,6 +389,7 @@ struct GameListView: View {
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .help("Download the Game")
                                         }
                                     }
                                 }
