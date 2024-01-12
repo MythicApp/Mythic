@@ -2990,6 +2990,9 @@
         }
       }
     },
+    "Delete the Game" : {
+
+    },
     "Dismiss loading" : {
       "localizations" : {
         "ar" : {
@@ -3557,6 +3560,9 @@
           }
         }
       }
+    },
+    "Download the Game" : {
+
     },
     "Downloaded %lf MiB, Written %lf" : {
       "extractionState" : "stale",
@@ -9283,6 +9289,9 @@
         }
       }
     },
+    "Refresh the Library" : {
+
+    },
     "Restart Onboarding…" : {
       "localizations" : {
         "ar" : {
@@ -10421,6 +10430,9 @@
           }
         }
       }
+    },
+    "Start the Game" : {
+
     },
     "Stop" : {
       "localizations" : {
@@ -12699,6 +12711,12 @@
           }
         }
       }
+    },
+    "You need to update the Game" : {
+
+    },
+    "You need to verify this Game before playing" : {
+
     }
   },
   "version" : "1.0"
