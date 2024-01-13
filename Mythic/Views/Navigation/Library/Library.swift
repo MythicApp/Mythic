@@ -40,6 +40,7 @@ struct LibraryView: View {
                     } label: {
                         Image(systemName: "plus.app")
                     }
+                    .help("Import a game")
                 }
                 
                 // MARK: Refresh Button
@@ -49,6 +50,7 @@ struct LibraryView: View {
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .help("Refresh library")
                 }
             }
         

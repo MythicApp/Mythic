@@ -3558,6 +3558,9 @@
         }
       }
     },
+    "Download %@" : {
+
+    },
     "Downloaded %lf MiB, Written %lf" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -5442,6 +5445,12 @@
         }
       }
     },
+    "Game integrity verification is required." : {
+
+    },
+    "Game Settings" : {
+
+    },
     "Game title:" : {
 
     },
@@ -5728,6 +5737,9 @@
           }
         }
       }
+    },
+    "Import a game" : {
+
     },
     "Import a Game" : {
       "localizations" : {
@@ -7863,6 +7875,9 @@
         }
       }
     },
+    "Launch %@" : {
+
+    },
     "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
       "localizations" : {
         "cs" : {
@@ -9282,6 +9297,9 @@
           }
         }
       }
+    },
+    "Refresh library" : {
+
     },
     "Restart Onboarding…" : {
       "localizations" : {
@@ -11844,6 +11862,9 @@
           }
         }
       }
+    },
+    "Update available!" : {
+
     },
     "Verify the game's integrity" : {
       "localizations" : {
