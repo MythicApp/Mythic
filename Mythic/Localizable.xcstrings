@@ -3300,6 +3300,12 @@
             "value" : "Eliminar el juego"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Poista peli"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3312,10 +3318,28 @@
             "value" : "A játék törlése"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina il gioco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゲームを削除する"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "게임 삭제"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwijder de Spel"
           }
         },
         "no" : {
@@ -3324,16 +3348,58 @@
             "value" : "Slett spillet"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuń grę"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir o jogo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir o jogo"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Șterge jocul"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить игру"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta bort spelet"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oyunu Sil"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видалити гру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除游戏"
           }
         }
       }
@@ -3944,6 +4010,12 @@
             "value" : "Descargar el juego"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lataa peli"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3956,10 +4028,28 @@
             "value" : "A játék letöltése"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scarica il gioco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゲームをダウンロード"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "게임 다운로드"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download het spel"
           }
         },
         "no" : {
@@ -3968,16 +4058,58 @@
             "value" : "Last ned spillet"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pobierz grę"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixar o jogo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixar o jogo"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Descarcă jocul"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачать игру"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ladda ner spelet"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oyunu İndirin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Завантажити гру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载游戏"
           }
         }
       }
@@ -10717,6 +10849,12 @@
             "value" : "Actualizar la biblioteca"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Päivitä kirjasto"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10729,10 +10867,28 @@
             "value" : "Frissítse a könyvtárat"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna la libreria"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ライブラリを更新"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "라이브러리 새로 고침"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ververs de bibliotheek"
           }
         },
         "no" : {
@@ -10741,16 +10897,58 @@
             "value" : "Oppdater biblioteket"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odśwież bibliotekę"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizar a biblioteca"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizar a biblioteca"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reîmprospătează biblioteca"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обновить библиотеку"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera biblioteket"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kütüphaneyi Yenileyin"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оновити бібліотеку"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新库"
           }
         }
       }
@@ -12071,6 +12269,12 @@
             "value" : "Iniciar la partida"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aloita peli"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12083,10 +12287,28 @@
             "value" : "Kezdje a játékot"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia la partita"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゲームを開始"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "게임 시작"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start de wedstrijd"
           }
         },
         "no" : {
@@ -12095,16 +12317,58 @@
             "value" : "Start spillet"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rozpocznij grę"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar o jogo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar o jogo"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Începe jocul"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начать игру"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starta spelet"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oyunu Başlat"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Почати гру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始游戏"
           }
         }
       }
@@ -14703,6 +14967,12 @@
             "value" : "Necesitas actualizar el Juego"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinun täytyy päivittää peli"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14715,10 +14985,28 @@
             "value" : "Frissítenie kell a Game"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devi aggiornare il gioco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ゲームを更新する必要があります"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "게임을 업데이트해야 합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je moet het spel updaten"
           }
         },
         "no" : {
@@ -14727,16 +15015,58 @@
             "value" : "Du må oppdatere spillet"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musisz zaktualizować grę"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa atualizar o Jogo"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa atualizar o Jogo"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trebuie să actualizezi jocul"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вам нужно обновить Игру"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du måste uppdatera spelet"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oyunu güncellemeniz gerekiyor"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вам потрібно оновити Гру"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您需要更新游戏"
           }
         }
       }
@@ -14779,6 +15109,12 @@
             "value" : "Necesitas verificar esta partida antes de jugar"
           }
         },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinun täytyy vahvistaa tämä peli ennen pelaamista"
+          }
+        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
@@ -14791,10 +15127,28 @@
             "value" : "Játék előtt ellenőriznie kell ezt a játékot"
           }
         },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Devi verificare questa partita prima di giocare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "プレイする前にこのゲームを確認する必要があります"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "플레이하기 전에 이 게임을 인증해야 합니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je moet dit spel verifiëren voordat je gaat spelen"
           }
         },
         "no" : {
@@ -14803,16 +15157,58 @@
             "value" : "Du må bekrefte dette spillet før du spiller"
           }
         },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Musisz zweryfikować tę grę przed grą"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa verificar este Jogo antes de jogar"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você precisa verificar este Jogo antes de jogar"
+          }
+        },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Trebuie să verifici acest joc înainte de a juca"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вы должны подтвердить эту игру перед началом игры"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du måste verifiera detta spel innan du spelar"
+          }
+        },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oynamadan önce bu Oyunu doğrulamanız gerekir"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вам потрібно підтвердити цю гру перед грою"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "您需要在玩游戏前验证此游戏"
           }
         }
       }
