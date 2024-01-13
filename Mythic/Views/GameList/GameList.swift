@@ -200,7 +200,6 @@ struct GameListView: View {
                                             
                                             image
                                                 .resizable()
-                                                .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
                                                 .aspectRatio(3/4, contentMode: .fit)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))

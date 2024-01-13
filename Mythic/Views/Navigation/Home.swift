@@ -100,7 +100,7 @@ struct HomeView: View {
                                             ]), startPoint: .top, endPoint: .bottom)
                                         )
                                 }
-                                .aspectRatio(contentMode: .fit)
+                                .aspectRatio(3/4, contentMode: .fit)
                             case .failure:
                                 Image(systemName: "network.slash")
                                     .symbolEffect(.appear)
