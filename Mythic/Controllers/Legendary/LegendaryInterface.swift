@@ -459,9 +459,10 @@ class Legendary {
             args: [
                 "launch",
                 game.appName,
+                needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
-            ],
+            ].compactMap { $0 },
             useCache: false,
             identifier: "launch_\(game.appName)",
             additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
