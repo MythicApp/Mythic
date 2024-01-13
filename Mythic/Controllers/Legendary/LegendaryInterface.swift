@@ -330,7 +330,7 @@ class Legendary {
         ]
             .compactMap { $0 }
         
-        if type == .install { // MARK: Install-only arguments
+        if type == .install { // Install-only arguments
             switch platform {
             case .macOS:
                 argBuilder += ["--platform", "Mac"]
@@ -544,7 +544,14 @@ class Legendary {
      }
      */
     
-    // TODO: DocC
+    // MARK: Get Game Platform Method
+    /**
+     Determines the platform of the game.
+
+     - Parameter platform: The platform of the game.
+     - Throws: `UnableToGetPlatformError` if the platform is not "Mac" or "Windows".
+     - Returns: The platform of the game as a `Platform` enum.
+     */
     static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
         guard game.isLegendary else { throw IsNotLegendaryError() }
         
@@ -559,7 +566,13 @@ class Legendary {
         
     }
     
-    // TODO: DocC
+    // MARK: Needs Update Method
+    /**
+     Determines if the game needs an update.
+
+     - Parameter game: The game to check for updates.
+     - Returns: A boolean indicating whether the game needs an update.
+     */
     static func needsUpdate(game: Mythic.Game) -> Bool {
         var needsUpdate: Bool = false
         
