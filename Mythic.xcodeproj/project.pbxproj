@@ -217,6 +217,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		6A0BB7AE2B52029000C8A693 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6AF7214C2B4C53F700AFD8F2 /* SearchBar.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		6A0C668A2ABC5235004B0755 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -370,7 +378,6 @@
 			children = (
 				6A00F2012AC5F51A0054858A /* GameList */,
 				6AF0EB2B2AADE2530044C09C /* WebView.swift */,
-				6AF7214C2B4C53F700AFD8F2 /* SearchBar.swift */,
 				6AF0EB202AAD4F1E0044C09C /* NotImplemented.swift */,
 				6AF0EB1C2AAD4C830044C09C /* Sheets */,
 				6A7F00B22B231EEA00D801CD /* Alerts */,
@@ -383,6 +390,7 @@
 			isa = PBXGroup;
 			children = (
 				6AC3E18C2B39D1EC000EB765 /* Utilities */,
+				6A0BB7AE2B52029000C8A693 /* Views */,
 			);
 			path = Deprecated;
 			sourceTree = "<group>";
