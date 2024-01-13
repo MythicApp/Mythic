@@ -64,19 +64,18 @@ extension LibraryView.GameImportView {
                     
                     HStack {
                         Text("Thumbnail URL (optional)")
-                        TextField("Enter URL here.", text: Binding(
+                        TextField("Enter URL here...", text: Binding(
                             get: {
                                 game.imageURL?.path ?? .init()
                             }, set: {
                                 game.imageURL = URL(string: $0)
                             }
                         ))
-                        .fixedSize()
                     }
                 }
                 
                 CachedAsyncImage(
-                    url: URL(string: game.imageURL?.path ?? .init()),
+                    url: game.imageURL,
                     urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
                 ) { phase in
                     switch phase {
@@ -92,7 +91,6 @@ extension LibraryView.GameImportView {
                             
                             image
                                 .resizable()
-                                .aspectRatio(contentMode: .fill)
                                 .aspectRatio(3/4, contentMode: .fit)
                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                 .modifier(FadeInModifier())
