@@ -2990,6 +2990,9 @@
         }
       }
     },
+    "Delete the Game" : {
+
+    },
     "Dismiss loading" : {
       "localizations" : {
         "ar" : {
@@ -10440,6 +10443,9 @@
         }
       }
     },
+    "Start the Game" : {
+
+    },
     "Stop" : {
       "localizations" : {
         "ar" : {
@@ -12720,6 +12726,12 @@
           }
         }
       }
+    },
+    "You need to update the Game" : {
+
+    },
+    "You need to verify this Game before playing" : {
+
     }
   },
   "version" : "1.0"
