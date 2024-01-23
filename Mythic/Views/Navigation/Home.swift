@@ -49,12 +49,6 @@ struct HomeView: View {
     @State private var animateStar: Bool = false
     let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds
     
-    // MARK: - Variables
-    private let recentlyPlayedGame: Game? = try? PropertyListDecoder().decode(
-        Game.self,
-        from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
-    )
-    
     // MARK: - Body
     var body: some View {
         HStack {
@@ -62,129 +56,134 @@ struct HomeView: View {
             VStack {
                 ZStack {
                     HStack {
-                        // MARK: Image
-                        AsyncImage(url: URL(string: recentlyPlayedImageURL)) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        if let recentlyPlayedGame: Game? = try? PropertyListDecoder().decode(
+                            Game.self,
+                            from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
+                        ) {
+                            // MARK: Image
+                            CachedAsyncImage(url: URL(string: recentlyPlayedImageURL), urlCache: gameImageURLCache) { phase in
+                                switch phase {
+                                case .empty:
+                                    ProgressView()
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .aspectRatio(3/4, contentMode: .fit)
+                                case .success(let image):
+                                    ZStack {
+                                        // MARK: Main Image
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fill)
+                                            .clipped()
+                                            .overlay(
+                                                // MARK: Blurred Overlay
+                                                image
+                                                    .resizable()
+                                                    .blur(radius: 10, opaque: true)
+                                                    .mask(
+                                                        LinearGradient(gradient: Gradient(stops: [
+                                                            Gradient.Stop(color: Color(white: 0, opacity: 0),
+                                                                          location: 0.65),
+                                                            Gradient.Stop(color: Color(white: 0, opacity: 1),
+                                                                          location: 0.8)
+                                                        ]), startPoint: .top, endPoint: .bottom)
+                                                    )
+                                            )
+                                            .overlay(
+                                                // MARK: Gradient Overlay (masked on blur)
+                                                LinearGradient(gradient: Gradient(stops: [
+                                                    Gradient.Stop(color: Color(white: 0, opacity: 0),
+                                                                  location: 0.6),
+                                                    Gradient.Stop(color: Color(white: 0, opacity: 0.25),
+                                                                  location: 1)
+                                                ]), startPoint: .top, endPoint: .bottom)
+                                            )
+                                    }
                                     .aspectRatio(3/4, contentMode: .fit)
-                            case .success(let image):
-                                ZStack {
-                                    // MARK: Main Image
-                                    image 
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fill)
-                                        .clipped()
-                                        .overlay(
-                                            // MARK: Blurred Overlay
-                                            image
-                                                .resizable()
-                                                .blur(radius: 10, opaque: true)
-                                                .mask(
-                                                    LinearGradient(gradient: Gradient(stops: [
-                                                        Gradient.Stop(color: Color(white: 0, opacity: 0),
-                                                                      location: 0.65),
-                                                        Gradient.Stop(color: Color(white: 0, opacity: 1),
-                                                                      location: 0.8)
-                                                    ]), startPoint: .top, endPoint: .bottom)
-                                                )
-                                        )
-                                        .overlay(
-                                            // MARK: Gradient Overlay (masked on blur)
-                                            LinearGradient(gradient: Gradient(stops: [
-                                                Gradient.Stop(color: Color(white: 0, opacity: 0),
-                                                              location: 0.6),
-                                                Gradient.Stop(color: Color(white: 0, opacity: 0.25),
-                                                              location: 1)
-                                            ]), startPoint: .top, endPoint: .bottom)
-                                        )
-                                }
-                                .aspectRatio(3/4, contentMode: .fit)
-                            case .failure:
-                                Image(systemName: "network.slash")
-                                    .symbolEffect(.appear)
-                                    .imageScale(.large)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .aspectRatio(3/4, contentMode: .fit)
-                            @unknown default:
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolEffect(.appear)
-                                    .imageScale(.large)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .aspectRatio(3/4, contentMode: .fit)
-                            }
-                        }
-                        .onAppear {
-                            if let recentlyPlayedGame = recentlyPlayedGame {
-                                Task(priority: .high) {
-                                    recentlyPlayedImageURL = await Legendary.getImage(
-                                        of: recentlyPlayedGame,
-                                        type: .tall
-                                    )
+                                case .failure:
+                                    Image(systemName: "network.slash")
+                                        .symbolEffect(.appear)
+                                        .imageScale(.large)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .aspectRatio(3/4, contentMode: .fit)
+                                @unknown default:
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .symbolEffect(.appear)
+                                        .imageScale(.large)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .aspectRatio(3/4, contentMode: .fit)
                                 }
                             }
-                        }
-                        .cornerRadius(20)
-                        .overlay(
-                            ZStack(alignment: .bottom) {
-                                VStack {
-                                    Spacer()
-                                    
-                                    HStack {
-                                        VStack {
-                                            HStack {
-                                                Text("RECENTLY PLAYED")
-                                                    .font(.footnote)
-                                                    .foregroundStyle(.placeholder)
-                                                
-                                                Spacer()
-                                            }
-                                            
-                                            HStack {
-                                                // MARK: Game Title
-                                                Text(recentlyPlayedGame?.title ?? "Unknown") // TODO: marquee effect
-                                                    .font(.title)
-                                                    .scaledToFit()
-                                                
-                                                Spacer()
-                                            }
-                                        }
-                                        
+                            .onAppear {
+                                if let recentlyPlayedGame = recentlyPlayedGame {
+                                    Task(priority: .userInitiated) {
+                                        recentlyPlayedImageURL = await Legendary.getImage(
+                                            of: recentlyPlayedGame,
+                                            type: .tall
+                                        )
+                                    }
+                                }
+                            }
+                            .cornerRadius(20)
+                            .overlay(
+                                ZStack(alignment: .bottom) {
+                                    VStack {
                                         Spacer()
                                         
-                                        if variables.getVariable("launching_\(recentlyPlayedGame?.appName ?? .init())") != true {
-                                            Button {
-                                                Task(priority: .userInitiated) {
-                                                    do {
-                                                        if let recentlyPlayedGame = recentlyPlayedGame {
-                                                            try await Legendary.launch(
-                                                                game: recentlyPlayedGame,
-                                                                bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
-                                                            )
-                                                        }
-                                                    } catch {
-                                                        LaunchError.game = recentlyPlayedGame
-                                                        LaunchError.message = "\(error.localizedDescription)"
-                                                        activeAlert = .launchError
-                                                        isAlertPresented = true
-                                                    }
+                                        HStack {
+                                            VStack {
+                                                HStack {
+                                                    Text("RECENTLY PLAYED")
+                                                        .font(.footnote)
+                                                        .foregroundStyle(.placeholder)
+                                                    
+                                                    Spacer()
                                                 }
-                                            } label: {
-                                                Image(systemName: "play.fill")
+                                                
+                                                HStack {
+                                                    // MARK: Game Title
+                                                    Text(recentlyPlayedGame?.title ?? "Unknown") // TODO: marquee effect
+                                                        .font(.title)
+                                                        .scaledToFit()
+                                                    
+                                                    Spacer()
+                                                }
+                                            }
+                                            
+                                            Spacer()
+                                            
+                                            if variables.getVariable("launching_\(recentlyPlayedGame?.appName ?? .init())") != true {
+                                                Button {
+                                                    Task(priority: .userInitiated) {
+                                                        do {
+                                                            if let recentlyPlayedGame = recentlyPlayedGame {
+                                                                try await Legendary.launch(
+                                                                    game: recentlyPlayedGame,
+                                                                    bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
+                                                                )
+                                                            }
+                                                        } catch {
+                                                            LaunchError.game = recentlyPlayedGame
+                                                            LaunchError.message = "\(error.localizedDescription)"
+                                                            activeAlert = .launchError
+                                                            isAlertPresented = true
+                                                        }
+                                                    }
+                                                } label: {
+                                                    Image(systemName: "play.fill")
+                                                        .padding()
+                                                }
+                                                .buttonStyle(.bordered)
+                                                .controlSize(.extraLarge)
+                                            } else {
+                                                ProgressView()
                                                     .padding()
                                             }
-                                            .buttonStyle(.bordered)
-                                            .controlSize(.extraLarge)
-                                        } else {
-                                            ProgressView()
-                                                .padding()
                                         }
+                                        .padding()
                                     }
-                                    .padding()
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }
