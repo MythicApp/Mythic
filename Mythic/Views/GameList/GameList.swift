@@ -386,6 +386,7 @@ struct GameListView: View {
                                                 Image(systemName: "arrow.down.to.line")
                                                     .foregroundStyle(.gray)
                                                     .padding()
+                                                    .disabled(installingGame != nil) // TODO: download queue
                                             }
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
