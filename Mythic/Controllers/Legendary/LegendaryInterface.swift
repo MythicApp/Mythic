@@ -664,6 +664,17 @@ class Legendary {
         return apps
     }
     
+    // TODO: get game installed.json, will simplify many commands
+    
+    static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
+        guard signedIn() else { throw NotSignedInError() }
+        guard game.isLegendary else { throw IsNotLegendaryError() }
+        
+        let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        
+        return installed[game.appName]["install_path"].string
+    }
+    
     // MARK: - Get Installable Method
     /**
      Retrieve installed games from epic games services.
