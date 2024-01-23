@@ -354,9 +354,11 @@ struct GameListView: View {
                                                    let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
                                                     ProgressView(value: percentage, total: 100)
                                                         .progressViewStyle(.linear)
+                                                        .help("\(Int(percentage))% complete")
                                                 } else {
                                                     ProgressView()
                                                         .progressViewStyle(.linear)
+                                                        .help("Starting installation")
                                                 }
                                             }
                                             .buttonStyle(.plain)
