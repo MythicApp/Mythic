@@ -23,6 +23,8 @@ let files = FileManager.default
 /// A simpler alias of `UserDefaults.standard`.
 let defaults = UserDefaults.standard
 
+let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+
 // MARK: - Enumerations
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable {
