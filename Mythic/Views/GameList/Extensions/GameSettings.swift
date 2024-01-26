@@ -56,6 +56,7 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: placeholderGame(.local)
+        game: .constant(.init(isLegendary: true, title: "Game", appName: "[AppName]", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
+        gameThumbnails: .constant(.init())
     )
 }
