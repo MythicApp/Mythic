@@ -207,26 +207,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Nebojte se, stále můžete nainstalovat Mythic Engine později.)"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Du kan ikke bekymre dig, du kan stadig installere Mythic Engine senere.)"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Keine Sorge, du kannst Mythic Engine später noch installieren.)"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Μην ανησυχείτε, μπορείτε ακόμα να εγκαταστήσετε το Mythic Engine αργότερα.)"
           }
         },
         "en-US" : {
@@ -237,20 +237,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(No te preocupes, todavía puedes instalar Motor Mítico más tarde.)"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Älä huoli, voit asentaa Mythic Engine myöhemmin.)"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Ne vous inquiétez pas, vous pouvez toujours installer Mythic Engine plus tard.)"
           }
         },
         "he" : {
@@ -267,14 +267,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Non ti preoccupare, puoi ancora installare Mythic Engine più tardi.)"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(心配しないで、あなたはまだ後でMythic Engineをインストールすることができます。"
           }
         },
         "ko" : {
@@ -285,8 +285,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Geen zorgen, je kunt Mythic Engine later nog installeren.)"
           }
         },
         "no" : {
@@ -297,32 +297,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(nie martw się, nadal możesz zainstalować Mythic Engine później.)"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Não se preocupe, você ainda pode instalar o Mecanismo Mítico mais tarde.)"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Não se preocupe, você ainda pode instalar o Mecanismo Mítico mais tarde.)"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(nu vă faceți griji, încă puteți instala Motorul Mitic mai târziu.)"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Не волнуйтесь, вы можете установить Mythic Engine позже.)"
           }
         },
         "sr" : {
@@ -333,20 +333,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Oroa dig inte, du kan fortfarande installera Mythic Engine senare.)"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Merak etmeyin, Mythic Engine'i daha sonra da yükleyebilirsiniz)."
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(Не хвилюйтеся, ви все ще можете встановити Mythic Engine пізніше.)"
           }
         },
         "vi" : {
@@ -357,8 +357,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Don't worry, you can still install Mythic Engine later.)"
+            "state" : "translated",
+            "value" : "(不要担心，您仍然可以稍后安装Mythic引擎。)"
           }
         },
         "zh-Hant" : {
@@ -1567,8 +1567,8 @@
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% 完了"
           }
         },
         "ko" : {
@@ -1579,8 +1579,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% compleet"
           }
         },
         "no" : {
@@ -1591,20 +1591,20 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% zakończono"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% completo"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% completo"
           }
         },
         "ro" : {
@@ -1615,8 +1615,8 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% завершено"
           }
         },
         "sr" : {
@@ -1627,8 +1627,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% slutförd"
           }
         },
         "tr" : {
@@ -1639,8 +1639,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% повний"
           }
         },
         "vi" : {
@@ -1651,8 +1651,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld%% 完成"
           }
         },
         "zh-Hant" : {
@@ -2304,8 +2304,8 @@
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Mythic Engine (GPTK) のインストールをキャンセルしてもよろしいですか？"
           }
         },
         "ko" : {
@@ -2316,8 +2316,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Weet u zeker dat u de installatie van Mythische Motor (GPTK) wilt annuleren?"
           }
         },
         "no" : {
@@ -2328,20 +2328,20 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Czy na pewno chcesz anulować instalację Mythic Engine (GPTK)?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Tem certeza que deseja cancelar a instalação do Motor Místico (GPTK)?"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Tem certeza que deseja cancelar a instalação do Motor Místico (GPTK)?"
           }
         },
         "ro" : {
@@ -2352,8 +2352,8 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Вы уверены, что хотите отменить установку Mythic Engine (GPTK)?"
           }
         },
         "sr" : {
@@ -2364,8 +2364,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Är du säker på att du vill avbryta Mythic Engine (GPTK) installation?"
           }
         },
         "tr" : {
@@ -2376,8 +2376,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "Ви впевнені, що хочете скасувати встановлення Mythic Engine (GPTK)?"
           }
         },
         "vi" : {
@@ -2388,8 +2388,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel Mythic Engine (GPTK) installation?"
+            "state" : "translated",
+            "value" : "您确定要取消Mythic Engine (GPTK) 安装吗？"
           }
         },
         "zh-Hant" : {
@@ -3955,14 +3955,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Cambia Bottiglia..."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Bottleを変更..."
           }
         },
         "ko" : {
@@ -3973,8 +3973,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Fles wijzigen..."
           }
         },
         "no" : {
@@ -3985,20 +3985,20 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Zmień butelkę..."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Mudar garrafa..."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Mudar garrafa..."
           }
         },
         "ro" : {
@@ -4009,8 +4009,8 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Изменить бутылку..."
           }
         },
         "sr" : {
@@ -4021,8 +4021,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Ändra flaska..."
           }
         },
         "tr" : {
@@ -4033,8 +4033,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "Змінити пляшку..."
           }
         },
         "vi" : {
@@ -4045,8 +4045,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Change Bottle..."
+            "state" : "translated",
+            "value" : "更改瓶子..."
           }
         },
         "zh-Hant" : {
@@ -5368,26 +5368,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "To znamená, že můžete hrát pouze hry podporované macOS.\n"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "At gøre dette betyder, at du kun kan spille macOS-understøttede spil.\n"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Dies bedeutet, dass du nur MacOS-unterstützte Spiele spielen kannst.\n"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Κάνοντας αυτό σημαίνει ότι μπορείτε να παίξετε μόνο παιχνίδια που υποστηρίζονται από macOS.\n"
           }
         },
         "en-US" : {
@@ -5398,20 +5398,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Hacer esto significa que sólo puedes jugar juegos compatibles con macOS.\n"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Tämä tarkoittaa, että voit pelata vain macOS-tuettuja pelejä.\n"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Cela signifie que vous ne pouvez jouer qu'à des jeux pris en charge par macOS.\n"
           }
         },
         "he" : {
@@ -5428,14 +5428,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Facendo questo significa che puoi giocare solo ai giochi supportati da macOS.\n"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "これを行うと、macOS対応ゲームのみプレイできます。\n"
           }
         },
         "ko" : {
@@ -5446,8 +5446,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Dit betekent dat je alleen macOS-ondersteunde spellen kunt spelen.\n"
           }
         },
         "no" : {
@@ -5458,32 +5458,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Czyniąc to, możesz grać tylko w gry wspierane przez macOS.\n"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Fazer isso significa que você só pode jogar jogos com macOS.\n"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Fazer isso significa que você só pode jogar jogos com macOS.\n"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Acest lucru înseamnă că poți juca doar jocuri acceptate de macOS.\n"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Это означает, что вы сможете играть только в игры, поддерживаемые macOS.\n"
           }
         },
         "sr" : {
@@ -5494,20 +5494,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Att göra detta innebär att du bara kan spela macOS-stödda spel.\n"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Bunu yaptığınızda yalnızca macOS destekli oyunları oynayabilirsiniz.\n"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Таким чином ви можете грати лише ігри з підтримкою macOS.\n"
           }
         },
         "vi" : {
@@ -5518,8 +5518,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "这样做意味着你只能玩支持 macOS 的游戏。\n"
           }
         },
         "zh-Hant" : {
@@ -6854,25 +6854,25 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -6884,19 +6884,19 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -6914,13 +6914,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -6932,7 +6932,7 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -6944,31 +6944,31 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -6980,20 +6980,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "DXVK"
+            "state" : "translated",
+            "value" : "ДХВК"
           }
         },
         "vi" : {
@@ -7004,7 +7004,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DXVK"
           }
         },
@@ -7228,26 +7228,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Vylepšená synchronizace (MSync)"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Forbedret Synkronisering (MSync)"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Verbesserte Synchronisation (MSync)"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Ενισχυμένος Συγχρονισμός (MSync)"
           }
         },
         "en-US" : {
@@ -7258,20 +7258,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Sync mejorada (MSync)"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Tehostettu Synkronointi (MSync)"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Synchronisation améliorée (MSync)"
           }
         },
         "he" : {
@@ -7288,14 +7288,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Sincronizzazione Avanzata (MSync)"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "強化同期 (MSync)"
           }
         },
         "ko" : {
@@ -7306,8 +7306,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Verbeterde synchronisatie (MSync)"
           }
         },
         "no" : {
@@ -7318,32 +7318,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Wzmocniona synchronizacja (MSync)"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Sincronização Melhorada (MSync)"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Sincronização Melhorada (MSync)"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Sincronizare îmbunătățită (MSync)"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Улучшенная синхронизация (MSync)"
           }
         },
         "sr" : {
@@ -7354,20 +7354,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Förbättrad synkronisering (MSync)"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Geliştirilmiş Senkronizasyon (MSync)"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Розширений синхронізацію (MSync)"
           }
         },
         "vi" : {
@@ -7378,8 +7378,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "增强同步 (MSync)"
           }
         },
         "zh-Hant" : {
@@ -8150,26 +8150,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Zde zadejte adresu URL..."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Indtast URL her..."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "URL hier eingeben..."
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Εισάγετε URL εδώ..."
           }
         },
         "en-US" : {
@@ -8180,20 +8180,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Introduzca la URL aquí..."
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Syötä URL-osoite tähän..."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Entrez l'URL ici..."
           }
         },
         "he" : {
@@ -8210,14 +8210,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Inserisci URL qui..."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "URLを入力してください..."
           }
         },
         "ko" : {
@@ -8228,8 +8228,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Voer URL in..."
           }
         },
         "no" : {
@@ -8240,32 +8240,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Wprowadź adres URL tutaj..."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Digite a URL aqui..."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Digite a URL aqui..."
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Introduceţi URL-ul aici..."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Введите URL здесь..."
           }
         },
         "sr" : {
@@ -8276,20 +8276,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Ange URL här..."
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "URL'yi buraya girin..."
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "Введіть URL тут..."
           }
         },
         "vi" : {
@@ -8300,8 +8300,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter URL here..."
+            "state" : "translated",
+            "value" : "在此输入URL..."
           }
         },
         "zh-Hant" : {
@@ -9806,26 +9806,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Soubor"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Fil"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Datei"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Αρχείο"
           }
         },
         "en-US" : {
@@ -9836,20 +9836,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Fichero"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Tiedosto"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Fichier"
           }
         },
         "he" : {
@@ -9866,14 +9866,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "File"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "ファイル"
           }
         },
         "ko" : {
@@ -9884,8 +9884,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Bestand"
           }
         },
         "no" : {
@@ -9896,32 +9896,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Plik"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Arquivo"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Arquivo"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Fişier"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Файл"
           }
         },
         "sr" : {
@@ -9932,20 +9932,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Fil"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Dosya"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Файл"
           }
         },
         "vi" : {
@@ -9956,8 +9956,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "文件"
           }
         },
         "zh-Hant" : {
@@ -14651,13 +14651,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14669,7 +14669,7 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14681,19 +14681,19 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14705,7 +14705,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14717,7 +14717,7 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14729,7 +14729,7 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14741,7 +14741,7 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "macOS"
           }
         },
@@ -14959,26 +14959,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Přesunout..."
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Flyt..."
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Bewegen..."
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Μετακίνηση..."
           }
         },
         "en-US" : {
@@ -14989,20 +14989,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Mover..."
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Siirrä..."
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Déplacer..."
           }
         },
         "he" : {
@@ -15019,14 +15019,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Sposta..."
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "移動..."
           }
         },
         "ko" : {
@@ -15037,8 +15037,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Verplaatsen..."
           }
         },
         "no" : {
@@ -15049,32 +15049,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Przenieś..."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Mover..."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Mover..."
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Mișcă..."
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Переместить..."
           }
         },
         "sr" : {
@@ -15085,20 +15085,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Flytta..."
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Çekil."
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "Перемістити..."
           }
         },
         "vi" : {
@@ -15109,8 +15109,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move..."
+            "state" : "translated",
+            "value" : "移动..."
           }
         },
         "zh-Hant" : {
@@ -16063,26 +16063,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Výkon HUD"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Ydeevne HUD"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Leistungs-HUD"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD Απόδοσης"
           }
         },
         "en-US" : {
@@ -16093,20 +16093,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Rendimiento HUD"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Suorituskyky HUD"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD de performance"
           }
         },
         "he" : {
@@ -16123,14 +16123,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD Prestazioni"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "パフォーマンス HUD"
           }
         },
         "ko" : {
@@ -16141,8 +16141,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Prestatie HUD"
           }
         },
         "no" : {
@@ -16153,32 +16153,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Wydajność HUD"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD de desempenho"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD de desempenho"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD de performanță"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD производительности"
           }
         },
         "sr" : {
@@ -16189,20 +16189,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Prestanda HUD"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Performans HUD"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "HUD продуктивності"
           }
         },
         "vi" : {
@@ -16213,8 +16213,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "性能HUD"
           }
         },
         "zh-Hant" : {
@@ -16247,25 +16247,25 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "Náhradník"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "stedhomder"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "Platzhalter"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
@@ -16277,19 +16277,19 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
@@ -16307,13 +16307,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "locehomder"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
@@ -16325,7 +16325,7 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
@@ -16337,32 +16337,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "domek"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "lugar"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "lugar"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "localizator"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "пластинка"
           }
         },
         "sr" : {
@@ -16373,20 +16373,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "placehomder"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "плейлобудинку"
           }
         },
         "vi" : {
@@ -16397,8 +16397,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "placehomder"
+            "state" : "translated",
+            "value" : "放置器"
           }
         },
         "zh-Hant" : {
@@ -16431,26 +16431,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Hrát"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Afspil"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Abspielen"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Αναπαραγωγή"
           }
         },
         "en-US" : {
@@ -16461,20 +16461,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Jugar"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Toista"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Jouer"
           }
         },
         "he" : {
@@ -16491,14 +16491,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Gioca"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "再生"
           }
         },
         "ko" : {
@@ -16509,8 +16509,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Afspelen"
           }
         },
         "no" : {
@@ -16521,32 +16521,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Odtwórz"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Reproduzir"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Reproduzir"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Redare"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Играть"
           }
         },
         "sr" : {
@@ -16557,20 +16557,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Spela"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Oyun"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "Відтворити"
           }
         },
         "vi" : {
@@ -16581,8 +16581,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play"
+            "state" : "translated",
+            "value" : "播放"
           }
         },
         "zh-Hant" : {
@@ -17357,26 +17357,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Režim Retina"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Retina-Tilstand"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Retina-Modus"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Λειτουργία Retina"
           }
         },
         "en-US" : {
@@ -17387,20 +17387,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Modo Retina"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Retina-tila"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Mode Retina"
           }
         },
         "he" : {
@@ -17417,13 +17417,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Modalità Retina"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Retina Mode"
           }
         },
@@ -17435,8 +17435,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Retina modus"
           }
         },
         "no" : {
@@ -17447,32 +17447,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Tryb Retina"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Modo Retina"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Modo Retina"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Mod Retina"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Режим сетчатки"
           }
         },
         "sr" : {
@@ -17483,8 +17483,8 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Näthinnan läge"
           }
         },
         "tr" : {
@@ -17495,8 +17495,8 @@
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Режим Retina"
           }
         },
         "vi" : {
@@ -17507,8 +17507,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "视网膜模式"
           }
         },
         "zh-Hant" : {
@@ -19013,26 +19013,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Spouštění instalace"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Starter installation"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Installation starten"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Έναρξη εγκατάστασης"
           }
         },
         "en-US" : {
@@ -19043,20 +19043,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Iniciando instalación"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Käynnistetään asennusta"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Démarrage de l'installation"
           }
         },
         "he" : {
@@ -19073,14 +19073,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Avvio installazione"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "インストールを開始"
           }
         },
         "ko" : {
@@ -19091,8 +19091,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Installatie starten"
           }
         },
         "no" : {
@@ -19103,32 +19103,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Uruchamianie instalacji"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Iniciando a instalação"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Iniciando a instalação"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Pornire instalare"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Запуск установки"
           }
         },
         "sr" : {
@@ -19139,20 +19139,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Startar installation"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Kurulumun başlatılması"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "Запуск встановлення"
           }
         },
         "vi" : {
@@ -19163,8 +19163,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Starting installation"
+            "state" : "translated",
+            "value" : "开始安装"
           }
         },
         "zh-Hant" : {
@@ -21405,26 +21405,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Ověřit"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verificér"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Überprüfen"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Επαλήθευση"
           }
         },
         "en-US" : {
@@ -21435,20 +21435,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verificar"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Vahvista"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Vérifier"
           }
         },
         "he" : {
@@ -21465,14 +21465,14 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verifica"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "確認する"
           }
         },
         "ko" : {
@@ -21483,8 +21483,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verifiëren"
           }
         },
         "no" : {
@@ -21495,32 +21495,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Weryfikacja"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verificar"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verificar"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verifică"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Подтвердить"
           }
         },
         "sr" : {
@@ -21531,20 +21531,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Verifiera"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Doğrulama"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "Перевірити"
           }
         },
         "vi" : {
@@ -21555,8 +21555,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify"
+            "state" : "translated",
+            "value" : "验证"
           }
         },
         "zh-Hant" : {
@@ -22693,26 +22693,26 @@
         },
         "cs" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Okna"
           }
         },
         "da" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Vinduer"
           }
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Fenster"
           }
         },
         "el" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Παράθυρα"
           }
         },
         "en-US" : {
@@ -22723,20 +22723,20 @@
         },
         "es" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Ventanas"
           }
         },
         "fi" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Ikkunat"
           }
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Fenêtres"
           }
         },
         "he" : {
@@ -22753,13 +22753,13 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Finestre"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Windows"
           }
         },
@@ -22771,8 +22771,8 @@
         },
         "nl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Vensters"
           }
         },
         "no" : {
@@ -22783,32 +22783,32 @@
         },
         "pl" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Okna"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Janelas"
           }
         },
         "pt-PT" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Janelas"
           }
         },
         "ro" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Ferestre"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Окна"
           }
         },
         "sr" : {
@@ -22819,20 +22819,20 @@
         },
         "sv" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Fönster"
           }
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Pencereler"
           }
         },
         "uk" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "Вікна"
           }
         },
         "vi" : {
@@ -22843,8 +22843,8 @@
         },
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Windows"
+            "state" : "translated",
+            "value" : "窗口"
           }
         },
         "zh-Hant" : {
