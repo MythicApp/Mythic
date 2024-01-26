@@ -48,6 +48,26 @@ extension Wine {
         let reason: String? = nil
     }
     
+    internal enum RegistryType: String {
+        case binary = "REG_BINARY"
+        case dword = "REG_DWORD"
+        case qword = "REG_QWORD"
+        case string = "REG_SZ"
+    }
+    
+    internal enum RegistryKey: String {
+        case currentVersion = #"HKLM\Software\Microsoft\Windows NT\CurrentVersion"#
+        case macDriver = #"HKCU\Software\Wine\Mac Driver"#
+        case desktop = #"HKCU\Control Panel\Desktop"#
+    }
+    
+    struct PrefixSettings {
+        let metalHUD: Bool
+        let msync: Bool
+        // retinaMode is handled already with funcs
+        
+    }
+    
     /// Signifies that a wineprefix does not exist at a specified location.
     struct PrefixDoesNotExistError: Error {  }
 }

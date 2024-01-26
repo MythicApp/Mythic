@@ -66,6 +66,7 @@ extension LibraryView {
                     )
                 }
             }
+            .fixedSize()
             
             .padding()
             

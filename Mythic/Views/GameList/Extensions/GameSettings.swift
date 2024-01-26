@@ -24,6 +24,8 @@ extension GameListView {
         
         // MARK: - Bindings
         @Binding var isPresented: Bool
+        @Binding var game: Game
+        @Binding var gameThumbnails: [String: String]
         
         // MARK: - Variables
         public var game: Game

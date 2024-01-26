@@ -48,8 +48,8 @@ class LocalGames {
         }
     }
     
-    static func launch(game: Mythic.Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
-        guard let library = library,
+    static func launch(game: Mythic.Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning, 
+        guard let library = library, // TODO: minimize Mythic if specified in settings using NSApplication.shared.keyWindow?.miniaturize(self)
                   library.contains(game) else {
                       log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
                       throw GameDoesNotExistError(game)

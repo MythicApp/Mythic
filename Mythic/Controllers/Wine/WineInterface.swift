@@ -17,7 +17,7 @@
 import Foundation
 import OSLog
 
-class Wine {
+class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
@@ -61,7 +61,6 @@ class Wine {
         return defaultBottleURL
     }()
     
-    // MARK: - Methods
     // MARK: - Command Method
     /**
      Run a wine command, using Mythic Engine's integrated wine.
@@ -266,6 +265,7 @@ class Wine {
      - Parameter prefix: The URL of the wine prefix to boot.
      */
     static func boot(prefix: URL) async throws { // TODO: Separate prefix booting and creation // TODO: add default wine settings such as high res mode and esync and whatnot, and control it via userdefaults
+        // TODO: be more structured with 'bottles' like Whisky
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         
         if !files.fileExists(atPath: prefix.path) {
@@ -290,6 +290,34 @@ class Wine {
         }
         
         log.notice("Successfully created prefix \"\(prefix.lastPathComponent)\"")
+    }
+    
+    private static func addRegistryKey( // thx whisky
+        prefix: URL,
+        key: String,
+        name: String,
+        data: String,
+        type: RegistryType
+    ) async throws {
+        guard prefixExists(at: prefix) else {
+            throw PrefixDoesNotExistError() // TODO: TODO
+        }
+        
+        _ = try await command( // FIXME: errors may create problems later
+            args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
+            identifier: "changeRegistry",
+            prefix: prefix
+        )
+    }
+    
+    static func toggleRetinaMode(prefix: URL, toggle: Bool) async throws {
+        try await addRegistryKey(
+            prefix: prefix,
+            key: RegistryKey.macDriver.rawValue,
+            name: "RetinaMode",
+            data: toggle ? "y" : "n",
+            type: .string
+        )
     }
     
     // MARK: - Prefix Exists Method

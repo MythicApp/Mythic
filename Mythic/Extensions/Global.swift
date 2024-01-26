@@ -38,18 +38,20 @@ enum GameType: String, CaseIterable {
 }
 
 struct Game: Hashable, Codable {
-    var isLegendary: Bool
+    var isLegendary: Bool // TODO: FIXME: replace isLegendary with gameType enum
     var title: String
-    
     var appName: String
-    var imageURL: URL?
     var platform: GamePlatform?
+    
+    var imageURL: URL?
     var path: String?
+    
+    // TODO: add functions that directly reference game; e.g. game.verify()
 }
 
-func placeholderGame(_ platform: GameType) -> Game {
+func placeholderGame(_ type: GameType) -> Game {
     // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
-    return Game(isLegendary: platform == .epic, title: .init(), appName: UUID().uuidString)
+    return .init(isLegendary: type == .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
 }
 
 /// Your father.

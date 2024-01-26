@@ -22,7 +22,7 @@ extension GameListView {
     struct InstallView: View {
         // MARK: - Bindings
         @Binding var isPresented: Bool
-        public var game: Game
+        @Binding var game: Game
         @Binding var optionalPacks: [String: String]
         @Binding var isGameListRefreshCalled: Bool
         @Binding var isAlertPresented: Bool
@@ -120,7 +120,7 @@ extension GameListView {
 #Preview {
     GameListView.InstallView(
         isPresented: .constant(true),
-        game: placeholderGame(.local),
+        game: .constant(placeholderGame(.local)),
         optionalPacks: .constant(.init()),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),

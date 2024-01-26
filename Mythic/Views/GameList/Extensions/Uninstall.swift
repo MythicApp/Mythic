@@ -24,7 +24,7 @@ extension GameListView {
         
         // MARK: - Bindings
         @Binding var isPresented: Bool
-        public var game: Game
+        @Binding var game: Game
         @Binding var isGameListRefreshCalled: Bool
         @Binding var activeAlert: GameListView.ActiveAlert
         @Binding var isAlertPresented: Bool
@@ -39,7 +39,7 @@ extension GameListView {
         @State private var isConfirmationPresented = false
         
         // MARK: - Body View
-        var body: some View {
+        var body: some View { // TODO: implement for non-epic games
             VStack {
                 Text("Uninstall \(game.title)")
                     .font(.title)
@@ -141,7 +141,7 @@ extension GameListView {
 #Preview {
     GameListView.UninstallView(
         isPresented: .constant(true),
-        game: placeholderGame(.local),
+        game: .constant(placeholderGame(.local)),
         isGameListRefreshCalled: .constant(false),
         activeAlert: .constant(.installError),
         isAlertPresented: .constant(false),

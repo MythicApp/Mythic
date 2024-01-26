@@ -78,7 +78,7 @@ struct GameListView: View {
     @State private var failedGame: Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Game?
+    @State private var currentGame: Game = placeholderGame(.local) // FIXME: bad programming
     
     @State private var installableGames: [Game] = .init()
     @State private var installedGames: [Game] = .init()
@@ -175,8 +175,8 @@ struct GameListView: View {
                                         string: game.isLegendary
                                         ? gameThumbnails[game.appName] ?? .init()
                                         : game.imageURL?.path ?? .init()
-                                    ), // FIXME: imageURL
-                                    urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+                                    ),
+                                    urlCache: gameImageURLCache
                                 ) { phase in
                                     switch phase {
                                     case .empty:
@@ -456,14 +456,15 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame ?? placeholderGame(.local)
+                game: $currentGame,
+                gameThumbnails: $gameThumbnails
             )
         }
         
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: currentGame ?? placeholderGame(.local),
+                game: $currentGame,
                 optionalPacks: $optionalPacks,
                 isGameListRefreshCalled: $isRefreshCalled,
                 isAlertPresented: $isAlertPresented,
@@ -476,7 +477,7 @@ struct GameListView: View {
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: currentGame ?? placeholderGame(.local),
+                game: $currentGame,
                 isGameListRefreshCalled: $isRefreshCalled,
                 activeAlert: $activeAlert,
                 isAlertPresented: $isAlertPresented,
@@ -488,7 +489,7 @@ struct GameListView: View {
         .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
                 isPresented: $isPlayDefaultViewPresented,
-                game: currentGame ?? placeholderGame(.local),
+                game: $currentGame,
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }

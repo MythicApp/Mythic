@@ -137,6 +137,9 @@
         }
       }
     },
+    "(Don't worry, you can still install Mythic Engine later.)" : {
+
+    },
     "(supports selective downloads.)" : {
       "localizations" : {
         "ar" : {
@@ -856,6 +859,9 @@
         }
       }
     },
+    "%lld%% complete" : {
+
+    },
     "A link should've opened in your browser. If not, click" : {
       "localizations" : {
         "ar" : {
@@ -1141,6 +1147,7 @@
       }
     },
     "Are you sure you want to cancel GPTK installation?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1281,6 +1288,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
+
     },
     "Are you sure you want to sign out?" : {
       "localizations" : {
@@ -2280,6 +2290,9 @@
         }
       }
     },
+    "Change Bottle..." : {
+
+    },
     "Check for Updates…" : {
       "localizations" : {
         "ar" : {
@@ -2990,9 +3003,6 @@
         }
       }
     },
-    "Delete the Game" : {
-
-    },
     "Dismiss loading" : {
       "localizations" : {
         "ar" : {
@@ -3136,6 +3146,7 @@
       }
     },
     "Doing this means you can only play macOS-supported games, imported games, or use Whisky." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3276,6 +3287,9 @@
           }
         }
       }
+    },
+    "Doing this means you can only play macOS-supported games.\n" : {
+
     },
     "Don't run uninstaller" : {
       "localizations" : {
@@ -3869,6 +3883,9 @@
     "Downloading Game Porting Toolkit…" : {
 
     },
+    "DXVK" : {
+
+    },
     "Elapsed: %@, ETA: %@" : {
       "localizations" : {
         "ar" : {
@@ -4016,6 +4033,9 @@
           }
         }
       }
+    },
+    "Enhanced Sync (MSync)" : {
+
     },
     "Enter authorisation key..." : {
       "extractionState" : "stale",
@@ -4309,7 +4329,7 @@
     "Enter game path or click \"Browse…\"" : {
 
     },
-    "Enter URL here." : {
+    "Enter URL here..." : {
 
     },
     "Error" : {
@@ -5447,6 +5467,9 @@
           }
         }
       }
+    },
+    "File" : {
+
     },
     "Game integrity verification is required." : {
 
@@ -8159,6 +8182,9 @@
         }
       }
     },
+    "macOS" : {
+
+    },
     "MANAGEMENT" : {
       "localizations" : {
         "ar" : {
@@ -8300,6 +8326,9 @@
           }
         }
       }
+    },
+    "Move..." : {
+
     },
     "Mythic" : {
       "localizations" : {
@@ -9011,6 +9040,15 @@
         }
       }
     },
+    "Performance HUD" : {
+
+    },
+    "placehomder" : {
+
+    },
+    "Play" : {
+
+    },
     "Progress: %lld%% (%lld/%lld objects)" : {
       "localizations" : {
         "ar" : {
@@ -9445,6 +9483,9 @@
           }
         }
       }
+    },
+    "Retina Mode" : {
+
     },
     "Retry" : {
       "localizations" : {
@@ -10443,7 +10484,7 @@
         }
       }
     },
-    "Start the Game" : {
+    "Starting installation" : {
 
     },
     "Stop" : {
@@ -11872,6 +11913,9 @@
     "Update available!" : {
 
     },
+    "Verify" : {
+
+    },
     "Verify the game's integrity" : {
       "localizations" : {
         "ar" : {
@@ -12585,6 +12629,9 @@
         }
       }
     },
+    "Windows" : {
+
+    },
     "Wine" : {
       "localizations" : {
         "ar" : {
@@ -12726,12 +12773,6 @@
           }
         }
       }
-    },
-    "You need to update the Game" : {
-
-    },
-    "You need to verify this Game before playing" : {
-
     }
   },
   "version" : "1.0"

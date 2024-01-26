@@ -64,37 +64,39 @@ extension LibraryView.GameImportView {
                     
                     HStack {
                         Text("Thumbnail URL (optional)")
-                        TextField("Enter URL here...", text: Binding(
-                            get: {
-                                game.imageURL?.path ?? .init()
-                            }, set: {
-                                game.imageURL = URL(string: $0)
-                            }
+                        TextField("Enter URL here...", text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
+                            get: { game.imageURL?.path ?? .init() },
+                            set: { game.imageURL = URL(string: $0) }
                         ))
                     }
                 }
                 
-                CachedAsyncImage(
-                    url: game.imageURL,
-                    urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
-                ) { phase in
+                CachedAsyncImage(url: game.imageURL, urlCache: gameImageURLCache) { phase in
                     switch phase {
                     case .empty:
-                        ProgressView()
+                        EmptyView()
                     case .success(let image):
-                        ZStack {
-                            image
-                                .resizable()
-                                .aspectRatio(3/4, contentMode: .fit)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .blur(radius: 20)
+                        HStack {
+                            Divider()
+                                .padding()
                             
-                            image
-                                .resizable()
-                                .aspectRatio(3/4, contentMode: .fit)
-                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                .modifier(FadeInModifier())
+                            ZStack {
+                                image // fix image stretching and try to zoom instead
+                                    .resizable()
+                                    .aspectRatio(3/4, contentMode: .fit)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .blur(radius: 20)
+                                    .frame(width: 150)
+                                
+                                image
+                                    .resizable()
+                                    .aspectRatio(3/4, contentMode: .fit)
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .modifier(FadeInModifier())
+                                    .frame(width: 150)
+                            }
                         }
+                        .scaledToFit()
                     case .failure:
                         Image(systemName: "network.slash")
                             .symbolEffect(.appear)
