@@ -75,7 +75,7 @@ struct MythicApp: App {
                 .alert(isPresented: $isUpdatePromptPresented) {
                     Alert(
                         title: Text("Time for an update!"),
-                        message: Text("The backend that allows you to play Windows games on macOS just got an update."),
+                        message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
                         primaryButton: .default(Text("Update")),
                         secondaryButton: .cancel(Text("Later"))
                     )

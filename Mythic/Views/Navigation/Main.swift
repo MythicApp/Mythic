@@ -93,6 +93,7 @@ struct MainView: View {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
                             .foregroundStyle(.primary)
+                            .help("Manage containers for Windows® applications")
                     }
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")

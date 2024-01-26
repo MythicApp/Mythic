@@ -53,8 +53,8 @@ extension OnboardingView {
                 
                 Text(
                 """
-                In order to launch windows games, Mythic must download
-                a special translator by Apple to convert Windows code to macOS.
+                In order to launch Windows® games, Mythic must download
+                a special translator by Apple to convert Windows® code to macOS.
                  
                 It's around 1.8GB in size, but the download is around 600MB due to compression.
                 """

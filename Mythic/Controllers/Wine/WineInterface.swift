@@ -91,6 +91,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 """
                 Unable to execute wine command, Mythic Engine is not installed!
                 If you see this error, it needs to be handled by the script that invokes it.
+                Contact blackxfiied on Discord or open an issue on GitHub.
                 """
             )
             throw Libraries.NotInstalledError()
