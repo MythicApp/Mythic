@@ -11441,6 +11441,7 @@
       }
     },
     "In order to launch windows games, Mythic must download\na special translator by Apple to convert Windows code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11620,6 +11621,190 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch windows games, Mythic must download\na special translator by Apple to convert Windows code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        }
+      }
+    },
+    "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من أجل تشغيل ألعاب Windows®️ ، يجب على Mythic تنزيل\nمترجم خاص من قبل Apple لتحويل كود Windows®️ إلى macOS.\n \nحجمها حوالي 1.8 جيغابايت ولكن التحميل يناهز 600ميغابايت بسبب الضغط."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chcete-li spustit Windows®️ hry, musí Mythic stáhnout\nspeciálního překladatele od Apple pro převod Windows®️ code na macOS.\n \nje přibližně 1,8GB velikosti, ale stahování je kolem 600MB kvůli komprimaci."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For at starte Windows®️-spil skal Mythic downloade\nen særlig oversætter fra Apple til at konvertere Windows®️-koden til macOS.\n \nDet er omkring 1,8 GB i størrelse, men download er omkring 600 MB på grund af komprimering."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Windows®️ games zu starten: Mythic muss\neinen speziellen Übersetzer von Apple herunterladen, um Windows®️ Code zu macOS zu konvertieren.\n \nEs ist etwa 1,8 GB groß, aber der Download liegt aufgrund der Komprimierung bei etwa 600MB groß."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para iniciar los juegos de Windows®️ Mythic debe descargar\nun traductor especial de Apple para convertir el código de Windows®️ a macOS.\n \nAproximadamente 1,8GB de tamaño, pero la descarga es de unos 600MB debido a la compresión."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour pouvoir lancer des jeux Windows®, Mythic doit télécharger\n, un traducteur spécial d'Apple pour convertir le code Windows® en code macOS.\n \nSa taille est d'environ 1,8 Go, mais le téléchargement est d'environ 600 Mo en raison de la compression."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Windows® játékok elindításához a Mythicnek le kell töltenie a\ncímre egy speciális Apple fordítót, amely a Windows® kódot macOS-re konvertálja.\n \nEz körülbelül 1,8 GB méretű, de a letöltés a tömörítés miatt 600 MB körül van."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows® 게임을 실행하려면 Mythic은 Apple의 특수 번역기(\n)를 다운로드하여 Windows® 코드를 macOS로 변환해야 합니다.\n \n파일 용량은 약 1.8GB이지만 압축으로 인해 다운로드 용량은 약 600MB입니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For å kunne starte Windows: registrert: partier må mythic laste ned\nen spesiell oversetter fra Apple for å konvertere Windows: registrert: kode til macOS.\n \nDet er rundt 1.8GB i størrelse, men nedlastingen er rundt 600MB på grunn av komprimering."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pentru a lansa jocuri Windows:registered, mitic trebuie să descarce\nun translator special de Apple pentru a converti codul Windows®️ în macOS.\n \nare aproximativ 1.8GB ca dimensiune, dar descărcarea este de aproximativ 600 MB din cauza comprimării."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows® oyunlarını başlatmak için Mythic, Windows® kodunu macOS'a dönüştürmek için Apple tarafından özel bir çevirmen olan\nadresini indirmelidir.\n \nYaklaşık 1,8 GB boyutundadır, ancak sıkıştırma nedeniyle indirme 600 MB civarındadır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
           }
         }
       }
@@ -14749,6 +14934,190 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "macOS"
+          }
+        }
+      }
+    },
+    "Manage containers for Windows® applications" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إدارة الحاويات لتطبيقات Windows®️"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spravovat kontejnery pro Windows®️ aplikace"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrer containere til Windows®️ applikationer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Behälter für Windows:registriert: Anwendungen verwalten"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrar contenedores para aplicaciones Windows®️"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gérer les conteneurs pour les applications Windows®️"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konténerek kezelése Windows® alkalmazásokhoz"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows® 애플리케이션용 컨테이너 관리"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrer beholdere for Windows: registrert: applikasjoner"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestionează containerele pentru aplicații Windows®️"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows® uygulamaları için kapsayıcıları yönetme"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Manage containers for Windows® applications"
           }
         }
       }
@@ -19912,6 +20281,7 @@
       }
     },
     "The backend that allows you to play Windows games on macOS just got an update." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -20091,6 +20461,190 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "The backend that allows you to play Windows games on macOS just got an update."
+          }
+        }
+      }
+    },
+    "The backend that allows you to play Windows® games on macOS just got an update." : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الخلفية التي تسمح لك بلعب ألعاب Windows®️ على macOS حصلت للتو على تحديث."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrace, která vám umožňuje hrát Windows®️ hry na macOS právě dostaly aktualizaci."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den backend, der giver dig mulighed for at spille Windows®️ spil på macOS har lige fået en opdatering."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Backend, mit dem Sie Windows spielen können: Registriert: Spiele auf macOS haben nur ein Update."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El backend que te permite jugar a los juegos de Windows®️ en macOS acaba de obtener una actualización."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le backend qui vous permet de jouer aux jeux Windows®️ sur macOS vient d'être mis à jour."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Az a háttértár, amely lehetővé teszi a Windows®-játékok macOS-en való lejátszását, most kapott egy frissítést."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS에서 Windows® 게임을 플레이할 수 있는 백엔드가 업데이트되었습니다."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakgrunnen som lar deg spille Windows:Registrert: spill på macOS fikk en oppdatering."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backend-ul care vă permite să jucați jocuri Windows®️ pe macOS tocmai a primit o actualizare."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows® oyunlarını macOS üzerinde oynamanızı sağlayan arka uç yeni bir güncelleme aldı."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
           }
         }
       }
