@@ -6052,6 +6052,7 @@
       }
     },
     "In order to launch windows games, Mythic must download\na special translator by Apple to convert Windows code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -6192,6 +6193,9 @@
           }
         }
       }
+    },
+    "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+
     },
     "Install" : {
       "localizations" : {
@@ -8183,6 +8187,9 @@
       }
     },
     "macOS" : {
+
+    },
+    "Manage containers for Windows® applications" : {
 
     },
     "MANAGEMENT" : {
@@ -11056,6 +11063,7 @@
       }
     },
     "The backend that allows you to play Windows games on macOS just got an update." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -11196,6 +11204,9 @@
           }
         }
       }
+    },
+    "The backend that allows you to play Windows® games on macOS just got an update." : {
+
     },
     "This will sign you out of the account \"%@\"." : {
       "localizations" : {
