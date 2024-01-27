@@ -113,14 +113,12 @@ struct HomeView: View {
                                         .aspectRatio(3/4, contentMode: .fit)
                                 }
                             }
-                            .onAppear {
+                            .task(priority: .userInitiated) {
                                 if let recentlyPlayedGame = recentlyPlayedGame {
-                                    Task(priority: .userInitiated) {
-                                        recentlyPlayedImageURL = await Legendary.getImage(
-                                            of: recentlyPlayedGame,
-                                            type: .tall
-                                        )
-                                    }
+                                    recentlyPlayedImageURL = await Legendary.getImage(
+                                        of: recentlyPlayedGame,
+                                        type: .tall
+                                    )
                                 }
                             }
                             .cornerRadius(20)

@@ -151,13 +151,11 @@ extension LibraryView.GameImportView {
                 .buttonStyle(.borderedProminent)
             }
             
-            .onAppear {
-                Task(priority: .userInitiated) {
-                    let games = try? await Legendary.getInstallable()
-                    if let games = games, !games.isEmpty { game = games.first! }
-                    installableGames = games ?? installableGames
-                    isProgressViewSheetPresented = false
-                }
+            .task(priority: .userInitiated) {
+                let games = try? await Legendary.getInstallable()
+                if let games = games, !games.isEmpty { game = games.first! }
+                installableGames = games ?? installableGames
+                isProgressViewSheetPresented = false
             }
         }
     }

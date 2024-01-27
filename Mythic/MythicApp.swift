@@ -43,7 +43,7 @@ struct MythicApp: App {
         Window("Mythic", id: "main") {
             MainView()
                 .frame(minWidth: 750, minHeight: 390)
-                .onAppear {
+                .task {
                     if isFirstLaunch {
                         isOnboardingPresented = true
                         isFirstLaunch = false

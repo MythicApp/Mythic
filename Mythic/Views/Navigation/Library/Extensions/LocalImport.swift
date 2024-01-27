@@ -126,7 +126,7 @@ extension LibraryView.GameImportView {
                 .buttonStyle(.borderedProminent)
             }
             
-            .onAppear {
+            .task(priority: .high) {
                 game.path = .init() // IMPORTANT, OR DONE BUTTON WILL NOT DISABLE PROPERLY
             }
         }

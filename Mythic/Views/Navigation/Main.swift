@@ -196,9 +196,7 @@ struct MainView: View {
                     Image(systemName: "person")
                         .foregroundStyle(.primary)
                     Text(epicUserAsync)
-                        .onAppear {
-                            updateLegendaryAccountState()
-                        }
+                        .task(priority: .utility) { updateLegendaryAccountState() }
                 }
                 
                 if epicUserAsync != "Loading…" {

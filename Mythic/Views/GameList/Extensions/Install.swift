@@ -101,7 +101,7 @@ extension GameListView {
             }
             .padding()
             .fixedSize()
-            .onAppear {
+            .task(priority: .high) {
                 if !optionalPacks.isEmpty {
                     for (_, tag) in optionalPacks {
                         isToggledDictionary[tag] = false
