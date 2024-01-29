@@ -2719,6 +2719,9 @@
         }
       }
     },
+    "Current Bottle: Default" : {
+
+    },
     "Damn." : {
       "localizations" : {
         "ar" : {
@@ -9203,6 +9206,9 @@
           }
         }
       }
+    },
+    "q" : {
+
     },
     "RECENTLY PLAYED" : {
       "localizations" : {

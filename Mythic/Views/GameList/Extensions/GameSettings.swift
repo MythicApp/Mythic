@@ -16,6 +16,7 @@
 
 import SwiftUI
 import SwiftyJSON
+import CachedAsyncImage
 
 extension GameListView {
     // MARK: - SettingsView
@@ -27,23 +28,159 @@ extension GameListView {
         @Binding var game: Game
         @Binding var gameThumbnails: [String: String]
         
-        // MARK: - Variables
-        public var game: Game
+        @State private var metadata: JSON? // FIXME: currently unused
+        @State private var isFileSectionExpanded: Bool = true
+        @State private var isWineSectionExpanded: Bool = true
+        @State private var isDXVKSectionExpanded: Bool = true
         
         // MARK: - Body View
         var body: some View {
             VStack {
-                Text(game.title)
-                    .font(.title)
+                HStack {
+                    VStack {
+                         Text(game.title)
+                         .font(.title)
+                        
+                        CachedAsyncImage(url: URL(
+                            string: game.isLegendary
+                            ? gameThumbnails[game.appName] ?? .init()
+                            : game.imageURL?.path ?? .init()
+                        ), urlCache: gameImageURLCache) { phase in
+                            switch phase {
+                            case .empty:
+                                EmptyView()
+                            case .success(let image):
+                                ZStack {
+                                    image // FIXME: fix image stretching and try to zoom instead
+                                        .resizable()
+                                        .aspectRatio(3/4, contentMode: .fit)
+                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // TODO: remove corner radius on blurred image
+                                        .blur(radius: 20)
+                                        .frame(width: 150)
+                                    
+                                    image
+                                        .resizable()
+                                        .aspectRatio(3/4, contentMode: .fit)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        .modifier(FadeInModifier())
+                                        .frame(width: 150)
+                                }
+                            case .failure:
+                                Image(systemName: "network.slash")
+                                    .symbolEffect(.appear)
+                                    .imageScale(.large)
+                            @unknown default:
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolEffect(.appear)
+                                    .imageScale(.large)
+                            }
+                        }
+                    }
+                    
+                    // TODO: game desc otherwise (no description available)
+                    
+                    // TODO: image carousel (if applicable)
+                    Divider()
+                    
+                    HStack {
+                        VStack {
+                            // TODO: alternate wine
+                            // TODO: !! make sure base path for games is in main settings
+                            
+                        }
+                        
+                            Form {
+                                Section("File", isExpanded: $isFileSectionExpanded) {
+                                    Button("Move...") {
+                                        let openPanel = NSOpenPanel()
+                                        openPanel.canChooseDirectories = true
+                                        openPanel.allowsMultipleSelection = false
+                                        
+                                        if openPanel.runModal() == .OK {
+                                            // game.path = openPanel.urls.first?.path ?? .init()
+                                            /* TODO: TODO
+                                             usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
+
+                                             positional arguments:
+                                               <App Name>       Name of the app
+                                               <New Base Path>  Directory to move game folder to
+
+                                             options:
+                                               -h, --help       show this help message and exit
+                                               --skip-move      Only change legendary database, do not move files (e.g. if
+                                                                already moved)
+
+                                             */
+                                        }
+                                    }
+                                }
+                                
+                                Section("Wine", isExpanded: $isWineSectionExpanded) {
+                                    Text("Current Bottle: Default") // picker
+                                    
+                                    Toggle("Performance HUD", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                    
+                                    Toggle("Retina Mode", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                    
+                                    Toggle("Enhanced Sync (MSync)", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                }
+                                
+                                Section("DXVK", isExpanded: $isDXVKSectionExpanded) {
+                                    Toggle("DXVK", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                }
+                            }
+                            .formStyle(.grouped)
+                    }
+                    .task {
+                        if game.isLegendary {
+                            metadata = try? Legendary.getGameMetadata(game: game) // FIXME: currently unused
+                        }
+                    }
+                }
                 
                 Spacer()
                 
                 HStack {
+                    Text("placehomder")
+                        .foregroundStyle(.placeholder)
+                    
+                    Text(game.isLegendary ? "Windows" : "macOS")
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 5)
+                        .overlay( // based off .buttonStyle(.accessoryBarAction)
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(.tertiary)
+                        )
+                    
+                    Spacer()
+                    
                     Button {
                         isPresented = false
                     } label: {
+                        Image(systemName: "checkmark.gobackward")
+                        Text("Verify")
+                    }
+                    
+                    Button {
+                        isPresented = false
+                    } label: {
+                        Image(systemName: "xmark.bin")
+                        Text("Uninstall")
+                    }
+                    
+                    Button {
+                        isPresented = false
+                    } label: {
+                        Image(systemName: "play")
+                        Text("Play")
+                    }
+                    
+                    Button {
+                        isPresented =  false
+                    } label: {
                         Text("Close")
                     }
+                    .buttonStyle(.borderedProminent)
                 }
             }
             .padding()

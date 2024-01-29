@@ -47,8 +47,6 @@ struct GameListView: View {
     
     @Binding var searchText: String
     
-    let installingGame: Game? = VariableManager.shared.getVariable("installing")
-    
     // MARK: - State Properties
     
     @ObservedObject private var variables: VariableManager = .shared
@@ -235,7 +233,7 @@ struct GameListView: View {
                                             .help("Game Settings")
                                             
                                             // MARK: Update Button
-                                            if Legendary.needsUpdate(game: game) {
+                                            if game.isLegendary, Legendary.needsUpdate(game: game) {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
@@ -287,20 +285,24 @@ struct GameListView: View {
                                                 .help("Game integrity verification is required.")
                                             } else {
                                                 // MARK: Play Button
-                                                Button {
+                                                Button { // TODO: play or update & play popover
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
-                                                            if game.isLegendary {
-                                                                try await Legendary.launch(
-                                                                    game: game,
-                                                                    bottle: URL(filePath: Wine.defaultBottle.path)
-                                                                )
+                                                            if let defaultBottle = Wine.allBottles?["Default"] {
+                                                                if game.isLegendary {
+                                                                    try await Legendary.launch(
+                                                                        game: game,
+                                                                        bottle: defaultBottle
+                                                                    )
+                                                                } else {
+                                                                    try await LocalGames.launch(
+                                                                        game: game,
+                                                                        bottle: defaultBottle // TODO: FIXME: Add userdefaults option for prefix, include whether its writeable before creation
+                                                                    )
+                                                                }
                                                             } else {
-                                                                try await LocalGames.launch(
-                                                                    game: game,
-                                                                    bottle: Wine.defaultBottle // TODO: FIXME: Add userdefaults option for prefix, include whether its writeable before creation
-                                                                )
+                                                                throw NSError()
                                                             }
                                                         } catch {
                                                             LaunchError.game = game
@@ -325,11 +327,10 @@ struct GameListView: View {
                                                 if game.isLegendary {
                                                     isUninstallViewPresented = true
                                                 } else {
-                                                    var library = LocalGames.library
+                                                    var library = LocalGames.library // TODO: add support to remove game
                                                     library?.removeAll { $0 == game }
                                                     LocalGames.library = library // FIXME: possible for split second to add new and overwrite one, extremely unlikely though
                                                     isRefreshCalled = true
-                                                    // TODO: implement functionality for non-legendary game removal.
                                                 }
                                             } label: {
                                                 Image(systemName: "xmark.bin.fill") // TODO: support for uninstalling local games
@@ -374,7 +375,7 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
                                             
-                                            .onChange(of: installingGame) { _, newValue in
+                                            .onChange(of: variables.getVariable("installing") as Game?) { _, newValue in
                                                 isRefreshCalled = (newValue == nil)
                                             }
                                         } else {
@@ -386,7 +387,7 @@ struct GameListView: View {
                                                 Image(systemName: "arrow.down.to.line")
                                                     .foregroundStyle(.gray)
                                                     .padding()
-                                                    .disabled(installingGame != nil) // TODO: download queue
+                                                    .disabled(variables.getVariable("installing") as Game? != nil) // FIXME: doesnt work, check for installing_ var instead
                                             }
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
