@@ -35,19 +35,18 @@ struct InstallStatusView: View {
             } else {
                 Text("Installing [unknown]…")
                     .font(.title)
+                Text("You probably left this open while installing. Your install has finished.") // FIXME: turn isPresented off when install finished, so this wont happen
+                    .foregroundStyle(.placeholder)
             }
             
-            GroupBox {
-                if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") { // TODO: create MiB to MB function
+            if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") { // TODO: create MiB to MB function
+                GroupBox {
                     Text("Progress: \(Int((installStatus["progress"])?["percentage"] as? Double ?? 0))% (\((installStatus["progress"])?["downloaded"] as? Int ?? 0)/\((installStatus["progress"])?["total"] as? Int ?? 0) objects)")
                     Text("Downloaded \((installStatus["download"])?["downloaded"] as? Double ?? 0) MiB, Written \((installStatus["download"])?["written"] as? Double ?? 0) MiB.") // TODO: if above 1 GiB, show up as GiB instead of MiB
                     Text("Elapsed: \("\((installStatus["progress"])?["runtime"] ?? "[unknown]")"), ETA: \("\((installStatus["progress"])?["eta"] ?? "[unknown]")")")
-                } else {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .controlSize(.large)
                 }
+                .fixedSize()
             }
-            .fixedSize()
             
             // MARK: Close Button
             Button("Close") { isPresented = false }
