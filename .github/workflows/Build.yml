@@ -11,10 +11,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-      with:
-        path: repo
+    - uses: actions/checkout@v2
 
     - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
@@ -27,6 +24,5 @@ jobs:
 
     - name: Build
       run: |
-        cd repo
         xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
       # can do [xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO], but it's better to be more specific
