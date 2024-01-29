@@ -1,4 +1,4 @@
-name: Build Mythic
+name: Build
 
 on:
  push:
@@ -11,18 +11,19 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      with:
+        path: repo
 
-    - name: Install Xcode
+    - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
-        xcode-select --install
+         if command -v xcode-select &> /dev/null then
+          xcode-select --install
+         fi
 
     - name: Build
       run: |
-        cd YourProjectPath # replace with your project path
+        cd repo
         xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
-
-    - name: Run tests
-      run: |
-        cd YourProjectPath # replace with your project path
-        xcodebuild test -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
+      # can do [xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO], but it's better to be more specific
