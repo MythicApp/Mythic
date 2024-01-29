@@ -1,0 +1,28 @@
+name: Build Mythic
+
+on:
+ push:
+    branches: [ main ]
+ pull_request:
+    branches: [ main ]
+
+jobs:
+ build:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Xcode
+      run: |
+        xcode-select --install
+
+    - name: Build
+      run: |
+        cd YourProjectPath # replace with your project path
+        xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
+
+    - name: Run tests
+      run: |
+        cd YourProjectPath # replace with your project path
+        xcodebuild test -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
