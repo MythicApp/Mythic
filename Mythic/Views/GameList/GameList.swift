@@ -230,7 +230,7 @@ struct GameListView: View {
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
-                                            .help("Game Settings")
+                                            .help("\(game.title) Settings")
                                             
                                             // MARK: Update Button
                                             if game.isLegendary, Legendary.needsUpdate(game: game) {
