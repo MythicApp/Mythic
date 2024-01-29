@@ -55,9 +55,10 @@ func placeholderGame(_ type: GameType) -> Game {
 }
 
 /// Your father.
-struct GameDoesNotExistError: Error {
+struct GameDoesNotExistError: LocalizedError {
     init(_ game: Mythic.Game) { self.game = game }
     let game: Mythic.Game
+    var errorDescription: String? = "This game doesn't exist."
 }
 
 // MARK: - Functions

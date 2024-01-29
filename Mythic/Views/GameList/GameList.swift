@@ -302,7 +302,7 @@ struct GameListView: View {
                                                                     )
                                                                 }
                                                             } else {
-                                                                throw NSError()
+                                                                throw Wine.PrefixDoesNotExistError()
                                                             }
                                                         } catch {
                                                             LaunchError.game = game

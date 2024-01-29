@@ -2290,9 +2290,6 @@
         }
       }
     },
-    "Change Bottle..." : {
-
-    },
     "Check for Updates…" : {
       "localizations" : {
         "ar" : {
@@ -9207,7 +9204,10 @@
         }
       }
     },
-    "q" : {
+    "raaa %@" : {
+
+    },
+    "raaah %@" : {
 
     },
     "RECENTLY PLAYED" : {
@@ -12790,6 +12790,9 @@
           }
         }
       }
+    },
+    "You probably left this open while installing. Your install has finished." : {
+
     }
   },
   "version" : "1.0"

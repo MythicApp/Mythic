@@ -27,7 +27,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static var runningCommands: [String: Process] = .init()
     
     /// The directory where all wine prefixes related to Mythic are stored.
-    static let bottlesDirectory: URL? = { // FIXME: is optional necessary in case of dir creation failure?
+    static let bottlesDirectory: URL? = { // FIXME: allow force-unwrapping of bottles directory, directory creation error will be rare
         let directory = Bundle.appContainer!.appending(path: "Bottles")
         if files.fileExists(atPath: directory.path) {
             return directory
@@ -286,8 +286,8 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         settings: BottleSettings = defaultBottleSettings,
         completion: @escaping (Result<Bottle, Error>) -> Void
     ) async {
-        guard let baseURL = baseURL else { completion(.failure(NSError())); return }
-        guard files.fileExists(atPath: baseURL.path) else { completion(.failure(FileLocations.FileDoesNotExistError(nil))); return }
+        guard let baseURL = baseURL else { return }
+        guard files.fileExists(atPath: baseURL.path) else { completion(.failure(FileLocations.FileDoesNotExistError(baseURL))); return }
         let bottleURL = baseURL.appending(path: name)
         
         guard Libraries.isInstalled() else { completion(.failure(Libraries.NotInstalledError())); return }

@@ -18,6 +18,15 @@ import SwiftUI
 struct WineView: View {
     var body: some View {
         NotImplementedView()
+        if let bottles = Wine.allBottles {
+            List {
+                ForEach(Array(bottles.keys), id: \.self) { name in
+                    Text("raaa \(name)")
+                    Text("raaah \(bottles[name]!.url.prettyPath())")
+                }
+            }
+            .padding()
+        }
     }
 }
 

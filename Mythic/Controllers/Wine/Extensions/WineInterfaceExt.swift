@@ -42,10 +42,11 @@ extension Wine {
     }
     
     /// Signifies that a wineprefix is unable to boot.
-    struct BootError: Error {
+    struct BootError: LocalizedError {
         
         // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
         let reason: String? = nil
+        var errorDescription: String? = "Bottle unable to boot." // TODO: add reason if possible
     }
     
     internal enum RegistryType: String {
@@ -74,5 +75,7 @@ extension Wine {
     }
     
     /// Signifies that a wineprefix does not exist at a specified location.
-    struct PrefixDoesNotExistError: Error {  }
+    struct PrefixDoesNotExistError: LocalizedError {
+        var errorDescription: String? = "This bottle doesn't exist."
+    }
 }

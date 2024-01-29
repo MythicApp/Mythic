@@ -112,19 +112,21 @@ class FileLocations {
     
     // MARK: - Other
     
-    struct FileDoesNotExistError: Error {
+    struct FileDoesNotExistError: LocalizedError {
         init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
         let fileURL: URL?
+        var errorDescription: String? = "The file/folder doesn't exist."
     }
     
-    struct FileNotModifiableError: Error { 
+    struct FileNotModifiableError: LocalizedError { 
         init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
         let fileURL: URL?
+        var errorDescription: String? = "The file/folder isn't modifiable."
     }
 }
