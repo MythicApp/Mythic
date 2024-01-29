@@ -443,14 +443,14 @@ class Legendary {
         if let error = errorThrownExternally { variables.removeVariable("installing"); throw error }
     }
     
-    static func launch(game: Mythic.Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
             throw GameDoesNotExistError(game)
         }
         
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
+        guard Wine.bottleExists(url: bottle.url) else { throw Wine.PrefixDoesNotExistError() }
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
@@ -459,13 +459,13 @@ class Legendary {
             args: [
                 "launch",
                 game.appName,
-                needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway
+                needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway (can do in gamelist)
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
             ].compactMap { $0 },
             useCache: false,
             identifier: "launch_\(game.appName)",
-            additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
+            additionalEnvironmentVariables: ["WINEPREFIX": bottle.url.path]
         )
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: false)

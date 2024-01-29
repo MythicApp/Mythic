@@ -61,11 +61,16 @@ extension Wine {
         case desktop = #"HKCU\Control Panel\Desktop"#
     }
     
-    struct PrefixSettings {
+    struct Bottle: Codable, Hashable {
+        let url: URL
+        let settings: BottleSettings
+        let busy: Bool
+    }
+    
+    struct BottleSettings: Codable, Hashable {
         let metalHUD: Bool
         let msync: Bool
-        // retinaMode is handled already with funcs
-        
+        let retinaMode: Bool // TODO: FIXME: turn into func
     }
     
     /// Signifies that a wineprefix does not exist at a specified location.

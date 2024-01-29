@@ -113,18 +113,18 @@ class FileLocations {
     // MARK: - Other
     
     struct FileDoesNotExistError: Error {
-        init(_ fileURL: URL) {
+        init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
-        let fileURL: URL
+        let fileURL: URL?
     }
     
     struct FileNotModifiableError: Error { 
-        init(_ fileURL: URL) {
+        init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
-        let fileURL: URL
+        let fileURL: URL?
     }
 }

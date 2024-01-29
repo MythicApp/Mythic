@@ -153,10 +153,10 @@ struct HomeView: View {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         do {
-                                                            if let recentlyPlayedGame = recentlyPlayedGame {
+                                                            if let recentlyPlayedGame = recentlyPlayedGame, let defaultBottle = Wine.allBottles?["Default"] {
                                                                 try await Legendary.launch(
                                                                     game: recentlyPlayedGame,
-                                                                    bottle: URL(filePath: Wine.defaultBottle.path) // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
+                                                                    bottle: defaultBottle // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
                                                                 )
                                                             }
                                                         } catch {

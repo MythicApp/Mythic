@@ -48,7 +48,7 @@ class LocalGames {
         }
     }
     
-    static func launch(game: Mythic.Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning, 
+    static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
         guard let library = library, // TODO: minimize Mythic if specified in settings using NSApplication.shared.keyWindow?.miniaturize(self)
                   library.contains(game) else {
                       log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
@@ -74,7 +74,7 @@ class LocalGames {
             }
         case .windows:
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-            guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
+            guard Wine.bottleExists(url: bottle.url) else { throw Wine.PrefixDoesNotExistError() }
             
             VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
@@ -82,7 +82,7 @@ class LocalGames {
             _ = try await Wine.command(
                 args: [game.path!], // FIXME: TODO: more advanced implementation
                 identifier: "launch_\(game.title)",
-                prefix: Wine.defaultBottle // TODO: whichever prefix is set for it or as default
+                bottleURL: bottle.url // TODO: whichever prefix is set for it or as default
             )
             
         case .none: do {  }
