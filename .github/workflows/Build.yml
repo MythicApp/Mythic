@@ -18,7 +18,10 @@ jobs:
 
     - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
-         if command -v xcode-select &> /dev/null then
+         if xcode-select --version >/dev/null 2>&1; then
+          echo "Xcode Command Line Tools is installed, skipping."
+         else
+          echo "Xcode Command Line Tools is not installed, installing."
           xcode-select --install
          fi
 
