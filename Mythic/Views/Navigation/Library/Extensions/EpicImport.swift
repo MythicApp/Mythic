@@ -35,54 +35,72 @@ extension LibraryView.GameImportView {
         @Binding var errorContent: Substring
         
         var body: some View {
-            Picker("Select a game:", selection: $game) {
-                ForEach(installableGames, id: \.self) { game in
-                    Text(game.title)
-                }
-            }
-            
-            Picker("Choose the game's native platform:", selection: $platform) {
-                ForEach(type(of: platform).allCases, id: \.self) {
-                    Text($0.rawValue)
-                }
-            }
-            .pickerStyle(.segmented)
-            
-            HStack {
-                TextField("Enter game path or click \"Browse…\"", text: Binding(
-                    get: { game.path ?? .init() },
-                    set: { game.path = $0 }
-                )) // TODO: if game path invalid, disable done and add warning icon with tooltip
-                
-                Button("Browse…") {
-                    let openPanel = NSOpenPanel()
-                    openPanel.allowedContentTypes = [
-                        game.platform == .macOS ? .exe : nil,
-                        game.platform == .windows ? .application : nil
-                    ]
-                        .compactMap { $0 }
-                    openPanel.canChooseDirectories = game.platform == .macOS // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
-                    openPanel.allowsMultipleSelection = false
-                    
-                    if openPanel.runModal() == .OK {
-                        game.path = openPanel.urls.first?.path ?? .init()
+            Form {
+                Picker("Select a game:", selection: $game) {
+                    ForEach(installableGames, id: \.self) { game in
+                        Text(game.title)
                     }
                 }
-            }
-            
-            HStack {
-                Toggle(isOn: $withDLCs) {
-                    Text("Import with DLCs")
+                
+                Picker("Choose the game's native platform:", selection: $platform) {
+                    ForEach(type(of: platform).allCases, id: \.self) {
+                        Text($0.rawValue)
+                    }
                 }
-                Spacer()
-            }
-            
-            HStack {
-                Toggle(isOn: $checkIntegrity) {
-                    Text("Verify the game's integrity")
+                
+                HStack {
+                    VStack {
+                        HStack { // FIXME: jank
+                            Text("Where is the game located?")
+                            Spacer()
+                        }
+                        HStack {
+                            Text(URL(filePath: game.path ?? .init()).prettyPath())
+                                .foregroundStyle(.placeholder)
+                            
+                            Spacer()
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    if !FileLocations.isWritableFolder(url: URL(filePath: game.path ?? .init())) ||
+                        !files.isWritableFile(atPath: game.path ?? .init()) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .help("Folder is not writable.")
+                    }
+                    
+                    Button("Browse…") {
+                        let openPanel = NSOpenPanel()
+                        openPanel.allowedContentTypes = [
+                            game.platform == .macOS ? .exe : nil,
+                            game.platform == .windows ? .application : nil
+                        ]
+                            .compactMap { $0 }
+                        openPanel.canChooseDirectories = game.platform == .macOS // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                        openPanel.allowsMultipleSelection = false
+                        
+                        if openPanel.runModal() == .OK {
+                            game.path = openPanel.urls.first?.path ?? .init()
+                        }
+                    }
                 }
-                Spacer()
+                
+                HStack {
+                    Toggle(isOn: $withDLCs) {
+                        Text("Import with DLCs")
+                    }
+                    Spacer()
+                }
+                
+                HStack {
+                    Toggle(isOn: $checkIntegrity) {
+                        Text("Verify the game's integrity")
+                    }
+                    Spacer()
+                }
             }
+            .formStyle(.grouped)
             
             HStack {
                 Button("Cancel", role: .cancel) {
