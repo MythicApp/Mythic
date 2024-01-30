@@ -30,10 +30,10 @@ struct InstallStatusView: View {
     var body: some View {
         VStack {
             if let installingGame: Game = variables.getVariable("installing") {
-                Text("Installing \(installingGame.title)…")
+                Text("Installing \(installingGame.title)...")
                     .font(.title)
             } else {
-                Text("Installing [unknown]…")
+                Text("Installing [unknown]...")
                     .font(.title)
                 Text("You probably left this open while installing. Your install has finished.") // FIXME: turn isPresented off when install finished, so this wont happen
                     .foregroundStyle(.placeholder)

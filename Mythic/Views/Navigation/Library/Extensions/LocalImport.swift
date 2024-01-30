@@ -38,12 +38,12 @@ extension LibraryView.GameImportView {
                         }
                         
                         HStack {
-                            TextField("Enter game path or click \"Browse…\"", text: Binding(
+                            TextField("Enter game path or click \"Browse...\"", text: Binding(
                                 get: { game.path ?? .init() },
                                 set: { game.path = $0 }
                             )) // TODO: if game path invalid, disable done and add warning icon with tooltip
                             
-                            Button("Browse…") {
+                            Button("Browse...") {
                                 let openPanel = NSOpenPanel()
                                 openPanel.allowedContentTypes = [
                                     game.platform == .macOS ? .exe : nil,

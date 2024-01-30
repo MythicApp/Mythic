@@ -283,16 +283,16 @@
             "value" : "(나중에 신화 엔진을 설치할 수 있으니 걱정하지 마세요.)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Ikke bekymre deg, du kan fortsatt installere Mythic Engine senere.)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "(Geen zorgen, je kunt Mythic Engine later nog installeren.)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(Ikke bekymre deg, du kan fortsatt installere Mythic Engine senere.)"
           }
         },
         "pl" : {
@@ -368,9 +368,6 @@
           }
         }
       }
-    },
-    "(Don't worry, you can still install Mythic Engine later.)" : {
-
     },
     "(supports selective downloads.)" : {
       "localizations" : {
@@ -838,13 +835,13 @@
             "value" : "%@"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@"
@@ -923,9 +920,6 @@
           }
         }
       }
-    },
-    "%@" : {
-
     },
     "%@\nIf this error appears, please consult support.\nMake sure to include what you were doing when the error occured." : {
       "localizations" : {
@@ -1586,16 +1580,16 @@
             "value" : "%lld%% 완료"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% fullført"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld%% compleet"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%% fullført"
           }
         },
         "pl" : {
@@ -1671,9 +1665,6 @@
           }
         }
       }
-    },
-    "%lld%% complete" : {
-
     },
     "A link should've opened in your browser. If not, click" : {
       "localizations" : {
@@ -2329,16 +2320,16 @@
             "value" : "신화 엔진(GPTK) 설치를 취소하시겠습니까?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil avbryte Mythic Engine (GPTK) installasjon?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weet u zeker dat u de installatie van Mythische Motor (GPTK) wilt annuleren?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil avbryte Mythic Engine (GPTK) installasjon?"
           }
         },
         "pl" : {
@@ -2414,9 +2405,6 @@
           }
         }
       }
-    },
-    "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
-
     },
     "Are you sure you want to delete \"%@\"?" : {
 
@@ -3345,7 +3333,6 @@
 
     },
     "Browse..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -3530,6 +3517,7 @@
       }
     },
     "Browse…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -3627,16 +3615,16 @@
             "value" : "찾아보기…"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bla gjennom…"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Blader door…"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bla gjennom…"
           }
         },
         "pl" : {
@@ -3712,9 +3700,6 @@
           }
         }
       }
-    },
-    "Browse…" : {
-
     },
     "Cancel" : {
       "localizations" : {
@@ -3901,6 +3886,7 @@
       }
     },
     "Change Bottle..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -3998,16 +3984,16 @@
             "value" : "병 교체..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endre flaske..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fles wijzigen..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Endre flaske..."
           }
         },
         "pl" : {
@@ -4084,7 +4070,11 @@
         }
       }
     },
+    "Check for Updates..." : {
+
+    },
     "Check for Updates…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5489,16 +5479,16 @@
             "value" : "이렇게 하면 macOS 지원 게임만 플레이할 수 있습니다.\n"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette betyr at du bare kan spille macOS-støttede spill.\n"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dit betekent dat je alleen macOS-ondersteunde spellen kunt spelen.\n"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dette betyr at du bare kan spille macOS-støttede spill.\n"
           }
         },
         "pl" : {
@@ -5574,9 +5564,6 @@
           }
         }
       }
-    },
-    "Doing this means you can only play macOS-supported games.\n" : {
-
     },
     "Don't run uninstaller" : {
       "localizations" : {
@@ -6044,15 +6031,15 @@
             "value" : "다운로드 %@"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Download %@"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Download %@"
           }
         },
@@ -6129,9 +6116,6 @@
           }
         }
       }
-    },
-    "Download %@" : {
-
     },
     "Downloaded %lf MiB, Written %lf" : {
       "extractionState" : "stale",
@@ -6428,16 +6412,16 @@
             "value" : "다운로드 %1$lf MiB, 작성 %2$lf MiB."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lastet ned %1$lf MiB, Written %2$lf MiB."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gedownloade %1$lf MiB, Geschreven %2$lf MiB."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lastet ned %1$lf MiB, Written %2$lf MiB."
           }
         },
         "pl" : {
@@ -6514,18 +6498,7 @@
         }
       }
     },
-    "Downloaded %lf MiB, Written %lf MiB." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
-          }
-        }
-      }
-    },
     "Downloading Game Porting Toolkit..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -6710,6 +6683,7 @@
       }
     },
     "Downloading Game Porting Toolkit…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -6807,16 +6781,16 @@
             "value" : "게임 포팅 툴킷 다운로드…"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laster ned Spill Porting Toolkit…"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Downloaden van Game Porting Toolkit…"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laster ned Spill Porting Toolkit…"
           }
         },
         "pl" : {
@@ -6991,16 +6965,16 @@
             "value" : "DXVK"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VK"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "DXVK"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VK"
           }
         },
         "pl" : {
@@ -7076,12 +7050,6 @@
           }
         }
       }
-    },
-    "Downloading Game Porting Toolkit…" : {
-
-    },
-    "DXVK" : {
-
     },
     "Elapsed: %@, ETA: %@" : {
       "localizations" : {
@@ -7371,16 +7339,16 @@
             "value" : "향상된 동기화(MSync)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forbedret synkronisering (MSync)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verbeterde synchronisatie (MSync)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Forbedret synkronisering (MSync)"
           }
         },
         "pl" : {
@@ -7457,11 +7425,7 @@
         }
       }
     },
-    "Enhanced Sync (MSync)" : {
-
-    },
     "Enter authorisation key..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -7646,6 +7610,7 @@
       }
     },
     "Enter authorisation key…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -7743,16 +7708,16 @@
             "value" : "인증 키 입력…"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angi autorisasjonsnøkkel…"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voer autorisatiesleutel in…"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Angi autorisasjonsnøkkel…"
           }
         },
         "pl" : {
@@ -7829,11 +7794,7 @@
         }
       }
     },
-    "Enter authorisation key…" : {
-
-    },
     "Enter game path or click \"Browse...\"" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8018,6 +7979,7 @@
       }
     },
     "Enter game path or click \"Browse…\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8115,16 +8077,16 @@
             "value" : "게임 경로를 입력하거나 \"찾아보기…\"를 클릭합니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angi spillbanen eller klikk \"Bla gjennom…\""
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voer het spel pad in of klik op \"Bladeren…\""
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Angi spillbanen eller klikk \"Bla gjennom…\""
           }
         },
         "pl" : {
@@ -8201,7 +8163,11 @@
         }
       }
     },
+    "Enter Thumbnail URL here... (optional)" : {
+
+    },
     "Enter URL here..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8299,16 +8265,16 @@
             "value" : "여기에 URL 입력..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Angi URL-adressen her..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Voer URL in..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Angi URL-adressen her..."
           }
         },
         "pl" : {
@@ -8384,12 +8350,6 @@
           }
         }
       }
-    },
-    "Enter game path or click \"Browse…\"" : {
-
-    },
-    "Enter Thumbnail URL here... (optional)" : {
-
     },
     "Error" : {
       "localizations" : {
@@ -9967,16 +9927,16 @@
             "value" : "파일"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fil"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bestand"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fil"
           }
         },
         "pl" : {
@@ -10052,6 +10012,9 @@
           }
         }
       }
+    },
+    "Folder is not writable." : {
+
     },
     "Game integrity verification is required." : {
       "localizations" : {
@@ -10151,16 +10114,16 @@
             "value" : "게임 무결성 인증이 필요합니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifisering av spillintegritet er påkrevd."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spel integriteit verificatie is vereist."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verifisering av spillintegritet er påkrevd."
           }
         },
         "pl" : {
@@ -10238,6 +10201,7 @@
       }
     },
     "Game Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10335,16 +10299,16 @@
             "value" : "게임 설정"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Innstillinger for spill"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spel Instellingen"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Innstillinger for spill"
           }
         },
         "pl" : {
@@ -10422,6 +10386,7 @@
       }
     },
     "Game title:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10519,16 +10484,16 @@
             "value" : "게임 제목:"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spill tittel:"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spel titel:"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spill tittel:"
           }
         },
         "pl" : {
@@ -10604,15 +10569,6 @@
           }
         }
       }
-    },
-    "File" : {
-
-    },
-    "Folder is not writable." : {
-
-    },
-    "Game integrity verification is required." : {
-
     },
     "Get support/Support Mythic" : {
 
@@ -11083,16 +11039,16 @@
             "value" : "게임 가져오기"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importer et parti"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importeer een spel"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer et parti"
           }
         },
         "pl" : {
@@ -11168,9 +11124,6 @@
           }
         }
       }
-    },
-    "Import a game" : {
-
     },
     "Import a Game" : {
       "localizations" : {
@@ -11823,16 +11776,16 @@
             "value" : "Windows® 게임을 실행하려면 Mythic은 Apple의 특수 번역기(\n)를 다운로드하여 Windows® 코드를 macOS로 변환해야 합니다.\n \n파일 용량은 약 1.8GB이지만 압축으로 인해 다운로드 용량은 약 600MB입니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For å kunne starte Windows: registrert: partier må mythic laste ned\nen spesiell oversetter fra Apple for å konvertere Windows: registrert: kode til macOS.\n \nDet er rundt 1.8GB i størrelse, men nedlastingen er rundt 600MB på grunn av komprimering."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "For å kunne starte Windows: registrert: partier må mythic laste ned\nen spesiell oversetter fra Apple for å konvertere Windows: registrert: kode til macOS.\n \nDet er rundt 1.8GB i størrelse, men nedlastingen er rundt 600MB på grunn av komprimering."
           }
         },
         "pl" : {
@@ -11908,9 +11861,6 @@
           }
         }
       }
-    },
-    "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
-
     },
     "Install" : {
       "localizations" : {
@@ -12832,7 +12782,11 @@
         }
       }
     },
+    "Installing [unknown]..." : {
+
+    },
     "Installing [unknown]…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13016,7 +12970,11 @@
         }
       }
     },
+    "Installing %@..." : {
+
+    },
     "Installing %@…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13201,7 +13159,6 @@
       }
     },
     "Installing Game Porting Toolkit..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13386,6 +13343,7 @@
       }
     },
     "Installing Game Porting Toolkit…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13483,16 +13441,16 @@
             "value" : "게임 포팅 툴킷 설치…"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installerer Game Porting Toolkit…"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installeer Game Porting Toolkit…"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Installerer Game Porting Toolkit…"
           }
         },
         "pl" : {
@@ -13568,9 +13526,6 @@
           }
         }
       }
-    },
-    "Installing Game Porting Toolkit…" : {
-
     },
     "It appears loading's taking a while." : {
       "localizations" : {
@@ -14406,13 +14361,13 @@
             "value" : "시작 %@"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start %@"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Start %@"
@@ -14491,9 +14446,6 @@
           }
         }
       }
-    },
-    "Launch %@" : {
-
     },
     "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
       "localizations" : {
@@ -14961,13 +14913,13 @@
             "value" : "macOS"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "macOS"
@@ -15145,16 +15097,16 @@
             "value" : "Windows® 애플리케이션용 컨테이너 관리"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrer beholdere for Windows: registrert: applikasjoner"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Manage containers for Windows® applications"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrer beholdere for Windows: registrert: applikasjoner"
           }
         },
         "pl" : {
@@ -15230,12 +15182,6 @@
           }
         }
       }
-    },
-    "macOS" : {
-
-    },
-    "Manage containers for Windows® applications" : {
-
     },
     "MANAGEMENT" : {
       "localizations" : {
@@ -15421,6 +15367,12 @@
         }
       }
     },
+    "Modify default settings for \"%@\"" : {
+
+    },
+    "Move" : {
+
+    },
     "Move..." : {
       "localizations" : {
         "af" : {
@@ -15519,16 +15471,16 @@
             "value" : "이동..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verplaatsen..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flytt..."
           }
         },
         "pl" : {
@@ -15604,15 +15556,6 @@
           }
         }
       }
-    },
-    "Modify default settings for \"%@\"" : {
-
-    },
-    "Move" : {
-
-    },
-    "Move..." : {
-
     },
     "Mythic" : {
       "localizations" : {
@@ -16632,16 +16575,16 @@
             "value" : "성능 HUD"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ytelse HUD"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prestatie HUD"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ytelse HUD"
           }
         },
         "pl" : {
@@ -16816,16 +16759,16 @@
             "value" : "플레이스홈더"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "plassholder"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "placehomder"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "plassholder"
           }
         },
         "pl" : {
@@ -17000,16 +16943,16 @@
             "value" : "플레이"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spill"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Afspelen"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Spill"
           }
         },
         "pl" : {
@@ -17085,15 +17028,6 @@
           }
         }
       }
-    },
-    "Performance HUD" : {
-
-    },
-    "placehomder" : {
-
-    },
-    "Play" : {
-
     },
     "Progress: %lld%% (%lld/%lld objects)" : {
       "localizations" : {
@@ -17570,16 +17504,16 @@
             "value" : "라이브러리 새로 고침"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdater biblioteket"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ververs bibliotheek"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppdater biblioteket"
           }
         },
         "pl" : {
@@ -17656,10 +17590,11 @@
         }
       }
     },
-    "Refresh library" : {
+    "Restart Onboarding..." : {
 
     },
     "Restart Onboarding…" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -17941,16 +17876,16 @@
             "value" : "망막 모드"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retina Modus"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Retina modus"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retina Modus"
           }
         },
         "pl" : {
@@ -18026,9 +17961,6 @@
           }
         }
       }
-    },
-    "Retina Mode" : {
-
     },
     "Retry" : {
       "localizations" : {
@@ -18312,16 +18244,16 @@
             "value" : "검색"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Søk"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoeken"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Søk"
           }
         },
         "pl" : {
@@ -18397,9 +18329,6 @@
           }
         }
       }
-    },
-    "Search" : {
-
     },
     "Select a game:" : {
       "localizations" : {
@@ -19603,16 +19532,16 @@
             "value" : "설치 시작"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starter installasjon"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Installatie starten"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starter installasjon"
           }
         },
         "pl" : {
@@ -19688,9 +19617,6 @@
           }
         }
       }
-    },
-    "Starting installation" : {
-
     },
     "Stop" : {
       "localizations" : {
@@ -20711,16 +20637,16 @@
             "value" : "macOS에서 Windows® 게임을 플레이할 수 있는 백엔드가 업데이트되었습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bakgrunnen som lar deg spille Windows:Registrert: spill på macOS fikk en oppdatering."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "The backend that allows you to play Windows® games on macOS just got an update."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bakgrunnen som lar deg spille Windows:Registrert: spill på macOS fikk en oppdatering."
           }
         },
         "pl" : {
@@ -20796,9 +20722,6 @@
           }
         }
       }
-    },
-    "The backend that allows you to play Windows® games on macOS just got an update." : {
-
     },
     "This process cannot be undone." : {
 
@@ -20988,6 +20911,7 @@
       }
     },
     "Thumbnail URL (optional)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21085,16 +21009,16 @@
             "value" : "썸네일 URL(선택 사항)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miniatyrbilde URL (valgfritt)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "URL van miniatuur (optioneel)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miniatyrbilde URL (valgfritt)"
           }
         },
         "pl" : {
@@ -22008,16 +21932,16 @@
             "value" : "업데이트 가능!"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdatering tilgjengelig!"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Update beschikbaar!"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppdatering tilgjengelig!"
           }
         },
         "pl" : {
@@ -22192,16 +22116,16 @@
             "value" : "확인"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verifiser"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifiëren"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verifiser"
           }
         },
         "pl" : {
@@ -22277,12 +22201,6 @@
           }
         }
       }
-    },
-    "Update available!" : {
-
-    },
-    "Verify" : {
-
     },
     "Verify the game's integrity" : {
       "localizations" : {
@@ -22937,16 +22855,16 @@
             "value" : "이 게임을 뭐라고 불러야 할까요?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hva skal vi kalle dette spillet?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hoe moeten we dit spel noemen?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hva skal vi kalle dette spillet?"
           }
         },
         "pl" : {
@@ -23022,9 +22940,6 @@
           }
         }
       }
-    },
-    "What should we call this game?" : {
-
     },
     "Where do you want the bottle's base path to be located?" : {
 
@@ -23498,16 +23413,16 @@
             "value" : "Windows"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vinduer"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vensters"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vinduer"
           }
         },
         "pl" : {
@@ -23583,9 +23498,6 @@
           }
         }
       }
-    },
-    "Windows" : {
-
     },
     "Wine" : {
       "localizations" : {

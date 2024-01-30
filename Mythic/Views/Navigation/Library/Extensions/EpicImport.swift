@@ -70,7 +70,7 @@ extension LibraryView.GameImportView {
                             .help("Folder is not writable.")
                     }
                     
-                    Button("Browse…") {
+                    Button("Browse...") {
                         let openPanel = NSOpenPanel()
                         openPanel.allowedContentTypes = [
                             game.platform == .macOS ? .exe : nil,

@@ -87,10 +87,10 @@ struct MythicApp: App {
         
         .commands {
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates…", action: updaterController.updater.checkForUpdates)
+                Button("Check for Updates...", action: updaterController.updater.checkForUpdates)
                     .disabled(!updaterController.updater.canCheckForUpdates)
                 
-                Button("Restart Onboarding…") {
+                Button("Restart Onboarding...") {
                     isOnboardingPresented = true
                 }
             }

@@ -138,7 +138,7 @@ extension OnboardingView {
             // MARK: Download Sheet
             .sheet(isPresented: $isDownloadSheetPresented) {
                 VStack {
-                    Text("Downloading Game Porting Toolkit…")
+                    Text("Downloading Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
                     HStack {
@@ -169,7 +169,7 @@ extension OnboardingView {
             // MARK: Install Sheet
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
-                    Text("Installing Game Porting Toolkit…")
+                    Text("Installing Game Porting Toolkit...")
                     
                     HStack {
                         Text("\(Int(installProgress * 100))%")

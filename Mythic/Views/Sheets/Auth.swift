@@ -85,7 +85,7 @@ struct AuthView: View {
             Text("\nEnter the 'authorisationCode' from the JSON response in the field below.")
             
             HStack {
-                TextField("Enter authorisation key…", text: $code)
+                TextField("Enter authorisation key...", text: $code)
                     .onSubmit {
                         Task(priority: .userInitiated) { await submitToLegendary() }
                     }
