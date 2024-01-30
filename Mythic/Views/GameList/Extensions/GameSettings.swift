@@ -92,7 +92,9 @@ extension GameListView {
                             Form {
                                 Section("File", isExpanded: $isFileSectionExpanded) {
                                     HStack {
-                                        Text("Move")
+                                        Text("Move \(game.title)")
+                                        
+                                        Spacer()
                                         
                                         Button("Move...") {
                                             let openPanel = NSOpenPanel()

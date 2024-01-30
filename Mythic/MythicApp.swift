@@ -58,7 +58,9 @@ struct MythicApp: App {
                     }
                 }
                 .task(priority: .background) {
-                    await Wine.boot(name: "Default") { _ in }
+                    if Libraries.isInstalled() {
+                        await Wine.boot(name: "Default") { _ in }
+                    }
                 }
             
             // MARK: - Other Properties
