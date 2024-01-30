@@ -213,12 +213,14 @@ struct HomeView: View {
                 // MARK: View 2 (Bottom)
                 VStack {
                     NotImplementedView()
+                    // WineView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .cornerRadius(20)
             }
         }
+        .navigationTitle("Home")
         .padding()
         .alert(isPresented: $isAlertPresented) { // TODO: Note, add progressview for homeview play button
             switch activeAlert {

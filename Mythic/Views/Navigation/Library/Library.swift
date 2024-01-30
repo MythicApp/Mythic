@@ -31,6 +31,8 @@ struct LibraryView: View {
     var body: some View {
         GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
         
+            .navigationTitle("Library")
+        
         // MARK: - Toolbar
             .toolbar {
                 // MARK: Add Game Button

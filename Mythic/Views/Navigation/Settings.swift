@@ -24,6 +24,7 @@ struct SettingsView: View {
         // TODO: VKD3D
         // TODO: winecfg button
         // TODO: windows version
+            .navigationTitle("Settings")
     }
 }
 

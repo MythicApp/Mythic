@@ -25,16 +25,8 @@ struct WineView: View {
     @State private var isDeletionAlertPresented = false
     
     var body: some View {
-        HStack {
-            Text("All Bottles")
-                .font(.title)
-                .multilineTextAlignment(.leading)
-            
-            Spacer()
-        }
-        .padding()
         if var bottles = Wine.allBottles {
-            List {
+            Form {
                 ForEach(Array(bottles.keys), id: \.self) { name in
                     HStack {
                         Text(name)
@@ -67,7 +59,8 @@ struct WineView: View {
                     }
                 }
             }
-            .padding()
+            .navigationTitle("Bottles")
+            .formStyle(.grouped)
             .onChange(of: bottles) { _, newValue in
                 bottles = newValue
             }

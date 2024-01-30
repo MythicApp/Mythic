@@ -31,6 +31,8 @@ struct StoreView: View {
             urlString: urlString
         )
         
+        .navigationTitle("Store")
+        
         .toolbar {
             
             // FIXME: Loading view update creates view update race condition with webview

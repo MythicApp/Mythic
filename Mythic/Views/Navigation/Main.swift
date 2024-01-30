@@ -72,14 +72,17 @@ struct MainView: View {
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
                             .foregroundStyle(.primary)
+                            .help("Everything in one place")
                     }
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
                             .foregroundStyle(.primary)
+                            .help("View your games")
                     }
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
                             .foregroundStyle(.primary)
+                            .help("Purchase new games from Epic")
                     }
                 }
                 
@@ -98,10 +101,12 @@ struct MainView: View {
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")
                             .foregroundStyle(.primary)
+                            .help("Configure Mythic")
                     }
                     NavigationLink(destination: SupportView()) {
                         Label("Support", systemImage: "questionmark.bubble")
                             .foregroundStyle(.primary)
+                            .help("Get support/Support Mythic")
                     }
                 }
                 
@@ -287,6 +292,7 @@ struct MainView: View {
                     Button(action: toggleSidebar, label: {
                         Image(systemName: "sidebar.left")
                     })
+                    .help("Toggle sidebar")
                 }
             }
             

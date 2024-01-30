@@ -1010,9 +1010,6 @@
     "Add a bottle" : {
 
     },
-    "All Bottles" : {
-
-    },
     "An error occurred." : {
       "localizations" : {
         "ar" : {
@@ -2014,6 +2011,9 @@
         }
       }
     },
+    "Bottles" : {
+
+    },
     "Browse..." : {
       "localizations" : {
         "ar" : {
@@ -2729,6 +2729,9 @@
           }
         }
       }
+    },
+    "Configure Mythic" : {
+
     },
     "Create a bottle" : {
 
@@ -5207,6 +5210,9 @@
         }
       }
     },
+    "Everything in one place" : {
+
+    },
     "Failed to boot \"%@.\"" : {
 
     },
@@ -5501,6 +5507,9 @@
 
     },
     "Game integrity verification is required." : {
+
+    },
+    "Get support/Support Mythic" : {
 
     },
     "here." : {
@@ -9233,6 +9242,9 @@
         }
       }
     },
+    "Purchase new games from Epic" : {
+
+    },
     "RECENTLY PLAYED" : {
       "localizations" : {
         "ar" : {
@@ -11524,6 +11536,9 @@
         }
       }
     },
+    "Toggle sidebar" : {
+
+    },
     "Uninstall" : {
       "localizations" : {
         "ar" : {
@@ -12239,6 +12254,9 @@
           }
         }
       }
+    },
+    "View your games" : {
+
     },
     "Welcome to Mythic!" : {
       "localizations" : {
