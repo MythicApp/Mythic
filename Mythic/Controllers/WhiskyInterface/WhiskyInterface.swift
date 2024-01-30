@@ -41,7 +41,7 @@ class WhiskyInterface {
         
         if let bottlePaths = getBottlePaths() {
             for path in bottlePaths {
-                if let bottleURL = URL(string: path),
+                if let bottleURL = URL(string: path), // use fileURL: alternatively
                    let metadata = getBottleMetadata(bottleURL: bottleURL) {
                     let bottle = Bottle(path: path, metadata: metadata)
                     bottles.append(bottle)

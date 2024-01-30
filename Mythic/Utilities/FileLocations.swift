@@ -87,6 +87,19 @@ class FileLocations {
         return nil
     }()
     
+    static func isWritableFolder(url: URL) -> Bool { // does the same as files.isWritableFile, just a second opinion
+        let tempFileName = "Mythic_temp\(UUID().uuidString)"
+        let tempFileURL = url.appendingPathComponent(tempFileName)
+
+        do {
+            try String().write(to: tempFileURL, atomically: true, encoding: .utf8)
+            try FileManager.default.removeItem(at: tempFileURL)
+            return true
+        } catch {
+            return false
+        }
+    }
+    
     // MARK: - User Containers Directory
     /** The current user's Containers directory.
      

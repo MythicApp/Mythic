@@ -74,7 +74,7 @@ class LocalGames {
             }
         case .windows:
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-            guard Wine.bottleExists(url: bottle.url) else { throw Wine.PrefixDoesNotExistError() }
+            guard Wine.bottleExists(url: bottle.url) else { throw Wine.BottleDoesNotExistError() }
             
             VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")

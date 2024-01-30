@@ -91,26 +91,35 @@ extension GameListView {
                         
                             Form {
                                 Section("File", isExpanded: $isFileSectionExpanded) {
-                                    Button("Move...") {
-                                        let openPanel = NSOpenPanel()
-                                        openPanel.canChooseDirectories = true
-                                        openPanel.allowsMultipleSelection = false
+                                    HStack {
+                                        Text("Move")
                                         
-                                        if openPanel.runModal() == .OK {
-                                            // game.path = openPanel.urls.first?.path ?? .init()
-                                            /* TODO: TODO
-                                             usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
-
-                                             positional arguments:
-                                               <App Name>       Name of the app
-                                               <New Base Path>  Directory to move game folder to
-
-                                             options:
-                                               -h, --help       show this help message and exit
-                                               --skip-move      Only change legendary database, do not move files (e.g. if
-                                                                already moved)
-
-                                             */
+                                        Button("Move...") {
+                                            let openPanel = NSOpenPanel()
+                                            openPanel.canChooseDirectories = true
+                                            openPanel.allowsMultipleSelection = false
+                                            openPanel.canCreateDirectories = true
+                                            
+                                            if openPanel.runModal() == .OK {
+                                                if game.isLegendary {
+                                                    // game.path = openPanel.urls.first?.path ?? .init()
+                                                    /* TODO: TODO
+                                                     usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
+                                                     
+                                                     positional arguments:
+                                                     <App Name>       Name of the app
+                                                     <New Base Path>  Directory to move game folder to
+                                                     
+                                                     options:
+                                                     -h, --help       show this help message and exit
+                                                     --skip-move      Only change legendary database, do not move files (e.g. if
+                                                     already moved)
+                                                     
+                                                     */
+                                                } else {
+                                                    
+                                                }
+                                            }
                                         }
                                     }
                                 }

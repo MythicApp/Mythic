@@ -440,7 +440,7 @@ class Legendary {
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.
-        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error }
+        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error } // FIXME: use withcheckedthrowingcontinuation like whisky rosetta2.swift
     }
     
     static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
@@ -450,7 +450,7 @@ class Legendary {
         }
         
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.bottleExists(url: bottle.url) else { throw Wine.PrefixDoesNotExistError() }
+        guard Wine.bottleExists(url: bottle.url) else { throw Wine.BottleDoesNotExistError() }
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")

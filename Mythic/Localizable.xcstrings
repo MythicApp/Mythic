@@ -717,6 +717,9 @@
         }
       }
     },
+    "%@ Settings" : {
+
+    },
     "%lld%%" : {
       "localizations" : {
         "ar" : {
@@ -1004,6 +1007,12 @@
         }
       }
     },
+    "Add a bottle" : {
+
+    },
+    "All Bottles" : {
+
+    },
     "An error occurred." : {
       "localizations" : {
         "ar" : {
@@ -1290,6 +1299,9 @@
       }
     },
     "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
+
+    },
+    "Are you sure you want to delete \"%@\"?" : {
 
     },
     "Are you sure you want to sign out?" : {
@@ -2003,7 +2015,6 @@
       }
     },
     "Browse..." : {
-      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2432,6 +2443,9 @@
         }
       }
     },
+    "Choose a name for your bottle:" : {
+
+    },
     "Choose the game's native platform:" : {
       "localizations" : {
         "ar" : {
@@ -2715,6 +2729,9 @@
           }
         }
       }
+    },
+    "Create a bottle" : {
+
     },
     "Current Bottle: Default" : {
 
@@ -3002,6 +3019,12 @@
           }
         }
       }
+    },
+    "Delete" : {
+
+    },
+    "Delete \"%@\"" : {
+
     },
     "Dismiss loading" : {
       "localizations" : {
@@ -4329,7 +4352,7 @@
     "Enter game path or click \"Browse…\"" : {
 
     },
-    "Enter URL here..." : {
+    "Enter Thumbnail URL here... (optional)" : {
 
     },
     "Error" : {
@@ -5184,6 +5207,9 @@
         }
       }
     },
+    "Failed to boot \"%@.\"" : {
+
+    },
     "Failed to load the webpage." : {
       "localizations" : {
         "ar" : {
@@ -5471,13 +5497,10 @@
     "File" : {
 
     },
+    "Folder is not writable." : {
+
+    },
     "Game integrity verification is required." : {
-
-    },
-    "Game Settings" : {
-
-    },
-    "Game title:" : {
 
     },
     "here." : {
@@ -8334,6 +8357,12 @@
         }
       }
     },
+    "Modify default settings for \"%@\"" : {
+
+    },
+    "Move" : {
+
+    },
     "Move..." : {
 
     },
@@ -9203,12 +9232,6 @@
           }
         }
       }
-    },
-    "raaa %@" : {
-
-    },
-    "raaah %@" : {
-
     },
     "RECENTLY PLAYED" : {
       "localizations" : {
@@ -11214,6 +11237,9 @@
     "The backend that allows you to play Windows® games on macOS just got an update." : {
 
     },
+    "This process cannot be undone." : {
+
+    },
     "This will sign you out of the account \"%@\"." : {
       "localizations" : {
         "ar" : {
@@ -11355,9 +11381,6 @@
           }
         }
       }
-    },
-    "Thumbnail URL (optional)" : {
-
     },
     "Time for an update!" : {
       "localizations" : {
@@ -12362,6 +12385,12 @@
     "What should we call this game?" : {
 
     },
+    "Where do you want the bottle's base path to be located?" : {
+
+    },
+    "Where is the game located?" : {
+
+    },
     "Whisky installed!" : {
       "localizations" : {
         "ar" : {
@@ -12790,6 +12819,9 @@
           }
         }
       }
+    },
+    "You can't delete the default bottle." : {
+
     },
     "You probably left this open while installing. Your install has finished." : {
 

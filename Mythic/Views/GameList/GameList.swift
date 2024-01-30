@@ -302,7 +302,7 @@ struct GameListView: View {
                                                                     )
                                                                 }
                                                             } else {
-                                                                throw Wine.PrefixDoesNotExistError()
+                                                                throw Wine.BottleDoesNotExistError()
                                                             }
                                                         } catch {
                                                             LaunchError.game = game

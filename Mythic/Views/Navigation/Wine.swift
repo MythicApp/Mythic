@@ -14,18 +14,98 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import OSLog
 
 struct WineView: View {
+    @State private var bottleNameToDelete: String = .init()
+    
+    @State private var isBottleCreationViewPresented = false
+    @State private var isBottleSettingsViewPresented = false
+    
+    @State private var isDeletionAlertPresented = false
+    
     var body: some View {
-        NotImplementedView()
-        if let bottles = Wine.allBottles {
+        HStack {
+            Text("All Bottles")
+                .font(.title)
+                .multilineTextAlignment(.leading)
+            
+            Spacer()
+        }
+        .padding()
+        if var bottles = Wine.allBottles {
             List {
                 ForEach(Array(bottles.keys), id: \.self) { name in
-                    Text("raaa \(name)")
-                    Text("raaah \(bottles[name]!.url.prettyPath())")
+                    HStack {
+                        Text(name)
+                        Text(bottles[name]!.url.prettyPath())
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .scaledToFit()
+                        
+                        Spacer()
+                        Button(action: {
+                            isBottleSettingsViewPresented = true
+                        }, label: {
+                            Image(systemName: "gear")
+                        })
+                        .buttonStyle(.borderless)
+                        .help("Modify default settings for \"\(name)\"")
+                        
+                        Button(action: {
+                            if name != "Default" {
+                                bottleNameToDelete = name
+                                isDeletionAlertPresented = true
+                            }
+                        }, label: {
+                            Image(systemName: "xmark.bin")
+                        })
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                        .opacity(name == "Default" ? 0.5 : 1)
+                        .help(name == "Default" ? "You can't delete the default bottle." : "Delete \"\(name)\"")
+                    }
                 }
             }
             .padding()
+            .onChange(of: bottles) { _, newValue in
+                bottles = newValue
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isBottleCreationViewPresented = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .help("Add a bottle")
+                }
+            }
+            .sheet(isPresented: $isBottleCreationViewPresented) {
+                BottleCreationView(isPresented: $isBottleCreationViewPresented)
+            }
+            .sheet(isPresented: $isBottleSettingsViewPresented) {
+                // BottleSettingsView()
+            }
+            .alert(isPresented: $isDeletionAlertPresented) {
+                Alert(
+                    title: .init("Are you sure you want to delete \"\(bottleNameToDelete)\"?"),
+                    message: .init("This process cannot be undone."),
+                    primaryButton: .destructive(.init("Delete")) {
+                        do {
+                            _ = try Wine.deleteBottle(url: bottles[bottleNameToDelete]!.url) // FIXME: this is where the crashes will happen
+                        } catch {
+                            Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
+                            bottleNameToDelete = .init()
+                            isDeletionAlertPresented = false
+                        }
+                    },
+                    secondaryButton: .cancel(.init("Cancel")) {
+                        bottleNameToDelete = .init()
+                        isDeletionAlertPresented = false
+                    }
+                )
+            }
         }
     }
 }

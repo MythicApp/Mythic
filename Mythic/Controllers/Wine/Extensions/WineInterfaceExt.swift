@@ -74,8 +74,11 @@ extension Wine {
         let retinaMode: Bool // TODO: FIXME: turn into func
     }
     
-    /// Signifies that a wineprefix does not exist at a specified location.
-    struct PrefixDoesNotExistError: LocalizedError {
+    struct BottleDoesNotExistError: LocalizedError {
         var errorDescription: String? = "This bottle doesn't exist."
+    }
+    
+    struct BottleAlreadyExistsError: LocalizedError {
+        var errorDescription: String? = "This bottle already exists."
     }
 }

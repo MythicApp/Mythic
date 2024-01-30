@@ -56,7 +56,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             } else {
                 Logger.app.warning("No bottles exist, returning default")
                 Task(priority: .high) { await Wine.boot(name: "Default") { _ in } }
-                return .init()
+                return .init() // TODO: if already exists, might not get appended in time
             }
         }
         set {
@@ -291,21 +291,26 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let bottleURL = baseURL.appending(path: name)
         
         guard Libraries.isInstalled() else { completion(.failure(Libraries.NotInstalledError())); return }
-        guard files.isWritableFile(atPath: bottleURL.path) else { completion(.failure(FileLocations.FileNotModifiableError(bottleURL))); return }
-        // TODO: FIXME: !!IMPORTANT!! replace throwing async functions with completion handlers - [completion: @escaping (Result<Void, Error>) -> Void]
-        defer { VariableManager.shared.setVariable("booting", value: false) }
-        VariableManager.shared.setVariable("booting", value: true) // TODO: rember
-        
-        if allBottles?[name] == nil { // FIXME: not safe, failure will delete everything there
-            allBottles?[name] = .init(url: bottleURL, settings: settings, busy: true)
-        }
+        guard FileLocations.isWritableFolder(url: baseURL) else { completion(.failure(FileLocations.FileNotModifiableError(bottleURL))); return }
         
         if !files.fileExists(atPath: bottleURL.path) {
             do {
                 try files.createDirectory(at: bottleURL, withIntermediateDirectories: true)
             } catch {
+                completion(.failure(error))
                 log.error("Unable to create prefix directory: \(error.localizedDescription)")
             }
+        }
+        
+        // TODO: FIXME: !!IMPORTANT!! replace throwing async functions with completion handlers - [completion: @escaping (Result<Void, Error>) -> Void]
+        defer { VariableManager.shared.setVariable("booting", value: false) }
+        VariableManager.shared.setVariable("booting", value: true) // TODO: rember
+        
+        if allBottles?[name] == nil { // FIXME: may be unsafe
+            allBottles?[name] = .init(url: bottleURL, settings: settings, busy: true)
+        } else {
+            completion(.failure(BottleAlreadyExistsError()))
+            return
         }
         
         do {
@@ -330,30 +335,58 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
     
+    static func deleteBottle(url: URL) throws -> Bool {
+        guard bottleExists(url: url) else { throw BottleDoesNotExistError() }
+        
+        try files.removeItem(at: url)
+        if let bottles = allBottles { allBottles = bottles.filter { $0.value.url != url } }
+        
+        return true
+    }
+    
     // MARK: - Add Registry Key Method
     private static func addRegistryKey(bottle: Bottle, key: String, name: String, data: String, type: RegistryType) async throws {
-        guard bottleExists(url: bottle.url) else {
-            throw PrefixDoesNotExistError() // TODO: TODO
-        }
+        guard bottleExists(url: bottle.url) else { throw BottleDoesNotExistError() }
         
         _ = try await command( // FIXME: errors may create problems later
             args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
-            identifier: "regedit",
+            identifier: "regadd",
             bottleURL: bottle.url
         )
     }
     
+    // MARK: - Query Registry Key Method
+    private static func queryRegistryKey(bottle: Bottle, key: String, name: String, type: RegistryType) async throws -> String? {
+        let output = try await command(
+            args: ["reg", "query", key, "-v", name],
+            identifier: "regquery",
+            bottleURL: bottle.url
+        )
+        
+        guard let lines = String(data: output.stdout, encoding: .utf8)?.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) else { return nil }
+        guard let line = lines.first(where: { $0.contains(type.rawValue) }) else { return nil }
+        let array = line.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
+        guard let value = array.last else { return nil }
+        return String(value)
+    }
+    
     // MARK: - Toggle Retina Mode Method
-    static func toggleRetinaMode(bottle: Bottle, toggle: Bool, completion: @escaping (_ failure: Error?) -> Void) async {
+    static func toggleRetinaMode(bottle: Bottle, toggle: Bool, completion: @escaping (_ success: Bool) -> Void) async {
         do {
-            if toggle {
-                try await addRegistryKey(bottle: bottle, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
-            } else {
-                
-            }
+            try await addRegistryKey(bottle: bottle, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
+            completion(true)
         } catch {
-            completion(error)
+            completion(false)
         } // TODO: add more completion handlers where necessary
+    }
+    
+    static func getRetinaMode(bottle: Bottle, completion: @escaping (Result<Bool, Error>) -> Void) async {
+        do {
+            let output = try await Wine.queryRegistryKey(bottle: bottle, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string)
+            completion(.success(output == "y"))
+        } catch {
+            completion(.failure(error))
+        }
     }
     
     // MARK: - Prefix Exists Method
