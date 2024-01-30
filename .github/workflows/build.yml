@@ -2,30 +2,30 @@ name: Build
 
 on:
  push:
-    branches: [ main ]
+  paths:
+   - 'Mythic.xcodeproj/**'
+   - 'Mythic/**'
  pull_request:
-    branches: [ main ]
+  paths:
+   - 'Mythic.xcodeproj/**'
+   - 'Mythic/**'
+ workflow_dispatch:
 
 jobs:
  build:
     runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Install SwiftLint using Homebrew
-      run: |
-          brew install swiftlint
+    - uses: actions/checkout@v3
 
     - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
          if xcode-select --version >/dev/null 2>&1; then
-          echo "Xcode Command Line Tools is installed, skipping."
+             echo "Xcode Command Line Tools is installed, skipping."
          else
-          echo "Xcode Command Line Tools is not installed, installing."
-          xcode-select --install
+             echo "Xcode Command Line Tools is not installed, installing."
+             xcode-select --install
          fi
 
     - name: Build
-      run: |
-        xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO
+      run: xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO
