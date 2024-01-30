@@ -10200,6 +10200,9 @@
         }
       }
     },
+    "Game location" : {
+
+    },
     "Game Settings" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -18697,6 +18700,9 @@
           }
         }
       }
+    },
+    "Show in Finder" : {
+
     },
     "Sign In" : {
       "localizations" : {
