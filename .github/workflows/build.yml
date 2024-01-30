@@ -13,6 +13,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install SwiftLint using Homebrew
+      run: |
+          brew install swiftlint
+
     - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
          if xcode-select --version >/dev/null 2>&1; then
@@ -25,4 +29,3 @@ jobs:
     - name: Build
       run: |
         xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO
-      # can do [xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO], but it's better to be more specific
