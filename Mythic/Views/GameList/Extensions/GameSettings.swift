@@ -33,6 +33,8 @@ extension GameListView {
         @State private var isWineSectionExpanded: Bool = true
         @State private var isDXVKSectionExpanded: Bool = true
         
+        @State private var gamePath: String?
+        
         // MARK: - Body View
         var body: some View {
             VStack {
@@ -123,6 +125,30 @@ extension GameListView {
                                                 }
                                             }
                                         }
+                                        .disabled(gamePath == nil)
+                                    }
+                                    HStack {
+                                        VStack {
+                                            HStack {
+                                                Text("Game location")
+                                                Spacer()
+                                            }
+                                            
+                                            HStack {
+                                                Text(URL(filePath: (gamePath ?? "[Unknown]")).prettyPath()) // FIXME: 3x repetition is bad
+                                                    .foregroundStyle(.placeholder)
+                                                Spacer()
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        Button("Show in Finder") {
+                                            NSWorkspace.shared.activateFileViewerSelecting(
+                                                [URL(filePath: gamePath ?? .init())]
+                                            )
+                                        }
+                                        .disabled(gamePath == nil)
                                     }
                                 }
                                 
@@ -141,6 +167,9 @@ extension GameListView {
                                 }
                             }
                             .formStyle(.grouped)
+                    }
+                    .onAppear {
+                        gamePath = game.isLegendary ? try? Legendary.getGamePath(game: game) : game.path
                     }
                     .task {
                         if game.isLegendary {
