@@ -86,7 +86,7 @@ struct StoreView: View {
                         NSWorkspace.shared.open(url)
                     }
                 } label: {
-                    Image(systemName: "globe.europe.africa.fill")
+                    Image(systemName: "arrow.up.forward")
                 }
             }
         }
