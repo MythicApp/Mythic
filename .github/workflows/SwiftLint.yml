@@ -5,16 +5,22 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
   push:
-  workflow_dispatch:
+    paths:
+      - '.github/workflows/swiftlint.yml'
+      - '.swiftlint.yml'
+      - '**/*.swift'
+  pull_request:
+    paths:
+      - '.github/workflows/swiftlint.yml'
+      - '.swiftlint.yml'
+      - '**/*.swift'
 
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: SwiftLint
+      
+      - name: GitHub Action for SwiftLint
         uses: norio-nomura/action-swiftlint@3.2.1
-        with:
-          args: --strict
