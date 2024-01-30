@@ -217,7 +217,7 @@ class Legendary {
             // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
-                runningCommands[identifier] = task
+                runningCommands[identifier] = task // WHY
                 try task.run()
                 
                 task.waitUntilExit()
