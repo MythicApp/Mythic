@@ -24,5 +24,5 @@ jobs:
 
     - name: Build
       run: |
-        xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx CODE_SIGNING_ALLOWED=NO
+        xcodebuild build -project Mythic.xcodeproj -scheme Mythic -sdk macosx -skipMacroValidation -skipPackagePluginValidation CODE_SIGNING_ALLOWED=NO
       # can do [xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO], but it's better to be more specific
