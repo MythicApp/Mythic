@@ -3,10 +3,12 @@ name: Build
 on:
  push:
   paths:
+   - '.github/workflows/build.yml'
    - 'Mythic.xcodeproj/**'
    - 'Mythic/**'
  pull_request:
   paths:
+   - '.github/workflows/build.yml'
    - 'Mythic.xcodeproj/**'
    - 'Mythic/**'
  workflow_dispatch:
