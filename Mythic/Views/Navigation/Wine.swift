@@ -25,7 +25,7 @@ struct WineView: View {
     @State private var isDeletionAlertPresented = false
     
     var body: some View {
-        if var bottles = Wine.allBottles {
+        if let bottles = Wine.allBottles {
             Form {
                 ForEach(Array(bottles.keys), id: \.self) { name in
                     HStack {
@@ -61,9 +61,6 @@ struct WineView: View {
             }
             .navigationTitle("Bottles")
             .formStyle(.grouped)
-            .onChange(of: bottles) { _, newValue in
-                bottles = newValue
-            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {

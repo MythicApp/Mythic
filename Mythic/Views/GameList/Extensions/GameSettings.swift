@@ -42,6 +42,7 @@ extension GameListView {
                     VStack {
                          Text(game.title)
                          .font(.title)
+                         .help("ID: \(game.appName)")
                         
                         CachedAsyncImage(url: URL(
                             string: game.isLegendary
@@ -181,8 +182,11 @@ extension GameListView {
                 Spacer()
                 
                 HStack {
-                    Text("placehomder")
+                    /*
+                    Text(game.appName)
+                        .scaledToFit()
                         .foregroundStyle(.placeholder)
+                     */
                     
                     Text(game.isLegendary ? "Windows" : "macOS")
                         .foregroundStyle(.secondary)
@@ -233,7 +237,7 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: .constant(.init(isLegendary: true, title: "Game", appName: "[AppName]", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
+        game: .constant(.init(isLegendary: true, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
         gameThumbnails: .constant(.init())
     )
 }
