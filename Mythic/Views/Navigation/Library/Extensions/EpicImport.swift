@@ -36,13 +36,22 @@ extension LibraryView.GameImportView {
         
         var body: some View {
             Form {
-                Picker("Select a game:", selection: $game) {
-                    ForEach(installableGames, id: \.self) { game in
-                        Text(game.title)
+                if !installableGames.isEmpty {
+                    Picker("Select a game:", selection: $game) {
+                        ForEach(installableGames, id: \.self) { game in
+                            Text(game.title)
+                        }
+                    }
+                } else {
+                    HStack {
+                        Text("Select a game:")
+                        Spacer()
+                        ProgressView()
+                            .controlSize(.small)
                     }
                 }
                 
-                Picker("Choose the game's native platform:", selection: $platform) {
+                Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
                     ForEach(type(of: platform).allCases, id: \.self) {
                         Text($0.rawValue)
                     }
@@ -64,20 +73,22 @@ extension LibraryView.GameImportView {
                     
                     Spacer()
                     
-                    if !FileLocations.isWritableFolder(url: URL(filePath: game.path ?? .init())) ||
-                        !files.isWritableFile(atPath: game.path ?? .init()) {
+                    if !files.isReadableFile(atPath: game.path ?? .init()) {
                         Image(systemName: "exclamationmark.triangle.fill")
-                            .help("Folder is not writable.")
+                            .help("File/Folder is not readable by Mythic.")
                     }
                     
                     Button("Browse...") {
                         let openPanel = NSOpenPanel()
-                        openPanel.allowedContentTypes = [
-                            game.platform == .macOS ? .exe : nil,
-                            game.platform == .windows ? .application : nil
-                        ]
-                            .compactMap { $0 }
-                        openPanel.canChooseDirectories = game.platform == .macOS // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                        openPanel.allowedContentTypes = []
+                        if platform == .macOS { // only way to make it update on change
+                            openPanel.allowedContentTypes = [.application]
+                            openPanel.canChooseDirectories = false
+                        } else if platform == .windows {
+                            openPanel.allowedContentTypes = [.exe]
+                            openPanel.canChooseDirectories = true // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                        }
+                        
                         openPanel.allowsMultipleSelection = false
                         
                         if openPanel.runModal() == .OK {

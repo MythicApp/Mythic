@@ -7795,6 +7795,7 @@
       }
     },
     "Enter game path or click \"Browse...\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10013,6 +10014,9 @@
         }
       }
     },
+    "File/Folder is not readable by Mythic." : {
+
+    },
     "Folder is not writable." : {
 
     },
@@ -10943,6 +10947,9 @@
           }
         }
       }
+    },
+    "ID: %@" : {
+
     },
     "Import a game" : {
       "localizations" : {
@@ -16665,6 +16672,7 @@
       }
     },
     "placehomder" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

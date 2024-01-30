@@ -38,19 +38,38 @@ extension LibraryView.GameImportView {
                         }
                         
                         HStack {
-                            TextField("Enter game path or click \"Browse...\"", text: Binding(
-                                get: { game.path ?? .init() },
-                                set: { game.path = $0 }
-                            )) // TODO: if game path invalid, disable done and add warning icon with tooltip
+                            // TODO: turn this whole HStack into a whole separate view
+                            VStack {
+                                HStack { // FIXME: jank
+                                    Text("Where is the game located?")
+                                    Spacer()
+                                }
+                                HStack {
+                                    Text(URL(filePath: game.path ?? .init()).prettyPath())
+                                        .foregroundStyle(.placeholder)
+                                    
+                                    Spacer()
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            if !files.isReadableFile(atPath: game.path ?? .init()) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .help("File/Folder is not readable by Mythic.")
+                            }
                             
                             Button("Browse...") {
                                 let openPanel = NSOpenPanel()
-                                openPanel.allowedContentTypes = [
-                                    game.platform == .macOS ? .exe : nil,
-                                    game.platform == .windows ? .application : nil
-                                ]
-                                    .compactMap { $0 }
-                                openPanel.canChooseDirectories = game.platform == .macOS // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                                openPanel.allowedContentTypes = []
+                                if platform == .macOS { // only way to make it update on change
+                                    openPanel.allowedContentTypes = [.application]
+                                    openPanel.canChooseDirectories = false
+                                } else if platform == .windows {
+                                    openPanel.allowedContentTypes = [.exe]
+                                    openPanel.canChooseDirectories = true // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                                }
+                                
                                 openPanel.allowsMultipleSelection = false
                                 
                                 if openPanel.runModal() == .OK {
