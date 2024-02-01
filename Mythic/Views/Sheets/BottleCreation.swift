@@ -66,6 +66,7 @@ struct BottleCreationView: View {
                 Button("Cancel", role: .cancel) {
                     isPresented = false
                 }
+                .disabled(isBooting) // FIXME: replace with confirmation alert if isBooting
                 
                 Spacer()
                 

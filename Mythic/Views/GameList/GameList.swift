@@ -346,7 +346,7 @@ struct GameListView: View {
                                                 .padding()
                                         }
                                     } else { // MARK: For games that aren't installed
-                                        // MARK: Game Installation View
+                                        // MARK: Game Installation View // FIXME: can also happen during updates and that doesnt show
                                         if variables.getVariable("installing") == game { // TODO: Add for verificationStatus // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                                             Button {
                                                 isInstallStatusViewPresented = true

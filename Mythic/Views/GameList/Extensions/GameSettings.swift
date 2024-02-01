@@ -22,7 +22,7 @@ extension GameListView {
     // MARK: - SettingsView
     /// An extension of the `GameListView` that defines the `SettingsView` SwiftUI view for game settings.
     struct SettingsView: View {
-        
+        // FIXME: IN DIRE NEED OF REFACTORING THE RETINA IMPLEMENTATION
         @ObservedObject private var variables: VariableManager = .shared
         
         // MARK: - Bindings
