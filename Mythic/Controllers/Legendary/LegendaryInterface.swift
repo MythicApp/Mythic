@@ -450,7 +450,7 @@ class Legendary {
         }
         
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.bottleExists(url: bottle.url) else { throw Wine.BottleDoesNotExistError() }
+        guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
@@ -465,7 +465,11 @@ class Legendary {
             ].compactMap { $0 },
             useCache: false,
             identifier: "launch_\(game.appName)",
-            additionalEnvironmentVariables: ["WINEPREFIX": bottle.url.path]
+            additionalEnvironmentVariables: [
+                "WINEPREFIX": bottle.url.path,
+                "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
+                "WINEMSYNC": bottle.settings.msync ? "1" : "0"
+            ]
         )
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: false)

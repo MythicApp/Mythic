@@ -63,15 +63,20 @@ extension Wine {
     }
     
     struct Bottle: Codable, Hashable {
-        let url: URL
-        let settings: BottleSettings
-        let busy: Bool
+        var url: URL
+        var settings: BottleSettings
+        var busy: Bool
     }
     
     struct BottleSettings: Codable, Hashable {
-        let metalHUD: Bool
-        let msync: Bool
-        let retinaMode: Bool // TODO: FIXME: turn into func
+        var metalHUD: Bool
+        var msync: Bool
+        var retinaMode: Bool // TODO: FIXME: turn into func
+    }
+    
+    enum BottleScope: String, CaseIterable {
+        case individual = "Individual"
+        case global = "Global"
     }
     
     struct BottleDoesNotExistError: LocalizedError {
@@ -80,5 +85,9 @@ extension Wine {
     
     struct BottleAlreadyExistsError: LocalizedError {
         var errorDescription: String? = "This bottle already exists."
+    }
+    
+    struct UnableToQueryRegistyError: LocalizedError {
+        var errorDescription: String? = "Unable to query registry of bottle."
     }
 }

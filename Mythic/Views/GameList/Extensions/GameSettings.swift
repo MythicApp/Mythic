@@ -23,6 +23,8 @@ extension GameListView {
     /// An extension of the `GameListView` that defines the `SettingsView` SwiftUI view for game settings.
     struct SettingsView: View {
         
+        @ObservedObject private var variables: VariableManager = .shared
+        
         // MARK: - Bindings
         @Binding var isPresented: Bool
         @Binding var game: Game
@@ -35,14 +37,20 @@ extension GameListView {
         
         @State private var gamePath: String?
         
+        @State private var bottleScope: Wine.BottleScope = .individual
+        @State private var selectedBottle: String = Wine.allBottles?.keys.first ?? "Default"
+        
+        @State private var retinaMode: Bool = Wine.defaultBottleSettings.retinaMode
+        @State private var modifyingRetinaMode: Bool = true
+        
         // MARK: - Body View
         var body: some View {
             VStack {
                 HStack {
                     VStack {
-                         Text(game.title)
-                         .font(.title)
-                         .help("ID: \(game.appName)")
+                        Text(game.title)
+                            .font(.title)
+                            .help("ID: \(game.appName)")
                         
                         CachedAsyncImage(url: URL(
                             string: game.isLegendary
@@ -89,85 +97,158 @@ extension GameListView {
                         VStack {
                             // TODO: alternate wine
                             // TODO: !! make sure base path for games is in main settings
-                            
                         }
                         
-                            Form {
-                                Section("File", isExpanded: $isFileSectionExpanded) {
-                                    HStack {
-                                        Text("Move \(game.title)")
+                        Form {
+                            Section("File", isExpanded: $isFileSectionExpanded) {
+                                HStack {
+                                    Text("Move \(game.title)")
+                                    
+                                    Spacer()
+                                    
+                                    Button("Move...") {
+                                        let openPanel = NSOpenPanel()
+                                        openPanel.canChooseDirectories = true
+                                        openPanel.allowsMultipleSelection = false
+                                        openPanel.canCreateDirectories = true
                                         
-                                        Spacer()
-                                        
-                                        Button("Move...") {
-                                            let openPanel = NSOpenPanel()
-                                            openPanel.canChooseDirectories = true
-                                            openPanel.allowsMultipleSelection = false
-                                            openPanel.canCreateDirectories = true
-                                            
-                                            if openPanel.runModal() == .OK {
-                                                if game.isLegendary {
-                                                    // game.path = openPanel.urls.first?.path ?? .init()
-                                                    /* TODO: TODO
-                                                     usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
-                                                     
-                                                     positional arguments:
-                                                     <App Name>       Name of the app
-                                                     <New Base Path>  Directory to move game folder to
-                                                     
-                                                     options:
-                                                     -h, --help       show this help message and exit
-                                                     --skip-move      Only change legendary database, do not move files (e.g. if
-                                                     already moved)
-                                                     
-                                                     */
-                                                } else {
-                                                    
-                                                }
+                                        if openPanel.runModal() == .OK {
+                                            if game.isLegendary {
+                                                // game.path = openPanel.urls.first?.path ?? .init()
+                                                /* TODO: TODO
+                                                 usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
+                                                 
+                                                 positional arguments:
+                                                 <App Name>       Name of the app
+                                                 <New Base Path>  Directory to move game folder to
+                                                 
+                                                 options:
+                                                 -h, --help       show this help message and exit
+                                                 --skip-move      Only change legendary database, do not move files (e.g. if
+                                                 already moved)
+                                                 
+                                                 */
+                                            } else {
+                                                
                                             }
                                         }
-                                        .disabled(gamePath == nil)
                                     }
-                                    HStack {
-                                        VStack {
-                                            HStack {
-                                                Text("Game location")
-                                                Spacer()
-                                            }
-                                            
-                                            HStack {
-                                                Text(URL(filePath: (gamePath ?? "[Unknown]")).prettyPath()) // FIXME: 3x repetition is bad
-                                                    .foregroundStyle(.placeholder)
-                                                Spacer()
-                                            }
+                                    .disabled(gamePath == nil)
+                                }
+                                HStack {
+                                    VStack {
+                                        HStack {
+                                            Text("Game location")
+                                            Spacer()
                                         }
                                         
-                                        Spacer()
-                                        
-                                        Button("Show in Finder") {
-                                            NSWorkspace.shared.activateFileViewerSelecting(
-                                                [URL(filePath: gamePath ?? .init())]
-                                            )
+                                        HStack {
+                                            Text(URL(filePath: (gamePath ?? "[Unknown]")).prettyPath()) // FIXME: 3x repetition is bad
+                                                .foregroundStyle(.placeholder)
+                                            Spacer()
                                         }
-                                        .disabled(gamePath == nil)
                                     }
-                                }
-                                
-                                Section("Wine", isExpanded: $isWineSectionExpanded) {
-                                    Text("Current Bottle: Default") // picker
                                     
-                                    Toggle("Performance HUD", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                    Spacer()
                                     
-                                    Toggle("Retina Mode", isOn: Binding(get: {return .init()}, set: {_ in}))
-                                    
-                                    Toggle("Enhanced Sync (MSync)", isOn: Binding(get: {return .init()}, set: {_ in}))
-                                }
-                                
-                                Section("DXVK", isExpanded: $isDXVKSectionExpanded) {
-                                    Toggle("DXVK", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                    Button("Show in Finder") {
+                                        NSWorkspace.shared.activateFileViewerSelecting(
+                                            [URL(filePath: gamePath ?? .init())]
+                                        )
+                                    }
+                                    .disabled(gamePath == nil)
                                 }
                             }
-                            .formStyle(.grouped)
+                            
+                            Section("Wine", isExpanded: $isWineSectionExpanded) {
+                                if let bottles = Wine.allBottles {
+                                    if variables.getVariable("booting") != true {
+                                        /* TODO: add support for different games having different configs under the same bottle
+                                         Picker("Bottle Scope", selection: $bottleScope) {
+                                         ForEach(type(of: bottleScope).allCases, id: \.self) {
+                                         Text($0.rawValue)
+                                         }
+                                         }
+                                         .pickerStyle(InlinePickerStyle())
+                                         */
+                                        
+                                        Picker("Current Bottle", selection: $selectedBottle) { // also remember to make that the bottle it launches with
+                                            ForEach(Array((Wine.allBottles ?? bottles).keys), id: \.self) { name in
+                                                Text(name)
+                                            }
+                                        }
+                                        .disabled(!bottles.contains { $0.key == "Default" })
+                                    } else {
+                                        HStack {
+                                            Text("Current bottle:")
+                                            Spacer()
+                                            ProgressView()
+                                                .controlSize(.small)
+                                        }
+                                    }
+                                }
+                                
+                                if Wine.allBottles?[selectedBottle] != nil {
+                                    Toggle("Performance HUD", isOn: Binding(
+                                        get: { /* TODO: add support for different games having different configs under the same bottle
+                                                switch bottleScope {
+                                                case .individual:
+                                                return Wine.individualBottleSettings![game.appName]!.metalHUD
+                                                case .global: */
+                                            return Wine.allBottles![selectedBottle]!.settings.metalHUD
+                                            // }
+                                        }, set: { /* TODO: add support for different games having different configs under the same bottle
+                                                   switch bottleScope {
+                                                   case .individual:
+                                                   <#code#>
+                                                   case .global: */
+                                            Wine.allBottles![selectedBottle]!.settings.metalHUD = $0
+                                            // }
+                                        }
+                                    ))
+                                    .disabled(variables.getVariable("booting") == true)
+                                    
+                                    if !modifyingRetinaMode {
+                                        Toggle("Retina Mode", isOn: Binding( // FIXME: make retina mode work!!
+                                            get: { retinaMode },
+                                            set: { value in
+                                                Task(priority: .userInitiated) {
+                                                    modifyingRetinaMode = true
+                                                    do {
+                                                        try await Wine.toggleRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url, toggle: value)
+                                                        retinaMode = value
+                                                        Wine.allBottles![selectedBottle]!.settings.retinaMode = value
+                                                        modifyingRetinaMode = false
+                                                    } catch { }
+                                                }
+                                            }
+                                                                           ))
+                                        .disabled(variables.getVariable("booting") == true)
+                                        .disabled(modifyingRetinaMode)
+                                    } else {
+                                        HStack {
+                                            Text("Retina Mode")
+                                            Spacer()
+                                            ProgressView()
+                                                .controlSize(.small)
+                                        }
+                                    }
+                                    
+                                    Toggle("Enhanced Sync (MSync)", isOn: Binding(
+                                        get: { return Wine.allBottles![selectedBottle]!.settings.msync },
+                                        set: { Wine.allBottles![selectedBottle]!.settings.msync = $0 }
+                                    ))
+                                    .disabled(variables.getVariable("booting") == true)
+                                }
+                            }
+                            
+                            Section("DXVK", isExpanded: $isDXVKSectionExpanded) {
+                                Toggle("DXVK", isOn: Binding(get: {return .init()}, set: {_ in}))
+                                    .help("Sorry, this isn't implemented yet!")
+                                    .disabled(true)
+                            }
+                        }
+                        .formStyle(.grouped)
                     }
                     .onAppear {
                         gamePath = game.isLegendary ? try? Legendary.getGamePath(game: game) : game.path
@@ -177,15 +258,23 @@ extension GameListView {
                             metadata = try? Legendary.getGameMetadata(game: game) // FIXME: currently unused
                         }
                     }
+                    .task {
+                        await Wine.getRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url) { result in
+                            if case .success(let success) = result {
+                                retinaMode = success
+                                modifyingRetinaMode = false
+                            }
+                        }
+                    }
                 }
                 
                 Spacer()
                 
                 HStack {
                     /*
-                    Text(game.appName)
-                        .scaledToFit()
-                        .foregroundStyle(.placeholder)
+                     Text(game.appName)
+                     .scaledToFit()
+                     .foregroundStyle(.placeholder)
                      */
                     
                     Text(game.isLegendary ? "Windows" : "macOS")
@@ -204,6 +293,8 @@ extension GameListView {
                         Image(systemName: "checkmark.gobackward")
                         Text("Verify")
                     }
+                    .help("Not implemented")
+                    .disabled(true)
                     
                     Button {
                         isPresented = false
@@ -211,6 +302,8 @@ extension GameListView {
                         Image(systemName: "xmark.bin")
                         Text("Uninstall")
                     }
+                    .help("Not implemented")
+                    .disabled(true)
                     
                     Button {
                         isPresented = false
@@ -218,6 +311,8 @@ extension GameListView {
                         Image(systemName: "play")
                         Text("Play")
                     }
+                    .help("Not implemented")
+                    .disabled(true)
                     
                     Button {
                         isPresented =  false

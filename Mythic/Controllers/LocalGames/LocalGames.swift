@@ -74,15 +74,19 @@ class LocalGames {
             }
         case .windows:
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-            guard Wine.bottleExists(url: bottle.url) else { throw Wine.BottleDoesNotExistError() }
+            guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
             
             VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             _ = try await Wine.command(
-                args: [game.path!], // FIXME: TODO: more advanced implementation
+                args: [game.path!],
                 identifier: "launch_\(game.title)",
-                bottleURL: bottle.url // TODO: whichever prefix is set for it or as default
+                bottleURL: bottle.url, // TODO: whichever prefix is set for it or as default
+                additionalEnvironmentVariables: [
+                    "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
+                    "WINEMSYNC": bottle.settings.msync ? "1" : "0"
+                ]
             )
             
         case .none: do {  }

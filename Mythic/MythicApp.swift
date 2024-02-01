@@ -62,6 +62,13 @@ struct MythicApp: App {
                         await Wine.boot(name: "Default") { _ in }
                     }
                 }
+                .task(priority: .high) {
+                    if let bottles = Wine.allBottles {
+                        for (key, value) in bottles where !Wine.bottleExists(bottleURL: value.url) {
+                            Wine.allBottles?.removeValue(forKey: key)
+                        }
+                    }
+                }
             
             // MARK: - Other Properties
             

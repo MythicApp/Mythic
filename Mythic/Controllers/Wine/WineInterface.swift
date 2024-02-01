@@ -18,6 +18,7 @@ import Foundation
 import OSLog
 
 class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
+    // FIXME: all funcs should take urls as params not bottles
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
@@ -74,6 +75,33 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static var defaultBottleSettings: BottleSettings {
         get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true) }
         set { defaults.set(newValue, forKey: "defaultBottleSettings") }
+    }
+    
+    @available(*, message: "keys MUST BE game.appName")
+    static var individualBottleSettings: [String: BottleSettings]? {
+        get {
+            if let object = defaults.object(forKey: "individualBottleSettings") as? Data {
+                do {
+                    return try PropertyListDecoder().decode(Dictionary.self, from: object)
+                } catch {
+                    Logger.app.error("Unable to retrieve individual bottle settings: \(error.localizedDescription)")
+                    return nil
+                }
+            } else {
+                Logger.app.warning("No games use individual bottle settings, returning default")
+                return .init()
+            }
+        }
+        set {
+            do {
+                defaults.set(
+                    try PropertyListEncoder().encode(newValue),
+                    forKey: "individualBottleSettings"
+                )
+            } catch {
+                Logger.app.error("Unable to set to individual bottle settings: \(error.localizedDescription)")
+            }
+        }
     }
     
     // MARK: - Command Method
@@ -322,70 +350,83 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             
             if let stderr = String(data: output.stderr, encoding: .utf8),
                !stderr.contains(try Regex(#"wine: configuration in (.*?) has been updated\."#)),
-               !bottleExists(url: bottleURL) {
+               !bottleExists(bottleURL: bottleURL) {
                 log.error("Unable to boot prefix \"\(name)\"")
                 completion(.failure(BootError()))
             }
             
             log.notice("Successfully booted prefix \"\(name)\"")
-            allBottles?[name] = .init(url: bottleURL, settings: settings, busy: false) // hate repetition
-            completion(.success(.init(url: bottleURL, settings: settings, busy: false)))
+            let newBottle: Bottle = .init(url: bottleURL, settings: settings, busy: false)
+            
+            try await toggleRetinaMode(bottleURL: bottleURL, toggle: settings.retinaMode)
+            
+            allBottles?[name] = newBottle
+            completion(.success(newBottle))
         } catch {
             completion(.failure(error))
         }
     }
     
-    static func deleteBottle(url: URL) throws -> Bool {
-        guard bottleExists(url: url) else { throw BottleDoesNotExistError() }
+    static func deleteBottle(bottleURL: URL) throws -> Bool {
+        guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        try files.removeItem(at: url)
-        if let bottles = allBottles { allBottles = bottles.filter { $0.value.url != url } }
+        if files.fileExists(atPath: bottleURL.path(percentEncoded: false)) { try files.removeItem(at: bottleURL) }
+        if let bottles = allBottles { allBottles = bottles.filter { $0.value.url != bottleURL } }
         
         return true
     }
     
     // MARK: - Add Registry Key Method
-    private static func addRegistryKey(bottle: Bottle, key: String, name: String, data: String, type: RegistryType) async throws {
-        guard bottleExists(url: bottle.url) else { throw BottleDoesNotExistError() }
+    private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
+        guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
         _ = try await command( // FIXME: errors may create problems later
             args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
             identifier: "regadd",
-            bottleURL: bottle.url
+            bottleURL: bottleURL
         )
     }
     
     // MARK: - Query Registry Key Method
-    private static func queryRegistryKey(bottle: Bottle, key: String, name: String, type: RegistryType) async throws -> String? {
-        let output = try await command(
-            args: ["reg", "query", key, "-v", name],
-            identifier: "regquery",
-            bottleURL: bottle.url
-        )
-        
-        guard let lines = String(data: output.stdout, encoding: .utf8)?.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) else { return nil }
-        guard let line = lines.first(where: { $0.contains(type.rawValue) }) else { return nil }
-        let array = line.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
-        guard let value = array.last else { return nil }
-        return String(value)
+    private static func queryRegistryKey(bottleURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
+        do {
+            let output = try await command(
+                args: ["reg", "query", key, "-v", name],
+                identifier: "regquery",
+                bottleURL: bottleURL
+            )
+            
+            guard let lines = String(data: output.stdout, encoding: .utf8)?.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) else { completion(.failure(UnableToQueryRegistyError())); return }
+            guard let line = lines.first(where: { $0.contains(type.rawValue) }) else { completion(.failure(UnableToQueryRegistyError())); return }
+            let array = line.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
+            guard let value = array.last else { completion(.failure(UnableToQueryRegistyError())); return }
+            
+            completion(.success(String(value)))
+        } catch {
+            log.error("\("Failed to query regkey \(type) \(name) \(key) in bottle at \(bottleURL)")")
+            completion(.failure(error))
+        }
     }
     
     // MARK: - Toggle Retina Mode Method
-    static func toggleRetinaMode(bottle: Bottle, toggle: Bool, completion: @escaping (_ success: Bool) -> Void) async {
+    static func toggleRetinaMode(bottleURL: URL, toggle: Bool) async throws {
         do {
-            try await addRegistryKey(bottle: bottle, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
-            completion(true)
+            try await addRegistryKey(bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
         } catch {
-            completion(false)
-        } // TODO: add more completion handlers where necessary
+            log.error("Unable to toggle retina mode to \(toggle ? "on" : "off") in bottle at \(bottleURL)")
+        }
     }
     
-    static func getRetinaMode(bottle: Bottle, completion: @escaping (Result<Bool, Error>) -> Void) async {
-        do {
-            let output = try await Wine.queryRegistryKey(bottle: bottle, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string)
-            completion(.success(output == "y"))
-        } catch {
-            completion(.failure(error))
+    static func getRetinaMode(bottleURL: URL, completion: @escaping (Result<Bool, Error>) -> Void) async {
+        await Wine.queryRegistryKey(
+            bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
+        ) { result in
+            switch result {
+            case .success(let value):
+                completion(.success(value == "y"))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
     
@@ -396,7 +437,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      - Parameter at: The `URL` of the prefix that needs to be checked.
      - Returns: Boolean value denoting the prefix's existence.
      */
-    static func bottleExists(url: URL) -> Bool { // TODO: refactor
-        return (try? files.contentsOfDirectory(atPath: url.path).contains("drive_c")) ?? false
+    static func bottleExists(bottleURL: URL) -> Bool { // TODO: refactor
+        return (try? files.contentsOfDirectory(atPath: bottleURL.path).contains("drive_c")) ?? false
     }
 }
