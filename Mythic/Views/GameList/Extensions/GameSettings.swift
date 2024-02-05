@@ -42,6 +42,22 @@ extension GameListView {
         
         @State private var retinaMode: Bool = Wine.defaultBottleSettings.retinaMode
         @State private var modifyingRetinaMode: Bool = true
+        @State private var retinaModeError: Error?
+        
+        private func fetchRetinaStatus() async {
+            modifyingRetinaMode = true
+            if let bottle = Wine.allBottles?[selectedBottle] {
+                await Wine.getRetinaMode(bottleURL: bottle.url) { result in
+                    switch result {
+                    case .success(let success):
+                        retinaMode = success
+                    case .failure(let failure):
+                        retinaModeError = failure
+                    }
+                }
+            }
+            modifyingRetinaMode = false
+        }
         
         // MARK: - Body View
         var body: some View {
@@ -50,7 +66,7 @@ extension GameListView {
                     VStack {
                         Text(game.title)
                             .font(.title)
-                            .help("ID: \(game.appName)")
+                            .help("UUID: \(game.appName)")
                         
                         CachedAsyncImage(url: URL(
                             string: game.isLegendary
@@ -229,8 +245,14 @@ extension GameListView {
                                         HStack {
                                             Text("Retina Mode")
                                             Spacer()
-                                            ProgressView()
-                                                .controlSize(.small)
+                                            if retinaModeError == nil {
+                                                ProgressView()
+                                                    .controlSize(.small)
+                                            } else {
+                                                Image(systemName: "exclamationmark.triangle.fill")
+                                                    .controlSize(.small)
+                                                    .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error")")
+                                            }
                                         }
                                     }
                                     
@@ -258,13 +280,9 @@ extension GameListView {
                             metadata = try? Legendary.getGameMetadata(game: game) // FIXME: currently unused
                         }
                     }
-                    .task {
-                        await Wine.getRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url) { result in
-                            if case .success(let success) = result {
-                                retinaMode = success
-                                modifyingRetinaMode = false
-                            }
-                        }
+                    .task(priority: .userInitiated) { await fetchRetinaStatus() }
+                    .onChange(of: selectedBottle) {
+                        Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     }
                 }
                 
@@ -277,8 +295,14 @@ extension GameListView {
                      .foregroundStyle(.placeholder)
                      */
                     
-                    Text(game.isLegendary ? "Windows" : "macOS")
-                        .foregroundStyle(.secondary)
+                    Text((game.isLegendary ? try? Legendary.getGamePlatform(game: game) : game.platform)?.rawValue ?? "Unknown")
+                        .padding(.horizontal, 5)
+                        .overlay( // based off .buttonStyle(.accessoryBarAction)
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(.tertiary)
+                        )
+                    
+                    Text(game.isLegendary ? "Epic" : "Local")
                         .padding(.horizontal, 5)
                         .overlay( // based off .buttonStyle(.accessoryBarAction)
                             RoundedRectangle(cornerRadius: 4)

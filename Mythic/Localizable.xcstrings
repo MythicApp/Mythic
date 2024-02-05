@@ -8355,6 +8355,9 @@
         }
       }
     },
+    "Epic" : {
+
+    },
     "Error" : {
       "localizations" : {
         "af" : {
@@ -10950,9 +10953,6 @@
           }
         }
       }
-    },
-    "ID: %@" : {
-
     },
     "Import a game" : {
       "localizations" : {
@@ -14828,7 +14828,11 @@
         }
       }
     },
+    "Local" : {
+
+    },
     "macOS" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -17975,6 +17979,9 @@
           }
         }
       }
+    },
+    "Retina Mode cannot be modified: %@" : {
+
     },
     "Retry" : {
       "localizations" : {
@@ -22035,6 +22042,9 @@
         }
       }
     },
+    "UUID: %@" : {
+
+    },
     "Verify" : {
       "localizations" : {
         "af" : {
@@ -23333,6 +23343,7 @@
       }
     },
     "Windows" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

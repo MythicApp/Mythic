@@ -29,7 +29,7 @@ let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable {
     case macOS = "macOS"
-    case windows = "Windows"
+    case windows = "Windows®"
 }
 
 enum GameType: String, CaseIterable {
