@@ -32,13 +32,13 @@ enum GamePlatform: String, CaseIterable, Codable {
     case windows = "Windows®"
 }
 
-enum GameType: String, CaseIterable {
+enum GameType: String, CaseIterable, Codable {
     case epic = "Epic"
     case local = "Local"
 }
 
 struct Game: Hashable, Codable {
-    var isLegendary: Bool // TODO: FIXME: replace isLegendary with gameType enum
+    var type: GameType
     var title: String
     var appName: String
     var platform: GamePlatform?
@@ -51,7 +51,7 @@ struct Game: Hashable, Codable {
 
 func placeholderGame(_ type: GameType) -> Game {
     // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
-    return .init(isLegendary: type == .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
+    return .init(type: .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
 }
 
 /// Your father.

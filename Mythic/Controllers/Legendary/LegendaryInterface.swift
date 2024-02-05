@@ -316,7 +316,7 @@ class Legendary {
         gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
-        guard game.isLegendary else { return } // TODO: FIXME: create IsNotLegendaryError
+        guard game.type == .epic else { return } // TODO: FIXME: create IsNotLegendaryError
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
@@ -558,7 +558,7 @@ class Legendary {
      - Returns: The platform of the game as a `Platform` enum.
      */
     static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
-        guard game.isLegendary else { throw IsNotLegendaryError() }
+        guard game.type == .epic else { throw IsNotLegendaryError() }
         
         let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName]["platform"].string
         if platform == "Mac" {
@@ -661,7 +661,7 @@ class Legendary {
         
         for (appName, gameInfo) in installedGames {
             if let title = gameInfo["title"] as? String {
-                apps.append(Mythic.Game(isLegendary: true, title: title, appName: appName))
+                apps.append(Mythic.Game(type: .epic, title: title, appName: appName))
             }
         }
         
@@ -672,7 +672,7 @@ class Legendary {
     
     static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
         guard signedIn() else { throw NotSignedInError() }
-        guard game.isLegendary else { throw IsNotLegendaryError() }
+        guard game.type == .epic else { throw IsNotLegendaryError() }
         
         let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
         
@@ -714,7 +714,7 @@ class Legendary {
      - Returns: An optional `JSON` with either the metadata or `nil`.
      */
     static func getGameMetadata(game: Mythic.Game) throws -> JSON? {
-        guard game.isLegendary else { throw IsNotLegendaryError() }
+        guard game.type == .epic else { throw IsNotLegendaryError() }
         let metadataDirectoryString = "\(configLocation)/metadata"
         
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
@@ -878,7 +878,7 @@ class Legendary {
             for game in json {
                 games.append(
                     Mythic.Game(
-                        isLegendary: true,
+                        type: .epic,
                         title: game.1["app_title"].string ?? .init(),
                         appName: game.1["app_name"].string ?? .init()
                     )

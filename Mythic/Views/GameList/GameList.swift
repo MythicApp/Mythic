@@ -24,7 +24,7 @@ import Combine
 /// ViewModifier that enables views to have a fade in effect
 struct FadeInModifier: ViewModifier {
     @State private var opacity: Double = 0
-
+    
     func body(content: Content) -> some View {
         content
             .opacity(opacity)
@@ -115,37 +115,37 @@ struct GameListView: View {
             }
         }
         
-            if game.isLegendary && mode == .optionalPacks {
-                group.enter()
-                Task(priority: .userInitiated) {
-                    let command = await Legendary.command(
-                        args: ["install", game.appName], // force-unwraps rely on good codebase, don't fumble
-                        useCache: true,
-                        identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
-                    )
-                    
-                    var isParsingOptionalPacks = false
-                    
-                    for line in String(data: command.stdout, encoding: .utf8)!.components(separatedBy: "\n") {
-                        if isParsingOptionalPacks {
-                            if line.isEmpty || !line.hasPrefix(" * ") { break }
-                            
-                            let cleanedLine = line.trimmingPrefix(" * ")
-                            let components = cleanedLine.split(separator: " - ", maxSplits: 1)
-                                .map { String($0) } // convert the substrings to regular strings
-                            
-                            if components.count >= 2 {
-                                let tag = components[0].trimmingCharacters(in: .whitespaces)
-                                let name = components[1].trimmingCharacters(in: .whitespaces)
-                                optionalPacks[name] = tag
-                            }
-                        } else if line.contains("The following optional packs are available (tag - name):") {
-                            isParsingOptionalPacks = true
+        if game.type == .epic && mode == .optionalPacks {
+            group.enter()
+            Task(priority: .userInitiated) {
+                let command = await Legendary.command(
+                    args: ["install", game.appName], // force-unwraps rely on good codebase, don't fumble
+                    useCache: true,
+                    identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
+                )
+                
+                var isParsingOptionalPacks = false
+                
+                for line in String(data: command.stdout, encoding: .utf8)!.components(separatedBy: "\n") {
+                    if isParsingOptionalPacks {
+                        if line.isEmpty || !line.hasPrefix(" * ") { break }
+                        
+                        let cleanedLine = line.trimmingPrefix(" * ")
+                        let components = cleanedLine.split(separator: " - ", maxSplits: 1)
+                            .map { String($0) } // convert the substrings to regular strings
+                        
+                        if components.count >= 2 {
+                            let tag = components[0].trimmingCharacters(in: .whitespaces)
+                            let name = components[1].trimmingCharacters(in: .whitespaces)
+                            optionalPacks[name] = tag
                         }
+                    } else if line.contains("The following optional packs are available (tag - name):") {
+                        isParsingOptionalPacks = true
                     }
-                    group.leave()
                 }
+                group.leave()
             }
+        }
         
         group.notify(queue: .main) {
             isProgressViewSheetPresented = false
@@ -170,7 +170,7 @@ struct GameListView: View {
                             VStack {
                                 CachedAsyncImage(
                                     url: URL(
-                                        string: game.isLegendary
+                                        string: game.type == .epic
                                         ? gameThumbnails[game.appName] ?? .init()
                                         : game.imageURL?.path ?? .init()
                                     ),
@@ -233,7 +233,7 @@ struct GameListView: View {
                                             .help("\(game.title) Settings")
                                             
                                             // MARK: Update Button
-                                            if game.isLegendary, Legendary.needsUpdate(game: game) {
+                                            if game.type == .epic, Legendary.needsUpdate(game: game) {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
@@ -255,7 +255,7 @@ struct GameListView: View {
                                                 .help("Update available!")
                                             }
                                             
-                                            if game.isLegendary,
+                                            if game.type == .epic,
                                                let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
                                                let needsVerification = json[game.appName]["needs_verification"].bool, // FIXME: force unwrap
                                                needsVerification {
@@ -290,7 +290,7 @@ struct GameListView: View {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
                                                             if let defaultBottle = Wine.allBottles?["Default"] {
-                                                                if game.isLegendary {
+                                                                if game.type == .epic {
                                                                     try await Legendary.launch(
                                                                         game: game,
                                                                         bottle: defaultBottle
@@ -324,7 +324,7 @@ struct GameListView: View {
                                             // MARK: Delete button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                if game.isLegendary {
+                                                if game.type == .epic {
                                                     isUninstallViewPresented = true
                                                 } else {
                                                     var library = LocalGames.library // TODO: add support to remove game

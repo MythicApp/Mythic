@@ -69,7 +69,7 @@ extension GameListView {
                             .help("UUID: \(game.appName)")
                         
                         CachedAsyncImage(url: URL(
-                            string: game.isLegendary
+                            string: game.type == .epic
                             ? gameThumbnails[game.appName] ?? .init()
                             : game.imageURL?.path ?? .init()
                         ), urlCache: gameImageURLCache) { phase in
@@ -129,7 +129,7 @@ extension GameListView {
                                         openPanel.canCreateDirectories = true
                                         
                                         if openPanel.runModal() == .OK {
-                                            if game.isLegendary {
+                                            if game.type == .epic {
                                                 // game.path = openPanel.urls.first?.path ?? .init()
                                                 /* TODO: TODO
                                                  usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
@@ -273,10 +273,10 @@ extension GameListView {
                         .formStyle(.grouped)
                     }
                     .onAppear {
-                        gamePath = game.isLegendary ? try? Legendary.getGamePath(game: game) : game.path
+                        gamePath = game.type == .epic ? try? Legendary.getGamePath(game: game) : game.path
                     }
                     .task {
-                        if game.isLegendary {
+                        if game.type == .epic {
                             metadata = try? Legendary.getGameMetadata(game: game) // FIXME: currently unused
                         }
                     }
@@ -295,14 +295,14 @@ extension GameListView {
                      .foregroundStyle(.placeholder)
                      */
                     
-                    Text((game.isLegendary ? try? Legendary.getGamePlatform(game: game) : game.platform)?.rawValue ?? "Unknown")
+                    Text((game.type == .epic ? try? Legendary.getGamePlatform(game: game) : game.platform)?.rawValue ?? "Unknown")
                         .padding(.horizontal, 5)
                         .overlay( // based off .buttonStyle(.accessoryBarAction)
                             RoundedRectangle(cornerRadius: 4)
                                 .stroke(.tertiary)
                         )
                     
-                    Text(game.isLegendary ? "Epic" : "Local")
+                    Text(game.type == .epic ? "Epic" : "Local")
                         .padding(.horizontal, 5)
                         .overlay( // based off .buttonStyle(.accessoryBarAction)
                             RoundedRectangle(cornerRadius: 4)
@@ -356,7 +356,7 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: .constant(.init(isLegendary: true, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
+        game: .constant(.init(type: .epic, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
         gameThumbnails: .constant(.init())
     )
 }
