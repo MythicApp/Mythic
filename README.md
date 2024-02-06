@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <a href="https://getmythic.app">
-    <img src="https://github.com/MythicApp/Branding-Assets/blob/main/Macos_Icons/icon_256x256.png" 
+    <img src="https://github.com/MythicApp/Mythic/assets/41133734/0c6ac6a2-66a2-42f1-b601-a9f92ba5d118" 
       style="width: 20%; height: 20%;">
   </a>
   
