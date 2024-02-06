@@ -282,6 +282,7 @@ extension GameListView {
                     }
                     .task(priority: .userInitiated) { await fetchRetinaStatus() }
                     .onChange(of: selectedBottle) {
+                        // TODO: add support for a default bottle for each game using userdefaults
                         Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     }
                 }

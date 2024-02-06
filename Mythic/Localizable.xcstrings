@@ -15758,6 +15758,9 @@
         }
       }
     },
+    "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support." : {
+
+    },
     "Next" : {
       "localizations" : {
         "af" : {
@@ -17238,6 +17241,9 @@
       }
     },
     "Purchase new games from Epic" : {
+
+    },
+    "Quit Mythic" : {
 
     },
     "RECENTLY PLAYED" : {
@@ -21304,6 +21310,9 @@
       }
     },
     "Toggle sidebar" : {
+
+    },
+    "Unable to boot default bottle." : {
 
     },
     "Uninstall" : {

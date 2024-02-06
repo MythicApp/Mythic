@@ -23,8 +23,14 @@ struct MythicApp: App {
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
-    @State private var isUpdatePromptPresented: Bool = false
+    @State private var isAlertPresented: Bool = false
     @State private var isNotificationPermissionsGranted = false
+    @State private var bootError: Error?
+    
+    @State private var activeAlert: ActiveAlert = .updatePrompt
+    enum ActiveAlert {
+        case updatePrompt, bootError
+    }
     
     // MARK: - Updater Controller
     private let updaterController: SPUStandardUpdaterController
@@ -54,12 +60,19 @@ struct MythicApp: App {
                     if let latestVersion = Libraries.fetchLatestVersion(),
                        let currentVersion = Libraries.getVersion(),
                        latestVersion > currentVersion {
-                        isUpdatePromptPresented = true
+                        activeAlert = .updatePrompt
+                        isAlertPresented = true
                     }
                 }
                 .task(priority: .background) {
                     if Libraries.isInstalled() {
-                        await Wine.boot(name: "Default") { _ in }
+                        await Wine.boot(name: "Default") { result in
+                            if case .failure(let failure) = result {
+                                bootError = failure
+                                activeAlert = .bootError
+                                isAlertPresented = true
+                            }
+                        }
                     }
                 }
                 .task(priority: .high) {
@@ -84,13 +97,22 @@ struct MythicApp: App {
                     OnboardingView.InstallView(isPresented: $isInstallViewPresented)
                 }
             
-                .alert(isPresented: $isUpdatePromptPresented) {
-                    Alert(
-                        title: Text("Time for an update!"),
-                        message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
-                        primaryButton: .default(Text("Update")),
-                        secondaryButton: .cancel(Text("Later"))
-                    )
+                .alert(isPresented: $isAlertPresented) {
+                    switch activeAlert {
+                    case .updatePrompt:
+                        Alert(
+                            title: Text("Time for an update!"),
+                            message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
+                            primaryButton: .default(Text("Update")), // TODO: not implemented
+                            secondaryButton: .cancel(Text("Later"))
+                        )
+                    case .bootError:
+                        Alert(
+                            title: Text("Unable to boot default bottle."),
+                            message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (\((bootError ?? UnknownError()).localizedDescription)"),
+                            dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
+                        )
+                    }
                 }
         }
         

@@ -25,6 +25,10 @@ let defaults = UserDefaults.standard
 
 let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
 
+struct UnknownError: LocalizedError {
+    var errorDescription: String? = "An unknown error occurred."
+}
+
 // MARK: - Enumerations
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable {
@@ -41,6 +45,7 @@ struct Game: Hashable, Codable {
     var type: GameType
     var title: String
     var appName: String
+    // var defaultBottle: Wine.Bottle? = Wine.allBottles?["Default"] // TODO: should be appstorage
     var platform: GamePlatform?
     
     var imageURL: URL?
