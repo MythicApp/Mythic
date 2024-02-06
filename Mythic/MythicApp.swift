@@ -67,7 +67,7 @@ struct MythicApp: App {
                 .task(priority: .background) {
                     if Libraries.isInstalled() {
                         await Wine.boot(name: "Default") { result in
-                            if case .failure(let failure) = result {
+                            if case .failure(let failure) = result, type(of: failure) != Wine.BottleAlreadyExistsError.self {
                                 bootError = failure
                                 activeAlert = .bootError
                                 isAlertPresented = true
@@ -109,7 +109,7 @@ struct MythicApp: App {
                     case .bootError:
                         Alert(
                             title: Text("Unable to boot default bottle."),
-                            message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (\((bootError ?? UnknownError()).localizedDescription)"),
+                            message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),
                             dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
                         )
                     }
