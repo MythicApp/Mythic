@@ -1,11 +1,10 @@
 <h1 align="center">
   <br>
   <a href="https://getmythic.app">
-    <img src="https://github.com/MythicApp/Mythic/assets/41133734/0c6ac6a2-66a2-42f1-b601-a9f92ba5d118" 
+    <img src="https://github.com/MythicApp/Mythic/assets/41133734/55df5b7d-f40f-4048-a5d9-e3746d92e138" 
       style="width: 20%; height: 20%;">
   </a>
   
-  Mythic
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
