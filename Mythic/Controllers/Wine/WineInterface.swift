@@ -77,7 +77,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         set { defaults.set(newValue, forKey: "defaultBottleSettings") }
     }
     
-    @available(*, message: "keys MUST BE game.appName")
+    @available(*, message: "keys MUST BE game.appName + variable currently unused")
     static var individualBottleSettings: [String: BottleSettings]? {
         get {
             if let object = defaults.object(forKey: "individualBottleSettings") as? Data {

@@ -38,11 +38,18 @@ extension GameListView {
         @State private var gamePath: String?
         
         @State private var bottleScope: Wine.BottleScope = .individual
-        @State private var selectedBottle: String = Wine.allBottles?.keys.first ?? "Default"
+        @State private var selectedBottle: String
         
         @State private var retinaMode: Bool = Wine.defaultBottleSettings.retinaMode
         @State private var modifyingRetinaMode: Bool = true
         @State private var retinaModeError: Error?
+        
+        init(isPresented: Binding<Bool>, game: Binding<Game>, gameThumbnails: Binding<[String: String]>) {
+            _isPresented = isPresented
+            _game = game
+            _gameThumbnails = gameThumbnails
+            _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
+        }
         
         private func fetchRetinaStatus() async {
             modifyingRetinaMode = true
@@ -124,6 +131,7 @@ extension GameListView {
                                     
                                     Button("Move...") {
                                         let openPanel = NSOpenPanel()
+                                        openPanel.prompt = "Move"
                                         openPanel.canChooseDirectories = true
                                         openPanel.allowsMultipleSelection = false
                                         openPanel.canCreateDirectories = true
@@ -282,7 +290,7 @@ extension GameListView {
                     }
                     .task(priority: .userInitiated) { await fetchRetinaStatus() }
                     .onChange(of: selectedBottle) {
-                        // TODO: add support for a default bottle for each game using userdefaults
+                        game.bottleName = selectedBottle
                         Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     }
                 }

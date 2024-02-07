@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "glur",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/joogps/Glur",
+      "state" : {
+        "branch" : "main",
+        "revision" : "fb9bc701ac4c917958931455dc2cab3e64e4c37f"
+      }
+    },
+    {
       "identity" : "semanticversion",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SwiftPackageIndex/SemanticVersion",

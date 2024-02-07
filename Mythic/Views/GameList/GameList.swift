@@ -289,20 +289,16 @@ struct GameListView: View {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
-                                                            if let defaultBottle = Wine.allBottles?["Default"] {
-                                                                if game.type == .epic {
-                                                                    try await Legendary.launch(
-                                                                        game: game,
-                                                                        bottle: defaultBottle
-                                                                    )
-                                                                } else {
-                                                                    try await LocalGames.launch(
-                                                                        game: game,
-                                                                        bottle: defaultBottle // TODO: FIXME: Add userdefaults option for prefix, include whether its writeable before creation
-                                                                    )
-                                                                }
+                                                            if game.type == .epic {
+                                                                try await Legendary.launch(
+                                                                    game: game,
+                                                                    bottle: Wine.allBottles![game.bottleName]!
+                                                                )
                                                             } else {
-                                                                throw Wine.BottleDoesNotExistError()
+                                                                try await LocalGames.launch(
+                                                                    game: game,
+                                                                    bottle: Wine.allBottles![game.bottleName]!
+                                                                )
                                                             }
                                                         } catch {
                                                             LaunchError.game = game

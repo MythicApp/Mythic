@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import OSLog
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
@@ -47,6 +48,21 @@ struct Game: Hashable, Codable {
     var appName: String
     // var defaultBottle: Wine.Bottle? = Wine.allBottles?["Default"] // TODO: should be appstorage
     var platform: GamePlatform?
+    var bottleName: String {
+        get {
+            if let object = defaults.string(forKey: "\(self.appName)_defaultBottle"),
+               Wine.allBottles?[object] != nil {
+                return object
+            } else {
+                return defaults.string(forKey: "\(self.appName)_defaultBottle") ?? "Default"
+            }
+        }
+        set {
+            if Wine.allBottles?[newValue] != nil {
+                defaults.set(newValue, forKey: "\(self.appName)_defaultBottle")
+            }
+        }
+    }
     
     var imageURL: URL?
     var path: String?

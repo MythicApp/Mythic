@@ -15758,7 +15758,7 @@
         }
       }
     },
-    "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (%@" : {
+    "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
 
     },
     "Next" : {

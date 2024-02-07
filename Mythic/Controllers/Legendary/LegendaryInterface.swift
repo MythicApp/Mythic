@@ -280,18 +280,18 @@ class Legendary {
     }
     
     // MARK: - Base Path Property
-    /**
-     The file location for legendary's configuration files.
-     
-     This property represents the base path for games.
-     */
+    /// This property represents the base path for games.
     var basePath: URL? {
         get {
             if let value = defaults.object(forKey: "gamesPath") as? URL {
                 return value
-            } else { return Bundle.appGames }
+            } else {
+                return Bundle.appGames
+            }
         }
-        set { defaults.set(newValue, forKey: "gamesPath") }
+        set {
+            defaults.set(newValue, forKey: "gamesPath")
+        }
     }
     
     // MARK: - Install Method

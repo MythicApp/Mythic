@@ -17,6 +17,8 @@
 		6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */; };
 		6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
+		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
+		6A12FF902B73AFCE00AA948C /* BottleSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */; };
 		6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1322372B1C98AE0049BB64 /* InstallStatus.swift */; };
 		6A1417B82AF7CCD80022DE24 /* FileLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1417B72AF7CCD80022DE24 /* FileLocations.swift */; };
 		6A1C6F422AEFD95900F89AE7 /* WineInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1C6F412AEFD95900F89AE7 /* WineInterface.swift */; };
@@ -75,6 +77,7 @@
 		6A0585472ADEC17300165C3C /* WhiskyInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterface.swift; sourceTree = "<group>"; };
 		6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImport.swift; sourceTree = "<group>"; };
 		6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicImport.swift; sourceTree = "<group>"; };
+		6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottleSettings.swift; sourceTree = "<group>"; };
 		6A1322372B1C98AE0049BB64 /* InstallStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallStatus.swift; sourceTree = "<group>"; };
 		6A1417B72AF7CCD80022DE24 /* FileLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
 		6A1C6F412AEFD95900F89AE7 /* WineInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WineInterface.swift; sourceTree = "<group>"; };
@@ -129,6 +132,7 @@
 			files = (
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
+				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
 				6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */,
 				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
@@ -387,6 +391,7 @@
 				6AF0EB1C2AAD4C830044C09C /* Sheets */,
 				6A7F00B22B231EEA00D801CD /* Alerts */,
 				6AD506542AAFF52B008A28C1 /* Navigation */,
+				6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -469,6 +474,7 @@
 				6AFC02802ABE02970004AB77 /* Sparkle */,
 				6A371B582AE7DFBF0054BF7A /* ZIPFoundation */,
 				6AAD31142B08693D0035FA69 /* SemanticVersion */,
+				6A12FF8D2B73AC4E00AA948C /* Glur */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -504,6 +510,7 @@
 				6AFC027F2ABE02970004AB77 /* XCRemoteSwiftPackageReference "Sparkle" */,
 				6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */,
+				6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -588,6 +595,7 @@
 				6A009E5F2AB5816A00A1397F /* Logger.swift in Sources */,
 				6AB474992AACBBE900AB9C63 /* MythicApp.swift in Sources */,
 				6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */,
+				6A12FF902B73AFCE00AA948C /* BottleSettings.swift in Sources */,
 				6A1417B82AF7CCD80022DE24 /* FileLocations.swift in Sources */,
 				6AA7413C2B6697A900369B35 /* URL.swift in Sources */,
 				6AE4A9A32B44682E0060D483 /* Lock.swift in Sources */,
@@ -741,7 +749,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2300;
+				CURRENT_PROJECT_VERSION = 2302;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -780,7 +788,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2300;
+				CURRENT_PROJECT_VERSION = 2302;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -840,6 +848,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/joogps/Glur";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
@@ -879,6 +895,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A0C66832ABC4092004B0755 /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
+		};
+		6A12FF8D2B73AC4E00AA948C /* Glur */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */;
+			productName = Glur;
 		};
 		6A371B582AE7DFBF0054BF7A /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

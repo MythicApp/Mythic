@@ -17,6 +17,7 @@
 import SwiftUI
 import Cocoa
 import CachedAsyncImage
+import Glur
 
 // MARK: - HomeView Struct
 /**
@@ -74,29 +75,7 @@ struct HomeView: View {
                                             .resizable()
                                             .aspectRatio(3/4, contentMode: .fill)
                                             .clipped()
-                                            .overlay(
-                                                // MARK: Blurred Overlay
-                                                image
-                                                    .resizable()
-                                                    .blur(radius: 10, opaque: true)
-                                                    .mask(
-                                                        LinearGradient(gradient: Gradient(stops: [
-                                                            Gradient.Stop(color: Color(white: 0, opacity: 0),
-                                                                          location: 0.65),
-                                                            Gradient.Stop(color: Color(white: 0, opacity: 1),
-                                                                          location: 0.8)
-                                                        ]), startPoint: .top, endPoint: .bottom)
-                                                    )
-                                            )
-                                            .overlay(
-                                                // MARK: Gradient Overlay (masked on blur)
-                                                LinearGradient(gradient: Gradient(stops: [
-                                                    Gradient.Stop(color: Color(white: 0, opacity: 0),
-                                                                  location: 0.6),
-                                                    Gradient.Stop(color: Color(white: 0, opacity: 0.25),
-                                                                  location: 1)
-                                                ]), startPoint: .top, endPoint: .bottom)
-                                            )
+                                            .glur(offset: 0.6, interpolation: 0.25, radius: 15)
                                     }
                                     .aspectRatio(3/4, contentMode: .fit)
                                 case .failure:
@@ -153,10 +132,10 @@ struct HomeView: View {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         do {
-                                                            if let recentlyPlayedGame = recentlyPlayedGame, let defaultBottle = Wine.allBottles?["Default"] {
+                                                            if let recentlyPlayedGame = recentlyPlayedGame {
                                                                 try await Legendary.launch(
                                                                     game: recentlyPlayedGame,
-                                                                    bottle: defaultBottle // FIXME: add support for not just default wine bottle, use appstorage var that defaults to defaultbottle
+                                                                    bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!
                                                                 )
                                                             }
                                                         } catch {
