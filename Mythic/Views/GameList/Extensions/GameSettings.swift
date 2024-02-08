@@ -28,7 +28,6 @@ extension GameListView {
         // MARK: - Bindings
         @Binding var isPresented: Bool
         @Binding var game: Game
-        @Binding var gameThumbnails: [String: String]
         
         @State private var metadata: JSON? // FIXME: currently unused
         @State private var isFileSectionExpanded: Bool = true
@@ -44,10 +43,9 @@ extension GameListView {
         @State private var modifyingRetinaMode: Bool = true
         @State private var retinaModeError: Error?
         
-        init(isPresented: Binding<Bool>, game: Binding<Game>, gameThumbnails: Binding<[String: String]>) {
+        init(isPresented: Binding<Bool>, game: Binding<Game>) {
             _isPresented = isPresented
             _game = game
-            _gameThumbnails = gameThumbnails
             _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
         }
         
@@ -77,7 +75,7 @@ extension GameListView {
                         
                         CachedAsyncImage(url: URL(
                             string: game.type == .epic
-                            ? gameThumbnails[game.appName] ?? .init()
+                            ? Legendary.getImage(of: game, type: .tall) 
                             : game.imageURL?.path ?? .init()
                         ), urlCache: gameImageURLCache) { phase in
                             switch phase {
@@ -129,7 +127,7 @@ extension GameListView {
                                     
                                     Spacer()
                                     
-                                    Button("Move...") {
+                                    Button("Move...") { // TODO: look into whether .fileMover is a suitable alternative
                                         let openPanel = NSOpenPanel()
                                         openPanel.prompt = "Move"
                                         openPanel.canChooseDirectories = true
@@ -365,7 +363,6 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: .constant(.init(type: .epic, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png"))),
-        gameThumbnails: .constant(.init())
+        game: .constant(.init(type: .epic, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png")))
     )
 }

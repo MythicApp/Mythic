@@ -83,7 +83,6 @@ struct GameListView: View {
     
     @State private var isInstallStatusViewPresented: Bool = false
     
-    @State private var gameThumbnails: [String: String] = .init()
     @State private var optionalPacks: [String: String] = .init()
     
     @State private var dataFetched: Bool = false
@@ -171,17 +170,26 @@ struct GameListView: View {
                                 CachedAsyncImage(
                                     url: URL(
                                         string: game.type == .epic
-                                        ? gameThumbnails[game.appName] ?? .init()
+                                        ? Legendary.getImage(of: game, type: .tall)
                                         : game.imageURL?.path ?? .init()
                                     ),
                                     urlCache: gameImageURLCache
                                 ) { phase in
                                     switch phase {
                                     case .empty:
-                                        if let thumbnail = gameThumbnails[game.appName] ?? game.imageURL?.path,
-                                           !thumbnail.isEmpty {
-                                            ProgressView()
-                                                .frame(width: 200, height: 400/1.5)
+                                        if !Legendary.getImage(of: game, type: .tall).isEmpty || ((game.imageURL?.path(percentEncoded: false).isEmpty) != nil) {
+                                            VStack {
+                                                Spacer()
+                                                HStack {
+                                                    ProgressView()
+                                                        .controlSize(.small)
+                                                        .padding(.trailing, 5)
+                                                    Text("(\(game.title))")
+                                                        .truncationMode(.tail)
+                                                        .foregroundStyle(.placeholder)
+                                                }
+                                            }
+                                            .frame(width: 200, height: 400/1.5)
                                         } else {
                                             Text("\(game.title)")
                                                 .font(.largeTitle)
@@ -217,7 +225,7 @@ struct GameListView: View {
                                 
                                 HStack {
                                     // MARK: For installed games
-                                    if installedGames.contains(game) {
+                                    if installedGames.contains(game) { // TODO: FIXME: IMPORTANT: if game path doesn't exist, grey out the game.
                                         if variables.getVariable("launching_\(game.appName)") != true {
                                             // MARK: Settings icon
                                             Button {
@@ -421,13 +429,6 @@ struct GameListView: View {
                 
                 group.enter()
                 Task(priority: .userInitiated) {
-                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? .init()
-                    if !thumbnails.isEmpty { gameThumbnails = thumbnails }
-                    group.leave()
-                }
-                
-                group.enter()
-                Task(priority: .userInitiated) {
                     let installed = (try? Legendary.getInstalledGames()) ?? .init()
                     if !installed.isEmpty { installedGames = installed + (LocalGames.library ?? .init())}
                     group.leave()
@@ -451,8 +452,7 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: $currentGame,
-                gameThumbnails: $gameThumbnails
+                game: $currentGame
             )
         }
         

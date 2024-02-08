@@ -152,4 +152,5 @@ struct MythicApp: App {
 
 #Preview {
     MainView()
+        .environmentObject(NetworkMonitor())
 }

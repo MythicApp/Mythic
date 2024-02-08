@@ -24,6 +24,7 @@ struct LibraryView: View {
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
     @State private var isGameListRefreshCalled: Bool = false
+    @State private var isDownloadsPopoverPresented: Bool = false
     
     @State private var searchText: String = .init()
     
@@ -35,6 +36,15 @@ struct LibraryView: View {
         
         // MARK: - Toolbar
             .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isDownloadsPopoverPresented.toggle()
+                    } label: {
+                        Image(systemName: "arrow.down.app")
+                    }
+                    .help("Manage Downloads")
+                }
+                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -57,6 +67,9 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
+            .popover(isPresented: $isDownloadsPopoverPresented) {
+                NotImplementedView()
+            }
         
             .sheet(isPresented: $addGameModalPresented) {
                 LibraryView.GameImportView(
@@ -69,6 +82,6 @@ struct LibraryView: View {
 }
 
 #Preview {
-    // MARK: - Game List Preview
-    GameListView(isRefreshCalled: .constant(false), searchText: .constant(""))
+    MainView()
+        .environmentObject(NetworkMonitor())
 }

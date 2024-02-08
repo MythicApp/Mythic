@@ -42,8 +42,6 @@ struct HomeView: View {
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
     
-    @State private var recentlyPlayedImageURL: String = .init()
-    
     @State private var isAlertPresented: Bool = false
     @State private var activeAlert: ActiveAlert = .launchError
     
@@ -62,7 +60,7 @@ struct HomeView: View {
                             from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
                         ) {
                             // MARK: Image
-                            CachedAsyncImage(url: URL(string: recentlyPlayedImageURL), urlCache: gameImageURLCache) { phase in
+                            CachedAsyncImage(url: URL(string: Legendary.getImage(of: recentlyPlayedGame!, type: .tall)), urlCache: gameImageURLCache) { phase in
                                 switch phase {
                                 case .empty:
                                     ProgressView()
@@ -90,14 +88,6 @@ struct HomeView: View {
                                         .imageScale(.large)
                                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                                         .aspectRatio(3/4, contentMode: .fit)
-                                }
-                            }
-                            .task(priority: .userInitiated) {
-                                if let recentlyPlayedGame = recentlyPlayedGame {
-                                    recentlyPlayedImageURL = await Legendary.getImage(
-                                        of: recentlyPlayedGame,
-                                        type: .tall
-                                    )
                                 }
                             }
                             .cornerRadius(20)

@@ -30,6 +30,7 @@
 		6A371B5D2AE84E340054BF7A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B5C2AE84E340054BF7A /* Data.swift */; };
 		6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */; };
 		6A3A52552ADBD5E000BD7776 /* PlayDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3A52542ADBD5E000BD7776 /* PlayDefault.swift */; };
+		6A3E23DE2B74BE0A00A79969 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3E23DD2B74BE0A00A79969 /* NetworkMonitor.swift */; };
 		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
 		6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */; };
 		6A6923522AD6D83D00157E3E /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6923512AD6D83D00157E3E /* Global.swift */; };
@@ -88,6 +89,7 @@
 		6A371B5C2AE84E340054BF7A /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGames.swift; sourceTree = "<group>"; };
 		6A3A52542ADBD5E000BD7776 /* PlayDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayDefault.swift; sourceTree = "<group>"; };
+		6A3E23DD2B74BE0A00A79969 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		6A4C396D2AC5DA4D002F943B /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
 		6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrariesExt.swift; sourceTree = "<group>"; };
 		6A6923512AD6D83D00157E3E /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
@@ -447,6 +449,7 @@
 				6A1417B72AF7CCD80022DE24 /* FileLocations.swift */,
 				6AC3E1882B374D2E000EB765 /* VariableManager.swift */,
 				6AE4A9A22B44682E0060D483 /* Lock.swift */,
+				6A3E23DD2B74BE0A00A79969 /* NetworkMonitor.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -610,6 +613,7 @@
 				6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */,
 				6AB474A82AACBC0100AB9C63 /* Main.swift in Sources */,
 				6A6923522AD6D83D00157E3E /* Global.swift in Sources */,
+				6A3E23DE2B74BE0A00A79969 /* NetworkMonitor.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -749,7 +753,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2302;
+				CURRENT_PROJECT_VERSION = 2323;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -788,7 +792,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2302;
+				CURRENT_PROJECT_VERSION = 2323;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

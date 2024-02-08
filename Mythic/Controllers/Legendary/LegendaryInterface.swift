@@ -688,21 +688,20 @@ class Legendary {
     static func getInstallable() async throws -> [Mythic.Game] { // TODO: use files in Config/metadata and use command to update in the background [IMPORTANT TO UPD IN BKG]
         guard signedIn() else { throw NotSignedInError() }
         
-        guard let json = try? await JSON(data: command(
-            args: [
-                "list",
-                "--platform",
-                "Windows",
-                "--third-party",
-                "--json"
-            ],
-            useCache: true,
-            identifier: "getInstallable"
-        ).stdout) else {
-            return .init()
+        let metadata = "\(configLocation)/metadata"
+        
+        guard let metadataContents = try? files.contentsOfDirectory(atPath: metadata) else {
+            throw FileLocations.FileDoesNotExistError(URL(filePath: metadata))
         }
         
-        return extractAppNamesAndTitles(from: json)
+        var games: [Mythic.Game] = .init()
+        
+        for file in metadataContents {
+            let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
+            games.append(.init(type: .epic, title: json["app_title"].string ?? .init(), appName: json["app_name"].string ?? .init()))
+        }
+        
+        return games.sorted { $0.title < $1.title }
     }
     
     // MARK: - Get Game Metadata Method
@@ -741,7 +740,7 @@ class Legendary {
      
      - Returns: The WebURL of the retrieved image.
      */
-    static func getImage(of game: Mythic.Game, type: ImageType) async -> String {
+    static func getImage(of game: Mythic.Game, type: ImageType) -> String {
         let metadata = try? getGameMetadata(game: game)
         var imageURL: String = .init()
         
@@ -770,7 +769,7 @@ class Legendary {
      - Throws: A ``NotSignedInError``.
      - Returns: A `Dictionary` with app names as keys and image URLs as values.
      */
-    @available(*, message: "Soon to be deprecated and replaced by `getImage`")
+    @available(*, deprecated, message: "Deprecated by `getImage`")
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
