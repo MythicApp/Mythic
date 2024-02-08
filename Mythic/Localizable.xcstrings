@@ -185,6 +185,9 @@
         }
       }
     },
+    "(%@)" : {
+
+    },
     "(Don't worry, you can still install Mythic Engine later.)" : {
       "localizations" : {
         "af" : {
@@ -3700,6 +3703,9 @@
           }
         }
       }
+    },
+    "Can't connect." : {
+
     },
     "Cancel" : {
       "localizations" : {
@@ -15200,6 +15206,9 @@
         }
       }
     },
+    "Manage Downloads" : {
+
+    },
     "MANAGEMENT" : {
       "localizations" : {
         "af" : {
@@ -15757,6 +15766,12 @@
           }
         }
       }
+    },
+    "Mythic is not connected to the internet." : {
+
+    },
+    "Mythic is unable to connect to the internet. App functionality will be limited." : {
+
     },
     "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
 

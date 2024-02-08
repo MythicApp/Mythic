@@ -21,6 +21,8 @@ import UserNotifications // TODO: TODO
 struct MythicApp: App {
     // MARK: - State Properties
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    @StateObject var networkMonitor = NetworkMonitor()
+    @State private var showNetworkAlert = false
     @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isAlertPresented: Bool = false
@@ -29,7 +31,7 @@ struct MythicApp: App {
     
     @State private var activeAlert: ActiveAlert = .updatePrompt
     enum ActiveAlert {
-        case updatePrompt, bootError
+        case updatePrompt, bootError, offlineAlert
     }
     
     // MARK: - Updater Controller
@@ -48,6 +50,7 @@ struct MythicApp: App {
     var body: some Scene {
         Window("Mythic", id: "main") {
             MainView()
+                .environmentObject(networkMonitor)
                 .frame(minWidth: 750, minHeight: 390)
                 .task(priority: .high) {
                     if isFirstLaunch {
@@ -96,14 +99,22 @@ struct MythicApp: App {
                 .sheet(isPresented: $isInstallViewPresented) {
                     OnboardingView.InstallView(isPresented: $isInstallViewPresented)
                 }
-            
+                
+                // Reference: https://arc.net/l/quote/cflghpbh
+                .onChange(of: networkMonitor.isConnected) { _, newValue in
+                    if newValue == false {
+                        activeAlert = .offlineAlert
+                        isAlertPresented = true
+                    }
+                }
+                
                 .alert(isPresented: $isAlertPresented) {
                     switch activeAlert {
                     case .updatePrompt:
                         Alert(
                             title: Text("Time for an update!"),
                             message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
-                            primaryButton: .default(Text("Update")), // TODO: not implemented
+                            primaryButton: .default(Text("Update")), // TODO: download over previous engine
                             secondaryButton: .cancel(Text("Later"))
                         )
                     case .bootError:
@@ -111,6 +122,11 @@ struct MythicApp: App {
                             title: Text("Unable to boot default bottle."),
                             message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),
                             dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
+                        )
+                    case .offlineAlert:
+                        Alert(
+                            title: Text("Can't connect."),
+                            message: Text("Mythic is unable to connect to the internet. App functionality will be limited.")
                         )
                     }
                 }

@@ -25,6 +25,8 @@ import Combine
 // MARK: - MainView Struct
 struct MainView: View {
     
+    @EnvironmentObject var networkMonitor: NetworkMonitor
+    
     // MARK: - State Variables
     @State private var isAuthViewPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
@@ -288,11 +290,19 @@ struct MainView: View {
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
             .toolbar {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: toggleSidebar, label: {
                         Image(systemName: "sidebar.left")
                     })
                     .help("Toggle sidebar")
+                }
+                
+                if !networkMonitor.isConnected {
+                    ToolbarItem(placement: .navigation) {
+                        Image(systemName: "network.slash")
+                            .foregroundStyle(.red)
+                            .help("Mythic is not connected to the internet.")
+                    }
                 }
             }
             
@@ -309,4 +319,5 @@ func toggleSidebar() {
 // MARK: - Preview
 #Preview {
     MainView()
+        .environmentObject(NetworkMonitor())
 }
