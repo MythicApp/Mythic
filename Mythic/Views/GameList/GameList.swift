@@ -308,7 +308,8 @@ struct GameListView: View {
                                                             if game.type == .epic {
                                                                 try await Legendary.launch(
                                                                     game: game,
-                                                                    bottle: Wine.allBottles![game.bottleName]!
+                                                                    bottle: Wine.allBottles![game.bottleName]!,
+                                                                    online: networkMonitor.isEpicAccessible
                                                                 )
                                                             } else {
                                                                 try await LocalGames.launch(

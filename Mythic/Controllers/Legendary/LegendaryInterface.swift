@@ -44,11 +44,9 @@ class Legendary {
     /// Dictionary to monitor running commands and their identifiers.
     private static var runningCommands: [String: Process] {
         get {
-            var result: [String: Process]?
             _runningCommandsQueue.sync {
-                result = _runningCommands
+                return _runningCommands 
             }
-            return result ?? [:]
         }
         set(newValue) {
             _runningCommandsQueue.async(flags: .barrier) {
@@ -443,7 +441,7 @@ class Legendary {
         if let error = errorThrownExternally { variables.removeVariable("installing"); throw error } // FIXME: use withcheckedthrowingcontinuation like whisky rosetta2.swift
     }
     
-    static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game, bottle: Wine.Bottle, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
             throw GameDoesNotExistError(game)
@@ -460,6 +458,7 @@ class Legendary {
                 "launch",
                 game.appName,
                 needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway (can do in gamelist)
+                online ? nil : "--offline",
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
             ].compactMap { $0 },

@@ -35,6 +35,7 @@ struct HomeView: View {
     
     // MARK: - State Variables
     @ObservedObject private var variables: VariableManager = .shared
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     
     @State private var loadingError = false
     @State private var isLoading = false
@@ -73,7 +74,7 @@ struct HomeView: View {
                                             .resizable()
                                             .aspectRatio(3/4, contentMode: .fill)
                                             .clipped()
-                                            .glur(offset: 0.6, interpolation: 0.25, radius: 15)
+                                            .glur(offset: 0.6, interpolation: 0.15, radius: 20)
                                     }
                                     .aspectRatio(3/4, contentMode: .fit)
                                 case .failure:
@@ -125,7 +126,8 @@ struct HomeView: View {
                                                             if let recentlyPlayedGame = recentlyPlayedGame {
                                                                 try await Legendary.launch(
                                                                     game: recentlyPlayedGame,
-                                                                    bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!
+                                                                    bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!,
+                                                                    online: networkMonitor.isEpicAccessible
                                                                 )
                                                             }
                                                         } catch {
