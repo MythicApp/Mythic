@@ -46,7 +46,7 @@ extension OnboardingView {
         // MARK: - Body
         var body: some View {
             VStack {
-                Text("Install Game Porting Toolkit")
+                Text("Install Mythic Engine")
                     .font(.title)
                 
                 Divider()
@@ -54,9 +54,10 @@ extension OnboardingView {
                 Text(
                 """
                 In order to launch Windows® games, Mythic must download
-                a special translator by Apple to convert Windows® code to macOS.
-                 
-                It's around 1.8GB in size, but the download is around 600MB due to compression.
+                a specialized translation layer.
+                
+                The download time should take ~7 minutes or less,
+                depending on your internet connection.
                 """
                 )
                 .multilineTextAlignment(.center)
@@ -72,6 +73,41 @@ extension OnboardingView {
                             isPresented = false
                         }
                     }
+                    
+                    HStack {
+                        Button(action: { // TODO: implement question mark popover
+                            isHelpPopoverPresented.toggle()
+                        }, label: {
+                            Image(systemName: "questionmark")
+                                .controlSize(.small)
+                        })
+                        .clipShape(Circle())
+                        .popover(isPresented: $isHelpPopoverPresented) {
+                            VStack {
+                                Text(
+                                """
+                                Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),
+                                which combines wine and D3DMetal, to create a windows gaming experience on macOS.
+                                Similar to Proton, Mythic Engine attempts to be an emulator-like experience that
+                                enables native Windows games to be playable on macOS, while coming closer to native
+                                performance than ever before. (performance will vary between games)
+                                """
+                                )
+                                
+                                HStack {
+                                    Text("Check out Mythic Engine")
+                                    Link("here.", destination: .init(string: "https://github.com/MythicApp/Engine-Evo")!)
+                                    
+                                    Spacer()
+                                }
+                            }
+                            .padding()
+                        }
+                        
+                        Spacer()
+                    }
+                    
+                    Spacer()
                     
                     // MARK: Install Button
                     Button(Libraries.isInstalled() ? "Installed" : "Install") {
@@ -112,24 +148,6 @@ extension OnboardingView {
                     }
                     .disabled(Libraries.isInstalled())
                     .buttonStyle(.borderedProminent)
-                }
-                
-                HStack {
-                    Button(action: { // TODO: implement question mark popover
-                        isHelpPopoverPresented.toggle()
-                    }, label: {
-                        Image(systemName: "questionmark")
-                            .controlSize(.small)
-                    })
-                    .clipShape(Circle())
-                    .popover(isPresented: $isHelpPopoverPresented) {
-                        VStack {
-                            NotImplementedView()
-                        }
-                        .padding()
-                    }
-                    
-                    Spacer()
                 }
             }
             .fixedSize()

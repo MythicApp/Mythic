@@ -91,7 +91,7 @@ struct HomeView: View {
                                         .aspectRatio(3/4, contentMode: .fit)
                                 }
                             }
-                            .cornerRadius(20)
+                            .cornerRadius(10)
                             .overlay(
                                 ZStack(alignment: .bottom) {
                                     VStack {

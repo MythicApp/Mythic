@@ -4264,6 +4264,9 @@
         }
       }
     },
+    "Check out Mythic Engine" : {
+
+    },
     "Choose a name for your bottle:" : {
 
     },
@@ -11707,6 +11710,7 @@
       }
     },
     "In order to launch Windows® games, Mythic must download\na special translator by Apple to convert Windows® code to macOS.\n \nIt's around 1.8GB in size, but the download is around 600MB due to compression." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11889,6 +11893,9 @@
           }
         }
       }
+    },
+    "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection." : {
+
     },
     "Install" : {
       "localizations" : {
@@ -12259,6 +12266,7 @@
       }
     },
     "Install Game Porting Toolkit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12441,6 +12449,9 @@
           }
         }
       }
+    },
+    "Install Mythic Engine" : {
+
     },
     "Installed" : {
       "localizations" : {
@@ -15779,6 +15790,9 @@
     "Mythic cannot connect to the internet." : {
 
     },
+    "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
+
+    },
     "Mythic is not connected to the internet." : {
 
     },
@@ -15786,6 +15800,9 @@
 
     },
     "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
+
+    },
+    "Mythic!" : {
 
     },
     "Next" : {
@@ -22640,7 +22657,11 @@
     "View your games" : {
 
     },
+    "Welcome to %@" : {
+
+    },
     "Welcome to Mythic!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
