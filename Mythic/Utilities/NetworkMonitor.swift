@@ -14,28 +14,30 @@ import SwiftUI
 
 class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
-    private let workerQueue = DispatchQueue(label: "NetworkMonitor")
+    private let queue = DispatchQueue(label: "NetworkMonitor")
     @Published var isConnected = true // Assumes the user is connected by default
     @Published var isEpicAccessible = true
     
     init() {
-        networkMonitor.pathUpdateHandler = { [self] path in
-            DispatchQueue.main.sync {
-                isConnected = (path.status == .satisfied)
-            }
-            
-            DispatchQueue.main.sync {
-                if isConnected {
-                    URLSession.shared.dataTask(with: .init(string: "https://epicgames.com")!) { [self] (_, response, _) in
-                        isEpicAccessible = ((200...299) ~= ((response as? HTTPURLResponse)?.statusCode ?? .init()))
+        networkMonitor.pathUpdateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.isConnected = (path.status == .satisfied)
+                
+                if self?.isConnected == true {
+                    URLSession.shared.dataTask(with: URL(string: "https://epicgames.com")!) { [weak self] (_, response, _) in
+                        DispatchQueue.main.async {
+                            self?.isEpicAccessible = ((200...299) ~= ((response as? HTTPURLResponse)?.statusCode ?? 0))
+                        }
                     }.resume()
                 } else {
-                    isEpicAccessible = false
+                    DispatchQueue.main.async {
+                        self?.isEpicAccessible = false
+                    }
                 }
             }
         }
         
-        networkMonitor.start(queue: workerQueue)
+        networkMonitor.start(queue: queue)
     }
 }
 

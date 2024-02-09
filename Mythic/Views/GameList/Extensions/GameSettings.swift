@@ -206,6 +206,7 @@ extension GameListView {
                         }
                     }
                     .task(priority: .userInitiated) { await fetchRetinaStatus() }
+                    
                     .onChange(of: selectedBottle) {
                         game.bottleName = selectedBottle
                         Task(priority: .userInitiated) { await fetchRetinaStatus() }

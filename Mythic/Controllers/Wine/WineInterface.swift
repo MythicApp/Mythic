@@ -24,8 +24,24 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     /// Logger instance for swift parsing of wine.
     private static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
+    private static var _runningCommands: [String: Process] = .init()
+    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
+    
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] = .init()
+    private static var runningCommands: [String: Process] {
+        get {
+            var result: [String: Process]?
+            _runningCommandsQueue.sync {
+                result = _runningCommands
+            }
+            return result ?? [:]
+        }
+        set(newValue) {
+            _runningCommandsQueue.async(flags: .barrier) {
+                _runningCommands = newValue
+            }
+        }
+    }
     
     /// The directory where all wine prefixes related to Mythic are stored.
     static let bottlesDirectory: URL? = { // FIXME: allow force-unwrapping of bottles directory, directory creation error will be rare
@@ -261,8 +277,8 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         // MARK: Run
         do {
             defer { runningCommands.removeValue(forKey: identifier) }
-            
             runningCommands[identifier] = task // WHAT
+            
             try task.run()
             
             task.waitUntilExit()
