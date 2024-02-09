@@ -22,6 +22,8 @@ struct WineView: View {
     @State private var isBottleCreationViewPresented = false
     @State private var isBottleSettingsViewPresented = false
     
+    @State private var selectedBottleName: String = .init()
+    
     @State private var isDeletionAlertPresented = false
     
     var body: some View {
@@ -37,6 +39,7 @@ struct WineView: View {
                         
                         Spacer()
                         Button(action: {
+                            selectedBottleName = name
                             isBottleSettingsViewPresented = true
                         }, label: {
                             Image(systemName: "gear")
@@ -75,7 +78,21 @@ struct WineView: View {
                 BottleCreationView(isPresented: $isBottleCreationViewPresented)
             }
             .sheet(isPresented: $isBottleSettingsViewPresented) {
-                // BottleSettingsView()
+                VStack {
+                    Text("Configure \"\(selectedBottleName)\"")
+                        .font(.title)
+                    
+                    Form {
+                        BottleSettingsView(selectedBottle: $selectedBottleName, withPicker: false)
+                    }
+                    .formStyle(.grouped)
+                    
+                    Button("Close") {
+                        isBottleSettingsViewPresented = false
+                    }
+                }
+                .padding()
+                .fixedSize()
             }
             .alert(isPresented: $isDeletionAlertPresented) {
                 Alert(

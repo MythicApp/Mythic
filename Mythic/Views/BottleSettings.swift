@@ -10,6 +10,7 @@ import SwiftUI
 struct BottleSettingsView: View {
     
     @Binding var selectedBottle: String
+    var withPicker: Bool
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var bottleScope: Wine.BottleScope = .individual
@@ -34,74 +35,103 @@ struct BottleSettingsView: View {
     }
     
     var body: some View {
-        Form {
-            if Wine.allBottles?[selectedBottle] != nil {
-                Toggle("Performance HUD", isOn: Binding(
-                    get: { /* TODO: add support for different games having different configs under the same bottle
-                            switch bottleScope {
-                            case .individual:
-                            return Wine.individualBottleSettings![game.appName]!.metalHUD
-                            case .global: */
-                        return Wine.allBottles![selectedBottle]!.settings.metalHUD
-                        // }
-                    }, set: { /* TODO: add support for different games having different configs under the same bottle
-                               switch bottleScope {
-                               case .individual:
-                               <#code#>
-                               case .global: */
-                        Wine.allBottles![selectedBottle]!.settings.metalHUD = $0
-                        // }
-                    }
-                ))
-                .disabled(variables.getVariable("booting") == true)
+        if withPicker {
+            if variables.getVariable("booting") != true {
+                /* TODO: add support for different games having different configs under the same bottle
+                 Picker("Bottle Scope", selection: $bottleScope) {
+                 ForEach(type(of: bottleScope).allCases, id: \.self) {
+                 Text($0.rawValue)
+                 }
+                 }
+                 .pickerStyle(InlinePickerStyle())
+                 */
                 
-                if !modifyingRetinaMode {
-                    Toggle("Retina Mode", isOn: Binding( // FIXME: make retina mode work!!
-                        get: { retinaMode },
-                        set: { value in
-                            Task(priority: .userInitiated) {
-                                modifyingRetinaMode = true
-                                do {
-                                    try await Wine.toggleRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url, toggle: value)
-                                    retinaMode = value
-                                    Wine.allBottles![selectedBottle]!.settings.retinaMode = value
-                                    modifyingRetinaMode = false
-                                } catch { }
-                            }
-                        }
-                                                       ))
-                    .disabled(variables.getVariable("booting") == true)
-                    .disabled(modifyingRetinaMode)
-                } else {
-                    HStack {
-                        Text("Retina Mode")
-                        Spacer()
-                        if retinaModeError == nil {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .controlSize(.small)
-                                .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error")")
-                        }
+                Picker("Current Bottle", selection: $selectedBottle) { // also remember to make that the bottle it launches with
+                    ForEach(Array((Wine.allBottles ?? .init()).keys), id: \.self) { name in
+                        Text(name)
                     }
                 }
-                
-                Toggle("Enhanced Sync (MSync)", isOn: Binding(
-                    get: { return Wine.allBottles![selectedBottle]!.settings.msync },
-                    set: { Wine.allBottles![selectedBottle]!.settings.msync = $0 }
-                ))
-                .disabled(variables.getVariable("booting") == true)
+                .disabled(((Wine.allBottles?.contains { $0.key == "Default" }) == nil))
+            } else {
+                HStack {
+                    Text("Current bottle:")
+                    Spacer()
+                    ProgressView()
+                        .controlSize(.small)
+                }
             }
         }
-        .formStyle(.grouped)
-        .task(priority: .userInitiated) { await fetchRetinaStatus() }
-        .onChange(of: selectedBottle) {
-            Task(priority: .userInitiated) { await fetchRetinaStatus() }
+        if Wine.allBottles?[selectedBottle] != nil {
+            Toggle("Performance HUD", isOn: Binding(
+                get: { /* TODO: add support for different games having different configs under the same bottle
+                        switch bottleScope {
+                        case .individual:
+                        return Wine.individualBottleSettings![game.appName]!.metalHUD
+                        case .global: */
+                    return Wine.allBottles![selectedBottle]!.settings.metalHUD
+                    // }
+                }, set: { /* TODO: add support for different games having different configs under the same bottle
+                           switch bottleScope {
+                           case .individual:
+                           <#code#>
+                           case .global: */
+                    Wine.allBottles![selectedBottle]!.settings.metalHUD = $0
+                    // }
+                }
+            ))
+            .disabled(variables.getVariable("booting") == true)
+            
+            if !modifyingRetinaMode {
+                Toggle("Retina Mode", isOn: Binding( // FIXME: make retina mode work!!
+                    get: { retinaMode },
+                    set: { value in
+                        Task(priority: .userInitiated) {
+                            modifyingRetinaMode = true
+                            do {
+                                try await Wine.toggleRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url, toggle: value)
+                                retinaMode = value
+                                Wine.allBottles![selectedBottle]!.settings.retinaMode = value
+                                modifyingRetinaMode = false
+                            } catch { }
+                        }
+                    }
+                                                   ))
+                .disabled(variables.getVariable("booting") == true)
+                .disabled(modifyingRetinaMode)
+            } else {
+                HStack {
+                    Text("Retina Mode")
+                    Spacer()
+                    if retinaModeError == nil {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .controlSize(.small)
+                            .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error")")
+                    }
+                }
+            }
+            
+            Toggle("Enhanced Sync (MSync)", isOn: Binding(
+                get: { return Wine.allBottles![selectedBottle]!.settings.msync },
+                set: { Wine.allBottles![selectedBottle]!.settings.msync = $0 }
+            ))
+            .disabled(variables.getVariable("booting") == true)
+            .task(priority: .userInitiated) { await fetchRetinaStatus() }
+            .onChange(of: selectedBottle) {
+                Task(priority: .userInitiated) { await fetchRetinaStatus() }
+            }
         }
     }
 }
 
 #Preview {
-    BottleSettingsView(selectedBottle: .constant("Default"))
+    Form {
+        BottleSettingsView(
+            selectedBottle: .constant("Default"),
+            withPicker: false
+        )
+    }
+    .formStyle(.grouped)
 }
