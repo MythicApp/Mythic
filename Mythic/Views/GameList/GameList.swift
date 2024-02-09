@@ -48,7 +48,7 @@ struct GameListView: View {
     @Binding var searchText: String
     
     // MARK: - State Properties
-    
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var isSettingsViewPresented: Bool = false
@@ -181,9 +181,16 @@ struct GameListView: View {
                                             VStack {
                                                 Spacer()
                                                 HStack {
-                                                    ProgressView()
-                                                        .controlSize(.small)
-                                                        .padding(.trailing, 5)
+                                                    if networkMonitor.isEpicAccessible {
+                                                        ProgressView()
+                                                            .controlSize(.small)
+                                                            .padding(.trailing, 5)
+                                                    } else {
+                                                        Image(systemName: "network.slash")
+                                                            .symbolEffect(.pulse)
+                                                            .foregroundStyle(.red)
+                                                            .help("Mythic cannot connect to the internet.")
+                                                    }
                                                     Text("(\(game.title))")
                                                         .truncationMode(.tail)
                                                         .foregroundStyle(.placeholder)
@@ -260,7 +267,8 @@ struct GameListView: View {
                                                 }
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
-                                                .help("Update available!")
+                                                .disabled(!networkMonitor.isEpicAccessible)
+                                                .help(networkMonitor.isEpicAccessible ? "Update \(game.title)" : "Connect to the internet to update \(game.title).")
                                             }
                                             
                                             if game.type == .epic,
@@ -391,12 +399,13 @@ struct GameListView: View {
                                                 Image(systemName: "arrow.down.to.line")
                                                     .foregroundStyle(.gray)
                                                     .padding()
-                                                    .disabled(variables.getVariable("installing") as Game? != nil) // FIXME: doesnt work, check for installing_ var instead
                                             }
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
-                                            .help("Download \(game.title)")
+                                            .disabled(variables.getVariable("installing") as Game? != nil)
+                                            .disabled(!networkMonitor.isEpicAccessible)
+                                            .help(networkMonitor.isEpicAccessible ? "Download \(game.title)" : "Connect to the internet to download \(game.title).")
                                         }
                                     }
                                 }
@@ -519,4 +528,5 @@ struct GameListView: View {
 
 #Preview {
     MainView()
+        .environmentObject(NetworkMonitor())
 }

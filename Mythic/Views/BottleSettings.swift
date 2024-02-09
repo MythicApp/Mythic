@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct BottleSettingsView: View {
+    
+    @Binding var selectedBottle: String
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var bottleScope: Wine.BottleScope = .individual
-    @State var selectedBottle: String = Wine.allBottles?.keys.first ?? "Default"
     
     @State private var retinaMode: Bool = Wine.defaultBottleSettings.retinaMode
     @State private var modifyingRetinaMode: Bool = true
@@ -34,33 +35,6 @@ struct BottleSettingsView: View {
     
     var body: some View {
         Form {
-            if let bottles = Wine.allBottles {
-                if variables.getVariable("booting") != true {
-                    /* TODO: add support for different games having different configs under the same bottle
-                     Picker("Bottle Scope", selection: $bottleScope) {
-                     ForEach(type(of: bottleScope).allCases, id: \.self) {
-                     Text($0.rawValue)
-                     }
-                     }
-                     .pickerStyle(InlinePickerStyle())
-                     */
-                    
-                    Picker("Current Bottle", selection: $selectedBottle) { // also remember to make that the bottle it launches with
-                        ForEach(Array((Wine.allBottles ?? bottles).keys), id: \.self) { name in
-                            Text(name)
-                        }
-                    }
-                    .disabled(!bottles.contains { $0.key == "Default" })
-                } else {
-                    HStack {
-                        Text("Current bottle:")
-                        Spacer()
-                        ProgressView()
-                            .controlSize(.small)
-                    }
-                }
-            }
-            
             if Wine.allBottles?[selectedBottle] != nil {
                 Toggle("Performance HUD", isOn: Binding(
                     get: { /* TODO: add support for different games having different configs under the same bottle
@@ -129,5 +103,5 @@ struct BottleSettingsView: View {
 }
 
 #Preview {
-    BottleSettingsView()
+    BottleSettingsView(selectedBottle: .constant("Default"))
 }

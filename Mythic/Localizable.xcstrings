@@ -4638,6 +4638,12 @@
     "Configure Mythic" : {
 
     },
+    "Connect to the internet to download %@." : {
+
+    },
+    "Connect to the internet to update %@." : {
+
+    },
     "Create a bottle" : {
 
     },
@@ -15767,6 +15773,9 @@
         }
       }
     },
+    "Mythic cannot connect to the internet." : {
+
+    },
     "Mythic is not connected to the internet." : {
 
     },
@@ -21882,7 +21891,11 @@
         }
       }
     },
+    "Update %@" : {
+
+    },
     "Update available!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

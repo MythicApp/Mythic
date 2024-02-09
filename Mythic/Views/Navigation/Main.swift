@@ -297,7 +297,7 @@ struct MainView: View {
                     .help("Toggle sidebar")
                 }
                 
-                if !networkMonitor.isConnected {
+                if !networkMonitor.isEpicAccessible {
                     ToolbarItem(placement: .navigation) {
                         Image(systemName: "network.slash")
                             .foregroundStyle(.red)
