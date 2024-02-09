@@ -24,9 +24,10 @@ struct AuthView: View {
     // MARK: - State Properties
     @State private var code: String = .init()
     @State private var isLoggingIn: Bool = false
-    @State private var progressViewPresented = false
-    @State private var isProgressViewSheetPresented = false
-    @State private var isError = false
+    @State private var progressViewPresented: Bool = false
+    @State private var isProgressViewSheetPresented: Bool = false
+    @State private var isHelpPopoverPresented: Bool = false
+    @State private var isError: Bool = false
     
     // MARK: - Submit to Legendary
     /// Submits the authorization code to Legendary for authentication.
@@ -84,7 +85,7 @@ struct AuthView: View {
             Text("\nEnter the 'authorisationCode' from the JSON response in the field below.")
             
             HStack {
-                TextField("Enter authorisation key…", text: $code)
+                TextField("Enter authorisation key...", text: $code)
                     .onSubmit {
                         Task(priority: .userInitiated) { await submitToLegendary() }
                     }
@@ -98,6 +99,23 @@ struct AuthView: View {
                 .buttonStyle(.borderedProminent)
             }
             .fixedSize()
+            HStack {
+                Button(action: { // TODO: implement question mark popover
+                    isHelpPopoverPresented.toggle()
+                }, label: {
+                    Image(systemName: "questionmark")
+                        .controlSize(.small)
+                })
+                .clipShape(Circle())
+                .popover(isPresented: $isHelpPopoverPresented) {
+                    VStack {
+                        NotImplementedView()
+                    }
+                        .padding()
+                }
+                
+                Spacer()
+            }
             
             .sheet(isPresented: $progressViewPresented) {
                 ProgressViewSheetWithError(isError: $isError, isPresented: $isProgressViewSheetPresented)

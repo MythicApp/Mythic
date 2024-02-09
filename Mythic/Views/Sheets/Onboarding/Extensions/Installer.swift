@@ -20,7 +20,7 @@ import Combine
 extension OnboardingView {
     // MARK: - InstallView Struct
     /// A view guiding the user through the installation of the Game Porting Toolkit.
-    struct InstallView: View {
+    struct InstallView: View { // TODO: revamp
         
         // MARK: - Binding Variables
         @Binding var isPresented: Bool
@@ -41,6 +41,7 @@ extension OnboardingView {
         @State private var installProgress: Double = 0
         @State private var installComplete: Bool = false
         @State private var installError: Bool = false
+        @State private var isHelpPopoverPresented: Bool = false
         
         // MARK: - Body
         var body: some View {
@@ -52,8 +53,8 @@ extension OnboardingView {
                 
                 Text(
                 """
-                In order to launch windows games, Mythic must download
-                a special translator by Apple to convert Windows code to macOS.
+                In order to launch Windows® games, Mythic must download
+                a special translator by Apple to convert Windows® code to macOS.
                  
                 It's around 1.8GB in size, but the download is around 600MB due to compression.
                 """
@@ -112,13 +113,32 @@ extension OnboardingView {
                     .disabled(Libraries.isInstalled())
                     .buttonStyle(.borderedProminent)
                 }
+                
+                HStack {
+                    Button(action: { // TODO: implement question mark popover
+                        isHelpPopoverPresented.toggle()
+                    }, label: {
+                        Image(systemName: "questionmark")
+                            .controlSize(.small)
+                    })
+                    .clipShape(Circle())
+                    .popover(isPresented: $isHelpPopoverPresented) {
+                        VStack {
+                            NotImplementedView()
+                        }
+                        .padding()
+                    }
+                    
+                    Spacer()
+                }
             }
+            .fixedSize()
             .padding()
             
             // MARK: Download Sheet
             .sheet(isPresented: $isDownloadSheetPresented) {
                 VStack {
-                    Text("Downloading Game Porting Toolkit…")
+                    Text("Downloading Game Porting Toolkit...")
                         .multilineTextAlignment(.leading)
                     
                     HStack {
@@ -149,7 +169,7 @@ extension OnboardingView {
             // MARK: Install Sheet
             .sheet(isPresented: $isInstallSheetPresented) {
                 VStack {
-                    Text("Installing Game Porting Toolkit…")
+                    Text("Installing Game Porting Toolkit...")
                     
                     HStack {
                         Text("\(Int(installProgress * 100))%")
@@ -173,8 +193,12 @@ extension OnboardingView {
                 case .closeConfirmation:
                     // MARK: Close Confirmation Alert
                     Alert(
-                        title: Text("Are you sure you want to cancel GPTK installation?"),
-                        message: Text("Doing this means you can only play macOS-supported games, imported games, or use Whisky."),
+                        title: Text("Are you sure you want to cancel Mythic Engine (GPTK) installation?"),
+                        message: Text("Doing this means you can only play macOS-supported games.\n")
+                        + Text("(Don't worry, you can still install Mythic Engine later.)") // styling does nothing as of now -- call it future-proofing
+                            .italic()
+                            .font(.footnote)
+                            .foregroundStyle(.placeholder),
                         primaryButton: .destructive(Text("OK")) { isPresented = false },
                         secondaryButton: .cancel(Text("Cancel")) { isAlertPresented = false }
                     )

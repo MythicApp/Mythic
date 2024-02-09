@@ -21,10 +21,11 @@ import SwiftUI
 import Foundation
 import OSLog
 import Combine
-import CachedAsyncImage
 
 // MARK: - MainView Struct
 struct MainView: View {
+    
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     
     // MARK: - State Variables
     @State private var isAuthViewPresented: Bool = false
@@ -40,7 +41,7 @@ struct MainView: View {
     
     @ObservedObject private var variables: VariableManager = .shared
     
-    @State private var epicUserAsync: String = "Loading…"
+    @State private var epicUserAsync: String = "Loading..."
     @State private var signedIn: Bool = false
     
     @State private var appVersion: String = .init()
@@ -48,7 +49,7 @@ struct MainView: View {
     
     // MARK: - Functions
     func updateLegendaryAccountState() {
-        epicUserAsync = "Loading…"
+        epicUserAsync = "Loading..."
         DispatchQueue.global(qos: .userInitiated).async {
             let whoAmIOutput = Legendary.whoAmI()
             DispatchQueue.main.async { [self] in
@@ -73,14 +74,17 @@ struct MainView: View {
                     NavigationLink(destination: HomeView()) {
                         Label("Home", systemImage: "house")
                             .foregroundStyle(.primary)
+                            .help("Everything in one place")
                     }
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
                             .foregroundStyle(.primary)
+                            .help("View your games")
                     }
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
                             .foregroundStyle(.primary)
+                            .help("Purchase new games from Epic")
                     }
                 }
                 
@@ -94,20 +98,23 @@ struct MainView: View {
                     NavigationLink(destination: WineView()) {
                         Label("Wine", systemImage: "wineglass")
                             .foregroundStyle(.primary)
+                            .help("Manage containers for Windows® applications")
                     }
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")
                             .foregroundStyle(.primary)
+                            .help("Configure Mythic")
                     }
                     NavigationLink(destination: SupportView()) {
                         Label("Support", systemImage: "questionmark.bubble")
                             .foregroundStyle(.primary)
+                            .help("Get support/Support Mythic")
                     }
                 }
                 
                 Spacer()
                 
-                if let installingGame: Legendary.Game = variables.getVariable("installing") {
+                if let installingGame: Game = variables.getVariable("installing") {
                     Divider()
                     
                     VStack { // TODO: turn this VStack into a separate view so it's the same in Main and GameList
@@ -124,9 +131,11 @@ struct MainView: View {
                                    let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
                                     ProgressView(value: percentage, total: 100)
                                         .progressViewStyle(.linear)
+                                        .help("\(Int(percentage))% complete")
                                 } else {
                                     ProgressView()
                                         .progressViewStyle(.linear)
+                                        .help("Starting installation")
                                 }
                             }
                             .buttonStyle(.plain)
@@ -147,7 +156,7 @@ struct MainView: View {
                     }
                 }
                 
-                if let verifyingGame: Legendary.Game = variables.getVariable("verifying") {
+                if let verifyingGame: Game = variables.getVariable("verifying") {
                     Divider()
                     
                     VStack {
@@ -194,12 +203,10 @@ struct MainView: View {
                     Image(systemName: "person")
                         .foregroundStyle(.primary)
                     Text(epicUserAsync)
-                        .onAppear {
-                            updateLegendaryAccountState()
-                        }
+                        .task(priority: .utility) { updateLegendaryAccountState() }
                 }
                 
-                if epicUserAsync != "Loading…" {
+                if epicUserAsync != "Loading..." {
                     if signedIn {
                         Button {
                             activeAlert = .signOutConfirmation
@@ -283,10 +290,19 @@ struct MainView: View {
             .listStyle(SidebarListStyle())
             .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
             .toolbar {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: toggleSidebar, label: {
                         Image(systemName: "sidebar.left")
                     })
+                    .help("Toggle sidebar")
+                }
+                
+                if !networkMonitor.isEpicAccessible {
+                    ToolbarItem(placement: .navigation) {
+                        Image(systemName: "network.slash")
+                            .foregroundStyle(.red)
+                            .help("Mythic is not connected to the internet.")
+                    }
                 }
             }
             
@@ -303,4 +319,5 @@ func toggleSidebar() {
 // MARK: - Preview
 #Preview {
     MainView()
+        .environmentObject(NetworkMonitor())
 }

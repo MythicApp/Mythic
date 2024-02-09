@@ -48,7 +48,7 @@ class Libraries {
                 do {
                     try dataAggregate.append(Data(contentsOf: fileURL))
                 } catch {
-                    Logger.file.error("Error reading libraries and generating a checksum: \(error)")
+                    Logger.file.error("Error reading libraries and generating a checksum: \(error.localizedDescription)")
                 }
             }
         }
@@ -100,7 +100,7 @@ class Libraries {
             
             if let data = data,
                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let artifacts = json["artifacts"] as? [[String: Any]],
+               let artifacts = json["artifacts"] as? [[String: Any]], // FIXME: NOTE: get the latest artifact from MAIN ONLY; NO BRANCHES
                let artifact = artifacts.first {
                 latestArtifact = artifact
             }
@@ -121,12 +121,12 @@ class Libraries {
             defer { dataLock.unlock() }
             
             if let file = file {
-                Logger.file.notice("Installing libraries…")
+                Logger.file.notice("Installing libraries...")
                 do {
                     try files.unzipItem(at: file, to: directory, progress: installProgress)
                     Logger.file.notice("Finished downloading and installing libraries.")
                 } catch {
-                    Logger.file.error("Unable to install libraries: \(error)")
+                    Logger.file.error("Unable to install libraries: \(error.localizedDescription)")
                     do {
                         try files.removeItem(at: file)
                     } catch {
@@ -231,7 +231,7 @@ class Libraries {
             defer { group.leave() }
             
             guard error == nil else {
-                log.error("Unable to check for new GPTK version: \(error)")
+                log.error("Unable to check for new GPTK version: \(error?.localizedDescription ?? "[Unknown error]")")
                 return
             }
             
@@ -271,7 +271,7 @@ class Libraries {
             try files.removeItem(at: directory)
             completion(.success(true))
         } catch {
-            Logger.file.error("Unable to remove libraries: \(error)")
+            Logger.file.error("Unable to remove libraries: \(error.localizedDescription)")
             completion(.failure(error))
         }
     }

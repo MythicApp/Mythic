@@ -14,10 +14,106 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import OSLog
 
 struct WineView: View {
+    @State private var bottleNameToDelete: String = .init()
+    
+    @State private var isBottleCreationViewPresented = false
+    @State private var isBottleSettingsViewPresented = false
+    
+    @State private var selectedBottleName: String = .init()
+    
+    @State private var isDeletionAlertPresented = false
+    
     var body: some View {
-        NotImplementedView()
+        if let bottles = Wine.allBottles {
+            Form {
+                ForEach(Array(bottles.keys), id: \.self) { name in
+                    HStack {
+                        Text(name)
+                        Text(bottles[name]!.url.prettyPath())
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .scaledToFit()
+                        
+                        Spacer()
+                        Button(action: {
+                            selectedBottleName = name
+                            isBottleSettingsViewPresented = true
+                        }, label: {
+                            Image(systemName: "gear")
+                        })
+                        .buttonStyle(.borderless)
+                        .help("Modify default settings for \"\(name)\"")
+                        
+                        Button(action: {
+                            if name != "Default" {
+                                bottleNameToDelete = name
+                                isDeletionAlertPresented = true
+                            }
+                        }, label: {
+                            Image(systemName: "xmark.bin")
+                        })
+                        .buttonStyle(.borderless)
+                        .foregroundStyle(.secondary)
+                        .opacity(name == "Default" ? 0.5 : 1)
+                        .help(name == "Default" ? "You can't delete the default bottle." : "Delete \"\(name)\"")
+                    }
+                }
+            }
+            .navigationTitle("Bottles")
+            .formStyle(.grouped)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isBottleCreationViewPresented = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .help("Add a bottle")
+                }
+            }
+            .sheet(isPresented: $isBottleCreationViewPresented) {
+                BottleCreationView(isPresented: $isBottleCreationViewPresented)
+            }
+            .sheet(isPresented: $isBottleSettingsViewPresented) {
+                VStack {
+                    Text("Configure \"\(selectedBottleName)\"")
+                        .font(.title)
+                    
+                    Form {
+                        BottleSettingsView(selectedBottle: $selectedBottleName, withPicker: false)
+                    }
+                    .formStyle(.grouped)
+                    
+                    Button("Close") {
+                        isBottleSettingsViewPresented = false
+                    }
+                }
+                .padding()
+                .fixedSize()
+            }
+            .alert(isPresented: $isDeletionAlertPresented) {
+                Alert(
+                    title: .init("Are you sure you want to delete \"\(bottleNameToDelete)\"?"),
+                    message: .init("This process cannot be undone."),
+                    primaryButton: .destructive(.init("Delete")) {
+                        do {
+                            _ = try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: this is where the crashes will happen
+                        } catch {
+                            Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
+                            bottleNameToDelete = .init()
+                            isDeletionAlertPresented = false
+                        }
+                    },
+                    secondaryButton: .cancel(.init("Cancel")) {
+                        bottleNameToDelete = .init()
+                        isDeletionAlertPresented = false
+                    }
+                )
+            }
+        }
     }
 }
 

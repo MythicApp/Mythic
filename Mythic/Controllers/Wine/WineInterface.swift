@@ -17,51 +17,109 @@
 import Foundation
 import OSLog
 
-class Wine {
+class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
+    // FIXME: all funcs should take urls as params not bottles
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
     private static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
+    private static var _runningCommands: [String: Process] = .init()
+    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
+    
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] = .init()
+    private static var runningCommands: [String: Process] {
+        get {
+            var result: [String: Process]?
+            _runningCommandsQueue.sync {
+                result = _runningCommands
+            }
+            return result ?? [:]
+        }
+        set(newValue) {
+            _runningCommandsQueue.async(flags: .barrier) {
+                _runningCommands = newValue
+            }
+        }
+    }
     
     /// The directory where all wine prefixes related to Mythic are stored.
-    static let bottlesDirectory: URL = {
+    static let bottlesDirectory: URL? = { // FIXME: allow force-unwrapping of bottles directory, directory creation error will be rare
         let directory = Bundle.appContainer!.appending(path: "Bottles")
-        if !files.fileExists(atPath: directory.path) {
+        if files.fileExists(atPath: directory.path) {
+            return directory
+        } else {
             do {
-                try files.createDirectory(at: directory, withIntermediateDirectories: false)
                 Logger.file.info("Creating bottles directory")
+                try files.createDirectory(at: directory, withIntermediateDirectories: false)
+                return directory
             } catch {
-                Logger.app.error("Error creating Bottles directory: \(error)")
+                Logger.app.error("Error creating Bottles directory: \(error.localizedDescription)")
+                return nil
             }
         }
-        
-        return directory
     }()
     
-    /// The default wineprefix.
-    static let defaultBottle: URL = { // FIXME: halts up main thread becuase of `Legendary.launch()` being unable to work with async vars
-        let defaultBottleURL = bottlesDirectory.appending(path: "Default")
-        let group = DispatchGroup() // make async func behave like sync
-        
-        group.enter()
-        Task { // run "async"
-            defer { group.leave() }
-            
+    // MARK: - All Bottles Variable
+    static var allBottles: [String: Bottle]? { // TODO: reimplement to check for files in bottles folder
+        get {
+            if let object = defaults.object(forKey: "allBottles") as? Data {
+                do {
+                    return try PropertyListDecoder().decode(Dictionary.self, from: object)
+                } catch {
+                    Logger.app.error("Unable to retrieve bottles: \(error.localizedDescription)")
+                    return nil
+                }
+            } else {
+                Logger.app.warning("No bottles exist, returning default")
+                Task(priority: .high) { await Wine.boot(name: "Default") { _ in } }
+                return .init() // TODO: if already exists, might not get appended in time
+            }
+        }
+        set {
             do {
-                try await boot(prefix: defaultBottleURL)
+                defaults.set(
+                    try PropertyListEncoder().encode(newValue),
+                    forKey: "allBottles"
+                )
             } catch {
-                log.error("Boot failed with error: \(error)")
+                Logger.app.error("Unable to set to bottles: \(error.localizedDescription)")
             }
         }
-        
-        group.wait()
-        return defaultBottleURL
-    }()
+    }
     
-    // MARK: - Methods
+    static var defaultBottleSettings: BottleSettings {
+        get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true) }
+        set { defaults.set(newValue, forKey: "defaultBottleSettings") }
+    }
+    
+    @available(*, message: "keys MUST BE game.appName + variable currently unused")
+    static var individualBottleSettings: [String: BottleSettings]? {
+        get {
+            if let object = defaults.object(forKey: "individualBottleSettings") as? Data {
+                do {
+                    return try PropertyListDecoder().decode(Dictionary.self, from: object)
+                } catch {
+                    Logger.app.error("Unable to retrieve individual bottle settings: \(error.localizedDescription)")
+                    return nil
+                }
+            } else {
+                Logger.app.warning("No games use individual bottle settings, returning default")
+                return .init()
+            }
+        }
+        set {
+            do {
+                defaults.set(
+                    try PropertyListEncoder().encode(newValue),
+                    forKey: "individualBottleSettings"
+                )
+            } catch {
+                Logger.app.error("Unable to set to individual bottle settings: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     // MARK: - Command Method
     /**
      Run a wine command, using Mythic Engine's integrated wine.
@@ -80,7 +138,7 @@ class Wine {
     static func command(
         args: [String],
         identifier: String,
-        prefix: URL,
+        bottleURL: URL,
         input: String? = nil,
         inputIf: InputIfCondition? = nil,
         asyncOutput: OutputHandler? = nil,
@@ -92,19 +150,20 @@ class Wine {
                 """
                 Unable to execute wine command, Mythic Engine is not installed!
                 If you see this error, it needs to be handled by the script that invokes it.
+                Contact blackxfiied on Discord or open an issue on GitHub.
                 """
             )
             throw Libraries.NotInstalledError()
         }
         
-        guard files.fileExists(atPath: prefix.path) else {
+        guard files.fileExists(atPath: bottleURL.path) else {
             log.error("Unable to execute wine command, prefix does not exist.")
-            throw FileLocations.FileDoesNotExistError(prefix)
+            throw FileLocations.FileDoesNotExistError(bottleURL)
         }
         
-        guard files.isWritableFile(atPath: prefix.path) else {
-            log.error("Unable to execure wine command, prefix directory is not writable.")
-            throw FileLocations.FileNotModifiableError(prefix)
+        guard files.isWritableFile(atPath: bottleURL.path) else {
+            log.error("Unable to execute wine command, prefix directory is not writable.")
+            throw FileLocations.FileNotModifiableError(bottleURL)
         }
         
         let queue: DispatchQueue = DispatchQueue(label: "wineCommand", attributes: .concurrent)
@@ -146,7 +205,7 @@ class Wine {
         
         task.arguments = args
         
-        var defaultEnvironmentVariables: [String: String] = prefix.path.isEmpty ? .init() : ["WINEPREFIX": prefix.path]
+        var defaultEnvironmentVariables: [String: String] = bottleURL.path.isEmpty ? .init() : ["WINEPREFIX": bottleURL.path]
         if let additionalEnvironmentVariables = additionalEnvironmentVariables {
             defaultEnvironmentVariables.merge(additionalEnvironmentVariables) { (_, new) in new }
         }
@@ -218,8 +277,8 @@ class Wine {
         // MARK: Run
         do {
             defer { runningCommands.removeValue(forKey: identifier) }
+            runningCommands[identifier] = task // WHAT
             
-            runningCommands[identifier] = task
             try task.run()
             
             task.waitUntilExit()
@@ -236,7 +295,7 @@ class Wine {
         if let stderrString = String(data: output.stderr, encoding: .utf8), !stderrString.isEmpty {
             log.debug("\(stderrString)")
         } else {
-            log.warning("stderr empty or nonexistent for command [\(commandKey)]")
+            log.debug("stderr empty or nonexistent for command \(commandKey)")
         }
         
         if let stdoutString = String(data: output.stdout, encoding: .utf8) {
@@ -244,7 +303,7 @@ class Wine {
                 log.debug("\(stdoutString)")
             }
         } else {
-            log.warning("stdout empty or nonexistent for command [\(commandKey)]")
+            log.debug("stdout empty or nonexistent for command \(commandKey)")
         }
         
         return output
@@ -261,35 +320,130 @@ class Wine {
     
     // MARK: - Boot Method
     /**
-     Boot a wine prefix. (This will create one if none exists in the URL provided in `prefix`)
+     Boot/Create a wine prefix. (This will create one if none exists in the URL provided in `prefix`)
      
      - Parameter prefix: The URL of the wine prefix to boot.
      */
-    static func boot(prefix: URL) async throws { // TODO: Separate prefix booting and creation // TODO: add default wine settings such as high res mode and esync and whatnot, and control it via userdefaults
-        guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+    static func boot(
+        baseURL: URL? = bottlesDirectory,
+        name: String,
+        settings: BottleSettings = defaultBottleSettings,
+        completion: @escaping (Result<Bottle, Error>) -> Void
+    ) async {
+        guard let baseURL = baseURL else { return }
+        guard files.fileExists(atPath: baseURL.path) else { completion(.failure(FileLocations.FileDoesNotExistError(baseURL))); return }
+        let bottleURL = baseURL.appending(path: name)
         
-        if !files.fileExists(atPath: prefix.path) {
+        guard Libraries.isInstalled() else { completion(.failure(Libraries.NotInstalledError())); return }
+        guard FileLocations.isWritableFolder(url: baseURL) else { completion(.failure(FileLocations.FileNotModifiableError(bottleURL))); return }
+        
+        if !files.fileExists(atPath: bottleURL.path) {
             do {
-                try files.createDirectory(at: prefix, withIntermediateDirectories: true)
+                try files.createDirectory(at: bottleURL, withIntermediateDirectories: true)
             } catch {
-                log.error("Unable to create prefix directory: \(error)")
+                completion(.failure(error))
+                log.error("Unable to create prefix directory: \(error.localizedDescription)")
             }
         }
         
-        let output = try await command(
-            args: ["wineboot"],
-            identifier: "wineboot",
-            prefix: prefix
-        )
+        // TODO: FIXME: !!IMPORTANT!! replace throwing async functions with completion handlers - [completion: @escaping (Result<Void, Error>) -> Void]
+        defer { VariableManager.shared.setVariable("booting", value: false) }
+        VariableManager.shared.setVariable("booting", value: true) // TODO: rember
         
-        if let stderr = String(data: output.stderr, encoding: .utf8),
-           !stderr.contains(try Regex(#"wine: configuration in (.*?) has been updated\."#)),
-           !prefixExists(at: prefix) {
-            log.error("Unable to create prefix \"\(prefix.lastPathComponent)\"")
-            throw BootError()
+        if allBottles?[name] == nil { // FIXME: may be unsafe
+            allBottles?[name] = .init(url: bottleURL, settings: settings, busy: true)
+        } else {
+            completion(.failure(BottleAlreadyExistsError()))
+            return
         }
         
-        log.notice("Successfully created prefix \"\(prefix.lastPathComponent)\"")
+        do {
+            let output = try await command(
+                args: ["wineboot"],
+                identifier: "wineboot",
+                bottleURL: bottleURL
+            )
+            
+            if let stderr = String(data: output.stderr, encoding: .utf8),
+               !stderr.contains(try Regex(#"wine: configuration in (.*?) has been updated\."#)),
+               !bottleExists(bottleURL: bottleURL) {
+                log.error("Unable to boot prefix \"\(name)\"")
+                completion(.failure(BootError()))
+            }
+            
+            log.notice("Successfully booted prefix \"\(name)\"")
+            let newBottle: Bottle = .init(url: bottleURL, settings: settings, busy: false)
+            
+            try await toggleRetinaMode(bottleURL: bottleURL, toggle: settings.retinaMode)
+            
+            allBottles?[name] = newBottle
+            completion(.success(newBottle))
+        } catch {
+            completion(.failure(error))
+        }
+    }
+    
+    static func deleteBottle(bottleURL: URL) throws -> Bool {
+        guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
+        
+        if files.fileExists(atPath: bottleURL.path(percentEncoded: false)) { try files.removeItem(at: bottleURL) }
+        if let bottles = allBottles { allBottles = bottles.filter { $0.value.url != bottleURL } }
+        
+        return true
+    }
+    
+    // MARK: - Add Registry Key Method
+    private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
+        guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
+        
+        _ = try await command( // FIXME: errors may create problems later
+            args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
+            identifier: "regadd",
+            bottleURL: bottleURL
+        )
+    }
+    
+    // MARK: - Query Registry Key Method
+    private static func queryRegistryKey(bottleURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
+        do {
+            let output = try await command(
+                args: ["reg", "query", key, "-v", name],
+                identifier: "regquery",
+                bottleURL: bottleURL
+            )
+            
+            guard let lines = String(data: output.stdout, encoding: .utf8)?.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) else { completion(.failure(UnableToQueryRegistyError())); return }
+            guard let line = lines.first(where: { $0.contains(type.rawValue) }) else { completion(.failure(UnableToQueryRegistyError())); return }
+            let array = line.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
+            guard let value = array.last else { completion(.failure(UnableToQueryRegistyError())); return }
+            
+            completion(.success(String(value)))
+        } catch {
+            log.error("\("Failed to query regkey \(type) \(name) \(key) in bottle at \(bottleURL)")")
+            completion(.failure(error))
+        }
+    }
+    
+    // MARK: - Toggle Retina Mode Method
+    static func toggleRetinaMode(bottleURL: URL, toggle: Bool) async throws {
+        do {
+            try await addRegistryKey(bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
+        } catch {
+            log.error("Unable to toggle retina mode to \(toggle ? "on" : "off") in bottle at \(bottleURL)")
+        }
+    }
+    
+    static func getRetinaMode(bottleURL: URL, completion: @escaping (Result<Bool, Error>) -> Void) async {
+        await Wine.queryRegistryKey(
+            bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
+        ) { result in
+            switch result {
+            case .success(let value):
+                completion(.success(value == "y"))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
     
     // MARK: - Prefix Exists Method
@@ -299,14 +453,7 @@ class Wine {
      - Parameter at: The `URL` of the prefix that needs to be checked.
      - Returns: Boolean value denoting the prefix's existence.
      */
-    static func prefixExists(at: URL) -> Bool {
-        // swiftlint:disable:previous identifier_name
-        if let contents = try? files.contentsOfDirectory(atPath: at.path) {
-            if contents.contains("drive_c") {
-                return true
-            }
-        }
-        
-        return false
+    static func bottleExists(bottleURL: URL) -> Bool { // TODO: refactor
+        return (try? files.contentsOfDirectory(atPath: bottleURL.path).contains("drive_c")) ?? false
     }
 }

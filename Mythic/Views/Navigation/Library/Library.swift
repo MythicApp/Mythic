@@ -24,13 +24,27 @@ struct LibraryView: View {
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
     @State private var isGameListRefreshCalled: Bool = false
+    @State private var isDownloadsPopoverPresented: Bool = false
+    
+    @State private var searchText: String = .init()
     
     // MARK: - Body
     var body: some View {
-        GameListView(isRefreshCalled: $isGameListRefreshCalled)
+        GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
+        
+            .navigationTitle("Library")
         
         // MARK: - Toolbar
             .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isDownloadsPopoverPresented.toggle()
+                    } label: {
+                        Image(systemName: "arrow.down.app")
+                    }
+                    .help("Manage Downloads")
+                }
+                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -38,6 +52,7 @@ struct LibraryView: View {
                     } label: {
                         Image(systemName: "plus.app")
                     }
+                    .help("Import a game")
                 }
                 
                 // MARK: Refresh Button
@@ -47,10 +62,14 @@ struct LibraryView: View {
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
+                    .help("Refresh library")
                 }
             }
         
         // MARK: - Other Properties
+            .popover(isPresented: $isDownloadsPopoverPresented) {
+                NotImplementedView()
+            }
         
             .sheet(isPresented: $addGameModalPresented) {
                 LibraryView.GameImportView(
@@ -63,6 +82,6 @@ struct LibraryView: View {
 }
 
 #Preview {
-    // MARK: - Game List Preview
-    GameListView(isRefreshCalled: .constant(false))
+    MainView()
+        .environmentObject(NetworkMonitor())
 }

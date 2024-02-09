@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import OSLog
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
@@ -23,16 +24,62 @@ let files = FileManager.default
 /// A simpler alias of `UserDefaults.standard`.
 let defaults = UserDefaults.standard
 
+let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+
+struct UnknownError: LocalizedError {
+    var errorDescription: String? = "An unknown error occurred."
+}
+
 // MARK: - Enumerations
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable {
     case macOS = "macOS"
-    case windows = "Windows"
+    case windows = "Windows®"
 }
 
-enum GameType: String, CaseIterable {
+enum GameType: String, CaseIterable, Codable {
     case epic = "Epic"
     case local = "Local"
+}
+
+struct Game: Hashable, Codable {
+    var type: GameType
+    var title: String
+    var appName: String
+    // var defaultBottle: Wine.Bottle? = Wine.allBottles?["Default"] // TODO: should be appstorage
+    var platform: GamePlatform?
+    var bottleName: String {
+        get {
+            if let object = defaults.string(forKey: "\(self.appName)_defaultBottle"),
+               Wine.allBottles?[object] != nil {
+                return object
+            } else {
+                return defaults.string(forKey: "\(self.appName)_defaultBottle") ?? "Default"
+            }
+        }
+        set {
+            if Wine.allBottles?[newValue] != nil {
+                defaults.set(newValue, forKey: "\(self.appName)_defaultBottle")
+            }
+        }
+    }
+    
+    var imageURL: URL?
+    var path: String?
+    
+    // TODO: add functions that directly reference game; e.g. game.verify()
+}
+
+func placeholderGame(_ type: GameType) -> Game {
+    // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
+    return .init(type: .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
+}
+
+/// Your father.
+struct GameDoesNotExistError: LocalizedError {
+    init(_ game: Mythic.Game) { self.game = game }
+    let game: Mythic.Game
+    var errorDescription: String? = "This game doesn't exist."
 }
 
 // MARK: - Functions

@@ -36,7 +36,7 @@ class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error("Unable to get global Applications directory: \(error)")
+            Logger.file.error("Unable to get global Applications directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -58,7 +58,7 @@ class FileLocations {
                 )
                 return gamesURL
             } catch {
-                Logger.file.error("Unable to get games directory: \(error)")
+                Logger.file.error("Unable to get games directory: \(error.localizedDescription)")
             }
         } // no else block, error is handled already
         
@@ -81,11 +81,24 @@ class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error("Unable to get Application Support directory: \(error)")
+            Logger.file.error("Unable to get Application Support directory: \(error.localizedDescription)")
         }
         
         return nil
     }()
+    
+    static func isWritableFolder(url: URL) -> Bool { // does the same as files.isWritableFile, just a second opinion
+        let tempFileName = "Mythic_temp\(UUID().uuidString)"
+        let tempFileURL = url.appendingPathComponent(tempFileName)
+
+        do {
+            try String().write(to: tempFileURL, atomically: true, encoding: .utf8)
+            try FileManager.default.removeItem(at: tempFileURL)
+            return true
+        } catch {
+            return false
+        }
+    }
     
     // MARK: - User Containers Directory
     /** The current user's Containers directory.
@@ -104,7 +117,7 @@ class FileLocations {
             )
             .appendingPathComponent("Containers")
         } catch {
-            Logger.file.error("Unable to get Containers directory: \(error)")
+            Logger.file.error("Unable to get Containers directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -112,19 +125,21 @@ class FileLocations {
     
     // MARK: - Other
     
-    struct FileDoesNotExistError: Error {
-        init(_ fileURL: URL) {
+    struct FileDoesNotExistError: LocalizedError {
+        init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
-        let fileURL: URL
+        let fileURL: URL?
+        var errorDescription: String? = "The file/folder doesn't exist."
     }
     
-    struct FileNotModifiableError: Error { 
-        init(_ fileURL: URL) {
+    struct FileNotModifiableError: LocalizedError { 
+        init(_ fileURL: URL?) {
             self.fileURL = fileURL
         }
         
-        let fileURL: URL
+        let fileURL: URL?
+        var errorDescription: String? = "The file/folder isn't modifiable."
     }
 }

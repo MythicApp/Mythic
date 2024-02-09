@@ -20,7 +20,11 @@ struct SettingsView: View {
         NotImplementedView()
         // TODO: purge shader cache, see applegamingwiki
         // TODO: high resolution mode default
-        // TODO:  
+        // TODO: MSYNC, ESYNC, OFF TRIPLE SLIDER
+        // TODO: VKD3D
+        // TODO: winecfg button
+        // TODO: windows version
+            .navigationTitle("Settings")
     }
 }
 

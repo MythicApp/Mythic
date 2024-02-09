@@ -53,15 +53,18 @@ extension Legendary {
         case load
     }
     
-    struct UnableToGetPlatformError: Error {  }
-    
-    /// Your father.
-    struct GameDoesNotExistError: Error {
-        init(_ game: Game) { self.game = game }
-        let game: Game
+    struct UnableToGetPlatformError: LocalizedError { 
+        var errorDescription: String? = "Mythic is unable to get the platform of this game."
     }
     
+    struct IsNotLegendaryError: LocalizedError { 
+        var errorDescription: String? = "This is not an epic game."
+    }
+    
+    // GameDoesNotExistError unified!
+    
     /// Struct to store games.
+    @available(*, deprecated, message: "Replaced by Mythic.Game")
     struct Game: Hashable, Codable {
         var appName: String
         var title: String
@@ -87,12 +90,15 @@ extension Legendary {
     
     /// Error when legendary is signed out on a command that enforces signin.
     @available(*, message: "This error will be deprecated soon, in favor of UserValidationError")
-    struct NotSignedInError: Error {  }
+    struct NotSignedInError: LocalizedError {
+        var errorDescription: String? = "You aren't signed in to epic games"
+    }
     
     /// Installation error with a message, see ``Legendary.install()``
-    struct InstallationError: Error {
+    struct InstallationError: LocalizedError {
         init(_ message: String) { self.message = message }
         
         let message: String
+        var errorDescription: String? = "Unable to install game." // TODO: message
     }
 }

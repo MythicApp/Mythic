@@ -1,10 +1,10 @@
 <h1 align="center">
   <br>
   <a href="https://getmythic.app">
-    <img src="https://github.com/MythicApp/Branding-Assets/blob/main/Macos_Icons/icon_256x256.png" 
+    <img src="https://github.com/MythicApp/Mythic/assets/41133734/55df5b7d-f40f-4048-a5d9-e3746d92e138" 
       style="width: 20%; height: 20%;">
   </a>
-  
+
   Mythic
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
@@ -19,11 +19,10 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 
 ## Features
 - [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX11, 12) (64-bit)
+- [ ] Steam Support (Coming in update 0.2.x)
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
-- [ ] Whisky Intergration
-- [ ] Steam Support (Coming in update 0.2.x)
 - [ ] Discord Intergration
 
 

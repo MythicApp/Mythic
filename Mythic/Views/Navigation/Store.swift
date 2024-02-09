@@ -21,6 +21,7 @@ struct StoreView: View {
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var urlString = "https://store.epicgames.com/"
+    @State private var refreshAnimation: Angle = .degrees(0)
     
     var body: some View {
         WebView(
@@ -30,6 +31,8 @@ struct StoreView: View {
             isLoading: $isLoading,
             urlString: urlString
         )
+        
+        .navigationTitle("Store")
         
         .toolbar {
             
@@ -74,8 +77,14 @@ struct StoreView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     urlString = "javascript:location.reload();"
+                    withAnimation(.default) {
+                        refreshAnimation = .degrees(360)
+                    } completion: {
+                        refreshAnimation = .degrees(0)
+                    }
                 } label: {
-                    Image(systemName: "arrow.clockwise.circle.fill")
+                    Image(systemName: "arrow.clockwise.circle")
+                        .rotationEffect(refreshAnimation) // thx whisky
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
@@ -84,7 +93,7 @@ struct StoreView: View {
                         NSWorkspace.shared.open(url)
                     }
                 } label: {
-                    Image(systemName: "globe.europe.africa.fill")
+                    Image(systemName: "arrow.up.forward")
                 }
             }
         }

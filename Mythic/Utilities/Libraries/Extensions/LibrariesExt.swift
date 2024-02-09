@@ -18,8 +18,12 @@ import Foundation
 
 extension Libraries {
     /// An error indicating that the libraries are already installed.
-    struct AlreadyInstalledError: Error {  }
+    struct AlreadyInstalledError: LocalizedError { 
+        var errorDescription: String? = "Mythic Engine is already installed."
+    }
     
     /// An error indicating that the libraries are not installed.
-    struct NotInstalledError: Error {  }
+    struct NotInstalledError: LocalizedError {
+        var errorDescription: String? = "Mythic Engine is not installed."
+    }
 }

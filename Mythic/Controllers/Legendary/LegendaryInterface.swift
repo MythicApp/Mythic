@@ -26,9 +26,6 @@ import OSLog
  */
 class Legendary {
     
-    /// For threadsafing and providing examples
-    public static let placeholderGame: Game = .init(appName: "[unknown]", title: "game")
-    
     // MARK: - Properties
     
     /// The file location for legendary's configuration files.
@@ -47,11 +44,9 @@ class Legendary {
     /// Dictionary to monitor running commands and their identifiers.
     private static var runningCommands: [String: Process] {
         get {
-            var result: [String: Process]?
             _runningCommandsQueue.sync {
-                result = _runningCommands
+                return _runningCommands 
             }
-            return result ?? [:]
         }
         set(newValue) {
             _runningCommandsQueue.async(flags: .barrier) {
@@ -220,7 +215,7 @@ class Legendary {
             // MARK: Run
             do {
                 defer { runningCommands.removeValue(forKey: identifier) }
-                runningCommands[identifier] = task
+                runningCommands[identifier] = task // WHY
                 try task.run()
                 
                 task.waitUntilExit()
@@ -283,18 +278,18 @@ class Legendary {
     }
     
     // MARK: - Base Path Property
-    /**
-     The file location for legendary's configuration files.
-     
-     This property represents the base path for games.
-     */
+    /// This property represents the base path for games.
     var basePath: URL? {
         get {
             if let value = defaults.object(forKey: "gamesPath") as? URL {
                 return value
-            } else { return Bundle.appGames }
+            } else {
+                return Bundle.appGames
+            }
         }
-        set { defaults.set(newValue, forKey: "gamesPath") }
+        set {
+            defaults.set(newValue, forKey: "gamesPath")
+        }
     }
     
     // MARK: - Install Method
@@ -311,7 +306,7 @@ class Legendary {
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
     static func install(
-        game: Game,
+        game: Mythic.Game,
         platform: GamePlatform,
         type: InstallationType = .install,
         optionalPacks: [String]? = nil,
@@ -319,6 +314,7 @@ class Legendary {
         gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
+        guard game.type == .epic else { return } // TODO: FIXME: create IsNotLegendaryError
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
@@ -332,7 +328,7 @@ class Legendary {
         ]
             .compactMap { $0 }
         
-        if type == .install { // MARK: Install-only arguments
+        if type == .install { // Install-only arguments
             switch platform {
             case .macOS:
                 argBuilder += ["--platform", "Mac"]
@@ -442,17 +438,17 @@ class Legendary {
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.
-        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error }
+        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error } // FIXME: use withcheckedthrowingcontinuation like whisky rosetta2.swift
     }
     
-    static func launch(game: Game, bottle: URL) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game, bottle: Wine.Bottle, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
             throw GameDoesNotExistError(game)
         }
         
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.prefixExists(at: bottle) else { throw Wine.PrefixDoesNotExistError() }
+        guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
@@ -461,12 +457,18 @@ class Legendary {
             args: [
                 "launch",
                 game.appName,
+                needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway (can do in gamelist)
+                online ? nil : "--offline",
                 "--wine",
                 Libraries.directory.appending(path: "Wine/bin/wine64").path
-            ],
+            ].compactMap { $0 },
             useCache: false,
             identifier: "launch_\(game.appName)",
-            additionalEnvironmentVariables: ["WINEPREFIX": bottle.path]
+            additionalEnvironmentVariables: [
+                "WINEPREFIX": bottle.url.path,
+                "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
+                "WINEMSYNC": bottle.settings.msync ? "1" : "0"
+            ]
         )
         
         VariableManager.shared.setVariable("launching_\(game.appName)", value: false)
@@ -546,8 +548,17 @@ class Legendary {
      }
      */
     
-    // TODO: DocC
-    static func getGamePlatform(game: Game) throws -> GamePlatform {
+    // MARK: Get Game Platform Method
+    /**
+     Determines the platform of the game.
+
+     - Parameter platform: The platform of the game.
+     - Throws: `UnableToGetPlatformError` if the platform is not "Mac" or "Windows".
+     - Returns: The platform of the game as a `Platform` enum.
+     */
+    static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
+        guard game.type == .epic else { throw IsNotLegendaryError() }
+        
         let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName]["platform"].string
         if platform == "Mac" {
             return .macOS
@@ -559,8 +570,14 @@ class Legendary {
         
     }
     
-    // TODO: DocC
-    static func needsUpdate(game: Game) -> Bool {
+    // MARK: Needs Update Method
+    /**
+     Determines if the game needs an update.
+
+     - Parameter game: The game to check for updates.
+     - Returns: A boolean indicating whether the game needs an update.
+     */
+    static func needsUpdate(game: Mythic.Game) -> Bool {
         var needsUpdate: Bool = false
         
         do {
@@ -577,7 +594,7 @@ class Legendary {
                 log.error("Unable to compare upstream and installed version of game \"\(game.title)\".")
             }
         } catch {
-            log.error("Unable to fetch if \(game.title) needs an update: \(error)")
+            log.error("Unable to fetch if \(game.title) needs an update: \(error.localizedDescription)")
         }
         
         return needsUpdate
@@ -623,10 +640,10 @@ class Legendary {
     /**
      Retrieve installed games from epic games services.
      
-     - Returns: A dictionary containing ``Legendary.Game`` objects.
+     - Returns: A dictionary containing ``Game`` objects.
      - Throws: A ``NotSignedInError``.
      */
-    static func getInstalledGames() throws -> [Game] {
+    static func getInstalledGames() throws -> [Mythic.Game] { // TODO: delete Legendary.Game and replace Mythic.Game with Game
         guard signedIn() else { throw NotSignedInError() }
         
         let installedJSONFileURL: URL = URL(filePath: "\(configLocation)/installed.json")
@@ -639,15 +656,26 @@ class Legendary {
             return .init()
         }
         
-        var apps: [Game] = .init()
+        var apps: [Mythic.Game] = .init()
         
         for (appName, gameInfo) in installedGames {
             if let title = gameInfo["title"] as? String {
-                apps.append(Game(appName: appName, title: title))
+                apps.append(Mythic.Game(type: .epic, title: title, appName: appName))
             }
         }
         
         return apps
+    }
+    
+    // TODO: get game installed.json, will simplify many commands
+    
+    static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
+        guard signedIn() else { throw NotSignedInError() }
+        guard game.type == .epic else { throw IsNotLegendaryError() }
+        
+        let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        
+        return installed[game.appName]["install_path"].string
     }
     
     // MARK: - Get Installable Method
@@ -656,24 +684,23 @@ class Legendary {
      
      - Returns: An `Array` of ``Game`` objects.
      */
-    static func getInstallable() async throws -> [Game] { // TODO: use files in Config/metadata and use command to update in the background [IMPORTANT TO UPD IN BKG]
+    static func getInstallable() async throws -> [Mythic.Game] { // TODO: use files in Config/metadata and use command to update in the background [IMPORTANT TO UPD IN BKG]
         guard signedIn() else { throw NotSignedInError() }
         
-        guard let json = try? await JSON(data: command(
-            args: [
-                "list",
-                "--platform",
-                "Windows",
-                "--third-party",
-                "--json"
-            ],
-            useCache: true,
-            identifier: "getInstallable"
-        ).stdout) else {
-            return .init()
+        let metadata = "\(configLocation)/metadata"
+        
+        guard let metadataContents = try? files.contentsOfDirectory(atPath: metadata) else {
+            throw FileLocations.FileDoesNotExistError(URL(filePath: metadata))
         }
         
-        return extractAppNamesAndTitles(from: json)
+        var games: [Mythic.Game] = .init()
+        
+        for file in metadataContents {
+            let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
+            games.append(.init(type: .epic, title: json["app_title"].string ?? .init(), appName: json["app_name"].string ?? .init()))
+        }
+        
+        return games.sorted { $0.title < $1.title }
     }
     
     // MARK: - Get Game Metadata Method
@@ -684,7 +711,8 @@ class Legendary {
      - Throws: A ``DoesNotExistError`` if the metadata directory doesn't exist.
      - Returns: An optional `JSON` with either the metadata or `nil`.
      */
-    static func getGameMetadata(game: Game) throws -> JSON? {
+    static func getGameMetadata(game: Mythic.Game) throws -> JSON? {
+        guard game.type == .epic else { throw IsNotLegendaryError() }
         let metadataDirectoryString = "\(configLocation)/metadata"
         
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
@@ -711,7 +739,7 @@ class Legendary {
      
      - Returns: The WebURL of the retrieved image.
      */
-    static func getImage(of game: Game, type: ImageType) async -> String {
+    static func getImage(of game: Mythic.Game, type: ImageType) -> String {
         let metadata = try? getGameMetadata(game: game)
         var imageURL: String = .init()
         
@@ -740,7 +768,7 @@ class Legendary {
      - Throws: A ``NotSignedInError``.
      - Returns: A `Dictionary` with app names as keys and image URLs as values.
      */
-    @available(*, message: "Soon to be deprecated and replaced by `getImage`")
+    @available(*, deprecated, message: "Deprecated by `getImage`")
     static func getImages(imageType: ImageType) async throws -> [String: String] {
         guard signedIn() else { throw NotSignedInError() }
         
@@ -817,7 +845,7 @@ class Legendary {
      - Parameter appTitle: The title of the game.
      - Returns: The app name of the game.
      */
-    @available(*, deprecated, message: "Made redundant by Legendary.Game")
+    @available(*, deprecated, message: "Made redundant by Game")
     static func getAppNameFromTitle(appTitle: String) async -> String? { // TODO: full removal before launch
         guard signedIn() else { return String() }
         let json = try? await JSON(data: command(args: ["info", appTitle, "--json"], useCache: true, identifier: "getAppNameFromTitle").stdout)
@@ -830,7 +858,7 @@ class Legendary {
      - Parameter appName: The app name of the game.
      - Returns: The title of the game.
      */
-    @available(*, deprecated, message: "Made redundant by Legendary.Game")
+    @available(*, deprecated, message: "Made redundant by Game")
     static func getTitleFromAppName(appName: String) async -> String? { // TODO: full removal before launch
         guard signedIn() else { return String() }
         let json = try? await JSON(data: command(args: ["info", appName, "--json"], useCache: true, identifier: "getTitleFromAppName").stdout)
@@ -841,15 +869,16 @@ class Legendary {
     /**
      Well, what do you think it does?
      */
-    private static func extractAppNamesAndTitles(from json: JSON?) -> [Game] {
-        var games: [Game] = .init()
+    private static func extractAppNamesAndTitles(from json: JSON?) -> [Mythic.Game] {
+        var games: [Mythic.Game] = .init()
         
         if let json = json {
             for game in json {
                 games.append(
-                    Game(
-                        appName: game.1["app_name"].string ?? .init(),
-                        title: game.1["app_title"].string ?? .init()
+                    Mythic.Game(
+                        type: .epic,
+                        title: game.1["app_title"].string ?? .init(),
+                        appName: game.1["app_name"].string ?? .init()
                     )
                 )
             }

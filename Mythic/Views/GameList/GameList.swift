@@ -24,7 +24,7 @@ import Combine
 /// ViewModifier that enables views to have a fade in effect
 struct FadeInModifier: ViewModifier {
     @State private var opacity: Double = 0
-
+    
     func body(content: Content) -> some View {
         content
             .opacity(opacity)
@@ -45,10 +45,10 @@ struct GameListView: View {
     /// Binding to track if a refresh is called.
     @Binding var isRefreshCalled: Bool
     
-    let installingGame: Legendary.Game? = VariableManager.shared.getVariable("installing")
+    @Binding var searchText: String
     
     // MARK: - State Properties
-    
+    @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var isSettingsViewPresented: Bool = false
@@ -65,7 +65,7 @@ struct GameListView: View {
     
     struct LaunchError {
         static var message: String = .init()
-        static var game: Legendary.Game? = nil // swiftlint:disable:this redundant_optional_initialization
+        static var game: Game? = nil // swiftlint:disable:this redundant_optional_initialization
     }
     
     @State private var activeAlert: ActiveAlert = .installError
@@ -73,17 +73,16 @@ struct GameListView: View {
     
     @State private var installationErrorMessage: String = .init()
     @State private var uninstallationErrorMessage: Substring = .init()
-    @State private var failedGame: Legendary.Game?
+    @State private var failedGame: Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Legendary.Game = Legendary.placeholderGame
+    @State private var currentGame: Game = placeholderGame(.local) // FIXME: bad programming
     
-    @State private var installableGames: [Legendary.Game] = .init()
-    @State private var installedGames: [Legendary.Game] = .init()
+    @State private var installableGames: [Game] = .init()
+    @State private var installedGames: [Game] = .init()
     
     @State private var isInstallStatusViewPresented: Bool = false
     
-    @State private var gameThumbnails: [String: String] = .init()
     @State private var optionalPacks: [String: String] = .init()
     
     @State private var dataFetched: Bool = false
@@ -102,7 +101,7 @@ struct GameListView: View {
      - Parameter game: The game to set as the current game.
      - Parameter mode: The mode for updating the current game.
      */
-    func updateCurrentGame(game: Legendary.Game, mode: UpdateCurrentGameMode) {
+    func updateCurrentGame(game: Game, mode: UpdateCurrentGameMode) {
         isProgressViewSheetPresented = true
         
         let group = DispatchGroup()
@@ -114,12 +113,12 @@ struct GameListView: View {
                 group.leave()
             }
         }
-
-        if mode == .optionalPacks {
+        
+        if game.type == .epic && mode == .optionalPacks {
             group.enter()
             Task(priority: .userInitiated) {
                 let command = await Legendary.command(
-                    args: ["install", game.appName],
+                    args: ["install", game.appName], // force-unwraps rely on good codebase, don't fumble
                     useCache: true,
                     identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
                 )
@@ -158,7 +157,9 @@ struct GameListView: View {
         ScrollView(.horizontal) {
             LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) {
                 if dataFetched {
-                    ForEach(Array(installableGames.enumerated()), id: \.element.self) { index, game in
+                    ForEach(Array(installableGames.enumerated().filter {
+                        searchText.isEmpty || $0.element.title.localizedCaseInsensitiveContains(searchText)
+                    }), id: \.element.self) { index, game in
                         ZStack {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.background)
@@ -167,13 +168,40 @@ struct GameListView: View {
                             
                             VStack {
                                 CachedAsyncImage(
-                                    url: URL(string: gameThumbnails[game.appName] ?? .init()),
-                                    urlCache: URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+                                    url: URL(
+                                        string: game.type == .epic
+                                        ? Legendary.getImage(of: game, type: .tall)
+                                        : game.imageURL?.path ?? .init()
+                                    ),
+                                    urlCache: gameImageURLCache
                                 ) { phase in
                                     switch phase {
                                     case .empty:
-                                        ProgressView()
+                                        if !Legendary.getImage(of: game, type: .tall).isEmpty || ((game.imageURL?.path(percentEncoded: false).isEmpty) != nil) {
+                                            VStack {
+                                                Spacer()
+                                                HStack {
+                                                    if networkMonitor.isEpicAccessible {
+                                                        ProgressView()
+                                                            .controlSize(.small)
+                                                            .padding(.trailing, 5)
+                                                    } else {
+                                                        Image(systemName: "network.slash")
+                                                            .symbolEffect(.pulse)
+                                                            .foregroundStyle(.red)
+                                                            .help("Mythic cannot connect to the internet.")
+                                                    }
+                                                    Text("(\(game.title))")
+                                                        .truncationMode(.tail)
+                                                        .foregroundStyle(.placeholder)
+                                                }
+                                            }
                                             .frame(width: 200, height: 400/1.5)
+                                        } else {
+                                            Text("\(game.title)")
+                                                .font(.largeTitle)
+                                                .frame(width: 200, height: 400/1.5)
+                                        }
                                     case .success(let image):
                                         ZStack {
                                             image
@@ -185,16 +213,14 @@ struct GameListView: View {
                                             
                                             image
                                                 .resizable()
-                                                .aspectRatio(contentMode: .fill)
                                                 .frame(width: 200, height: 400/1.5)
                                                 .aspectRatio(3/4, contentMode: .fit)
                                                 .clipShape(RoundedRectangle(cornerRadius: 20))
                                                 .modifier(FadeInModifier())
                                         }
                                     case .failure:
-                                        Image(systemName: "network.slash")
-                                            .symbolEffect(.appear)
-                                            .imageScale(.large)
+                                        Text("\(game.title)")
+                                            .font(.largeTitle)
                                             .frame(width: 200, height: 400/1.5)
                                     @unknown default:
                                         Image(systemName: "exclamationmark.triangle")
@@ -205,8 +231,10 @@ struct GameListView: View {
                                 }
                                 
                                 HStack {
-                                    if installedGames.contains(game) {
+                                    // MARK: For installed games
+                                    if installedGames.contains(game) { // TODO: FIXME: IMPORTANT: if game path doesn't exist, grey out the game.
                                         if variables.getVariable("launching_\(game.appName)") != true {
+                                            // MARK: Settings icon
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
                                                 isSettingsViewPresented = true
@@ -217,12 +245,14 @@ struct GameListView: View {
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .help("\(game.title) Settings")
                                             
-                                            if Legendary.needsUpdate(game: game) {
+                                            // MARK: Update Button
+                                            if game.type == .epic, Legendary.needsUpdate(game: game) {
                                                 Button {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
-                                    
+                                                        
                                                         _ = try await Legendary.install(
                                                             game: game, // TODO: better update implementation; rushing to launch
                                                             platform: try Legendary.getGamePlatform(game: game)
@@ -237,11 +267,15 @@ struct GameListView: View {
                                                 }
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .disabled(!networkMonitor.isEpicAccessible)
+                                                .help(networkMonitor.isEpicAccessible ? "Update \(game.title)" : "Connect to the internet to update \(game.title).")
                                             }
                                             
-                                            if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
-                                               let needsVerification = json[game.appName]["needs_verification"].bool,
-                                               needsVerification == true {
+                                            if game.type == .epic,
+                                               let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
+                                               let needsVerification = json[game.appName]["needs_verification"].bool, // FIXME: force unwrap
+                                               needsVerification {
+                                                // MARK: Verification Button
                                                 Button(action: {
                                                     updateCurrentGame(game: game, mode: .normal)
                                                     Task {
@@ -254,7 +288,7 @@ struct GameListView: View {
                                                             
                                                             isRefreshCalled = true
                                                         } catch {
-                                                            Logger.app.error("Unable to verify \(game.title): \(error)") // TODO: implement visual error
+                                                            Logger.app.error("Unable to verify \(game.title): \(error.localizedDescription)") // TODO: implement visual error
                                                         }
                                                     }
                                                 }, label: {
@@ -264,18 +298,28 @@ struct GameListView: View {
                                                 })
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .help("Game integrity verification is required.")
                                             } else {
-                                                Button {
+                                                // MARK: Play Button
+                                                Button { // TODO: play or update & play popover
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
-                                                            try await Legendary.launch(
-                                                                game: game,
-                                                                bottle: URL(filePath: Wine.defaultBottle.path)
-                                                            )
+                                                            if game.type == .epic {
+                                                                try await Legendary.launch(
+                                                                    game: game,
+                                                                    bottle: Wine.allBottles![game.bottleName]!,
+                                                                    online: networkMonitor.isEpicAccessible
+                                                                )
+                                                            } else {
+                                                                try await LocalGames.launch(
+                                                                    game: game,
+                                                                    bottle: Wine.allBottles![game.bottleName]!
+                                                                )
+                                                            }
                                                         } catch {
                                                             LaunchError.game = game
-                                                            LaunchError.message = "\(error)"
+                                                            LaunchError.message = "\(error.localizedDescription)"
                                                             activeAlert = .launchError
                                                             isAlertPresented = true
                                                         }
@@ -287,24 +331,35 @@ struct GameListView: View {
                                                 }
                                                 .buttonStyle(.plain)
                                                 .controlSize(.large)
+                                                .help("Launch \(game.title)")
                                             }
                                             
+                                            // MARK: Delete button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                isUninstallViewPresented = true
+                                                if game.type == .epic {
+                                                    isUninstallViewPresented = true
+                                                } else {
+                                                    var library = LocalGames.library // TODO: add support to remove game
+                                                    library?.removeAll { $0 == game }
+                                                    LocalGames.library = library // FIXME: possible for split second to add new and overwrite one, extremely unlikely though
+                                                    isRefreshCalled = true
+                                                }
                                             } label: {
-                                                Image(systemName: "xmark.bin.fill")
+                                                Image(systemName: "xmark.bin.fill") // TODO: support for uninstalling local games
                                                     .foregroundStyle(.red)
                                                     .padding()
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .help("Uninstall \(game.title)")
                                         } else {
                                             ProgressView()
                                                 .controlSize(.small)
                                                 .padding()
                                         }
-                                    } else {
+                                    } else { // MARK: For games that aren't installed
+                                        // MARK: Game Installation View // FIXME: can also happen during updates and that doesnt show
                                         if variables.getVariable("installing") == game { // TODO: Add for verificationStatus // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                                             Button {
                                                 isInstallStatusViewPresented = true
@@ -313,9 +368,11 @@ struct GameListView: View {
                                                    let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
                                                     ProgressView(value: percentage, total: 100)
                                                         .progressViewStyle(.linear)
+                                                        .help("\(Int(percentage))% complete")
                                                 } else {
                                                     ProgressView()
                                                         .progressViewStyle(.linear)
+                                                        .help("Starting installation")
                                                 }
                                             }
                                             .buttonStyle(.plain)
@@ -331,10 +388,11 @@ struct GameListView: View {
                                             .buttonStyle(.plain)
                                             .controlSize(.regular)
                                             
-                                            .onChange(of: installingGame) { _, newValue in
+                                            .onChange(of: variables.getVariable("installing") as Game?) { _, newValue in
                                                 isRefreshCalled = (newValue == nil)
                                             }
                                         } else {
+                                            // MARK: Game Download button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .optionalPacks)
                                                 isInstallViewPresented = true
@@ -346,6 +404,9 @@ struct GameListView: View {
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
+                                            .disabled(variables.getVariable("installing") as Game? != nil)
+                                            .disabled(!networkMonitor.isEpicAccessible)
+                                            .help(networkMonitor.isEpicAccessible ? "Download \(game.title)" : "Connect to the internet to download \(game.title).")
                                         }
                                     }
                                 }
@@ -356,11 +417,10 @@ struct GameListView: View {
                     }
                 }
             }
+            .searchable(text: $searchText, placement: .toolbar)
         }
         
-        .onAppear {
-            isRefreshCalled = true
-        }
+        .task { isRefreshCalled = true }
         
         .onReceive(Just(isRefreshCalled)) { called in
             if called {
@@ -373,21 +433,14 @@ struct GameListView: View {
                 group.enter()
                 Task(priority: .userInitiated) {
                     let games = (try? await Legendary.getInstallable()) ?? .init()
-                    if !games.isEmpty { installableGames = games }
-                    group.leave()
-                }
-                
-                group.enter()
-                Task(priority: .userInitiated) {
-                    let thumbnails = (try? await Legendary.getImages(imageType: .tall)) ?? .init()
-                    if !thumbnails.isEmpty { gameThumbnails = thumbnails }
+                    if !games.isEmpty { installableGames = games + (LocalGames.library ?? .init()) }
                     group.leave()
                 }
                 
                 group.enter()
                 Task(priority: .userInitiated) {
                     let installed = (try? Legendary.getInstalledGames()) ?? .init()
-                    if !installed.isEmpty { installedGames = installed }
+                    if !installed.isEmpty { installedGames = installed + (LocalGames.library ?? .init())}
                     group.leave()
                 }
                 
@@ -409,14 +462,14 @@ struct GameListView: View {
         .sheet(isPresented: $isSettingsViewPresented) {
             GameListView.SettingsView(
                 isPresented: $isSettingsViewPresented,
-                game: currentGame
+                game: $currentGame
             )
         }
         
         .sheet(isPresented: $isInstallViewPresented) {
             GameListView.InstallView(
                 isPresented: $isInstallViewPresented,
-                game: currentGame,
+                game: $currentGame,
                 optionalPacks: $optionalPacks,
                 isGameListRefreshCalled: $isRefreshCalled,
                 isAlertPresented: $isAlertPresented,
@@ -429,7 +482,7 @@ struct GameListView: View {
         .sheet(isPresented: $isUninstallViewPresented) {
             GameListView.UninstallView(
                 isPresented: $isUninstallViewPresented,
-                game: currentGame,
+                game: $currentGame,
                 isGameListRefreshCalled: $isRefreshCalled,
                 activeAlert: $activeAlert,
                 isAlertPresented: $isAlertPresented,
@@ -441,7 +494,7 @@ struct GameListView: View {
         .sheet(isPresented: $isPlayDefaultViewPresented) {
             GameListView.PlayDefaultView(
                 isPresented: $isPlayDefaultViewPresented,
-                game: currentGame,
+                game: $currentGame,
                 isGameListRefreshCalled: $isRefreshCalled
             )
         }
@@ -474,7 +527,7 @@ struct GameListView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
-    GameListView(isRefreshCalled: .constant(false))
+    MainView()
+        .environmentObject(NetworkMonitor())
 }

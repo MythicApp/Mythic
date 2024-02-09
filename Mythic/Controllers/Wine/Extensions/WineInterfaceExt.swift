@@ -42,12 +42,52 @@ extension Wine {
     }
     
     /// Signifies that a wineprefix is unable to boot.
-    struct BootError: Error {
+    struct BootError: LocalizedError {
         
         // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
         let reason: String? = nil
+        var errorDescription: String? = "Bottle unable to boot." // TODO: add reason if possible
     }
     
-    /// Signifies that a wineprefix does not exist at a specified location.
-    struct PrefixDoesNotExistError: Error {  }
+    internal enum RegistryType: String {
+        case binary = "REG_BINARY"
+        case dword = "REG_DWORD"
+        case qword = "REG_QWORD"
+        case string = "REG_SZ"
+    }
+    
+    internal enum RegistryKey: String {
+        case currentVersion = #"HKLM\Software\Microsoft\Windows NT\CurrentVersion"#
+        case macDriver = #"HKCU\Software\Wine\Mac Driver"#
+        case desktop = #"HKCU\Control Panel\Desktop"#
+    }
+    
+    struct Bottle: Codable, Hashable {
+        var url: URL
+        var settings: BottleSettings
+        var busy: Bool
+    }
+    
+    struct BottleSettings: Codable, Hashable {
+        var metalHUD: Bool
+        var msync: Bool
+        var retinaMode: Bool // TODO: FIXME: turn into func
+    }
+    
+    enum BottleScope: String, CaseIterable {
+        case individual = "Individual"
+        case global = "Global"
+    }
+    
+    struct BottleDoesNotExistError: LocalizedError {
+        var errorDescription: String? = "This bottle doesn't exist."
+    }
+    
+    struct BottleAlreadyExistsError: LocalizedError {
+        var errorDescription: String? = "This bottle already exists."
+    }
+    
+    struct UnableToQueryRegistyError: LocalizedError {
+        var errorDescription: String? = "Unable to query registry of bottle."
+    }
 }

@@ -67,7 +67,7 @@ struct WebView: NSViewRepresentable {
         /// Called when a navigation fails.
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
             DispatchQueue.main.async { [self] in
-                parent.log.error("\(error)")
+                parent.log.error("\(error.localizedDescription)")
                 parent.loadingError = true
             }
         }

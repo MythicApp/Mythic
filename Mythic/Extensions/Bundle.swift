@@ -38,7 +38,7 @@ extension Bundle {
                     try files.createDirectory(atPath: homePath, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating application support directory")
                 } catch {
-                    Logger.app.error("Error creating application support directory: \(error)")
+                    Logger.app.error("Error creating application support directory: \(error.localizedDescription)")
                 }
             }
             
@@ -63,7 +63,7 @@ extension Bundle {
                     try files.createDirectory(atPath: containerPath, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating Containers directory")
                 } catch {
-                    Logger.app.error("Error creating Containers directory: \(error)")
+                    Logger.app.error("Error creating Containers directory: \(error.localizedDescription)")
                 }
             }
             
@@ -87,7 +87,7 @@ extension Bundle {
                 )
                 return appGamesURL
             } catch {
-                Logger.file.error("Unable to get games directory: \(error)")
+                Logger.file.error("Unable to get games directory: \(error.localizedDescription)")
             }
         } // no else block, error is handled already
         
