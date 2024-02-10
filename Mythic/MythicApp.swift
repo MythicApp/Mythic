@@ -67,7 +67,7 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isFirstLaunch {
+            if isFirstLaunch || isOnboardingPresented {
                 OnboardingEvo()
                     .transition(.opacity)
                     .onAppear {
@@ -166,7 +166,9 @@ struct MythicApp: App {
                     .disabled(!updaterController.updater.canCheckForUpdates)
                 
                 Button("Restart Onboarding...") {
-                    isOnboardingPresented = true
+                    withAnimation(.easeInOut(duration: 2)) {
+                        isOnboardingPresented = true
+                    }
                 }
             }
         }
@@ -179,9 +181,6 @@ struct MythicApp: App {
 }
 
 #Preview {
-    OnboardingEvo()
-    /*
     MainView()
         .environmentObject(NetworkMonitor())
-     */
 }
