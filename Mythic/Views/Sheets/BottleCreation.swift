@@ -80,7 +80,7 @@ struct BottleCreationView: View {
                         isBooting = true
                         await Wine.boot(baseURL: bottlePath, name: bottleName) { result in
                             switch result {
-                            case .success(_): // swiftlint:disable:this empty_enum_arguments
+                            case .success:
                                 isBooting = false
                                 isPresented = false
                             case .failure(let error):

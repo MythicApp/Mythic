@@ -441,6 +441,32 @@ class Legendary {
         if let error = errorThrownExternally { variables.removeVariable("installing"); throw error } // FIXME: use withcheckedthrowingcontinuation like whisky rosetta2.swift
     }
     
+    static func move(game: Mythic.Game, newPath: String) async throws {
+        if let gamePath = try? getGamePath(game: game) {
+            guard files.isWritableFile(atPath: gamePath) else { throw FileLocations.FileNotModifiableError(URL(filePath: gamePath)) }
+            try files.moveItem(at: URL(filePath: gamePath), to: URL(filePath: newPath))
+            _ = await command(
+                args: ["move", game.appName, newPath, "--skip-move"],
+                useCache: false,
+                identifier: "moveGame"
+            )
+        }
+    }
+    
+    static func signIn(authKey: String) async -> Bool {
+        let command = await Legendary.command(
+            args: ["auth", "--code", authKey],
+            useCache: false,
+            identifier: "signIn"
+        )
+        
+        if let stderr = String(data: command.stderr, encoding: .utf8) {
+            return stderr.contains("Successfully logged in as")
+        }
+        
+        return false
+    }
+    
     static func launch(game: Mythic.Game, bottle: Wine.Bottle, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system

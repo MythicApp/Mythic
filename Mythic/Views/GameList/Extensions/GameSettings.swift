@@ -136,23 +136,15 @@ extension GameListView {
                                             openPanel.canCreateDirectories = true
                                             
                                             if openPanel.runModal() == .OK {
-                                                if game.type == .epic {
-                                                    // game.path = openPanel.urls.first?.path ?? .init()
-                                                    /* TODO: TODO
-                                                     usage: cli move [-h] [--skip-move] <App Name> <New Base Path>
-                                                     
-                                                     positional arguments:
-                                                     <App Name>       Name of the app
-                                                     <New Base Path>  Directory to move game folder to
-                                                     
-                                                     options:
-                                                     -h, --help       show this help message and exit
-                                                     --skip-move      Only change legendary database, do not move files (e.g. if
-                                                     already moved)
-                                                     
-                                                     */
-                                                } else {
-                                                    
+                                                if let newLocation = openPanel.urls.first {
+                                                    switch game.type {
+                                                    case .epic:
+                                                        Task.sync(priority: .userInitiated) {
+                                                            try await Legendary.move(game: game, newPath: newLocation.path(percentEncoded: false))
+                                                        }
+                                                    case .local:
+                                                        do {  } // FIXME: IMPLEMENT
+                                                    }
                                                 }
                                             }
                                         }

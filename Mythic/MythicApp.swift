@@ -46,90 +46,118 @@ struct MythicApp: App {
         )
     }
     
+    func toggleTitleBar(_ value: Bool) {
+        if value {
+            if let window = NSApplication.shared.windows.first {
+                window.titlebarAppearsTransparent = false
+                window.titleVisibility = .visible
+                window.isMovableByWindowBackground = false
+                window.styleMask.remove(.fullSizeContentView)
+            }
+        } else {
+            if let window = NSApplication.shared.windows.first {
+                window.titlebarAppearsTransparent = true
+                window.titleVisibility = .hidden
+                window.isMovableByWindowBackground = true
+                window.styleMask.insert(.fullSizeContentView)
+            }
+        }
+    }
+    
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            MainView()
-                .environmentObject(networkMonitor)
-                .frame(minWidth: 750, minHeight: 390)
-                .task(priority: .high) {
-                    if isFirstLaunch {
-                        isOnboardingPresented = true
-                        isFirstLaunch = false
-                    } else if !Libraries.isInstalled() {
-                        isInstallViewPresented = true
+            if isFirstLaunch {
+                OnboardingEvo()
+                    .transition(.opacity)
+                    .onAppear {
+                        // Bring window to front
+                        if let window = NSApp.windows.first {
+                            window.makeKeyAndOrderFront(nil)
+                            NSApp.activate(ignoringOtherApps: true)
+                        }
+                        
+                        // Hide window title bar
+                        toggleTitleBar(false)
                     }
-                    
-                    if let latestVersion = Libraries.fetchLatestVersion(),
-                       let currentVersion = Libraries.getVersion(),
-                       latestVersion > currentVersion {
-                        activeAlert = .updatePrompt
-                        isAlertPresented = true
+            } else {
+                MainView()
+                    .transition(.opacity)
+                    .environmentObject(networkMonitor)
+                    .frame(minWidth: 750, minHeight: 390)
+                    .onAppear { toggleTitleBar(true) }
+                    .task(priority: .high) {
+                        if let latestVersion = Libraries.fetchLatestVersion(),
+                           let currentVersion = Libraries.getVersion(),
+                           latestVersion > currentVersion {
+                            activeAlert = .updatePrompt
+                            isAlertPresented = true
+                        }
                     }
-                }
-                .task(priority: .background) {
-                    if Libraries.isInstalled() {
-                        await Wine.boot(name: "Default") { result in
-                            if case .failure(let failure) = result, type(of: failure) != Wine.BottleAlreadyExistsError.self {
-                                bootError = failure
-                                activeAlert = .bootError
-                                isAlertPresented = true
+                    .task(priority: .background) {
+                        if Libraries.isInstalled() {
+                            await Wine.boot(name: "Default") { result in
+                                if case .failure(let failure) = result, type(of: failure) != Wine.BottleAlreadyExistsError.self {
+                                    bootError = failure
+                                    activeAlert = .bootError
+                                    isAlertPresented = true
+                                }
                             }
                         }
                     }
-                }
-                .task(priority: .high) {
-                    if let bottles = Wine.allBottles {
-                        for (key, value) in bottles where !Wine.bottleExists(bottleURL: value.url) {
-                            Wine.allBottles?.removeValue(forKey: key)
+                    .task(priority: .high) {
+                        if let bottles = Wine.allBottles {
+                            for (key, value) in bottles where !Wine.bottleExists(bottleURL: value.url) {
+                                Wine.allBottles?.removeValue(forKey: key)
+                            }
                         }
                     }
-                }
-            
-            // MARK: - Other Properties
-            
-                .sheet(isPresented: $isOnboardingPresented) {
-                    OnboardingView(
-                        isPresented: $isOnboardingPresented,
-                        isInstallViewPresented: $isInstallViewPresented
-                    )
-                    .fixedSize()
-                }
-            
-                .sheet(isPresented: $isInstallViewPresented) {
-                    OnboardingView.InstallView(isPresented: $isInstallViewPresented)
-                }
+                
+                // MARK: - Other Properties
+                
+                    .sheet(isPresented: $isOnboardingPresented) {
+                        OnboardingView(
+                            isPresented: $isOnboardingPresented,
+                            isInstallViewPresented: $isInstallViewPresented
+                        )
+                        .fixedSize()
+                    }
+                
+                    .sheet(isPresented: $isInstallViewPresented) {
+                        OnboardingView.InstallView(isPresented: $isInstallViewPresented)
+                    }
                 
                 // Reference: https://arc.net/l/quote/cflghpbh
-                .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
-                    if newValue == false {
-                        activeAlert = .offlineAlert
-                        isAlertPresented = true
+                    .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
+                        if newValue == false {
+                            activeAlert = .offlineAlert
+                            isAlertPresented = true
+                        }
                     }
-                }
                 
-                .alert(isPresented: $isAlertPresented) {
-                    switch activeAlert {
-                    case .updatePrompt:
-                        Alert(
-                            title: Text("Time for an update!"),
-                            message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
-                            primaryButton: .default(Text("Update")), // TODO: download over previous engine
-                            secondaryButton: .cancel(Text("Later"))
-                        )
-                    case .bootError:
-                        Alert(
-                            title: Text("Unable to boot default bottle."),
-                            message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),
-                            dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
-                        )
-                    case .offlineAlert:
-                        Alert(
-                            title: Text("Can't connect."),
-                            message: Text("Mythic is unable to connect to the internet. App functionality will be limited.")
-                        )
+                    .alert(isPresented: $isAlertPresented) {
+                        switch activeAlert {
+                        case .updatePrompt:
+                            Alert(
+                                title: Text("Time for an update!"),
+                                message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
+                                primaryButton: .default(Text("Update")), // TODO: download over previous engine
+                                secondaryButton: .cancel(Text("Later"))
+                            )
+                        case .bootError:
+                            Alert(
+                                title: Text("Unable to boot default bottle."),
+                                message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),
+                                dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
+                            )
+                        case .offlineAlert:
+                            Alert(
+                                title: Text("Can't connect."),
+                                message: Text("Mythic is unable to connect to the internet. App functionality will be limited.")
+                            )
+                        }
                     }
-                }
+            }
         }
         
         .commands {
@@ -151,6 +179,9 @@ struct MythicApp: App {
 }
 
 #Preview {
+    OnboardingEvo()
+    /*
     MainView()
         .environmentObject(NetworkMonitor())
+     */
 }

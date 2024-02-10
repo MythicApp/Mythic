@@ -299,9 +299,15 @@ struct MainView: View {
                 
                 if !networkMonitor.isEpicAccessible {
                     ToolbarItem(placement: .navigation) {
-                        Image(systemName: "network.slash")
-                            .foregroundStyle(.red)
-                            .help("Mythic is not connected to the internet.")
+                        if networkMonitor.isConnected {
+                            ProgressView()
+                                .controlSize(.small)
+                                .help("Mythic is checking the connection to the internet.")
+                        } else {
+                            Image(systemName: "network.slash")
+                                .foregroundStyle(.red)
+                                .help("Mythic is not connected to the internet.")
+                        }
                     }
                 }
             }

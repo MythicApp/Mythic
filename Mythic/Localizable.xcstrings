@@ -372,6 +372,12 @@
         }
       }
     },
+    "(optional)" : {
+
+    },
+    "(please restart Mythic.)" : {
+
+    },
     "(supports selective downloads.)" : {
       "localizations" : {
         "af" : {
@@ -5027,6 +5033,9 @@
         }
       }
     },
+    "Default Bottle Setup" : {
+
+    },
     "Delete" : {
 
     },
@@ -6888,6 +6897,9 @@
         }
       }
     },
+    "Downloading Mythic Engine..." : {
+
+    },
     "DXVK" : {
       "localizations" : {
         "af" : {
@@ -8184,6 +8196,9 @@
           }
         }
       }
+    },
+    "Enter the 'authorisationCode' from the JSON response in the field below." : {
+
     },
     "Enter Thumbnail URL here... (optional)" : {
 
@@ -9486,6 +9501,9 @@
     "Failed to boot \"%@.\"" : {
 
     },
+    "Failed to install Mythic Engine." : {
+
+    },
     "Failed to load the webpage." : {
       "localizations" : {
         "af" : {
@@ -9669,6 +9687,9 @@
           }
         }
       }
+    },
+    "Failed to set up default bottle." : {
+
     },
     "Favourites (Not implemented yet)" : {
       "localizations" : {
@@ -13566,6 +13587,9 @@
         }
       }
     },
+    "Installing Mythic Engine..." : {
+
+    },
     "It appears loading's taking a while." : {
       "localizations" : {
         "af" : {
@@ -15793,10 +15817,19 @@
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
 
     },
+    "Mythic is checking the connection to the internet." : {
+
+    },
     "Mythic is not connected to the internet." : {
 
     },
+    "Mythic is now setting up your default bottle to play Windows® games." : {
+
+    },
     "Mythic is unable to connect to the internet. App functionality will be limited." : {
+
+    },
+    "Mythic setup is now complete." : {
 
     },
     "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
@@ -22845,6 +22878,9 @@
         }
       }
     },
+    "Welcome to Mythic." : {
+
+    },
     "What should we call this game?" : {
       "localizations" : {
         "af" : {
@@ -23776,6 +23812,9 @@
 
     },
     "You probably left this open while installing. Your install has finished." : {
+
+    },
+    "You're all set!" : {
 
     }
   },

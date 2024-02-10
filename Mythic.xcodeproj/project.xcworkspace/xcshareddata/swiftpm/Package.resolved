@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "colorfulx",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/ColorfulX",
+      "state" : {
+        "revision" : "36d17615994b46fa11d6632b9e014285befe0cd0",
+        "version" : "2.4.0"
+      }
+    },
+    {
       "identity" : "glur",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/joogps/Glur",
@@ -25,6 +34,15 @@
       "state" : {
         "revision" : "47d3d90aee3c52b6f61d04ceae426e607df62347",
         "version" : "2.5.2"
+      }
+    },
+    {
+      "identity" : "springinterpolation",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Lakr233/SpringInterpolation.git",
+      "state" : {
+        "revision" : "be8721cffc87ec514fa13ba5dab586a2730f51c9",
+        "version" : "1.1.2"
       }
     },
     {

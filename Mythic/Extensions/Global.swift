@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import SwiftUI
 import OSLog
 
 // MARK: - Global Constants
@@ -86,7 +87,7 @@ struct GameDoesNotExistError: LocalizedError {
 // MARK: App Install Checker
 /**
  Checks if an app with the given bundle identifier is installed on the system.
-
+ 
  - Parameter bundleIdentifier: The bundle identifier of the app.
  - Returns: `true` if the app is installed; otherwise, `false`.
  */
