@@ -10809,6 +10809,9 @@
         }
       }
     },
+    "Hey, %@!" : {
+
+    },
     "Home" : {
       "localizations" : {
         "af" : {

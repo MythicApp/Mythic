@@ -48,18 +48,16 @@ struct MythicApp: App {
     
     func toggleTitleBar(_ value: Bool) {
         if value {
-            if let window = NSApplication.shared.windows.first {
+            if let window = NSApp.windows.first {
                 window.titlebarAppearsTransparent = false
                 window.titleVisibility = .visible
                 window.isMovableByWindowBackground = false
-                window.styleMask.remove(.fullSizeContentView)
             }
         } else {
-            if let window = NSApplication.shared.windows.first {
+            if let window = NSApp.windows.first {
                 window.titlebarAppearsTransparent = true
                 window.titleVisibility = .hidden
                 window.isMovableByWindowBackground = true
-                window.styleMask.insert(.fullSizeContentView)
             }
         }
     }
@@ -183,4 +181,5 @@ struct MythicApp: App {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+    
 }

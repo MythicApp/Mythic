@@ -38,6 +38,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
     }
     
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    @State private var isOnboardingPresented: Bool = false
     
     @State private var currentChapter: Chapter
     
@@ -156,12 +157,10 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             } completion: {
                                 if !Legendary.signedIn() {
                                     currentChapter = .signIn
-                                } else {
-                                    
-                                }
-                                
-                                if !Libraries.isInstalled() {
-                                    currentChapter.next()
+                                } else if Legendary.signedIn() {
+                                    currentChapter = .greetings
+                                } else if !Libraries.isInstalled() {
+                                    currentChapter = .engineDisclaimer
                                 } else if Wine.allBottles?["Default"] == nil {
                                     currentChapter = .defaultBottleSetup
                                 } else {
@@ -679,5 +678,5 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
 }
 
 #Preview {
-    OnboardingEvo(fromChapter: .greetings)
+    OnboardingEvo(fromChapter: .logo)
 }

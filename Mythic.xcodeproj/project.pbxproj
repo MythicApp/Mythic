@@ -25,7 +25,6 @@
 		6A1C6F422AEFD95900F89AE7 /* WineInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1C6F412AEFD95900F89AE7 /* WineInterface.swift */; };
 		6A1C6F462AEFD9B100F89AE7 /* WineInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1C6F452AEFD9B100F89AE7 /* WineInterfaceExt.swift */; };
 		6A1ECF722B0CA0560010DC17 /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1ECF712B0CA0560010DC17 /* EventManager.swift */; };
-		6A34B8FC2B77A4D7005B2854 /* InstallEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A34B8FB2B77A46F005B2854 /* InstallEvo.swift */; };
 		6A371B562AE7A5E20054BF7A /* Installer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B552AE7A5E20054BF7A /* Installer.swift */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A371B5B2AE7E93B0054BF7A /* Libraries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B5A2AE7E93B0054BF7A /* Libraries.swift */; };
@@ -90,7 +89,6 @@
 		6A1C6F412AEFD95900F89AE7 /* WineInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WineInterface.swift; sourceTree = "<group>"; };
 		6A1C6F452AEFD9B100F89AE7 /* WineInterfaceExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WineInterfaceExt.swift; sourceTree = "<group>"; };
 		6A1ECF712B0CA0560010DC17 /* EventManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
-		6A34B8FB2B77A46F005B2854 /* InstallEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallEvo.swift; sourceTree = "<group>"; };
 		6A371B552AE7A5E20054BF7A /* Installer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Installer.swift; sourceTree = "<group>"; };
 		6A371B5A2AE7E93B0054BF7A /* Libraries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Libraries.swift; sourceTree = "<group>"; };
 		6A371B5C2AE84E340054BF7A /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
@@ -280,17 +278,8 @@
 			isa = PBXGroup;
 			children = (
 				6A7A81172B77097200D19E32 /* OnboardingEvo.swift */,
-				6A34B8F92B77A346005B2854 /* Extensions */,
 			);
 			path = OnboardingEvo;
-			sourceTree = "<group>";
-		};
-		6A34B8F92B77A346005B2854 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				6A34B8FB2B77A46F005B2854 /* InstallEvo.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 		6A371B502AE7A4870054BF7A /* Onboarding */ = {
@@ -598,7 +587,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */,
-				6A34B8FC2B77A4D7005B2854 /* InstallEvo.swift in Sources */,
 				6AA7413E2B67FC7400369B35 /* BottleCreation.swift in Sources */,
 				6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */,
 				6AF0EB2A2AADE1780044C09C /* Store.swift in Sources */,
@@ -789,7 +777,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2358;
+				CURRENT_PROJECT_VERSION = 2361;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -828,7 +816,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2358;
+				CURRENT_PROJECT_VERSION = 2361;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
