@@ -47,15 +47,11 @@ struct MythicApp: App {
     
     func toggleTitleBar(_ value: Bool) {
         if let window = NSApp.windows.first {
-            if value {
-                window.titlebarAppearsTransparent = false
-                window.titleVisibility = .visible
-                window.isMovableByWindowBackground = false
-            } else {
-                window.titlebarAppearsTransparent = true
-                window.titleVisibility = .hidden
-                window.isMovableByWindowBackground = true
-            }
+            window.titlebarAppearsTransparent = !value
+            window.titleVisibility = value ? .visible : .hidden
+            window.isMovableByWindowBackground = !value
+            window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
+            window.standardWindowButton(.zoomButton)?.isHidden = !value
         }
     }
     
@@ -65,15 +61,16 @@ struct MythicApp: App {
             if isFirstLaunch {
                 OnboardingEvo()
                     .transition(.opacity)
+                    .frame(minWidth: 750, minHeight: 390)
                     .onAppear {
+                        // Hide window title bar
+                        toggleTitleBar(false)
+                        
                         // Bring window to front
                         if let window = NSApp.windows.first {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
                         }
-                        
-                        // Hide window title bar
-                        toggleTitleBar(false)
                     }
             } else {
                 MainView()
