@@ -43,6 +43,10 @@ extension GameListView {
         @State private var modifyingRetinaMode: Bool = true
         @State private var retinaModeError: Error?
         
+        @State private var movingGame: Bool = false
+        @State private var isMovingGameErrorPresented: Bool = false
+        @State private var movingGameError: Error?
+        
         init(isPresented: Binding<Bool>, game: Binding<Game>) {
             _isPresented = isPresented
             _game = game
@@ -128,27 +132,61 @@ extension GameListView {
                                         
                                         Spacer()
                                         
-                                        Button("Move...") { // TODO: look into whether .fileMover is a suitable alternative
-                                            let openPanel = NSOpenPanel()
-                                            openPanel.prompt = "Move"
-                                            openPanel.canChooseDirectories = true
-                                            openPanel.allowsMultipleSelection = false
-                                            openPanel.canCreateDirectories = true
-                                            
-                                            if openPanel.runModal() == .OK {
-                                                if let newLocation = openPanel.urls.first {
-                                                    switch game.type {
-                                                    case .epic:
-                                                        Task.sync(priority: .userInitiated) {
-                                                            try await Legendary.move(game: game, newPath: newLocation.path(percentEncoded: false))
+                                        if movingGame {
+                                            ProgressView()
+                                                .controlSize(.small)
+                                                .help("Mythic is currently moving \"\(game.title)\".")
+                                        } else {
+                                            Button("Move...") { // TODO: look into whether .fileMover is a suitable alternative
+                                                let openPanel = NSOpenPanel()
+                                                openPanel.prompt = "Move"
+                                                openPanel.canChooseDirectories = true
+                                                openPanel.allowsMultipleSelection = false
+                                                openPanel.canCreateDirectories = true
+                                                
+                                                switch game.type {
+                                                case .epic:
+                                                    openPanel.directoryURL = .init(filePath: (try? Legendary.getGamePath(game: game)) ?? .init())
+                                                case .local:
+                                                    openPanel.directoryURL = .init(filePath: game.path ?? .init())
+                                                }
+                                                
+                                                if openPanel.runModal() == .OK {
+                                                    if let newLocation = openPanel.urls.first?.path(percentEncoded: false) {
+                                                        movingGame = true
+                                                        switch game.type {
+                                                        case .epic:
+                                                            Task(priority: .userInitiated) {
+                                                                do {
+                                                                    try await Legendary.move(game: game, newPath: newLocation)
+                                                                    gamePath = try? Legendary.getGamePath(game: game) ?? gamePath
+                                                                } catch {
+                                                                    isMovingGameErrorPresented = true
+                                                                    movingGameError = error
+                                                                }
+                                                            }
+                                                        case .local:
+                                                            if let oldLocation = game.path {
+                                                                do {
+                                                                    if files.isWritableFile(atPath: newLocation) {
+                                                                        try files.moveItem(atPath: oldLocation, toPath: newLocation) // not very good
+                                                                    } else {
+                                                                        throw FileLocations.FileNotModifiableError(nil)
+                                                                    }
+                                                                } catch {
+                                                                    isMovingGameErrorPresented = true
+                                                                    movingGameError = error
+                                                                }
+                                                            } else {
+                                                                
+                                                            }
                                                         }
-                                                    case .local:
-                                                        do {  } // FIXME: IMPLEMENT
+                                                        movingGame = false
                                                     }
                                                 }
                                             }
+                                            .disabled(gamePath == nil)
                                         }
-                                        .disabled(gamePath == nil)
                                     }
                                     HStack {
                                         VStack {
@@ -267,6 +305,12 @@ extension GameListView {
             }
             .padding()
             .frame(width: 600)
+            .alert(isPresented: $isMovingGameErrorPresented) {
+                .init(
+                    title: .init("Unable to move \(game.title)."),
+                    message: .init(movingGameError?.localizedDescription ?? "Unknown Error.")
+                )
+            }
         }
     }
 }

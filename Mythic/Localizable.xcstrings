@@ -14513,6 +14513,12 @@
         }
       }
     },
+    "Launch Configurator" : {
+
+    },
+    "Launch Winetricks" : {
+
+    },
     "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
       "localizations" : {
         "af" : {
@@ -15821,6 +15827,9 @@
 
     },
     "Mythic is checking the connection to the internet." : {
+
+    },
+    "Mythic is currently moving \"%@\"." : {
 
     },
     "Mythic is not connected to the internet." : {
@@ -21393,6 +21402,9 @@
 
     },
     "Unable to boot default bottle." : {
+
+    },
+    "Unable to move %@." : {
 
     },
     "Uninstall" : {

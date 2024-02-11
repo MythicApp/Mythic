@@ -20,7 +20,8 @@ import UserNotifications // TODO: TODO
 @main
 struct MythicApp: App {
     // MARK: - State Properties
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
+    @State private var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false
     @State private var isInstallViewPresented: Bool = false
@@ -59,17 +60,17 @@ struct MythicApp: App {
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isFirstLaunch {
-                OnboardingEvo()
+                OnboardingEvo(fromChapter: onboardingChapter)
                     .transition(.opacity)
                     .frame(minWidth: 750, minHeight: 390)
                     .onAppear {
-                        // Hide window title bar
                         toggleTitleBar(false)
                         
-                        // Bring window to front
+                        // Bring to front
                         if let window = NSApp.windows.first {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
+                            
                         }
                     }
             } else {
@@ -78,30 +79,18 @@ struct MythicApp: App {
                     .environmentObject(networkMonitor)
                     .frame(minWidth: 750, minHeight: 390)
                     .onAppear { toggleTitleBar(true) }
-                    .task(priority: .high) {
+                    .task(priority: .medium) {
                         if let latestVersion = Libraries.fetchLatestVersion(),
                            let currentVersion = Libraries.getVersion(),
                            latestVersion > currentVersion {
                             activeAlert = .updatePrompt
-                            isAlertPresented = true
+                            isAlertPresented = true // TODO: add to onboarding chapter
                         }
                     }
                     .task(priority: .background) {
-                        if Libraries.isInstalled() {
-                            await Wine.boot(name: "Default") { result in
-                                if case .failure(let failure) = result, type(of: failure) != Wine.BottleAlreadyExistsError.self {
-                                    bootError = failure
-                                    activeAlert = .bootError
-                                    isAlertPresented = true
-                                }
-                            }
-                        }
-                    }
-                    .task(priority: .high) {
-                        if let bottles = Wine.allBottles {
-                            for (key, value) in bottles where !Wine.bottleExists(bottleURL: value.url) {
-                                Wine.allBottles?.removeValue(forKey: key)
-                            }
+                        if Libraries.isInstalled(), Wine.allBottles?["Default"] == nil {
+                            onboardingChapter = .defaultBottleSetup
+                            isFirstLaunch = true
                         }
                     }
                 

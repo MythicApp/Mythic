@@ -442,9 +442,9 @@ class Legendary {
     }
     
     static func move(game: Mythic.Game, newPath: String) async throws {
-        if let gamePath = try? getGamePath(game: game) {
-            guard files.isWritableFile(atPath: gamePath) else { throw FileLocations.FileNotModifiableError(URL(filePath: gamePath)) }
-            try files.moveItem(at: URL(filePath: gamePath), to: URL(filePath: newPath))
+        if let oldPath = try getGamePath(game: game) {
+            guard files.isWritableFile(atPath: oldPath) else { throw FileLocations.FileNotModifiableError(.init(filePath: oldPath)) }
+            try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
             _ = await command(
                 args: ["move", game.appName, newPath, "--skip-move"],
                 useCache: false,
@@ -693,8 +693,6 @@ class Legendary {
         return apps
     }
     
-    // TODO: get game installed.json, will simplify many commands
-    
     static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
         guard signedIn() else { throw NotSignedInError() }
         guard game.type == .epic else { throw IsNotLegendaryError() }
@@ -710,25 +708,30 @@ class Legendary {
      
      - Returns: An `Array` of ``Game`` objects.
      */
-    static func getInstallable() async throws -> [Mythic.Game] { // TODO: use files in Config/metadata and use command to update in the background [IMPORTANT TO UPD IN BKG]
+    static func getInstallable() async throws -> [Mythic.Game] {
         guard signedIn() else { throw NotSignedInError() }
         
         let metadata = "\(configLocation)/metadata"
         
-        guard let metadataContents = try? files.contentsOfDirectory(atPath: metadata) else {
-            throw FileLocations.FileDoesNotExistError(URL(filePath: metadata))
+        if let metadataContents = try? files.contentsOfDirectory(atPath: metadata),
+           !metadataContents.isEmpty {
+            Task(priority: .background) {
+                _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+            }
+        } else {
+            Task.sync(priority: .high) {
+                _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+            }
         }
         
-        var games: [Mythic.Game] = .init()
-        
-        for file in metadataContents {
+        let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
-            games.append(.init(type: .epic, title: json["app_title"].string ?? .init(), appName: json["app_name"].string ?? .init()))
+            return .init(type: .epic, title: json["app_title"].stringValue, appName: json["app_name"].stringValue)
         }
         
         return games.sorted { $0.title < $1.title }
     }
-    
+
     // MARK: - Get Game Metadata Method
     /**
      Retrieve game metadata as a JSON.

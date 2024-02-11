@@ -87,8 +87,34 @@ struct WineView: View {
                     }
                     .formStyle(.grouped)
                     
-                    Button("Close") {
-                        isBottleSettingsViewPresented = false
+                    HStack {
+                        Spacer()
+                        
+                        Button("Launch Winetricks") {
+                            let task = Process()
+                            task.executableURL = Libraries.directory.appending(path: "winetricks")
+                            task.environment = ["WINEPREFIX": bottles[selectedBottleName]!.url.path(percentEncoded: false)]
+                            do {
+                                try task.run()
+                            } catch {
+                                // TODO: implement
+                            }
+                        }
+                        
+                        Button("Launch Configurator") {
+                            Task {
+                                try await Wine.command(
+                                    args: ["winecfg"],
+                                    identifier: "winecfg",
+                                    bottleURL: bottles[selectedBottleName]!.url
+                                )
+                            }
+                        }
+                        
+                        Button("Close") {
+                            isBottleSettingsViewPresented = false
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
                 }
                 .padding()
