@@ -231,7 +231,7 @@ class Libraries {
             defer { group.leave() }
             
             guard error == nil else {
-                log.error("Unable to check for new GPTK version: \(error?.localizedDescription ?? "[Unknown error]")")
+                log.error("Unable to check for new GPTK version: \(error?.localizedDescription ?? "Unknown Error.")")
                 return
             }
             

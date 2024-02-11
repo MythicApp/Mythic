@@ -15,7 +15,7 @@ struct BottleCreationView: View {
     
     @State private var isBooting: Bool = false
     
-    @State private var bootErrorDescription: String = "Unknown error."
+    @State private var bootErrorDescription: String = "Unknown Error."
     @State private var isBootFailureAlertPresented: Bool = false
     
     var body: some View {

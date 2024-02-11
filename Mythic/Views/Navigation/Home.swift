@@ -59,7 +59,7 @@ struct HomeView: View {
                         if let recentlyPlayedGame: Game? = try? PropertyListDecoder().decode(
                             Game.self,
                             from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
-                        ) {
+                        ), Legendary.signedIn() {
                             // MARK: Image
                             CachedAsyncImage(url: URL(string: Legendary.getImage(of: recentlyPlayedGame!, type: .tall)), urlCache: gameImageURLCache) { phase in
                                 switch phase {

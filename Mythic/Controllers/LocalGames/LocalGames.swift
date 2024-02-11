@@ -70,7 +70,7 @@ class LocalGames {
                     }
                 )
             } else {
-                log.critical("\("The game at \(game.path ?? "[unknown path]") doesn't exist, cannot launch local macOS game!")")
+                log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
             }
         case .windows:
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }

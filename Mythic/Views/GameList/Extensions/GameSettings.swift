@@ -158,7 +158,7 @@ extension GameListView {
                                             }
                                             
                                             HStack {
-                                                Text(URL(filePath: (gamePath ?? "[Unknown]")).prettyPath()) // FIXME: 3x repetition is bad
+                                                Text(URL(filePath: (gamePath ?? "Unknown")).prettyPath()) // FIXME: 3x repetition is bad
                                                     .foregroundStyle(.placeholder)
                                                 Spacer()
                                             }

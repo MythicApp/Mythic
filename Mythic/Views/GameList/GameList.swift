@@ -420,7 +420,7 @@ struct GameListView: View {
             .searchable(text: $searchText, placement: .toolbar)
         }
         
-        .task { isRefreshCalled = true }
+        .task(priority: .userInitiated) { isRefreshCalled = true }
         
         .onReceive(Just(isRefreshCalled)) { called in
             if called {

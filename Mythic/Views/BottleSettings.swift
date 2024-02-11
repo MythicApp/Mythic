@@ -108,7 +108,7 @@ struct BottleSettingsView: View {
                     } else {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .controlSize(.small)
-                            .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error")")
+                            .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                     }
                 }
             }
@@ -130,7 +130,7 @@ struct BottleSettingsView: View {
     Form {
         BottleSettingsView(
             selectedBottle: .constant("Default"),
-            withPicker: false
+            withPicker: true
         )
     }
     .formStyle(.grouped)

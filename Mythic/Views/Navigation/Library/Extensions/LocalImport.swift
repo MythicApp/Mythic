@@ -67,7 +67,7 @@ extension LibraryView.GameImportView {
                                     openPanel.canChooseDirectories = false
                                 } else if platform == .windows {
                                     openPanel.allowedContentTypes = [.exe]
-                                    openPanel.canChooseDirectories = true // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                                    openPanel.canChooseDirectories = true
                                 }
                                 
                                 openPanel.allowsMultipleSelection = false

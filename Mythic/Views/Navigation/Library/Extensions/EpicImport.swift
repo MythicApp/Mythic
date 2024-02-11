@@ -64,7 +64,7 @@ extension LibraryView.GameImportView {
                             Spacer()
                         }
                         HStack {
-                            Text(URL(filePath: game.path ?? .init()).prettyPath())
+                            Text(URL(filePath: path).prettyPath())
                                 .foregroundStyle(.placeholder)
                             
                             Spacer()
@@ -73,7 +73,7 @@ extension LibraryView.GameImportView {
                     
                     Spacer()
                     
-                    if !files.isReadableFile(atPath: game.path ?? .init()) {
+                    if !files.isReadableFile(atPath: path) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("File/Folder is not readable by Mythic.")
                     }
@@ -86,13 +86,13 @@ extension LibraryView.GameImportView {
                             openPanel.canChooseDirectories = false
                         } else if platform == .windows {
                             openPanel.allowedContentTypes = [.exe]
-                            openPanel.canChooseDirectories = true // FIXME: Legendary (presumably) handles dirs (check this in case it doesnt)
+                            openPanel.canChooseDirectories = true
                         }
                         
                         openPanel.allowsMultipleSelection = false
                         
                         if openPanel.runModal() == .OK {
-                            game.path = openPanel.urls.first?.path ?? .init()
+                            path = openPanel.urls.first?.path ?? .init()
                         }
                     }
                 }
