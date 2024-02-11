@@ -45,7 +45,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
     @State private var animationColors: [Color] = [
         .init(hex: "#5412F6"),
         .init(hex: "#7E1ED8"),
-        .init(hex: "#2C2C2C")
+        .init(NSColor.windowBackgroundColor)
     ]
     @State private var animationSpeed: Double = 1
     @State private var animationNoise: Double = 15
@@ -114,6 +114,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
             
             VStack {
                 switch currentChapter {
+                // MARK: - Logo
                 case .logo:
                     Image("MythicIcon")
                         .resizable()
@@ -130,57 +131,63 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                                 
                             }
                         }
+                // MARK: - Logo
                 case .welcome:
-                    Text("Welcome to Mythic.")
-                        .font(.bold(.largeTitle)())
-                        .opacity(isWelcomeOpacityAnimated ? 1.0 : 0.0)
-                        .offset(y: isWelcomeOffsetAnimated ? 0 : 30)
-                        .onAppear {
-                            withAnimation(.easeInOut(duration: 2)) {
-                                isWelcomeOpacityAnimated = true
-                            }
-                            
-                            withAnimation(.easeOut(duration: 1)) {
-                                isWelcomeOffsetAnimated = true
-                            } completion: {
-                                withAnimation(.easeOut(duration: 0.5)) {
-                                    isSecondRowPresented = true
+                    VStack {
+                        Text("Welcome to Mythic.")
+                            .font(.bold(.largeTitle)())
+                            .opacity(isWelcomeOpacityAnimated ? 1.0 : 0.0)
+                            .offset(y: isWelcomeOffsetAnimated ? 0 : 30)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 2)) {
+                                    isWelcomeOpacityAnimated = true
+                                }
+                                
+                                withAnimation(.easeOut(duration: 1)) {
+                                    isWelcomeOffsetAnimated = true
+                                } completion: {
+                                    withAnimation(.easeOut(duration: 0.5)) {
+                                        isSecondRowPresented = true
+                                    }
                                 }
                             }
-                        }
-                    
-                    Button(
-                        action: {
-                            withAnimation {
-                                isSecondRowPresented = false
-                                isWelcomeOpacityAnimated = false
-                            } completion: {
-                                if !Legendary.signedIn() {
-                                    currentChapter = .signIn
-                                } else if Legendary.signedIn() {
-                                    currentChapter = .greetings
-                                } else if !Libraries.isInstalled() {
-                                    currentChapter = .engineDisclaimer
-                                } else if Wine.allBottles?["Default"] == nil {
-                                    currentChapter = .defaultBottleSetup
-                                } else {
-                                    currentChapter = .finished
+                        
+                        Button(
+                            action: {
+                                withAnimation {
+                                    isSecondRowPresented = false
+                                    isWelcomeOpacityAnimated = false
+                                } completion: {
+                                    if !Legendary.signedIn() {
+                                        currentChapter = .signIn
+                                    } else if Legendary.signedIn() {
+                                        currentChapter = .greetings
+                                    } else if !Libraries.isInstalled() {
+                                        currentChapter = .engineDisclaimer
+                                    } else if Wine.allBottles?["Default"] == nil {
+                                        currentChapter = .defaultBottleSetup
+                                    } else {
+                                        currentChapter = .finished
+                                    }
                                 }
+                            }, label: {
+                                Image(systemName: "arrow.right")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20)
                             }
-                        }, label: {
-                            Image(systemName: "arrow.right")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20)
-                        }
-                    )
-                    .buttonStyle(.borderless)
-                    .opacity(isSecondRowPresented ? 1 : 0)
+                        )
+                        .buttonStyle(.borderless)
+                        .opacity(isSecondRowPresented ? 1 : 0)
+                    }
+                    .foregroundStyle(.white)
+                // MARK: - Sign In
                 case .signIn:
                     VStack {
                         VStack {
                             Text("Sign in to Epic Games")
                                 .font(.bold(.title)())
+                                .foregroundStyle(.white)
                             Text("(optional)")
                                 .foregroundStyle(.placeholder)
                                 .font(.footnote)
@@ -194,10 +201,12 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         VStack {
                             HStack {
                                 Text("A link should've opened in your browser. If not, click")
+                                    .foregroundStyle(.white)
                                 Link("here.", destination: URL(string: "https://legendary.gl/epiclogin")!)
                             }
                             
                             Text("Enter the 'authorisationCode' from the JSON response in the field below.")
+                                .foregroundStyle(.white)
                             
                             HStack {
                                 TextField("Enter authorisation key...", text: $epicAuthKey)
@@ -219,6 +228,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                                     }
                                 )
                                 .buttonStyle(.borderless)
+                                .foregroundStyle(.white)
                             }
                         }
                         .opacity(isSecondRowPresented ? 1 : 0)
@@ -253,6 +263,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             .disabled(epicSigningIn)
                             .buttonStyle(.borderless)
                         }
+                        .foregroundStyle(.white)
                         .opacity(isSecondRowPresented ? 1 : 0)
                     }
                     .onChange(of: epicSigninSuccess) { _, newValue in
@@ -269,16 +280,18 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             withAnimation(.easeOut(duration: 0.5)) {
                                 isSecondRowPresented = true
                             } completion: {
-                                NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                                // NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
                             }
                         }
                     }
+                // MARK: - Greetings
                 case .greetings:
                     VStack {
                         HStack {
                             Text("Hey, \(Legendary.whoAmI())!")
                                 .font(.bold(.title)())
                                 .scaledToFit()
+                                .foregroundStyle(.white)
                             
                             Image("EGFaceless")
                                 .resizable()
@@ -311,6 +324,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             isGreetingsOffsetAnimated = true
                         }
                     }
+                // MARK: - Engine Disclaimer
                 case .engineDisclaimer:
                     VStack {
                         Text("Install Mythic Engine")
@@ -330,6 +344,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         )
                         .multilineTextAlignment(.center)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2)) {
                             isEngineDisclaimerOpacityAnimated = true
@@ -422,7 +437,9 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         )
                         .buttonStyle(.borderless)
                     }
+                    .foregroundStyle(.white)
                     .opacity(isSecondRowPresented ? 1 : 0)
+                // MARK: - Engine Downloader
                 case .engineDownloader:
                     VStack {
                         Text("Downloading Mythic Engine...")
@@ -448,6 +465,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         }
                         .opacity(isSecondRowPresented ? 1.0 : 0.0)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2)) {
                             isDownloadOpacityAnimated = true
@@ -461,6 +479,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             }
                         }
                     }
+                // MARK: - Engine Installer
                 case .engineInstaller:
                     VStack {
                         Text("Installing Mythic Engine...")
@@ -487,6 +506,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         }
                         .opacity(isSecondRowPresented ? 1.0 : 0.0)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2)) {
                             isInstallOpacityAnimated = true
@@ -500,6 +520,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             }
                         }
                     }
+                // MARK: - Engine Error
                 case .engineError:
                     VStack {
                         Text("Failed to install Mythic Engine.")
@@ -517,15 +538,8 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             .font(.footnote)
                             .opacity(isSecondRowPresented ? 1.0 : 0.0)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
-                        animationColors = [
-                            .init(hex: "#5412F6"),
-                            .init(hex: "#7E1ED8"),
-                            .init(hex: "#2C2C2C"),
-                            .init(hex: "#2C2C2C"),
-                            .init(hex: "#2C2C2C"),
-                            .init(hex: "#2C2C2C")
-                        ]
                         withAnimation(.easeInOut(duration: 2)) {
                             isEngineErrorOpacityAnimated = true
                         }
@@ -538,6 +552,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             }
                         }
                     }
+                // MARK: - Default Bottle Setup
                 case .defaultBottleSetup:
                     VStack {
                         Text("Default Bottle Setup")
@@ -554,6 +569,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         ProgressView()
                             .controlSize(.small)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2)) {
                             isDefaultBottleSetupOpacityAnimated = true
@@ -583,7 +599,8 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             }
                         }
                     }
-                case .defaultBottleSetupError: // TODO: unify with .engineError
+                    // MARK: - Default Bottle Setup Error
+                case .defaultBottleSetupError:
                     VStack {
                         Text("Failed to set up default bottle.")
                             .font(.bold(.title)())
@@ -600,6 +617,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             .font(.footnote)
                             .opacity(isSecondRowPresented ? 1.0 : 0.0)
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         animationColors = [
                             .init(hex: "#5412F6"),
@@ -622,6 +640,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             }
                         }
                     }
+                // MARK: - Finished
                 case .finished:
                     VStack {
                         Text("You're all set!")
@@ -657,6 +676,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                         .opacity(isSecondRowPresented ? 1 : 0)
                         
                     }
+                    .foregroundStyle(.white)
                     .onAppear {
                         withAnimation(.easeInOut(duration: 2)) {
                             isFinishedOpacityAnimated = true
@@ -678,5 +698,5 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
 }
 
 #Preview {
-    OnboardingEvo(fromChapter: .logo)
+    OnboardingEvo(fromChapter: .engineError)
 }
