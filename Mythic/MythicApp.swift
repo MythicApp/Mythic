@@ -23,7 +23,6 @@ struct MythicApp: App {
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false
-    @State private var isOnboardingPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
     @State private var isAlertPresented: Bool = false
     @State private var isNotificationPermissionsGranted = false
@@ -47,14 +46,12 @@ struct MythicApp: App {
     }
     
     func toggleTitleBar(_ value: Bool) {
-        if value {
-            if let window = NSApp.windows.first {
+        if let window = NSApp.windows.first {
+            if value {
                 window.titlebarAppearsTransparent = false
                 window.titleVisibility = .visible
                 window.isMovableByWindowBackground = false
-            }
-        } else {
-            if let window = NSApp.windows.first {
+            } else {
                 window.titlebarAppearsTransparent = true
                 window.titleVisibility = .hidden
                 window.isMovableByWindowBackground = true
@@ -65,7 +62,7 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isFirstLaunch || isOnboardingPresented {
+            if isFirstLaunch {
                 OnboardingEvo()
                     .transition(.opacity)
                     .onAppear {
@@ -113,14 +110,6 @@ struct MythicApp: App {
                 
                 // MARK: - Other Properties
                 
-                    .sheet(isPresented: $isOnboardingPresented) {
-                        OnboardingView(
-                            isPresented: $isOnboardingPresented,
-                            isInstallViewPresented: $isInstallViewPresented
-                        )
-                        .fixedSize()
-                    }
-                
                     .sheet(isPresented: $isInstallViewPresented) {
                         OnboardingView.InstallView(isPresented: $isInstallViewPresented)
                     }
@@ -163,9 +152,11 @@ struct MythicApp: App {
                 Button("Check for Updates...", action: updaterController.updater.checkForUpdates)
                     .disabled(!updaterController.updater.canCheckForUpdates)
                 
-                Button("Restart Onboarding...") {
-                    withAnimation(.easeInOut(duration: 2)) {
-                        isOnboardingPresented = true
+                if !isFirstLaunch {
+                    Button("Restart Onboarding...") {
+                        withAnimation(.easeInOut(duration: 2)) {
+                            isFirstLaunch = true
+                        }
                     }
                 }
             }
@@ -181,5 +172,4 @@ struct MythicApp: App {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
-    
 }

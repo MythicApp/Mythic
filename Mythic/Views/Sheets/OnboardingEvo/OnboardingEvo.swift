@@ -280,7 +280,7 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                             withAnimation(.easeOut(duration: 0.5)) {
                                 isSecondRowPresented = true
                             } completion: {
-                                // NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                                NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
                             }
                         }
                     }
