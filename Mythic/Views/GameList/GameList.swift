@@ -76,7 +76,7 @@ struct GameListView: View {
     @State private var failedGame: Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Game = placeholderGame(.local) // FIXME: bad programming
+    @State private var currentGame: Game = placeholderGame(.local)
     
     @State private var installableGames: [Game] = .init()
     @State private var installedGames: [Game] = .init()
@@ -118,9 +118,9 @@ struct GameListView: View {
             group.enter()
             Task(priority: .userInitiated) {
                 let command = await Legendary.command(
-                    args: ["install", game.appName], // force-unwraps rely on good codebase, don't fumble
+                    args: ["install", game.appName],
                     useCache: true,
-                    identifier: "parseOptionalPacks" // TODO: replace with metadata["dlcItemList"]
+                    identifier: "parseOptionalPacks"
                 )
                 
                 var isParsingOptionalPacks = false
@@ -254,7 +254,7 @@ struct GameListView: View {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         
                                                         _ = try await Legendary.install(
-                                                            game: game, // TODO: better update implementation; rushing to launch
+                                                            game: game,
                                                             platform: try Legendary.getGamePlatform(game: game)
                                                         )
                                                         
@@ -340,9 +340,8 @@ struct GameListView: View {
                                                 if game.type == .epic {
                                                     isUninstallViewPresented = true
                                                 } else {
-                                                    var library = LocalGames.library // TODO: add support to remove game
-                                                    library?.removeAll { $0 == game }
-                                                    LocalGames.library = library // FIXME: possible for split second to add new and overwrite one, extremely unlikely though
+                                                    var library = LocalGames.library
+                                                    LocalGames.library = library?.filter { $0 != game }
                                                     isRefreshCalled = true
                                                 }
                                             } label: {
@@ -359,8 +358,11 @@ struct GameListView: View {
                                                 .padding()
                                         }
                                     } else { // MARK: For games that aren't installed
-                                        // MARK: Game Installation View // FIXME: can also happen during updates and that doesnt show
-                                        if variables.getVariable("installing") == game { // TODO: Add for verificationStatus // TODO: turn this VStack into a separate view so it's the same in Main and GameList
+                                        // MARK: Game Installation View
+                                        // FIXME: can also happen during updates and that doesnt show
+                                        if variables.getVariable("installing") == game {
+                                            // TODO: Add for verificationStatus
+                                            // TODO: turn this VStack into a separate view so it's the same in Main and GameList
                                             Button {
                                                 isInstallStatusViewPresented = true
                                             } label: {
@@ -505,7 +507,7 @@ struct GameListView: View {
         
         .alert(isPresented: $isAlertPresented) {
             switch activeAlert {
-            case .installError: // used in other scripts, will unify (TODO: unify)
+            case .installError:
                 Alert(
                     title: Text("Error installing \(failedGame?.title ?? "game")."),
                     message: Text(installationErrorMessage)

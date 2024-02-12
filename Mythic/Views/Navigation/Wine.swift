@@ -84,6 +84,8 @@ struct WineView: View {
                     
                     Form {
                         BottleSettingsView(selectedBottle: $selectedBottleName, withPicker: false)
+                        // TODO: Add slider for scaling
+                        // TODO: Add slider for winver
                     }
                     .formStyle(.grouped)
                     
@@ -91,14 +93,7 @@ struct WineView: View {
                         Spacer()
                         
                         Button("Launch Winetricks") {
-                            let task = Process()
-                            task.executableURL = Libraries.directory.appending(path: "winetricks")
-                            task.environment = ["WINEPREFIX": bottles[selectedBottleName]!.url.path(percentEncoded: false)]
-                            do {
-                                try task.run()
-                            } catch {
-                                // TODO: implement
-                            }
+                            try? Wine.launchWinetricks(prefix: bottles[selectedBottleName]!.url)
                         }
                         
                         Button("Launch Configurator") {

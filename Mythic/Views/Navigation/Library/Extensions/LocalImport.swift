@@ -38,7 +38,6 @@ extension LibraryView.GameImportView {
                         }
                         
                         HStack {
-                            // TODO: turn this whole HStack into a whole separate view
                             VStack {
                                 HStack { // FIXME: jank
                                     Text("Where is the game located?")

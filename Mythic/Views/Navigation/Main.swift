@@ -261,7 +261,7 @@ struct MainView: View {
                         title: .init("Are you sure you want to sign out?"),
                         message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
                         primaryButton: .destructive(.init("Sign Out")) {
-                            Task(priority: .high) { // TODO: possible progress view implementation
+                            Task(priority: .high) {
                                 let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
                                 if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
                                     updateLegendaryAccountState()

@@ -19,7 +19,7 @@ import MetalKit
 import ColorfulX
 import UserNotifications // TODO: TODO
 
-struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
+struct OnboardingEvo: View {
     init(fromChapter: Chapter = .logo) {
         self.currentChapter = fromChapter
     }
@@ -371,7 +371,8 @@ struct OnboardingEvo: View { // TODO: move creation of default bottle here!!
                     .offset(y: isEngineDisclaimerOffsetAnimated ? 0 : 30)
                     
                     HStack {
-                        Button(action: { // TODO: implement question mark popover
+                        Button(
+                            action: {
                             isHelpPopoverPresented.toggle()
                         }, label: {
                             Image(systemName: "questionmark.circle")

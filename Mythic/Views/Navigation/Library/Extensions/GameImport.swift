@@ -34,7 +34,7 @@ extension LibraryView {
         @State private var type: GameType = .epic
         
         // MARK: - Body
-        var body: some View { // TODO: split up epic and local into different view files
+        var body: some View {
             VStack {
                 Text("Import a Game")
                     .font(.title)

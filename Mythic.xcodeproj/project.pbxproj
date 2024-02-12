@@ -238,6 +238,8 @@
 		6A0BB7AE2B52029000C8A693 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6ABA8DAF2B791B0600D446CF /* Sheets */,
+				6A00F20A2AC5F8730054858A /* Auth.swift */,
 				6AF7214C2B4C53F700AFD8F2 /* SearchBar.swift */,
 			);
 			path = Views;
@@ -416,6 +418,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		6ABA8DAF2B791B0600D446CF /* Sheets */ = {
+			isa = PBXGroup;
+			children = (
+				6A371B502AE7A4870054BF7A /* Onboarding */,
+			);
+			path = Sheets;
+			sourceTree = "<group>";
+		};
 		6AC3E18A2B374F3C000EB765 /* Deprecated */ = {
 			isa = PBXGroup;
 			children = (
@@ -452,8 +462,6 @@
 			children = (
 				6A34B8F82B779EA2005B2854 /* OnboardingEvo */,
 				6A00F2082AC5F7DE0054858A /* ProgressView */,
-				6A371B502AE7A4870054BF7A /* Onboarding */,
-				6A00F20A2AC5F8730054858A /* Auth.swift */,
 				6A1322372B1C98AE0049BB64 /* InstallStatus.swift */,
 				6AA7413D2B67FC7400369B35 /* BottleCreation.swift */,
 			);

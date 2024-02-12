@@ -193,7 +193,7 @@ struct HomeView: View {
         }
         .navigationTitle("Home")
         .padding()
-        .alert(isPresented: $isAlertPresented) { // TODO: Note, add progressview for homeview play button
+        .alert(isPresented: $isAlertPresented) {
             switch activeAlert {
             case .launchError:
                 Alert(
