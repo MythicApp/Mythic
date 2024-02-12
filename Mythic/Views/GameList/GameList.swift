@@ -340,8 +340,7 @@ struct GameListView: View {
                                                 if game.type == .epic {
                                                     isUninstallViewPresented = true
                                                 } else {
-                                                    var library = LocalGames.library
-                                                    LocalGames.library = library?.filter { $0 != game }
+                                                    LocalGames.library = LocalGames.library?.filter { $0 != game }
                                                     isRefreshCalled = true
                                                 }
                                             } label: {

@@ -301,6 +301,7 @@ struct OnboardingEvo: View {
                                 .font(.bold(.title)())
                                 .scaledToFit()
                                 .foregroundStyle(.white)
+                                .task { _ = try? await Legendary.getInstallable() }
                             
                             Image("EGFaceless")
                                 .resizable()
@@ -708,5 +709,5 @@ struct OnboardingEvo: View {
 }
 
 #Preview {
-    OnboardingEvo(fromChapter: .engineError)
+    OnboardingEvo(fromChapter: .logo)
 }

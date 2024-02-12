@@ -70,7 +70,6 @@ struct MythicApp: App {
                         if let window = NSApp.windows.first {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
-                            
                         }
                     }
             } else {

@@ -719,7 +719,7 @@ class Legendary {
                 _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
             }
         } else {
-            Task.sync(priority: .high) {
+            Task.sync(priority: .high) { // called during onboarding for speed
                 _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
             }
         }

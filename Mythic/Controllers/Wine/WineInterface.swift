@@ -72,7 +72,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 }
             } else {
                 Logger.app.warning("No bottles exist, returning default")
-                Task(priority: .high) { await Wine.boot(name: "Default") { result in } }
+                Task(priority: .high) { await Wine.boot(name: "Default") { _ in } }
                 return .init() // FIXME: if already exists, might not get appended in time
             }
         }
