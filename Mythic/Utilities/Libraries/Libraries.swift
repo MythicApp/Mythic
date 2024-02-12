@@ -72,8 +72,6 @@ class Libraries {
         installProgressHandler: @escaping (Double) -> Void,
         completion: @escaping (Result<Bool, Error>) -> Void
     ) {
-        // TODO: Handle installation progress
-        
         guard !isInstalled() else {
             completion(.failure(AlreadyInstalledError()))
             return

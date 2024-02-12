@@ -90,7 +90,7 @@ extension GameListView {
                                     image // FIXME: fix image stretching and try to zoom instead
                                         .resizable()
                                         .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10)) // TODO: remove corner radius on blurred image
+                                        .clipShape(RoundedRectangle(cornerRadius: 10))
                                         .blur(radius: 20)
                                         .frame(width: 150)
                                     
@@ -114,7 +114,6 @@ extension GameListView {
                     }
                     
                     // TODO: game desc otherwise (no description available)
-                    
                     // TODO: image carousel (if applicable)
                     Divider()
                     

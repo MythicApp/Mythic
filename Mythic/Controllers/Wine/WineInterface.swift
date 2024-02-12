@@ -18,7 +18,7 @@ import Foundation
 import OSLog
 
 class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
-    // FIXME: all funcs should take urls as params not bottles
+    // FIXME: TODO: all funcs should take urls as params not bottles
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
@@ -61,7 +61,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }()
     
     // MARK: - All Bottles Variable
-    static var allBottles: [String: Bottle]? { // TODO: reimplement to check for files in bottles folder
+    static var allBottles: [String: Bottle]? {
         get {
             if let object = defaults.object(forKey: "allBottles") as? Data {
                 do {
@@ -72,8 +72,8 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 }
             } else {
                 Logger.app.warning("No bottles exist, returning default")
-                Task(priority: .high) { await Wine.boot(name: "Default") { _ in } }
-                return .init() // TODO: if already exists, might not get appended in time
+                Task(priority: .high) { await Wine.boot(name: "Default") { result in } }
+                return .init() // FIXME: if already exists, might not get appended in time
             }
         }
         set {
@@ -310,11 +310,21 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // TODO: implement
-    @available(*, unavailable, message: "Not implemented")
+    @available(*, message: "Not implemented completely.")
     static func launchWinetricks(prefix: URL) throws {
         guard Libraries.isInstalled() else {
             log.error("Unable to launch winetricks, Mythic Engine is not installed!")
             throw Libraries.NotInstalledError()
+        }
+        
+        let task = Process()
+        task.executableURL = Libraries.directory.appending(path: "winetricks")
+        task.environment = ["WINEPREFIX": prefix.path(percentEncoded: false)]
+        do {
+            try task.run()
+        } catch {
+            // TODO: implement
+            // doesn't work if zenity isn't installed
         }
     }
     
