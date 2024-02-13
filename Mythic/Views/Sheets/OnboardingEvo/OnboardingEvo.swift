@@ -601,10 +601,9 @@ struct OnboardingEvo: View {
                                     case .success:
                                         currentChapter = .finished
                                     case .failure(let failure):
-                                        if type(of: failure) != Wine.BottleAlreadyExistsError.self { // FIXME: could be smarter
-                                            bottleSetupError = failure
-                                            currentChapter = .defaultBottleSetupError
-                                        }
+                                        guard type(of: failure) != Wine.BottleAlreadyExistsError.self else { currentChapter = .finished; return }
+                                        bottleSetupError = failure
+                                        currentChapter = .defaultBottleSetupError
                                     }
                                 }
                             }
