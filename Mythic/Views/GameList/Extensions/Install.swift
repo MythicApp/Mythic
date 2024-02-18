@@ -30,6 +30,8 @@ extension GameListView {
         @Binding var installationErrorMessage: String
         @Binding var failedGame: Game?
         
+        @State var baseURL: URL = Bundle.appGames! // TODO: default base path
+        
         // MARK: - State Properties
         /// Dictionary to track the toggled state of optional packs.
         @State private var isToggledDictionary: [String: Bool] = .init()
@@ -46,32 +48,74 @@ extension GameListView {
 
                     Divider()
                     
-                    ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { name, tag in
-                        HStack {
-                            VStack {
-                                Text(name)
-                                Text(tag)
-                                    .font(.footnote)
-                                    .foregroundStyle(.placeholder)
-                                    .multilineTextAlignment(.leading)
+                    Form {
+                        ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { name, tag in
+                            HStack {
+                                VStack {
+                                    Text(name)
+                                    Text(tag)
+                                        .font(.footnote)
+                                        .foregroundStyle(.placeholder)
+                                        .multilineTextAlignment(.leading)
+                                }
+                                
+                                Spacer()
+                                
+                                Toggle(
+                                    isOn: Binding(
+                                        get: { isToggledDictionary[tag] ?? false },
+                                        set: { newValue in isToggledDictionary[tag] = newValue }
+                                    )
+                                ) {  }
                             }
+                        }
+                    }
+                    .formStyle(.grouped)
+                }
+                
+                Form {
+                    HStack {
+                        VStack {
+                            HStack { // FIXME: jank
+                                Text("Where do you want the game's base path to be located?")
+                                Spacer()
+                            }
+                            HStack {
+                                Text(baseURL.prettyPath())
+                                    .foregroundStyle(.placeholder)
+                                
+                                Spacer()
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        if !FileLocations.isWritableFolder(url: baseURL) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .help("Folder is not writable.")
+                        }
+                        
+                        Button("Browse...") {
+                            let openPanel = NSOpenPanel()
+                            openPanel.canChooseDirectories = true
+                            openPanel.canChooseFiles = false
+                            openPanel.canCreateDirectories = true
+                            openPanel.allowsMultipleSelection = false
                             
-                            Spacer()
-                            
-                            Toggle(
-                                isOn: Binding(
-                                    get: { isToggledDictionary[tag] ?? false },
-                                    set: { newValue in isToggledDictionary[tag] = newValue }
-                                )
-                            ) {  }
+                            if openPanel.runModal() == .OK {
+                                baseURL = openPanel.urls.first!
+                            }
                         }
                     }
                 }
+                .formStyle(.grouped)
                 
                 HStack {
                     Button("Close") {
                         isPresented = false
                     }
+                    
+                    Spacer()
                     
                     Button("Install") {
                         Task(priority: .userInitiated) {
@@ -79,7 +123,8 @@ extension GameListView {
                             do {
                                 try await Legendary.install(
                                     game: game, platform: .windows,
-                                    optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys)
+                                    optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys),
+                                    baseURL: baseURL
                                 )
                                 
                                 isGameListRefreshCalled = true
@@ -90,8 +135,7 @@ extension GameListView {
                                     installationErrorMessage = error.message
                                     activeAlert = .installError
                                     isAlertPresented = true
-                                default:
-                                    do {  }
+                                default: do {  } // pass
                                 }
                             }
                         }
@@ -121,7 +165,7 @@ extension GameListView {
     GameListView.InstallView(
         isPresented: .constant(true),
         game: .constant(placeholderGame(.local)),
-        optionalPacks: .constant(.init()),
+        optionalPacks: .constant(["dud": "dudname", "dud2": "dud2name"]),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),
         activeAlert: .constant(.installError),

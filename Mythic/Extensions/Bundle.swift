@@ -83,7 +83,7 @@ extension Bundle {
             do {
                 try files.createDirectory(
                     at: appGamesURL,
-                    withIntermediateDirectories: false
+                    withIntermediateDirectories: true
                 )
                 return appGamesURL
             } catch {

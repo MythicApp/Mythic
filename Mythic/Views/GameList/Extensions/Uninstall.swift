@@ -44,21 +44,22 @@ extension GameListView {
                 Text("Uninstall \(game.title)")
                     .font(.title)
                 
-                Spacer()
-                
-                HStack {
-                    Toggle(isOn: $keepFiles) {
-                        Text("Keep files")
+                Form {
+                    HStack {
+                        Toggle(isOn: $keepFiles) {
+                            Text("Keep files")
+                        }
+                        Spacer()
                     }
-                    Spacer()
-                }
-                
-                HStack {
-                    Toggle(isOn: $skipUninstaller) {
-                        Text("Don't run uninstaller")
+                    
+                    HStack {
+                        Toggle(isOn: $skipUninstaller) {
+                            Text("Don't run uninstaller")
+                        }
+                        Spacer()
                     }
-                    Spacer()
                 }
+                .formStyle(.grouped)
                 
                 HStack {
                     Button("Cancel", role: .cancel) {

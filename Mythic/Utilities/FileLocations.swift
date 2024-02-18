@@ -54,7 +54,7 @@ class FileLocations {
             do {
                 try files.createDirectory(
                     at: gamesURL,
-                    withIntermediateDirectories: false
+                    withIntermediateDirectories: true
                 )
                 return gamesURL
             } catch {

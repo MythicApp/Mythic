@@ -20,7 +20,7 @@ struct BottleCreationView: View {
     @Binding var isPresented: Bool
     
     @State private var bottleName: String = "My Bottle"
-    @State private var bottlePath: URL = Wine.bottlesDirectory!
+    @State private var bottleURL: URL = Wine.bottlesDirectory!
     
     @State private var isBooting: Bool = false
     
@@ -42,7 +42,7 @@ struct BottleCreationView: View {
                             Spacer()
                         }
                         HStack {
-                            Text(bottlePath.prettyPath())
+                            Text(bottleURL.prettyPath())
                                 .foregroundStyle(.placeholder)
                             
                             Spacer()
@@ -51,7 +51,7 @@ struct BottleCreationView: View {
                     
                     Spacer()
                     
-                    if !FileLocations.isWritableFolder(url: URL(filePath: bottlePath.path(percentEncoded: false))) {
+                    if !FileLocations.isWritableFolder(url: bottleURL) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("Folder is not writable.")
                     }
@@ -64,7 +64,7 @@ struct BottleCreationView: View {
                         openPanel.allowsMultipleSelection = false
                         
                         if openPanel.runModal() == .OK {
-                            bottlePath = openPanel.urls.first!
+                            bottleURL = openPanel.urls.first!
                         }
                     }
                 }
@@ -87,7 +87,7 @@ struct BottleCreationView: View {
                 Button("Done") {
                     Task(priority: .userInitiated) {
                         isBooting = true
-                        await Wine.boot(baseURL: bottlePath, name: bottleName) { result in
+                        await Wine.boot(baseURL: bottleURL, name: bottleName) { result in
                             switch result {
                             case .success:
                                 isBooting = false
@@ -102,7 +102,7 @@ struct BottleCreationView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(isBooting)
-                .disabled(!FileLocations.isWritableFolder(url: bottlePath))
+                .disabled(!FileLocations.isWritableFolder(url: bottleURL))
             }
         }
         .padding()

@@ -277,21 +277,6 @@ class Legendary {
         }
     }
     
-    // MARK: - Base Path Property
-    /// This property represents the base path for games.
-    var basePath: URL? {
-        get {
-            if let value = defaults.object(forKey: "gamesPath") as? URL {
-                return value
-            } else {
-                return Bundle.appGames
-            }
-        }
-        set {
-            defaults.set(newValue, forKey: "gamesPath")
-        }
-    }
-    
     // MARK: - Install Method
     /**
      Installs, updates, or repairs games using legendary.
@@ -310,7 +295,7 @@ class Legendary {
         platform: GamePlatform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
+        baseURL: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
         gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
@@ -337,8 +322,8 @@ class Legendary {
                 argBuilder += ["--platform", "Windows"]
             }
             
-            if let basePath = basePath, files.fileExists(atPath: basePath.path) {
-                argBuilder += ["--base-path", basePath.absoluteString]
+            if let baseURL = baseURL, files.fileExists(atPath: baseURL.path) {
+                argBuilder += ["--base-path", baseURL.absoluteString]
             }
             
             if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
