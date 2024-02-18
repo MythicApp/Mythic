@@ -308,7 +308,7 @@ class Legendary {
     static func install(
         game: Mythic.Game,
         platform: GamePlatform,
-        type: InstallationType = .install,
+        type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
         basePath: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
         gameFolder: URL? = nil
@@ -318,6 +318,7 @@ class Legendary {
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
+        let gameModification: GameModification = .shared
         var errorThrownExternally: Error?
         
         var argBuilder = [
@@ -345,8 +346,25 @@ class Legendary {
             }
         }
         
-        var installStatus: [String: [String: Any]] = .init() // MARK: installStatus
         var verificationStatus: [String: Double] = .init()
+        var status: [String: [String: Any]] = .init()
+        
+        let progressRegex = #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#
+        let downloadedRegex = #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#
+        let cacheUsageRegex = #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#
+        let downloadAdvancedRegex = #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#
+        let downloadDiskRegex = #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#
+
+        func match(regex: String, line: String) -> NSTextCheckingResult? {
+            let range = NSRange(line.startIndex..<line.endIndex, in: line)
+            let regex = try? NSRegularExpression(pattern: regex)
+            return regex?.firstMatch(in: line, range: range)
+        }
+        
+        DispatchQueue.main.sync {
+            gameModification.game = game
+            gameModification.type = type
+        }
         
         _ = await command(
             args: argBuilder + [game.appName],
@@ -361,7 +379,7 @@ class Legendary {
                 stdout: { output in
                     output.enumerateLines { line, _ in
                         if line.contains("Failure:") {
-                            errorThrownExternally = InstallationError(String(line.trimmingPrefix(" ! Failure: ")))
+                            errorThrownExternally = InstallationError(message: String(line.trimmingPrefix(" ! Failure: ")))
                         } else if line.contains("Verification progress:") {
                             variables.setVariable("verifying", value: game) // FIXME: may cause lag when verifying due to rapid, repeated updating
                             if let regex = try? NSRegularExpression(pattern: #"Verification progress: (\d+)/(\d+) \((\d+\.\d+)%\) \[(\d+\.\d+) MiB/s\]"#),
@@ -383,62 +401,57 @@ class Legendary {
                 },
                 stderr: { output in
                     output.enumerateLines { line, _ in
-                        if line.contains("[DLManager] INFO:") {
-                            if !line.contains("All done! Download manager quitting...") { // do not add ellipses here
-                                variables.setVariable("installing", value: game)
-                                
-                                let range = NSRange(line.startIndex..<line.endIndex, in: line)
-                                if let regex = try? NSRegularExpression(pattern: #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#),
-                                   let match = regex.firstMatch(in: line, range: range) {
-                                    installStatus["progress"] = [
-                                        "percentage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        "downloaded": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
-                                        "total": Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
-                                        "runtime": line[Range(match.range(at: 4), in: line)!],
-                                        "eta": line[Range(match.range(at: 5), in: line)!]
-                                    ]
-                                } else if let regex = try? NSRegularExpression(pattern: #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#),
-                                          let match = regex.firstMatch(in: line, range: range) {
-                                    installStatus["download"] = [ // MiB | 1 MB = (10^6/2^20) MiB
-                                        "downloaded": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        "written": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    ]
-                                } else if let regex = try? NSRegularExpression(pattern: #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#),
-                                          let match = regex.firstMatch(in: line, range: range) {
-                                    installStatus["downloadCache"] = [
-                                        "usage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0, // MiB
-                                        "activeTasks": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    ]
-                                } else if let regex = try? NSRegularExpression(pattern: #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#),
-                                          let match = regex.firstMatch(in: line, range: range) {
-                                    installStatus["downloadAdvanced"] = [ // MiB/s
-                                        "raw": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        "decompressed": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    ]
-                                } else if let regex = try? NSRegularExpression(pattern: #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#),
-                                          let match = regex.firstMatch(in: line, range: range) {
-                                    installStatus["downloadDisk"] = [ // MiB/s
-                                        "write": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                        "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                                    ]
-                                }
-                                if line.contains("All done! Download manager quitting...") { // do not add ellipses here
-                                    installStatus.removeAll()
-                                } else {
-                                    variables.setVariable("installStatus", value: installStatus)
-                                }
-                            } else {
-                                variables.removeVariable("installing")
-                            }
+                        guard line.contains("[DLManager] INFO:") else { return }
+                        
+                        if line.contains("All done! Download manager quitting...") {
+                            GameModification.reset(); return
                         }
+                        
+                        if let match = match(regex: progressRegex, line: line) {
+                            status["progress"] = [
+                                "percentage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                "downloaded": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
+                                "total": Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
+                                "runtime": line[Range(match.range(at: 4), in: line)!],
+                                "eta": line[Range(match.range(at: 5), in: line)!]
+                            ]
+                        } else if let match = match(regex: downloadedRegex, line: line) {
+                            status["download"] = [
+                                "downloaded": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                "written": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                            ]
+                        } else if let match = match(regex: cacheUsageRegex, line: line) {
+                            status["downloadCache"] = [
+                                "usage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                "activeTasks": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                            ]
+                        } else if let match = match(regex: downloadAdvancedRegex, line: line) {
+                            status["downloadAdvanced"] = [
+                                "raw": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                "decompressed": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                            ]
+                        } else if let match = match(regex: downloadDiskRegex, line: line) {
+                            status["downloadDisk"] = [
+                                "write": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
+                                "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
+                            ]
+                        }
+                        
+                        DispatchQueue.main.sync {
+                            GameModification.shared.status = status
+                        }
+                        
                     }
                 }
             )
         )
         
+        GameModification.reset()
+        
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.
-        if let error = errorThrownExternally { variables.removeVariable("installing"); throw error } // FIXME: use withcheckedthrowingcontinuation like whisky rosetta2.swift
+        // FIXME: withCheckedThrowingContinuation may fix this problem
+        if let error = errorThrownExternally { GameModification.reset(); throw error }
     }
     
     static func move(game: Mythic.Game, newPath: String) async throws {

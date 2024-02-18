@@ -26,11 +26,11 @@ import SwiftUI
  */
 func stopGameModificationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert {
     return Alert(
-        title: Text("Are you sure you want to stop modifying \(game?.title ?? "this game")?"),
+        title: Text("Are you sure you want to stop \(GameModification.shared.type?.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "install")
-            VariableManager.shared.removeVariable("installing"); VariableManager.shared.removeVariable("installStatus")
-            VariableManager.shared.removeVariable("verifying"); VariableManager.shared.removeVariable("verificationStatus")
+            // TODO: create new func for stopping installation
+            // GameModification.reset()
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )

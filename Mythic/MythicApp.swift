@@ -47,7 +47,7 @@ struct MythicApp: App {
     }
     
     func toggleTitleBar(_ value: Bool) {
-        if let window = NSApp.windows.first {
+        if let window = NSApp.mainWindow {
             window.titlebarAppearsTransparent = !value
             window.titleVisibility = value ? .visible : .hidden
             window.isMovableByWindowBackground = !value
@@ -67,7 +67,7 @@ struct MythicApp: App {
                         toggleTitleBar(false)
                         
                         // Bring to front
-                        if let window = NSApp.windows.first {
+                        if let window = NSApp.mainWindow {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
                         }

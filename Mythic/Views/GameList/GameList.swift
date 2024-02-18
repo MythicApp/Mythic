@@ -50,6 +50,7 @@ struct GameListView: View {
     // MARK: - State Properties
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
+    @ObservedObject private var gameModification: GameModification = .shared
     
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
@@ -359,37 +360,11 @@ struct GameListView: View {
                                     } else { // MARK: For games that aren't installed
                                         // MARK: Game Installation View
                                         // FIXME: can also happen during updates and that doesnt show
-                                        if variables.getVariable("installing") == game {
-                                            // TODO: Add for verificationStatus
-                                            // TODO: turn this VStack into a separate view so it's the same in Main and GameList
-                                            Button {
-                                                isInstallStatusViewPresented = true
-                                            } label: {
-                                                if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
-                                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
-                                                    ProgressView(value: percentage, total: 100)
-                                                        .progressViewStyle(.linear)
-                                                        .help("\(Int(percentage))% complete")
-                                                } else {
-                                                    ProgressView()
-                                                        .progressViewStyle(.linear)
-                                                        .help("Starting installation")
-                                                }
-                                            }
-                                            .buttonStyle(.plain)
+                                        if gameModification.game == game {
+                                            InstallationProgressView()
+                                                .padding()
                                             
-                                            Button {
-                                                activeAlert = .stopDownloadWarning
-                                                isAlertPresented = true
-                                            } label: {
-                                                Image(systemName: "stop.fill")
-                                                    .foregroundStyle(.red)
-                                                    .padding()
-                                            }
-                                            .buttonStyle(.plain)
-                                            .controlSize(.regular)
-                                            
-                                            .onChange(of: variables.getVariable("installing") as Game?) { _, newValue in
+                                            .onChange(of: gameModification.game) { _, newValue in
                                                 isRefreshCalled = (newValue == nil)
                                             }
                                         } else {
@@ -405,7 +380,7 @@ struct GameListView: View {
                                             .shadow(color: .gray, radius: 10, x: 1, y: 1)
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
-                                            .disabled(variables.getVariable("installing") as Game? != nil)
+                                            .disabled(gameModification.game != nil)
                                             .disabled(!networkMonitor.isEpicAccessible)
                                             .help(networkMonitor.isEpicAccessible ? "Download \(game.title)" : "Connect to the internet to download \(game.title).")
                                         }
@@ -425,7 +400,7 @@ struct GameListView: View {
         
         .onReceive(Just(isRefreshCalled)) { called in
             if called {
-                Logger.app.info("Received refresh call for GameListView")
+                Logger.app.debug("Received refresh call for GameListView")
                 isProgressViewSheetPresented = true
                 dataFetched = false
                 
@@ -517,7 +492,7 @@ struct GameListView: View {
                     message: Text(uninstallationErrorMessage)
                 )
             case .stopDownloadWarning:
-                stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing"))
+                stopGameModificationAlert(isPresented: $isAlertPresented, game: gameModification.game)
             case .launchError:
                 Alert(
                     title: Text("Error launching \(LaunchError.game?.title ?? "game")."),

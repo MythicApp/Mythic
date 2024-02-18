@@ -49,11 +49,11 @@ class LocalGames {
     }
     
     static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
-        guard let library = library, // TODO: minimize Mythic if specified in settings using NSApplication.shared.keyWindow?.miniaturize(self)
-                  library.contains(game) else {
-                      log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
-                      throw GameDoesNotExistError(game)
-                  }
+        guard let library = library,
+              library.contains(game) else {
+            log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
+            throw GameDoesNotExistError(game)
+        }
         
         switch game.platform {
         case .macOS:
@@ -89,7 +89,7 @@ class LocalGames {
                 ]
             )
             
-        case .none: do {  }
+        case .none: do { /* TODO: Error */ }
         }
         
         VariableManager.shared.setVariable("launching_\(game.title)", value: false)

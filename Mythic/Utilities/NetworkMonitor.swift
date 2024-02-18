@@ -22,7 +22,7 @@ class NetworkMonitor: ObservableObject {
     init() {
         networkMonitor.pathUpdateHandler = { [weak self] path in
             var epicURL: URLRequest = .init(url: .init(string: "https://epicgames.com")!)
-            epicURL.timeoutInterval = 7
+            epicURL.timeoutInterval = 5 // doesnt work
             
             DispatchQueue.main.async {
                 self?.isConnected = (path.status == .satisfied)

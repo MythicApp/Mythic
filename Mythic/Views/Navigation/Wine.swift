@@ -79,7 +79,7 @@ struct WineView: View {
             }
             .sheet(isPresented: $isBottleSettingsViewPresented) {
                 VStack {
-                    Text("Configure \"\(selectedBottleName)\"")
+                    Text("Configure default settings for \"\(selectedBottleName)\"")
                         .font(.title)
                     
                     Form {

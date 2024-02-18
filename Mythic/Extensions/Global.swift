@@ -27,6 +27,10 @@ let defaults = UserDefaults.standard
 
 let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
 
+let mainLock = NSRecursiveLock()
+
+var launching: Game?
+
 struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
 }
@@ -69,6 +73,28 @@ struct Game: Hashable, Codable {
     var path: String?
     
     // TODO: add functions that directly reference game; e.g. game.verify()
+}
+
+enum GameModificationType: String {
+    case install = "installing"
+    case update = "updating"
+    case repair = "repairing"
+}
+
+class GameModification: ObservableObject {
+    static var shared: GameModification = .init()
+    
+    @Published var game: Mythic.Game?
+    @Published var type: GameModificationType?
+    @Published var status: [String: [String: Any]]?
+    
+    static func reset() {
+        DispatchQueue.main.sync {
+            shared.game = nil
+            shared.type = nil
+            shared.status = nil
+        }
+    }
 }
 
 func placeholderGame(_ type: GameType) -> Game {

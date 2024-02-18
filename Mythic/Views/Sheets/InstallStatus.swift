@@ -25,11 +25,12 @@ struct InstallStatusView: View {
     // MARK: - Binding Variables
     @Binding var isPresented: Bool
     @ObservedObject private var variables: VariableManager = .shared
-    
+    @ObservedObject private var gameModification: GameModification = .shared
+        
     // MARK: - Body
     var body: some View {
         VStack {
-            if let installingGame: Game = variables.getVariable("installing") {
+            if let installingGame = gameModification.game {
                 Text("Installing \(installingGame.title)...")
                     .font(.title)
             } else {

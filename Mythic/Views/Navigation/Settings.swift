@@ -19,11 +19,11 @@ struct SettingsView: View {
     var body: some View {
         NotImplementedView()
         // TODO: purge shader cache, see applegamingwiki
-        // TODO: high resolution mode default
-        // TODO: MSYNC, ESYNC, OFF TRIPLE SLIDER
-        // TODO: VKD3D
-        // TODO: winecfg button
-        // TODO: windows version
+        // TODO: cleanup legendary
+        // TODO: minimize to menu bar setting
+        // TODO: erase Mythic
+        // TODO: delete mythic engine
+        // TODO: maybe: default bottle settings
             .navigationTitle("Settings")
     }
 }

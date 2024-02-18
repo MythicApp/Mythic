@@ -2602,7 +2602,18 @@
         }
       }
     },
+    "Are you sure you want to stop %@ %@?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        }
+      }
+    },
     "Are you sure you want to stop modifying %@?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4644,7 +4655,7 @@
         }
       }
     },
-    "Configure \"%@\"" : {
+    "Configure default settings for \"%@\"" : {
 
     },
     "Configure Mythic" : {
@@ -11921,6 +11932,9 @@
     "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection." : {
 
     },
+    "Initializing..." : {
+
+    },
     "Install" : {
       "localizations" : {
         "af" : {
@@ -12662,6 +12676,7 @@
       }
     },
     "INSTALLING" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15826,7 +15841,10 @@
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
 
     },
-    "Mythic is checking the connection to the internet." : {
+    "Mythic is checking the connection to Epic." : {
+
+    },
+    "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
 
     },
     "Mythic is currently moving \"%@\"." : {
@@ -19554,6 +19572,7 @@
       }
     },
     "Starting installation" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22519,6 +22538,7 @@
       }
     },
     "VERIFYING" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

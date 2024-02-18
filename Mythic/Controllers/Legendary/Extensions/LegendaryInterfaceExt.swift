@@ -29,20 +29,6 @@ extension Legendary {
         case tall
     }
     
-    /// Enumeration containing the activities legendary does that require a data lock.
-    enum DataLockUse {
-        case installing
-        case removing
-        case moving
-        case none
-    }
-    
-    enum InstallationType {
-        case install
-        case update
-        case repair
-    }
-    
     // MARK: - ImageError Enumeration
     /// Error for image errors.
     enum ImageError: Error {
@@ -89,14 +75,13 @@ extension Legendary {
     }
     
     /// Error when legendary is signed out on a command that enforces signin.
-    @available(*, message: "This error will be deprecated soon, in favor of UserValidationError")
     struct NotSignedInError: LocalizedError {
         var errorDescription: String? = "You aren't signed in to epic games"
     }
     
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: LocalizedError {
-        init(_ message: String) { self.message = message }
+        init(message: String) { self.message = message }
         
         let message: String
         var errorDescription: String? = "Unable to install game." // TODO: message

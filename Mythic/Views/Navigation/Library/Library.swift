@@ -67,7 +67,7 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
-            .popover(isPresented: $isDownloadsPopoverPresented) {
+            .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .leading) {
                 NotImplementedView()
             }
         

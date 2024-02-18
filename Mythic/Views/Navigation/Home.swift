@@ -74,7 +74,7 @@ struct HomeView: View {
                                             .resizable()
                                             .aspectRatio(3/4, contentMode: .fill)
                                             .clipped()
-                                            .glur(offset: 0.6, interpolation: 0.15, radius: 20)
+                                            .glur(offset: 0.5, interpolation: 0.4, radius: 20)
                                     }
                                     .aspectRatio(3/4, contentMode: .fit)
                                 case .failure:

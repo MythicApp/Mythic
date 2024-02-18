@@ -39,6 +39,7 @@
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
 		6A7A81182B77097200D19E32 /* OnboardingEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81172B77097200D19E32 /* OnboardingEvo.swift */; };
 		6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */; };
+		6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */; };
 		6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* Uninstall.swift */; };
 		6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */; };
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
@@ -101,6 +102,7 @@
 		6A7A81122B76F9E900D19E32 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		6A7A81172B77097200D19E32 /* OnboardingEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingEvo.swift; sourceTree = "<group>"; };
 		6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
+		6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationProgress.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* Uninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uninstall.swift; sourceTree = "<group>"; };
 		6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -414,6 +416,7 @@
 				6A7F00B22B231EEA00D801CD /* Alerts */,
 				6AD506542AAFF52B008A28C1 /* Navigation */,
 				6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */,
+				6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -613,6 +616,7 @@
 				6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */,
 				6A00F2052AC5F7450054858A /* GameImport.swift in Sources */,
 				6A3A52552ADBD5E000BD7776 /* PlayDefault.swift in Sources */,
+				6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */,
 				6AD506562AAFF671008A28C1 /* Home.swift in Sources */,
 				6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */,
 				6A1C6F462AEFD9B100F89AE7 /* WineInterfaceExt.swift in Sources */,
@@ -785,7 +789,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2367;
+				CURRENT_PROJECT_VERSION = 2387;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -824,7 +828,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2367;
+				CURRENT_PROJECT_VERSION = 2387;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

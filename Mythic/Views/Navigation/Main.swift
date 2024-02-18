@@ -32,35 +32,20 @@ struct MainView: View {
     @State private var isInstallStatusViewPresented: Bool = false
     
     enum ActiveAlert {
-        case stopDownloadWarning
-        case stopVerificationWarning
         case signOutConfirmation
     }
-    @State private var activeAlert: ActiveAlert? = .none
+    @State private var activeAlert: ActiveAlert?
     @State private var isAlertPresented: Bool = false
     
     @ObservedObject private var variables: VariableManager = .shared
+    @ObservedObject private var gameModification: GameModification = .shared
     
-    @State private var epicUserAsync: String = "Loading..."
-    @State private var signedIn: Bool = false
+    @State var account: String = Legendary.whoAmI()
     
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
     
-    // MARK: - Functions
-    func updateLegendaryAccountState() {
-        epicUserAsync = "Loading..."
-        DispatchQueue.global(qos: .userInitiated).async {
-            let whoAmIOutput = Legendary.whoAmI()
-            DispatchQueue.main.async { [self] in
-                signedIn = Legendary.signedIn()
-                epicUserAsync = whoAmIOutput
-            }
-        }
-    }
-    
-    // MARK: - Initializer
-    init() { updateLegendaryAccountState() }
+    func updateEpicSignin() { account = Legendary.whoAmI() }
     
     // MARK: - Body
     var body: some View {
@@ -114,86 +99,17 @@ struct MainView: View {
                 
                 Spacer()
                 
-                if let installingGame: Game = variables.getVariable("installing") {
-                    Divider()
-                    
-                    VStack { // TODO: turn this VStack into a separate view so it's the same in Main and GameList
-                            Text("INSTALLING")
-                                .fontWeight(.bold)
-                                .font(.system(size: 8))
-                                .offset(x: -2, y: 0)
-                            Text(installingGame.title)
-                        HStack {
-                            Button {
-                                isInstallStatusViewPresented = true
-                            } label: {
-                                if let installStatus: [String: [String: Any]] = variables.getVariable("installStatus"),
-                                   let percentage: Double = (installStatus["progress"])?["percentage"] as? Double {
-                                    ProgressView(value: percentage, total: 100)
-                                        .progressViewStyle(.linear)
-                                        .help("\(Int(percentage))% complete")
-                                } else {
-                                    ProgressView()
-                                        .progressViewStyle(.linear)
-                                        .help("Starting installation")
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            
-                            Button {
-                                activeAlert = .stopDownloadWarning
-                                isAlertPresented = true
-                            } label: {
-                                Image(systemName: "stop.fill")
-                                    .foregroundStyle(.red)
-                                    .padding()
-                            }
-                            .shadow(color: .red, radius: 10, x: 1, y: 1)
-                            .buttonStyle(.plain)
-                            .frame(width: 8, height: 8)
-                            .controlSize(.mini)
-                        }
-                    }
-                }
-                
-                if let verifyingGame: Game = variables.getVariable("verifying") {
+                if let game = gameModification.game {
                     Divider()
                     
                     VStack {
-                        Text("VERIFYING")
+                        Text((gameModification.type?.rawValue ?? "modifying").uppercased()) // FIXME: conditional
                             .fontWeight(.bold)
                             .font(.system(size: 8))
                             .offset(x: -2, y: 0)
-                        Text(verifyingGame.title)
+                        Text(game.title)
                         
-                        HStack {
-                            Button {
-                                // FIXME: TODO: ADD VERIFICATION STATUS VIEW
-                            } label: {
-                                if let verificationStatus: [String: Double] = variables.getVariable("verificationStatus"),
-                                   let percentage = verificationStatus["percentage"] {
-                                    ProgressView(value: percentage, total: 100)
-                                        .progressViewStyle(.linear)
-                                } else {
-                                    ProgressView()
-                                        .progressViewStyle(.linear)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            
-                            Button {
-                                activeAlert = .stopVerificationWarning
-                                isAlertPresented = true
-                            } label: {
-                                Image(systemName: "stop.fill")
-                                    .foregroundStyle(.red)
-                                    .padding()
-                            }
-                            .shadow(color: .red, radius: 10, x: 1, y: 1)
-                            .buttonStyle(.plain)
-                            .frame(width: 8, height: 8)
-                            .controlSize(.mini)
-                        }
+                        InstallationProgressView()
                     }
                 }
                 
@@ -202,32 +118,29 @@ struct MainView: View {
                 HStack {
                     Image(systemName: "person")
                         .foregroundStyle(.primary)
-                    Text(epicUserAsync)
-                        .task(priority: .utility) { updateLegendaryAccountState() }
+                    Text(account)
                 }
                 
-                if epicUserAsync != "Loading..." {
-                    if signedIn {
-                        Button {
-                            activeAlert = .signOutConfirmation
-                            isAlertPresented = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "person.slash")
-                                    .foregroundStyle(.primary)
-                                Text("Sign Out")
-                            }
+                if account != "Nobody" {
+                    Button {
+                        activeAlert = .signOutConfirmation
+                        isAlertPresented = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "person.slash")
+                                .foregroundStyle(.primary)
+                            Text("Sign Out")
                         }
-                    } else {
-                        Button {
-                            NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
-                            isAuthViewPresented = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "person")
-                                    .foregroundStyle(.primary)
-                                Text("Sign In")
-                            }
+                    }
+                } else {
+                    Button {
+                        NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                        isAuthViewPresented = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "person")
+                                .foregroundStyle(.primary)
+                            Text("Sign In")
                         }
                     }
                 }
@@ -242,9 +155,7 @@ struct MainView: View {
             }
             .sheet(isPresented: $isAuthViewPresented) {
                 AuthView(isPresented: $isAuthViewPresented)
-                    .onDisappear {
-                        updateLegendaryAccountState()
-                    }
+                    .onDisappear { updateEpicSignin() }
             }
             
             .sheet(isPresented: $isInstallStatusViewPresented) {
@@ -252,20 +163,17 @@ struct MainView: View {
             }
             .alert(isPresented: $isAlertPresented) {
                 switch activeAlert {
-                case .stopDownloadWarning:
-                    return stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("installing"))
-                case .stopVerificationWarning:
-                    return stopGameModificationAlert(isPresented: $isAlertPresented, game: variables.getVariable("verifying"))
                 case .signOutConfirmation:
                     return Alert(
                         title: .init("Are you sure you want to sign out?"),
                         message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
                         primaryButton: .destructive(.init("Sign Out")) {
                             Task(priority: .high) {
-                                let command = await Legendary.command(args: ["auth", "--delete"], useCache: false, identifier: "userAreaSignOut")
-                                if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("User data deleted.") {
-                                    updateLegendaryAccountState()
-                                }
+                                _ = await Legendary.command(
+                                    args: ["auth", "--delete"],
+                                    useCache: false,
+                                    identifier: "userAreaSignOut"
+                                )
                             }
                         },
                         secondaryButton: .cancel(.init("Cancel")) {
@@ -300,20 +208,19 @@ struct MainView: View {
                 if !networkMonitor.isEpicAccessible {
                     ToolbarItem(placement: .navigation) {
                         if networkMonitor.isCheckingEpicAccessibility {
-                            ProgressView()
-                                .controlSize(.small)
+                            Image(systemName: "network.slash")
+                                .foregroundStyle(.yellow)
+                                .symbolEffect(.pulse)
                                 .help("Mythic is checking the connection to Epic.")
+                        } else if networkMonitor.isConnected {
+                            Image(systemName: "wifi.exclamationmark")
+                                .foregroundStyle(.yellow)
+                                .symbolEffect(.pulse)
+                                .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
                         } else {
-                            if networkMonitor.isConnected {
-                                Image(systemName: "network")
-                                    .foregroundStyle(.yellow)
-                                    .symbolEffect(.pulse)
-                                    .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
-                            } else {
-                                Image(systemName: "network.slash")
-                                    .foregroundStyle(.red)
-                                    .help("Mythic is not connected to the internet.")
-                            }
+                            Image(systemName: "network.slash")
+                                .foregroundStyle(.red)
+                                .help("Mythic is not connected to the internet.")
                         }
                     }
                 }
