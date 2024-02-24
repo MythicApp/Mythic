@@ -307,7 +307,8 @@ struct GameListView: View {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
-                                                            if game.type == .epic {
+                                                            switch game.type {
+                                                            case .epic:
                                                                 if Libraries.isInstalled() {
                                                                     try await Legendary.launch(
                                                                         game: game,
@@ -316,10 +317,10 @@ struct GameListView: View {
                                                                     )
                                                                 } else {
                                                                     let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                                                    app.isFirstLaunch = true
                                                                     app.onboardingChapter = .engineDisclaimer
+                                                                    app.isFirstLaunch = true
                                                                 }
-                                                            } else {
+                                                            case .local:
                                                                 try await LocalGames.launch(
                                                                     game: game,
                                                                     bottle: Wine.allBottles![game.bottleName]!
@@ -347,9 +348,10 @@ struct GameListView: View {
                                             // MARK: Delete button
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
-                                                if game.type == .epic {
+                                                switch game.type {
+                                                case .epic:
                                                     isUninstallViewPresented = true
-                                                } else {
+                                                case .local:
                                                     LocalGames.library = LocalGames.library?.filter { $0 != game }
                                                     isRefreshCalled = true
                                                 }
