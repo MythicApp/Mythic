@@ -327,7 +327,7 @@ struct GameListView: View {
                                                                 )
                                                             }
                                                             
-                                                            if minimizeOnGameLaunch { NSApp.mainWindow?.miniaturize(nil) }
+                                                            if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
                                                         } catch {
                                                             LaunchError.game = game
                                                             LaunchError.message = "\(error.localizedDescription)"

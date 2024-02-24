@@ -132,7 +132,7 @@ struct HomeView: View {
                                                                     online: networkMonitor.isEpicAccessible
                                                                 )
                                                                 
-                                                                if minimizeOnGameLaunch { NSApp.mainWindow?.miniaturize(nil) }
+                                                                if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
                                                             }
                                                         } catch {
                                                             LaunchError.game = recentlyPlayedGame

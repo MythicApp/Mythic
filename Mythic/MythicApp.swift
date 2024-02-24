@@ -46,16 +46,6 @@ struct MythicApp: App {
         )
     }
     
-    func toggleTitleBar(_ value: Bool) {
-        if let window = NSApp.mainWindow {
-            window.titlebarAppearsTransparent = !value
-            window.titleVisibility = value ? .visible : .hidden
-            window.isMovableByWindowBackground = !value
-            window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
-            window.standardWindowButton(.zoomButton)?.isHidden = !value
-        }
-    }
-    
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
@@ -63,11 +53,10 @@ struct MythicApp: App {
                 OnboardingEvo(fromChapter: onboardingChapter)
                     .transition(.opacity)
                     .frame(minWidth: 750, minHeight: 390)
-                    .onAppear {
+                    .task(priority: .high) {
                         toggleTitleBar(false)
                         
-                        // Bring to front
-                        if let window = NSApp.mainWindow {
+                        if let window = NSApp.windows.first {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
                         }
@@ -77,7 +66,7 @@ struct MythicApp: App {
                     .transition(.opacity)
                     .environmentObject(networkMonitor)
                     .frame(minWidth: 750, minHeight: 390)
-                    .onAppear { toggleTitleBar(true) }
+                    .task(priority: .high) { toggleTitleBar(true) }
                     .task(priority: .medium) {
                         if let latestVersion = Libraries.fetchLatestVersion(),
                            let currentVersion = Libraries.getVersion(),

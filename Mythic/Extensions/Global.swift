@@ -108,6 +108,16 @@ struct GameDoesNotExistError: LocalizedError {
     var errorDescription: String? = "This game doesn't exist."
 }
 
+func toggleTitleBar(_ value: Bool) {
+    if let window = NSApp.windows.first {
+        window.titlebarAppearsTransparent = !value
+        window.titleVisibility = value ? .visible : .hidden
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
+        window.standardWindowButton(.zoomButton)?.isHidden = !value
+        window.isMovableByWindowBackground = !value
+    }
+}
+
 // MARK: - Functions
 // MARK: App Install Checker
 /**
