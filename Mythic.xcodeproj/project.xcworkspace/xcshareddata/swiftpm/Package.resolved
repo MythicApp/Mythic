@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Lakr233/ColorfulX",
       "state" : {
-        "revision" : "36d17615994b46fa11d6632b9e014285befe0cd0",
-        "version" : "2.4.0"
+        "revision" : "24dea76cbd7dbcc1a31da6f2213264d449e7687b",
+        "version" : "2.4.4"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/joogps/Glur",
       "state" : {
         "branch" : "main",
-        "revision" : "fb9bc701ac4c917958931455dc2cab3e64e4c37f"
+        "revision" : "af1189af8e846fea979fe6cb112026269a5da946"
       }
     },
     {
