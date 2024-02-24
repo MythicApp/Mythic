@@ -47,7 +47,8 @@ struct HomeView: View {
     @State private var activeAlert: ActiveAlert = .launchError
     
     @State private var animateStar: Bool = false
-    let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so difficult on swift to repeat something every 2 seconds
+    let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so lengthy on swift to repeat something every 2 seconds
+    @Environment(\.colorScheme) var colorScheme
     
     // MARK: - Body
     var body: some View {
@@ -168,7 +169,7 @@ struct HomeView: View {
                         .symbolRenderingMode(.palette)
                         .symbolEffect(.bounce, value: animateStar)
                         .contentTransition(.symbolEffect(.replace))
-                        .foregroundStyle(animateStar ? .yellow : .yellow, .white)
+                        .foregroundStyle(animateStar ? .yellow : .yellow, (colorScheme == .light ? .black : .white))
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 35, height: 35)
                         .onReceive(animateStarTimer) { _ in
