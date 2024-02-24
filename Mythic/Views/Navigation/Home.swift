@@ -36,6 +36,7 @@ struct HomeView: View {
     // MARK: - State Variables
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
+    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var loadingError = false
     @State private var isLoading = false
@@ -130,6 +131,8 @@ struct HomeView: View {
                                                                     bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!,
                                                                     online: networkMonitor.isEpicAccessible
                                                                 )
+                                                                
+                                                                if minimizeOnGameLaunch { NSApp.mainWindow?.miniaturize(nil) }
                                                             }
                                                         } catch {
                                                             LaunchError.game = recentlyPlayedGame

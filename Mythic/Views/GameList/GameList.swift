@@ -51,6 +51,7 @@ struct GameListView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var gameModification: GameModification = .shared
+    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var isSettingsViewPresented: Bool = false
     @State private var isInstallViewPresented: Bool = false
@@ -314,7 +315,9 @@ struct GameListView: View {
                                                                         online: networkMonitor.isEpicAccessible
                                                                     )
                                                                 } else {
-                                                                    MythicApp().isFirstLaunch = true // FIXME: is this dangerous or just stupid
+                                                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                                                    app.isFirstLaunch = true
+                                                                    app.onboardingChapter = .engineDisclaimer
                                                                 }
                                                             } else {
                                                                 try await LocalGames.launch(
@@ -322,6 +325,8 @@ struct GameListView: View {
                                                                     bottle: Wine.allBottles![game.bottleName]!
                                                                 )
                                                             }
+                                                            
+                                                            if minimizeOnGameLaunch { NSApp.mainWindow?.miniaturize(nil) }
                                                         } catch {
                                                             LaunchError.game = game
                                                             LaunchError.message = "\(error.localizedDescription)"
