@@ -307,11 +307,15 @@ struct GameListView: View {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         do {
                                                             if game.type == .epic {
-                                                                try await Legendary.launch(
-                                                                    game: game,
-                                                                    bottle: Wine.allBottles![game.bottleName]!,
-                                                                    online: networkMonitor.isEpicAccessible
-                                                                )
+                                                                if Libraries.isInstalled() {
+                                                                    try await Legendary.launch(
+                                                                        game: game,
+                                                                        bottle: Wine.allBottles![game.bottleName]!,
+                                                                        online: networkMonitor.isEpicAccessible
+                                                                    )
+                                                                } else {
+                                                                    MythicApp().isFirstLaunch = true // FIXME: is this dangerous or just stupid
+                                                                }
                                                             } else {
                                                                 try await LocalGames.launch(
                                                                     game: game,
@@ -326,8 +330,8 @@ struct GameListView: View {
                                                         }
                                                     }
                                                 } label: {
-                                                    Image(systemName: "play.fill") // .disabled when game is running
-                                                        .foregroundStyle(.green)
+                                                    Image(systemName: Libraries.isInstalled() ? "play.fill" : "arrow.down.circle.dotted") // .disabled when game is running
+                                                        .foregroundStyle(Libraries.isInstalled() ? .green : .orange)
                                                         .padding()
                                                 }
                                                 .buttonStyle(.plain)

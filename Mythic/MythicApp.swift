@@ -20,8 +20,8 @@ import UserNotifications // TODO: TODO
 @main
 struct MythicApp: App {
     // MARK: - State Properties
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
-    @State private var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
+    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
+    @State var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false
     @State private var isInstallViewPresented: Bool = false

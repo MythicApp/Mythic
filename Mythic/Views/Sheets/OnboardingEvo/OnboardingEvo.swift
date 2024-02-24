@@ -84,6 +84,8 @@ struct OnboardingEvo: View {
     @State private var isEngineErrorOpacityAnimated: Bool = false
     @State private var isEngineErrorOffsetAnimated: Bool = false
     
+    @State private var isSkipEngineInstallationAlertPresented: Bool = false
+    
     @State private var isDefaultBottleSetupOpacityAnimated: Bool = false
     @State private var isDefaultBottleSetupOffsetAnimated: Bool = false
     
@@ -270,6 +272,7 @@ struct OnboardingEvo: View {
                                 }
                             )
                             .disabled(epicSigningIn)
+                            .help("Skip this step")
                             .buttonStyle(.borderless)
                         }
                         .foregroundStyle(.white)
@@ -348,7 +351,7 @@ struct OnboardingEvo: View {
                             In order to launch Windows® games, Mythic must download
                             a specialized translation layer.
                             
-                            The download time should take ~7 minutes or less,
+                            The download time should take ~10 minutes or less,
                             depending on your internet connection.
                             """
                         )
@@ -447,6 +450,25 @@ struct OnboardingEvo: View {
                             }
                         )
                         .buttonStyle(.borderless)
+                        
+                        Button {
+                            isSkipEngineInstallationAlertPresented = true
+                        } label: {
+                            Image(systemName: "arrow.right.to.line")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20)
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Skip this step")
+                        .alert(isPresented: $isSkipEngineInstallationAlertPresented) {
+                            Alert(
+                                title: .init("Are you sure you want to skip Mythic Engine installation?"),
+                                message: .init("Without Mythic Engine, you'll be unable to launch windows games."),
+                                primaryButton: .default(.init("Skip")) { currentChapter = .finished },
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                     .foregroundStyle(.white)
                     .opacity(isSecondRowPresented ? 1 : 0)
