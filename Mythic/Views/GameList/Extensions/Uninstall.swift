@@ -41,7 +41,7 @@ extension GameListView {
         // MARK: - Body View
         var body: some View { // TODO: implement for non-epic games
             VStack {
-                Text("Uninstall \(game.title)")
+                Text("Uninstall \"\(game.title)\"")
                     .font(.title)
                 
                 Form {
@@ -84,7 +84,7 @@ extension GameListView {
             
             .alert(isPresented: $isConfirmationPresented) {
                 Alert(
-                    title: Text("Are you sure you want to uninstall \(game.title)?"),
+                    title: Text("Are you sure you want to uninstall \"\(game.title)\"?"),
                     primaryButton: .destructive(Text("Uninstall")) {
                         isPresented = false
                         isProgressViewSheetPresented = true

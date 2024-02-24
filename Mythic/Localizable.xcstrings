@@ -2797,7 +2797,11 @@
         }
       }
     },
+    "Are you sure you want to uninstall \"%@\"?" : {
+
+    },
     "Are you sure you want to uninstall %@?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12119,7 +12123,11 @@
         }
       }
     },
+    "Install \"%@\"" : {
+
+    },
     "Install %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13047,6 +13055,9 @@
           }
         }
       }
+    },
+    "Installing %@" : {
+
     },
     "Installing %@..." : {
 
@@ -16235,6 +16246,9 @@
           }
         }
       }
+    },
+    "Not implemented yet" : {
+
     },
     "OK" : {
       "localizations" : {
@@ -21610,7 +21624,11 @@
         }
       }
     },
+    "Uninstall \"%@\"" : {
+
+    },
     "Uninstall %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

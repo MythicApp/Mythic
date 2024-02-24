@@ -61,11 +61,13 @@ struct MainView: View {
                             .foregroundStyle(.primary)
                             .help("Everything in one place")
                     }
+                    
                     NavigationLink(destination: LibraryView()) {
                         Label("Library", systemImage: "books.vertical")
                             .foregroundStyle(.primary)
                             .help("View your games")
                     }
+                    
                     NavigationLink(destination: StoreView()) {
                         Label("Store", systemImage: "basket")
                             .foregroundStyle(.primary)
@@ -85,11 +87,13 @@ struct MainView: View {
                             .foregroundStyle(.primary)
                             .help("Manage containers for Windows® applications")
                     }
+                    
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "gear")
                             .foregroundStyle(.primary)
                             .help("Configure Mythic")
                     }
+                    
                     NavigationLink(destination: SupportView()) {
                         Label("Support", systemImage: "questionmark.bubble")
                             .foregroundStyle(.primary)

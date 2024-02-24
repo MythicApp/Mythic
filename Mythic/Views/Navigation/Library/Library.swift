@@ -20,6 +20,8 @@ import SwiftyJSON
 // MARK: - LibraryView Struct
 /// A view displaying the user's library of games.
 struct LibraryView: View {
+    @ObservedObject private var gameModification: GameModification = .shared
+    
     // MARK: - State Variables
     @State private var addGameModalPresented = false
     @State private var legendaryStatus: JSON = JSON()
@@ -31,18 +33,19 @@ struct LibraryView: View {
     // MARK: - Body
     var body: some View {
         GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
-        
             .navigationTitle("Library")
         
         // MARK: - Toolbar
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        isDownloadsPopoverPresented.toggle()
-                    } label: {
-                        Image(systemName: "arrow.down.app")
+                if gameModification.game != nil {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            isDownloadsPopoverPresented.toggle()
+                        } label: {
+                            Image(systemName: "arrow.down.app")
+                        }
+                        .help("Manage Downloads")
                     }
-                    .help("Manage Downloads")
                 }
                 
                 // MARK: Add Game Button
@@ -67,8 +70,12 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
-            .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .leading) {
-                NotImplementedView()
+            .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .top) {
+                List {
+                    Text("Installing \(GameModification.shared.game?.title ?? "game")")
+                    InstallationProgressView()
+                }
+                .listStyle(.automatic)
             }
         
             .sheet(isPresented: $addGameModalPresented) {

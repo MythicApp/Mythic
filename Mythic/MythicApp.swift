@@ -116,7 +116,7 @@ struct MythicApp: App {
                                 primaryButton: .default(Text("Update")), // TODO: download over previous engine
                                 secondaryButton: .cancel(Text("Later"))
                             )
-                        case .bootError:
+                        case .bootError: // TODO: replace with onboarding-style error
                             Alert(
                                 title: Text("Unable to boot default bottle."),
                                 message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),

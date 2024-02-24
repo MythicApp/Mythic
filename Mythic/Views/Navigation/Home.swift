@@ -183,8 +183,7 @@ struct HomeView: View {
                 
                 // MARK: View 2 (Bottom)
                 VStack {
-                    NotImplementedView()
-                    // WineView()
+                    BottleListView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)

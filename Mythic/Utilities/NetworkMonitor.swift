@@ -15,40 +15,41 @@ import SwiftUI
 class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
-    @Published var isConnected = true // Assumes the user is connected by default
+    
+    @Published var isConnected = true
     @Published var isCheckingEpicAccessibility = false
     @Published var isEpicAccessible = true
-    
+
     init() {
         networkMonitor.pathUpdateHandler = { [weak self] path in
-            var epicURL: URLRequest = .init(url: .init(string: "https://epicgames.com")!)
-            epicURL.timeoutInterval = 5 // doesnt work
-            
             DispatchQueue.main.async {
                 self?.isConnected = (path.status == .satisfied)
+                guard self?.isConnected == true else { self?.updateAccessibility(false); return }
                 
-                if self?.isConnected == true {
-                    self?.isCheckingEpicAccessibility = true
-                    URLSession.shared.dataTask(with: .init(string: "https://epicgames.com")!) { (_/*data*/, response, error) in
-                        guard error == nil else { self?.isEpicAccessible = false; return }
-                        guard let httpResponse = response as? HTTPURLResponse else { self?.isEpicAccessible = false; return }
-                        DispatchQueue.main.async {
-                            self?.isEpicAccessible = (200...299) ~= httpResponse.statusCode
-                            self?.isCheckingEpicAccessibility = false
-                        }
-                    }.resume()
-                } else {
-                    DispatchQueue.main.async {
-                        self?.isEpicAccessible = false
-                        self?.isCheckingEpicAccessibility = false
-                    }
-                }
+                self?.isCheckingEpicAccessibility = true
+                
+                let request = URLRequest(
+                    url: URL(string: "https://epicgames.com")!,
+                    cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
+                    timeoutInterval: 5
+                )
+                
+                URLSession.shared.dataTask(with: request) { [weak self] _, response, error in
+                    guard error == nil, let httpResponse = response as? HTTPURLResponse else { self?.updateAccessibility(false); return }
+                    self?.updateAccessibility((200...299) ~= httpResponse.statusCode)
+                }.resume()
+                
             }
         }
-        
         networkMonitor.start(queue: queue)
     }
 
+    private func updateAccessibility(_ isAccessible: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.isEpicAccessible = isAccessible
+            self?.isCheckingEpicAccessibility = false
+        }
+    }
 }
 
 #Preview {

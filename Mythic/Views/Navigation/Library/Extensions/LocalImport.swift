@@ -130,7 +130,7 @@ extension LibraryView.GameImportView {
                     Spacer()
                     
                     Button("Done") {
-                        LocalGames.library? += [game]
+                        LocalGames.library?.insert(game)
                         isPresented = false
                         isGameListRefreshCalled = true
                     }

@@ -12,6 +12,8 @@ struct InstallationProgressView: View {
     @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
     
+    @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
+    
     var body: some View {
         HStack {
             Button {
@@ -28,6 +30,18 @@ struct InstallationProgressView: View {
                 }
             }
             .buttonStyle(.plain)
+            
+            Button {
+                // TODO: implement
+            } label: {
+                Image(systemName: "pause.fill")
+                    .foregroundStyle(.orange)
+                    .padding(.leading)
+            }
+            .buttonStyle(.plain)
+            .controlSize(.regular)
+            .disabled(true)
+            .help("Not implemented yet")
             
             Button {
                 isStopGameModificationAlertPresented = true

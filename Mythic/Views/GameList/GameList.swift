@@ -351,7 +351,7 @@ struct GameListView: View {
                                             }
                                             .buttonStyle(.plain)
                                             .controlSize(.large)
-                                            .help("Uninstall \(game.title)")
+                                            .help("Uninstall \"\(game.title)\"")
                                         } else {
                                             ProgressView()
                                                 .controlSize(.small)

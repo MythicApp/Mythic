@@ -20,6 +20,7 @@ struct SettingsView: View {
         NotImplementedView()
         // TODO: purge shader cache, see applegamingwiki
         // TODO: cleanup legendary
+        // TODO: wineserver -k to force quit everything running
         // TODO: minimize to menu bar setting
         // TODO: erase Mythic
         // TODO: delete mythic engine

@@ -30,7 +30,7 @@ func stopGameModificationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "install")
             // TODO: create new func for stopping installation
-            // GameModification.reset()
+            GameModification.reset()
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )

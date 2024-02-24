@@ -37,6 +37,8 @@ class Legendary {
     /// Cache for storing command outputs.
     private static var commandCache: [String: (stdout: Data, stderr: Data)] = .init()
     
+    private static var downloadQueue: [Mythic.Game] = .init()
+    
     // MARK: runningCommands
     private static var _runningCommands: [String: Process] = .init()
     private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
@@ -323,7 +325,7 @@ class Legendary {
             }
             
             if let baseURL = baseURL, files.fileExists(atPath: baseURL.path) {
-                argBuilder += ["--base-path", baseURL.absoluteString]
+                argBuilder += ["--base-path", baseURL.path(percentEncoded: false)]
             }
             
             if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
@@ -465,6 +467,13 @@ class Legendary {
         return false
     }
     
+    /**
+     Launches games.
+     
+     - Parameters:
+        - game: The game to launch.
+        - bottle: The
+     */
     static func launch(game: Mythic.Game, bottle: Wine.Bottle, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system

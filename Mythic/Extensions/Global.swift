@@ -20,14 +20,14 @@ import OSLog
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
-let files = FileManager.default
+let files: FileManager = .default
 
 /// A simpler alias of `UserDefaults.standard`.
-let defaults = UserDefaults.standard
+let defaults: UserDefaults = .standard
 
-let gameImageURLCache = URLCache(memoryCapacity: 128_000_000, diskCapacity: 768_000_000) // in bytes
+let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacity: 500_000_000) // in bytes
 
-let mainLock = NSRecursiveLock()
+let mainLock: NSRecursiveLock = .init()
 
 var launching: Game?
 
@@ -55,11 +55,12 @@ struct Game: Hashable, Codable {
     var platform: GamePlatform?
     var bottleName: String {
         get {
-            if let object = defaults.string(forKey: "\(self.appName)_defaultBottle"),
-               Wine.allBottles?[object] != nil {
-                return object
+            if let bottleName = defaults.string(forKey: "\(self.appName)_defaultBottle"),
+               Wine.allBottles?[bottleName] != nil {
+                return bottleName
             } else {
-                return defaults.string(forKey: "\(self.appName)_defaultBottle") ?? "Default"
+                defaults.set("Default", forKey: "\(self.appName)_defaultBottle")
+                return "Default"
             }
         }
         set {
@@ -71,8 +72,6 @@ struct Game: Hashable, Codable {
     
     var imageURL: URL?
     var path: String?
-    
-    // TODO: add functions that directly reference game; e.g. game.verify()
 }
 
 enum GameModificationType: String {

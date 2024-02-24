@@ -22,11 +22,11 @@ class LocalGames {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
     
     // TODO: DocC
-    static var library: [Mythic.Game]? { // FIXME: is there a way to init it at the top
+    static var library: Set<Mythic.Game>? { // FIXME: is there a way to init it at the top
         get {
             if let library = defaults.object(forKey: "localGamesLibrary") as? Data {
                 do {
-                    return try PropertyListDecoder().decode(Array.self, from: library)
+                    return try PropertyListDecoder().decode(Set.self, from: library)
                 } catch {
                     Logger.app.error("Unable to retrieve local game library: \(error.localizedDescription)")
                     return nil

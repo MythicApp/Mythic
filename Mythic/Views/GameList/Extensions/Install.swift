@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import OSLog
 
 extension GameListView {
     // MARK: - InstallView
@@ -30,6 +31,11 @@ extension GameListView {
         @Binding var installationErrorMessage: String
         @Binding var failedGame: Game?
         
+        @State private var platform: GamePlatform = .macOS
+        
+        // FIXME: make as binding using init() {}
+        @State private var supportedPlatforms: [GamePlatform]?
+        
         @State var baseURL: URL = Bundle.appGames! // TODO: default base path
         
         // MARK: - State Properties
@@ -39,7 +45,7 @@ extension GameListView {
         // MARK: - Body View
         var body: some View {
             VStack {
-                Text("Install \(game.title)")
+                Text("Install \"\(game.title)\"")
                     .font(.title)
                 if !optionalPacks.isEmpty {
                     Text("(supports selective downloads.)")
@@ -107,6 +113,21 @@ extension GameListView {
                             }
                         }
                     }
+                    
+                    if supportedPlatforms == nil {
+                        HStack {
+                            Text("Choose the game's native platform:")
+                            Spacer()
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+                    } else {
+                        Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
+                            ForEach(supportedPlatforms!, id: \.self) {
+                                Text($0.rawValue).tag($0)
+                            }
+                        }
+                    }
                 }
                 .formStyle(.grouped)
                 
@@ -119,10 +140,9 @@ extension GameListView {
                     
                     Button("Install") {
                         Task(priority: .userInitiated) {
-                            isPresented = false
                             do {
                                 try await Legendary.install(
-                                    game: game, platform: .windows,
+                                    game: game, platform: platform,
                                     optionalPacks: Array(isToggledDictionary.filter { $0.value == true }.keys),
                                     baseURL: baseURL
                                 )
@@ -130,7 +150,7 @@ extension GameListView {
                                 isGameListRefreshCalled = true
                             } catch {
                                 switch error {
-                                case let error as Legendary.InstallationError:
+                                case let error as Legendary.InstallationError: // TODO: FIXME: isPresented becomes false before error is displayed
                                     failedGame = game
                                     installationErrorMessage = error.message
                                     activeAlert = .installError
@@ -150,6 +170,19 @@ extension GameListView {
                     for (_, tag) in optionalPacks {
                         isToggledDictionary[tag] = false
                     }
+                }
+            }
+            .task(priority: .medium) {
+                var platforms: [GamePlatform] = .init()
+                if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
+                    if fetchedPlatforms.keys.contains("Windows") { platforms.append(.windows) }
+                    if fetchedPlatforms.keys.contains("Mac") { platforms.append(.macOS) }
+                    
+                    DispatchQueue.main.async {
+                        platform = platforms.first!
+                    }
+                } else {
+                    Logger.app.info("Unable to fetch supported platforms for \(game.title)")
                 }
             }
             .onDisappear {
