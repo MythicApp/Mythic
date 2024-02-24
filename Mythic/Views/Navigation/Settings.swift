@@ -90,7 +90,8 @@ struct SettingsView: View {
                 }
                 
                 Button {
-                    
+                    // TODO: mythic's folder in Libary/Preferences
+                    // TODO: beat up legendary
                 } label: {
                     Image(systemName: "power.dotted")
                     Text("Reset Mythic")
@@ -99,7 +100,7 @@ struct SettingsView: View {
                 .help("Not implemented yet")
                 
                 Button {
-                    
+                    // TODO: mythic's folder in Libary/Preferences
                 } label: {
                     Image(systemName: "clock.arrow.circlepath")
                     Text("Reset settings to default")
@@ -114,7 +115,7 @@ struct SettingsView: View {
                         forceQuitSuccessful = Wine.killAll()
                     } label: {
                         Image(systemName: "xmark.app")
-                        Text("Force Quit Applications") // wineserver k
+                        Text("Force Quit Applications")
                     }
                     
                     if forceQuitSuccessful != nil {
@@ -127,7 +128,7 @@ struct SettingsView: View {
                         shaderCachePurgeSuccessful = Wine.purgeShaderCache()
                     } label: {
                         Image(systemName: "square.stack.3d.up.slash.fill")
-                        Text("Purge Shader Cache") // applegamingwiki
+                        Text("Purge Shader Cache")
                     }
                     
                     if shaderCachePurgeSuccessful != nil {
@@ -156,7 +157,7 @@ struct SettingsView: View {
                 }
             }
             .disabled(!Libraries.isInstalled())
-            .help("Mythic Engine is not installed.")
+            .help(Libraries.isInstalled() ? "Mythic Engine is not installed." : .init())
             
             Section("Epic", isExpanded: $isEpicSectionExpanded) {
                 HStack {

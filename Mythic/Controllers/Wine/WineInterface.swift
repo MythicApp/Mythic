@@ -125,13 +125,13 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      Run a wine command, using Mythic Engine's integrated wine.
      
      - Parameters:
-        - args: The command arguments.
-        - identifier: String to keep track of individual command functions. (originally UUID-based)
-        - prefix: File URL to prefix wine should use to execute command.
-        - input: Optional input string for the command.
-        - inputIf: Optional condition to be checked for in the output streams before input is appended.
-        - asyncOutput: Optional closure that gets output appended to it immediately.
-        - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
+     - args: The command arguments.
+     - identifier: String to keep track of individual command functions. (originally UUID-based)
+     - prefix: File URL to prefix wine should use to execute command.
+     - input: Optional input string for the command.
+     - inputIf: Optional condition to be checked for in the output streams before input is appended.
+     - asyncOutput: Optional closure that gets output appended to it immediately.
+     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
      
      - Returns: A tuple containing stdout and stderr data.
      */
@@ -429,9 +429,23 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             .trimmingCharacters(in: .whitespacesAndNewlines)
         else { return false }
         
+        let d3dmcache = "\(userCachePath)/d3dm"
+        
         task.waitUntilExit()
         
-        do { try files.removeItem(atPath: userCachePath) } catch { return false }
+        var error: NSDictionary?
+        if let scriptObject = NSAppleScript(
+            source: """
+            do shell script \"sudo rm -rf \(d3dmcache)\" with administrator privileges
+            """) {
+            
+            let output = scriptObject.executeAndReturnError(&error)
+            print(output.stringValue ?? "no output from shader cache purge")
+            
+            if error != nil {
+                return false
+            }
+        }
         
         return true
     }
