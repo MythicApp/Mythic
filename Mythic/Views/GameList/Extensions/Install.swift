@@ -101,7 +101,8 @@ extension GameListView {
                                 .help("Folder is not writable.")
                         }
                         
-                        Button("Browse...") {
+                        // TODO: unify
+                        Button("Browse...") { // TODO: replace with .fileImporter
                             let openPanel = NSOpenPanel()
                             openPanel.canChooseDirectories = true
                             openPanel.canChooseFiles = false

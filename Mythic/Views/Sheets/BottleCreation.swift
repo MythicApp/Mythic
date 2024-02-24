@@ -56,7 +56,7 @@ struct BottleCreationView: View {
                             .help("Folder is not writable.")
                     }
                     
-                    Button("Browse...") {
+                    Button("Browse...") { // TODO: replace with .fileImporter
                         let openPanel = NSOpenPanel()
                         openPanel.canChooseDirectories = true
                         openPanel.canChooseFiles = false

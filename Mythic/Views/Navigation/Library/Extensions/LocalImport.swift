@@ -59,7 +59,8 @@ extension LibraryView.GameImportView {
                                     .help("File/Folder is not readable by Mythic.")
                             }
                             
-                            Button("Browse...") {
+                            // TODO: unify
+                            Button("Browse...") { // TODO: replace with .fileImporter
                                 let openPanel = NSOpenPanel()
                                 openPanel.allowedContentTypes = []
                                 if platform == .macOS { // only way to make it update on change, no switch
