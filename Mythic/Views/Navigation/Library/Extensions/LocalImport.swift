@@ -22,7 +22,7 @@ extension LibraryView.GameImportView {
         @Binding var isPresented: Bool
         @Binding var isGameListRefreshCalled: Bool
         
-        @State private var game: Game = placeholderGame(.local)
+        @State private var game: Game = placeholderGame(type: .local)
         @State private var platform: GamePlatform = .macOS
         
         var body: some View {

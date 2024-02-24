@@ -22,7 +22,7 @@ extension LibraryView.GameImportView {
         
         @Binding var isPresented: Bool
         
-        @State private var game: Game = placeholderGame(.epic)
+        @State private var game: Game = placeholderGame(type: .epic)
         @State private var path: String = .init()
         @State private var platform: GamePlatform = .macOS
         

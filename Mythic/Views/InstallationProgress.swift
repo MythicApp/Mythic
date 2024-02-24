@@ -56,7 +56,7 @@ struct InstallationProgressView: View {
         .alert(isPresented: $isStopGameModificationAlertPresented) {
             stopGameModificationAlert(
                 isPresented: $isStopGameModificationAlertPresented,
-                game: gameModification.game ?? placeholderGame(.local)
+                game: gameModification.game ?? placeholderGame(type: .local)
             )
         }
         .sheet(isPresented: $isInstallStatusViewPresented) {

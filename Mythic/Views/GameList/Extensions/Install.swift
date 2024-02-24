@@ -199,12 +199,12 @@ extension GameListView {
 #Preview {
     GameListView.InstallView(
         isPresented: .constant(true),
-        game: .constant(placeholderGame(.local)),
+        game: .constant(placeholderGame(type: .local)),
         optionalPacks: .constant(["dud": "dudname", "dud2": "dud2name"]),
         isGameListRefreshCalled: .constant(false),
         isAlertPresented: .constant(false),
         activeAlert: .constant(.installError),
         installationErrorMessage: .constant(.init()),
-        failedGame: .constant(placeholderGame(.local))
+        failedGame: .constant(placeholderGame(type: .local))
     )
 }

@@ -78,7 +78,7 @@ struct GameListView: View {
     @State private var failedGame: Game?
     
     @State private var isProgressViewSheetPresented: Bool = true
-    @State private var currentGame: Game = placeholderGame(.local)
+    @State private var currentGame: Game = placeholderGame(type: .local)
     
     @State private var installableGames: [Game] = .init()
     @State private var installedGames: [Game] = .init()

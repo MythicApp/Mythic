@@ -96,9 +96,9 @@ class GameModification: ObservableObject {
     }
 }
 
-func placeholderGame(_ type: GameType) -> Game { // this is so stupid
-    // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
-    return .init(type: .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
+/// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise
+func placeholderGame(type: GameType) -> Game { // this is so stupid
+    return .init(type: type, title: .init(), appName: UUID().uuidString, platform: .macOS)
 }
 
 /// Your father.
