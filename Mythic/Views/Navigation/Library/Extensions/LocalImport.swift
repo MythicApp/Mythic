@@ -36,6 +36,7 @@ extension LibraryView.GameImportView {
                                 Text($0.rawValue)
                             }
                         }
+                        .onChange(of: platform) { game.platform = $1 }
                         
                         HStack {
                             VStack {
@@ -61,7 +62,7 @@ extension LibraryView.GameImportView {
                             Button("Browse...") {
                                 let openPanel = NSOpenPanel()
                                 openPanel.allowedContentTypes = []
-                                if platform == .macOS { // only way to make it update on change
+                                if platform == .macOS { // only way to make it update on change, no switch
                                     openPanel.allowedContentTypes = [.application]
                                     openPanel.canChooseDirectories = false
                                 } else if platform == .windows {
@@ -77,10 +78,13 @@ extension LibraryView.GameImportView {
                             }
                         }
                         
-                        TextField("Enter Thumbnail URL here... (optional)", text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
-                            get: { game.imageURL?.path ?? .init() },
-                            set: { game.imageURL = URL(string: $0) }
-                                                                                         ))
+                        TextField(
+                            "Enter Thumbnail URL here... (optional)",
+                            text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
+                                get: { game.imageURL?.path ?? .init() },
+                                set: { game.imageURL = URL(string: $0) }
+                            )
+                        )
                     }
                     .formStyle(.grouped)
                     
@@ -140,8 +144,9 @@ extension LibraryView.GameImportView {
                 }
                 
                 .task(priority: .high) {
-                    game.path = .init() // IMPORTANT, OR DONE BUTTON WILL NOT DISABLE PROPERLY
+                    game.path = .init()
                 }
+                
             }
         }
     }

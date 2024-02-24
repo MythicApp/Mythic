@@ -89,7 +89,7 @@ extension Bundle {
             } catch {
                 Logger.file.error("Unable to get games directory: \(error.localizedDescription)")
             }
-        } // no else block, error is handled already
+        }
         
         return nil
     }()

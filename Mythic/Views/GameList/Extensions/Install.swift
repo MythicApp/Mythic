@@ -172,13 +172,14 @@ extension GameListView {
                     }
                 }
             }
-            .task(priority: .medium) {
+            .task {
                 var platforms: [GamePlatform] = .init()
                 if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
                     if fetchedPlatforms.keys.contains("Windows") { platforms.append(.windows) }
                     if fetchedPlatforms.keys.contains("Mac") { platforms.append(.macOS) }
                     
                     DispatchQueue.main.async {
+                        supportedPlatforms = platforms
                         platform = platforms.first!
                     }
                 } else {

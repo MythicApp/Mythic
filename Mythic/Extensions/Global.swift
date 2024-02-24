@@ -50,7 +50,7 @@ enum GameType: String, CaseIterable, Codable {
 struct Game: Hashable, Codable {
     var type: GameType
     var title: String
-    var appName: String
+    var appName: String = UUID().uuidString
     // var defaultBottle: Wine.Bottle? = Wine.allBottles?["Default"] // TODO: should be appstorage
     var platform: GamePlatform?
     var bottleName: String {
@@ -96,7 +96,7 @@ class GameModification: ObservableObject {
     }
 }
 
-func placeholderGame(_ type: GameType) -> Game {
+func placeholderGame(_ type: GameType) -> Game { // this is so stupid
     // WARN: GAMEIMPORT.LOCAL TEXT BOX WILL DEFAULT TO TITLE VALUE
     return .init(type: .epic, title: .init(), appName: UUID().uuidString, platform: .macOS)
 }
