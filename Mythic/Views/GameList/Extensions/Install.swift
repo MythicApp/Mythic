@@ -36,7 +36,7 @@ extension GameListView {
         // FIXME: make as binding using init() {}
         @State private var supportedPlatforms: [GamePlatform]?
         
-        @State var baseURL: URL = Bundle.appGames! // TODO: default base path
+        @AppStorage("defaultInstallBaseURL") private var baseURL: URL = Bundle.appGames!
         
         // MARK: - State Properties
         /// Dictionary to track the toggled state of optional packs.

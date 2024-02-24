@@ -297,7 +297,7 @@ class Legendary {
         platform: GamePlatform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        baseURL: URL? = /*defaults.object(forKey: "gamesPath") as? URL ??*/ Bundle.appGames, // TODO: userdefaults implementation
+        baseURL: URL? = defaults.url(forKey: "defaultInstallBaseURL"),
         gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
@@ -324,6 +324,7 @@ class Legendary {
                 argBuilder += ["--platform", "Windows"]
             }
             
+            // Legendary will download elsewhere if none are specified
             if let baseURL = baseURL, files.fileExists(atPath: baseURL.path) {
                 argBuilder += ["--base-path", baseURL.path(percentEncoded: false)]
             }

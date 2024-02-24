@@ -393,11 +393,45 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
     
+    // MARK: - Delete Bottle Method
     static func deleteBottle(bottleURL: URL) throws -> Bool {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
         if files.fileExists(atPath: bottleURL.path(percentEncoded: false)) { try files.removeItem(at: bottleURL) }
         if let bottles = allBottles { allBottles = bottles.filter { $0.value.url != bottleURL } }
+        
+        return true
+    }
+    
+    // MARK: - Kill All Method
+    static func killAll() -> Bool {
+        let task = Process()
+        task.executableURL = Libraries.directory.appending(path: "Wine/bin/wineserver")
+        task.arguments = ["-k"]
+        do { try task.run() } catch { return false }
+        
+        return true
+    }
+    // MARK: - Clear Shader Cache Method
+    static func purgeShaderCache(game: Game? = nil) -> Bool {
+        let task = Process()
+        task.launchPath = "/usr/bin/getconf"
+        task.arguments = ["DARWIN_USER_CACHE_DIR"]
+        
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        do { try task.run() } catch { return false }
+        
+        guard let userCachePath = String(
+            data: pipe.fileHandleForReading.readDataToEndOfFile(),
+            encoding: .utf8
+        )?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        else { return false }
+        
+        task.waitUntilExit()
+        
+        do { try files.removeItem(atPath: userCachePath) } catch { return false }
         
         return true
     }

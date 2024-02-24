@@ -4475,6 +4475,9 @@
         }
       }
     },
+    "Clean Up Miscallaneous Caches" : {
+
+    },
     "Close" : {
       "localizations" : {
         "af" : {
@@ -5047,6 +5050,9 @@
           }
         }
       }
+    },
+    "Default bottle settings" : {
+
     },
     "Default Bottle Setup" : {
 
@@ -10078,6 +10084,9 @@
 
     },
     "Folder is not writable." : {
+
+    },
+    "Force Quit Applications" : {
 
     },
     "Game integrity verification is required." : {
@@ -15472,6 +15481,9 @@
         }
       }
     },
+    "Minimise to menu bar on game launch" : {
+
+    },
     "Modify default settings for \"%@\"" : {
 
     },
@@ -17364,6 +17376,9 @@
     "Purchase new games from Epic" : {
 
     },
+    "Purge Shader Cache" : {
+
+    },
     "Quit Mythic" : {
 
     },
@@ -17734,6 +17749,18 @@
           }
         }
       }
+    },
+    "Remove Mythic Engine" : {
+
+    },
+    "Reset Mythic" : {
+
+    },
+    "Reset settings to default" : {
+
+    },
+    "Reset to Default" : {
+
     },
     "Restart Onboarding..." : {
 
@@ -23863,6 +23890,9 @@
           }
         }
       }
+    },
+    "Wine/Mythic Engine" : {
+
     },
     "You can't delete the default bottle." : {
 
