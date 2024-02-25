@@ -17,6 +17,7 @@
 import Foundation
 import SwiftUI
 import OSLog
+import UserNotifications
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
@@ -24,6 +25,11 @@ let files: FileManager = .default
 
 /// A simpler alias of `UserDefaults.standard`.
 let defaults: UserDefaults = .standard
+
+/// A simpler alias of `workspace`.
+let workspace: NSWorkspace = .shared
+
+let notifications: UNUserNotificationCenter = .current()
 
 let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacity: 500_000_000) // in bytes
 

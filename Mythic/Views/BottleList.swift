@@ -55,7 +55,7 @@ struct BottleListView: View {
             
             .sheet(isPresented: $isBottleSettingsViewPresented) {
                 VStack {
-                    Text("Configure default settings for \"\(selectedBottleName)\"")
+                    Text("Configure default settings for \"\(selectedBottleName)\"") // FIXME: glitch
                         .font(.title)
                     
                     Form {
@@ -111,6 +111,26 @@ struct BottleListView: View {
                     }
                 )
             }
+        } else if !Libraries.isInstalled() {
+            Text("Mythic Engine is not installed!")
+                .font(.title)
+            Button {
+                let app = MythicApp() // FIXME: is this dangerous or just stupid
+                app.onboardingChapter = .engineDisclaimer
+                app.isFirstLaunch = true
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.down.to.line")
+                    Text("Install Mythic Engine")
+                }
+                .padding(5)
+            }
+            .buttonStyle(.borderedProminent)
+        } else {
+            Image(systemName: "exclamationmark.triangle")
+                .imageScale(.large)
+                .symbolEffect(.pulse)
+                .help("Unable to fetch bottles.")
         }
     }
 }

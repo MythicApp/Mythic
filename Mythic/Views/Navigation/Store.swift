@@ -90,7 +90,7 @@ struct StoreView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if let url = URL(string: urlString) {
-                        NSWorkspace.shared.open(url)
+                        workspace.open(url)
                     }
                 } label: {
                     Image(systemName: "arrow.up.forward")

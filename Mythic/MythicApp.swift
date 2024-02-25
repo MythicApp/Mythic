@@ -19,6 +19,9 @@ import UserNotifications // TODO: TODO
 // MARK: - Where it all begins!
 @main
 struct MythicApp: App {
+    // MARK: - App Delegate
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     // MARK: - State Properties
     @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
     @State var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
@@ -35,7 +38,7 @@ struct MythicApp: App {
     }
     
     // MARK: - Updater Controller
-    private let updaterController: SPUStandardUpdaterController
+    let updaterController: SPUStandardUpdaterController
     
     // MARK: - Initialization
     init() {
@@ -45,7 +48,6 @@ struct MythicApp: App {
             userDriverDelegate: nil
         )
     }
-    
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {

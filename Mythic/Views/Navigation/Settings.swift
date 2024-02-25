@@ -22,7 +22,8 @@ struct SettingsView: View {
     @State private var isDefaultBottleSectionExpanded: Bool = true
     
     @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
-    @AppStorage("defaultInstallBaseURL") private var installBaseURL: URL = Bundle.appGames!
+    @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
+    @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     
     @State private var isAlertPresented: Bool = false
     enum ActiveAlert {
@@ -41,6 +42,7 @@ struct SettingsView: View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
                 Toggle("Minimise to menu bar on game launch", isOn: $minimize)
+                Toggle("Force quit all games when Mythic closes", isOn: $quitOnClose)
                 
                 HStack {
                     VStack {
@@ -90,6 +92,7 @@ struct SettingsView: View {
                 }
                 
                 Button {
+                    
                     // TODO: mythic's folder in Libary/Preferences
                     // TODO: beat up legendary
                 } label: {

@@ -17,6 +17,7 @@
 import Foundation
 import SwiftyJSON
 import OSLog
+import UserNotifications
 
 // MARK: - Legendary Class
 /**
@@ -297,11 +298,11 @@ class Legendary {
         platform: GamePlatform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        baseURL: URL? = defaults.url(forKey: "defaultInstallBaseURL"),
+        baseURL: URL? = defaults.url(forKey: "installBaseURL"),
         gameFolder: URL? = nil
     ) async throws {
         guard signedIn() else { throw NotSignedInError() }
-        guard game.type == .epic else { return } // TODO: FIXME: create IsNotLegendaryError
+        guard game.type == .epic else { throw IsNotLegendaryError() }
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
@@ -392,7 +393,18 @@ class Legendary {
                         guard line.contains("[DLManager] INFO:") else { return }
                         
                         if line.contains("All done! Download manager quitting...") {
-                            GameModification.reset(); return
+                            GameModification.reset()
+                            
+                            notifications.add(
+                                .init(identifier: UUID().uuidString,
+                                      content: {
+                                          let content = UNMutableNotificationContent()
+                                          content.title = "Finished installing \"\(game.title)\"."
+                                          return content
+                                      }(),
+                                      trigger: nil)
+                            )
+                            return
                         }
                         
                         if let match = match(regex: progressRegex, line: line) {
@@ -451,6 +463,18 @@ class Legendary {
                 useCache: false,
                 identifier: "moveGame"
             )
+            
+            try await notifications.add(
+                .init(identifier: UUID().uuidString,
+                      content: {
+                          let content = UNMutableNotificationContent()
+                          content.title = "Finished moving \"\(game.title)\"."
+                          content.title = "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath())"
+                          return content
+                      }(),
+                      trigger: nil)
+            )
+
         }
     }
     

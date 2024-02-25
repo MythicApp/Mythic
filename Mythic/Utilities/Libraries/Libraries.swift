@@ -20,6 +20,7 @@ import SemanticVersion
 import CryptoKit
 import SwiftyJSON
 import OSLog
+import UserNotifications
 
 // MARK: - Libraries Class
 /// Manages the installation, removal, and versioning of Mythic's libraries. (Mythic Engine)
@@ -144,6 +145,16 @@ class Libraries {
                     Logger.file.notice("Libraries checksum is: \(checksum)")
                     
                     completion(.success(true))
+                    notifications.add(
+                        .init(identifier: UUID().uuidString,
+                              content: {
+                                  let content = UNMutableNotificationContent()
+                                  content.title = "Finished installing Mythic Engine."
+                                  content.title = "Windows® games are now playable!"
+                                  return content
+                              }(),
+                              trigger: nil)
+                    )
                 }
             }
         }
@@ -185,7 +196,15 @@ class Libraries {
      - Returns: `true` if installed, `false` otherwise.
      */
     static func isInstalled() -> Bool {
-        return files.fileExists(atPath: directory.path) && checksum() == defaults.string(forKey: "librariesChecksum") ? true : false
+        guard files.fileExists(atPath: directory.path) else { return false }
+        
+        if let checksum = defaults.string(forKey: "librariesChecksum") {
+            return checksum == self.checksum()
+        }
+        
+        let checksum = checksum()
+        defaults.set(checksum, forKey: "librariesChecksum")
+        return true
     }
     
     // MARK: - getVersion Method
@@ -255,7 +274,7 @@ class Libraries {
     
      - Parameter completion: A closure to be called upon completion of the removal.
      */
-    static func remove(completion: @escaping (Result<Bool, Error>) -> Void) {
+    static func remove(completion: @escaping (Result<Bool, Error>) -> Void) { // FIXME: not appropriate use for a completion handler
         defer { dataLock.unlock() }
         
         guard isInstalled() else {

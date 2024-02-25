@@ -10089,6 +10089,9 @@
     "Folder is not writable." : {
 
     },
+    "Force quit all games when Mythic closes" : {
+
+    },
     "Force Quit Applications" : {
 
     },
@@ -15870,6 +15873,9 @@
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
 
     },
+    "Mythic Engine is not installed!" : {
+
+    },
     "Mythic is checking the connection to Epic." : {
 
     },
@@ -21474,6 +21480,9 @@
 
     },
     "Unable to boot default bottle." : {
+
+    },
+    "Unable to fetch bottles." : {
 
     },
     "Unable to move %@." : {

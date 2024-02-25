@@ -204,7 +204,7 @@ extension GameListView {
                                         Spacer()
                                         
                                         Button("Show in Finder") {
-                                            NSWorkspace.shared.activateFileViewerSelecting(
+                                            workspace.activateFileViewerSelecting(
                                                 [URL(filePath: gamePath ?? .init())]
                                             )
                                         }

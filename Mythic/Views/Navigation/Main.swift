@@ -138,7 +138,7 @@ struct MainView: View {
                     }
                 } else {
                     Button {
-                        NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                        workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
                         isAuthViewPresented = true
                     } label: {
                         HStack {

@@ -292,7 +292,7 @@ struct OnboardingEvo: View {
                             withAnimation(.easeOut(duration: 0.5)) {
                                 isSecondRowPresented = true
                             } completion: {
-                                NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                                workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
                             }
                         }
                     }

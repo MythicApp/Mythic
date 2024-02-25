@@ -76,12 +76,12 @@ class FileLocations {
         do {
             return try files.url(
                 for: .applicationSupportDirectory,
-                in: .userDomainMask,
+                in: .userDomainMask, // to remain individual
                 appropriateFor: nil,
                 create: false
             )
         } catch {
-            Logger.file.error("Unable to get Application Support directory: \(error.localizedDescription)")
+            Logger.file.error(" Unable to get Application Support directory: \(error.localizedDescription)")
         }
         
         return nil

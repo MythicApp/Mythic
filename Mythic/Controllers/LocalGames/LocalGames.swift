@@ -58,7 +58,7 @@ class LocalGames {
         switch game.platform {
         case .macOS:
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
-                NSWorkspace.shared.open(
+                workspace.open(
                     URL(filePath: game.path ?? .init()),
                     configuration: NSWorkspace.OpenConfiguration(),
                     completionHandler: { (_/*game*/, error) in

@@ -36,7 +36,7 @@ extension GameListView {
         // FIXME: make as binding using init() {}
         @State private var supportedPlatforms: [GamePlatform]?
         
-        @AppStorage("defaultInstallBaseURL") private var baseURL: URL = Bundle.appGames!
+        @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
         
         // MARK: - State Properties
         /// Dictionary to track the toggled state of optional packs.
@@ -140,6 +140,8 @@ extension GameListView {
                     Spacer()
                     
                     Button("Install") {
+                        isPresented = false
+                        
                         Task(priority: .userInitiated) {
                             do {
                                 try await Legendary.install(

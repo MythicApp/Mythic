@@ -47,5 +47,7 @@ struct UpdaterSettingsView: View {
             .disabled(!automaticallyChecksForUpdates)
         }
         .padding()
+        
+        SettingsView()
     }
 }

@@ -35,6 +35,8 @@
 		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
 		6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */; };
 		6A6923522AD6D83D00157E3E /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6923512AD6D83D00157E3E /* Global.swift */; };
+		6A721B2B2B8A4BD600A4EA3C /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A721B2A2B8A4BD600A4EA3C /* Credits.rtf */; };
+		6A721B2D2B8B3D5A00A4EA3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A721B2C2B8B3D5A00A4EA3C /* AppDelegate.swift */; };
 		6A7A81132B76F9E900D19E32 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81122B76F9E900D19E32 /* Task.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
 		6A7A81182B77097200D19E32 /* OnboardingEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81172B77097200D19E32 /* OnboardingEvo.swift */; };
@@ -100,6 +102,8 @@
 		6A4C396D2AC5DA4D002F943B /* GameSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettings.swift; sourceTree = "<group>"; };
 		6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibrariesExt.swift; sourceTree = "<group>"; };
 		6A6923512AD6D83D00157E3E /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
+		6A721B2A2B8A4BD600A4EA3C /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		6A721B2C2B8B3D5A00A4EA3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A7A81122B76F9E900D19E32 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		6A7A81172B77097200D19E32 /* OnboardingEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingEvo.swift; sourceTree = "<group>"; };
 		6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
@@ -384,6 +388,7 @@
 			isa = PBXGroup;
 			children = (
 				6AC25CBE2AAEFF5100D395CF /* Info.plist */,
+				6A721B2C2B8B3D5A00A4EA3C /* AppDelegate.swift */,
 				6AB474982AACBBE900AB9C63 /* MythicApp.swift */,
 				6AF0EB1D2AAD4DD70044C09C /* Utilities */,
 				6AB474A92AACBCD000AB9C63 /* Views */,
@@ -395,6 +400,7 @@
 				6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */,
 				6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */,
 				6AB474A12AACBBEA00AB9C63 /* Mythic.entitlements */,
+				6A721B2A2B8A4BD600A4EA3C /* Credits.rtf */,
 				6AB4749E2AACBBEA00AB9C63 /* Preview Content */,
 			);
 			path = Mythic;
@@ -411,7 +417,6 @@
 		6AB474A92AACBCD000AB9C63 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				6AAAFBA72B8323940072B5BB /* BottleList.swift */,
 				6A00F2012AC5F51A0054858A /* GameList */,
 				6AF0EB2B2AADE2530044C09C /* WebView.swift */,
 				6AF0EB202AAD4F1E0044C09C /* NotImplemented.swift */,
@@ -419,6 +424,7 @@
 				6A7F00B22B231EEA00D801CD /* Alerts */,
 				6AD506542AAFF52B008A28C1 /* Navigation */,
 				6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */,
+				6AAAFBA72B8323940072B5BB /* BottleList.swift */,
 				6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */,
 			);
 			path = Views;
@@ -564,6 +570,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A721B2B2B8A4BD600A4EA3C /* Credits.rtf in Resources */,
 				6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */,
 				6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */,
 				6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */,
@@ -633,6 +640,7 @@
 				6AD506582AAFF6CB008A28C1 /* Library.swift in Sources */,
 				6A00F2002AC5EC490054858A /* Install.swift in Sources */,
 				6A009E5F2AB5816A00A1397F /* Logger.swift in Sources */,
+				6A721B2D2B8B3D5A00A4EA3C /* AppDelegate.swift in Sources */,
 				6AB474992AACBBE900AB9C63 /* MythicApp.swift in Sources */,
 				6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */,
 				6A12FF902B73AFCE00AA948C /* BottleSettings.swift in Sources */,
@@ -793,7 +801,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2403;
+				CURRENT_PROJECT_VERSION = 2418;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -832,7 +840,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2403;
+				CURRENT_PROJECT_VERSION = 2418;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

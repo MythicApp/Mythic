@@ -404,11 +404,22 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Kill All Method
-    static func killAll() -> Bool {
+    static func killAll(bottleURL: URL? = nil) -> Bool {
         let task = Process()
         task.executableURL = Libraries.directory.appending(path: "Wine/bin/wineserver")
         task.arguments = ["-k"]
-        do { try task.run() } catch { return false }
+        
+        if let bottleURL = bottleURL {
+            task.environment = ["WINEPREFIX": bottleURL.path(percentEncoded: false)]
+            do { try task.run() } catch { return false }
+        } else {
+            if let bottles = Wine.allBottles {
+                for bottle in bottles.values {
+                    task.environment = ["WINEPREFIX": bottle.url.path(percentEncoded: false)]
+                    do { try task.run() } catch { return false }
+                }
+            }
+        }
         
         return true
     }

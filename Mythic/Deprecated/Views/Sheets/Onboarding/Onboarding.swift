@@ -72,7 +72,7 @@ struct OnboardingView: View {
                 // MARK: Sign In Button
                 if Legendary.signedIn() == false && authSuccessful != true {
                     Button("Sign In") {
-                        NSWorkspace.shared.open(URL(string: "http://legendary.gl/epiclogin")!)
+                        workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
                         isAuthViewPresented = true
                     }
                     .buttonStyle(.borderedProminent)
