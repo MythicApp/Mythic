@@ -169,66 +169,82 @@ struct GameListView: View {
                                 .offset(y: -5)
                             
                             VStack {
-                                CachedAsyncImage(
-                                    url: URL(
-                                        string: game.type == .epic
-                                        ? Legendary.getImage(of: game, type: .tall)
-                                        : game.imageURL?.path ?? .init()
-                                    ),
-                                    urlCache: gameImageURLCache
-                                ) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        if !Legendary.getImage(of: game, type: .tall).isEmpty || ((game.imageURL?.path(percentEncoded: false).isEmpty) != nil) {
-                                            VStack {
-                                                Spacer()
-                                                HStack {
-                                                    if networkMonitor.isEpicAccessible {
-                                                        ProgressView()
-                                                            .controlSize(.small)
-                                                            .padding(.trailing, 5)
-                                                    } else {
-                                                        Image(systemName: "network.slash")
-                                                            .symbolEffect(.pulse)
-                                                            .foregroundStyle(.red)
-                                                            .help("Mythic cannot connect to the internet.")
+                                if let gamePath = game.path, game.imageURL == nil && game.platform == .macOS {
+                                    ZStack {
+                                        Image(nsImage: workspace.icon(forFile: gamePath)) // FIXME: fix image stretching and try to zoom instead
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                            .blur(radius: 20)
+                                            .frame(width: 200)
+                                        
+                                        Image(nsImage: workspace.icon(forFile: gamePath))
+                                            .resizable()
+                                            .scaledToFit()
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                            .modifier(FadeInModifier())
+                                            .frame(width: 200)
+                                    }
+                                } else {
+                                    CachedAsyncImage(
+                                        url: game.type == .epic
+                                        ? .init(string: Legendary.getImage(of: game, type: .tall)) // TODO: if there is no local game image for a game, check if Legendary.getImage supports it
+                                        : game.imageURL,
+                                        urlCache: gameImageURLCache
+                                    ) { phase in
+                                        switch phase {
+                                        case .empty:
+                                            if !Legendary.getImage(of: game, type: .tall).isEmpty || ((game.imageURL?.path(percentEncoded: false).isEmpty) != nil) {
+                                                VStack {
+                                                    Spacer()
+                                                    HStack {
+                                                        if networkMonitor.isEpicAccessible {
+                                                            ProgressView()
+                                                                .controlSize(.small)
+                                                                .padding(.trailing, 5)
+                                                        } else {
+                                                            Image(systemName: "network.slash")
+                                                                .symbolEffect(.pulse)
+                                                                .foregroundStyle(.red)
+                                                                .help("Mythic cannot connect to the internet.")
+                                                        }
+                                                        Text("(\(game.title))")
+                                                            .truncationMode(.tail)
+                                                            .foregroundStyle(.placeholder)
                                                     }
-                                                    Text("(\(game.title))")
-                                                        .truncationMode(.tail)
-                                                        .foregroundStyle(.placeholder)
                                                 }
+                                                .frame(width: 200, height: 400/1.5)
+                                            } else {
+                                                Text("\(game.title)")
+                                                    .font(.largeTitle)
+                                                    .frame(width: 200, height: 400/1.5)
                                             }
-                                            .frame(width: 200, height: 400/1.5)
-                                        } else {
+                                        case .success(let image):
+                                            ZStack {
+                                                image
+                                                    .resizable()
+                                                    .frame(width: 200, height: 400/1.5)
+                                                    .aspectRatio(3/4, contentMode: .fit)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .blur(radius: 20)
+                                                
+                                                image
+                                                    .resizable()
+                                                    .frame(width: 200, height: 400/1.5)
+                                                    .aspectRatio(3/4, contentMode: .fit)
+                                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                                    .modifier(FadeInModifier())
+                                            }
+                                        case .failure:
                                             Text("\(game.title)")
                                                 .font(.largeTitle)
                                                 .frame(width: 200, height: 400/1.5)
-                                        }
-                                    case .success(let image):
-                                        ZStack {
-                                            image
-                                                .resizable()
+                                        @unknown default:
+                                            Image(systemName: "exclamationmark.triangle")
+                                                .symbolEffect(.appear)
+                                                .imageScale(.large)
                                                 .frame(width: 200, height: 400/1.5)
-                                                .aspectRatio(3/4, contentMode: .fit)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .blur(radius: 20)
-                                            
-                                            image
-                                                .resizable()
-                                                .frame(width: 200, height: 400/1.5)
-                                                .aspectRatio(3/4, contentMode: .fit)
-                                                .clipShape(RoundedRectangle(cornerRadius: 20))
-                                                .modifier(FadeInModifier())
                                         }
-                                    case .failure:
-                                        Text("\(game.title)")
-                                            .font(.largeTitle)
-                                            .frame(width: 200, height: 400/1.5)
-                                    @unknown default:
-                                        Image(systemName: "exclamationmark.triangle")
-                                            .symbolEffect(.appear)
-                                            .imageScale(.large)
-                                            .frame(width: 200, height: 400/1.5)
                                     }
                                 }
                                 

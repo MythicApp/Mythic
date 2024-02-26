@@ -77,38 +77,57 @@ extension GameListView {
                             .font(.title)
                             .help("UUID: \(game.appName)")
                         
-                        CachedAsyncImage(url: URL(
-                            string: game.type == .epic
-                            ? Legendary.getImage(of: game, type: .tall) 
-                            : game.imageURL?.path ?? .init()
-                        ), urlCache: gameImageURLCache) { phase in
-                            switch phase {
-                            case .empty:
-                                EmptyView()
-                            case .success(let image):
-                                ZStack {
-                                    image // FIXME: fix image stretching and try to zoom instead
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                                        .blur(radius: 20)
-                                        .frame(width: 150)
-                                    
-                                    image
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .modifier(FadeInModifier())
-                                        .frame(width: 150)
+                        if let gamePath = game.path, game.imageURL == nil && game.platform == .macOS {
+                            ZStack { // TODO: turn into its own view or extension or something
+                                Image(nsImage: workspace.icon(forFile: gamePath)) // FIXME: fix image stretching and try to zoom instead
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .blur(radius: 20)
+                                    .frame(width: 150)
+                                
+                                Image(nsImage: workspace.icon(forFile: gamePath))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    .modifier(FadeInModifier())
+                                    .frame(width: 150)
+                            }
+                        } else {
+                            CachedAsyncImage(
+                                url: game.type == .epic
+                                ? .init(string: Legendary.getImage(of: game, type: .tall)) // TODO: if there is no local game image for a game, check if Legendary.getImage supports it
+                                : game.imageURL,
+                                urlCache: gameImageURLCache
+                            ) { phase in
+                                switch phase {
+                                case .empty:
+                                    EmptyView()
+                                case .success(let image):
+                                    ZStack {
+                                        image // FIXME: fix image stretching and try to zoom instead
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fit)
+                                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                                            .blur(radius: 20)
+                                            .frame(width: 150)
+                                        
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fit)
+                                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                                            .modifier(FadeInModifier())
+                                            .frame(width: 150)
+                                    }
+                                case .failure:
+                                    Image(systemName: "network.slash")
+                                        .symbolEffect(.appear)
+                                        .imageScale(.large)
+                                @unknown default:
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .symbolEffect(.appear)
+                                        .imageScale(.large)
                                 }
-                            case .failure:
-                                Image(systemName: "network.slash")
-                                    .symbolEffect(.appear)
-                                    .imageScale(.large)
-                            @unknown default:
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolEffect(.appear)
-                                    .imageScale(.large)
                             }
                         }
                     }

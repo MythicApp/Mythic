@@ -25,6 +25,20 @@ extension LibraryView.GameImportView {
         @State private var game: Game = placeholderGame(type: .local)
         @State private var platform: GamePlatform = .macOS
         
+        private func updateGameTitle() {
+            if let path = game.path, !path.isEmpty, !game.title.isEmpty {
+                switch platform {
+                case .macOS:
+                    if let bundle = Bundle(path: path),
+                        let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
+                        game.title = selectedAppName // not to be confused with game.appName
+                    }
+                case .windows:
+                    game.title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
+                }
+            }
+        }
+        
         var body: some View {
             VStack {
                 HStack {
@@ -36,7 +50,11 @@ extension LibraryView.GameImportView {
                                 Text($0.rawValue)
                             }
                         }
-                        .onChange(of: platform) { game.platform = $1 }
+                        .onChange(of: platform) {
+                            game.platform = $1
+                            game.title = .init()
+                            game.path = .init()
+                        }
                         
                         HStack {
                             VStack {
@@ -78,6 +96,8 @@ extension LibraryView.GameImportView {
                                 }
                             }
                         }
+                        
+                        .onChange(of: game.path) { updateGameTitle() }
                         
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
