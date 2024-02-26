@@ -81,12 +81,11 @@ extension LibraryView.GameImportView {
                     Button("Browse...") { // TODO: replace with .fileImporter
                         let openPanel = NSOpenPanel()
                         openPanel.allowedContentTypes = []
+                        openPanel.canChooseDirectories = true
                         if platform == .macOS { // only way to make it update on change
                             openPanel.allowedContentTypes = [.application]
-                            openPanel.canChooseDirectories = false
                         } else if platform == .windows {
                             openPanel.allowedContentTypes = [.exe]
-                            openPanel.canChooseDirectories = true
                         }
                         
                         openPanel.allowsMultipleSelection = false

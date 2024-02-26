@@ -14,7 +14,6 @@
 
 import SwiftUI
 import Sparkle
-import UserNotifications // TODO: TODO
 
 // MARK: - Where it all begins!
 @main

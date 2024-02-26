@@ -107,6 +107,13 @@ extension GameListView {
                                 where line.contains("ERROR:") {
                                     if let range = line.range(of: "ERROR: ") {
                                         let substring = line[range.upperBound...]
+                                        guard !substring.contains("OSError(66, 'Directory not empty')") else { // FIXME: Currently a dirtyfix for legendary being unable to delete a game directory
+                                            if let gamePath = try? Legendary.getGamePath(game: game) {
+                                                try? files.removeItem(atPath: gamePath)
+                                            }
+                                            return
+                                        }
+                                        
                                         isProgressViewSheetPresented = false
                                         uninstallationErrorMessage = substring
                                         failedGame = game

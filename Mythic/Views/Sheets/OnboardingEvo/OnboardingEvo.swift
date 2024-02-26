@@ -17,7 +17,7 @@
 import SwiftUI
 import MetalKit
 import ColorfulX
-import UserNotifications // TODO: TODO
+import UserNotifications
 
 struct OnboardingEvo: View {
     init(fromChapter: Chapter = .logo) {
