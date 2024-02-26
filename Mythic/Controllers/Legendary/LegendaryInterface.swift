@@ -75,6 +75,7 @@ class Legendary {
      
      - Returns: A tuple containing stdout and stderr data.
      */
+    @discardableResult
     static func command(
         args: [String],
         useCache: Bool,
@@ -97,7 +98,7 @@ class Legendary {
         if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
             log.debug("Cached, returning.")
             Task(priority: .background) {
-                _ = await run()
+                await run()
                 log.debug("New cache appended.")
             }
             log.debug("Cache returned.")
@@ -109,6 +110,7 @@ class Legendary {
         
         // MARK: - Run Method
         @Sendable
+        @discardableResult
         func run() async -> (stdout: Data, stderr: Data) {
             let task = Process()
             task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
@@ -153,6 +155,7 @@ class Legendary {
             task.environment = defaultEnvironmentVariables
             
             let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
+            task.qualityOfService = .userInitiated
             
             log.debug("executing \(fullCommand)")
             
@@ -355,7 +358,7 @@ class Legendary {
             gameModification.type = type
         }
         
-        _ = await command(
+        await command(
             args: argBuilder + [game.appName],
             useCache: false,
             identifier: "install",
@@ -458,7 +461,7 @@ class Legendary {
         if let oldPath = try getGamePath(game: game) {
             guard files.isWritableFile(atPath: oldPath) else { throw FileLocations.FileNotModifiableError(.init(filePath: oldPath)) }
             try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
-            _ = await command(
+            await command(
                 args: ["move", game.appName, newPath, "--skip-move"],
                 useCache: false,
                 identifier: "moveGame"
@@ -511,7 +514,7 @@ class Legendary {
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
-        _ = await command(
+        await command(
             args: [
                 "launch",
                 game.appName,
@@ -748,11 +751,11 @@ class Legendary {
         if let metadataContents = try? files.contentsOfDirectory(atPath: metadata),
            !metadataContents.isEmpty {
             Task(priority: .background) {
-                _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+                await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
             }
         } else {
             Task.sync(priority: .high) { // called during onboarding for speed
-                _ = await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+                await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
             }
         }
         

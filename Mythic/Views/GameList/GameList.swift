@@ -255,7 +255,7 @@ struct GameListView: View {
                                                     Task(priority: .userInitiated) {
                                                         updateCurrentGame(game: game, mode: .normal)
                                                         
-                                                        _ = try await Legendary.install(
+                                                        try await Legendary.install(
                                                             game: game,
                                                             platform: try Legendary.getGamePlatform(game: game)
                                                         )

@@ -135,6 +135,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      
      - Returns: A tuple containing stdout and stderr data.
      */
+    @discardableResult
     static func command(
         args: [String],
         identifier: String,
@@ -212,6 +213,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         task.environment = defaultEnvironmentVariables
         
         let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
+        task.qualityOfService = .userInitiated
         
         log.debug("executing \(fullCommand)")
         
@@ -394,6 +396,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Delete Bottle Method
+    @discardableResult
     static func deleteBottle(bottleURL: URL) throws -> Bool {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
@@ -404,6 +407,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Kill All Method
+    @discardableResult
     static func killAll(bottleURL: URL? = nil) -> Bool {
         let task = Process()
         task.executableURL = Libraries.directory.appending(path: "Wine/bin/wineserver")
@@ -465,7 +469,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        _ = try await command( // FIXME: errors may create problems later
+        try await command( // FIXME: errors may create problems later
             args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
             identifier: "regadd",
             bottleURL: bottleURL

@@ -79,7 +79,7 @@ class LocalGames {
             VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
-            _ = try await Wine.command(
+            try await Wine.command(
                 args: [game.path!],
                 identifier: "launch_\(game.title)",
                 bottleURL: bottle.url, // TODO: whichever prefix is set for it or as default

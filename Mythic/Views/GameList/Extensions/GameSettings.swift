@@ -215,12 +215,14 @@ extension GameListView {
                                 Section("Wine", isExpanded: $isWineSectionExpanded) {
                                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                                 }
+                                .disabled(game.platform == .macOS)
                                 
                                 Section("DXVK", isExpanded: $isDXVKSectionExpanded) {
                                     Toggle("DXVK", isOn: Binding(get: {return .init()}, set: {_ in}))
                                         .help("Sorry, this isn't implemented yet!")
                                         .disabled(true)
                                 }
+                                .disabled(game.platform == .macOS)
                             }
                             .formStyle(.grouped)
                             .frame(width: geometry.size.width, height: geometry.size.height)

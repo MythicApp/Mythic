@@ -51,9 +51,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                 }
             }
         }
+        
     }
     
     func applicationWillTerminate(_ notification: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") { _ = Wine.killAll() }
+        if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
     }
 }
