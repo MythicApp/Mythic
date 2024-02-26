@@ -34,7 +34,7 @@ struct MainView: View {
     enum ActiveAlert {
         case signOutConfirmation
     }
-    @State private var activeAlert: ActiveAlert?
+    @State private var activeAlert: ActiveAlert = .signOutConfirmation
     @State private var isAlertPresented: Bool = false
     
     @ObservedObject private var variables: VariableManager = .shared
@@ -182,20 +182,7 @@ struct MainView: View {
                         },
                         secondaryButton: .cancel(.init("Cancel")) {
                             isAlertPresented = false
-                            activeAlert = .none
                         }
-                    )
-                case nil:
-                    Logger.app.error("no activeAlert supplied. resultantly, there's no alert to be presented.")
-                    return Alert(
-                        title: .init("An error occurred."),
-                        message: .init(
-                            """
-                            \(Text("[ActiveAlert Fault]").italic())
-                            If this error appears, please consult support.
-                            Make sure to include what you were doing when the error occured.
-                            """
-                        )
                     )
                 }
             }
