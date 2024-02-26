@@ -41,10 +41,10 @@ import Foundation
  }
  ```
  */
-class VariableManager: ObservableObject {
+@Observable class VariableManager: ObservableObject {
     static let shared = VariableManager()
 
-    @Published private var variables = [String: Any]()
+    private var variables = [String: Any]()
 
     /// Set variable data within the variable manager.
     func setVariable(_ key: String, value: Any) {

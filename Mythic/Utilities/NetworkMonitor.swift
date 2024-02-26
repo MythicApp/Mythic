@@ -12,13 +12,13 @@ import Network
 
 import SwiftUI
 
-class NetworkMonitor: ObservableObject {
+@Observable class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
     
-    @Published var isConnected = true
-    @Published var isCheckingEpicAccessibility = false
-    @Published var isEpicAccessible = true
+    var isConnected = true
+    var isCheckingEpicAccessibility = false
+    var isEpicAccessible = true
 
     init() {
         networkMonitor.pathUpdateHandler = { [weak self] path in

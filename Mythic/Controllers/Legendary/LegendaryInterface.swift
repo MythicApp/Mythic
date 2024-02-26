@@ -514,24 +514,22 @@ class Legendary {
         VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
-        await command(
-            args: [
-                "launch",
-                game.appName,
-                needsUpdate(game: game) ? "--skip-version-check" : nil, // FIXME: add alert to update game or launch anyway (can do in gamelist)
-                online ? nil : "--offline",
-                "--wine",
-                Libraries.directory.appending(path: "Wine/bin/wine64").path
-            ].compactMap { $0 },
-            useCache: false,
-            identifier: "launch_\(game.appName)",
-            additionalEnvironmentVariables: [
-                "WINEPREFIX": bottle.url.path,
-                "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
-                "WINEMSYNC": bottle.settings.msync ? "1" : "0"
-            ]
-        )
+        var args = [
+            "launch",
+            game.appName,
+            needsUpdate(game: game) ? "--skip-version-check" : nil,
+            online ? nil : "--offline",
+        ] .compactMap { $0 }
         
+        var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
+        
+        if game.platform == .windows {
+            args += ["--wine", Libraries.directory.appending(path: "Wine/bin/wine64").path]
+            environmentVariables["WINEPREFIX"] = bottle.url.path
+            environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
+        }
+        
+        await command(args: args, useCache: false, identifier: "launch_\(game.appName)", additionalEnvironmentVariables: environmentVariables)
         VariableManager.shared.setVariable("launching_\(game.appName)", value: false)
     }
     

@@ -563,6 +563,7 @@
       }
     },
     "[ActiveAlert Fault]" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -931,6 +932,7 @@
       }
     },
     "%@\nIf this error appears, please consult support.\nMake sure to include what you were doing when the error occured." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1863,6 +1865,7 @@
 
     },
     "An error occurred." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

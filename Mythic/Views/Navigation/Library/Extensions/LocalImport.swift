@@ -81,12 +81,11 @@ extension LibraryView.GameImportView {
                             Button("Browse...") { // TODO: replace with .fileImporter
                                 let openPanel = NSOpenPanel()
                                 openPanel.allowedContentTypes = []
+                                openPanel.canChooseDirectories = true
                                 if platform == .macOS { // only way to make it update on change, no switch
                                     openPanel.allowedContentTypes = [.application]
-                                    openPanel.canChooseDirectories = false
                                 } else if platform == .windows {
                                     openPanel.allowedContentTypes = [.exe]
-                                    openPanel.canChooseDirectories = true
                                 }
                                 
                                 openPanel.allowsMultipleSelection = false
@@ -103,7 +102,7 @@ extension LibraryView.GameImportView {
                             "Enter Thumbnail URL here... (optional)",
                             text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
                                 get: { game.imageURL?.path ?? .init() },
-                                set: { game.imageURL = URL(string: $0) }
+                                set: { game.imageURL = .init(string: $0) }
                             )
                         )
                     }

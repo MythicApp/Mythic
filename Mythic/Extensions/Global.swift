@@ -86,12 +86,12 @@ enum GameModificationType: String {
     case repair = "repairing"
 }
 
-class GameModification: ObservableObject {
+@Observable class GameModification: ObservableObject {
     static var shared: GameModification = .init()
     
-    @Published var game: Mythic.Game?
-    @Published var type: GameModificationType?
-    @Published var status: [String: [String: Any]]?
+    var game: Mythic.Game?
+    var type: GameModificationType?
+    var status: [String: [String: Any]]?
     
     static func reset() {
         DispatchQueue.main.sync {
