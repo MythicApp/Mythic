@@ -18,6 +18,7 @@
 		6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */; };
 		6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
+		6A11CF902B8F821400124E0D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A12FF902B73AFCE00AA948C /* BottleSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */; };
 		6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1322372B1C98AE0049BB64 /* InstallStatus.swift */; };
@@ -44,7 +45,6 @@
 		6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */; };
 		6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */; };
 		6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* Uninstall.swift */; };
-		6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */; };
 		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* LegendaryInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */; };
 		6AA6CCE72AD571C500F664A5 /* LegendaryInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */; };
@@ -88,6 +88,7 @@
 		6A0585472ADEC17300165C3C /* WhiskyInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterface.swift; sourceTree = "<group>"; };
 		6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImport.swift; sourceTree = "<group>"; };
 		6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicImport.swift; sourceTree = "<group>"; };
+		6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottleSettings.swift; sourceTree = "<group>"; };
 		6A1322372B1C98AE0049BB64 /* InstallStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallStatus.swift; sourceTree = "<group>"; };
 		6A1417B72AF7CCD80022DE24 /* FileLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
@@ -110,7 +111,6 @@
 		6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
 		6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationProgress.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* Uninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uninstall.swift; sourceTree = "<group>"; };
-		6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; wrapsLines = 0; };
 		6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegendaryInterface.swift; sourceTree = "<group>"; };
 		6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegendaryInterfaceExt.swift; sourceTree = "<group>"; };
@@ -400,7 +400,7 @@
 				6AC3E18A2B374F3C000EB765 /* Deprecated */,
 				6AAF14DE2B271DF4000B1BA2 /* legendary */,
 				6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */,
-				6A85A14E2B452B9400E05D83 /* Localizable.xcstrings */,
+				6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */,
 				6AB474A12AACBBEA00AB9C63 /* Mythic.entitlements */,
 				6A721B2A2B8A4BD600A4EA3C /* Credits.rtf */,
 				6AB4749E2AACBBEA00AB9C63 /* Preview Content */,
@@ -575,9 +575,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A721B2B2B8A4BD600A4EA3C /* Credits.rtf in Resources */,
+				6A11CF902B8F821400124E0D /* Localizable.xcstrings in Resources */,
 				6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */,
 				6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */,
-				6A85A14F2B452B9400E05D83 /* Localizable.xcstrings in Resources */,
 				6AAF14DF2B271DF4000B1BA2 /* legendary in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
