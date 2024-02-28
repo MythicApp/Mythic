@@ -9,16 +9,18 @@
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?logo=discord)](https://discord.com/invite/58NZ7fFqPy)
-  [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
   
+  
+  <h6>(localization returns soon)</h6>
 </h1>
 
-<h4><b>A unique open-source game launcher for macOS with Epic Games integration and the ability to run Windows games.</b></h4>
+<h4><b>A unique open-source game launcher for macOS with the ability to run Windows games.</b></h4>
+
 
 Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendary), that keeps coherence with the rest of macOS in mind.
 
 ## Features
-- [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX11, 12) (64-bit)
+- [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX9-12) (64-bit)
 - [ ] Steam Support (Coming in update 0.2.x)
 - [x] Epic Games Support
 - [x] Manual Game Imports
@@ -40,6 +42,8 @@ Mythic uses the following Swift dependencies:
 - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) - The better way to deal with JSON data in Swift. 
 - [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift
 - [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) - Semantic version structuring & parsing
+- [ColorfulX](https://github.com/Lakr233/ColorfulX) - An implementation using Metal for crafting multi-colored gradients.
+- [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
 
 ## License
 Copyright © 2023 blackxfiied, Jecta
