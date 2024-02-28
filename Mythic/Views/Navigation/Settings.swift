@@ -47,7 +47,7 @@ struct SettingsView: View {
                 HStack {
                     VStack {
                         HStack { // FIXME: jank
-                            Text("Where do you want the game's base path to be located?")
+                            Text("Choose the default base path for games:")
                             Spacer()
                         }
                         HStack {
@@ -92,7 +92,6 @@ struct SettingsView: View {
                 }
                 
                 Button {
-                    
                     // TODO: mythic's folder in Libary/Preferences
                     // TODO: beat up legendary
                 } label: {
@@ -110,6 +109,8 @@ struct SettingsView: View {
                 }
                 .disabled(true)
                 .help("Not implemented yet")
+                
+                UpdaterSettingsView(updater: MythicApp().updaterController.updater)
             }
             
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {

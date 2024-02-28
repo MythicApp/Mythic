@@ -29,7 +29,7 @@ import SwiftUI
                 self?.isCheckingEpicAccessibility = true
                 
                 let request = URLRequest(
-                    url: URL(string: "https://epicgames.com")!,
+                    url: .init(string: "https://epicgames.com")!,
                     cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
                     timeoutInterval: 5
                 )

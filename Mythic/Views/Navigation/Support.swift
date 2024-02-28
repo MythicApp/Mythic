@@ -14,12 +14,44 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import Shimmer
 
 struct SupportView: View {
+    // TODO: https://arc.net/l/quote/icczlrwf
+    
     var body: some View {
-        NotImplementedView()
-            .navigationTitle("Support")
-    }
+        HStack {
+            VStack {
+                
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.background)
+            .clipShape(.rect(cornerRadius: 10))
+            .shimmering(bandSize: 1)
+            
+            VStack {
+                VStack {
+                    HStack {
+                        
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.background)
+                .clipShape(.rect(cornerRadius: 10))
+                .shimmering(bandSize: 1)
+                
+                VStack {
+                    
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.background)
+                .clipShape(.rect(cornerRadius: 10))
+                .shimmering(bandSize: 1)
+            }
+        }
+        .padding()
+        .navigationTitle("Support")
+}
 }
 
 #Preview {

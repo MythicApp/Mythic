@@ -18,6 +18,7 @@ import SwiftUI
 import Cocoa
 import CachedAsyncImage
 import Glur
+import Shimmer
 
 // MARK: - HomeView Struct
 /**
@@ -69,6 +70,8 @@ struct HomeView: View {
                                     ProgressView()
                                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                                         .aspectRatio(3/4, contentMode: .fit)
+                                        .clipShape(.rect(cornerRadius: 10))
+                                        .shimmering()
                                 case .success(let image):
                                     ZStack {
                                         // MARK: Main Image
@@ -93,7 +96,7 @@ struct HomeView: View {
                                         .aspectRatio(3/4, contentMode: .fit)
                                 }
                             }
-                            .cornerRadius(10)
+                            .clipShape(.rect(cornerRadius: 10))
                             .overlay(
                                 ZStack(alignment: .bottom) {
                                     VStack {
@@ -161,7 +164,7 @@ struct HomeView: View {
                 }
             }
             .background(.background)
-            .cornerRadius(10)
+            .clipShape(.rect(cornerRadius: 10))
             
             // MARK: - Side Views
             VStack {
@@ -183,7 +186,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(10)
+                .clipShape(.rect(cornerRadius: 10))
                 
                 // MARK: View 2 (Bottom)
                 VStack {
@@ -191,7 +194,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .cornerRadius(10)
+                .clipShape(.rect(cornerRadius: 10))
             }
         }
         .navigationTitle("Home")
