@@ -18,6 +18,7 @@ import Foundation
 import SwiftUI
 import OSLog
 import UserNotifications
+import SwordRPC
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
@@ -34,6 +35,8 @@ let notifications: UNUserNotificationCenter = .current()
 let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacity: 500_000_000) // in bytes
 
 let mainLock: NSRecursiveLock = .init()
+
+let discordRPC: SwordRPC = .init(appId: "1191343317749870712")
 
 var launching: Game?
 

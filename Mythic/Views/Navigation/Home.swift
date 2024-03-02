@@ -19,6 +19,7 @@ import Cocoa
 import CachedAsyncImage
 import Glur
 import Shimmer
+import SwordRPC
 
 // MARK: - HomeView Struct
 /**
@@ -207,6 +208,17 @@ struct HomeView: View {
                     message: Text(LaunchError.message)
                 )
             }
+        }
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Looking at the Home View"
+                presence.state = "Idle"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
         }
     }
 }

@@ -16,6 +16,7 @@
 
 import SwiftUI
 import CachedAsyncImage
+import SwordRPC
 
 extension LibraryView.GameImportView {
     struct Local: View {
@@ -167,6 +168,17 @@ extension LibraryView.GameImportView {
                     game.path = .init()
                 }
                 
+                .task(priority: .background) { // TODO: same as in epicimport, can be unified?
+                    discordRPC.setPresence({
+                        var presence: RichPresence = .init()
+                        presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""
+                        presence.state = "Importing \(game.title)"
+                        presence.timestamps.start = .now
+                        presence.assets.largeImage = "macos_512x512_2x"
+                        
+                        return presence
+                    }())
+                }
             }
         }
     }

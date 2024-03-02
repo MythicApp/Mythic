@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import SwordRPC
 
 extension LibraryView.GameImportView {
     struct Epic: View {
@@ -184,6 +185,18 @@ extension LibraryView.GameImportView {
                 if let games = games, !games.isEmpty { game = games.first! }
                 installableGames = games ?? installableGames
                 isProgressViewSheetPresented = false
+            }
+            
+            .task(priority: .background) { // TODO: same as in localimport, can be unified?
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""
+                    presence.state = "Importing \(game.title)"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
             }
         }
     }

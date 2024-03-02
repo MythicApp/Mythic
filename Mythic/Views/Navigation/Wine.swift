@@ -14,6 +14,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import SwordRPC
 
 struct WineView: View {
     @State private var isBottleCreationViewPresented = false
@@ -21,6 +22,18 @@ struct WineView: View {
     var body: some View {
         BottleListView()
             .navigationTitle("Bottles")
+        
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.state = "Managing bottles"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
+            }
+        
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -31,6 +44,7 @@ struct WineView: View {
                     .help("Add a bottle")
                 }
             }
+        
             .sheet(isPresented: $isBottleCreationViewPresented) {
                 BottleCreationView(isPresented: $isBottleCreationViewPresented)
             }

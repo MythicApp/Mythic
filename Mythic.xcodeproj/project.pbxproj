@@ -61,6 +61,7 @@
 		6AC25CBD2AAED24700D395CF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC25CBC2AAED24700D395CF /* Settings.swift */; };
 		6AC3E1892B374D2E000EB765 /* VariableManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3E1882B374D2E000EB765 /* VariableManager.swift */; };
 		6AC4745D2AC07F0D00188D38 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4745C2AC07F0D00188D38 /* ProgressView.swift */; };
+		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6AD506562AAFF671008A28C1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506552AAFF671008A28C1 /* Home.swift */; };
 		6AD506582AAFF6CB008A28C1 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506572AAFF6CB008A28C1 /* Library.swift */; };
 		6AD5065A2AAFF6E2008A28C1 /* Wine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506592AAFF6E2008A28C1 /* Wine.swift */; };
@@ -148,6 +149,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */,
 				6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */,
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
@@ -521,6 +523,7 @@
 				6A12FF8D2B73AC4E00AA948C /* Glur */,
 				6A7A81152B77093600D19E32 /* ColorfulX */,
 				6A34366D2B8D7F1200D35BCA /* Shimmer */,
+				6AC742DC2B9314AB000EA1B2 /* SwordRPC */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -559,6 +562,7 @@
 				6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */,
 				6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */,
 				6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -805,7 +809,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2428;
+				CURRENT_PROJECT_VERSION = 2438;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -844,7 +848,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2428;
+				CURRENT_PROJECT_VERSION = 2438;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -944,6 +948,14 @@
 				minimumVersion = 0.3.8;
 			};
 		};
+		6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PKBeam/SwordRPC";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
@@ -992,6 +1004,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */;
 			productName = SemanticVersion;
+		};
+		6AC742DC2B9314AB000EA1B2 /* SwordRPC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */;
+			productName = SwordRPC;
 		};
 		6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OSLog
+import SwordRPC
 
 struct BottleListView: View {
     @State private var isBottleSettingsViewPresented = false
@@ -90,6 +91,17 @@ struct BottleListView: View {
                 }
                 .padding()
                 .fixedSize()
+                .task(priority: .background) {
+                    discordRPC.setPresence({
+                        var presence: RichPresence = .init()
+                        presence.details = "Configuring bottle \"\(selectedBottleName)\""
+                        presence.state = "Configuring Bottle"
+                        presence.timestamps.start = .now
+                        presence.assets.largeImage = "macos_512x512_2x"
+                        
+                        return presence
+                    }())
+                }
             }
             
             .alert(isPresented: $isDeletionAlertPresented) {

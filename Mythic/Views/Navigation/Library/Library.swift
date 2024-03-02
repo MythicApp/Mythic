@@ -16,6 +16,7 @@
 
 import SwiftUI
 import SwiftyJSON
+import SwordRPC
 
 // MARK: - LibraryView Struct
 /// A view displaying the user's library of games.
@@ -67,6 +68,17 @@ struct LibraryView: View {
                     }
                     .help("Refresh library")
                 }
+            }
+        
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.state = "Looking through their game library"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
             }
         
         // MARK: - Other Properties

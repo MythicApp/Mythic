@@ -18,6 +18,7 @@ import SwiftUI
 import MetalKit
 import ColorfulX
 import UserNotifications
+import SwordRPC
 
 struct OnboardingEvo: View {
     init(fromChapter: Chapter = .logo) {
@@ -724,7 +725,17 @@ struct OnboardingEvo: View {
                     }
                 }
             }
-            
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.details = "Getting Mythic set up"
+                    presence.state = "Onboarding"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
+            }
         }
     }
 }

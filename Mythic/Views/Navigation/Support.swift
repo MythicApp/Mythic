@@ -15,6 +15,7 @@
 
 import SwiftUI
 import Shimmer
+import SwordRPC
 
 struct SupportView: View {
     // TODO: https://arc.net/l/quote/icczlrwf
@@ -50,6 +51,18 @@ struct SupportView: View {
             }
         }
         .padding()
+        
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.state = "Looking for help"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
+        }
+        
         .navigationTitle("Support")
 }
 }

@@ -14,6 +14,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import SwordRPC
 
 struct SettingsView: View {
     @State private var isWineSectionExpanded: Bool = true
@@ -24,6 +25,7 @@ struct SettingsView: View {
     @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
+    @AppStorage("discordRPC") private var rpc: Bool = true
     
     @State private var isAlertPresented: Bool = false
     enum ActiveAlert {
@@ -41,7 +43,10 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
+                Toggle("Display Mythic activity status on Discord", isOn: $rpc)
+                
                 Toggle("Minimise to menu bar on game launch", isOn: $minimize)
+                
                 Toggle("Force quit all games when Mythic closes", isOn: $quitOnClose)
                 
                 HStack {
@@ -184,6 +189,16 @@ struct SettingsView: View {
             Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) { // TODO: to replace with Wine.defaultBottleSettings
                 BottleSettingsView(selectedBottle: .constant("Default"), withPicker: false)
             }
+        }
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.state = "Configuring Mythic"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
         }
         .formStyle(.grouped)
         .navigationTitle("Settings")

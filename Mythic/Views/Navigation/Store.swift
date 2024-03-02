@@ -14,6 +14,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import SwordRPC
 
 struct StoreView: View {
     @State private var loadingError = false
@@ -33,6 +34,18 @@ struct StoreView: View {
         )
         
         .navigationTitle("Store")
+        
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Currently browsing \(urlString)"
+                presence.state = "Looking for games to purchase"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
+        }
         
         .toolbar {
             

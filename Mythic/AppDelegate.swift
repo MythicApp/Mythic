@@ -16,14 +16,23 @@
 
 import SwiftUI
 import Sparkle
+import SwordRPC
 import UserNotifications
 import OSLog
 
-class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate {
     var updaterController: SPUStandardUpdaterController?
     var networkMonitor: NetworkMonitor?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // MARK: initialize default UserDefaults Values
+        UserDefaults.standard.register(
+            defaults: [
+                "discordRPC": true
+            ]
+        )
+        
+        // MARK: Applications folder disclaimer
 #if !DEBUG // TODO: possibly turn this into an onboarding-style message.
         let appURL = Bundle.main.bundleURL
         
@@ -49,6 +58,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         }
 #endif
         
+        // MARK: Notification Authorisation Request and Delegation Setting
         notifications.delegate = self
         notifications.getNotificationSettings { settings in
             guard settings.authorizationStatus != .authorized else { return }
@@ -61,9 +71,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             }
         }
         
+        // MARK: DiscordRPC Connection and Delegation Setting
+        discordRPC.delegate = self
+        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
     }
     
     func applicationWillTerminate(_ notification: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
+    }
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+}
+
+extension AppDelegate: SwordRPCDelegate {
+    func swordRPCDidConnect(_ rpc: SwordRPC) {
+        rpc.setPresence({
+            var presence: RichPresence = .init()
+            presence.details = "Just launched Mythic"
+            presence.state = "Idle"
+            presence.timestamps.start = .now
+            presence.assets.largeImage = "macos_512x512_2x"
+            
+            return presence
+        }())
     }
 }

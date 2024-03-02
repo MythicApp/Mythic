@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
+import SwordRPC
 
 struct BottleCreationView: View {
     @Binding var isPresented: Bool
@@ -106,11 +107,24 @@ struct BottleCreationView: View {
             }
         }
         .padding()
+        
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(
                 title: .init("Failed to boot \"\(bottleName).\""),
                 message: .init(bootErrorDescription)
             )
+        }
+        
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Currently creating bottle \"\(bottleName)\""
+                presence.state = "Creating a bottle"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
         }
     }
 }
