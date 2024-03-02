@@ -26,6 +26,7 @@ struct WineView: View {
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
+                    presence.details = "Managing their Windows® Instances"
                     presence.state = "Managing bottles"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"

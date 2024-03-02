@@ -55,7 +55,8 @@ struct SupportView: View {
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.state = "Looking for help"
+                presence.details = "Looking for help"
+                presence.state = "Viewing Support"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
                 

@@ -17,6 +17,7 @@
 import SwiftUI
 import SwiftyJSON
 import CachedAsyncImage
+import SwordRPC
 
 extension GameListView {
     // MARK: - SettingsView
@@ -325,6 +326,17 @@ extension GameListView {
             }
             .padding()
             .frame(width: 600)
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.details = "Configuring \(game.platform?.rawValue ?? .init()) game \"\(game.title)\""
+                    presence.state = "Configuring \(game.title)"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
+            }
             .alert(isPresented: $isMovingGameErrorPresented) {
                 .init(
                     title: .init("Unable to move \(game.title)."),

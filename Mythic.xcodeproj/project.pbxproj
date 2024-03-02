@@ -18,7 +18,6 @@
 		6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */; };
 		6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
-		6A11CF902B8F821400124E0D /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A12FF902B73AFCE00AA948C /* BottleSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */; };
 		6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1322372B1C98AE0049BB64 /* InstallStatus.swift */; };
@@ -62,6 +61,7 @@
 		6AC3E1892B374D2E000EB765 /* VariableManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC3E1882B374D2E000EB765 /* VariableManager.swift */; };
 		6AC4745D2AC07F0D00188D38 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC4745C2AC07F0D00188D38 /* ProgressView.swift */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
+		6AC742E12B933487000EA1B2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6AC742E02B933487000EA1B2 /* Localizable.xcstrings */; };
 		6AD506562AAFF671008A28C1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506552AAFF671008A28C1 /* Home.swift */; };
 		6AD506582AAFF6CB008A28C1 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506572AAFF6CB008A28C1 /* Library.swift */; };
 		6AD5065A2AAFF6E2008A28C1 /* Wine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506592AAFF6E2008A28C1 /* Wine.swift */; };
@@ -89,7 +89,6 @@
 		6A0585472ADEC17300165C3C /* WhiskyInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterface.swift; sourceTree = "<group>"; };
 		6A0BB7AA2B501A2200C8A693 /* LocalImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImport.swift; sourceTree = "<group>"; };
 		6A0BB7AC2B501A3400C8A693 /* EpicImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicImport.swift; sourceTree = "<group>"; };
-		6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottleSettings.swift; sourceTree = "<group>"; };
 		6A1322372B1C98AE0049BB64 /* InstallStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallStatus.swift; sourceTree = "<group>"; };
 		6A1417B72AF7CCD80022DE24 /* FileLocations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
@@ -130,6 +129,7 @@
 		6AC25CBE2AAEFF5100D395CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6AC3E1882B374D2E000EB765 /* VariableManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableManager.swift; sourceTree = "<group>"; };
 		6AC4745C2AC07F0D00188D38 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		6AC742E02B933487000EA1B2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6AD506552AAFF671008A28C1 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		6AD506572AAFF6CB008A28C1 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		6AD506592AAFF6E2008A28C1 /* Wine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wine.swift; sourceTree = "<group>"; };
@@ -402,7 +402,7 @@
 				6AC3E18A2B374F3C000EB765 /* Deprecated */,
 				6AAF14DE2B271DF4000B1BA2 /* legendary */,
 				6AB4749C2AACBBEA00AB9C63 /* Assets.xcassets */,
-				6A11CF8F2B8F821400124E0D /* Localizable.xcstrings */,
+				6AC742E02B933487000EA1B2 /* Localizable.xcstrings */,
 				6AB474A12AACBBEA00AB9C63 /* Mythic.entitlements */,
 				6A721B2A2B8A4BD600A4EA3C /* Credits.rtf */,
 				6AB4749E2AACBBEA00AB9C63 /* Preview Content */,
@@ -579,7 +579,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A721B2B2B8A4BD600A4EA3C /* Credits.rtf in Resources */,
-				6A11CF902B8F821400124E0D /* Localizable.xcstrings in Resources */,
+				6AC742E12B933487000EA1B2 /* Localizable.xcstrings in Resources */,
 				6AB474A02AACBBEA00AB9C63 /* Preview Assets.xcassets in Resources */,
 				6AB4749D2AACBBEA00AB9C63 /* Assets.xcassets in Resources */,
 				6AAF14DF2B271DF4000B1BA2 /* legendary in Resources */,
@@ -809,7 +809,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2438;
+				CURRENT_PROJECT_VERSION = 2442;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -848,7 +848,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2438;
+				CURRENT_PROJECT_VERSION = 2442;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
