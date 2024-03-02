@@ -1,30 +1,189 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
-
-    },
-    "(%@)" : {
-
-    },
-    "(Don't worry, you can still install Mythic Engine later.)" : {
-
-    },
-    "(optional)" : {
-
-    },
-    "(please restart Mythic.)" : {
-
-    },
-    "(supports selective downloads.)" : {
-
-    },
-    "%@" : {
-
-    },
     "%@ %@ (%@)" : {
       "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@ (%3$@)"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ %2$@ (%3$@)"
@@ -32,36 +191,189 @@
         }
       }
     },
-    "%@ Settings" : {
-
-    },
-    "%lld%%" : {
-
-    },
-    "%lld%% complete" : {
-
-    },
-    "A link should've opened in your browser. If not, click" : {
-
-    },
-    "Add a bottle" : {
-
-    },
-    "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
-
-    },
-    "Are you sure you want to delete \"%@\"?" : {
-
-    },
-    "Are you sure you want to sign out?" : {
-
-    },
-    "Are you sure you want to skip Mythic Engine installation?" : {
-
-    },
     "Are you sure you want to stop %@ %@?" : {
       "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Are you sure you want to stop %1$@ %2$@?"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to stop %1$@ %2$@?"
@@ -69,108 +381,189 @@
         }
       }
     },
-    "Are you sure you want to uninstall \"%@\"?" : {
-
-    },
-    "Automatically check for updates" : {
-
-    },
-    "Automatically download updates" : {
-
-    },
-    "Bottles" : {
-
-    },
-    "Browse..." : {
-
-    },
-    "Can't connect." : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Check for Updates..." : {
-
-    },
-    "Check out Mythic Engine" : {
-
-    },
-    "Choose a name for your bottle:" : {
-
-    },
-    "Choose the default base path for games:" : {
-
-    },
-    "Choose the game's native platform:" : {
-
-    },
-    "Clean Up Miscallaneous Caches" : {
-
-    },
-    "Close" : {
-
-    },
-    "Configure default settings for \"%@\"" : {
-
-    },
-    "Configure Mythic" : {
-
-    },
-    "Connect to the internet to download %@." : {
-
-    },
-    "Connect to the internet to update %@." : {
-
-    },
-    "Create a bottle" : {
-
-    },
-    "Current Bottle" : {
-
-    },
-    "Current bottle:" : {
-
-    },
-    "Damn." : {
-
-    },
-    "DASHBOARD" : {
-
-    },
-    "Default Bottle Settings" : {
-
-    },
-    "Default Bottle Setup" : {
-
-    },
-    "Delete" : {
-
-    },
-    "Delete \"%@\"" : {
-
-    },
-    "Dismiss loading" : {
-
-    },
-    "Display Mythic activity status on Discord" : {
-
-    },
-    "Doing this means you can only play macOS-supported games.\n" : {
-
-    },
-    "Don't run uninstaller" : {
-
-    },
-    "Done" : {
-
-    },
-    "Download %@" : {
-
-    },
     "Downloaded %lf MiB, Written %lf MiB." : {
       "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
@@ -178,18 +571,189 @@
         }
       }
     },
-    "Downloading Game Porting Toolkit..." : {
-
-    },
-    "Downloading Mythic Engine..." : {
-
-    },
-    "DXVK" : {
-
-    },
     "Elapsed: %@, ETA: %@" : {
       "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Elapsed: %1$@, ETA: %2$@"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Elapsed: %1$@, ETA: %2$@"
@@ -197,426 +761,195 @@
         }
       }
     },
-    "Enhanced Sync (MSync)" : {
-
-    },
-    "Enter authorisation key..." : {
-
-    },
-    "Enter the 'authorisationCode' from the JSON response in the field below." : {
-
-    },
-    "Enter Thumbnail URL here... (optional)" : {
-
-    },
-    "Epic" : {
-
-    },
-    "Error" : {
-
-    },
-    "Error importing game" : {
-
-    },
-    "Error installing %@." : {
-
-    },
-    "Error installing GPTK." : {
-
-    },
-    "Error launching %@." : {
-
-    },
-    "Error uninstalling %@." : {
-
-    },
-    "Everything in one place" : {
-
-    },
-    "Failed to boot \"%@.\"" : {
-
-    },
-    "Failed to install Mythic Engine." : {
-
-    },
-    "Failed to load the webpage." : {
-
-    },
-    "Failed to set up default bottle." : {
-
-    },
-    "Favourites (Not implemented yet)" : {
-
-    },
-    "File" : {
-
-    },
-    "File/Folder is not readable by Mythic." : {
-
-    },
-    "Folder is not writable." : {
-
-    },
-    "Force quit all games when Mythic closes" : {
-
-    },
-    "Force Quit Applications" : {
-
-    },
-    "Game integrity verification is required." : {
-
-    },
-    "Game location" : {
-
-    },
-    "Get support/Support Mythic" : {
-
-    },
-    "here." : {
-
-    },
-    "Hey, %@!" : {
-
-    },
-    "Home" : {
-
-    },
-    "Import a game" : {
-
-    },
-    "Import a Game" : {
-
-    },
-    "Import with DLCs" : {
-
-    },
-    "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection." : {
-
-    },
-    "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes or less,\ndepending on your internet connection." : {
-
-    },
-    "Initializing..." : {
-
-    },
-    "Install" : {
-
-    },
-    "Install \"%@\"" : {
-
-    },
-    "Install Mythic Engine" : {
-
-    },
-    "Installed" : {
-
-    },
-    "Installing [unknown]..." : {
-
-    },
-    "Installing %@" : {
-
-    },
-    "Installing %@..." : {
-
-    },
-    "Installing Game Porting Toolkit..." : {
-
-    },
-    "Installing Mythic Engine..." : {
-
-    },
-    "It appears loading's taking a while." : {
-
-    },
-    "Keep files" : {
-
-    },
-    "Keep waiting (dismissable with esc)" : {
-
-    },
-    "Later" : {
-
-    },
-    "Launch %@" : {
-
-    },
-    "Launch Configurator" : {
-
-    },
-    "Launch Winetricks" : {
-
-    },
-    "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
-
-    },
-    "Library" : {
-
-    },
-    "Local" : {
-
-    },
-    "Manage containers for Windows® applications" : {
-
-    },
-    "Manage Downloads" : {
-
-    },
-    "MANAGEMENT" : {
-
-    },
-    "Minimise to menu bar on game launch" : {
-
-    },
-    "Modify default settings for \"%@\"" : {
-
-    },
-    "Move %@" : {
-
-    },
-    "Move..." : {
-
-    },
-    "Mythic" : {
-
-    },
-    "Mythic cannot connect to the internet." : {
-
-    },
-    "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
-
-    },
-    "Mythic Engine is not installed!" : {
-
-    },
-    "Mythic is checking the connection to Epic." : {
-
-    },
-    "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
-
-    },
-    "Mythic is currently moving \"%@\"." : {
-
-    },
-    "Mythic is not connected to the internet." : {
-
-    },
-    "Mythic is now setting up your default bottle to play Windows® games." : {
-
-    },
-    "Mythic is unable to connect to the internet. App functionality will be limited." : {
-
-    },
-    "Mythic setup is now complete." : {
-
-    },
-    "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
-
-    },
-    "Mythic!" : {
-
-    },
-    "Next" : {
-
-    },
-    "Not implemented" : {
-
-    },
-    "Not implemented yet" : {
-
-    },
-    "OK" : {
-
-    },
-    "OK!" : {
-
-    },
-    "Performance HUD" : {
-
-    },
-    "Play" : {
-
-    },
     "Progress: %lld%% (%lld/%lld objects)" : {
       "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
         "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "en-US" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
+          }
+        },
+        "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
           }
         }
       }
-    },
-    "Purchase new games from Epic" : {
-
-    },
-    "Purge Shader Cache" : {
-
-    },
-    "Quit Mythic" : {
-
-    },
-    "RECENTLY PLAYED" : {
-
-    },
-    "Refresh library" : {
-
-    },
-    "Remove Mythic Engine" : {
-
-    },
-    "Reset Mythic" : {
-
-    },
-    "Reset settings to default" : {
-
-    },
-    "Reset to Default" : {
-
-    },
-    "Restart Onboarding..." : {
-
-    },
-    "Retina Mode" : {
-
-    },
-    "Retina Mode cannot be modified: %@" : {
-
-    },
-    "Retry" : {
-
-    },
-    "Search" : {
-
-    },
-    "Select a game:" : {
-
-    },
-    "Settings" : {
-
-    },
-    "Show in Finder" : {
-
-    },
-    "Sign In" : {
-
-    },
-    "Sign in to Epic Games" : {
-
-    },
-    "Sign Out" : {
-
-    },
-    "Skip" : {
-
-    },
-    "Skip this step" : {
-
-    },
-    "Sorry, this isn't implemented yet!" : {
-
-    },
-    "Stop" : {
-
-    },
-    "Store" : {
-
-    },
-    "Submit" : {
-
-    },
-    "Support" : {
-
-    },
-    "The backend that allows you to play Windows® games on macOS just got an update." : {
-
-    },
-    "This process cannot be undone." : {
-
-    },
-    "This will sign you out of the account \"%@\"." : {
-
-    },
-    "Time for an update!" : {
-
-    },
-    "Toggle sidebar" : {
-
-    },
-    "Unable to boot default bottle." : {
-
-    },
-    "Unable to fetch bottles." : {
-
-    },
-    "Unable to move %@." : {
-
-    },
-    "Uninstall" : {
-
-    },
-    "Uninstall \"%@\"" : {
-
-    },
-    "Update" : {
-
-    },
-    "Update %@" : {
-
-    },
-    "UUID: %@" : {
-
-    },
-    "Verify" : {
-
-    },
-    "Verify the game's integrity" : {
-
-    },
-    "View your games" : {
-
-    },
-    "Welcome to %@" : {
-
-    },
-    "Welcome to Mythic." : {
-
-    },
-    "What should we call this game?" : {
-
-    },
-    "Where do you want the bottle's base path to be located?" : {
-
-    },
-    "Where do you want the game's base path to be located?" : {
-
-    },
-    "Where is the game located?" : {
-
-    },
-    "Whisky installed!" : {
-
-    },
-    "Whisky is not installed!" : {
-
-    },
-    "Wine" : {
-
-    },
-    "Wine/Mythic Engine" : {
-
-    },
-    "Without Mythic Engine, you'll be unable to launch windows games." : {
-
-    },
-    "You can't delete the default bottle." : {
-
-    },
-    "You probably left this open while installing. Your install has finished." : {
-
-    },
-    "You're all set!" : {
-
     }
   },
   "version" : "1.0"
