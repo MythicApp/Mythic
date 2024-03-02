@@ -212,7 +212,7 @@ struct HomeView: View {
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.details = "Looking at the Home View"
+                presence.details = "Viewing home"
                 presence.state = "Idle"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"

@@ -44,6 +44,13 @@ struct SettingsView: View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
                 Toggle("Display Mythic activity status on Discord", isOn: $rpc)
+                    .onChange(of: rpc) { _, newValue in
+                        if newValue {
+                            _ = discordRPC.connect()
+                        } else {
+                            discordRPC.disconnect()
+                        }
+                    }
                 
                 Toggle("Minimise to menu bar on game launch", isOn: $minimize)
                 
@@ -115,7 +122,6 @@ struct SettingsView: View {
                 .disabled(true)
                 .help("Not implemented yet")
                 
-                UpdaterSettingsView(updater: MythicApp().updaterController.updater)
             }
             
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
@@ -193,6 +199,7 @@ struct SettingsView: View {
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
+                presence.details = "Tweaking some settings"
                 presence.state = "Configuring Mythic"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"

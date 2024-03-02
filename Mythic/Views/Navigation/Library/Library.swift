@@ -73,7 +73,8 @@ struct LibraryView: View {
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
-                    presence.state = "Looking through their game library"
+                    presence.details = "Looking through their game library"
+                    presence.state = "Viewing Library"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
                     
