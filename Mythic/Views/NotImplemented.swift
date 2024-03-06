@@ -42,15 +42,7 @@ struct NotImplementedView: View {
  - Returns: An Alert instance.
  */
 func notImplementedAlert(isPresented: Binding<Bool>, warning: String? = nil) -> Alert {
-    return Alert(
-        title: Text("Not implemented"),
-        primaryButton: .default(Text("OK!")) {
-            isPresented.wrappedValue = false
-        },
-        secondaryButton: .destructive(Text("Damn.")) {
-            isPresented.wrappedValue = false
-        }
-    )
+    return .init(title: .init("Sorry, this isn't implemented yet!"))
 }
 
 // MARK: - Preview
