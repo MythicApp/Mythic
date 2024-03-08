@@ -305,7 +305,7 @@ struct OnboardingEvo: View {
                                 .font(.bold(.title)())
                                 .scaledToFit()
                                 .foregroundStyle(.white)
-                                .task { _ = try? await Legendary.getInstallable() }
+                                .task { _ = try? Legendary.getInstallable() }
                             
                             Image("EGFaceless")
                                 .resizable()
@@ -465,7 +465,7 @@ struct OnboardingEvo: View {
                         .alert(isPresented: $isSkipEngineInstallationAlertPresented) {
                             Alert(
                                 title: .init("Are you sure you want to skip Mythic Engine installation?"),
-                                message: .init("Without Mythic Engine, you'll be unable to launch windows games."),
+                                message: .init("Without Mythic Engine, you'll be unable to launch Windows® games."),
                                 primaryButton: .default(.init("Skip")) { currentChapter = .finished },
                                 secondaryButton: .cancel()
                             )

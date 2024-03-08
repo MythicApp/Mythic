@@ -16,6 +16,7 @@
 
 import SwiftUI
 import SwordRPC
+import OSLog
 
 extension LibraryView.GameImportView {
     struct Epic: View {
@@ -26,6 +27,8 @@ extension LibraryView.GameImportView {
         @State private var game: Game = placeholderGame(type: .epic)
         @State private var path: String = .init()
         @State private var platform: GamePlatform = .macOS
+        
+        @State private var supportedPlatforms: [GamePlatform]?
         
         @State private var withDLCs: Bool = false
         @State private var checkIntegrity: Bool = false
@@ -51,10 +54,18 @@ extension LibraryView.GameImportView {
                             .controlSize(.small)
                     }
                 }
-                
-                Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
-                    ForEach(type(of: platform).allCases, id: \.self) {
-                        Text($0.rawValue)
+                if supportedPlatforms == nil {
+                    HStack {
+                        Text("Choose the game's native platform:")
+                        Spacer()
+                        ProgressView()
+                            .controlSize(.small)
+                    }
+                } else {
+                    Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
+                        ForEach(supportedPlatforms!, id: \.self) {
+                            Text($0.rawValue)
+                        }
                     }
                 }
                 
@@ -112,6 +123,23 @@ extension LibraryView.GameImportView {
                 }
             }
             .formStyle(.grouped)
+            .onChange(of: game) {
+                if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
+                    supportedPlatforms = fetchedPlatforms.keys
+                        .compactMap { key in
+                            switch key {
+                            case "Windows": return .windows
+                            case "Mac": return .macOS
+                            default: return nil
+                            }
+                        }
+                    
+                    platform = supportedPlatforms!.first!
+                } else {
+                    Logger.app.info("Unable to fetch supported platforms for \(game.title).")
+                    supportedPlatforms = GamePlatform.allCases
+                }
+            }
             
             HStack {
                 Button("Cancel", role: .cancel) {
@@ -135,8 +163,7 @@ extension LibraryView.GameImportView {
                                     "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
                                     game.appName,
                                     path
-                                ]
-                                    .compactMap { $0 },
+                                ] .compactMap { $0 },
                                 useCache: false,
                                 identifier: "gameImport"
                             )
@@ -177,11 +204,12 @@ extension LibraryView.GameImportView {
                     }
                 }
                 .disabled(path.isEmpty)
+                .disabled(supportedPlatforms == nil)
                 .buttonStyle(.borderedProminent)
             }
             
             .task(priority: .userInitiated) {
-                let games = try? await Legendary.getInstallable()
+                let games = try? Legendary.getInstallable()
                 if let games = games, !games.isEmpty { game = games.first! }
                 installableGames = games ?? installableGames
                 isProgressViewSheetPresented = false

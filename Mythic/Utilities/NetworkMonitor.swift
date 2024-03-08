@@ -16,7 +16,6 @@
 
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
-
 import Foundation
 import Network
 

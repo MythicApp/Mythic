@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@available(*, deprecated, message: "brink of deprecation 🙏🏾")
 struct InstallationProgressView: View {
     @ObservedObject var gameModification: GameModification = .shared
     @State private var isStopGameModificationAlertPresented: Bool = false
@@ -32,27 +33,17 @@ struct InstallationProgressView: View {
             .buttonStyle(.plain)
             
             Button {
-                // TODO: implement
-            } label: {
-                Image(systemName: "pause.fill")
-                    .foregroundStyle(.orange)
-                    .padding(.leading)
-            }
-            .buttonStyle(.plain)
-            .controlSize(.regular)
-            .disabled(true)
-            .help("Not implemented yet")
-            
-            Button {
                 isStopGameModificationAlertPresented = true
             } label: {
                 Image(systemName: "stop.fill")
                     .foregroundStyle(.red)
                     .padding(.leading)
             }
+            .scaledToFit()
             .buttonStyle(.plain)
             .controlSize(.regular)
         }
+        .scaledToFill()
         .alert(isPresented: $isStopGameModificationAlertPresented) {
             stopGameModificationAlert(
                 isPresented: $isStopGameModificationAlertPresented,

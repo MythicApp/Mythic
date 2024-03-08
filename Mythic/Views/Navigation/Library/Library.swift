@@ -33,7 +33,8 @@ struct LibraryView: View {
     
     // MARK: - Body
     var body: some View {
-        GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
+        // GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
+        GameListEvo()
             .navigationTitle("Library")
         
         // MARK: - Toolbar
@@ -84,11 +85,8 @@ struct LibraryView: View {
         
         // MARK: - Other Properties
             .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .top) {
-                List {
                     Text("Installing \(GameModification.shared.game?.title ?? "game")")
                     InstallationProgressView()
-                }
-                .listStyle(.automatic)
             }
         
             .sheet(isPresented: $addGameModalPresented) {

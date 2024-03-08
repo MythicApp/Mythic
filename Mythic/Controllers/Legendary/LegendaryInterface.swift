@@ -317,8 +317,7 @@ class Legendary {
             "install",
             type == .repair ? "--repair" : nil,
             type == .update ? "--update-only": nil
-        ]
-            .compactMap { $0 }
+        ] .compactMap { $0 }
         
         if type == .install { // Install-only arguments
             switch platform {
@@ -511,14 +510,15 @@ class Legendary {
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
         
-        VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
+        GameModification.shared.launching = game
+        
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
         var args = [
             "launch",
             game.appName,
             needsUpdate(game: game) ? "--skip-version-check" : nil,
-            online ? nil : "--offline",
+            online ? nil : "--offline"
         ] .compactMap { $0 }
         
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
@@ -530,7 +530,7 @@ class Legendary {
         }
         
         await command(args: args, useCache: false, identifier: "launch_\(game.appName)", additionalEnvironmentVariables: environmentVariables)
-        VariableManager.shared.setVariable("launching_\(game.appName)", value: false)
+        GameModification.shared.launching = nil
     }
     
     /*
@@ -741,7 +741,7 @@ class Legendary {
      
      - Returns: An `Array` of ``Game`` objects.
      */
-    static func getInstallable() async throws -> [Mythic.Game] {
+    static func getInstallable() throws -> [Mythic.Game] {
         guard signedIn() else { throw NotSignedInError() }
         
         let metadata = "\(configLocation)/metadata"

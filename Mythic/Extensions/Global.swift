@@ -36,9 +36,7 @@ let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacit
 
 let mainLock: NSRecursiveLock = .init()
 
-let discordRPC: SwordRPC = .init(appId: "1191343317749870712")
-
-var launching: Game?
+let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
 
 struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
@@ -57,30 +55,55 @@ enum GameType: String, CaseIterable, Codable {
 }
 
 struct Game: Hashable, Codable {
+    init(type: GameType, title: String, appName: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
+        self.type = type
+        self.title = title
+        self.appName = appName
+        self.platform = (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
+        self.imageURL = (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
+        self.path = (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
+    }
+    
     var type: GameType
     var title: String
     var appName: String = UUID().uuidString
-    // var defaultBottle: Wine.Bottle? = Wine.allBottles?["Default"] // TODO: should be appstorage
     var platform: GamePlatform?
     var bottleName: String {
         get {
-            if let bottleName = defaults.string(forKey: "\(self.appName)_defaultBottle"),
+            if let bottleName = defaults.string(forKey: "\(appName)_defaultBottle"),
                Wine.allBottles?[bottleName] != nil {
                 return bottleName
             } else {
-                defaults.set("Default", forKey: "\(self.appName)_defaultBottle")
+                defaults.set("Default", forKey: "\(appName)_defaultBottle")
                 return "Default"
             }
         }
         set {
             if Wine.allBottles?[newValue] != nil {
-                defaults.set(newValue, forKey: "\(self.appName)_defaultBottle")
+                defaults.set(newValue, forKey: "\(appName)_defaultBottle")
+            }
+        }
+    }
+    
+    var isFavourited: Bool {
+        get { favouriteGames.contains(appName) }
+        set {
+            if newValue {
+                favouriteGames.insert(appName)
+            } else {
+                favouriteGames.remove(appName)
             }
         }
     }
     
     var imageURL: URL?
     var path: String?
+}
+
+/// Returns the app names of all favourited games.
+var favouriteGames: Set<String> {
+    get { return Set(defaults.stringArray(forKey: "favouriteGames") ?? .init()) }
+    set { defaults.set(Array(newValue), forKey: "favouriteGames") }
 }
 
 enum GameModificationType: String {
@@ -97,12 +120,14 @@ enum GameModificationType: String {
     var status: [String: [String: Any]]?
     
     static func reset() {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             shared.game = nil
             shared.type = nil
             shared.status = nil
         }
     }
+    
+    var launching: Game? // no other place bruh
 }
 
 /// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise

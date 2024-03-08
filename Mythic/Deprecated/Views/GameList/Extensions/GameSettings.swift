@@ -290,33 +290,6 @@ extension GameListView {
                     Spacer()
                     
                     Button {
-                        isPresented = false
-                    } label: {
-                        Image(systemName: "checkmark.gobackward")
-                        Text("Verify")
-                    }
-                    .help("Not implemented")
-                    .disabled(true)
-                    
-                    Button {
-                        isPresented = false
-                    } label: {
-                        Image(systemName: "xmark.bin")
-                        Text("Uninstall")
-                    }
-                    .help("Not implemented")
-                    .disabled(true)
-                    
-                    Button {
-                        isPresented = false
-                    } label: {
-                        Image(systemName: "play")
-                        Text("Play")
-                    }
-                    .help("Not implemented")
-                    .disabled(true)
-                    
-                    Button {
                         isPresented =  false
                     } label: {
                         Text("Close")
