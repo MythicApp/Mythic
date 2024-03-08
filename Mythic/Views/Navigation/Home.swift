@@ -54,7 +54,7 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     
     // MARK: - Body
-    var body: some View {
+    var body: some View { // TODO: revamp
         HStack {
             // MARK: - Recent Game Display
             VStack {
@@ -65,7 +65,7 @@ struct HomeView: View {
                             from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
                         ), Legendary.signedIn() {
                             // MARK: Image
-                            CachedAsyncImage(url: URL(string: Legendary.getImage(of: recentlyPlayedGame!, type: .tall)), urlCache: gameImageURLCache) { phase in
+                            CachedAsyncImage(url: recentlyPlayedGame?.imageURL, urlCache: gameImageURLCache) { phase in
                                 switch phase {
                                 case .empty:
                                     ProgressView()
@@ -130,11 +130,25 @@ struct HomeView: View {
                                                     Task(priority: .userInitiated) {
                                                         do {
                                                             if let recentlyPlayedGame = recentlyPlayedGame {
-                                                                try await Legendary.launch(
-                                                                    game: recentlyPlayedGame,
-                                                                    bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!,
-                                                                    online: networkMonitor.isEpicAccessible
-                                                                )
+                                                                switch recentlyPlayedGame.type {
+                                                                case .epic:
+                                                                    if Libraries.isInstalled() {
+                                                                        try await Legendary.launch(
+                                                                            game: recentlyPlayedGame,
+                                                                            bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!,
+                                                                            online: networkMonitor.isEpicAccessible
+                                                                        )
+                                                                    } else {
+                                                                        let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                                                        app.onboardingChapter = .engineDisclaimer
+                                                                        app.isFirstLaunch = true
+                                                                    }
+                                                                case .local:
+                                                                    try await LocalGames.launch(
+                                                                        game: recentlyPlayedGame,
+                                                                        bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!
+                                                                    )
+                                                                }
                                                                 
                                                                 if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
                                                             }

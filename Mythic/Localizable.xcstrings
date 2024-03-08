@@ -132,9 +132,6 @@
     "Current bottle:" : {
 
     },
-    "Damn." : {
-
-    },
     "DASHBOARD" : {
 
     },
@@ -218,10 +215,16 @@
     "Error importing game" : {
 
     },
+    "Error installing \"%@\"." : {
+
+    },
     "Error installing %@." : {
 
     },
     "Error installing GPTK." : {
+
+    },
+    "Error launching \"%@\"." : {
 
     },
     "Error launching %@." : {
@@ -243,6 +246,9 @@
 
     },
     "Failed to set up default bottle." : {
+
+    },
+    "Favourite \"%@\"" : {
 
     },
     "Favourites (Not implemented yet)" : {
@@ -267,6 +273,9 @@
 
     },
     "Game location" : {
+
+    },
+    "Game verification is required for \"%@\"." : {
 
     },
     "Get support/Support Mythic" : {
@@ -371,6 +380,9 @@
     "Modify default settings for \"%@\"" : {
 
     },
+    "Modify settings for \"%@\"" : {
+
+    },
     "Move %@" : {
 
     },
@@ -419,22 +431,16 @@
     "Next" : {
 
     },
-    "Not implemented" : {
-
-    },
     "Not implemented yet" : {
 
     },
     "OK" : {
 
     },
-    "OK!" : {
-
-    },
     "Performance HUD" : {
 
     },
-    "Play" : {
+    "Play \"%@\"" : {
 
     },
     "Progress: %lld%% (%lld/%lld objects)" : {
@@ -519,6 +525,9 @@
     "Stop" : {
 
     },
+    "Stop installing \"%@\"" : {
+
+    },
     "Store" : {
 
     },
@@ -552,6 +561,9 @@
     "Unable to move %@." : {
 
     },
+    "Unable to uninstall \"%@\"." : {
+
+    },
     "Uninstall" : {
 
     },
@@ -561,13 +573,13 @@
     "Update" : {
 
     },
+    "Update \"%@\"" : {
+
+    },
     "Update %@" : {
 
     },
     "UUID: %@" : {
-
-    },
-    "Verify" : {
 
     },
     "Verify the game's integrity" : {
@@ -594,19 +606,13 @@
     "Where is the game located?" : {
 
     },
-    "Whisky installed!" : {
-
-    },
-    "Whisky is not installed!" : {
-
-    },
     "Wine" : {
 
     },
     "Wine/Mythic Engine" : {
 
     },
-    "Without Mythic Engine, you'll be unable to launch windows games." : {
+    "Without Mythic Engine, you'll be unable to launch Windows® games." : {
 
     },
     "You can't delete the default bottle." : {

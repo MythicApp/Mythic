@@ -157,7 +157,7 @@ struct GameListView: View {
     
     var body: some View {
         ScrollView(.horizontal) {
-            LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) {
+            LazyHGrid(rows: [GridItem(.adaptive(minimum: 335))], spacing: 15) { // also lazyloads images
                 if dataFetched {
                     ForEach(Array(installableGames.enumerated().filter {
                         searchText.isEmpty || $0.element.title.localizedCaseInsensitiveContains(searchText)
@@ -166,7 +166,6 @@ struct GameListView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.background)
                                 .frame(width: 220, height: 335)
-                                .offset(y: -5)
                             
                             VStack {
                                 if let gamePath = game.path, game.imageURL == nil && game.platform == .macOS {
@@ -185,6 +184,7 @@ struct GameListView: View {
                                             .modifier(FadeInModifier())
                                             .frame(width: 200)
                                     }
+                                    .frame(width: 200, height: 400/1.5)
                                 } else {
                                     CachedAsyncImage(
                                         url: game.type == .epic
@@ -273,7 +273,8 @@ struct GameListView: View {
                                                         
                                                         try await Legendary.install(
                                                             game: game,
-                                                            platform: try Legendary.getGamePlatform(game: game)
+                                                            platform: try Legendary.getGamePlatform(game: game),
+                                                            type: .update
                                                         )
                                                         
                                                         isRefreshCalled = true
@@ -435,7 +436,7 @@ struct GameListView: View {
                 
                 group.enter()
                 Task(priority: .userInitiated) {
-                    let games = (try? await Legendary.getInstallable()) ?? .init()
+                    let games = (try? Legendary.getInstallable()) ?? .init()
                     if !games.isEmpty { installableGames = games + (LocalGames.library ?? .init()) }
                     group.leave()
                 }
@@ -491,14 +492,6 @@ struct GameListView: View {
                 isAlertPresented: $isAlertPresented,
                 failedGame: $failedGame,
                 uninstallationErrorMessage: $uninstallationErrorMessage
-            )
-        }
-        
-        .sheet(isPresented: $isPlayDefaultViewPresented) {
-            GameListView.PlayDefaultView(
-                isPresented: $isPlayDefaultViewPresented,
-                game: $currentGame,
-                isGameListRefreshCalled: $isRefreshCalled
             )
         }
         

@@ -81,6 +81,7 @@ extension GameListView {
                 
                 Form {
                     HStack {
+                        
                         VStack {
                             HStack { // FIXME: jank
                                 Text("Where do you want the game's base path to be located?")

@@ -76,7 +76,7 @@ class LocalGames {
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
             guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
             
-            VariableManager.shared.setVariable("launching_\(game.appName)", value: true)
+            GameModification.shared.launching = game
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             try await Wine.command(
@@ -92,6 +92,6 @@ class LocalGames {
         case .none: do { /* TODO: Error */ }
         }
         
-        VariableManager.shared.setVariable("launching_\(game.title)", value: false)
+        GameModification.shared.launching = nil
     }
 }

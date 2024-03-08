@@ -49,176 +49,202 @@ struct MainView: View {
     
     // MARK: - Body
     var body: some View {
-        NavigationView {
-            List {
-                Text("DASHBOARD")
-                    .font(.system(size: 10))
-                    .fontWeight(.bold)
-                
-                Group {
-                    NavigationLink(destination: HomeView()) {
-                        Label("Home", systemImage: "house")
-                            .foregroundStyle(.primary)
-                            .help("Everything in one place")
+        NavigationSplitView(
+            sidebar: {
+                List {
+                    Text("DASHBOARD")
+                        .font(.system(size: 10))
+                        .fontWeight(.bold)
+                    
+                    Group {
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                HomeView().transition(.slide)
+                            }
+                        ) {
+                            Label("Home", systemImage: "house")
+                                .foregroundStyle(.primary)
+                                .help("Everything in one place")
+                        }
+                        
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                LibraryView().transition(.slide)
+                            }
+                        ) {
+                            Label("Library", systemImage: "books.vertical")
+                                .foregroundStyle(.primary)
+                                .help("View your games")
+                        }
+                        
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                StoreView().transition(.slide)
+                            }
+                        ) {
+                            Label("Store", systemImage: "basket")
+                                .foregroundStyle(.primary)
+                                .help("Purchase new games from Epic")
+                        }
                     }
                     
-                    NavigationLink(destination: LibraryView()) {
-                        Label("Library", systemImage: "books.vertical")
-                            .foregroundStyle(.primary)
-                            .help("View your games")
+                    Spacer()
+                    
+                    Text("MANAGEMENT")
+                        .font(.system(size: 10))
+                        .fontWeight(.bold)
+                    
+                    Group {
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                WineView().transition(.slide)
+                            }
+                        ) {
+                            Label("Wine", systemImage: "wineglass")
+                                .foregroundStyle(.primary)
+                                .help("Manage containers for Windows® applications")
+                        }
+                        
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                SettingsView().transition(.slide)
+                            }
+                        ) {
+                            Label("Settings", systemImage: "gear")
+                                .foregroundStyle(.primary)
+                                .help("Configure Mythic")
+                        }
+                        
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                SupportView().transition(.slide)
+                            }
+                        ) {
+                            Label("Support", systemImage: "questionmark.bubble")
+                                .foregroundStyle(.primary)
+                                .help("Get support/Support Mythic")
+                        }
                     }
                     
-                    NavigationLink(destination: StoreView()) {
-                        Label("Store", systemImage: "basket")
-                            .foregroundStyle(.primary)
-                            .help("Purchase new games from Epic")
-                    }
-                }
-                
-                Spacer()
-                
-                Text("MANAGEMENT")
-                    .font(.system(size: 10))
-                    .fontWeight(.bold)
-                
-                Group {
-                    NavigationLink(destination: WineView()) {
-                        Label("Wine", systemImage: "wineglass")
-                            .foregroundStyle(.primary)
-                            .help("Manage containers for Windows® applications")
+                    Spacer()
+                    
+                    if let game = gameModification.game {
+                        Divider()
+                        
+                        VStack {
+                            Text((gameModification.type?.rawValue ?? "modifying").uppercased()) // FIXME: conditional
+                                .fontWeight(.bold)
+                                .font(.system(size: 8))
+                                .offset(x: -2, y: 0)
+                            Text(game.title)
+                            
+                            InstallationProgressView()
+                        }
                     }
                     
-                    NavigationLink(destination: SettingsView()) {
-                        Label("Settings", systemImage: "gear")
-                            .foregroundStyle(.primary)
-                            .help("Configure Mythic")
-                    }
-                    
-                    NavigationLink(destination: SupportView()) {
-                        Label("Support", systemImage: "questionmark.bubble")
-                            .foregroundStyle(.primary)
-                            .help("Get support/Support Mythic")
-                    }
-                }
-                
-                Spacer()
-                
-                if let game = gameModification.game {
                     Divider()
                     
-                    VStack {
-                        Text((gameModification.type?.rawValue ?? "modifying").uppercased()) // FIXME: conditional
-                            .fontWeight(.bold)
-                            .font(.system(size: 8))
-                            .offset(x: -2, y: 0)
-                        Text(game.title)
-                        
-                        InstallationProgressView()
+                    HStack {
+                        Image(systemName: "person")
+                            .foregroundStyle(.primary)
+                        Text(account)
                     }
-                }
-                
-                Divider()
-                
-                HStack {
-                    Image(systemName: "person")
-                        .foregroundStyle(.primary)
-                    Text(account)
-                }
-                
-                if account != "Nobody" {
-                    Button {
-                        activeAlert = .signOutConfirmation
-                        isAlertPresented = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "person.slash")
-                                .foregroundStyle(.primary)
-                            Text("Sign Out")
-                        }
-                    }
-                } else {
-                    Button {
-                        workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
-                        isAuthViewPresented = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "person")
-                                .foregroundStyle(.primary)
-                            Text("Sign In")
-                        }
-                    }
-                }
-                
-                if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
-                   let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-                   let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-                    Text("\(displayName) \(shortVersion) (\(bundleVersion))")
-                        .font(.footnote)
-                        .foregroundStyle(.placeholder)
-                }
-            }
-            .sheet(isPresented: $isAuthViewPresented) {
-                AuthView(isPresented: $isAuthViewPresented)
-                    .onDisappear { updateEpicSignin() }
-            }
-            
-            .sheet(isPresented: $isInstallStatusViewPresented) {
-                InstallStatusView(isPresented: $isInstallStatusViewPresented)
-            }
-            .alert(isPresented: $isAlertPresented) {
-                switch activeAlert {
-                case .signOutConfirmation:
-                    return Alert(
-                        title: .init("Are you sure you want to sign out?"),
-                        message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
-                        primaryButton: .destructive(.init("Sign Out")) {
-                            Task(priority: .high) {
-                                await Legendary.command(
-                                    args: ["auth", "--delete"],
-                                    useCache: false,
-                                    identifier: "userAreaSignOut"
-                                )
+                    
+                    if account != "Nobody" {
+                        Button {
+                            activeAlert = .signOutConfirmation
+                            isAlertPresented = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "person.slash")
+                                    .foregroundStyle(.primary)
+                                Text("Sign Out")
                             }
-                        },
-                        secondaryButton: .cancel(.init("Cancel")) {
-                            isAlertPresented = false
                         }
-                    )
+                    } else {
+                        Button {
+                            workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
+                            isAuthViewPresented = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "person")
+                                    .foregroundStyle(.primary)
+                                Text("Sign In")
+                            }
+                        }
+                    }
+                    
+                    if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
+                       let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                       let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+                        Text("\(displayName) \(shortVersion) (\(bundleVersion))")
+                            .font(.footnote)
+                            .foregroundStyle(.placeholder)
+                    }
                 }
-            }
-            .listStyle(SidebarListStyle())
-            .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Button(action: toggleSidebar, label: {
-                        Image(systemName: "sidebar.left")
-                    })
-                    .help("Toggle sidebar")
+                .sheet(isPresented: $isAuthViewPresented) {
+                    AuthView(isPresented: $isAuthViewPresented)
+                        .onDisappear { updateEpicSignin() }
                 }
                 
-                if !networkMonitor.isEpicAccessible {
-                    ToolbarItem(placement: .navigation) {
-                        if networkMonitor.isCheckingEpicAccessibility {
-                            Image(systemName: "network.slash")
-                                .foregroundStyle(.yellow)
-                                .symbolEffect(.pulse)
-                                .help("Mythic is checking the connection to Epic.")
-                        } else if networkMonitor.isConnected {
-                            Image(systemName: "wifi.exclamationmark")
-                                .foregroundStyle(.yellow)
-                                .symbolEffect(.pulse)
-                                .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
-                        } else {
-                            Image(systemName: "network.slash")
-                                .foregroundStyle(.red)
-                                .help("Mythic is not connected to the internet.")
+                .sheet(isPresented: $isInstallStatusViewPresented) {
+                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                }
+                .alert(isPresented: $isAlertPresented) {
+                    switch activeAlert {
+                    case .signOutConfirmation:
+                        return Alert(
+                            title: .init("Are you sure you want to sign out?"),
+                            message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
+                            primaryButton: .destructive(.init("Sign Out")) {
+                                Task(priority: .high) {
+                                    await Legendary.command(
+                                        args: ["auth", "--delete"],
+                                        useCache: false,
+                                        identifier: "userAreaSignOut"
+                                    )
+                                }
+                            },
+                            secondaryButton: .cancel(.init("Cancel")) {
+                                isAlertPresented = false
+                            }
+                        )
+                    }
+                }
+                .listStyle(SidebarListStyle())
+                .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
+                .toolbar {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(action: toggleSidebar, label: {
+                            Image(systemName: "sidebar.left")
+                        })
+                        .help("Toggle sidebar")
+                    }
+                    
+                    if !networkMonitor.isEpicAccessible {
+                        ToolbarItem(placement: .navigation) {
+                            if networkMonitor.isCheckingEpicAccessibility {
+                                Image(systemName: "network.slash")
+                                    .foregroundStyle(.yellow)
+                                    .symbolEffect(.pulse)
+                                    .help("Mythic is checking the connection to Epic.")
+                            } else if networkMonitor.isConnected {
+                                Image(systemName: "wifi.exclamationmark")
+                                    .foregroundStyle(.yellow)
+                                    .symbolEffect(.pulse)
+                                    .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
+                            } else {
+                                Image(systemName: "network.slash")
+                                    .foregroundStyle(.red)
+                                    .help("Mythic is not connected to the internet.")
+                            }
                         }
                     }
                 }
+            }, detail: {
+                HomeView()
             }
-            
-            HomeView()
-        }
+        )
     }
 }
 
