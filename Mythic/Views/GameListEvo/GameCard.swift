@@ -78,13 +78,24 @@ struct GameCard: View {
                                 .font(.bold(.title3)())
                                 .padding(.leading)
                             
-                            Text(game.type == .epic ? "Epic" : "Local")
+                            Text(game.type.rawValue)
                                 .padding(.horizontal, 5)
                                 .font(.caption)
                                 .overlay( // based off .buttonStyle(.accessoryBarAction)
                                     RoundedRectangle(cornerRadius: 4)
                                         .stroke(.tertiary)
                                 )
+                            
+                            if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
+                               recent == game {
+                                Text("Recent")
+                                    .padding(.horizontal, 5)
+                                    .font(.caption)
+                                    .overlay( // based off .buttonStyle(.accessoryBarAction)
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(.tertiary)
+                                    )
+                            }
                             
                             Spacer()
                         }
