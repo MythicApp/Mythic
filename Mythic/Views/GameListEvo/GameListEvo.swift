@@ -12,7 +12,7 @@ struct GameListEvo: View {
     
     var body: some View {
         ScrollView(.horizontal) {
-            HStack {
+            LazyHStack {
                 ForEach(
                     Array((try? Legendary.getInstallable()) ?? .init()).filter {
                         searchString.isEmpty || $0.title.localizedCaseInsensitiveContains(searchString)

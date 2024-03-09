@@ -8,9 +8,9 @@
 import SwiftUI
 import Shimmer
 import SwiftyJSON
+import CachedAsyncImage
 import Glur
 import OSLog
-import Combine
 
 struct GameCard: View {
     @Binding var game: Game
@@ -37,9 +37,7 @@ struct GameCard: View {
             .fill(.background)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay { // MARK: Image
-                AsyncImage(
-                    url: game.imageURL
-                ) { phase in
+                CachedAsyncImage(url: game.imageURL) { phase in
                     switch phase {
                     case .empty:
                         RoundedRectangle(cornerRadius: 20)

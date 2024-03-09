@@ -32,8 +32,6 @@ let workspace: NSWorkspace = .shared
 
 let notifications: UNUserNotificationCenter = .current()
 
-let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacity: 500_000_000) // in bytes
-
 let mainLock: NSRecursiveLock = .init()
 
 let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID

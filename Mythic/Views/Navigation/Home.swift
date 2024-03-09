@@ -65,7 +65,7 @@ struct HomeView: View {
                             from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
                         ), Legendary.signedIn() {
                             // MARK: Image
-                            CachedAsyncImage(url: recentlyPlayedGame?.imageURL, urlCache: gameImageURLCache) { phase in
+                            CachedAsyncImage(url: recentlyPlayedGame?.imageURL) { phase in
                                 switch phase {
                                 case .empty:
                                     ProgressView()

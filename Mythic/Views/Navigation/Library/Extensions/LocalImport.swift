@@ -109,7 +109,7 @@ extension LibraryView.GameImportView {
                     }
                     .formStyle(.grouped)
                     
-                    CachedAsyncImage(url: game.imageURL, urlCache: gameImageURLCache) { phase in
+                    CachedAsyncImage(url: game.imageURL) { phase in
                         switch phase {
                         case .empty:
                             EmptyView()
