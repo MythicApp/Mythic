@@ -92,8 +92,10 @@ struct MythicApp: App {
                 // Reference: https://arc.net/l/quote/cflghpbh
                     .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
                         if newValue == false {
+                            /*
                             activeAlert = .offlineAlert
                             isAlertPresented = true
+                             */
                         }
                     }
                 

@@ -225,17 +225,14 @@ struct MainView: View {
                         ToolbarItem(placement: .navigation) {
                             if networkMonitor.isCheckingEpicAccessibility {
                                 Image(systemName: "network.slash")
-                                    .foregroundStyle(.yellow)
                                     .symbolEffect(.pulse)
                                     .help("Mythic is checking the connection to Epic.")
                             } else if networkMonitor.isConnected {
                                 Image(systemName: "wifi.exclamationmark")
-                                    .foregroundStyle(.yellow)
                                     .symbolEffect(.pulse)
                                     .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
                             } else {
                                 Image(systemName: "network.slash")
-                                    .foregroundStyle(.red)
                                     .help("Mythic is not connected to the internet.")
                             }
                         }

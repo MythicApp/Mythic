@@ -32,8 +32,6 @@ let workspace: NSWorkspace = .shared
 
 let notifications: UNUserNotificationCenter = .current()
 
-let gameImageURLCache: URLCache = .init(memoryCapacity: 192_000_000, diskCapacity: 500_000_000) // in bytes
-
 let mainLock: NSRecursiveLock = .init()
 
 let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
@@ -98,6 +96,28 @@ struct Game: Hashable, Codable {
     
     var imageURL: URL?
     var path: String?
+    
+    mutating func move(to newLocation: URL) async throws {
+        switch type {
+        case .epic:
+            try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
+            path = try! Legendary.getGamePath(game: self) // swiftlint:disable:this force_try
+        case .local:
+            if let oldLocation = path {
+                if files.isWritableFile(atPath: newLocation.path(percentEncoded: false)) {
+                    try files.moveItem(atPath: oldLocation, toPath: newLocation.path(percentEncoded: false)) // not very good
+                } else {
+                    throw FileLocations.FileNotModifiableError(nil)
+                }
+            }
+        }
+    }
+}
+
+/// Returns the app names of all favourited games.
+var favouriteGames: Set<String> {
+    get { return Set(defaults.stringArray(forKey: "favouriteGames") ?? .init()) }
+    set { defaults.set(Array(newValue), forKey: "favouriteGames") }
 }
 
 /// Returns the app names of all favourited games.

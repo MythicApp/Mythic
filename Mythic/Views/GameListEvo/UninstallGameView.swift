@@ -53,7 +53,7 @@ struct UninstallViewEvo: View {
                     .alert(isPresented: $isUninstallationErrorPresented) {
                         Alert(
                             title: .init("Unable to uninstall \"\(game.title)\"."),
-                            message: .init(uninstallationErrorReason ?? "Unknown error.")
+                            message: .init(uninstallationErrorReason ?? "Unknown Error.")
                         )
                     }
                 HStack {
