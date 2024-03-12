@@ -189,8 +189,7 @@ struct GameListView: View {
                                     CachedAsyncImage(
                                         url: game.type == .epic
                                         ? .init(string: Legendary.getImage(of: game, type: .tall)) // TODO: if there is no local game image for a game, check if Legendary.getImage supports it
-                                        : game.imageURL,
-                                        urlCache: gameImageURLCache
+                                        : game.imageURL
                                     ) { phase in
                                         switch phase {
                                         case .empty:

@@ -162,6 +162,9 @@
     "Done" : {
 
     },
+    "Download \"%@\"" : {
+
+    },
     "Download %@" : {
 
     },
@@ -275,6 +278,9 @@
     "Game location" : {
 
     },
+    "Game Location:" : {
+
+    },
     "Game verification is required for \"%@\"." : {
 
     },
@@ -383,6 +389,9 @@
     "Modify settings for \"%@\"" : {
 
     },
+    "Move \"%@\"" : {
+
+    },
     "Move %@" : {
 
     },
@@ -462,7 +471,7 @@
     "Quit Mythic" : {
 
     },
-    "RECENTLY PLAYED" : {
+    "Recent" : {
 
     },
     "Refresh library" : {
@@ -556,6 +565,19 @@
 
     },
     "Unable to fetch bottles." : {
+
+    },
+    "Unable to locate %@ at its specified path (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Unable to locate %1$@ at its specified path (%2$@)"
+          }
+        }
+      }
+    },
+    "Unable to move \"%@\"." : {
 
     },
     "Unable to move %@." : {

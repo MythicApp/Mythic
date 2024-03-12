@@ -98,8 +98,7 @@ extension GameListView {
                             CachedAsyncImage(
                                 url: game.type == .epic
                                 ? .init(string: Legendary.getImage(of: game, type: .tall)) // TODO: if there is no local game image for a game, check if Legendary.getImage supports it
-                                : game.imageURL,
-                                urlCache: gameImageURLCache
+                                : game.imageURL
                             ) { phase in
                                 switch phase {
                                 case .empty:
@@ -299,6 +298,7 @@ extension GameListView {
             }
             .padding()
             .frame(width: 600)
+            .frame(minHeight: 250)
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()

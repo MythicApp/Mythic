@@ -17,6 +17,8 @@
 import SwiftUI
 
 struct BottleSettingsView: View {
+    // TODO: Add DXVK
+    // TODO: FSR 3?
     
     @Binding var selectedBottle: String
     var withPicker: Bool
@@ -104,7 +106,8 @@ struct BottleSettingsView: View {
                             } catch { }
                         }
                     }
-                                                   ))
+                                                   )
+                )
                 .disabled(variables.getVariable("booting") == true)
                 .disabled(modifyingRetinaMode)
             } else {

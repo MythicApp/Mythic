@@ -12,13 +12,15 @@ struct GameListEvo: View {
     
     var body: some View {
         ScrollView(.horizontal) {
-            HStack {
+            LazyHStack {
                 ForEach(
-                    Array((try? Legendary.getInstallable()) ?? .init()).filter {
-                        searchString.isEmpty || $0.title.localizedCaseInsensitiveContains(searchString)
-                    }
-                        .sorted { $0.title < $1.title }
-                        .sorted { $0.isFavourite && !$1.isFavourited },
+                    (LocalGames.library ?? .init()) + ((try? Legendary.getInstallable()) ?? .init())
+                        .filter {
+                            searchString.isEmpty ||
+                            $0.title.localizedCaseInsensitiveContains(searchString)
+                        }
+                        .sorted(by: { $0.title < $1.title })
+                        .sorted(by: { $0.isFavourited && !$1.isFavourited }),
                     id: \.appName
                 ) { game in
                     GameCard(game: .constant(game))
@@ -32,4 +34,5 @@ struct GameListEvo: View {
 
 #Preview {
     GameListEvo()
+        .environmentObject(NetworkMonitor())
 }
