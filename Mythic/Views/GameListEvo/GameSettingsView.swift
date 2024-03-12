@@ -8,6 +8,7 @@
 import SwiftUI
 import CachedAsyncImage
 import Shimmer
+import SwordRPC
 
 struct GameSettingsView: View {
     @Binding var game: Game
@@ -174,6 +175,17 @@ struct GameSettingsView: View {
                 Text("Close")
             }
             .buttonStyle(.borderedProminent)
+        }
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Configuring \(game.platform?.rawValue ?? .init()) game \"\(game.title)\""
+                presence.state = "Configuring \(game.title)"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                
+                return presence
+            }())
         }
     }
 }
