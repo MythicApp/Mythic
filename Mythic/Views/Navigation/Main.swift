@@ -124,63 +124,55 @@ struct MainView: View {
                                 .foregroundStyle(.primary)
                                 .help("Get support/Support Mythic")
                         }
+                        
+                        NavigationLink(
+                            destination: withAnimation(.easeInOut) {
+                                AccountsView().transition(.slide)
+                            }
+                        ) {
+                            Label("Accounts", systemImage: "person.2")
+                                .foregroundStyle(.primary)
+                                .help("Get support/Support Mythic")
+                        }
                     }
                     
                     Spacer()
-                    
-                    if let game = gameModification.game {
-                        Divider()
-                        
-                        VStack {
-                            Text((gameModification.type?.rawValue ?? "modifying").uppercased()) // FIXME: conditional
-                                .fontWeight(.bold)
-                                .font(.system(size: 8))
-                                .offset(x: -2, y: 0)
-                            Text(game.title)
-                            
-                            InstallationProgressView()
-                        }
-                    }
-                    
-                    Divider()
-                    
-                    HStack {
-                        Image(systemName: "person")
-                            .foregroundStyle(.primary)
-                        Text(account)
-                    }
-                    
-                    if account != "Nobody" {
-                        Button {
-                            activeAlert = .signOutConfirmation
-                            isAlertPresented = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "person.slash")
-                                    .foregroundStyle(.primary)
-                                Text("Sign Out")
-                            }
-                        }
-                    } else {
-                        Button {
-                            workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
-                            isAuthViewPresented = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "person")
-                                    .foregroundStyle(.primary)
-                                Text("Sign In")
-                            }
-                        }
-                    }
-                    
-                    if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
-                       let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-                       let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-                        Text("\(displayName) \(shortVersion) (\(bundleVersion))")
-                            .font(.footnote)
-                            .foregroundStyle(.placeholder)
-                    }
+                    /*
+                     Spacer()
+                     
+                     
+                     Divider()
+                     
+                     HStack {
+                     Image(systemName: "person")
+                     .foregroundStyle(.primary)
+                     Text(account)
+                     }
+                     
+                     if account != "Nobody" {
+                     Button {
+                     activeAlert = .signOutConfirmation
+                     isAlertPresented = true
+                     } label: {
+                     HStack {
+                     Image(systemName: "person.slash")
+                     .foregroundStyle(.primary)
+                     Text("Sign Out")
+                     }
+                     }
+                     } else {
+                     Button {
+                     workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
+                     isAuthViewPresented = true
+                     } label: {
+                     HStack {
+                     Image(systemName: "person")
+                     .foregroundStyle(.primary)
+                     Text("Sign In")
+                     }
+                     }
+                     }
+                     */
                 }
                 .sheet(isPresented: $isAuthViewPresented) {
                     AuthView(isPresented: $isAuthViewPresented)
@@ -237,6 +229,26 @@ struct MainView: View {
                             }
                         }
                     }
+                }
+                
+                if gameModification.game != nil {
+                    List {
+                        NavigationLink(destination: EmptyView()) {
+                            Label("Downloads", systemImage: "arrow.down.to.line")
+                                .foregroundStyle(.primary)
+                                .help("Get support/Support Mythic")
+                        }
+                    }
+                    .frame(maxHeight: 40)
+                }
+                
+                if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
+                   let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                   let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+                    Text("\(displayName) \(shortVersion) (\(bundleVersion))")
+                        .font(.footnote)
+                        .foregroundStyle(.placeholder)
+                        .padding(.bottom)
                 }
             }, detail: {
                 HomeView()
