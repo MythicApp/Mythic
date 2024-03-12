@@ -283,6 +283,9 @@ class Legendary {
         }
     }
     
+    static func stopAllCommands() { runningCommands.keys.forEach { stopCommand(identifier: $0) } }
+
+    
     // MARK: - Install Method
     /**
      Installs, updates, or repairs games using legendary.

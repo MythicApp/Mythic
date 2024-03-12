@@ -39,17 +39,6 @@ struct LibraryView: View {
         
         // MARK: - Toolbar
             .toolbar {
-                if gameModification.game != nil {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button {
-                            isDownloadsPopoverPresented.toggle()
-                        } label: {
-                            Image(systemName: "arrow.down.app")
-                        }
-                        .help("Manage Downloads")
-                    }
-                }
-                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -84,11 +73,6 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
-            .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .top) {
-                    Text("Installing \(GameModification.shared.game?.title ?? "game")")
-                    InstallationProgressView()
-            }
-        
             .sheet(isPresented: $addGameModalPresented) {
                 LibraryView.GameImportView(
                     isPresented: $addGameModalPresented,

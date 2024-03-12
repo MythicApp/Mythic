@@ -29,7 +29,7 @@ struct GameCard: View {
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
     
-    @State private var hoveringOverButton: Bool = false
+    @State private var hoveringOverDestructiveButton: Bool = false
     @State private var animateFavouriteIcon: Bool = false
     
     var body: some View {
@@ -105,42 +105,8 @@ struct GameCard: View {
                         // MARK: Button Stack
                         HStack {
                             if gameModification.game == game { // MARK: View if game is being installed
-                                HStack {
-                                    Button {
-                                        // isInstallStatusViewPresented = true
-                                    } label: {
-                                        if let percentage = gameModification.status?["progress"]?["percentage"] as? Double {
-                                            ProgressView(value: percentage, total: 100)
-                                                .progressViewStyle(.linear)
-                                                .help("\(Int(percentage))% complete")
-                                        } else {
-                                            ProgressView()
-                                                .progressViewStyle(.linear)
-                                                .help("Initializing...")
-                                        }
-                                    }
-                                    .buttonStyle(.plain)
-                                    
-                                    Button {
-                                        isStopGameModificationAlertPresented = true
-                                    } label: {
-                                        Image(systemName: "xmark")
-                                            .padding(5)
-                                            .foregroundStyle(hoveringOverButton ? .red : .primary)
-                                    }
-                                    .clipShape(.circle)
-                                    .help("Stop installing \"\(game.title)\"")
-                                    .onHover { hovering in
-                                        withAnimation(.easeInOut(duration: 0.1)) { hoveringOverButton = hovering }
-                                    }
-                                    .alert(isPresented: $isStopGameModificationAlertPresented) {
-                                        stopGameModificationAlert(
-                                            isPresented: $isStopGameModificationAlertPresented,
-                                            game: game
-                                        )
-                                    }
-                                }
-                                .padding([.leading, .trailing])
+                                InstallationProgressView()
+                                    .padding([.leading, .trailing])
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Libraries.isInstalled() {
                                     // MARK: Engine Install Button
@@ -283,12 +249,12 @@ struct GameCard: View {
                                 } label: {
                                     Image(systemName: "xmark.bin")
                                         .padding(5)
-                                        .foregroundStyle(hoveringOverButton ? .red : .primary)
+                                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
                                 }
                                 .clipShape(.circle)
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
-                                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverButton = hovering }
+                                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
                                 }
                                 .sheet(isPresented: $isUninstallSheetPresented) {
                                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
@@ -303,6 +269,7 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .disabled(!networkMonitor.isEpicAccessible)
+                                .disabled(gameModification.game != nil)
                                 .help("Download \"\(game.title)\"")
                                 .sheet(isPresented: $isInstallSheetPresented) {
                                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)

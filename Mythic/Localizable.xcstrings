@@ -44,6 +44,9 @@
     "A link should've opened in your browser. If not, click" : {
 
     },
+    "Accounts" : {
+
+    },
     "Add a bottle" : {
 
     },
@@ -168,34 +171,17 @@
     "Download %@" : {
 
     },
-    "Downloaded %lf MiB, Written %lf MiB." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Downloaded %1$lf MiB, Written %2$lf MiB."
-          }
-        }
-      }
-    },
     "Downloading Game Porting Toolkit..." : {
 
     },
     "Downloading Mythic Engine..." : {
 
     },
-    "DXVK" : {
+    "Downloads" : {
 
     },
-    "Elapsed: %@, ETA: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Elapsed: %1$@, ETA: %2$@"
-          }
-        }
-      }
+    "DXVK" : {
+
     },
     "Enhanced Sync (MSync)" : {
 
@@ -326,13 +312,7 @@
     "Installed" : {
 
     },
-    "Installing [unknown]..." : {
-
-    },
-    "Installing %@" : {
-
-    },
-    "Installing %@..." : {
+    "Installing \"[Game]\"..." : {
 
     },
     "Installing Game Porting Toolkit..." : {
@@ -372,9 +352,6 @@
 
     },
     "Manage containers for Windows® applications" : {
-
-    },
-    "Manage Downloads" : {
 
     },
     "MANAGEMENT" : {
@@ -451,16 +428,6 @@
     },
     "Play \"%@\"" : {
 
-    },
-    "Progress: %lld%% (%lld/%lld objects)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Progress: %1$lld%% (%2$lld/%3$lld objects)"
-          }
-        }
-      }
     },
     "Purchase new games from Epic" : {
 
@@ -638,9 +605,6 @@
 
     },
     "You can't delete the default bottle." : {
-
-    },
-    "You probably left this open while installing. Your install has finished." : {
 
     },
     "You're all set!" : {

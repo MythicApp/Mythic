@@ -13,8 +13,6 @@
 
 import SwiftUI
 
-// @ObservedObject private var variables: VariableManager = .shared // FIXME: Swift: Property wrappers are not yet supported in top-level code
-
 // MARK: - StopDownloadAlert Function
 /**
  Creates an alert for stopping the download.
@@ -29,7 +27,6 @@ func stopGameModificationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert
         title: Text("Are you sure you want to stop \(GameModification.shared.type?.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "install")
-            // TODO: create new func for stopping installation
             GameModification.reset()
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }

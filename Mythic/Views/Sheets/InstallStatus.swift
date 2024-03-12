@@ -24,37 +24,20 @@ import Charts // TODO: TODO
 struct InstallStatusView: View {
     // MARK: - Binding Variables
     @Binding var isPresented: Bool
-    @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var gameModification: GameModification = .shared
         
     // MARK: - Body
     var body: some View {
-        VStack {
-            if let installingGame = gameModification.game {
-                Text("Installing \(installingGame.title)...")
-                    .font(.title)
-            } else {
-                Text("Installing [unknown]...")
-                    .font(.title)
-                Text("You probably left this open while installing. Your install has finished.") // FIXME: turn isPresented off when install finished, so this wont happen
-                    .foregroundStyle(.placeholder)
-            }
+        Text("Installing \"[Game]\"...")
+            .font(.title)
+        
+        Form {
             
-            if let installStatus: [String: [String: Any]] = VariableManager.shared.getVariable("installStatus") { // TODO: create MiB to MB function
-                GroupBox {
-                    Text("Progress: \(Int((installStatus["progress"])?["percentage"] as? Double ?? 0))% (\((installStatus["progress"])?["downloaded"] as? Int ?? 0)/\((installStatus["progress"])?["total"] as? Int ?? 0) objects)")
-                    Text("Downloaded \((installStatus["download"])?["downloaded"] as? Double ?? 0) MiB, Written \((installStatus["download"])?["written"] as? Double ?? 0) MiB.") // TODO: if above 1 GiB, show up as GiB instead of MiB
-                    Text("Elapsed: \("\((installStatus["progress"])?["runtime"] ?? "[Wnknown]")"), ETA: \("\((installStatus["progress"])?["eta"] ?? "[Wnknown]")")")
-                }
-                .fixedSize()
-            }
-            
-            // MARK: Close Button
-            Button("Close") { isPresented = false }
-                .buttonStyle(.borderedProminent)
-                .foregroundStyle(.accent)
         }
-        .padding()
+        .formStyle(.grouped)
+        
+        Button("Close") { isPresented = false }
+            .buttonStyle(.borderedProminent)
     }
 }
 

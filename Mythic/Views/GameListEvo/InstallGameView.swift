@@ -24,7 +24,6 @@ struct InstallViewEvo: View {
     
     @State private var isInstallErrorPresented: Bool = false
     @State private var installError: Error?
-    @State private var waiting: Bool = false
     
     var body: some View {
         Text("Install \"\(game.title)\"")
@@ -170,15 +169,14 @@ struct InstallViewEvo: View {
             Spacer()
             
             HStack {
-                if fetchingOptionalPacks || waiting {
+                if fetchingOptionalPacks {
                     ProgressView()
                         .controlSize(.small)
                         .padding(0.5)
                 }
                     
                 Button("Install") {
-                    waiting = true
-                    
+                    isPresented = false
                     Task(priority: .userInitiated) {
                         do {
                             try await Legendary.install(
@@ -187,25 +185,14 @@ struct InstallViewEvo: View {
                                 optionalPacks: Array(selectedOptionalPacks),
                                 baseURL: baseURL
                             )
-                            
                             // isGameListRefreshCalled = true
                         } catch {
                             installError = error
                             isInstallErrorPresented = true
                         }
                     }
-                    
-                    if gameModification.game == nil {
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 20) {
-                            waiting = false
-                            Legendary.stopCommand(identifier: "install")
-                        }
-                    } else {
-                        isPresented = false
-                    }
                 }
                 .disabled(fetchingOptionalPacks)
-                .disabled(waiting)
                 .buttonStyle(.borderedProminent)
             }
             .alert(isPresented: $isInstallErrorPresented) {

@@ -7,51 +7,60 @@
 
 import SwiftUI
 
-@available(*, deprecated, message: "brink of deprecation 🙏🏾")
 struct InstallationProgressView: View {
-    @ObservedObject var gameModification: GameModification = .shared
+    var withPercentage: Bool = true
+    
+    @ObservedObject private var gameModification: GameModification = .shared
     @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
+    @State private var hoveringOverDestructiveButton: Bool = false
     
     @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
     
     var body: some View {
-        HStack {
-            Button {
-                isInstallStatusViewPresented = true
-            } label: {
-                if let percentage: Double = (gameModification.status?["progress"])?["percentage"] as? Double {
-                    ProgressView(value: percentage, total: 100)
-                        .progressViewStyle(.linear)
-                        .help("\(Int(percentage))% complete")
-                } else {
-                    ProgressView()
-                        .progressViewStyle(.linear)
-                        .help("Initializing...")
+        if let game = gameModification.game {
+            HStack {
+                Button {
+                    isInstallStatusViewPresented = true
+                } label: {
+                    if let percentage = gameModification.status?["progress"]?["percentage"] as? Double {
+                        ProgressView(value: percentage, total: 100)
+                            .progressViewStyle(.linear)
+                            .help("\(Int(percentage))% complete")
+                    } else {
+                        ProgressView()
+                            .progressViewStyle(.linear)
+                            .help("Initializing...")
+                    }
+                }
+                .buttonStyle(.plain)
+                
+                if withPercentage, let percentage = gameModification.status?["progress"]?["percentage"] as? Double {
+                    Text("\(Int(percentage))%")
+                }
+                    
+                Button {
+                    isStopGameModificationAlertPresented = true
+                } label: {
+                    Image(systemName: "xmark")
+                        .padding(5)
+                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
+                }
+                .clipShape(.circle)
+                .help("Stop installing \"\(game.title)\"")
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
+                }
+                .alert(isPresented: $isStopGameModificationAlertPresented) {
+                    stopGameModificationAlert(
+                        isPresented: $isStopGameModificationAlertPresented,
+                        game: game
+                    )
+                }
+                .sheet(isPresented: $isInstallStatusViewPresented) {
+                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
                 }
             }
-            .buttonStyle(.plain)
-            
-            Button {
-                isStopGameModificationAlertPresented = true
-            } label: {
-                Image(systemName: "stop.fill")
-                    .foregroundStyle(.red)
-                    .padding(.leading)
-            }
-            .scaledToFit()
-            .buttonStyle(.plain)
-            .controlSize(.regular)
-        }
-        .scaledToFill()
-        .alert(isPresented: $isStopGameModificationAlertPresented) {
-            stopGameModificationAlert(
-                isPresented: $isStopGameModificationAlertPresented,
-                game: gameModification.game ?? placeholderGame(type: .local)
-            )
-        }
-        .sheet(isPresented: $isInstallStatusViewPresented) {
-            InstallStatusView(isPresented: $isInstallStatusViewPresented)
         }
     }
 }

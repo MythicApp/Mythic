@@ -20,7 +20,7 @@ import SwordRPC
 import UserNotifications
 import OSLog
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     var updaterController: SPUStandardUpdaterController?
     var networkMonitor: NetworkMonitor?
     
@@ -78,6 +78,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillTerminate(_ notification: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
+        // TODO: stop download alert if downloading before closure
+        Legendary.stopAllCommands()
     }
 }
 
