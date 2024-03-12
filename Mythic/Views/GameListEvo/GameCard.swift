@@ -60,7 +60,6 @@ struct GameCard: View {
                             .glur(radius: 20, offset: 0.5, interpolation: 0.7)
                             .clipShape(.rect(cornerRadius: 20))
                             .modifier(FadeInModifier())
-                            .grayscale(0) // if game installed and not found
                     case .failure:
                         // fallthrough
                         RoundedRectangle(cornerRadius: 20)
@@ -76,11 +75,13 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
+                                .foregroundStyle(.white)
                                 .padding(.leading)
                             
                             Text(game.type.rawValue)
-                                .padding(.horizontal, 5)
                                 .font(.caption)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 5)
                                 .overlay( // based off .buttonStyle(.accessoryBarAction)
                                     RoundedRectangle(cornerRadius: 4)
                                         .stroke(.tertiary)
@@ -89,8 +90,9 @@ struct GameCard: View {
                             if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
                                recent == game {
                                 Text("Recent")
-                                    .padding(.horizontal, 5)
                                     .font(.caption)
+                                    .padding(.horizontal, 5)
+                                    .foregroundStyle(.white)
                                     .overlay( // based off .buttonStyle(.accessoryBarAction)
                                         RoundedRectangle(cornerRadius: 4)
                                             .stroke(.tertiary)
@@ -139,7 +141,7 @@ struct GameCard: View {
                                     }
                                 }
                                 .padding([.leading, .trailing])
-                            } else if ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
+                            } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Libraries.isInstalled() {
                                     // MARK: Engine Install Button
                                     Button {
@@ -210,7 +212,8 @@ struct GameCard: View {
                                                 .padding(5)
                                         }
                                         .clipShape(.circle)
-                                        .help("Play \"\(game.title)\"")
+                                        .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(URL(filePath: game.path!).prettyPath()))")
+                                        .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),
@@ -228,7 +231,7 @@ struct GameCard: View {
                                                 try await Legendary.install(
                                                     game: game,
                                                     platform: game.platform!,
-                                                    type: .repair
+                                                    type: .update
                                                 )
                                             } catch {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
@@ -240,6 +243,7 @@ struct GameCard: View {
                                             .padding(5)
                                     }
                                     .clipShape(.circle)
+                                    .disabled(!networkMonitor.isEpicAccessible)
                                     .help("Update \"\(game.title)\"")
                                     .disabled(gameModification.game != nil)
                                 }
@@ -253,7 +257,9 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .sheet(isPresented: $isGameSettingsSheetPresented) {
-                                    GameListView.SettingsView(isPresented: $isGameSettingsSheetPresented, game: $game)
+                                    GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                                        .padding()
+                                        .frame(minWidth: 750)
                                 }
                                 .help("Modify settings for \"\(game.title)\"")
                                 
@@ -296,6 +302,8 @@ struct GameCard: View {
                                         .padding(5)
                                 }
                                 .clipShape(.circle)
+                                .disabled(!networkMonitor.isEpicAccessible)
+                                .help("Download \"\(game.title)\"")
                                 .sheet(isPresented: $isInstallSheetPresented) {
                                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
                                         .padding()
@@ -312,4 +320,5 @@ struct GameCard: View {
 
 #Preview {
     GameCard(game: .constant(placeholderGame(type: .epic)))
+        .environmentObject(NetworkMonitor())
 }

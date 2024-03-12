@@ -96,6 +96,22 @@ struct Game: Hashable, Codable {
     
     var imageURL: URL?
     var path: String?
+    
+    mutating func move(to newLocation: URL) async throws {
+        switch type {
+        case .epic:
+            try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
+            path = try! Legendary.getGamePath(game: self) // swiftlint:disable:this force_try
+        case .local:
+            if let oldLocation = path {
+                if files.isWritableFile(atPath: newLocation.path(percentEncoded: false)) {
+                    try files.moveItem(atPath: oldLocation, toPath: newLocation.path(percentEncoded: false)) // not very good
+                } else {
+                    throw FileLocations.FileNotModifiableError(nil)
+                }
+            }
+        }
+    }
 }
 
 /// Returns the app names of all favourited games.

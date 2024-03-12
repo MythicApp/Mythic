@@ -27,7 +27,7 @@ extension LibraryView.GameImportView {
         @State private var platform: GamePlatform = .macOS
         
         private func updateGameTitle() {
-            if let path = game.path, !path.isEmpty, !game.title.isEmpty {
+            if let path = game.path, !path.isEmpty, game.title.isEmpty {
                 switch platform {
                 case .macOS:
                     if let bundle = Bundle(path: path),
@@ -56,6 +56,7 @@ extension LibraryView.GameImportView {
                             game.title = .init()
                             game.path = .init()
                         }
+                        .task { game.platform = platform }
                         
                         HStack {
                             VStack {

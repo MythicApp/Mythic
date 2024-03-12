@@ -39,34 +39,70 @@ class Libraries {
     /**
      Calculates the checksum of the libraries folder and its contents.
      
-     - Returns: A string representing the checksum.
+     - Returns: An integer representing the checksum.
      */
-    static func checksum() -> String {
-        var dataAggregate = Data()
+    @available(*, message: "Unused due to inconsistencies")
+    static var checksum: String? {
+        guard _checksum == nil || _checksum?.isEmpty == true else { return _checksum! }
         
-        if let enumerator = FileManager.default.enumerator(atPath: directory.path) {
-            for case let fileURL as URL in enumerator {
+        let group: DispatchGroup = .init()
+        let queue: DispatchQueue = .init(label: "checksum", attributes: .concurrent)
+        let serialQueue: DispatchQueue = .init(label: "checksumSerial")
+        
+        var hash: SHA256 = .init()
+        guard let enumerator = files.enumerator(atPath: directory.path) else { return nil }
+        
+        for case let fileName as String in enumerator {
+            queue.async(group: group) {
                 do {
-                    try dataAggregate.append(Data(contentsOf: fileURL))
+                    try calculateChecksum(for: directory.appending(path: fileName), hash: &hash)
                 } catch {
-                    Logger.file.error("Error reading libraries and generating a checksum: \(error.localizedDescription)")
+                    print("checksum: error: \(error.localizedDescription)")
+                    serialQueue.async {
+                        _checksum = nil
+                    }
                 }
             }
         }
         
-        let checksum = dataAggregate.hash.map { String(format: "%02hhx", $0) }.joined()
+        group.notify(queue: serialQueue) {
+            _checksum = hash.finalize().map { String(format: "%02x", $0) }.joined()
+        }
         
-        return checksum
+        group.wait()
+        return _checksum
+    }
+    
+    static var _checksum: String? // swiftlint:disable:this identifier_name
+    
+    private static func calculateChecksum(for directory: URL, hash: inout SHA256) throws {
+        let resourceKeys: Set<URLResourceKey> = [.isDirectoryKey, .nameKey]
+        
+        let contents = try files.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: Array(resourceKeys),
+            options: [.skipsHiddenFiles]
+        )
+        
+        for url in contents {
+            guard let isDirectory = try url.resourceValues(forKeys: resourceKeys).isDirectory else { continue }
+            
+            if isDirectory {
+                try calculateChecksum(for: url, hash: &hash)
+            } else {
+                hash.update(data: try Data(contentsOf: url))
+            }
+        }
     }
     
     // MARK: - Install Method
     /**
      Installs the Mythic Engine.
-    
+     
      - Parameters:
-       - downloadProgressHandler: A closure to handle the download progress.
-       - installProgressHandler: A closure to handle the installation progress.
-       - completion: A closure to be called upon completion of the installation.
+     - downloadProgressHandler: A closure to handle the download progress.
+     - installProgressHandler: A closure to handle the installation progress.
+     - completion: A closure to be called upon completion of the installation.
      */
     static func install(
         downloadProgressHandler: @escaping (Double) -> Void,
@@ -140,10 +176,8 @@ class Libraries {
                 }
                 
                 if files.fileExists(atPath: directory.path) {
-                    let checksum = checksum()
-                    defaults.set(checksum, forKey: "librariesChecksum")
-                    Logger.file.notice("Libraries checksum is: \(checksum)")
-                    
+                    // defaults.set(checksum, forKey: "librariesChecksum")
+                    // Logger.file.notice("Libraries checksum is: \(String(describing: checksum))")
                     completion(.success(true))
                     notifications.add(
                         .init(identifier: UUID().uuidString,
@@ -192,24 +226,18 @@ class Libraries {
     // MARK: - isInstalled Method
     /**
      Checks if Mythic Engine is installed.
-    
+     
      - Returns: `true` if installed, `false` otherwise.
      */
     static func isInstalled() -> Bool {
         guard files.fileExists(atPath: directory.path) else { return false }
-        
-        if let checksum = defaults.string(forKey: "librariesChecksum") {
-            return checksum == self.checksum()
-        }
-        
-        let checksum = checksum()
-        defaults.set(checksum, forKey: "librariesChecksum")
-        return true
+        // defaults.register(defaults: ["engineChecksum": checksum!])
+        return true // defaults.string(forKey: "engineChecksum") == checksum
     }
     
     // MARK: - getVersion Method
     /** Gets the version of the installed Mythic Engine.
-    
+     
      - Returns: The semantic version of the installed libraries.
      */
     static func getVersion() -> SemanticVersion? {
@@ -229,7 +257,7 @@ class Libraries {
     // MARK: - fetchLatestVersion Method
     /**
      Fetches the latest version of Mythic Engine.
-    
+     
      - Returns: The semantic version of the latest libraries.
      */
     static func fetchLatestVersion() -> SemanticVersion? {
@@ -271,7 +299,7 @@ class Libraries {
     // MARK: - Remove Method
     /**
      Removes Mythic Engine.
-    
+     
      - Parameter completion: A closure to be called upon completion of the removal.
      */
     static func remove(completion: @escaping (Result<Bool, Error>) -> Void) { // FIXME: not appropriate use for a completion handler

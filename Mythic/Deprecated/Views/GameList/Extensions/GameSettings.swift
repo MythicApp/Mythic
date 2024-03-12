@@ -298,6 +298,7 @@ extension GameListView {
             }
             .padding()
             .frame(width: 600)
+            .frame(minHeight: 250)
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
