@@ -274,9 +274,9 @@ class Legendary {
      
      - Parameter identifier: The unique identifier of the command to be stopped.
      */
-    static func stopCommand(identifier: String) {
+    static func stopCommand(identifier: String) { // TODO: pause and replay downloads using task.suspend() and task.resume()
         if let task = runningCommands[identifier] {
-            task.terminate()
+            task.interrupt()
             runningCommands.removeValue(forKey: identifier)
         } else {
             log.error("Bad identifer, unable to stop command execution.")
