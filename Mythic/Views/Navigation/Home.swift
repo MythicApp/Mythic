@@ -57,20 +57,12 @@ struct HomeView: View {
     var body: some View { // TODO: revamp
         HStack {
             // MARK: - Recent Game Display
-            VStack {
-                ZStack {
-                    HStack {
-                        if var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(
-                            Game.self,
-                            from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()
-                        ) {
-                            GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
-                        }
-                    }
-                }
+            if var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(
+                Game.self,
+                from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()
+            ) {
+                GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
             }
-            .background(.background)
-            .clipShape(.rect(cornerRadius: 10))
             
             // MARK: - Side Views
             VStack {
@@ -79,8 +71,7 @@ struct HomeView: View {
                     Image(systemName: animateStar ? "star.fill" : "calendar.badge.clock")
                         .resizable()
                         .symbolRenderingMode(.palette)
-                        .symbolEffect(.bounce, value: animateStar)
-                        .contentTransition(.symbolEffect(.replace))
+                        .contentTransition(.symbolEffect(.replace.upUp.byLayer))
                         .foregroundStyle(animateStar ? .yellow : .yellow, (colorScheme == .light ? .black : .white))
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 35, height: 35)
