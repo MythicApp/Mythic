@@ -117,6 +117,7 @@ struct GameCard: View {
                                             .padding(5)
                                     }
                                     .clipShape(.circle)
+                                    .disabled(!networkMonitor.isConnected)
                                     .help("Install Mythic Engine")
                                 } else if case .epic = game.type, // if verification required, FIXME: turn this block into a Legendary function
                                           let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
@@ -140,6 +141,8 @@ struct GameCard: View {
                                             .padding(5)
                                     }
                                     .clipShape(.circle)
+                                    .disabled(!networkMonitor.isEpicAccessible)
+                                    .disabled(gameModification.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
@@ -210,6 +213,7 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
+                                    .disabled(gameModification.game != nil)
                                     .help("Update \"\(game.title)\"")
                                     .disabled(gameModification.game != nil)
                                 }
