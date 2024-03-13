@@ -30,8 +30,8 @@ extension LibraryView.GameImportView {
         
         @State private var supportedPlatforms: [GamePlatform]?
         
-        @State private var withDLCs: Bool = false
-        @State private var checkIntegrity: Bool = false
+        @State private var withDLCs: Bool = true
+        @State private var checkIntegrity: Bool = true
         
         @Binding var isProgressViewSheetPresented: Bool
         @Binding var isGameListRefreshCalled: Bool
