@@ -210,8 +210,9 @@ extension LibraryView.GameImportView {
             
             .task(priority: .userInitiated) {
                 let games = try? Legendary.getInstallable()
-                if let games = games, !games.isEmpty { game = games.first! }
-                installableGames = games ?? installableGames
+                guard let games = games, !games.isEmpty else { return }
+                installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
+                game = installableGames.first!
                 isProgressViewSheetPresented = false
             }
             
