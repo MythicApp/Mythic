@@ -138,6 +138,8 @@ struct GameSettingsView: View {
                 Section("Wine", isExpanded: .constant(true)) {
                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                 }
+                .disabled(game.platform != .windows)
+                .onChange(of: selectedBottle) { game.bottleName = $1 }
             }
             .formStyle(.grouped)
         }

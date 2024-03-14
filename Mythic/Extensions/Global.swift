@@ -68,13 +68,11 @@ struct Game: Hashable, Codable {
     var platform: GamePlatform?
     var bottleName: String {
         get {
-            if let bottleName = defaults.string(forKey: "\(appName)_defaultBottle"),
-               Wine.allBottles?[bottleName] != nil {
-                return bottleName
-            } else {
-                defaults.set("Default", forKey: "\(appName)_defaultBottle")
-                return "Default"
-            }
+            let bottleKey: String = "\(appName)_defaultBottle"
+            
+            if Wine.allBottles?[bottleKey] == nil { defaults.removeObject(forKey: bottleKey) }
+            defaults.register(defaults: [bottleKey: "Default"]) // reregister after removal
+            return defaults.string(forKey: bottleKey)!
         }
         set {
             if Wine.allBottles?[newValue] != nil {
