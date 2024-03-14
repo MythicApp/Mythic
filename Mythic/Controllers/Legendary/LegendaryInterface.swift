@@ -318,6 +318,7 @@ class Legendary {
         var argBuilder = [
             "-y",
             "install",
+            game.appName,
             type == .repair ? "--repair" : nil,
             type == .update ? "--update-only": nil
         ] .compactMap { $0 }
@@ -361,10 +362,10 @@ class Legendary {
         }
         
         await command(
-            args: argBuilder + [game.appName],
+            args: argBuilder,
             useCache: false,
             identifier: "install",
-            input: "\(Array(optionalPacks ?? .init()).joined(separator: ", "))\n",
+            input: "\(Array(optionalPacks ?? .init()).joined(separator: ", "))" + "\n",
             inputIf: .init(
                 stream: .stdout,
                 string: "Additional packs [Enter to confirm]:"
@@ -373,6 +374,12 @@ class Legendary {
                 stdout: { output in
                     output.enumerateLines { line, _ in
                         if line.contains("Failure:") {
+                        /*
+                        FIXME: Example output of error
+                         Installation requirements check returned the following results:
+                          - Warning: This game requires an ownership verification token and likely uses Denuvo DRM.
+                          ! Failure: Not enough available disk space! 12.05 GiB < 12.55 GiB
+                         */
                             errorThrownExternally = InstallationError(message: String(line.trimmingPrefix(" ! Failure: ")))
                         } else if line.contains("Verification progress:") {
                             variables.setVariable("verifying", value: game) // FIXME: may cause lag when verifying due to rapid, repeated updating
