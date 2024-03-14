@@ -25,6 +25,9 @@ struct GameSettingsView: View {
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
     
+    @State private var isFileSectionExpanded: Bool = true
+    @State private var isWineSectionExpanded: Bool = true
+    
     var body: some View {
         HStack {
             VStack {
@@ -73,7 +76,7 @@ struct GameSettingsView: View {
             Divider()
             
             Form {
-                Section("File", isExpanded: .constant(true)) {
+                Section("File", isExpanded: $isFileSectionExpanded) {
                     HStack {
                         Text("Move \"\(game.title)\"")
                         
@@ -135,7 +138,7 @@ struct GameSettingsView: View {
                     }
                 }
                 
-                Section("Wine", isExpanded: .constant(true)) {
+                Section("Wine", isExpanded: $isWineSectionExpanded) {
                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                 }
                 .disabled(game.platform != .windows)
