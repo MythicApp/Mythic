@@ -32,6 +32,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             ]
         )
         
+        // MARK: Bottle removal if folder was deleted externally
+        if let bottles = Wine.allBottles {
+            for (key, value) in bottles where !files.fileExists(atPath: value.url.path(percentEncoded: false)) {
+                Wine.allBottles?.removeValue(forKey: key)
+            }
+        }
+        
         // MARK: Applications folder disclaimer
 #if !DEBUG // TODO: possibly turn this into an onboarding-style message.
         let appURL = Bundle.main.bundleURL
