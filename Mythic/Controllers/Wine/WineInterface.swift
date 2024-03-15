@@ -398,6 +398,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Delete Bottle Method
     @discardableResult
     static func deleteBottle(bottleURL: URL) throws -> Bool {
+        Logger.file.notice("Deleting \(bottleURL.lastPathComponent) (\(bottleURL))")
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
         if files.fileExists(atPath: bottleURL.path(percentEncoded: false)) { try files.removeItem(at: bottleURL) }

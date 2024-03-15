@@ -29,14 +29,14 @@ struct UninstallViewEvo: View {
             Form {
                 HStack {
                     Toggle(isOn: $keepFiles) {
-                        Text("Keep files")
+                        Text("Don't delete the game files (Delete it from Mythic only)")
                     }
                     Spacer()
                 }
                 
                 HStack {
                     Toggle(isOn: $skipUninstaller) {
-                        Text("Don't run uninstaller")
+                        Text("Don't run uninstaller (If applicable)")
                     }
                     Spacer()
                 }

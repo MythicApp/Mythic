@@ -135,8 +135,6 @@ struct MainView: View {
                                 .help("Get support/Support Mythic")
                         }
                     }
-                    
-                    Spacer()
                     /*
                      Spacer()
                      

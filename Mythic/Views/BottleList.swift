@@ -49,6 +49,25 @@ struct BottleListView: View {
                         .foregroundStyle(.secondary)
                         .opacity(name == "Default" ? 0.5 : 1)
                         .help(name == "Default" ? "You can't delete the default bottle." : "Delete \"\(name)\"")
+                        .alert(isPresented: $isDeletionAlertPresented) {
+                            Alert(
+                                title: .init("Are you sure you want to delete \"\(bottleNameToDelete)\"?"),
+                                message: .init("This process cannot be undone."),
+                                primaryButton: .destructive(.init("Delete")) {
+                                    do {
+                                        try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: this is where the crashes will happen
+                                    } catch {
+                                        Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
+                                        bottleNameToDelete = .init()
+                                        isDeletionAlertPresented = false
+                                    }
+                                },
+                                secondaryButton: .cancel(.init("Cancel")) {
+                                    bottleNameToDelete = .init()
+                                    isDeletionAlertPresented = false
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -102,26 +121,6 @@ struct BottleListView: View {
                         return presence
                     }())
                 }
-            }
-            
-            .alert(isPresented: $isDeletionAlertPresented) {
-                Alert(
-                    title: .init("Are you sure you want to delete \"\(bottleNameToDelete)\"?"),
-                    message: .init("This process cannot be undone."),
-                    primaryButton: .destructive(.init("Delete")) {
-                        do {
-                            try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: this is where the crashes will happen
-                        } catch {
-                            Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
-                            bottleNameToDelete = .init()
-                            isDeletionAlertPresented = false
-                        }
-                    },
-                    secondaryButton: .cancel(.init("Cancel")) {
-                        bottleNameToDelete = .init()
-                        isDeletionAlertPresented = false
-                    }
-                )
             }
         } else if !Libraries.isInstalled() {
             Text("Mythic Engine is not installed!")

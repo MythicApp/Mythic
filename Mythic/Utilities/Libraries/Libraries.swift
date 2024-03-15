@@ -16,7 +16,7 @@
 
 import Foundation
 import ZIPFoundation
-import SemanticVersion
+import SemanticVersion // https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
 import CryptoKit
 import SwiftyJSON
 import OSLog

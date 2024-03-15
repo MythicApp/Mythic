@@ -75,12 +75,12 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
-                                .foregroundStyle(.white)
+                                // .foregroundStyle(.white)
                                 .padding(.leading)
                             
                             Text(game.type.rawValue)
                                 .font(.caption)
-                                .foregroundStyle(.white)
+                                // .foregroundStyle(.white)
                                 .padding(.horizontal, 5)
                                 .overlay( // based off .buttonStyle(.accessoryBarAction)
                                     RoundedRectangle(cornerRadius: 4)
@@ -92,7 +92,7 @@ struct GameCard: View {
                                 Text("Recent")
                                     .font(.caption)
                                     .padding(.horizontal, 5)
-                                    .foregroundStyle(.white)
+                                    // .foregroundStyle(.white)
                                     .overlay( // based off .buttonStyle(.accessoryBarAction)
                                         RoundedRectangle(cornerRadius: 4)
                                             .stroke(.tertiary)

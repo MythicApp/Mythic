@@ -145,7 +145,7 @@ class Legendary {
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
             task.standardInput = input != nil ? pipe.stdin : nil
-            
+
             task.arguments = args
             
             var defaultEnvironmentVariables = ["LEGENDARY_CONFIG_PATH": configLocation]
@@ -241,7 +241,7 @@ class Legendary {
                     log.debug("\(stderrString)")
                 case stderrString.contains("INFO:"):
                     log.info("\(stderrString)")
-                case stderrString.contains("WARNING:"):
+                case stderrString.contains("WARN:"):
                     log.warning("\(stderrString)")
                 case stderrString.contains("ERROR:"):
                     log.error("\(stderrString)")
@@ -270,22 +270,22 @@ class Legendary {
     
     // MARK: - Stop Command Method
     /**
-     Stops the execution of a command based on its identifier.
+     Stops the execution of a command based on its identifier. (SIGTERM)
      
      - Parameter identifier: The unique identifier of the command to be stopped.
      */
     static func stopCommand(identifier: String) { // TODO: pause and replay downloads using task.suspend() and task.resume()
         if let task = runningCommands[identifier] {
-            task.interrupt()
+            task.interrupt() // SIGTERM
             runningCommands.removeValue(forKey: identifier)
         } else {
-            log.error("Bad identifer, unable to stop command execution.")
+            log.error("Unable to stop Legendary command: Bad identifier.")
         }
     }
     
+    /// Stops the execution of all commands.
     static func stopAllCommands() { runningCommands.keys.forEach { stopCommand(identifier: $0) } }
 
-    
     // MARK: - Install Method
     /**
      Installs, updates, or repairs games using legendary.

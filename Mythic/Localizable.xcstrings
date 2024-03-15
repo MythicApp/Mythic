@@ -159,7 +159,13 @@
     "Doing this means you can only play macOS-supported games.\n" : {
 
     },
+    "Don't delete the game files (Delete it from Mythic only)" : {
+
+    },
     "Don't run uninstaller" : {
+
+    },
+    "Don't run uninstaller (If applicable)" : {
 
     },
     "Done" : {
