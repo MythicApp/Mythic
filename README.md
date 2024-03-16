@@ -23,7 +23,7 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
-- [ ] Discord Intergration
+- [ ] Discord Integration
 
 
 There are more big things coming your way for Mythic's full release, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
