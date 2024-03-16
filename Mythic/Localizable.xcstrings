@@ -426,6 +426,9 @@
     "Not implemented yet" : {
 
     },
+    "Not signed in" : {
+
+    },
     "OK" : {
 
     },
@@ -493,6 +496,9 @@
 
     },
     "Sign Out" : {
+
+    },
+    "Signed in as \"%@\"." : {
 
     },
     "Skip" : {
