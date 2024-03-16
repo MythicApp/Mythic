@@ -204,13 +204,6 @@ struct MainView: View {
                 .listStyle(SidebarListStyle())
                 .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
                 .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button(action: toggleSidebar, label: {
-                            Image(systemName: "sidebar.left")
-                        })
-                        .help("Toggle sidebar")
-                    }
-                    
                     if !networkMonitor.isEpicAccessible {
                         ToolbarItem(placement: .navigation) {
                             if networkMonitor.isCheckingEpicAccessibility {
@@ -253,11 +246,6 @@ struct MainView: View {
             }
         )
     }
-}
-
-// MARK: - Sidebar Toggle Function
-func toggleSidebar() {
-    NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
 }
 
 // MARK: - Preview
