@@ -64,9 +64,7 @@ extension LibraryView {
                         isPresented: $isPresented,
                         isGameListRefreshCalled: $isGameListRefreshCalled
                     )
-#if !targetEnvironment(simulator) // https://arc.net/l/quote/noenvbmd
                     .padding(.bottom) // FIXME: dirtyfix for padding issue
-#endif
                 }
             }
             

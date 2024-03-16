@@ -56,14 +56,6 @@ struct AuthView: View {
         }
     }
     
-    // MARK: - Initializer
-    /**
-     Initializes the AuthView.
-    
-     - Parameters:
-       - isPresented: Binding to control the presentation of the view.
-       - authSuccessful: Binding to track the authentication success state.
-     */
     init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool?> = .constant(false)) {
         _isPresented = isPresented
         _authSuccessful = authSuccessful
@@ -99,6 +91,7 @@ struct AuthView: View {
                 .buttonStyle(.borderedProminent)
             }
             .fixedSize()
+            
             HStack {
                 Button(action: { // TODO: implement question mark popover
                     isHelpPopoverPresented.toggle()
@@ -106,12 +99,12 @@ struct AuthView: View {
                     Image(systemName: "questionmark")
                         .controlSize(.small)
                 })
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .popover(isPresented: $isHelpPopoverPresented) {
                     VStack {
                         NotImplementedView()
                     }
-                        .padding()
+                    .padding()
                 }
                 
                 Spacer()
@@ -123,6 +116,7 @@ struct AuthView: View {
         }
         .padding()
         .fixedSize()
+        .task(priority: .userInitiated) { workspace.open(URL(string: "http://legendary.gl/epiclogin")!) }
     }
 }
 
