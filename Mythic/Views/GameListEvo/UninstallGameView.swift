@@ -87,8 +87,10 @@ struct UninstallViewEvo: View {
                                 )
                                 
                                 if let stderrString = String(data: output.stderr, encoding: .utf8),
-                                   let errorLine = stderrString.split(separator: "\n").first(where: { $0.contains("ERROR:") }) {
-                                    guard !errorLine.contains("OSError(66, 'Directory not empty')") else {
+                                   // swiftlint:disable:next force_try
+                                   let errorLine = stderrString.split(separator: "\n").first(where: { $0.contains("ERROR:") })?.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)) {
+                                    // Dirtyfix for OSError(66, 'Directory not empty') and other legendary game deletion failures
+                                    guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
                                         if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
                                         return
                                     }

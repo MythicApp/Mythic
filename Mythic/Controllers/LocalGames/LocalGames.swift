@@ -49,6 +49,8 @@ class LocalGames {
     }
     
     static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
+        Logger.app.notice("Launching local game \(game.title) (\(game.platform?.rawValue ?? "unknown"))")
+        
         guard let library = library,
               library.contains(game) else {
             log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
