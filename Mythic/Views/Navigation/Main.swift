@@ -57,31 +57,19 @@ struct MainView: View {
                         .fontWeight(.bold)
                     
                     Group {
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                HomeView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: HomeView()) {
                             Label("Home", systemImage: "house")
                                 .foregroundStyle(.primary)
                                 .help("Everything in one place")
                         }
                         
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                LibraryView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: LibraryView()) {
                             Label("Library", systemImage: "books.vertical")
                                 .foregroundStyle(.primary)
                                 .help("View your games")
                         }
                         
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                StoreView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: StoreView()) {
                             Label("Store", systemImage: "basket")
                                 .foregroundStyle(.primary)
                                 .help("Purchase new games from Epic")
@@ -95,41 +83,25 @@ struct MainView: View {
                         .fontWeight(.bold)
                     
                     Group {
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                WineView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: WineView()) {
                             Label("Wine", systemImage: "wineglass")
                                 .foregroundStyle(.primary)
                                 .help("Manage containers for Windows® applications")
                         }
                         
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                SettingsView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: SettingsView()) {
                             Label("Settings", systemImage: "gear")
                                 .foregroundStyle(.primary)
                                 .help("Configure Mythic")
                         }
                         
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                SupportView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: SupportView()) {
                             Label("Support", systemImage: "questionmark.bubble")
                                 .foregroundStyle(.primary)
                                 .help("Get support/Support Mythic")
                         }
                         
-                        NavigationLink(
-                            destination: withAnimation(.easeInOut) {
-                                AccountsView().transition(.slide)
-                            }
-                        ) {
+                        NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
                                 .foregroundStyle(.primary)
                                 .help("Get support/Support Mythic")
