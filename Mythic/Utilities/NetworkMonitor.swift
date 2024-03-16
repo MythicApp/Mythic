@@ -31,11 +31,14 @@ import SwiftUI
 
     init() {
         networkMonitor.pathUpdateHandler = { [weak self] path in
-            DispatchQueue.main.async {
-                self?.isConnected = (path.status == .satisfied)
-                guard self?.isConnected == true else { self?.updateAccessibility(false); return }
+            guard let self = self else { return }
+            guard isCheckingEpicAccessibility == false else { return }
+            
+            DispatchQueue.global(qos: .background).async {
+                self.isConnected = (path.status == .satisfied)
+                guard self.isConnected == true else { self.updateAccessibility(false); return }
                 
-                self?.isCheckingEpicAccessibility = true
+                self.isCheckingEpicAccessibility = true
                 
                 let request = URLRequest(
                     url: .init(string: "https://epicgames.com")!,
@@ -43,9 +46,9 @@ import SwiftUI
                     timeoutInterval: 5
                 )
                 
-                URLSession.shared.dataTask(with: request) { [weak self] _, response, error in
-                    guard error == nil, let httpResponse = response as? HTTPURLResponse else { self?.updateAccessibility(false); return }
-                    self?.updateAccessibility((200...299) ~= httpResponse.statusCode)
+                URLSession.shared.dataTask(with: request) { _, response, error in
+                    guard error == nil, let httpResponse = response as? HTTPURLResponse else { self.updateAccessibility(false); return }
+                    self.updateAccessibility((200...299) ~= httpResponse.statusCode)
                 }.resume()
                 
             }
