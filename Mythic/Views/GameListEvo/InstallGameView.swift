@@ -30,13 +30,15 @@ struct InstallViewEvo: View {
             .font(.title)
             .task(priority: .userInitiated) {
                 fetchingOptionalPacks = true
-                defer { fetchingOptionalPacks = false }
+                // defer { fetchingOptionalPacks = false }
                 
                 let command = await Legendary.command(
                     args: ["install", game.appName],
                     useCache: true,
                     identifier: "parseOptionalPacks"
                 )
+                
+                fetchingOptionalPacks = false // await
                 
                 guard let stdoutString = String(data: command.stdout, encoding: .utf8) else { return }
                 guard stdoutString.contains("The following optional packs are available (tag - name):") else { return }
