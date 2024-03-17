@@ -121,7 +121,7 @@ struct GameCard: View {
                                     .help("Install Mythic Engine")
                                 } else if case .epic = game.type, // if verification required, FIXME: turn this block into a Legendary function
                                           let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
-                                          let needsVerification = json[game.appName]["needs_verification"].bool, needsVerification {
+                                          let needsVerification = json[game.id]["needs_verification"].bool, needsVerification {
                                     // MARK: Verify Button
                                     Button {
                                         Task(priority: .userInitiated) {

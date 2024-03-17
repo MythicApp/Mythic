@@ -318,7 +318,7 @@ class Legendary {
         var argBuilder = [
             "-y",
             "install",
-            game.appName,
+            game.id,
             type == .repair ? "--repair" : nil,
             type == .update ? "--update-only": nil
         ] .compactMap { $0 }
@@ -471,7 +471,7 @@ class Legendary {
             guard files.isWritableFile(atPath: oldPath) else { throw FileLocations.FileNotModifiableError(.init(filePath: oldPath)) }
             try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
             await command(
-                args: ["move", game.appName, newPath, "--skip-move"],
+                args: ["move", game.id, newPath, "--skip-move"],
                 useCache: false,
                 identifier: "moveGame"
             )
@@ -526,7 +526,7 @@ class Legendary {
         
         var args = [
             "launch",
-            game.appName,
+            game.id,
             needsUpdate(game: game) ? "--skip-version-check" : nil,
             online ? nil : "--offline"
         ] .compactMap { $0 }
@@ -539,7 +539,7 @@ class Legendary {
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
         
-        await command(args: args, useCache: false, identifier: "launch_\(game.appName)", additionalEnvironmentVariables: environmentVariables)
+        await command(args: args, useCache: false, identifier: "launch_\(game.id)", additionalEnvironmentVariables: environmentVariables)
         GameModification.shared.launching = nil
     }
     
@@ -606,7 +606,7 @@ class Legendary {
      
      _ = await command(args: [
      "launch",
-     game.appName,
+     game.id,
      "--wine",
      "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
      ]
@@ -628,7 +628,7 @@ class Legendary {
     static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
         guard game.type == .epic else { throw IsNotLegendaryError() }
         
-        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.appName]["platform"].string
+        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.id]["platform"].string
         if platform == "Mac" {
             return .macOS
         } else if platform == "Windows" {
@@ -653,8 +653,8 @@ class Legendary {
             let metadata = try getGameMetadata(game: game)
             let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
             
-            if let installedVersion = installed[game.appName]["version"].string,
-               let platform = installed[game.appName]["platform"].string,
+            if let installedVersion = installed[game.id]["version"].string,
+               let platform = installed[game.id]["platform"].string,
                let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string {
                 if upstreamVersion != installedVersion {
                     needsUpdate = true
@@ -727,9 +727,9 @@ class Legendary {
         
         var apps: [Mythic.Game] = .init()
         
-        for (appName, gameInfo) in installedGames {
+        for (id, gameInfo) in installedGames {
             if let title = gameInfo["title"] as? String {
-                apps.append(Mythic.Game(type: .epic, title: title, appName: appName))
+                apps.append(Mythic.Game(type: .epic, title: title, id: id))
             }
         }
         
@@ -742,7 +742,7 @@ class Legendary {
         
         let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
         
-        return installed[game.appName]["install_path"].string
+        return installed[game.id]["install_path"].string
     }
     
     // MARK: - Get Installable Method
@@ -769,7 +769,7 @@ class Legendary {
         
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
-            return .init(type: .epic, title: json["app_title"].stringValue, appName: json["app_name"].stringValue)
+            return .init(type: .epic, title: json["app_title"].stringValue, id: json["app_name"].stringValue)
         }
         
         return games.sorted { $0.title < $1.title }
@@ -792,7 +792,7 @@ class Legendary {
         }
         
         if let metadataFileName = metadataDirectoryContents.first(where: {
-            $0.hasSuffix(".json") && $0.contains(game.appName)
+            $0.hasSuffix(".json") && $0.contains(game.id)
         }),
            let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
            let json = try? JSON(data: data) {
@@ -861,7 +861,7 @@ class Legendary {
         var urls: [String: String] = .init()
         
         for game in json {
-            let appName = String(describing: game.1["app_name"])
+            let id = String(describing: game.1["app_name"])
             if let keyImages = game.1["metadata"]["keyImages"].array {
                 var image: [JSON] = .init()
                 
@@ -873,7 +873,7 @@ class Legendary {
                 }
                 
                 if let imageURL = image.first?["url"].string {
-                    urls[appName] = imageURL
+                    urls[id] = imageURL
                 }
             }
         }
@@ -901,9 +901,9 @@ class Legendary {
             return (nil, of: nil)
         }
         
-        for (appName, dict) in json {
-            if appName == game || dict.compactMap({ $0.1.rawString() }).contains(game) {
-                return (true, of: appName)
+        for (id, dict) in json {
+            if id == game || dict.compactMap({ $0.1.rawString() }).contains(game) {
+                return (true, of: id)
             }
         }
         
@@ -927,13 +927,13 @@ class Legendary {
     /**
      Retrieve the game's title from the game's app\_name.
      
-     - Parameter appName: The app name of the game.
+     - Parameter id: The app name of the game.
      - Returns: The title of the game.
      */
     @available(*, deprecated, message: "Made redundant by Game")
-    static func getTitleFromAppName(appName: String) async -> String? { // TODO: full removal before launch
+    static func getTitleFromAppName(id: String) async -> String? { // TODO: full removal before launch
         guard signedIn() else { return String() }
-        let json = try? await JSON(data: command(args: ["info", appName, "--json"], useCache: true, identifier: "getTitleFromAppName").stdout)
+        let json = try? await JSON(data: command(args: ["info", id, "--json"], useCache: true, identifier: "getTitleFromAppName").stdout)
         return json?["game"]["title"].stringValue
     }
     
@@ -950,7 +950,7 @@ class Legendary {
                     Mythic.Game(
                         type: .epic,
                         title: game.1["app_title"].string ?? .init(),
-                        appName: game.1["app_name"].string ?? .init()
+                        id: game.1["app_name"].string ?? .init()
                     )
                 )
             }

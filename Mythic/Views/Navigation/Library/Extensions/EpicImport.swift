@@ -154,14 +154,14 @@ extension LibraryView.GameImportView {
                     Task(priority: .userInitiated) {
                         var command: (stdout: Data, stderr: Data)?
                         
-                        if !game.appName.isEmpty && !game.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
+                        if !game.id.isEmpty && !game.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
                             command = await Legendary.command(
                                 args: [
                                     "import",
                                     checkIntegrity ? nil : "--disable-check",
                                     withDLCs ? "--with-dlcs" : "--skip-dlcs",
                                     "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
-                                    game.appName,
+                                    game.id,
                                     path
                                 ] .compactMap { $0 },
                                 useCache: false,
@@ -172,7 +172,7 @@ extension LibraryView.GameImportView {
                         if command != nil {
                             if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
                                 if !commandStderrString.isEmpty {
-                                    if !game.appName.isEmpty && !game.title.isEmpty {
+                                    if !game.id.isEmpty && !game.title.isEmpty {
                                         if commandStderrString.contains("INFO: Game \"\(game.title)\" has been imported.") {
                                             isPresented = false
                                             isGameListRefreshCalled = true

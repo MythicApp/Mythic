@@ -95,7 +95,7 @@ extension GameListView {
                                     "-y", "uninstall",
                                     keepFiles ? "--keep-files" : nil,
                                     skipUninstaller ? "--skip-uninstaller" : nil,
-                                    game.appName
+                                    game.id
                                 ] .compactMap { $0 },
                                 useCache: false,
                                 identifier: "uninstall"

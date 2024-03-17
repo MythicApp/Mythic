@@ -33,7 +33,7 @@ struct InstallViewEvo: View {
                 // defer { fetchingOptionalPacks = false }
                 
                 let command = await Legendary.command(
-                    args: ["install", game.appName],
+                    args: ["install", game.id],
                     useCache: true,
                     identifier: "parseOptionalPacks"
                 )

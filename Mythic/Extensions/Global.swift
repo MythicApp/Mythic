@@ -52,11 +52,11 @@ enum GameType: String, CaseIterable, Codable {
     case local = "Local"
 }
 
-struct Game: Hashable, Codable {
-    init(type: GameType, title: String, appName: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
+struct Game: Hashable, Codable, Identifiable {
+    init(type: GameType, title: String, id: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
         self.type = type
         self.title = title
-        self.appName = appName
+        self.id = id
         self.platform = (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
         self.imageURL = (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
         self.path = (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
@@ -64,11 +64,11 @@ struct Game: Hashable, Codable {
     
     var type: GameType
     var title: String
-    var appName: String = UUID().uuidString
+    var id: String = UUID().uuidString
     var platform: GamePlatform?
     var bottleName: String {
         get {
-            let bottleKey: String = "\(appName)_defaultBottle"
+            let bottleKey: String = id.appending("_defaultBottle")
             
             if Wine.allBottles?[bottleKey] == nil { defaults.removeObject(forKey: bottleKey) }
             defaults.register(defaults: [bottleKey: "Default"]) // reregister after removal
@@ -76,18 +76,18 @@ struct Game: Hashable, Codable {
         }
         set {
             if Wine.allBottles?[newValue] != nil {
-                defaults.set(newValue, forKey: "\(appName)_defaultBottle")
+                defaults.set(newValue, forKey: id.appending("_defaultBottle"))
             }
         }
     }
     
     var isFavourited: Bool {
-        get { favouriteGames.contains(appName) }
+        get { favouriteGames.contains(id) }
         set {
             if newValue {
-                favouriteGames.insert(appName)
+                favouriteGames.insert(id)
             } else {
-                favouriteGames.remove(appName)
+                favouriteGames.remove(id)
             }
         }
     }
@@ -144,7 +144,7 @@ enum GameModificationType: String {
 
 /// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise
 func placeholderGame(type: GameType) -> Game { // this is so stupid
-    return .init(type: type, title: .init(), appName: UUID().uuidString, platform: .macOS)
+    return .init(type: type, title: .init(), id: UUID().uuidString, platform: .macOS)
 }
 
 /// Your father.

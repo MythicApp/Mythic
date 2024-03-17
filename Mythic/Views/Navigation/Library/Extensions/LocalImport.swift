@@ -32,7 +32,7 @@ extension LibraryView.GameImportView {
                 case .macOS:
                     if let bundle = Bundle(path: path),
                         let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
-                        game.title = selectedAppName // not to be confused with game.appName
+                        game.title = selectedAppName // not to be confused with game.id
                     }
                 case .windows:
                     game.title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other

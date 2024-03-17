@@ -120,7 +120,7 @@ struct GameListView: View {
             group.enter()
             Task(priority: .userInitiated) {
                 let command = await Legendary.command(
-                    args: ["install", game.appName],
+                    args: ["install", game.id],
                     useCache: true,
                     identifier: "parseOptionalPacks"
                 )
@@ -250,7 +250,7 @@ struct GameListView: View {
                                 HStack {
                                     // MARK: For installed games
                                     if installedGames.contains(game) { // TODO: FIXME: IMPORTANT: if game path doesn't exist, grey out the game.
-                                        if variables.getVariable("launching_\(game.appName)") != true {
+                                        if variables.getVariable("launching_\(game.id)") != true {
                                             // MARK: Settings icon
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)
@@ -291,7 +291,7 @@ struct GameListView: View {
                                             
                                             if game.type == .epic,
                                                let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
-                                               let needsVerification = json[game.appName]["needs_verification"].bool, // FIXME: force unwrap
+                                               let needsVerification = json[game.id]["needs_verification"].bool, // FIXME: force unwrap
                                                needsVerification {
                                                 // MARK: Verification Button
                                                 Button(action: {
@@ -300,7 +300,7 @@ struct GameListView: View {
                                                         do {
                                                             try await Legendary.install(
                                                                 game: game,
-                                                                platform: json[game.appName]["platform"].string == "Mac" ? .macOS : .windows,
+                                                                platform: json[game.id]["platform"].string == "Mac" ? .macOS : .windows,
                                                                 type: .repair
                                                             )
                                                             

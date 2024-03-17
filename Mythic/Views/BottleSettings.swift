@@ -77,7 +77,7 @@ struct BottleSettingsView: View {
                 get: { /* TODO: add support for different games having different configs under the same bottle
                         switch bottleScope {
                         case .individual:
-                        return Wine.individualBottleSettings![game.appName]!.metalHUD
+                        return Wine.individualBottleSettings![game.id]!.metalHUD
                         case .global: */
                     return Wine.allBottles![selectedBottle]!.settings.metalHUD
                     // }

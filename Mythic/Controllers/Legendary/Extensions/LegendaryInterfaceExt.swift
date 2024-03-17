@@ -52,7 +52,7 @@ extension Legendary {
     /// Struct to store games.
     @available(*, deprecated, message: "Replaced by Mythic.Game")
     struct Game: Hashable, Codable {
-        var appName: String
+        var id: String
         var title: String
     }
     

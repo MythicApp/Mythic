@@ -20,8 +20,7 @@ struct GameListEvo: View {
                             $0.title.localizedCaseInsensitiveContains(searchString)
                         }
                         .sorted(by: { $0.title < $1.title })
-                        .sorted(by: { $0.isFavourited && !$1.isFavourited }),
-                    id: \.appName
+                        .sorted(by: { $0.isFavourited && !$1.isFavourited })
                 ) { game in
                     GameCard(game: .constant(game))
                         .padding()

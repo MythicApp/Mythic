@@ -76,7 +76,7 @@ extension GameListView {
                     VStack {
                         Text(game.title)
                             .font(.title)
-                            .help("UUID: \(game.appName)")
+                            .help("UUID: \(game.id)")
                         
                         if let gamePath = game.path, game.imageURL == nil && game.platform == .macOS {
                             ZStack { // TODO: turn into its own view or extension or something
@@ -267,7 +267,7 @@ extension GameListView {
                 
                 HStack {
                     /*
-                     Text(game.appName)
+                     Text(game.id)
                      .scaledToFit()
                      .foregroundStyle(.placeholder)
                      */
@@ -324,6 +324,6 @@ extension GameListView {
 #Preview {
     GameListView.SettingsView(
         isPresented: .constant(true),
-        game: .constant(.init(type: .epic, title: "Game", appName: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png")))
+        game: .constant(.init(type: .epic, title: "Game", id: "Test_\(UUID().uuidString)", platform: .macOS, imageURL: URL(string: "https://cdn1.epicgames.com/ut/item/ut-39a5fa32c5534e0eabede7b732ca48c8-1288x1450-9a43b56b492819d279855ae612ad85cd-1288x1450-9a43b56b492819d279855ae612ad85cd.png")))
     )
 }
