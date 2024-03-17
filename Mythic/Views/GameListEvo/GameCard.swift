@@ -204,7 +204,7 @@ struct GameCard: View {
                                                 )
                                             } catch {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
-                                                // TODO: add repair error
+                                                // TODO: add update error
                                             }
                                         }
                                     } label: {

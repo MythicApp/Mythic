@@ -104,7 +104,7 @@ struct MainView: View {
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
                                 .foregroundStyle(.primary)
-                                .help("Get support/Support Mythic")
+                                .help("View all currently signed in accounts")
                         }
                     }
                     /*
@@ -196,10 +196,10 @@ struct MainView: View {
                 
                 if gameModification.game != nil {
                     List {
-                        NavigationLink(destination: EmptyView()) {
+                        NavigationLink(destination: DownloadsView()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")
                                 .foregroundStyle(.primary)
-                                .help("Get support/Support Mythic")
+                                .help("View all downloads")
                         }
                     }
                     .frame(maxHeight: 40)

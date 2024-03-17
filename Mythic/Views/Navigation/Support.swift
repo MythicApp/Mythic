@@ -28,7 +28,11 @@ struct SupportView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
-            .shimmering(bandSize: 1)
+            .shimmering(
+                animation: .easeInOut(duration: 1)
+                    .repeatForever(autoreverses: false),
+                bandSize: 1
+            )
             
             VStack {
                 VStack {
@@ -39,7 +43,11 @@ struct SupportView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .clipShape(.rect(cornerRadius: 10))
-                .shimmering(bandSize: 1)
+                .shimmering(
+                    animation: .easeInOut(duration: 1)
+                        .repeatForever(autoreverses: false),
+                    bandSize: 1
+                )
                 
                 VStack {
                     
@@ -47,7 +55,11 @@ struct SupportView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
                 .clipShape(.rect(cornerRadius: 10))
-                .shimmering(bandSize: 1)
+                .shimmering(
+                    animation: .easeInOut(duration: 1)
+                        .repeatForever(autoreverses: false),
+                    bandSize: 1
+                )
             }
         }
         .padding()

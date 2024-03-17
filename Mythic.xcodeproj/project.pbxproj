@@ -73,6 +73,7 @@
 		6ADF5ABB2B98B9710041D04E /* UninstallGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADF5ABA2B98B9710041D04E /* UninstallGameView.swift */; };
 		6ADFD97B2B975B3300557086 /* GameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADFD97A2B975B3300557086 /* GameCard.swift */; };
 		6AE4A9A32B44682E0060D483 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE4A9A22B44682E0060D483 /* Lock.swift */; };
+		6AEF7BC62BA6D873002FFE26 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEF7BC52BA6D873002FFE26 /* Downloads.swift */; };
 		6AF0EB1F2AAD4E0A0044C09C /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0EB1E2AAD4E0A0044C09C /* Onboarding.swift */; };
 		6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0EB202AAD4F1E0044C09C /* NotImplemented.swift */; };
 		6AF0EB2A2AADE1780044C09C /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0EB292AADE1780044C09C /* Store.swift */; };
@@ -146,6 +147,7 @@
 		6ADF5ABA2B98B9710041D04E /* UninstallGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UninstallGameView.swift; sourceTree = "<group>"; };
 		6ADFD97A2B975B3300557086 /* GameCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCard.swift; sourceTree = "<group>"; };
 		6AE4A9A22B44682E0060D483 /* Lock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
+		6AEF7BC52BA6D873002FFE26 /* Downloads.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Downloads.swift; sourceTree = "<group>"; };
 		6AF0EB1E2AAD4E0A0044C09C /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		6AF0EB202AAD4F1E0044C09C /* NotImplemented.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotImplemented.swift; sourceTree = "<group>"; };
 		6AF0EB292AADE1780044C09C /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
@@ -478,8 +480,9 @@
 				6AC25CBC2AAED24700D395CF /* Settings.swift */,
 				6AD506592AAFF6E2008A28C1 /* Wine.swift */,
 				6AD5065B2AAFF6F0008A28C1 /* Support.swift */,
-				6AB474A72AACBC0100AB9C63 /* Main.swift */,
 				6ABEEEB42BA096BC00D24A4E /* Accounts.swift */,
+				6AEF7BC52BA6D873002FFE26 /* Downloads.swift */,
+				6AB474A72AACBC0100AB9C63 /* Main.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -655,6 +658,7 @@
 				6AF0EB2C2AADE2530044C09C /* WebView.swift in Sources */,
 				6A0585482ADEC17300165C3C /* WhiskyInterface.swift in Sources */,
 				6AFC02852ABF67F60004AB77 /* Bundle.swift in Sources */,
+				6AEF7BC62BA6D873002FFE26 /* Downloads.swift in Sources */,
 				6AACB0932AC71757007D7CE8 /* UpdaterSettings [TEMP].swift in Sources */,
 				6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */,
 				6A00F2052AC5F7450054858A /* GameImport.swift in Sources */,

@@ -57,10 +57,9 @@ struct HomeView: View {
     var body: some View { // TODO: revamp
         HStack {
             // MARK: - Recent Game Display
-            if var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(
-                Game.self,
-                from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()
-            ) {
+            if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,
+               var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(Game.self, from: recentlyPlayedObject
+               ) {
                 GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
             }
             
