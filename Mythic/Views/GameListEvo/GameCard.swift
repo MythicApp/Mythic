@@ -51,6 +51,7 @@ struct GameCard: View {
                             image
                                 .resizable()
                                 .scaledToFit()
+                                .modifier(FadeInModifier())
                         } else {
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(.windowBackground)

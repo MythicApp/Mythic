@@ -64,7 +64,8 @@ extension LibraryView {
                         isPresented: $isPresented,
                         isGameListRefreshCalled: $isGameListRefreshCalled
                     )
-                    .padding(.bottom) // FIXME: dirtyfix for padding issue
+                    .scaledToFit()
+                    // .padding(.bottom) // FIXME: dirtyfix for padding issue
                 }
             }
             

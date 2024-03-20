@@ -43,55 +43,57 @@ extension LibraryView.GameImportView {
         var body: some View {
             VStack {
                 HStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.background)
-                        .aspectRatio(3/4, contentMode: .fit)
-                        .overlay { // MARK: Image
-                            CachedAsyncImage(url: game.imageURL) { phase in
-                                switch phase {
-                                case .empty:
-                                    if case .local = game.type {
-                                        let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+                    if game.imageURL != nil {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.background)
+                            .aspectRatio(3/4, contentMode: .fit)
+                            .overlay { // MARK: Image
+                                CachedAsyncImage(url: game.imageURL) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        if case .local = game.type {
+                                            let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+                                            
+                                            image
+                                                .resizable()
+                                                .aspectRatio(3/4, contentMode: .fill)
+                                                .blur(radius: 20.0)
+                                            
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .modifier(FadeInModifier())
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .fill(.windowBackground)
+                                                .shimmering(
+                                                    animation: .easeInOut(duration: 1)
+                                                        .repeatForever(autoreverses: false),
+                                                    bandSize: 1
+                                                )
+                                        }
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fill)
+                                            .clipShape(.rect(cornerRadius: 20))
+                                            .blur(radius: 10.0)
                                         
                                         image
                                             .resizable()
                                             .aspectRatio(3/4, contentMode: .fill)
-                                            .blur(radius: 20.0)
-                                        
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                    } else {
+                                            .clipShape(.rect(cornerRadius: 20))
+                                            .modifier(FadeInModifier())
+                                    case .failure:
                                         RoundedRectangle(cornerRadius: 20)
                                             .fill(.windowBackground)
-                                            .shimmering(
-                                                animation: .easeInOut(duration: 1)
-                                                    .repeatForever(autoreverses: false),
-                                                bandSize: 1
-                                            )
+                                    @unknown default:
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.windowBackground)
                                     }
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fill)
-                                        .clipShape(.rect(cornerRadius: 20))
-                                        .blur(radius: 10.0)
-                                    
-                                    image
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fill)
-                                        .clipShape(.rect(cornerRadius: 20))
-                                        .modifier(FadeInModifier())
-                                case .failure:
-                                    // fallthrough
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(.windowBackground)
-                                @unknown default:
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(.windowBackground)
                                 }
                             }
-                        }
+                    }
                     
                     Form {
                         TextField("What should we call this game?", text: $game.title)
@@ -153,49 +155,12 @@ extension LibraryView.GameImportView {
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
                             text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
-                                get: { game.imageURL?.path ?? .init() },
+                                get: { game.imageURL?.absoluteString ?? .init() },
                                 set: { game.imageURL = .init(string: $0) }
-                            )
+                                         )
                         )
                     }
                     .formStyle(.grouped)
-                    
-                    CachedAsyncImage(url: game.imageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            EmptyView()
-                        case .success(let image):
-                            HStack {
-                                Divider()
-                                    .padding()
-                                
-                                ZStack {
-                                    image // fix image stretching and try to zoom instead
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .blur(radius: 20)
-                                        .frame(width: 150)
-                                    
-                                    image
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .modifier(FadeInModifier())
-                                        .frame(width: 150)
-                                }
-                            }
-                            .scaledToFit()
-                        case .failure:
-                            Image(systemName: "network.slash")
-                                .symbolEffect(.appear)
-                                .imageScale(.large)
-                        @unknown default:
-                            Image(systemName: "exclamationmark.triangle")
-                                .symbolEffect(.appear)
-                                .imageScale(.large)
-                        }
-                    }
                 }
                 
                 HStack {
