@@ -38,6 +38,7 @@ struct UninstallViewEvo: View {
                     Toggle(isOn: $skipUninstaller) {
                         Text("Don't run uninstaller (If applicable)")
                     }
+                    .disabled(game.type == .local)
                     Spacer()
                 }
             }
@@ -72,36 +73,48 @@ struct UninstallViewEvo: View {
                     Alert(
                         title: Text("Are you sure you want to uninstall \"\(game.title)\"?"),
                         primaryButton: .destructive(Text("Uninstall")) {
-                            Task(priority: .userInitiated) {
-                                uninstalling = true
-                                
-                                let output = await Legendary.command(
-                                    args: [
-                                        "-y", "uninstall",
-                                        keepFiles ? "--keep-files" : nil,
-                                        skipUninstaller ? "--skip-uninstaller" : nil,
-                                        game.id
-                                    ] .compactMap { $0 },
-                                    useCache: false,
-                                    identifier: "uninstall"
-                                )
-                                
-                                if let stderrString = String(data: output.stderr, encoding: .utf8),
-                                   // swiftlint:disable:next force_try
-                                   let errorLine = stderrString.split(separator: "\n").first(where: { $0.contains("ERROR:") })?.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)) {
-                                    // Dirtyfix for OSError(66, 'Directory not empty') and other legendary game deletion failures
-                                    guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
-                                        if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
-                                        return
+                            switch game.type {
+                            case .epic:
+                                Task(priority: .userInitiated) {
+                                    uninstalling = true
+                                    
+                                    let output = await Legendary.command(
+                                        args: [
+                                            "-y", "uninstall",
+                                            keepFiles ? "--keep-files" : nil,
+                                            skipUninstaller ? "--skip-uninstaller" : nil,
+                                            game.id
+                                        ] .compactMap { $0 },
+                                        useCache: false,
+                                        identifier: "uninstall"
+                                    )
+                                    
+                                    if let stderrString = String(data: output.stderr, encoding: .utf8),
+                                       // swiftlint:disable:next force_try
+                                       let errorLine = stderrString.split(separator: "\n").first(where: { $0.contains("ERROR:") })?.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)) {
+                                        // Dirtyfix for OSError(66, 'Directory not empty') and other legendary game deletion failures
+                                        guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
+                                            if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
+                                            return
+                                        }
+                                        
+                                        uninstallationErrorReason = errorLine.replacingOccurrences(of: "ERROR: ", with: "")
+                                        isUninstallationErrorPresented = true
+                                    } else {
+                                        isPresented = false
                                     }
                                     
-                                    uninstallationErrorReason = errorLine.replacingOccurrences(of: "ERROR: ", with: "")
-                                    isUninstallationErrorPresented = true
-                                } else {
-                                    isPresented = false
+                                    uninstalling = false
                                 }
-                                
-                                uninstalling = false
+                            case .local:
+                                do {
+                                    guard let gamePath = game.path else { throw FileLocations.FileDoesNotExistError(.init(filePath: game.path ?? .init())) }
+                                    if !keepFiles { try files.removeItem(atPath: gamePath) }
+                                    LocalGames.library?.remove(game)
+                                } catch {
+                                    uninstallationErrorReason = error.localizedDescription
+                                    isUninstallationErrorPresented = true
+                                }
                             }
                         },
                         secondaryButton: .cancel(Text("Cancel")) {
