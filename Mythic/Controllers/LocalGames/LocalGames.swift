@@ -67,7 +67,7 @@ class LocalGames {
                         if let error = error {
                             log.error("Error launching local macOS game \"\(game.title)\": \(error)")
                         } else {
-                            log.info("Launched local macOS game \"\(game.title)\": \(error)")
+                            log.info("Launched local macOS game \"\(game.title)\".")
                         }
                     }
                 )

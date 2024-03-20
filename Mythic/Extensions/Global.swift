@@ -57,9 +57,9 @@ struct Game: Hashable, Codable, Identifiable {
         self.type = type
         self.title = title
         self.id = id
-        self.platform = (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
-        self.imageURL = (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
-        self.path = (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
+        self.platform = platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
+        self.imageURL = imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
+        self.path = path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
     }
     
     var type: GameType

@@ -39,6 +39,10 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
+        if Libraries.isInstalled() {
+            Wine.allBottles = Wine.allBottles // creates default bottle automatically due to custom getter
+        }
+        
         // MARK: Applications folder disclaimer
 #if !DEBUG // TODO: possibly turn this into an onboarding-style message.
         let appURL = Bundle.main.bundleURL

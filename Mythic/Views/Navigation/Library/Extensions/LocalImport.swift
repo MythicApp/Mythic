@@ -43,6 +43,56 @@ extension LibraryView.GameImportView {
         var body: some View {
             VStack {
                 HStack {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.background)
+                        .aspectRatio(3/4, contentMode: .fit)
+                        .overlay { // MARK: Image
+                            CachedAsyncImage(url: game.imageURL) { phase in
+                                switch phase {
+                                case .empty:
+                                    if case .local = game.type {
+                                        let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+                                        
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fill)
+                                            .blur(radius: 20.0)
+                                        
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                    } else {
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.windowBackground)
+                                            .shimmering(
+                                                animation: .easeInOut(duration: 1)
+                                                    .repeatForever(autoreverses: false),
+                                                bandSize: 1
+                                            )
+                                    }
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(3/4, contentMode: .fill)
+                                        .clipShape(.rect(cornerRadius: 20))
+                                        .blur(radius: 10.0)
+                                    
+                                    image
+                                        .resizable()
+                                        .aspectRatio(3/4, contentMode: .fill)
+                                        .clipShape(.rect(cornerRadius: 20))
+                                        .modifier(FadeInModifier())
+                                case .failure:
+                                    // fallthrough
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.windowBackground)
+                                @unknown default:
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.windowBackground)
+                                }
+                            }
+                        }
+                    
                     Form {
                         TextField("What should we call this game?", text: $game.title)
                         

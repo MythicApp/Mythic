@@ -41,13 +41,26 @@ struct GameSettingsView: View {
                         CachedAsyncImage(url: game.imageURL) { phase in
                             switch phase {
                             case .empty:
-                                RoundedRectangle(cornerRadius: 20)
-                                    .fill(.windowBackground)
-                                    .shimmering(
-                                        animation: .easeInOut(duration: 1)
-                                            .repeatForever(autoreverses: false),
-                                        bandSize: 1
-                                    )
+                                if case .local = game.type, game.imageURL == nil {
+                                    let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+                                    
+                                    image
+                                        .resizable()
+                                        .aspectRatio(3/4, contentMode: .fill)
+                                        .blur(radius: 20.0)
+                                    
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                } else {
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(.windowBackground)
+                                        .shimmering(
+                                            animation: .easeInOut(duration: 1)
+                                                .repeatForever(autoreverses: false),
+                                            bandSize: 1
+                                        )
+                                }
                             case .success(let image):
                                 image
                                     .resizable()

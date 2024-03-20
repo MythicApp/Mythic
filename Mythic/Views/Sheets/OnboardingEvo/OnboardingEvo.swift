@@ -56,7 +56,7 @@ struct OnboardingEvo: View {
         .init(hex: "#5412F6"),
         .init(hex: "#7E1ED8"),
         .init(hex: "#9D30C1"),
-        .init(hex: "#FFFFFF")
+        .init(NSColor.windowBackgroundColor)
     ]
     @State private var animationSpeed: Double = 1
     @State private var animationNoise: Double = 15
