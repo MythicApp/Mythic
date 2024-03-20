@@ -35,9 +35,9 @@ struct SettingsView: View {
     }
     @State private var activeAlert: ActiveAlert = .reset
     
-    @State private var forceQuitSuccessful: Bool?
-    @State private var shaderCachePurgeSuccessful: Bool?
-    @State private var engineRemovalSuccessful: Bool?
+    @State private var isForceQuitSuccessful: Bool?
+    @State private var isShaderCachePurgeSuccessful: Bool?
+    @State private var isEngineRemovalSuccessful: Bool?
     @State private var isCleanupSuccessful: Bool?
     
     var body: some View {
@@ -58,7 +58,7 @@ struct SettingsView: View {
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Choose the default base path for games:")
                             Spacer()
                         }
@@ -127,47 +127,45 @@ struct SettingsView: View {
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
                     Button {
-                        forceQuitSuccessful = Wine.killAll()
+                        isForceQuitSuccessful = Wine.killAll()
                     } label: {
                         Image(systemName: "xmark.app")
                         Text("Force Quit Applications")
                     }
                     
-                    if forceQuitSuccessful != nil {
-                        Image(systemName: forceQuitSuccessful! ? "checkmark" : "xmark")
+                    if isForceQuitSuccessful != nil {
+                        Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
                     }
                 }
                 
                 HStack {
                     Button {
-                        shaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                        isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
                     } label: {
                         Image(systemName: "square.stack.3d.up.slash.fill")
                         Text("Purge Shader Cache")
                     }
                     
-                    if shaderCachePurgeSuccessful != nil {
-                        Image(systemName: shaderCachePurgeSuccessful! ? "checkmark" : "xmark")
+                    if isShaderCachePurgeSuccessful != nil {
+                        Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
                     }
                 }
                 
                 HStack {
                     Button {
-                        Libraries.remove { result in
-                            switch result {
-                            case .success:
-                                engineRemovalSuccessful = true
-                            case .failure: // TODO: add reason to .help
-                                engineRemovalSuccessful = false
-                            }
+                        do {
+                            try Libraries.remove()
+                            isEngineRemovalSuccessful = true
+                        } catch {
+                            isEngineRemovalSuccessful = false
                         }
                     } label: {
                         Image(systemName: "gear.badge.xmark")
                         Text("Remove Mythic Engine")
                     }
                     
-                    if engineRemovalSuccessful != nil {
-                        Image(systemName: engineRemovalSuccessful! ? "checkmark" : "xmark")
+                    if isEngineRemovalSuccessful != nil {
+                        Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
                     }
                 }
             }

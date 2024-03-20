@@ -97,10 +97,11 @@ struct InstallViewEvo: View {
             
             HStack {
                 VStack {
-                    HStack { // FIXME: jank
+                    HStack {
                         Text("Where do you want the game's base path to be located?")
                         Spacer()
                     }
+                    
                     HStack {
                         Text(baseURL.prettyPath())
                             .foregroundStyle(.placeholder)
@@ -138,7 +139,7 @@ struct InstallViewEvo: View {
                         .controlSize(.small)
                 }
             } else {
-                Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
+                Picker("Choose the game's native platform:", selection: $platform) {
                     ForEach(supportedPlatforms!, id: \.self) {
                         Text($0.rawValue).tag($0)
                     }

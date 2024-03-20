@@ -93,7 +93,7 @@ struct BottleSettingsView: View {
             .disabled(variables.getVariable("booting") == true)
             
             if !modifyingRetinaMode {
-                Toggle("Retina Mode", isOn: Binding( // FIXME: make retina mode work!!
+                Toggle("Retina Mode", isOn: Binding(
                     get: { retinaMode },
                     set: { value in
                         Task(priority: .userInitiated) {

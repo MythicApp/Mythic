@@ -22,7 +22,7 @@ class LocalGames {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
     
     // TODO: DocC
-    static var library: Set<Mythic.Game>? { // FIXME: is there a way to init it at the top
+    static var library: Set<Mythic.Game>? {
         get {
             if let library = defaults.object(forKey: "localGamesLibrary") as? Data {
                 do {
