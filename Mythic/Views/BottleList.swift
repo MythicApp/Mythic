@@ -55,7 +55,7 @@ struct BottleListView: View {
                                 message: .init("This process cannot be undone."),
                                 primaryButton: .destructive(.init("Delete")) {
                                     do {
-                                        try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: this is where the crashes will happen
+                                        try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: may produce crashes
                                     } catch {
                                         Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
                                         bottleNameToDelete = .init()

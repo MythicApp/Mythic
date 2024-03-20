@@ -44,7 +44,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     /// The directory where all wine prefixes related to Mythic are stored.
-    static let bottlesDirectory: URL? = { // FIXME: allow force-unwrapping of bottles directory, directory creation error will be rare
+    static let bottlesDirectory: URL? = {
         let directory = Bundle.appContainer!.appending(path: "Bottles")
         if files.fileExists(atPath: directory.path) {
             return directory
@@ -358,9 +358,8 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
         }
         
-        // TODO: FIXME: !!IMPORTANT!! replace throwing async functions with completion handlers - [completion: @escaping (Result<Void, Error>) -> Void]
         defer { VariableManager.shared.setVariable("booting", value: false) }
-        VariableManager.shared.setVariable("booting", value: true) // TODO: rember
+        VariableManager.shared.setVariable("booting", value: true)
         
         if allBottles?[name] == nil { // FIXME: may be unsafe
             allBottles?[name] = .init(url: bottleURL, settings: settings, busy: true)
@@ -470,7 +469,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        try await command( // FIXME: errors may create problems later
+        try await command( // FIXME: errors aren't handled
             args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
             identifier: "regadd",
             bottleURL: bottleURL

@@ -135,7 +135,7 @@ class Libraries {
             
             if let data = data,
                let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-               let artifacts = json["artifacts"] as? [[String: Any]], // FIXME: NOTE: get the latest artifact from MAIN ONLY; NO BRANCHES
+               let artifacts = json["artifacts"] as? [[String: Any]], // NOTE: get the latest artifact from MAIN ONLY; NO BRANCHES
                let artifact = artifacts.first {
                 latestArtifact = artifact
             }
@@ -302,22 +302,11 @@ class Libraries {
      
      - Parameter completion: A closure to be called upon completion of the removal.
      */
-    static func remove(completion: @escaping (Result<Bool, Error>) -> Void) { // FIXME: not appropriate use for a completion handler
+    static func remove() throws {
         defer { dataLock.unlock() }
-        
-        guard isInstalled() else {
-            completion(.failure(NotInstalledError()))
-            return
-        }
+        guard isInstalled() else { throw NotInstalledError() }
         
         dataLock.lock()
-        
-        do {
-            try files.removeItem(at: directory)
-            completion(.success(true))
-        } catch {
-            Logger.file.error("Unable to remove libraries: \(error.localizedDescription)")
-            completion(.failure(error))
-        }
+        try files.removeItem(at: directory)
     }
 }

@@ -22,6 +22,7 @@ struct GameSettingsView: View {
         _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
     }
     
+    @State private var moving: Bool = false
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
     
@@ -95,36 +96,37 @@ struct GameSettingsView: View {
                         
                         Spacer()
                         
-                        Button("Move...") { // TODO: look into whether .fileMover is a suitable alternative
-                            let openPanel = NSOpenPanel()
-                            openPanel.prompt = "Move"
-                            openPanel.canChooseDirectories = true
-                            openPanel.allowsMultipleSelection = false
-                            openPanel.canCreateDirectories = true
-                            
-                            switch game.type {
-                            case .epic:
-                                openPanel.directoryURL = .init(filePath: (try? Legendary.getGamePath(game: game)) ?? .init())
-                            case .local:
+                        if !moving {
+                            Button("Move...") { // TODO: look into whether .fileMover is a suitable alternative
+                                let openPanel = NSOpenPanel()
+                                openPanel.prompt = "Move"
+                                openPanel.canChooseDirectories = true
+                                openPanel.allowsMultipleSelection = false
+                                openPanel.canCreateDirectories = true
                                 openPanel.directoryURL = .init(filePath: game.path ?? .init())
-                            }
-                            
-                            if case .OK = openPanel.runModal(), let newLocation = openPanel.urls.first {
-                                Task.sync { // FIXME: can lock main, replace with async and progressview
-                                    do {
-                                        try await game.move(to: newLocation)
-                                    } catch {
-                                        movingError = error
-                                        isMovingErrorPresented = true
+                                
+                                if case .OK = openPanel.runModal(), let newLocation = openPanel.urls.first {
+                                    Task.sync { // FIXME: can lock main, replace with async and progressview
+                                        do {
+                                            moving = true
+                                            try await game.move(to: newLocation)
+                                            moving = false
+                                        } catch {
+                                            movingError = error
+                                            isMovingErrorPresented = true
+                                        }
                                     }
                                 }
                             }
-                        }
-                        .alert(isPresented: $isMovingErrorPresented) {
-                            Alert(
-                                title: .init("Unable to move \"\(game.title)\"."),
-                                message: .init(movingError?.localizedDescription ?? "Unknown Error.")
-                            )
+                            .alert(isPresented: $isMovingErrorPresented) {
+                                Alert(
+                                    title: .init("Unable to move \"\(game.title)\"."),
+                                    message: .init(movingError?.localizedDescription ?? "Unknown Error.")
+                                )
+                            }
+                        } else {
+                            ProgressView()
+                                .controlSize(.small)
                         }
                     }
                     

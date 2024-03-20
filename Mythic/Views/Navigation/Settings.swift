@@ -58,7 +58,7 @@ struct SettingsView: View {
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Choose the default base path for games:")
                             Spacer()
                         }

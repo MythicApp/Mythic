@@ -62,7 +62,7 @@ extension LibraryView.GameImportView {
                             .controlSize(.small)
                     }
                 } else {
-                    Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
+                    Picker("Choose the game's native platform:", selection: $platform) {
                         ForEach(supportedPlatforms!, id: \.self) {
                             Text($0.rawValue)
                         }
@@ -71,7 +71,7 @@ extension LibraryView.GameImportView {
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Where is the game located?")
                             Spacer()
                         }
@@ -154,7 +154,7 @@ extension LibraryView.GameImportView {
                     Task(priority: .userInitiated) {
                         var command: (stdout: Data, stderr: Data)?
                         
-                        if !game.id.isEmpty && !game.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
+                        if !game.id.isEmpty && !game.title.isEmpty {
                             command = await Legendary.command(
                                 args: [
                                     "import",

@@ -24,6 +24,7 @@ struct BottleCreationView: View {
     @State private var bottleURL: URL = Wine.bottlesDirectory!
     
     @State private var isBooting: Bool = false
+    @State private var isCancellationAlertPresented: Bool = false
     
     @State private var bootErrorDescription: String = "Unknown Error."
     @State private var isBootFailureAlertPresented: Bool = false
@@ -38,7 +39,7 @@ struct BottleCreationView: View {
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Where do you want the bottle's base path to be located?")
                             Spacer()
                         }
@@ -74,9 +75,20 @@ struct BottleCreationView: View {
             
             HStack {
                 Button("Cancel", role: .cancel) {
-                    isPresented = false
+                    if isBooting {
+                        isCancellationAlertPresented = true
+                    } else {
+                        isPresented = false
+                    }
                 }
-                .disabled(isBooting) // FIXME: replace with confirmation alert if isBooting
+                .alert(isPresented: $isCancellationAlertPresented) {
+                    Alert(
+                        title: .init("Are you sure you want to cancel bottle creation?"),
+                        message: .init("This will cancel \"\(bottleName)\"'s creation."),
+                        primaryButton: .destructive(.init("OK")),
+                        secondaryButton: .cancel()
+                    )
+                }
                 
                 Spacer()
                 

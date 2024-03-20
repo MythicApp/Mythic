@@ -65,7 +65,6 @@ extension LibraryView {
                         isGameListRefreshCalled: $isGameListRefreshCalled
                     )
                     .scaledToFit()
-                    // .padding(.bottom) // FIXME: dirtyfix for padding issue
                 }
             }
             

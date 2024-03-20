@@ -154,7 +154,7 @@ extension LibraryView.GameImportView {
                         
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
-                            text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
+                            text: Binding(
                                 get: { game.imageURL?.absoluteString ?? .init() },
                                 set: { game.imageURL = .init(string: $0) }
                                          )
