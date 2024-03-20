@@ -92,25 +92,11 @@ struct GameCard: View {
                                 // .foregroundStyle(.white)
                                 .padding(.leading)
                             
-                            Text(game.type.rawValue)
-                                .font(.caption)
-                                // .foregroundStyle(.white)
-                                .padding(.horizontal, 5)
-                                .overlay( // based off .buttonStyle(.accessoryBarAction)
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(.tertiary)
-                                )
+                            SubscriptedTextView(game.type.rawValue)
                             
                             if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
                                recent == game {
-                                Text("Recent")
-                                    .font(.caption)
-                                    .padding(.horizontal, 5)
-                                    // .foregroundStyle(.white)
-                                    .overlay( // based off .buttonStyle(.accessoryBarAction)
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(.tertiary)
-                                    )
+                                SubscriptedTextView("Recent")
                             }
                             
                             Spacer()

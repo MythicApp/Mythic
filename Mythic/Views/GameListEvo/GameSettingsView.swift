@@ -161,28 +161,13 @@ struct GameSettingsView: View {
         }
         
         HStack {
-            Text(game.platform?.rawValue ?? "Unknown")
-                .padding(.horizontal, 5)
-                .overlay( // based off .buttonStyle(.accessoryBarAction)
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(.tertiary)
-                )
+            SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
             
-            Text(game.type.rawValue)
-                .padding(.horizontal, 5)
-                .overlay( // based off .buttonStyle(.accessoryBarAction)
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(.tertiary)
-                )
+            SubscriptedTextView(game.type.rawValue)
             
             if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
                recent == game {
-                Text("Recent")
-                    .padding(.horizontal, 5)
-                    .overlay( // based off .buttonStyle(.accessoryBarAction)
-                        RoundedRectangle(cornerRadius: 4)
-                            .stroke(.tertiary)
-                    )
+                SubscriptedTextView("Recent")
             }
             
             Spacer()

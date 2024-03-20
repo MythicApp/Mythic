@@ -28,8 +28,9 @@ struct DownloadsView: View {
     @ObservedObject private var gameModification: GameModification = .shared
     
     var body: some View {
-        Form {
+        List {
             HStack {
+                
                 VStack {
                     HStack {
                         Text("Now Installing")
@@ -38,6 +39,8 @@ struct DownloadsView: View {
                     HStack {
                         Text(gameModification.game?.title ?? "Unknown")
                             .font(.bold(.title3)())
+                        
+                        SubscriptedTextView(gameModification.game?.type.rawValue ?? "Unknown")
                         Spacer()
                     }
                 }
