@@ -216,7 +216,7 @@ extension LibraryView.GameImportView {
                 isProgressViewSheetPresented = false
             }
             
-            .task(priority: .background) { // TODO: same as in localimport, can be unified?
+            .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
                     presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""

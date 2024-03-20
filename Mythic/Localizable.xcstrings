@@ -4,9 +4,6 @@
     "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
 
     },
-    "(%@)" : {
-
-    },
     "(Don't worry, you can still install Mythic Engine later.)" : {
 
     },
@@ -19,9 +16,6 @@
     "(supports selective downloads.)" : {
 
     },
-    "%@" : {
-
-    },
     "%@ %@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -31,9 +25,6 @@
           }
         }
       }
-    },
-    "%@ Settings" : {
-
     },
     "%lld%%" : {
 
@@ -48,6 +39,9 @@
 
     },
     "Add a bottle" : {
+
+    },
+    "Are you sure you want to cancel bottle creation?" : {
 
     },
     "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
@@ -120,12 +114,6 @@
     "Configure Mythic" : {
 
     },
-    "Connect to the internet to download %@." : {
-
-    },
-    "Connect to the internet to update %@." : {
-
-    },
     "Create a bottle" : {
 
     },
@@ -162,9 +150,6 @@
     "Don't delete the game files (Delete it from Mythic only)" : {
 
     },
-    "Don't run uninstaller" : {
-
-    },
     "Don't run uninstaller (If applicable)" : {
 
     },
@@ -174,9 +159,6 @@
     "Download \"%@\"" : {
 
     },
-    "Download %@" : {
-
-    },
     "Downloading Game Porting Toolkit..." : {
 
     },
@@ -184,9 +166,6 @@
 
     },
     "Downloads" : {
-
-    },
-    "DXVK" : {
 
     },
     "Enhanced Sync (MSync)" : {
@@ -213,9 +192,6 @@
     "Error installing \"%@\"." : {
 
     },
-    "Error installing %@." : {
-
-    },
     "Error installing GPTK." : {
 
     },
@@ -223,9 +199,6 @@
 
     },
     "Error launching %@." : {
-
-    },
-    "Error uninstalling %@." : {
 
     },
     "Everything in one place" : {
@@ -262,12 +235,6 @@
 
     },
     "Force Quit Applications" : {
-
-    },
-    "Game integrity verification is required." : {
-
-    },
-    "Game location" : {
 
     },
     "Game Location:" : {
@@ -330,16 +297,10 @@
     "It appears loading's taking a while." : {
 
     },
-    "Keep files" : {
-
-    },
     "Keep waiting (dismissable with esc)" : {
 
     },
     "Later" : {
-
-    },
-    "Launch %@" : {
 
     },
     "Launch Configurator" : {
@@ -352,9 +313,6 @@
 
     },
     "Library" : {
-
-    },
-    "Local" : {
 
     },
     "Manage containers for Windows® applications" : {
@@ -375,16 +333,10 @@
     "Move \"%@\"" : {
 
     },
-    "Move %@" : {
-
-    },
     "Move..." : {
 
     },
     "Mythic" : {
-
-    },
-    "Mythic cannot connect to the internet." : {
 
     },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
@@ -397,9 +349,6 @@
 
     },
     "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
-
-    },
-    "Mythic is currently moving \"%@\"." : {
 
     },
     "Mythic is not connected to the internet." : {
@@ -531,6 +480,9 @@
     "This process cannot be undone." : {
 
     },
+    "This will cancel \"%@\"'s creation." : {
+
+    },
     "This will sign you out of the account \"%@\"." : {
 
     },
@@ -556,9 +508,6 @@
     "Unable to move \"%@\"." : {
 
     },
-    "Unable to move %@." : {
-
-    },
     "Unable to uninstall \"%@\"." : {
 
     },
@@ -572,12 +521,6 @@
 
     },
     "Update \"%@\"" : {
-
-    },
-    "Update %@" : {
-
-    },
-    "UUID: %@" : {
 
     },
     "Verify the game's integrity" : {

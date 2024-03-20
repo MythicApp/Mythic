@@ -511,14 +511,14 @@ class Legendary {
         - game: The game to launch.
         - bottle: The
      */
-    static func launch(game: Mythic.Game, bottle: Wine.Bottle, online: Bool) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
             throw GameDoesNotExistError(game)
         }
         
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-        guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
+        guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
         
         GameModification.shared.launching = game
         
@@ -535,7 +535,7 @@ class Legendary {
         
         if game.platform == .windows {
             args += ["--wine", Libraries.directory.appending(path: "Wine/bin/wine64").path]
-            environmentVariables["WINEPREFIX"] = bottle.url.path
+            environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
         
@@ -712,7 +712,7 @@ class Legendary {
      - Returns: A dictionary containing ``Game`` objects.
      - Throws: A ``NotSignedInError``.
      */
-    static func getInstalledGames() throws -> [Mythic.Game] { // TODO: delete Legendary.Game and replace Mythic.Game with Game
+    static func getInstalledGames() throws -> [Mythic.Game] {
         guard signedIn() else { throw NotSignedInError() }
         
         let installedJSONFileURL: URL = URL(filePath: "\(configLocation)/installed.json")

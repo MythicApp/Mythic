@@ -526,7 +526,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      - Parameter at: The `URL` of the prefix that needs to be checked.
      - Returns: Boolean value denoting the prefix's existence.
      */
-    static func bottleExists(bottleURL: URL) -> Bool { // TODO: refactor
+    static func bottleExists(bottleURL: URL) -> Bool {
         return (try? files.contentsOfDirectory(atPath: bottleURL.path).contains("drive_c")) ?? false
     }
 }

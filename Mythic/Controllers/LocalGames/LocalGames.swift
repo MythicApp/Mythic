@@ -48,7 +48,7 @@ class LocalGames {
         }
     }
     
-    static func launch(game: Mythic.Game, bottle: Wine.Bottle) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game) async throws { // TODO: be able to tell when game is runnning
         Logger.app.notice("Launching local game \(game.title) (\(game.platform?.rawValue ?? "unknown"))")
         
         guard let library = library,
@@ -76,7 +76,7 @@ class LocalGames {
             }
         case .windows:
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
-            guard Wine.bottleExists(bottleURL: bottle.url) else { throw Wine.BottleDoesNotExistError() }
+            guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
             
             GameModification.shared.launching = game
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")

@@ -111,7 +111,9 @@ struct GameCard: View {
                                 if case .windows = game.platform, !Libraries.isInstalled() {
                                     // MARK: Engine Install Button
                                     Button {
-                                        _ = OnboardingEvo(fromChapter: .engineDisclaimer) // FIXME: dud
+                                        let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                        app.onboardingChapter = .engineDisclaimer
+                                        app.isFirstLaunch = true
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")
                                             .padding(5)
@@ -160,14 +162,10 @@ struct GameCard: View {
                                                     case .epic:
                                                         try await Legendary.launch(
                                                             game: game,
-                                                            bottle: Wine.allBottles![game.bottleName]!,
                                                             online: networkMonitor.isEpicAccessible
                                                         )
                                                     case .local:
-                                                        try await LocalGames.launch(
-                                                            game: game,
-                                                            bottle: Wine.allBottles![game.bottleName]!
-                                                        )
+                                                        try await LocalGames.launch(game: game)
                                                     }
                                                     
                                                     if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
@@ -284,6 +282,21 @@ struct GameCard: View {
                         .padding(.bottom)
                         .disabled(false) // if game installed and not found
                     }
+                }
+            }
+    }
+}
+
+/// ViewModifier that enables views to have a fade in effect
+struct FadeInModifier: ViewModifier {
+    @State private var opacity: Double = 0
+    
+    func body(content: Content) -> some View {
+        content
+            .opacity(opacity)
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.5)) {
+                    opacity = 1
                 }
             }
     }

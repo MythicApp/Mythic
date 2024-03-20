@@ -54,7 +54,7 @@ struct HomeView: View {
     @Environment(\.colorScheme) var colorScheme
     
     // MARK: - Body
-    var body: some View { // TODO: revamp
+    var body: some View {
         HStack {
             // MARK: - Recent Game Display
             if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,

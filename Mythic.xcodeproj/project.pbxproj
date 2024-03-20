@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6A009E5F2AB5816A00A1397F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A009E5E2AB5816A00A1397F /* Logger.swift */; };
-		6A00F2002AC5EC490054858A /* Install.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F1FF2AC5EC490054858A /* Install.swift */; };
 		6A00F2052AC5F7450054858A /* GameImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F2042AC5F7450054858A /* GameImport.swift */; };
 		6A00F20B2AC5F8730054858A /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20A2AC5F8730054858A /* Auth.swift */; };
 		6A00F20D2AC5F8F90054858A /* ProgressViewWithError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20C2AC5F8F90054858A /* ProgressViewWithError.swift */; };
@@ -34,7 +33,6 @@
 		6A371B5D2AE84E340054BF7A /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A371B5C2AE84E340054BF7A /* Data.swift */; };
 		6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A38B64B2ACDB972004EC2E4 /* LocalGames.swift */; };
 		6A3E23DE2B74BE0A00A79969 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3E23DD2B74BE0A00A79969 /* NetworkMonitor.swift */; };
-		6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4C396D2AC5DA4D002F943B /* GameSettings.swift */; };
 		6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A634B6D2AE951DC00EAC63C /* LibrariesExt.swift */; };
 		6A6923522AD6D83D00157E3E /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6923512AD6D83D00157E3E /* Global.swift */; };
 		6A6D03EE2B9EFBD30064CEBB /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6D03ED2B9EFBD30064CEBB /* GameSettingsView.swift */; };
@@ -45,8 +43,6 @@
 		6A7A81182B77097200D19E32 /* OnboardingEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81172B77097200D19E32 /* OnboardingEvo.swift */; };
 		6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */; };
 		6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */; };
-		6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A82830D2AC71DAF005CA9AC /* Uninstall.swift */; };
-		6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA5307E2AB5E1DD002D238E /* GameList.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* LegendaryInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */; };
 		6AA6CCE72AD571C500F664A5 /* LegendaryInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */; };
 		6AA7413C2B6697A900369B35 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA7413B2B6697A900369B35 /* URL.swift */; };
@@ -657,10 +653,8 @@
 				6A38B64C2ACDB972004EC2E4 /* LocalGames.swift in Sources */,
 				6AF0EB2A2AADE1780044C09C /* Store.swift in Sources */,
 				6ADF5ABB2B98B9710041D04E /* UninstallGameView.swift in Sources */,
-				6A82830E2AC71DAF005CA9AC /* Uninstall.swift in Sources */,
 				6A634B6E2AE951DC00EAC63C /* LibrariesExt.swift in Sources */,
 				6A023E1A2B76807F00CC73CF /* Color.swift in Sources */,
-				6A4C396E2AC5DA4D002F943B /* GameSettings.swift in Sources */,
 				6A0BB7AD2B501A3400C8A693 /* EpicImport.swift in Sources */,
 				6A371B5D2AE84E340054BF7A /* Data.swift in Sources */,
 				6A1C6F422AEFD95900F89AE7 /* WineInterface.swift in Sources */,
@@ -689,7 +683,6 @@
 				6AC25CBD2AAED24700D395CF /* Settings.swift in Sources */,
 				6A371B562AE7A5E20054BF7A /* Installer.swift in Sources */,
 				6AD506582AAFF6CB008A28C1 /* Library.swift in Sources */,
-				6A00F2002AC5EC490054858A /* Install.swift in Sources */,
 				6A009E5F2AB5816A00A1397F /* Logger.swift in Sources */,
 				6A721B2D2B8B3D5A00A4EA3C /* AppDelegate.swift in Sources */,
 				6A02BDEA2B99FC2900B70656 /* InstallGameView.swift in Sources */,
@@ -708,7 +701,6 @@
 				6A0461BB2B4856C800DDF215 /* LocalGamesExt.swift in Sources */,
 				6AC4745D2AC07F0D00188D38 /* ProgressView.swift in Sources */,
 				6AF7214D2B4C53F700AFD8F2 /* SearchBar.swift in Sources */,
-				6AA5307F2AB5E1DD002D238E /* GameList.swift in Sources */,
 				6AB474A82AACBC0100AB9C63 /* Main.swift in Sources */,
 				6A6923522AD6D83D00157E3E /* Global.swift in Sources */,
 				6A7A81132B76F9E900D19E32 /* Task.swift in Sources */,
@@ -853,7 +845,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2489;
+				CURRENT_PROJECT_VERSION = 2490;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -892,7 +884,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2489;
+				CURRENT_PROJECT_VERSION = 2490;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

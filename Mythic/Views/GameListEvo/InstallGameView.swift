@@ -118,7 +118,7 @@ struct InstallViewEvo: View {
                 }
                 
                 // TODO: unify
-                Button("Browse...") { // TODO: replace with .fileImporter
+                Button("Browse...") {
                     let openPanel = NSOpenPanel()
                     openPanel.canChooseDirectories = true
                     openPanel.canChooseFiles = false

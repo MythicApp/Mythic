@@ -43,7 +43,6 @@ extension Wine {
     
     /// Signifies that a wineprefix is unable to boot.
     struct BootError: LocalizedError {
-        
         // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
         let reason: String? = nil
         var errorDescription: String? = "Bottle unable to boot." // TODO: add reason if possible
