@@ -25,9 +25,27 @@
 import SwiftUI
 
 struct DownloadsView: View {
+    @ObservedObject private var gameModification: GameModification = .shared
+    
     var body: some View {
         Form {
-            InstallationProgressView()
+            HStack {
+                VStack {
+                    HStack {
+                        Text("Now Installing")
+                        Spacer()
+                    }
+                    HStack {
+                        Text(gameModification.game?.title ?? "Unknown")
+                            .font(.bold(.title3)())
+                        Spacer()
+                    }
+                }
+                
+                Spacer()
+                
+                InstallationProgressView()
+            }
         }
         .formStyle(.automatic)
     }
