@@ -50,6 +50,9 @@
     "Are you sure you want to delete \"%@\"?" : {
 
     },
+    "Are you sure you want to remove Mythic Engine?" : {
+
+    },
     "Are you sure you want to sign out?" : {
 
     },
@@ -297,6 +300,9 @@
     "It appears loading's taking a while." : {
 
     },
+    "It'll have to be reinstalled in order to play Windows® games." : {
+
+    },
     "Keep waiting (dismissable with esc)" : {
 
     },
@@ -400,6 +406,9 @@
 
     },
     "Refresh library" : {
+
+    },
+    "Remove" : {
 
     },
     "Remove Mythic Engine" : {
