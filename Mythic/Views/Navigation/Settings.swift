@@ -27,18 +27,12 @@ struct SettingsView: View {
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     @AppStorage("discordRPC") private var rpc: Bool = true
     
-    @State private var isAlertPresented: Bool = false
-    enum ActiveAlert {
-        case reset
-        case forceQuit
-        case removeEngine
-    }
-    @State private var activeAlert: ActiveAlert = .reset
-    
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
     @State private var isEngineRemovalSuccessful: Bool?
     @State private var isCleanupSuccessful: Bool?
+    
+    @State private var isEngineRemovalAlertPresented: Bool = false
     
     var body: some View {
         Form {
@@ -153,15 +147,25 @@ struct SettingsView: View {
                 
                 HStack {
                     Button {
-                        do {
-                            try Libraries.remove()
-                            isEngineRemovalSuccessful = true
-                        } catch {
-                            isEngineRemovalSuccessful = false
-                        }
+                        isEngineRemovalAlertPresented = true
                     } label: {
                         Image(systemName: "gear.badge.xmark")
                         Text("Remove Mythic Engine")
+                    }
+                    .alert(isPresented: $isEngineRemovalAlertPresented) {
+                        Alert(
+                            title: .init("Are you sure you want to remove Mythic Engine?"),
+                            message: .init("It'll have to be reinstalled in order to play Windows® games."),
+                            primaryButton: .destructive(.init("Remove")) {
+                                do {
+                                    try Libraries.remove()
+                                    isEngineRemovalSuccessful = true
+                                } catch {
+                                    isEngineRemovalSuccessful = false
+                                }
+                            },
+                            secondaryButton: .cancel()
+                        )
                     }
                     
                     if isEngineRemovalSuccessful != nil {
@@ -207,9 +211,6 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Settings")
-        // .alert(isPresented: $isAlertPresented) {
-            
-        // }
     }
 }
 
