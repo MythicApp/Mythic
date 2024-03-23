@@ -125,16 +125,14 @@ struct BottleListView: View {
         } else if !Libraries.isInstalled() {
             Text("Mythic Engine is not installed!")
                 .font(.title)
+            
             Button {
                 let app = MythicApp() // FIXME: is this dangerous or just stupid
                 app.onboardingChapter = .engineDisclaimer
                 app.isFirstLaunch = true
             } label: {
-                HStack {
-                    Image(systemName: "arrow.down.to.line")
-                    Text("Install Mythic Engine")
-                }
-                .padding(5)
+                Label("Install Mythic Engine", systemImage: "arrow.down.to.line")
+                    .padding(5)
             }
             .buttonStyle(.borderedProminent)
         } else {

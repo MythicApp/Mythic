@@ -101,8 +101,7 @@ struct SettingsView: View {
                     // TODO: mythic's folder in Libary/Preferences
                     // TODO: beat up legendary
                 } label: {
-                    Image(systemName: "power.dotted")
-                    Text("Reset Mythic")
+                    Label("Reset Mythic", systemImage: "power.dotted")
                 }
                 .disabled(true)
                 .help("Not implemented yet")
@@ -110,8 +109,7 @@ struct SettingsView: View {
                 Button {
                     // TODO: mythic's folder in Libary/Preferences
                 } label: {
-                    Image(systemName: "clock.arrow.circlepath")
-                    Text("Reset settings to default")
+                    Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
                 }
                 .disabled(true)
                 .help("Not implemented yet")
@@ -123,8 +121,7 @@ struct SettingsView: View {
                     Button {
                         isForceQuitSuccessful = Wine.killAll()
                     } label: {
-                        Image(systemName: "xmark.app")
-                        Text("Force Quit Applications")
+                        Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
                     }
                     
                     if isForceQuitSuccessful != nil {
@@ -136,8 +133,7 @@ struct SettingsView: View {
                     Button {
                         isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
                     } label: {
-                        Image(systemName: "square.stack.3d.up.slash.fill")
-                        Text("Purge Shader Cache")
+                        Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
                     }
                     
                     if isShaderCachePurgeSuccessful != nil {
@@ -149,8 +145,7 @@ struct SettingsView: View {
                     Button {
                         isEngineRemovalAlertPresented = true
                     } label: {
-                        Image(systemName: "gear.badge.xmark")
-                        Text("Remove Mythic Engine")
+                        Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
                     }
                     .alert(isPresented: $isEngineRemovalAlertPresented) {
                         Alert(
@@ -184,8 +179,7 @@ struct SettingsView: View {
                             isCleanupSuccessful = String(data: output.stderr, encoding: .utf8)!.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
                         }
                     } label: {
-                        Image(systemName: "bubbles.and.sparkles")
-                        Text("Clean Up Miscallaneous Caches")
+                        Label("Clean Up Miscallaneous Caches", systemImage: "bubbles.and.sparkles")
                     }
                     
                     if isCleanupSuccessful != nil {

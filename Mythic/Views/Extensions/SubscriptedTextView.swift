@@ -28,4 +28,5 @@ struct SubscriptedTextView: View {
 
 #Preview {
     SubscriptedTextView("Test Text")
+        .padding()
 }

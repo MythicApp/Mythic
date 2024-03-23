@@ -28,29 +28,34 @@ struct DownloadsView: View {
     @ObservedObject private var gameModification: GameModification = .shared
     
     var body: some View {
-        List {
-            HStack {
-                
-                VStack {
-                    HStack {
-                        Text("Now Installing")
-                        Spacer()
+        if gameModification.game != nil { // TODO: FIXME: will require change after dl queue is implemented
+            List {
+                HStack { // will eventually foreach when dl queue is implemented
+                    
+                    VStack {
+                        HStack {
+                            Text("Now Installing")
+                            Spacer()
+                        }
+                        HStack {
+                            Text(gameModification.game?.title ?? "Unknown")
+                                .font(.bold(.title3)())
+                            
+                            SubscriptedTextView(gameModification.game?.type.rawValue ?? "Unknown")
+                            Spacer()
+                        }
                     }
-                    HStack {
-                        Text(gameModification.game?.title ?? "Unknown")
-                            .font(.bold(.title3)())
-                        
-                        SubscriptedTextView(gameModification.game?.type.rawValue ?? "Unknown")
-                        Spacer()
-                    }
+                    
+                    Spacer()
+                    
+                    InstallationProgressView()
                 }
-                
-                Spacer()
-                
-                InstallationProgressView()
             }
+            .formStyle(.automatic)
+        } else {
+            Text("No downloads are queued.")
+                .font(.largeTitle.bold())
         }
-        .formStyle(.automatic)
     }
 }
 

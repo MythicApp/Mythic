@@ -98,6 +98,8 @@ struct UninstallViewEvo: View {
                                             return
                                         }
                                         
+                                        guard let path = game.path, files.fileExists(atPath: path) else { return }
+                                        
                                         uninstallationErrorReason = errorLine.replacingOccurrences(of: "ERROR: ", with: "")
                                         isUninstallationErrorPresented = true
                                     } else {

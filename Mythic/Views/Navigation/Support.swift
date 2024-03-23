@@ -36,9 +36,7 @@ struct SupportView: View {
             
             VStack {
                 VStack {
-                    HStack {
-                        
-                    }
+                    
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
