@@ -286,16 +286,18 @@ class Legendary {
     /// Stops the execution of all commands.
     static func stopAllCommands() { runningCommands.keys.forEach { stopCommand(identifier: $0) } }
 
-    // MARK: - Install Method
+    // MARK: Install Method
     /**
      Installs, updates, or repairs games using legendary.
      
      - Parameters:
-        - game: The game's `app_name`.
+        - game: The game's `app_name`. (referred to as id)
+        - platform: The game's platform.
+        - type: The nature of the game modification.
         - optionalPacks: Optional packs to install along with the base game.
-        - basePath: A custom path for the game to install to.
+        - baseURL: A custom ``URL`` for the game to install to.
         - gameFolder: The folder where the game should be installed.
-        - platform: The platform for which the game should be installed.
+        - priority: Whether the game should interrupt the currently queued game installation.
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
@@ -305,26 +307,46 @@ class Legendary {
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
         baseURL: URL? = defaults.url(forKey: "installBaseURL"),
-        gameFolder: URL? = nil
+        gameFolder: URL? = nil,
+        priority: Bool = false
     ) async throws {
+        try await install(
+            args: .init(
+                game: game,
+                platform: platform,
+                type: type,
+                optionalPacks: optionalPacks,
+                baseURL: baseURL,
+                gameFolder: gameFolder
+            ), priority: priority
+        )
+    }
+    
+    // MARK: - Overloaded Install Method
+    /// - Parameters:
+    ///    - args: Installation arguments
+    static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn() else { throw NotSignedInError() }
-        guard game.type == .epic else { throw IsNotLegendaryError() }
+        guard args.game.type == .epic else { throw IsNotLegendaryError() }
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
-        let gameModification: GameModification = .shared
+        let operation: GameOperation = .shared
         var errorThrownExternally: Error?
+        
+        operation.queue.append(args)
+        defer { operation.current = nil }
         
         var argBuilder = [
             "-y",
             "install",
-            game.id,
-            type == .repair ? "--repair" : nil,
-            type == .update ? "--update-only": nil
+            args.game.id,
+            args.type == .repair ? "--repair" : nil,
+            args.type == .update ? "--update-only": nil
         ] .compactMap { $0 }
         
-        if type == .install { // Install-only arguments
-            switch platform {
+        if args.type == .install { // Install-only arguments
+            switch args.platform {
             case .macOS:
                 argBuilder += ["--platform", "Mac"]
             case .windows:
@@ -332,11 +354,11 @@ class Legendary {
             }
             
             // Legendary will download elsewhere if none are specified
-            if let baseURL = baseURL, files.fileExists(atPath: baseURL.path) {
+            if let baseURL = args.baseURL, files.fileExists(atPath: baseURL.path) {
                 argBuilder += ["--base-path", baseURL.path(percentEncoded: false)]
             }
             
-            if let gameFolder = gameFolder, files.fileExists(atPath: gameFolder.path) {
+            if let gameFolder = args.gameFolder, files.fileExists(atPath: gameFolder.path) {
                 argBuilder += ["--game-folder", gameFolder.absoluteString]
             }
         }
@@ -356,16 +378,11 @@ class Legendary {
             return regex?.firstMatch(in: line, range: range)
         }
         
-        DispatchQueue.main.sync {
-            gameModification.game = game
-            gameModification.type = type
-        }
-        
         await command(
             args: argBuilder,
             useCache: false,
             identifier: "install",
-            input: "\(Array(optionalPacks ?? .init()).joined(separator: ", "))" + "\n",
+            input: "\(Array(args.optionalPacks ?? .init()).joined(separator: ", "))" + "\n",
             inputIf: .init(
                 stream: .stdout,
                 string: "Additional packs [Enter to confirm]:"
@@ -382,7 +399,7 @@ class Legendary {
                          */
                             errorThrownExternally = InstallationError(message: String(line.trimmingPrefix(" ! Failure: ")))
                         } else if line.contains("Verification progress:") {
-                            variables.setVariable("verifying", value: game) // FIXME: may cause lag when verifying due to rapid, repeated updating
+                            variables.setVariable("verifying", value: args.game) // FIXME: may cause lag when verifying due to rapid, repeated updating
                             if let regex = try? NSRegularExpression(pattern: #"Verification progress: (\d+)/(\d+) \((\d+\.\d+)%\) \[(\d+\.\d+) MiB/s\]"#),
                                let match = regex.firstMatch(in: line, options: [], range: NSRange(location: 0, length: line.count)) {
                                 verificationStatus["verifiedFiles"] = Double((line as NSString).substring(with: match.range(at: 1)))
@@ -405,17 +422,6 @@ class Legendary {
                         guard line.contains("[DLManager] INFO:") else { return }
                         
                         if line.contains("All done! Download manager quitting...") {
-                            GameModification.reset()
-                            
-                            notifications.add(
-                                .init(identifier: UUID().uuidString,
-                                      content: {
-                                          let content = UNMutableNotificationContent()
-                                          content.title = "Finished installing \"\(game.title)\"."
-                                          return content
-                                      }(),
-                                      trigger: nil)
-                            )
                             return
                         }
                         
@@ -449,16 +455,14 @@ class Legendary {
                             ]
                         }
                         
-                        DispatchQueue.main.sync {
-                            GameModification.shared.status = status
+                        DispatchQueue.main.asyncAndWait {
+                            operation.current?.status = status
                         }
                         
                     }
                 }
             )
         )
-        
-        GameModification.reset()
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
         // Throwing an error directly to install() is preferable.

@@ -237,7 +237,7 @@
     "Force quit all games when Mythic closes" : {
 
     },
-    "Force Quit Applications" : {
+    "Force Quit All Windows® Applications" : {
 
     },
     "Game Location:" : {
@@ -376,6 +376,9 @@
 
     },
     "Next" : {
+
+    },
+    "No downloads are queued." : {
 
     },
     "Not implemented yet" : {

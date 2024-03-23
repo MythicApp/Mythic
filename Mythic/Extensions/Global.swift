@@ -142,6 +142,47 @@ enum GameModificationType: String {
     var launching: Game? // no other place bruh
 }
 
+class GameOperation: ObservableObject {
+    static var shared: GameOperation = .init()
+    
+    // swiftlint:disable:next redundant_optional_initialization
+    @Published var current: (args: InstallArguments, status: [String: [String: Any]])? = nil {
+        didSet {
+            guard GameOperation.shared.current != nil else { return }
+            switch GameOperation.shared.current!.args.game.type {
+            case .epic:
+                Task(priority: .high) { [weak self] in
+                    guard self != nil else { return }
+                    try? await Legendary.install(args: GameOperation.shared.current!.args, priority: false) // FIXME: needs error handling.
+                    GameOperation.shared.current = nil
+                }
+            case .local: // this should literally never happen
+                GameOperation.shared.current = nil
+            }
+        }
+    }
+    
+    @Published var queue: [InstallArguments] = .init() {
+        didSet { GameOperation.advance() }
+    }
+    
+    static func advance() {
+        guard shared.current == nil, let first = shared.queue.first else { return }
+        shared.current?.args = first; shared.queue.removeFirst()
+    }
+    
+    @Published var launching: Game?
+    
+    struct InstallArguments {
+        var game: Mythic.Game,
+            platform: GamePlatform,
+            type: GameModificationType,
+            optionalPacks: [String]?,
+            baseURL: URL?,
+            gameFolder: URL?
+    }
+}
+
 /// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise
 func placeholderGame(type: GameType) -> Game { // this is so stupid
     return .init(type: type, title: .init(), id: UUID().uuidString, platform: .macOS)
