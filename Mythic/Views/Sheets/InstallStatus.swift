@@ -24,7 +24,7 @@ import Charts // TODO: TODO
 struct InstallStatusView: View {
     // MARK: - Binding Variables
     @Binding var isPresented: Bool
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
         
     // MARK: - Body
     var body: some View {

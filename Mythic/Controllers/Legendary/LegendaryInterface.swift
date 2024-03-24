@@ -48,7 +48,7 @@ class Legendary {
     private static var runningCommands: [String: Process] {
         get {
             _runningCommandsQueue.sync {
-                return _runningCommands 
+                return _runningCommands
             }
         }
         set(newValue) {
@@ -65,13 +65,13 @@ class Legendary {
      Run a legendary command using the included legendary binary.
      
      - Parameters:
-        - args: The command arguments.
-        - useCache: Flag indicating whether to use cached output.
-        - identifier: String to keep track of individual command functions. (originally UUID-based)
-        - input: Optional input string for the command.
-        - inputIf: Optional condition to be checked for in the output streams before input is appended.
-        - asyncOutput: Optional closure that gets output appended to it immediately.
-        - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
+     - args: The command arguments.
+     - useCache: Flag indicating whether to use cached output.
+     - identifier: String to keep track of individual command functions. (originally UUID-based)
+     - input: Optional input string for the command.
+     - inputIf: Optional condition to be checked for in the output streams before input is appended.
+     - asyncOutput: Optional closure that gets output appended to it immediately.
+     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
      
      - Returns: A tuple containing stdout and stderr data.
      */
@@ -88,7 +88,6 @@ class Legendary {
         
         struct QueueContainer {
             let cache: DispatchQueue = DispatchQueue(label: "legendaryCommandCache")
-            let command: DispatchQueue = DispatchQueue(label: "legendaryCommand", attributes: .concurrent)
         }
         
         let queue = QueueContainer()
@@ -145,7 +144,7 @@ class Legendary {
             task.standardError = pipe.stderr
             task.standardOutput = pipe.stdout
             task.standardInput = input != nil ? pipe.stdin : nil
-
+            
             task.arguments = args
             
             var defaultEnvironmentVariables = ["LEGENDARY_CONFIG_PATH": configLocation]
@@ -157,56 +156,52 @@ class Legendary {
             let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
             task.qualityOfService = .userInitiated
             
-            log.debug("executing \(fullCommand)")
+            log.debug("Executing: \(fullCommand)")
             
             // MARK: Asynchronous stdout Appending
-            queue.command.async(qos: .utility) {
-                Task(priority: .high) {
-                    while true {
-                        let availableData = pipe.stdout.fileHandleForReading.availableData
-                        if availableData.isEmpty { break }
-                        
-                        await data.append(availableData, to: .stdout)
-                        
-                        if let inputIf = inputIf, inputIf.stream == .stdout {
-                            if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+            Task(priority: .utility) {
+                while true {
+                    let availableData = pipe.stdout.fileHandleForReading.availableData
+                    if availableData.isEmpty { break }
+                    
+                    await data.append(availableData, to: .stdout)
+                    
+                    if let inputIf = inputIf, inputIf.stream == .stdout {
+                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+                            if let inputData = input?.data(using: .utf8) {
+                                pipe.stdin.fileHandleForWriting.write(inputData)
+                                pipe.stdin.fileHandleForWriting.closeFile()
+                            }
+                        }
+                    }
+                    
+                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                        asyncOutput.stdout(outputString)
+                    }
+                }
+            }
+            
+            // MARK: Asynchronous stderr Appending
+            Task(priority: .utility) {
+                while true {
+                    let availableData = pipe.stderr.fileHandleForReading.availableData
+                    if availableData.isEmpty { break }
+                    
+                    await data.append(availableData, to: .stderr)
+                    
+                    if let inputIf = inputIf, inputIf.stream == .stderr {
+                        if let availableData = String(data: availableData, encoding: .utf8) {
+                            if availableData.contains(inputIf.string) {
                                 if let inputData = input?.data(using: .utf8) {
                                     pipe.stdin.fileHandleForWriting.write(inputData)
                                     pipe.stdin.fileHandleForWriting.closeFile()
                                 }
                             }
                         }
-                        
-                        if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                            asyncOutput.stdout(outputString)
-                        }
                     }
-                }
-            }
-            
-            // MARK: Asynchronous stderr Appending
-            queue.command.async(qos: .utility) {
-                Task(priority: .high) {
-                    while true {
-                        let availableData = pipe.stderr.fileHandleForReading.availableData
-                        if availableData.isEmpty { break }
-                        
-                        await data.append(availableData, to: .stderr)
-                        
-                        if let inputIf = inputIf, inputIf.stream == .stderr {
-                            if let availableData = String(data: availableData, encoding: .utf8) {
-                                if availableData.contains(inputIf.string) {
-                                    if let inputData = input?.data(using: .utf8) {
-                                        pipe.stdin.fileHandleForWriting.write(inputData)
-                                        pipe.stdin.fileHandleForWriting.closeFile()
-                                    }
-                                }
-                            }
-                        }
-                        
-                        if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                            asyncOutput.stderr(outputString)
-                        }
+                    
+                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                        asyncOutput.stderr(outputString)
                     }
                 }
             }
@@ -285,19 +280,19 @@ class Legendary {
     
     /// Stops the execution of all commands.
     static func stopAllCommands() { runningCommands.keys.forEach { stopCommand(identifier: $0) } }
-
+    
     // MARK: Install Method
     /**
      Installs, updates, or repairs games using legendary.
      
      - Parameters:
-        - game: The game's `app_name`. (referred to as id)
-        - platform: The game's platform.
-        - type: The nature of the game modification.
-        - optionalPacks: Optional packs to install along with the base game.
-        - baseURL: A custom ``URL`` for the game to install to.
-        - gameFolder: The folder where the game should be installed.
-        - priority: Whether the game should interrupt the currently queued game installation.
+     - game: The game's `app_name`. (referred to as id)
+     - platform: The game's platform.
+     - type: The nature of the game modification.
+     - optionalPacks: Optional packs to install along with the base game.
+     - baseURL: A custom ``URL`` for the game to install to.
+     - gameFolder: The folder where the game should be installed.
+     - priority: Whether the game should interrupt the currently queued game installation.
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
@@ -328,14 +323,13 @@ class Legendary {
     static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn() else { throw NotSignedInError() }
         guard args.game.type == .epic else { throw IsNotLegendaryError() }
+        // guard args.type != .uninstall else { do {/* Add uninstallation support via dialog */}; return }
+        
         // TODO: data lock handling
         
         let variables: VariableManager = .shared
         let operation: GameOperation = .shared
         var errorThrownExternally: Error?
-        
-        operation.queue.append(args)
-        defer { operation.current = nil }
         
         var argBuilder = [
             "-y",
@@ -371,7 +365,7 @@ class Legendary {
         let cacheUsageRegex = #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#
         let downloadAdvancedRegex = #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#
         let downloadDiskRegex = #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#
-
+        
         func match(regex: String, line: String) -> NSTextCheckingResult? {
             let range = NSRange(line.startIndex..<line.endIndex, in: line)
             let regex = try? NSRegularExpression(pattern: regex)
@@ -391,12 +385,12 @@ class Legendary {
                 stdout: { output in
                     output.enumerateLines { line, _ in
                         if line.contains("Failure:") {
-                        /*
-                        FIXME: Example output of error
-                         Installation requirements check returned the following results:
-                          - Warning: This game requires an ownership verification token and likely uses Denuvo DRM.
-                          ! Failure: Not enough available disk space! 12.05 GiB < 12.55 GiB
-                         */
+                            /*
+                             FIXME: Example output of error
+                             Installation requirements check returned the following results:
+                             - Warning: This game requires an ownership verification token and likely uses Denuvo DRM.
+                             ! Failure: Not enough available disk space! 12.05 GiB < 12.55 GiB
+                             */
                             errorThrownExternally = InstallationError(message: String(line.trimmingPrefix(" ! Failure: ")))
                         } else if line.contains("Verification progress:") {
                             variables.setVariable("verifying", value: args.game) // FIXME: may cause lag when verifying due to rapid, repeated updating
@@ -455,8 +449,15 @@ class Legendary {
                             ]
                         }
                         
-                        DispatchQueue.main.asyncAndWait {
+                        DispatchQueue.main.asyncAndWait { // FIXME: might cause lag
                             operation.current?.status = status
+                            GameOperation.log.debug("""
+                            \n-- INSTALLATION --\n
+                            operation.current.status is being updated with: \(status).
+                            operation.current.args is currently reading: \(String(describing: operation.current?.args)).
+                            operation.current.args is \(operation.current?.args.game == args.game ? .init() : "not ")the same as the current installation's args.
+                            the download queue currently reads: \(operation.queue)
+                            """)
                         }
                         
                     }
@@ -465,9 +466,9 @@ class Legendary {
         )
         
         // This exists because throwing an error inside of an OutputHandler isn't possible directly.
-        // Throwing an error directly to install() is preferable.
+        // Throwing an error directly to install() is preferable
         // FIXME: withCheckedThrowingContinuation may fix this problem
-        if let error = errorThrownExternally { GameModification.reset(); throw error }
+        if let error = errorThrownExternally { throw error }
     }
     
     static func move(game: Mythic.Game, newPath: String) async throws {
@@ -490,7 +491,7 @@ class Legendary {
                       }(),
                       trigger: nil)
             )
-
+            
         }
     }
     
@@ -512,8 +513,8 @@ class Legendary {
      Launches games.
      
      - Parameters:
-        - game: The game to launch.
-        - bottle: The
+     - game: The game to launch.
+     - bottle: The
      */
     static func launch(game: Mythic.Game, online: Bool) async throws { // TODO: be able to tell when game is runnning
         guard try Legendary.getInstalledGames().contains(game) else {
@@ -524,7 +525,9 @@ class Legendary {
         guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
         guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
         
-        GameModification.shared.launching = game
+        DispatchQueue.main.async {
+            GameOperation.shared.launching = game
+        }
         
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
@@ -544,7 +547,10 @@ class Legendary {
         }
         
         await command(args: args, useCache: false, identifier: "launch_\(game.id)", additionalEnvironmentVariables: environmentVariables)
-        GameModification.shared.launching = nil
+        
+        DispatchQueue.main.async {
+            GameOperation.shared.launching = nil
+        }
     }
     
     /*
@@ -624,7 +630,7 @@ class Legendary {
     // MARK: Get Game Platform Method
     /**
      Determines the platform of the game.
-
+     
      - Parameter platform: The platform of the game.
      - Throws: `UnableToGetPlatformError` if the platform is not "Mac" or "Windows".
      - Returns: The platform of the game as a `Platform` enum.
@@ -646,7 +652,7 @@ class Legendary {
     // MARK: Needs Update Method
     /**
      Determines if the game needs an update.
-
+     
      - Parameter game: The game to check for updates.
      - Returns: A boolean indicating whether the game needs an update.
      */
@@ -778,7 +784,7 @@ class Legendary {
         
         return games.sorted { $0.title < $1.title }
     }
-
+    
     // MARK: - Get Game Metadata Method
     /**
      Retrieve game metadata as a JSON.
@@ -810,8 +816,8 @@ class Legendary {
      Retrieves game thumbnail image from legendary's downloaded metadata.
      
      - Parameters:
-        - of: The game to fetch the thumbnail of.
-        - type: The aspect ratio of the image to fetch the thumbnail of.
+     - of: The game to fetch the thumbnail of.
+     - type: The aspect ratio of the image to fetch the thumbnail of.
      
      - Returns: The WebURL of the retrieved image.
      */
@@ -835,7 +841,7 @@ class Legendary {
         
         return imageURL
     }
-
+    
     // MARK: - Get Images Method
     /**
      Get game images with "DieselGameBox" metadata.

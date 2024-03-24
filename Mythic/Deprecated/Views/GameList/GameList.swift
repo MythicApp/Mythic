@@ -511,7 +511,7 @@ struct GameListView: View {
                     message: Text(uninstallationErrorMessage)
                 )
             case .stopDownloadWarning:
-                stopGameModificationAlert(isPresented: $isAlertPresented, game: gameModification.game)
+                stopGameOperationAlert(isPresented: $isAlertPresented, game: gameModification.game)
             case .launchError:
                 Alert(
                     title: Text("Error launching \(LaunchError.game?.title ?? "game")."),

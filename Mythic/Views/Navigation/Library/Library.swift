@@ -21,7 +21,7 @@ import SwordRPC
 // MARK: - LibraryView Struct
 /// A view displaying the user's library of games.
 struct LibraryView: View {
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     
     // MARK: - State Variables
     @State private var addGameModalPresented = false

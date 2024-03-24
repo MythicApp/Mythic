@@ -57,7 +57,7 @@ class Libraries {
                 do {
                     try calculateChecksum(for: directory.appending(path: fileName), hash: &hash)
                 } catch {
-                    print("checksum: error: \(error.localizedDescription)")
+                    log.error("checksum: error: \(error.localizedDescription)")
                     serialQueue.async {
                         _checksum = nil
                     }

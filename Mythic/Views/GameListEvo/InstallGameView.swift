@@ -20,7 +20,7 @@ struct InstallViewEvo: View {
     @State var platform: GamePlatform = .macOS
     
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject var operation: GameOperation = .shared
     
     @State private var isInstallErrorPresented: Bool = false
     @State private var installError: Error?
@@ -181,6 +181,17 @@ struct InstallViewEvo: View {
                 Button("Install") {
                     isPresented = false
                     Task(priority: .userInitiated) {
+                        operation.queue.append(
+                            GameOperation.InstallArguments(
+                                game: game,
+                                platform: platform,
+                                type: .install,
+                                optionalPacks: Array(selectedOptionalPacks),
+                                baseURL: baseURL
+                            )
+                        )
+                        
+                        /*
                         do {
                             try await Legendary.install(
                                 game: game,
@@ -193,6 +204,7 @@ struct InstallViewEvo: View {
                             installError = error
                             isInstallErrorPresented = true
                         }
+                         */
                     }
                 }
                 .disabled(fetchingOptionalPacks)

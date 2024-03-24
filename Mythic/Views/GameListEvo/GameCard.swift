@@ -17,7 +17,7 @@ struct GameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
@@ -104,7 +104,7 @@ struct GameCard: View {
                         
                         // MARK: Button Stack
                         HStack {
-                            if gameModification.game == game { // MARK: View if game is being installed
+                            if operation.current?.args.game == game { // MARK: View if game is being installed
                                 InstallationProgressView()
                                     .padding([.leading, .trailing])
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
@@ -127,6 +127,13 @@ struct GameCard: View {
                                     // MARK: Verify Button
                                     Button {
                                         Task(priority: .userInitiated) {
+                                            operation.queue.append(
+                                                GameOperation.InstallArguments(
+                                                    game: game, platform: game.platform!, type: .repair
+                                                )
+                                            )
+                                            
+                                            /*
                                             do {
                                                 try await Legendary.install(
                                                     game: game,
@@ -137,6 +144,7 @@ struct GameCard: View {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
                                                 // TODO: add repair error
                                             }
+                                             */
                                         }
                                     } label: {
                                         Image(systemName: "checkmark.circle.badge.questionmark")
@@ -144,11 +152,11 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    .disabled(gameModification.game != nil)
+                                    // .disabled(operation.current?.args.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
-                                    if gameModification.launching == game {
+                                    if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
                                             .padding(5)
@@ -194,6 +202,12 @@ struct GameCard: View {
                                 if case .epic = game.type, Legendary.needsUpdate(game: game) {
                                     Button {
                                         Task(priority: .userInitiated) {
+                                            operation.queue.append(
+                                                GameOperation.InstallArguments(
+                                                    game: game, platform: game.platform!, type: .repair
+                                                )
+                                            )
+                                            /*
                                             do {
                                                 try await Legendary.install(
                                                     game: game,
@@ -204,6 +218,7 @@ struct GameCard: View {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
                                                 // TODO: add update error
                                             }
+                                             */
                                         }
                                     } label: {
                                         Image(systemName: "arrow.triangle.2.circlepath")
@@ -211,9 +226,8 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    .disabled(gameModification.game != nil)
+                                    // .disabled(operation.current?.args.game != nil)
                                     .help("Update \"\(game.title)\"")
-                                    .disabled(gameModification.game != nil)
                                 }
                                 
                                 // MARK: Settings Button
@@ -254,6 +268,7 @@ struct GameCard: View {
                                         .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
                                 }
                                 .clipShape(.circle)
+                                .disabled(operation.current?.args.game != nil)
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
                                     withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
@@ -271,7 +286,7 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .disabled(!networkMonitor.isEpicAccessible)
-                                .disabled(gameModification.game != nil)
+                                // .disabled(operation.current?.args.game != nil)
                                 .help("Download \"\(game.title)\"")
                                 .sheet(isPresented: $isInstallSheetPresented) {
                                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)

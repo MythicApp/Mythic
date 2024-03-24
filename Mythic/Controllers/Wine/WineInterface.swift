@@ -167,8 +167,6 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw FileLocations.FileNotModifiableError(bottleURL)
         }
         
-        let queue: DispatchQueue = DispatchQueue(label: "wineCommand", attributes: .concurrent)
-        
         let commandKey = String(describing: args)
         
         let task = Process()
@@ -215,56 +213,52 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
         task.qualityOfService = .userInitiated
         
-        log.debug("executing \(fullCommand)")
+        log.debug("Executing: \(fullCommand)")
         
         // MARK: Asynchronous stdout Appending
-        queue.async(qos: .utility) {
-            Task(priority: .high) { // already lowered by queue.async qos
-                while true {
-                    let availableData = pipe.stdout.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    await data.append(availableData, to: .stdout)
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stdout {
-                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+        Task(priority: .utility) {
+            while true {
+                let availableData = pipe.stdout.fileHandleForReading.availableData
+                if availableData.isEmpty { break }
+                
+                await data.append(availableData, to: .stdout)
+                
+                if let inputIf = inputIf, inputIf.stream == .stdout {
+                    if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
+                        if let inputData = input?.data(using: .utf8) {
+                            pipe.stdin.fileHandleForWriting.write(inputData)
+                            pipe.stdin.fileHandleForWriting.closeFile()
+                        }
+                    }
+                }
+                
+                if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                    asyncOutput.stdout(outputString)
+                }
+            }
+        }
+        
+        // MARK: Asynchronous stderr Appending
+        Task(priority: .utility) {
+            while true {
+                let availableData = pipe.stderr.fileHandleForReading.availableData
+                if availableData.isEmpty { break }
+                
+                await data.append(availableData, to: .stderr)
+                
+                if let inputIf = inputIf, inputIf.stream == .stderr {
+                    if let availableData = String(data: availableData, encoding: .utf8) {
+                        if availableData.contains(inputIf.string) {
                             if let inputData = input?.data(using: .utf8) {
                                 pipe.stdin.fileHandleForWriting.write(inputData)
                                 pipe.stdin.fileHandleForWriting.closeFile()
                             }
                         }
                     }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stdout(outputString)
-                    }
                 }
-            }
-        }
-        
-        // MARK: Asynchronous stderr Appending
-        queue.async(qos: .utility) {
-            Task(priority: .high) { // already lowered by queue.async qos
-                while true {
-                    let availableData = pipe.stderr.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    await data.append(availableData, to: .stderr)
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stderr {
-                        if let availableData = String(data: availableData, encoding: .utf8) {
-                            if availableData.contains(inputIf.string) {
-                                if let inputData = input?.data(using: .utf8) {
-                                    pipe.stdin.fileHandleForWriting.write(inputData)
-                                    pipe.stdin.fileHandleForWriting.closeFile()
-                                }
-                            }
-                        }
-                    }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stderr(outputString)
-                    }
+                
+                if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
+                    asyncOutput.stderr(outputString)
                 }
             }
         }
@@ -455,7 +449,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             """) {
             
             let output = scriptObject.executeAndReturnError(&error)
-            print(output.stringValue ?? "no output from shader cache purge")
+            Logger.app.debug("output from shader cache purge: \(output.stringValue ?? "none")")
             
             if error != nil {
                 return false

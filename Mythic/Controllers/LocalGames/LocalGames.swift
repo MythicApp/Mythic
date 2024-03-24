@@ -78,7 +78,9 @@ class LocalGames {
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
             guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
             
-            GameModification.shared.launching = game
+            DispatchQueue.main.async {
+                GameOperation.shared.launching = game
+            }
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             try await Wine.command(
@@ -94,6 +96,8 @@ class LocalGames {
         case .none: do { /* TODO: Error */ }
         }
         
-        GameModification.shared.launching = nil
+        DispatchQueue.main.async {
+            GameOperation.shared.launching = nil
+        }
     }
 }

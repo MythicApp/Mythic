@@ -22,12 +22,11 @@ import SwiftUI
     - game: The game for which the download is stopped.
  - Returns: An `Alert` instance.
  */
-func stopGameModificationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert {
+func stopGameOperationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert { // rename to stopGameOperationAlert
     return Alert(
-        title: Text("Are you sure you want to stop \(GameModification.shared.type?.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
+        title: Text("Are you sure you want to stop \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "install")
-            GameModification.reset()
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )

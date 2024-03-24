@@ -122,8 +122,10 @@ enum GameModificationType: String {
     case install = "installing"
     case update = "updating"
     case repair = "repairing"
+    // case uninstall = "uninstalling"
 }
 
+@available(*, deprecated, renamed: "GameOperation", message: "womp")
 @Observable class GameModification: ObservableObject {
     static var shared: GameModification = .init()
     
@@ -144,42 +146,62 @@ enum GameModificationType: String {
 
 class GameOperation: ObservableObject {
     static var shared: GameOperation = .init()
+    internal static let log = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: "GameOperation"
+    )
     
     // swiftlint:disable:next redundant_optional_initialization
     @Published var current: (args: InstallArguments, status: [String: [String: Any]])? = nil {
         didSet {
+            // @ObservedObject var operation: GameOperation = .shared
+            guard GameOperation.shared.current?.args != oldValue?.args else { return } // FIXME: might cause lag
             guard GameOperation.shared.current != nil else { return }
             switch GameOperation.shared.current!.args.game.type {
             case .epic:
                 Task(priority: .high) { [weak self] in
                     guard self != nil else { return }
                     try? await Legendary.install(args: GameOperation.shared.current!.args, priority: false) // FIXME: needs error handling.
-                    GameOperation.shared.current = nil
+                    DispatchQueue.main.asyncAndWait {
+                        GameOperation.shared.current = nil
+                    }
+                    GameOperation.advance()
                 }
             case .local: // this should literally never happen
-                GameOperation.shared.current = nil
+                DispatchQueue.main.asyncAndWait {
+                    GameOperation.shared.current = nil
+                }
             }
         }
     }
+    
+    @Published var status: [String: [String: Any]]? // FIXME: replace tuple current
     
     @Published var queue: [InstallArguments] = .init() {
         didSet { GameOperation.advance() }
     }
     
     static func advance() {
+        log.debug("[operation.advance] attempting operation advancement")
         guard shared.current == nil, let first = shared.queue.first else { return }
-        shared.current?.args = first; shared.queue.removeFirst()
+        log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
+        DispatchQueue.main.async {
+            shared.current = (args: first, status: .init()); shared.queue.removeFirst()
+            log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.args.game.title))")
+        }
     }
     
     @Published var launching: Game?
     
-    struct InstallArguments {
+    struct InstallArguments: Equatable, Hashable {
         var game: Mythic.Game,
             platform: GamePlatform,
             type: GameModificationType,
-            optionalPacks: [String]?,
-            baseURL: URL?,
-            gameFolder: URL?
+            // swiftlint:disable redundant_optional_initialization
+            optionalPacks: [String]? = nil,
+            baseURL: URL? = nil,
+            gameFolder: URL? = nil
+            // swiftlint:enable redundant_optional_initialization
     }
 }
 
