@@ -57,6 +57,10 @@ class LocalGames {
             throw GameDoesNotExistError(game)
         }
         
+        DispatchQueue.main.async {
+            GameOperation.shared.launching = game
+        }
+        
         switch game.platform {
         case .macOS:
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
@@ -74,13 +78,10 @@ class LocalGames {
             } else {
                 log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
             }
-        case .windows:
+        case .windows: // FIXME: unneeded unification
             guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
             guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
             
-            DispatchQueue.main.async {
-                GameOperation.shared.launching = game
-            }
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             try await Wine.command(

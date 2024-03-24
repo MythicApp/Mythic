@@ -191,7 +191,66 @@ class GameOperation: ObservableObject {
         }
     }
     
-    @Published var launching: Game?
+    @Published var runningGames: Set<Game> = .init()
+    
+    private func checkIfGameOpen(_ game: Game) async {
+        guard let gamePath = game.path, let gamePlatform = game.platform else { return }
+
+        var isOpen = true
+        defer {
+            discordRPC.setPresence({
+                var presence = RichPresence()
+                presence.details = "Just finished playing \(game.title)"
+                presence.state = "Idle"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                return presence
+            }())
+        }
+
+        GameOperation.log.debug("now monitoring \(gamePlatform.rawValue) game \(game.title)")
+
+        DispatchQueue.main.async {
+            GameOperation.shared.runningGames.insert(game)
+        }
+
+        discordRPC.setPresence({
+            var presence = RichPresence()
+            presence.details = "Playing a \(gamePlatform.rawValue) game."
+            presence.state = "Playing \(game.title)"
+            presence.timestamps.start = .now
+            presence.assets.largeImage = "macos_512x512_2x"
+            return presence
+        }())
+
+        while isOpen {
+            GameOperation.log.debug("checking \(game.title) is alive")
+            
+            let isRunning = {
+                switch gamePlatform {
+                case .macOS:
+                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+                case .windows:
+                    (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
+                }
+            }()
+            
+            if !isRunning {
+                DispatchQueue.main.async { GameOperation.shared.runningGames.remove(game) }
+                isOpen = false
+            } else {
+                sleep(3)
+            }
+        }
+    }
+    
+    // swiftlint:disable:next redundant_optional_initialization
+    @Published var launching: Game? = nil {
+        didSet {
+            guard launching == nil, let oldValue = oldValue else { return }
+            Task(priority: .background) { await checkIfGameOpen(oldValue) }
+        }
+    }
     
     struct InstallArguments: Equatable, Hashable {
         var game: Mythic.Game,

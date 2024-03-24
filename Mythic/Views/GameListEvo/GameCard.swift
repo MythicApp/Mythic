@@ -189,6 +189,7 @@ struct GameCard: View {
                                         .clipShape(.circle)
                                         .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(URL(filePath: game.path!).prettyPath()))")
                                         .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
+                                        .disabled(operation.runningGames.contains(game))
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),
@@ -226,6 +227,7 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
+                                    .disabled(operation.runningGames.contains(game))
                                     // .disabled(operation.current?.args.game != nil)
                                     .help("Update \"\(game.title)\"")
                                 }
@@ -269,6 +271,7 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .disabled(operation.current?.args.game != nil)
+                                .disabled(operation.runningGames.contains(game))
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
                                     withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }

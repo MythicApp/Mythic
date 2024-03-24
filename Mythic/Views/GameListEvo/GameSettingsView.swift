@@ -118,6 +118,7 @@ struct GameSettingsView: View {
                                     }
                                 }
                             }
+                            .disabled(GameOperation.shared.runningGames.contains(game))
                             .alert(isPresented: $isMovingErrorPresented) {
                                 Alert(
                                     title: .init("Unable to move \"\(game.title)\"."),
