@@ -449,7 +449,7 @@ class Legendary {
                             ]
                         }
                         
-                        DispatchQueue.main.asyncAndWait { // FIXME: might cause lag
+                        DispatchQueue.main.async { // FIXME: might cause lag
                             operation.current?.status = status
                             GameOperation.log.debug("""
                             \n-- INSTALLATION --\n
