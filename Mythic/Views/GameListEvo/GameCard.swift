@@ -289,7 +289,7 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .disabled(!networkMonitor.isEpicAccessible)
-                                // .disabled(operation.current?.args.game != nil)
+                                .disabled(operation.queue.contains(where: { $0.game == game }))
                                 .help("Download \"\(game.title)\"")
                                 .sheet(isPresented: $isInstallSheetPresented) {
                                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
