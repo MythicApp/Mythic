@@ -104,7 +104,7 @@ struct GameCard: View {
                         
                         // MARK: Button Stack
                         HStack {
-                            if operation.current?.args.game == game { // MARK: View if game is being installed
+                            if operation.current?.args.game.id == game.id { // MARK: View if game is being installed
                                 InstallationProgressView()
                                     .padding([.leading, .trailing])
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
@@ -187,7 +187,7 @@ struct GameCard: View {
                                                 .padding(5)
                                         }
                                         .clipShape(.circle)
-                                        .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(URL(filePath: game.path!).prettyPath()))")
+                                        .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                                         .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
                                         .disabled(operation.runningGames.contains(game))
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {

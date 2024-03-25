@@ -184,7 +184,7 @@ class Libraries {
                               content: {
                                   let content = UNMutableNotificationContent()
                                   content.title = "Finished installing Mythic Engine."
-                                  content.title = "Windows® games are now playable!"
+                                  content.body = "Windows® games are now playable!"
                                   return content
                               }(),
                               trigger: nil)

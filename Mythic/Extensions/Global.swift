@@ -52,7 +52,12 @@ enum GameType: String, CaseIterable, Codable {
     case local = "Local"
 }
 
-struct Game: Hashable, Codable, Identifiable {
+struct Game: Hashable, Codable, Identifiable, Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     init(type: GameType, title: String, id: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
         self.type = type
         self.title = title
@@ -161,10 +166,34 @@ class GameOperation: ObservableObject {
             case .epic:
                 Task(priority: .high) { [weak self] in
                     guard self != nil else { return }
-                    try? await Legendary.install(args: GameOperation.shared.current!.args, priority: false) // FIXME: needs error handling.
+                    do {
+                        try await Legendary.install(args: GameOperation.shared.current!.args, priority: false)
+                        try await notifications.add(
+                            .init(identifier: UUID().uuidString,
+                                  content: {
+                                      let content = UNMutableNotificationContent()
+                                      content.title = "Finished \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.args.game.title ?? "Unknown")\"."
+                                      return content
+                                  }(),
+                                  trigger: nil)
+                        )
+                    } catch {
+                        try await notifications.add(
+                            .init(identifier: UUID().uuidString,
+                                  content: {
+                                      let content = UNMutableNotificationContent()
+                                      content.title = "Error \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.args.game.title ?? "Unknown")\"."
+                                      content.body = error.localizedDescription
+                                      return content
+                                  }(),
+                                  trigger: nil)
+                        )
+                    }
+                    
                     DispatchQueue.main.asyncAndWait {
                         GameOperation.shared.current = nil
                     }
+                    
                     GameOperation.advance()
                 }
             case .local: // this should literally never happen
