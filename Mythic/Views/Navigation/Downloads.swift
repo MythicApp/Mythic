@@ -6,52 +6,69 @@
 //
 
 import SwiftUI
+import CachedAsyncImage
 
 struct DownloadsView: View {
     @ObservedObject private var operation: GameOperation = .shared
     
     var body: some View {
-        if operation.current != nil || !operation.queue.isEmpty { // TODO: FIXME: will require change after dl queue is implemented
-            List {
+        List { // TODO: FIXME: THIS IS A PREVIEW, MOVE TO THE TOP TO SEE THE CHANGES
+            ForEach([operation.current?.args].compactMap { $0 } + operation.queue, id: \.self) { args in
                 HStack {
                     VStack {
                         HStack {
-                            Text("Now Installing")
+                            if operation.current?.args == args {
+                                Text("Now Installing")
+                            } else if operation.queue.contains(args) {
+                                Text("Queued")
+                            } else {
+                                Text("Status Unknown")
+                            }
+                            
                             Spacer()
                         }
                         HStack {
-                            Text(operation.current?.args.game.title ?? "Unknown")
+                            Text(args.game.title)
                                 .font(.bold(.title3)())
                             
-                            SubscriptedTextView(operation.current?.args.game.type.rawValue ?? "Unknown")
+                            SubscriptedTextView(args.game.type.rawValue)
+                            
                             Spacer()
+                        }
+                    }
+                    .background {
+                        if let url = args.game.imageURL {
+                            CachedAsyncImage(url: url, scale: 0.3) { phase in
+                                if case .success(let image) = phase {
+                                    HStack {
+                                        image // TODO: make image width length of the text vstack + 50
+                                            .resizable()
+                                            .frame(width: 150, height: 10, alignment: .leading) // hate hardcoding frame sizes
+                                            .blur(radius: 10)
+                                            .modifier(FadeInModifier())
+                                        
+                                        Spacer()
+                                    }
+                                }
+                            }
                         }
                     }
                     
                     Spacer()
                     
-                    InstallationProgressView()
-                }
-                
-                ForEach(operation.queue, id: \.self) { queuedItem in
-                    VStack {
-                        HStack {
-                            Text("Queued")
-                            Spacer()
+                    if operation.current?.args == args {
+                        InstallationProgressView()
+                    } else if operation.queue.contains(args) {
+                        Button {
+                            operation.queue.removeAll(where: {$0 == args})
+                        } label: {
+                            Image(systemName: "xmark")
+                                .padding(5)
                         }
-                        HStack {
-                            Text(queuedItem.game.title)
-                                .font(.bold(.title3)())
-                            
-                            SubscriptedTextView(operation.current?.args.game.type.rawValue ?? "Unknown")
-                            Spacer()
-                        }
+                        .clipShape(.circle)
                     }
                 }
             }
-        } else {
-            Text("No downloads are queued.")
-                .font(.largeTitle.bold())
         }
     }
 }
