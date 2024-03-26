@@ -165,10 +165,8 @@ struct GameSettingsView: View {
         
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
-                .scaledToFill()
             
             SubscriptedTextView(game.type.rawValue)
-                .scaledToFill()
             
             if (try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init())) == game {
                 SubscriptedTextView("Recent")

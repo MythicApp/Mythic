@@ -57,8 +57,14 @@ struct InstallViewEvo: View {
                 }
             }
         
+        if operation.current != nil {
+            Text("Cannot fetch selected downloads while other items are downloading.")
+                .font(.footnote)
+                .foregroundStyle(.placeholder)
+        }
+        
         if !optionalPacks.isEmpty {
-            Text("(supports selective downloads.)")
+            Text("(Supports selective downloads)")
                 .font(.footnote)
                 .foregroundStyle(.placeholder)
             

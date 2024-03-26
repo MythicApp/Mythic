@@ -13,7 +13,7 @@
     "(please restart Mythic.)" : {
 
     },
-    "(supports selective downloads.)" : {
+    "(Supports selective downloads)" : {
 
     },
     "%@ %@ (%@)" : {
@@ -88,6 +88,9 @@
 
     },
     "Cancel" : {
+
+    },
+    "Cannot fetch selected downloads while other items are downloading." : {
 
     },
     "Check for Updates..." : {
@@ -378,9 +381,6 @@
     "Next" : {
 
     },
-    "No downloads are queued." : {
-
-    },
     "Not implemented yet" : {
 
     },
@@ -472,6 +472,9 @@
 
     },
     "Sorry, this isn't implemented yet!" : {
+
+    },
+    "Status Unknown" : {
 
     },
     "Stop" : {

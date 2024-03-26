@@ -23,8 +23,9 @@ import OSLog
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     var updaterController: SPUStandardUpdaterController?
     var networkMonitor: NetworkMonitor?
+    var window: NSWindow!
     
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    func applicationDidFinishLaunching(_: Notification) {
         // MARK: initialize default UserDefaults Values
         UserDefaults.standard.register(
             defaults: [
@@ -87,7 +88,26 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
     }
     
-    func applicationWillTerminate(_ notification: Notification) {
+    func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {
+        if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
+            let alert = NSAlert()
+            alert.messageText = "Are you sure you want to quit?"
+            alert.informativeText = "Mythic is still modifying games."
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            let result = alert.runModal()
+            
+            if result == .alertFirstButtonReturn {
+                return .terminateNow
+            } else {
+                return .terminateCancel
+            }
+        }
+        
+        return .terminateNow
+    }
+    
+    func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
         // TODO: stop download alert if downloading before closure
         Legendary.stopAllCommands()
