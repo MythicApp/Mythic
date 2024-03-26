@@ -70,6 +70,8 @@ struct DownloadsView: View {
                 }
             }
         }
+        
+        .navigationTitle("Downloads")
     }
 }
 
