@@ -16,6 +16,8 @@ struct BottleListView: View {
     @State private var selectedBottleName: String = .init()
     @State private var bottleNameToDelete: String = .init()
     
+    @State private var configuratorActive: Bool = false
+    
     var body: some View {
         if let bottles = Wine.allBottles {
             Form {
@@ -99,6 +101,12 @@ struct BottleListView: View {
                                     identifier: "winecfg",
                                     bottleURL: bottles[selectedBottleName]!.url
                                 )
+                            }
+                        }
+                        .disabled(configuratorActive)
+                        .task(priority: .background) {
+                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { timer in
+                                configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg | grep -v grep"]))?.isEmpty == false
                             }
                         }
                         
