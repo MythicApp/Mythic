@@ -205,7 +205,7 @@ struct GameCard: View {
                                         Task(priority: .userInitiated) {
                                             operation.queue.append(
                                                 GameOperation.InstallArguments(
-                                                    game: game, platform: game.platform!, type: .repair
+                                                    game: game, platform: game.platform!, type: .update
                                                 )
                                             )
                                             /*
