@@ -415,6 +415,7 @@ class Legendary {
                             return
                         }
                         
+                        // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
                         if let match = try? progressRegex.firstMatch(in: line) {
                             DispatchQueue.main.async {
                                 operation.status.progress = GameOperation.InstallStatus.Progress(

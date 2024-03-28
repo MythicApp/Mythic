@@ -496,6 +496,7 @@ struct GameListView: View {
         
         .sheet(isPresented: $isInstallStatusViewPresented) {
             InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                .padding()
         }
         
         .alert(isPresented: $isAlertPresented) {

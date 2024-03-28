@@ -151,6 +151,7 @@ struct MainView: View {
                 
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
                 }
                 .alert(isPresented: $isAlertPresented) {
                     switch activeAlert {

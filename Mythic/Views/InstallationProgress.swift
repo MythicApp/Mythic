@@ -59,6 +59,7 @@ struct InstallationProgressView: View {
                 }
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
                 }
             }
         }

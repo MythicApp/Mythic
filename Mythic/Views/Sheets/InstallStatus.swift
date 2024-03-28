@@ -28,20 +28,93 @@ struct InstallStatusView: View {
         
     // MARK: - Body
     var body: some View {
-        Text("Installing \"[Game]\"...")
-            .font(.title)
-        
-        Form {
+        if let current = operation.current {
+            Text("Installing \"\(current.game.title)\"...")
+                .font(.title)
             
+            Text("\(Int(operation.status.progress?.percentage ?? 0))% Complete")
+                .font(.title3)
+            
+            Form {
+                HStack {
+                    Text("Progress:")
+                    Spacer()
+                    Text("\(Int(operation.status.progress?.percentage ?? 0))%")
+                    Text("(\(operation.status.progress?.downloadedObjects ?? 0)/\(operation.status.progress?.totalObjects ?? 0) Objects)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("Time Remaining:") // TODO: convert to timeinterval HERE, to save on performance
+                    Spacer()
+                    Text("\(operation.status.progress?.eta ?? "Unknown")")
+                    Text("(\(operation.status.progress?.runtime ?? "00:00:00") Elapsed)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("Download Speed:")
+                    Spacer()
+                    Text("\(Int(operation.status.downloadSpeed?.raw ?? 0) * (10^6 / 2^20)) MB/s")
+                    Text("(raw)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    
+                    VStack {
+                        Text("\(Int(operation.status.download?.downloaded ?? 0) * (10^6 / 2^20)) MB Downloaded")
+                        Text("\(Int(operation.status.download?.written ?? 0) * (10^6 / 2^20)) MB Written")
+                    }
+                    .font(.bold(.footnote)())
+                    .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("Disk Speed:")
+                    Spacer()
+                    
+                    Text("\(Int(operation.status.diskSpeed?.read ?? 0) * (10^6 / 2^20)) MB/s")
+                    Text("(read)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    
+                    Text("\(Int(operation.status.diskSpeed?.write ?? 0) * (10^6 / 2^20)) MB/s")
+                    Text("(write)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                
+                /* works! // TODO: maybe add an advanced metrics settigns thing that uses this
+                 ForEach(Array(Mirror(reflecting: operation.status.progress ?? .init(percentage: 0, downloadedObjects: 0, totalObjects: 0, runtime: "0", eta: "0")).children), id: \.label) { child in
+                 if let label = child.label {
+                 Text("\(String(describing: label)): \(String(describing: child.value))")
+                 }
+                 }
+                 */
+            }
+            .formStyle(.grouped)
+        } else {
+            Text("No installation is currently running.")
+                .font(.bold(.title)())
         }
-        .formStyle(.grouped)
         
-        Button("Close") { isPresented = false }
-            .buttonStyle(.borderedProminent)
+        HStack {
+            if let percentage = operation.status.progress?.percentage {
+                ProgressView(value: percentage, total: 100)
+                    .progressViewStyle(.linear)
+                    .help("\(Int(percentage))% complete")
+                
+                Spacer()
+            }
+            Button("Close") { isPresented = false }
+                .buttonStyle(.borderedProminent)
+        }
     }
 }
 
 // MARK: - Preview
 #Preview {
     InstallStatusView(isPresented: .constant(true))
+        .padding()
 }

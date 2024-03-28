@@ -124,7 +124,7 @@ struct BottleListView: View {
             }
         } else if !Libraries.isInstalled() {
             Text("Mythic Engine is not installed!")
-                .font(.title)
+                .font(.bold(.title)())
             
             Button {
                 let app = MythicApp() // FIXME: is this dangerous or just stupid
