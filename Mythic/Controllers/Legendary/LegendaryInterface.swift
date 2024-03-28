@@ -18,6 +18,7 @@ import Foundation
 import SwiftyJSON
 import OSLog
 import UserNotifications
+import RegexBuilder
 
 // MARK: - Legendary Class
 /**
@@ -358,19 +359,14 @@ class Legendary {
         }
         
         var verificationStatus: [String: Double] = .init()
-        var status: [String: [String: Any]] = .init()
         
-        let progressRegex = #"Progress: (\d+\.\d+)% \((\d+)/(\d+)\), Running for (\d+:\d+:\d+), ETA: (\d+:\d+:\d+)"#
-        let downloadedRegex = #"Downloaded: ([\d.]+) \w+, Written: ([\d.]+) \w+"#
-        let cacheUsageRegex = #"Cache usage: ([\d.]+) \w+, active tasks: (\d+)"#
-        let downloadAdvancedRegex = #"\+ Download\s+- ([\d.]+) \w+/\w+ \(raw\) / ([\d.]+) \w+/\w+ \(decompressed\)"#
-        let downloadDiskRegex = #"\+ Disk\s+- ([\d.]+) \w+/\w+ \(write\) / ([\d.]+) \w+/\w+ \(read\)"#
-        
-        func match(regex: String, line: String) -> NSTextCheckingResult? {
-            let range = NSRange(line.startIndex..<line.endIndex, in: line)
-            let regex = try? NSRegularExpression(pattern: regex)
-            return regex?.firstMatch(in: line, range: range)
-        }
+        // swiftlint:disable force_try
+        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
+        let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
+        let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
+        let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
+        let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
+        // swiftlint:enable force_try
         
         await command(
             args: argBuilder,
@@ -419,47 +415,53 @@ class Legendary {
                             return
                         }
                         
-                        if let match = match(regex: progressRegex, line: line) {
-                            status["progress"] = [
-                                "percentage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                "downloaded": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0,
-                                "total": Int(line[Range(match.range(at: 3), in: line)!]) ?? 0,
-                                "runtime": line[Range(match.range(at: 4), in: line)!],
-                                "eta": line[Range(match.range(at: 5), in: line)!]
-                            ]
-                        } else if let match = match(regex: downloadedRegex, line: line) {
-                            status["download"] = [
-                                "downloaded": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                "written": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                            ]
-                        } else if let match = match(regex: cacheUsageRegex, line: line) {
-                            status["downloadCache"] = [
-                                "usage": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                "activeTasks": Int(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                            ]
-                        } else if let match = match(regex: downloadAdvancedRegex, line: line) {
-                            status["downloadAdvanced"] = [
-                                "raw": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                "decompressed": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                            ]
-                        } else if let match = match(regex: downloadDiskRegex, line: line) {
-                            status["downloadDisk"] = [
-                                "write": Double(line[Range(match.range(at: 1), in: line)!]) ?? 0,
-                                "read": Double(line[Range(match.range(at: 2), in: line)!]) ?? 0
-                            ]
+                        if let match = try? progressRegex.firstMatch(in: line) {
+                            DispatchQueue.main.async {
+                                operation.status.progress = GameOperation.InstallStatus.Progress(
+                                    percentage: Double(match["percentage"]?.value as? Substring ?? "") ?? 0.0,
+                                    downloadedObjects: Int(match["downloadedObjects"]?.value as? Substring ?? "") ?? 0,
+                                    totalObjects: Int(match["totalObjects"]?.value as? Substring ?? "") ?? 0,
+                                    runtime: String(match["runtime"]?.value as? Substring ?? "00:00:00"),
+                                    eta: String(match["eta"]?.value as? Substring ?? "00:00:00")
+                                )
+                            }
+                        } else if let match = try? downloadRegex.firstMatch(in: line) {
+                            DispatchQueue.main.async {
+                                operation.status.download = GameOperation.InstallStatus.Download(
+                                    downloaded: Double(match["downloaded"]?.value as? Substring ?? "") ?? 0.0,
+                                    written: Double(match["written"]?.value as? Substring ?? "") ?? 0.0
+                                )
+                            }
+                        } else if let match = try? cacheRegex.firstMatch(in: line) {
+                            DispatchQueue.main.async {
+                                operation.status.cache = GameOperation.InstallStatus.Cache(
+                                    usage: Double(match["usage"]?.value as? Substring ?? "") ?? 0.0,
+                                    activeTasks: Int(match["activeTasks"]?.value as? Substring ?? "") ?? 0
+                                )
+                            }
+                        } else if let match = try? downloadSpeedRegex.firstMatch(in: line) {
+                            DispatchQueue.main.async {
+                                operation.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                                    raw: Double(match["raw"]?.value as? Substring ?? "") ?? 0.0,
+                                    decompressed: Double(match["decompressed"]?.value as? Substring ?? "") ?? 0.0
+                                )
+                            }
+                        } else if let match = try? diskSpeedRegex.firstMatch(in: line) {
+                            DispatchQueue.main.async {
+                                operation.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
+                                    write: Double(match["write"]?.value as? Substring ?? "") ?? 0.0,
+                                    read: Double(match["read"]?.value as? Substring ?? "") ?? 0.0
+                                )
+                            }
                         }
                         
-                        DispatchQueue.main.asyncAndWait { // FIXME: might cause lag
-                            operation.current?.status = status
-                            GameOperation.log.debug("""
+                        GameOperation.log.debug("""
                             \n-- INSTALLATION --\n
-                            operation.current.status is being updated with: \(status).
-                            operation.current.args is currently reading: \(String(describing: operation.current?.args)).
-                            operation.current.args is \(operation.current?.args.game == args.game ? .init() : "not ")the same as the current installation's args.
+                            operation.current?.status is being updated with: \(String(describing: operation.status)).
+                            operation.current?.args is currently reading: \(String(describing: operation.current)).
+                            operation.current?.args is \(operation.current?.game == args.game ? .init() : "not ")the same as the current installation's args.
                             the download queue currently reads: \(operation.queue)
                             """)
-                        }
-                        
                     }
                 }
             )

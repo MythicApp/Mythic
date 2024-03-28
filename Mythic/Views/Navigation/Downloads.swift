@@ -13,11 +13,11 @@ struct DownloadsView: View {
     
     var body: some View {
         List { // TODO: FIXME: THIS IS A PREVIEW, MOVE TO THE TOP TO SEE THE CHANGES
-            ForEach([operation.current?.args].compactMap { $0 } + operation.queue, id: \.self) { args in
+            ForEach([operation.current].compactMap { $0 } + operation.queue, id: \.self) { args in
                 HStack {
                     VStack {
                         HStack {
-                            if operation.current?.args == args {
+                            if operation.current == args {
                                 Text("Now Installing")
                             } else if operation.queue.contains(args) {
                                 Text("Queued")
@@ -56,7 +56,7 @@ struct DownloadsView: View {
                     
                     Spacer()
                     
-                    if operation.current?.args == args {
+                    if operation.current == args {
                         InstallationProgressView()
                     } else if operation.queue.contains(args) {
                         Button {

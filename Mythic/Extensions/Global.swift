@@ -157,22 +157,22 @@ class GameOperation: ObservableObject {
     )
     
     // swiftlint:disable:next redundant_optional_initialization
-    @Published var current: (args: InstallArguments, status: [String: [String: Any]])? = nil {
+    @Published var current: InstallArguments? = nil {
         didSet {
             // @ObservedObject var operation: GameOperation = .shared
-            guard GameOperation.shared.current?.args != oldValue?.args else { return } // FIXME: might cause lag
+            guard GameOperation.shared.current != oldValue else { return } // FIXME: might cause lag
             guard GameOperation.shared.current != nil else { return }
-            switch GameOperation.shared.current!.args.game.type {
+            switch GameOperation.shared.current!.game.type {
             case .epic:
                 Task(priority: .high) { [weak self] in
                     guard self != nil else { return }
                     do {
-                        try await Legendary.install(args: GameOperation.shared.current!.args, priority: false)
+                        try await Legendary.install(args: GameOperation.shared.current!, priority: false)
                         try await notifications.add(
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
-                                      content.title = "Finished \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.args.game.title ?? "Unknown")\"."
+                                      content.title = "Finished \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
                                       return content
                                   }(),
                                   trigger: nil)
@@ -182,7 +182,7 @@ class GameOperation: ObservableObject {
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
-                                      content.title = "Error \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.args.game.title ?? "Unknown")\"."
+                                      content.title = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
                                       content.body = error.localizedDescription
                                       return content
                                   }(),
@@ -204,7 +204,7 @@ class GameOperation: ObservableObject {
         }
     }
     
-    @Published var status: [String: [String: Any]]? // FIXME: replace tuple current
+    @Published var status: GameOperation.InstallStatus = .init() // FIXME: replace tuple current
     
     @Published var queue: [InstallArguments] = .init() {
         didSet { GameOperation.advance() }
@@ -215,8 +215,8 @@ class GameOperation: ObservableObject {
         guard shared.current == nil, let first = shared.queue.first else { return }
         log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
         DispatchQueue.main.async {
-            shared.current = (args: first, status: .init()); shared.queue.removeFirst()
-            log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.args.game.title))")
+            shared.current = first; shared.queue.removeFirst()
+            log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.game.title))")
         }
     }
     
@@ -290,6 +290,42 @@ class GameOperation: ObservableObject {
             baseURL: URL? = nil,
             gameFolder: URL? = nil
             // swiftlint:enable redundant_optional_initialization
+    }
+    
+    struct InstallStatus {
+        struct Progress {
+            var percentage: Double
+            var downloadedObjects: Int
+            var totalObjects: Int
+            var runtime: String
+            var eta: String
+        }
+        
+        struct Download {
+            var downloaded: Double
+            var written: Double
+        }
+        
+        struct Cache {
+            var usage: Double
+            var activeTasks: Int
+        }
+        
+        struct DownloadSpeed {
+            var raw: Double
+            var decompressed: Double
+        }
+        
+        struct DiskSpeed {
+            var write: Double
+            var read: Double
+        }
+        
+        var progress: Progress?
+        var download: Download?
+        var cache: Cache?
+        var downloadSpeed: DownloadSpeed?
+        var diskSpeed: DiskSpeed?
     }
 }
 

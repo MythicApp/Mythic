@@ -1,5 +1,5 @@
 //
-//  GameListEvo.swift
+//  GameCard.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 5/3/2024.
@@ -104,7 +104,7 @@ struct GameCard: View {
                         
                         // MARK: Button Stack
                         HStack {
-                            if operation.current?.args.game.id == game.id { // MARK: View if game is being installed
+                            if operation.current?.game.id == game.id { // MARK: View if game is being installed
                                 InstallationProgressView()
                                     .padding([.leading, .trailing])
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
@@ -152,7 +152,7 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    // .disabled(operation.current?.args.game != nil)
+                                    // .disabled(operation.current?.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
@@ -228,7 +228,7 @@ struct GameCard: View {
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
                                     .disabled(operation.runningGames.contains(game))
-                                    // .disabled(operation.current?.args.game != nil)
+                                    // .disabled(operation.current?.game != nil)
                                     .help("Update \"\(game.title)\"")
                                 }
                                 
@@ -270,7 +270,7 @@ struct GameCard: View {
                                         .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
                                 }
                                 .clipShape(.circle)
-                                .disabled(operation.current?.args.game != nil)
+                                .disabled(operation.current?.game != nil)
                                 .disabled(operation.runningGames.contains(game))
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
