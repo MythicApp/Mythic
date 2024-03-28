@@ -412,7 +412,7 @@ class Legendary {
                         guard line.contains("[DLManager] INFO:") else { return }
                         
                         if line.contains("All done! Download manager quitting...") {
-                            return
+                            operation.current = nil
                         }
                         
                         // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
