@@ -18,12 +18,12 @@ struct InstallationProgressView: View {
     @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
     
     var body: some View {
-        if let game = operation.current?.args.game {
+        if let game = operation.current?.game {
             HStack {
                 Button {
                     isInstallStatusViewPresented = true
                 } label: {
-                    if let percentage = operation.current?.status["progress"]?["percentage"] as? Double {
+                    if let percentage = operation.status.progress?.percentage {
                         ProgressView(value: percentage, total: 100)
                             .progressViewStyle(.linear)
                             .help("\(Int(percentage))% complete")
@@ -35,7 +35,7 @@ struct InstallationProgressView: View {
                 }
                 .buttonStyle(.plain)
                 
-                if withPercentage, let percentage = operation.current?.status["progress"]?["percentage"] as? Double {
+                if withPercentage, let percentage = operation.status.progress?.percentage {
                     Text("\(Int(percentage))%")
                 }
                     

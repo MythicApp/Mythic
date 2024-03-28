@@ -24,7 +24,7 @@ import SwiftUI
  */
 func stopGameOperationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert { // rename to stopGameOperationAlert
     return Alert(
-        title: Text("Are you sure you want to stop \(GameOperation.shared.current?.args.type.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
+        title: Text("Are you sure you want to stop \(GameOperation.shared.current?.type.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
             Legendary.stopCommand(identifier: "install")
         },
