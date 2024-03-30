@@ -227,9 +227,7 @@ class Legendary {
             }
             
             // MARK: - Output (stderr/out) Handler
-            let output: (stdout: Data, stderr: Data) = await (
-                data.stdout, data.stderr
-            )
+            let output: (stdout: Data, stderr: Data) = await (data.stdout, data.stderr)
             
             if let stderrString = String(data: output.stderr, encoding: .utf8), !stderrString.isEmpty {
                 switch true {

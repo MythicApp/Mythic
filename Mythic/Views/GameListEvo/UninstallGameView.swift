@@ -132,5 +132,5 @@ struct UninstallViewEvo: View {
 }
 
 #Preview {
-    UninstallViewEvo(game: .constant(placeholderGame(type: .local)), isPresented: .constant(true))
+    UninstallViewEvo(game: .constant(.init(type: .local, title: .init())), isPresented: .constant(true))
 }

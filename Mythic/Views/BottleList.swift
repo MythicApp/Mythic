@@ -104,8 +104,8 @@ struct BottleListView: View {
                             }
                         }
                         .disabled(configuratorActive)
-                        .task(priority: .background) {
-                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { timer in
+                        .task(priority: .background) { // FIXME: Will keep going even when view loses focus
+                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _/*timer*/ in
                                 configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg | grep -v grep"]))?.isEmpty == false
                             }
                         }

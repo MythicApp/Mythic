@@ -52,25 +52,50 @@ enum GameType: String, CaseIterable, Codable {
     case local = "Local"
 }
 
-struct Game: Hashable, Codable, Identifiable, Equatable {
-    
-    static func == (lhs: Self, rhs: Self) -> Bool {
+class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
+    // MARK: Stubs
+    static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id
     }
     
-    init(type: GameType, title: String, id: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
-        self.type = type
-        self.title = title
-        self.id = id
-        self.platform = platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
-        self.imageURL = imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
-        self.path = path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self)
     }
     
+    // MARK: Initializer
+    init(type: GameType, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
+        self.type = type
+        self.title = title
+        self.id = id ?? UUID().uuidString
+        self.platform = platform
+        self.imageURL = imageURL
+        self.path = path
+    }
+    
+    // MARK: Mutables
     var type: GameType
     var title: String
-    var id: String = UUID().uuidString
-    var platform: GamePlatform?
+    var id: String
+    
+    private var _platform: GamePlatform?
+    var platform: GamePlatform? {
+        get { return _platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
+        set { _platform = newValue }
+    }
+    
+    private var _imageURL: URL?
+    var imageURL: URL? {
+        get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        set { _imageURL = newValue }
+    }
+
+    private var _path: String?
+    var path: String? {
+        get { _path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil) }
+        set { _path = newValue }
+    }
+    
+    // MARK: Properties
     var bottleName: String {
         get {
             let bottleKey: String = id.appending("_defaultBottle")
@@ -97,10 +122,8 @@ struct Game: Hashable, Codable, Identifiable, Equatable {
         }
     }
     
-    var imageURL: URL?
-    var path: String?
-    
-    mutating func move(to newLocation: URL) async throws {
+    // MARK: Functions
+    func move(to newLocation: URL) async throws {
         switch type {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
@@ -329,11 +352,6 @@ class GameOperation: ObservableObject {
         var downloadSpeed: DownloadSpeed?
         var diskSpeed: DiskSpeed?
     }
-}
-
-/// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise
-func placeholderGame(type: GameType) -> Game { // this is so stupid
-    return .init(type: type, title: .init(), id: UUID().uuidString, platform: .macOS)
 }
 
 /// Your father.

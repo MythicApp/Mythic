@@ -196,5 +196,5 @@ struct GameSettingsView: View {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(placeholderGame(type: .epic)), isPresented: .constant(true))
+    GameSettingsView(game: .constant(.init(type: .epic, title: .init())), isPresented: .constant(true))
 }
