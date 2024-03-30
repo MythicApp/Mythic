@@ -10,7 +10,7 @@ import SwiftUI
 struct InstallationProgressView: View {
     var withPercentage: Bool = true
     
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
     @State private var hoveringOverDestructiveButton: Bool = false
@@ -18,12 +18,12 @@ struct InstallationProgressView: View {
     @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
     
     var body: some View {
-        if let game = gameModification.game {
+        if let game = operation.current?.game {
             HStack {
                 Button {
                     isInstallStatusViewPresented = true
                 } label: {
-                    if let percentage = gameModification.status?["progress"]?["percentage"] as? Double {
+                    if let percentage = operation.status.progress?.percentage {
                         ProgressView(value: percentage, total: 100)
                             .progressViewStyle(.linear)
                             .help("\(Int(percentage))% complete")
@@ -35,7 +35,7 @@ struct InstallationProgressView: View {
                 }
                 .buttonStyle(.plain)
                 
-                if withPercentage, let percentage = gameModification.status?["progress"]?["percentage"] as? Double {
+                if withPercentage, let percentage = operation.status.progress?.percentage {
                     Text("\(Int(percentage))%")
                 }
                     
@@ -52,13 +52,14 @@ struct InstallationProgressView: View {
                     withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
                 }
                 .alert(isPresented: $isStopGameModificationAlertPresented) {
-                    stopGameModificationAlert(
+                    stopGameOperationAlert(
                         isPresented: $isStopGameModificationAlertPresented,
                         game: game
                     )
                 }
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
                 }
             }
         }

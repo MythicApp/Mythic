@@ -4,6 +4,19 @@
     "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
 
     },
+    "(%@ Elapsed)" : {
+
+    },
+    "(%lld/%lld Objects)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(%1$lld/%2$lld Objects)"
+          }
+        }
+      }
+    },
     "(Don't worry, you can still install Mythic Engine later.)" : {
 
     },
@@ -13,7 +26,19 @@
     "(please restart Mythic.)" : {
 
     },
-    "(supports selective downloads.)" : {
+    "(raw)" : {
+
+    },
+    "(read)" : {
+
+    },
+    "(Supports selective downloads)" : {
+
+    },
+    "(write)" : {
+
+    },
+    "%@" : {
 
     },
     "%@ %@ (%@)" : {
@@ -26,10 +51,22 @@
         }
       }
     },
+    "%lld MB Downloaded" : {
+
+    },
+    "%lld MB Written" : {
+
+    },
+    "%lld MB/s" : {
+
+    },
     "%lld%%" : {
 
     },
     "%lld%% complete" : {
+
+    },
+    "%lld%% Complete" : {
 
     },
     "A link should've opened in your browser. If not, click" : {
@@ -90,6 +127,9 @@
     "Cancel" : {
 
     },
+    "Cannot fetch selected downloads while other items are downloading." : {
+
+    },
     "Check for Updates..." : {
 
     },
@@ -141,6 +181,9 @@
     "Delete \"%@\"" : {
 
     },
+    "Disk Speed:" : {
+
+    },
     "Dismiss loading" : {
 
     },
@@ -160,6 +203,9 @@
 
     },
     "Download \"%@\"" : {
+
+    },
+    "Download Speed:" : {
 
     },
     "Downloading Game Porting Toolkit..." : {
@@ -237,7 +283,7 @@
     "Force quit all games when Mythic closes" : {
 
     },
-    "Force Quit Applications" : {
+    "Force Quit All Windows® Applications" : {
 
     },
     "Game Location:" : {
@@ -264,6 +310,9 @@
     "Import a Game" : {
 
     },
+    "Import game" : {
+
+    },
     "Import with DLCs" : {
 
     },
@@ -288,7 +337,7 @@
     "Installed" : {
 
     },
-    "Installing \"[Game]\"..." : {
+    "Installing \"%@\"..." : {
 
     },
     "Installing Game Porting Toolkit..." : {
@@ -378,6 +427,12 @@
     "Next" : {
 
     },
+    "No games can be shown." : {
+
+    },
+    "No installation is currently running." : {
+
+    },
     "Not implemented yet" : {
 
     },
@@ -396,10 +451,16 @@
     "Play \"%@\"" : {
 
     },
+    "Progress:" : {
+
+    },
     "Purchase new games from Epic" : {
 
     },
     "Purge Shader Cache" : {
+
+    },
+    "Queued" : {
 
     },
     "Quit Mythic" : {
@@ -468,6 +529,9 @@
     "Sorry, this isn't implemented yet!" : {
 
     },
+    "Status Unknown" : {
+
+    },
     "Stop" : {
 
     },
@@ -496,6 +560,9 @@
 
     },
     "Time for an update!" : {
+
+    },
+    "Time Remaining:" : {
 
     },
     "Unable to boot default bottle." : {

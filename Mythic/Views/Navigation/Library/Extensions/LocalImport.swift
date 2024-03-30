@@ -23,7 +23,7 @@ extension LibraryView.GameImportView {
         @Binding var isPresented: Bool
         @Binding var isGameListRefreshCalled: Bool
         
-        @State private var game: Game = placeholderGame(type: .local)
+        @State private var game: Game = .init(type: .local, title: .init())
         @State private var platform: GamePlatform = .macOS
         
         private func updateGameTitle() {
@@ -155,7 +155,7 @@ extension LibraryView.GameImportView {
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
                             text: Binding(
-                                get: { game.imageURL?.absoluteString ?? .init() },
+                                get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
                                 set: { game.imageURL = .init(string: $0) }
                                          )
                         )

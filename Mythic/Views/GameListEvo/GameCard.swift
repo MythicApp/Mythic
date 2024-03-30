@@ -1,5 +1,5 @@
 //
-//  GameListEvo.swift
+//  GameCard.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 5/3/2024.
@@ -17,7 +17,7 @@ struct GameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
@@ -104,7 +104,7 @@ struct GameCard: View {
                         
                         // MARK: Button Stack
                         HStack {
-                            if gameModification.game == game { // MARK: View if game is being installed
+                            if operation.current?.game.id == game.id { // MARK: View if game is being installed
                                 InstallationProgressView()
                                     .padding([.leading, .trailing])
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
@@ -127,6 +127,13 @@ struct GameCard: View {
                                     // MARK: Verify Button
                                     Button {
                                         Task(priority: .userInitiated) {
+                                            operation.queue.append(
+                                                GameOperation.InstallArguments(
+                                                    game: game, platform: game.platform!, type: .repair
+                                                )
+                                            )
+                                            
+                                            /*
                                             do {
                                                 try await Legendary.install(
                                                     game: game,
@@ -137,6 +144,7 @@ struct GameCard: View {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
                                                 // TODO: add repair error
                                             }
+                                             */
                                         }
                                     } label: {
                                         Image(systemName: "checkmark.circle.badge.questionmark")
@@ -144,11 +152,11 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    .disabled(gameModification.game != nil)
+                                    // .disabled(operation.current?.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
-                                    if gameModification.launching == game {
+                                    if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
                                             .padding(5)
@@ -179,8 +187,9 @@ struct GameCard: View {
                                                 .padding(5)
                                         }
                                         .clipShape(.circle)
-                                        .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(URL(filePath: game.path!).prettyPath()))")
+                                        .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                                         .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
+                                        .disabled(operation.runningGames.contains(game))
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),
@@ -194,6 +203,12 @@ struct GameCard: View {
                                 if case .epic = game.type, Legendary.needsUpdate(game: game) {
                                     Button {
                                         Task(priority: .userInitiated) {
+                                            operation.queue.append(
+                                                GameOperation.InstallArguments(
+                                                    game: game, platform: game.platform!, type: .update
+                                                )
+                                            )
+                                            /*
                                             do {
                                                 try await Legendary.install(
                                                     game: game,
@@ -204,6 +219,7 @@ struct GameCard: View {
                                                 Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
                                                 // TODO: add update error
                                             }
+                                             */
                                         }
                                     } label: {
                                         Image(systemName: "arrow.triangle.2.circlepath")
@@ -211,9 +227,9 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    .disabled(gameModification.game != nil)
+                                    .disabled(operation.runningGames.contains(game))
+                                    // .disabled(operation.current?.game != nil)
                                     .help("Update \"\(game.title)\"")
-                                    .disabled(gameModification.game != nil)
                                 }
                                 
                                 // MARK: Settings Button
@@ -254,6 +270,8 @@ struct GameCard: View {
                                         .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
                                 }
                                 .clipShape(.circle)
+                                .disabled(operation.current?.game != nil)
+                                .disabled(operation.runningGames.contains(game))
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
                                     withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
@@ -271,7 +289,7 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .disabled(!networkMonitor.isEpicAccessible)
-                                .disabled(gameModification.game != nil)
+                                .disabled(operation.queue.contains(where: { $0.game == game }))
                                 .help("Download \"\(game.title)\"")
                                 .sheet(isPresented: $isInstallSheetPresented) {
                                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
@@ -302,6 +320,6 @@ struct FadeInModifier: ViewModifier {
 }
 
 #Preview {
-    GameCard(game: .constant(placeholderGame(type: .epic)))
+    GameCard(game: .constant(.init(type: .local, title: .init())))
         .environmentObject(NetworkMonitor())
 }

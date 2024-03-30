@@ -57,7 +57,7 @@ class Libraries {
                 do {
                     try calculateChecksum(for: directory.appending(path: fileName), hash: &hash)
                 } catch {
-                    print("checksum: error: \(error.localizedDescription)")
+                    log.error("checksum: error: \(error.localizedDescription)")
                     serialQueue.async {
                         _checksum = nil
                     }
@@ -184,7 +184,7 @@ class Libraries {
                               content: {
                                   let content = UNMutableNotificationContent()
                                   content.title = "Finished installing Mythic Engine."
-                                  content.title = "Windows® games are now playable!"
+                                  content.body = "Windows® games are now playable!"
                                   return content
                               }(),
                               trigger: nil)

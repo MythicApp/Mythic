@@ -52,20 +52,50 @@ enum GameType: String, CaseIterable, Codable {
     case local = "Local"
 }
 
-struct Game: Hashable, Codable, Identifiable {
-    init(type: GameType, title: String, id: String, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
-        self.type = type
-        self.title = title
-        self.id = id
-        self.platform = platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil)
-        self.imageURL = imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil)
-        self.path = path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil)
+class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
+    // MARK: Stubs
+    static func == (lhs: Game, rhs: Game) -> Bool {
+        return lhs.id == rhs.id
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self)
+    }
+    
+    // MARK: Initializer
+    init(type: GameType, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
+        self.type = type
+        self.title = title
+        self.id = id ?? UUID().uuidString
+        self.platform = platform
+        self.imageURL = imageURL
+        self.path = path
+    }
+    
+    // MARK: Mutables
     var type: GameType
     var title: String
-    var id: String = UUID().uuidString
-    var platform: GamePlatform?
+    var id: String
+    
+    private var _platform: GamePlatform?
+    var platform: GamePlatform? {
+        get { return _platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
+        set { _platform = newValue }
+    }
+    
+    private var _imageURL: URL?
+    var imageURL: URL? {
+        get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        set { _imageURL = newValue }
+    }
+
+    private var _path: String?
+    var path: String? {
+        get { _path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil) }
+        set { _path = newValue }
+    }
+    
+    // MARK: Properties
     var bottleName: String {
         get {
             let bottleKey: String = id.appending("_defaultBottle")
@@ -92,10 +122,8 @@ struct Game: Hashable, Codable, Identifiable {
         }
     }
     
-    var imageURL: URL?
-    var path: String?
-    
-    mutating func move(to newLocation: URL) async throws {
+    // MARK: Functions
+    func move(to newLocation: URL) async throws {
         switch type {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
@@ -122,8 +150,10 @@ enum GameModificationType: String {
     case install = "installing"
     case update = "updating"
     case repair = "repairing"
+    // case uninstall = "uninstalling"
 }
 
+@available(*, deprecated, renamed: "GameOperation", message: "womp")
 @Observable class GameModification: ObservableObject {
     static var shared: GameModification = .init()
     
@@ -142,9 +172,186 @@ enum GameModificationType: String {
     var launching: Game? // no other place bruh
 }
 
-/// A `Game` object that serves as a placeholder for unwrapping reasons or otherwise
-func placeholderGame(type: GameType) -> Game { // this is so stupid
-    return .init(type: type, title: .init(), id: UUID().uuidString, platform: .macOS)
+class GameOperation: ObservableObject {
+    static var shared: GameOperation = .init()
+    internal static let log = Logger(
+        subsystem: Bundle.main.bundleIdentifier!,
+        category: "GameOperation"
+    )
+    
+    // swiftlint:disable:next redundant_optional_initialization
+    @Published var current: InstallArguments? = nil {
+        didSet {
+            // @ObservedObject var operation: GameOperation = .shared
+            guard GameOperation.shared.current != oldValue else { return } // FIXME: might cause lag
+            guard GameOperation.shared.current != nil else { return }
+            switch GameOperation.shared.current!.game.type {
+            case .epic:
+                Task(priority: .high) { [weak self] in
+                    guard self != nil else { return }
+                    do {
+                        try await Legendary.install(args: GameOperation.shared.current!, priority: false)
+                        try await notifications.add(
+                            .init(identifier: UUID().uuidString,
+                                  content: {
+                                      let content = UNMutableNotificationContent()
+                                      content.title = "Finished \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+                                      return content
+                                  }(),
+                                  trigger: nil)
+                        )
+                    } catch {
+                        try await notifications.add(
+                            .init(identifier: UUID().uuidString,
+                                  content: {
+                                      let content = UNMutableNotificationContent()
+                                      content.title = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+                                      content.body = error.localizedDescription
+                                      return content
+                                  }(),
+                                  trigger: nil)
+                        )
+                    }
+                    
+                    DispatchQueue.main.asyncAndWait {
+                        GameOperation.shared.current = nil
+                    }
+                    
+                    GameOperation.advance()
+                }
+            case .local: // this should literally never happen
+                DispatchQueue.main.asyncAndWait {
+                    GameOperation.shared.current = nil
+                }
+            }
+        }
+    }
+    
+    @Published var status: GameOperation.InstallStatus = .init() // FIXME: replace tuple current
+    
+    @Published var queue: [InstallArguments] = .init() {
+        didSet { GameOperation.advance() }
+    }
+    
+    static func advance() {
+        log.debug("[operation.advance] attempting operation advancement")
+        guard shared.current == nil, let first = shared.queue.first else { return }
+        log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
+        DispatchQueue.main.async {
+            shared.current = first; shared.queue.removeFirst()
+            log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.game.title))")
+        }
+    }
+    
+    @Published var runningGames: Set<Game> = .init()
+    
+    private func checkIfGameOpen(_ game: Game) async {
+        guard let gamePath = game.path, let gamePlatform = game.platform else { return }
+
+        var isOpen = true
+        defer {
+            discordRPC.setPresence({
+                var presence = RichPresence()
+                presence.details = "Just finished playing \(game.title)"
+                presence.state = "Idle"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+                return presence
+            }())
+        }
+
+        GameOperation.log.debug("now monitoring \(gamePlatform.rawValue) game \(game.title)")
+
+        DispatchQueue.main.async {
+            GameOperation.shared.runningGames.insert(game)
+        }
+
+        discordRPC.setPresence({
+            var presence = RichPresence()
+            presence.details = "Playing a \(gamePlatform.rawValue) game."
+            presence.state = "Playing \(game.title)"
+            presence.timestamps.start = .now
+            presence.assets.largeImage = "macos_512x512_2x"
+            return presence
+        }())
+
+        while isOpen {
+            GameOperation.log.debug("checking \(game.title) is alive")
+            
+            let isRunning = {
+                switch gamePlatform {
+                case .macOS:
+                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+                case .windows:
+                    (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
+                }
+            }()
+            
+            if !isRunning {
+                DispatchQueue.main.async { GameOperation.shared.runningGames.remove(game) }
+                isOpen = false
+            } else {
+                sleep(3)
+            }
+        }
+    }
+    
+    // swiftlint:disable:next redundant_optional_initialization
+    @Published var launching: Game? = nil {
+        didSet {
+            guard launching == nil, let oldValue = oldValue else { return }
+            Task(priority: .background) { await checkIfGameOpen(oldValue) }
+        }
+    }
+    
+    struct InstallArguments: Equatable, Hashable {
+        var game: Mythic.Game,
+            platform: GamePlatform,
+            type: GameModificationType,
+            // swiftlint:disable redundant_optional_initialization
+            optionalPacks: [String]? = nil,
+            baseURL: URL? = nil,
+            gameFolder: URL? = nil
+            // swiftlint:enable redundant_optional_initialization
+    }
+    
+    struct InstallStatus {
+        // swiftlint:disable nesting
+        struct Progress {
+            var percentage: Double
+            var downloadedObjects: Int
+            var totalObjects: Int
+            var runtime: String
+            var eta: String
+        }
+        
+        struct Download {
+            var downloaded: Double
+            var written: Double
+        }
+        
+        struct Cache {
+            var usage: Double
+            var activeTasks: Int
+        }
+        
+        struct DownloadSpeed {
+            var raw: Double
+            var decompressed: Double
+        }
+        
+        struct DiskSpeed {
+            var write: Double
+            var read: Double
+        }
+        // swiftlint:enable nesting
+        
+        var progress: Progress?
+        var download: Download?
+        var cache: Cache?
+        var downloadSpeed: DownloadSpeed?
+        var diskSpeed: DiskSpeed?
+    }
 }
 
 /// Your father.

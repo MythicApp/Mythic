@@ -118,6 +118,7 @@ struct GameSettingsView: View {
                                     }
                                 }
                             }
+                            .disabled(GameOperation.shared.runningGames.contains(game))
                             .alert(isPresented: $isMovingErrorPresented) {
                                 Alert(
                                     title: .init("Unable to move \"\(game.title)\"."),
@@ -164,10 +165,8 @@ struct GameSettingsView: View {
         
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
-                .scaledToFill()
             
             SubscriptedTextView(game.type.rawValue)
-                .scaledToFill()
             
             if (try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init())) == game {
                 SubscriptedTextView("Recent")
@@ -197,5 +196,5 @@ struct GameSettingsView: View {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(placeholderGame(type: .epic)), isPresented: .constant(true))
+    GameSettingsView(game: .constant(.init(type: .epic, title: .init())), isPresented: .constant(true))
 }

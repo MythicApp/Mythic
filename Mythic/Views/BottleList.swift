@@ -16,6 +16,8 @@ struct BottleListView: View {
     @State private var selectedBottleName: String = .init()
     @State private var bottleNameToDelete: String = .init()
     
+    @State private var configuratorActive: Bool = false
+    
     var body: some View {
         if let bottles = Wine.allBottles {
             Form {
@@ -101,6 +103,12 @@ struct BottleListView: View {
                                 )
                             }
                         }
+                        .disabled(configuratorActive)
+                        .task(priority: .background) { // FIXME: Will keep going even when view loses focus
+                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _/*timer*/ in
+                                configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg | grep -v grep"]))?.isEmpty == false
+                            }
+                        }
                         
                         Button("Close") {
                             isBottleSettingsViewPresented = false
@@ -124,7 +132,7 @@ struct BottleListView: View {
             }
         } else if !Libraries.isInstalled() {
             Text("Mythic Engine is not installed!")
-                .font(.title)
+                .font(.bold(.title)())
             
             Button {
                 let app = MythicApp() // FIXME: is this dangerous or just stupid

@@ -20,7 +20,7 @@ struct InstallViewEvo: View {
     @State var platform: GamePlatform = .macOS
     
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject var operation: GameOperation = .shared
     
     @State private var isInstallErrorPresented: Bool = false
     @State private var installError: Error?
@@ -57,8 +57,14 @@ struct InstallViewEvo: View {
                 }
             }
         
+        if operation.current != nil {
+            Text("Cannot fetch selected downloads while other items are downloading.")
+                .font(.footnote)
+                .foregroundStyle(.placeholder)
+        }
+        
         if !optionalPacks.isEmpty {
-            Text("(supports selective downloads.)")
+            Text("(Supports selective downloads)")
                 .font(.footnote)
                 .foregroundStyle(.placeholder)
             
@@ -181,6 +187,17 @@ struct InstallViewEvo: View {
                 Button("Install") {
                     isPresented = false
                     Task(priority: .userInitiated) {
+                        operation.queue.append(
+                            GameOperation.InstallArguments(
+                                game: game,
+                                platform: platform,
+                                type: .install,
+                                optionalPacks: Array(selectedOptionalPacks),
+                                baseURL: baseURL
+                            )
+                        )
+                        
+                        /*
                         do {
                             try await Legendary.install(
                                 game: game,
@@ -193,6 +210,7 @@ struct InstallViewEvo: View {
                             installError = error
                             isInstallErrorPresented = true
                         }
+                         */
                     }
                 }
                 .disabled(fetchingOptionalPacks)
@@ -209,5 +227,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(placeholderGame(type: .local)), isPresented: .constant(true))
+    InstallViewEvo(game: .constant(.init(type: .local, title: .init())), isPresented: .constant(true))
 }

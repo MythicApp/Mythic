@@ -38,7 +38,7 @@ struct MainView: View {
     @State private var isAlertPresented: Bool = false
     
     @ObservedObject private var variables: VariableManager = .shared
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     
     @State var account: String = Legendary.whoAmI()
     
@@ -151,6 +151,7 @@ struct MainView: View {
                 
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
                 }
                 .alert(isPresented: $isAlertPresented) {
                     switch activeAlert {
@@ -194,7 +195,7 @@ struct MainView: View {
                     }
                 }
                 
-                if gameModification.game != nil {
+                if operation.current != nil || !operation.queue.isEmpty {
                     List {
                         NavigationLink(destination: DownloadsView()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")

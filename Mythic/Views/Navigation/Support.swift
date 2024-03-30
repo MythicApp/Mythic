@@ -19,6 +19,7 @@ import SwordRPC
 
 struct SupportView: View {
     // TODO: https://arc.net/l/quote/icczlrwf
+    @State private var game: Game = .init(type: .local, title: "default title")
     
     var body: some View {
         HStack {
@@ -75,9 +76,42 @@ struct SupportView: View {
         }
         
         .navigationTitle("Support")
-}
+    }
 }
 
+struct ContentView: View {
+    @State private var game: Game = .init(type: .local, title: "")
+
+    var body: some View {
+        VStack {
+            Text("Current Title: \(game.title)")
+                .padding()
+            
+            TextField("", text: $game.title)
+            
+            Button("Update Title") {
+                game.title = "example"
+            }
+            
+            Text("current id: \(game.id)")
+            Button("Update id") {
+                game.id = "example"
+            }
+            
+            Text("current imageurl: \(String(describing: game.imageURL?.absoluteString))")
+            Button("Update id") {
+                game.imageURL = .init(string: "https://cdn.discordapp.com/attachments/924251802231259166/989319195881767013/image0.jpg?ex=6604b34c&is=65f23e4c&hm=106194fd2f28443c05136ddfa5a8a5591ac379c3ca87438d141535796ff6ddf2&")
+            }
+            
+            Text("current platform: \(game.platform?.rawValue ?? "")")
+            Button("Update id") {
+                game.platform = .macOS
+            }
+        }
+    }
+}
+
+
 #Preview {
-    SupportView()
+    ContentView()
 }
