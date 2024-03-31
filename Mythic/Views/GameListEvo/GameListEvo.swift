@@ -40,7 +40,7 @@ struct GameListEvo: View {
                 .font(.bold(.title)())
             
             Button {
-                
+                isGameImportViewPresented = true
             } label: {
                 Label("Import game", systemImage: "plus.app")
                     .padding(5)

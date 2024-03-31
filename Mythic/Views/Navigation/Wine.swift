@@ -36,13 +36,15 @@ struct WineView: View {
             }
         
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        isBottleCreationViewPresented = true
-                    } label: {
-                        Image(systemName: "plus")
+                if Libraries.isInstalled() {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button {
+                            isBottleCreationViewPresented = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .help("Add a bottle")
                     }
-                    .help("Add a bottle")
                 }
             }
         

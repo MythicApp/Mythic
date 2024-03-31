@@ -127,7 +127,7 @@ struct OnboardingEvo: View {
             
             VStack {
                 switch currentChapter {
-                // MARK: - Logo
+                    // MARK: - Logo
                 case .logo:
                     Image("MythicIcon")
                         .resizable()
@@ -144,7 +144,7 @@ struct OnboardingEvo: View {
                                 
                             }
                         }
-                // MARK: - Logo
+                    // MARK: - Logo
                 case .welcome:
                     VStack {
                         Text("Welcome to Mythic.")
@@ -165,36 +165,34 @@ struct OnboardingEvo: View {
                                 }
                             }
                         
-                        Button(
-                            action: {
-                                withAnimation {
-                                    isSecondRowPresented = false
-                                    isWelcomeOpacityAnimated = false
-                                } completion: {
-                                    if !Legendary.signedIn() {
-                                        currentChapter = .signIn
-                                    } else if Legendary.signedIn() {
-                                        currentChapter = .greetings
-                                    } else if !Libraries.isInstalled() {
-                                        currentChapter = .engineDisclaimer
-                                    } else if Wine.allBottles?["Default"] == nil {
-                                        currentChapter = .defaultBottleSetup
-                                    } else {
-                                        currentChapter = .finished
-                                    }
+                        Button {
+                            withAnimation {
+                                isSecondRowPresented = false
+                                isWelcomeOpacityAnimated = false
+                            } completion: {
+                                if !Legendary.signedIn() {
+                                    currentChapter = .signIn
+                                } else if Legendary.signedIn() {
+                                    currentChapter = .greetings
+                                } else if !Libraries.isInstalled() {
+                                    currentChapter = .engineDisclaimer
+                                } else if Wine.allBottles?["Default"] == nil {
+                                    currentChapter = .defaultBottleSetup
+                                } else {
+                                    currentChapter = .finished
                                 }
-                            }, label: {
-                                Image(systemName: "arrow.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20)
                             }
-                        )
+                        } label: {
+                            Image(systemName: "arrow.right")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20)
+                        }
                         .buttonStyle(.borderless)
                         .opacity(isSecondRowPresented ? 1 : 0)
                     }
                     .foregroundStyle(.white)
-                // MARK: - Sign In
+                    // MARK: - Sign In
                 case .signIn:
                     VStack {
                         VStack {
@@ -226,20 +224,20 @@ struct OnboardingEvo: View {
                                     .onSubmit { epicSignIn() }
                                     .frame(width: 350, alignment: .center)
                                 
-                                Button(
-                                    action: { epicSignIn() },
-                                    label: {
-                                        if epicSigningIn {
-                                            ProgressView()
-                                                .controlSize(.small)
-                                        } else {
-                                            Image(systemName: "arrow.right")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 20)
-                                        }
+                                Button {
+                                    epicSignIn()
+                                } label: {
+                                    if epicSigningIn {
+                                        ProgressView()
+                                            .controlSize(.small)
+                                            .foregroundStyle(.white)
+                                    } else {
+                                        Image(systemName: "arrow.right")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 20)
                                     }
-                                )
+                                }
                                 .buttonStyle(.borderless)
                                 .foregroundStyle(.white)
                             }
@@ -247,14 +245,14 @@ struct OnboardingEvo: View {
                         .opacity(isSecondRowPresented ? 1 : 0)
                         
                         HStack {
-                            Button(action: {
+                            Button {
                                 isHelpPopoverPresented.toggle()
-                            }, label: {
+                            } label: {
                                 Image(systemName: "questionmark.circle")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 20)
-                            })
+                            }
                             .buttonStyle(.borderless)
                             .popover(isPresented: $isHelpPopoverPresented, arrowEdge: .bottom) {
                                 VStack {
@@ -263,16 +261,14 @@ struct OnboardingEvo: View {
                                 .padding()
                             }
                             
-                            Button(
-                                action: {
-                                    currentChapter = .greetings
-                                }, label: {
-                                    Image(systemName: "arrow.right.to.line")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 20)
-                                }
-                            )
+                            Button {
+                                currentChapter = .greetings
+                            } label: {
+                                Image(systemName: "arrow.right.to.line")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20)
+                            }
                             .disabled(epicSigningIn)
                             .help("Skip this step")
                             .buttonStyle(.borderless)
@@ -298,7 +294,7 @@ struct OnboardingEvo: View {
                             }
                         }
                     }
-                // MARK: - Greetings
+                    // MARK: - Greetings
                 case .greetings:
                     VStack {
                         HStack {
@@ -339,7 +335,7 @@ struct OnboardingEvo: View {
                             isGreetingsOffsetAnimated = true
                         }
                     }
-                // MARK: - Engine Disclaimer
+                    // MARK: - Engine Disclaimer
                 case .engineDisclaimer:
                     VStack {
                         Text("Install Mythic Engine")
@@ -377,15 +373,14 @@ struct OnboardingEvo: View {
                     .offset(y: isEngineDisclaimerOffsetAnimated ? 0 : 30)
                     
                     HStack {
-                        Button(
-                            action: {
+                        Button {
                             isHelpPopoverPresented.toggle()
-                        }, label: {
+                        } label: {
                             Image(systemName: "questionmark.circle")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 20)
-                        })
+                        }
                         .buttonStyle(.borderless)
                         .popover(isPresented: $isHelpPopoverPresented, arrowEdge: .bottom) {
                             VStack {
@@ -412,45 +407,43 @@ struct OnboardingEvo: View {
                         Spacer()
                             .frame(width: 10)
                         
-                        Button(
-                            action: {
-                                withAnimation {
-                                    isSecondRowPresented = false
-                                    isEngineDisclaimerOpacityAnimated = false
-                                } completion: {
-                                    currentChapter.next()
-                                }
-                                Task(priority: .userInitiated) {
-                                    Libraries.install(
-                                        downloadProgressHandler: { progress in
-                                            librariesDownloadProgress = progress
-                                            
-                                            if progress == 1 {
-                                                currentChapter = .engineInstaller
-                                            }
-                                        },
-                                        
-                                        installProgressHandler: { librariesInstallProgress = $0 },
-                                        
-                                        completion: { completion in
-                                            switch completion {
-                                            case .success:
-                                                currentChapter = .defaultBottleSetup
-                                            case .failure(let failure):
-                                                    librariesError = failure
-                                                    currentChapter = .engineError
-                                            }
-                                            
-                                        }
-                                    )
-                                }
-                            }, label: {
-                                Image(systemName: "arrow.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20)
+                        Button {
+                            withAnimation {
+                                isSecondRowPresented = false
+                                isEngineDisclaimerOpacityAnimated = false
+                            } completion: {
+                                currentChapter.next()
                             }
-                        )
+                            Task(priority: .userInitiated) {
+                                Libraries.install(
+                                    downloadProgressHandler: { progress in
+                                        librariesDownloadProgress = progress
+                                        
+                                        if progress == 1 {
+                                            currentChapter = .engineInstaller
+                                        }
+                                    },
+                                    
+                                    installProgressHandler: { librariesInstallProgress = $0 },
+                                    
+                                    completion: { completion in
+                                        switch completion {
+                                        case .success:
+                                            currentChapter = .defaultBottleSetup
+                                        case .failure(let failure):
+                                            librariesError = failure
+                                            currentChapter = .engineError
+                                        }
+                                        
+                                    }
+                                )
+                            }
+                        } label: {
+                            Image(systemName: "arrow.right")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20)
+                        }
                         .buttonStyle(.borderless)
                         
                         Button {
@@ -474,7 +467,7 @@ struct OnboardingEvo: View {
                     }
                     .foregroundStyle(.white)
                     .opacity(isSecondRowPresented ? 1 : 0)
-                // MARK: - Engine Downloader
+                    // MARK: - Engine Downloader
                 case .engineDownloader:
                     VStack {
                         Text("Downloading Mythic Engine...")
@@ -514,7 +507,7 @@ struct OnboardingEvo: View {
                             }
                         }
                     }
-                // MARK: - Engine Installer
+                    // MARK: - Engine Installer
                 case .engineInstaller:
                     VStack {
                         Text("Installing Mythic Engine...")
@@ -555,7 +548,7 @@ struct OnboardingEvo: View {
                             }
                         }
                     }
-                // MARK: - Engine Error
+                    // MARK: - Engine Error
                 case .engineError:
                     VStack {
                         Text("Failed to install Mythic Engine.")
@@ -587,7 +580,7 @@ struct OnboardingEvo: View {
                             }
                         }
                     }
-                // MARK: - Default Bottle Setup
+                    // MARK: - Default Bottle Setup
                 case .defaultBottleSetup:
                     VStack {
                         Text("Default Bottle Setup")
@@ -674,7 +667,7 @@ struct OnboardingEvo: View {
                             }
                         }
                     }
-                // MARK: - Finished
+                    // MARK: - Finished
                 case .finished:
                     VStack {
                         Text("You're all set!")
@@ -688,24 +681,22 @@ struct OnboardingEvo: View {
                         Text("Mythic setup is now complete.")
                             .opacity(isSecondRowPresented ? 1.0 : 0.0)
                         
-                        Button(
-                            action: {
+                        Button {
+                            withAnimation {
+                                isSecondRowPresented = false
+                                isFinishedOpacityAnimated = false
+                            } completion: {
                                 withAnimation {
-                                    isSecondRowPresented = false
-                                    isFinishedOpacityAnimated = false
-                                } completion: {
-                                    withAnimation {
-                                        isFirstLaunch = false
-                                    }
+                                    isFirstLaunch = false
                                 }
-                                
-                            }, label: {
-                                Image(systemName: "arrow.right")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20)
                             }
-                        )
+                            
+                        } label: {
+                            Image(systemName: "arrow.right")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20)
+                        }
                         .buttonStyle(.borderless)
                         .opacity(isSecondRowPresented ? 1 : 0)
                         

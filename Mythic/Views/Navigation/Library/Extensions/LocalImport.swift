@@ -25,9 +25,10 @@ extension LibraryView.GameImportView {
         
         @State private var game: Game = .init(type: .local, title: .init())
         @State private var platform: GamePlatform = .macOS
+        @State private var path: String = .init()
         
         private func updateGameTitle() {
-            if let path = game.path, !path.isEmpty, game.title.isEmpty {
+            if !path.isEmpty, game.title.isEmpty {
                 switch platform {
                 case .macOS:
                     if let bundle = Bundle(path: path),
@@ -52,7 +53,7 @@ extension LibraryView.GameImportView {
                                     switch phase {
                                     case .empty:
                                         if case .local = game.type {
-                                            let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+                                            let image = Image(nsImage: workspace.icon(forFile: path))
                                             
                                             image
                                                 .resizable()
@@ -106,7 +107,7 @@ extension LibraryView.GameImportView {
                         .onChange(of: platform) {
                             game.platform = $1
                             game.title = .init()
-                            game.path = .init()
+                            path = .init()
                         }
                         .task { game.platform = platform }
                         
@@ -117,7 +118,7 @@ extension LibraryView.GameImportView {
                                     Spacer()
                                 }
                                 HStack {
-                                    Text(URL(filePath: game.path ?? .init()).prettyPath())
+                                    Text(URL(filePath: path).prettyPath())
                                         .foregroundStyle(.placeholder)
                                     
                                     Spacer()
@@ -126,7 +127,7 @@ extension LibraryView.GameImportView {
                             
                             Spacer()
                             
-                            if !files.isReadableFile(atPath: game.path ?? .init()) {
+                            if !files.isReadableFile(atPath: path), !path.isEmpty {
                                 Image(systemName: "exclamationmark.triangle.fill")
                                     .help("File/Folder is not readable by Mythic.")
                             }
@@ -145,12 +146,12 @@ extension LibraryView.GameImportView {
                                 openPanel.allowsMultipleSelection = false
                                 
                                 if openPanel.runModal() == .OK {
-                                    game.path = openPanel.urls.first?.path ?? .init()
+                                    path = openPanel.urls.first?.path ?? .init()
                                 }
                             }
                         }
                         
-                        .onChange(of: game.path) { updateGameTitle() }
+                        .onChange(of: path) { updateGameTitle(); game.path = $0 }
                         
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
@@ -175,13 +176,9 @@ extension LibraryView.GameImportView {
                         isPresented = false
                         isGameListRefreshCalled = true
                     }
-                    .disabled(game.path?.isEmpty ?? false)
+                    .disabled(path.isEmpty)
                     .disabled(game.title.isEmpty)
                     .buttonStyle(.borderedProminent)
-                }
-                
-                .task(priority: .high) {
-                    game.path = .init()
                 }
                 
                 .task(priority: .background) { // TODO: same as in epicimport, can be unified?

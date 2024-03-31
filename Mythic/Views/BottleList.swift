@@ -19,7 +19,7 @@ struct BottleListView: View {
     @State private var configuratorActive: Bool = false
     
     var body: some View {
-        if let bottles = Wine.allBottles {
+        if let bottles = Wine.allBottles, !bottles.isEmpty {
             Form {
                 ForEach(Array(bottles.keys), id: \.self) { name in
                     HStack {

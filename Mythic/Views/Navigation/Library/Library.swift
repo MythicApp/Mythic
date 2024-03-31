@@ -47,10 +47,8 @@ struct LibraryView: View {
                         Image(systemName: "plus.app")
                     }
                     .help("Import a game")
-                }
                 
                 // MARK: Refresh Button
-                ToolbarItem(placement: .confirmationAction) {
                     Button {
                         isGameListRefreshCalled = true
                     } label: {
