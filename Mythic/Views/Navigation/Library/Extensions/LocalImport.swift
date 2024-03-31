@@ -151,7 +151,10 @@ extension LibraryView.GameImportView {
                             }
                         }
                         
-                        .onChange(of: path) { updateGameTitle(); game.path = $0 }
+                        .onChange(of: path) {
+                            updateGameTitle()
+                            game.path = $1
+                        }
                         
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
