@@ -31,7 +31,7 @@ struct InstallViewEvo: View {
             .task(priority: .userInitiated) {
                 fetchingOptionalPacks = true
                 
-                try? await Legendary.command(arguments: ["install", "Fortnite"], identifier: "parseOptionalPacks") { output, task in
+                try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output, task in
                     if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
                         task.terminate() // kill is preferred
                     }
