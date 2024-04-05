@@ -225,8 +225,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(%@ Elapsed)"
+            "state" : "translated",
+            "value" : "(%@ vergangen)"
           }
         },
         "el" : {
@@ -415,8 +415,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(%1$lld/%2$lld Objects)"
+            "state" : "translated",
+            "value" : "(%1$lld/%2$lld Objekte)"
           }
         },
         "el" : {
@@ -487,8 +487,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(%1$lld/%2$lld Objects)"
+            "state" : "translated",
+            "value" : "(%1$lld/%2$lld Oġġetti)"
           }
         },
         "nl" : {
@@ -927,8 +927,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(optional)"
+            "state" : "translated",
+            "value" : " (isteğe bağlı)"
           }
         },
         "uk" : {
@@ -1117,8 +1117,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(please restart Mythic.)"
+            "state" : "translated",
+            "value" : "(lütfen Mythic'i yeniden başlatın.)"
           }
         },
         "uk" : {
@@ -1181,7 +1181,7 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "(raw)"
           }
         },
@@ -1247,7 +1247,7 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "(raw)"
           }
         },
@@ -1307,8 +1307,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(raw)"
+            "state" : "translated",
+            "value" : "(ham)"
           }
         },
         "uk" : {
@@ -1371,8 +1371,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(read)"
+            "state" : "translated",
+            "value" : "(lesen)"
           }
         },
         "el" : {
@@ -1437,8 +1437,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(read)"
+            "state" : "translated",
+            "value" : "(aqra)"
           }
         },
         "nl" : {
@@ -1497,8 +1497,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(read)"
+            "state" : "translated",
+            "value" : "(oku)"
           }
         },
         "uk" : {
@@ -1561,8 +1561,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Supports selective downloads)"
+            "state" : "translated",
+            "value" : "(Unterstützt selektive Downloads)"
           }
         },
         "el" : {
@@ -1627,8 +1627,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(Supports selective downloads)"
+            "state" : "translated",
+            "value" : "(Dan jissapportja niżżlin selettivi)"
           }
         },
         "nl" : {
@@ -1751,8 +1751,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(write)"
+            "state" : "translated",
+            "value" : "(schreiben)"
           }
         },
         "el" : {
@@ -1817,8 +1817,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(write)"
+            "state" : "translated",
+            "value" : "(ikteb)"
           }
         },
         "nl" : {
@@ -1877,8 +1877,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "(write)"
+            "state" : "translated",
+            "value" : "(yaz)"
           }
         },
         "uk" : {
@@ -2067,7 +2067,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%@"
           }
         },
@@ -2093,6 +2093,202 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@\n%@" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
           }
         }
       }
@@ -2263,7 +2459,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ %2$@ (%3$@)"
           }
         },
@@ -2327,8 +2523,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Downloaded"
+            "state" : "translated",
+            "value" : "%lld MB Heruntergeladen"
           }
         },
         "el" : {
@@ -2393,8 +2589,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Downloaded"
+            "state" : "translated",
+            "value" : "%lld MB Mniżżlin"
           }
         },
         "nl" : {
@@ -2453,8 +2649,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Downloaded"
+            "state" : "translated",
+            "value" : "%lld MB İndirildi"
           }
         },
         "uk" : {
@@ -2517,8 +2713,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Written"
+            "state" : "translated",
+            "value" : "%lld MB Geschrieben"
           }
         },
         "el" : {
@@ -2583,8 +2779,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Written"
+            "state" : "translated",
+            "value" : "%lld MB Miktubin"
           }
         },
         "nl" : {
@@ -2643,8 +2839,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld MB Written"
+            "state" : "translated",
+            "value" : "%lld MB Yazıldı"
           }
         },
         "uk" : {
@@ -2707,7 +2903,7 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld MB/s"
           }
         },
@@ -2773,7 +2969,7 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld MB/s"
           }
         },
@@ -2833,7 +3029,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld MB/s"
           }
         },
@@ -3023,7 +3219,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld%%"
           }
         },
@@ -3213,8 +3409,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% complete"
+            "state" : "translated",
+            "value" : "%lld% tamamlandı"
           }
         },
         "uk" : {
@@ -3277,8 +3473,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% Complete"
+            "state" : "translated",
+            "value" : "%lld%% Abgeschlossen"
           }
         },
         "el" : {
@@ -3343,8 +3539,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% Complete"
+            "state" : "translated",
+            "value" : "%lld%% Lest"
           }
         },
         "nl" : {
@@ -3403,8 +3599,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "%lld%% Complete"
+            "state" : "translated",
+            "value" : "%lld% Tamamlandı"
           }
         },
         "uk" : {
@@ -3593,8 +3789,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
+            "state" : "translated",
+            "value" : "Tarayıcınızda bir bağlantı açılmış olmalı. Açılmadıysa, tıklayın"
           }
         },
         "uk" : {
@@ -3657,7 +3853,7 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Accounts"
           }
         },
@@ -3723,8 +3919,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Accounts"
+            "state" : "translated",
+            "value" : "Kontijiet"
           }
         },
         "nl" : {
@@ -3783,8 +3979,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Accounts"
+            "state" : "translated",
+            "value" : "Hesaplar"
           }
         },
         "uk" : {
@@ -4037,8 +4233,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel bottle creation?"
+            "state" : "translated",
+            "value" : "Sind Sie sicher, dass Sie die Bottle erstellung abbrechen möchten?"
           }
         },
         "el" : {
@@ -4103,8 +4299,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to cancel bottle creation?"
+            "state" : "translated",
+            "value" : "Ċert li trid tikkanċella t-tagħmil tal-bottle?"
           }
         },
         "nl" : {
@@ -4543,8 +4739,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to delete \"%@\"?"
+            "state" : "translated",
+            "value" : "\"%@\" Silmek istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -4607,8 +4803,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to remove Mythic Engine?"
+            "state" : "translated",
+            "value" : "Sind Sie sicher, dass Sie Mythic Engine entfernen möchten?"
           }
         },
         "el" : {
@@ -4733,8 +4929,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to remove Mythic Engine?"
+            "state" : "translated",
+            "value" : "Mythic Engine'i kaldırmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -4923,8 +5119,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to sign out?"
+            "state" : "translated",
+            "value" : "Oturumu kapatmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -5113,8 +5309,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to skip Mythic Engine installation?"
+            "state" : "translated",
+            "value" : "Mythic Engine kurulumunu atlamak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -5309,8 +5505,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to stop %1$@ %2$@?"
+            "state" : "translated",
+            "value" : "%1$@ %2$@ Oturumu kapatmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -5499,8 +5695,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Are you sure you want to uninstall \"%@\"?"
+            "state" : "translated",
+            "value" : "\"%@\" Kaldırmak istediğinizden emin misiniz?"
           }
         },
         "uk" : {
@@ -5689,8 +5885,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Automatically check for updates"
+            "state" : "translated",
+            "value" : "Güncellemeleri otomatik olarak denetle"
           }
         },
         "uk" : {
@@ -5879,8 +6075,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Automatically download updates"
+            "state" : "translated",
+            "value" : "Güncellemeleri otomatik olarak indir"
           }
         },
         "uk" : {
@@ -6069,7 +6265,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Bottles"
           }
         },
@@ -6259,8 +6455,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Browse..."
+            "state" : "translated",
+            "value" : "Gözat..."
           }
         },
         "uk" : {
@@ -6449,8 +6645,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Can't connect."
+            "state" : "translated",
+            "value" : "Bağlantı kurulamıyor."
           }
         },
         "uk" : {
@@ -6639,8 +6835,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cancel"
+            "state" : "translated",
+            "value" : "İptal Et"
           }
         },
         "uk" : {
@@ -6703,8 +6899,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Cannot fetch selected downloads while other items are downloading."
+            "state" : "translated",
+            "value" : "Ausgewählte Downloads können nicht abgerufen werden, während andere Elemente heruntergeladen werden."
           }
         },
         "el" : {
@@ -7019,8 +7215,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check for Updates..."
+            "state" : "translated",
+            "value" : "Güncellemeleri Kontrol Et..."
           }
         },
         "uk" : {
@@ -7209,8 +7405,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Check out Mythic Engine"
+            "state" : "translated",
+            "value" : "Mythic Engine'e göz atın"
           }
         },
         "uk" : {
@@ -7969,8 +8165,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Clean Up Miscallaneous Caches"
+            "state" : "translated",
+            "value" : "Karışık Önbellekleri Temizle"
           }
         },
         "uk" : {
@@ -8159,8 +8355,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Close"
+            "state" : "translated",
+            "value" : "Kapat"
           }
         },
         "uk" : {
@@ -8349,8 +8545,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Configure default settings for \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" için varsayılan ayarları yapılandırın"
           }
         },
         "uk" : {
@@ -8539,8 +8735,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Configure Mythic"
+            "state" : "translated",
+            "value" : "Mythic'i Yapılandırma"
           }
         },
         "uk" : {
@@ -8919,8 +9115,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current Bottle"
+            "state" : "translated",
+            "value" : "Güncel Bottle"
           }
         },
         "uk" : {
@@ -9109,8 +9305,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Current bottle:"
+            "state" : "translated",
+            "value" : "Güncel bottle:"
           }
         },
         "uk" : {
@@ -9139,7 +9335,198 @@
         }
       }
     },
+    "Dashboard" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Dashboard"
+          }
+        }
+      }
+    },
     "DASHBOARD" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -9299,8 +9686,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "DASHBOARD"
+            "state" : "translated",
+            "value" : "GÖSTERGE PANOSU"
           }
         },
         "uk" : {
@@ -9489,8 +9876,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Default Bottle Settings"
+            "state" : "translated",
+            "value" : "Varsayılan Bottle Ayarları"
           }
         },
         "uk" : {
@@ -9869,8 +10256,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete"
+            "state" : "translated",
+            "value" : "Sil"
           }
         },
         "uk" : {
@@ -10059,8 +10446,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Delete \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" Sil"
           }
         },
         "uk" : {
@@ -10123,8 +10510,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disk Speed:"
+            "state" : "translated",
+            "value" : "Festplattengeschwindigkeit:"
           }
         },
         "el" : {
@@ -10189,8 +10576,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disk Speed:"
+            "state" : "translated",
+            "value" : "Velocità tad-Disk:"
           }
         },
         "nl" : {
@@ -10249,8 +10636,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Disk Speed:"
+            "state" : "translated",
+            "value" : "Disk Hızı:"
           }
         },
         "uk" : {
@@ -10439,8 +10826,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Dismiss loading"
+            "state" : "translated",
+            "value" : "Yüklemeyi Kapat"
           }
         },
         "uk" : {
@@ -10629,8 +11016,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Display Mythic activity status on Discord"
+            "state" : "translated",
+            "value" : "Discord'da Mythic etkinlik durumunu gösterme"
           }
         },
         "uk" : {
@@ -10819,8 +11206,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Doing this means you can only play macOS-supported games.\n"
+            "state" : "translated",
+            "value" : "Bunu yaptığınızda yalnızca macOS destekli oyunları oynayabilirsiniz.\n"
           }
         },
         "uk" : {
@@ -10883,8 +11270,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Don't delete the game files (Delete it from Mythic only)"
+            "state" : "translated",
+            "value" : "Löschen Sie nicht die Spieldateien (Löschen Sie sie nur mit Mythic)"
           }
         },
         "el" : {
@@ -10949,8 +11336,8 @@
         },
         "mt" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Don't delete the game files (Delete it from Mythic only)"
+            "state" : "translated",
+            "value" : "Tħassarx il-fajls tal-logħob (Tħassar minn Mythic biss)"
           }
         },
         "nl" : {
@@ -11009,8 +11396,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Don't delete the game files (Delete it from Mythic only)"
+            "state" : "translated",
+            "value" : "Oyun dosyalarını silmeyin (Sadece Mythic'ten silin)"
           }
         },
         "uk" : {
@@ -11073,8 +11460,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Don't run uninstaller (If applicable)"
+            "state" : "translated",
+            "value" : "Deinstallation nicht ausführen (falls anwendbar)"
           }
         },
         "el" : {
@@ -11453,8 +11840,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Download \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" herunterladen"
           }
         },
         "el" : {
@@ -11579,8 +11966,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Download \"%@\""
+            "state" : "translated",
+            "value" : "İndir \"%@\""
           }
         },
         "uk" : {
@@ -11643,8 +12030,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Download Speed:"
+            "state" : "translated",
+            "value" : "Download-Geschwindigkeit:"
           }
         },
         "el" : {
@@ -11769,8 +12156,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Download Speed:"
+            "state" : "translated",
+            "value" : "İndirme Hızı:"
           }
         },
         "uk" : {
@@ -11959,8 +12346,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Downloading Game Porting Toolkit..."
+            "state" : "translated",
+            "value" : "Game Porting Toolkit indiriliyor..."
           }
         },
         "uk" : {
@@ -12149,8 +12536,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Downloading Mythic Engine..."
+            "state" : "translated",
+            "value" : "Mythic Engine İndiriliyor..."
           }
         },
         "uk" : {
@@ -12213,7 +12600,7 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Downloads"
           }
         },
@@ -12339,8 +12726,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Downloads"
+            "state" : "translated",
+            "value" : "İndirilenler"
           }
         },
         "uk" : {
@@ -12529,8 +12916,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enhanced Sync (MSync)"
+            "state" : "translated",
+            "value" : "Geliştirilmiş Senkronizasyon (MSync)"
           }
         },
         "uk" : {
@@ -12719,8 +13106,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Enter authorisation key..."
+            "state" : "translated",
+            "value" : "Yetkilendirme anahtarını girin..."
           }
         },
         "uk" : {
@@ -13733,8 +14120,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Error installing \"%@\"."
+            "state" : "translated",
+            "value" : "Fehler beim Installieren von \"%@\"."
           }
         },
         "el" : {
@@ -14113,8 +14500,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Error launching \"%@\"."
+            "state" : "translated",
+            "value" : "Fehler beim Starten von \"%@\"."
           }
         },
         "el" : {
@@ -14429,8 +14816,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Error launching %@."
+            "state" : "translated",
+            "value" : "%@ başlatılırken hata oluştu."
           }
         },
         "uk" : {
@@ -14619,8 +15006,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Everything in one place"
+            "state" : "translated",
+            "value" : "Her şey tek bir yerde"
           }
         },
         "uk" : {
@@ -14809,8 +15196,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Failed to boot \"%@.\""
+            "state" : "translated",
+            "value" : "\"%@\" başlatılamadı."
           }
         },
         "uk" : {
@@ -14999,8 +15386,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Failed to install Mythic Engine."
+            "state" : "translated",
+            "value" : "Mythic Engine yüklemekte başarısız oldu."
           }
         },
         "uk" : {
@@ -15189,8 +15576,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Failed to load the webpage."
+            "state" : "translated",
+            "value" : "Web sayfası yüklenemedi."
           }
         },
         "uk" : {
@@ -15443,8 +15830,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Favourite \"%@\""
+            "state" : "translated",
+            "value" : "Favorit \"%@\""
           }
         },
         "el" : {
@@ -15569,8 +15956,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Favourite \"%@\""
+            "state" : "translated",
+            "value" : "Favori \"%@\""
           }
         },
         "uk" : {
@@ -15759,8 +16146,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Favourites (Not implemented yet)"
+            "state" : "translated",
+            "value" : "Favoriler (Henüz uygulanmadı)"
           }
         },
         "uk" : {
@@ -15949,8 +16336,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File"
+            "state" : "translated",
+            "value" : "Dosya"
           }
         },
         "uk" : {
@@ -16139,8 +16526,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "File/Folder is not readable by Mythic."
+            "state" : "translated",
+            "value" : "Dosya/Klasör Mythic tarafından okunamıyor."
           }
         },
         "uk" : {
@@ -16329,8 +16716,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Folder is not writable."
+            "state" : "translated",
+            "value" : "Klasör yazılabilir değil."
           }
         },
         "uk" : {
@@ -16519,8 +16906,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Force quit all games when Mythic closes"
+            "state" : "translated",
+            "value" : "Mythic kapandığında tüm oyunlardan kapatmaya zorla"
           }
         },
         "uk" : {
@@ -16583,8 +16970,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Force Quit All Windows® Applications"
+            "state" : "translated",
+            "value" : "Beenden aller Windows®-Anwendungen erzwingen"
           }
         },
         "el" : {
@@ -16709,8 +17096,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Force Quit All Windows® Applications"
+            "state" : "translated",
+            "value" : "Tüm Windows® Uygulamalarından Çıkmaya Zorla"
           }
         },
         "uk" : {
@@ -16773,8 +17160,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Game Location:"
+            "state" : "translated",
+            "value" : "Spiel-Ordner:"
           }
         },
         "el" : {
@@ -16899,8 +17286,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Game Location:"
+            "state" : "translated",
+            "value" : "Oyun Konumu:"
           }
         },
         "uk" : {
@@ -16963,8 +17350,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Game verification is required for \"%@\"."
+            "state" : "translated",
+            "value" : "Für \"%@\" ist eine Spielverifizierung erforderlich."
           }
         },
         "el" : {
@@ -17089,8 +17476,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Game verification is required for \"%@\"."
+            "state" : "translated",
+            "value" : "\"%@\" oyunu için doğrulama gereklidir."
           }
         },
         "uk" : {
@@ -17279,8 +17666,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Get support/Support Mythic"
+            "state" : "translated",
+            "value" : "Destek alın/Destek Mythic"
           }
         },
         "uk" : {
@@ -17659,8 +18046,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Hey, %@!"
+            "state" : "translated",
+            "value" : "Merhaba, %@!"
           }
         },
         "uk" : {
@@ -17849,8 +18236,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Home"
+            "state" : "translated",
+            "value" : "Ana Sayfa"
           }
         },
         "uk" : {
@@ -17875,6 +18262,196 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Home"
+          }
+        }
+      }
+    },
+    "Import" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Import"
           }
         }
       }
@@ -18039,8 +18616,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Import a game"
+            "state" : "translated",
+            "value" : "Bir oyunu içe aktar"
           }
         },
         "uk" : {
@@ -18070,6 +18647,7 @@
       }
     },
     "Import a Game" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18229,8 +18807,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Import a Game"
+            "state" : "translated",
+            "value" : "Bir Oyun İçe Aktar"
           }
         },
         "uk" : {
@@ -18293,8 +18871,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Import game"
+            "state" : "translated",
+            "value" : "Spiel importieren"
           }
         },
         "el" : {
@@ -19179,8 +19757,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Initializing..."
+            "state" : "translated",
+            "value" : "Yükleniyor..."
           }
         },
         "uk" : {
@@ -19369,8 +19947,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Install"
+            "state" : "translated",
+            "value" : "Yükle"
           }
         },
         "uk" : {
@@ -19559,8 +20137,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Install \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" Yükle"
           }
         },
         "uk" : {
@@ -19749,8 +20327,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Install Mythic Engine"
+            "state" : "translated",
+            "value" : "Mythic Engine'i yükleyin"
           }
         },
         "uk" : {
@@ -19939,8 +20517,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Installed"
+            "state" : "translated",
+            "value" : "Yüklendi"
           }
         },
         "uk" : {
@@ -20003,8 +20581,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Installing \"%@\"..."
+            "state" : "translated",
+            "value" : "Installiere \"%@\"..."
           }
         },
         "el" : {
@@ -20129,8 +20707,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Installing \"%@\"..."
+            "state" : "translated",
+            "value" : "%@ Yükleniyor..."
           }
         },
         "uk" : {
@@ -20319,8 +20897,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Installing Game Porting Toolkit..."
+            "state" : "translated",
+            "value" : "Game Porting Toolkit Yükleniyor..."
           }
         },
         "uk" : {
@@ -20509,8 +21087,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Installing Mythic Engine..."
+            "state" : "translated",
+            "value" : "Mythic Engine yükleniyor..."
           }
         },
         "uk" : {
@@ -20699,8 +21277,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "It appears loading's taking a while."
+            "state" : "translated",
+            "value" : "Görünüşe göre yükleme biraz zaman alıyor."
           }
         },
         "uk" : {
@@ -20763,8 +21341,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "It'll have to be reinstalled in order to play Windows® games."
+            "state" : "translated",
+            "value" : "Es muss neu installiert werden, um Windows®-Spiele spielen zu können."
           }
         },
         "el" : {
@@ -20889,8 +21467,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "It'll have to be reinstalled in order to play Windows® games."
+            "state" : "translated",
+            "value" : "Windows® oyunlarını oynamak için yeniden yüklenmesi gerekecek."
           }
         },
         "uk" : {
@@ -21079,8 +21657,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Keep waiting (dismissable with esc)"
+            "state" : "translated",
+            "value" : "Beklemeye devam et (esc ile reddedilebilir)"
           }
         },
         "uk" : {
@@ -21269,8 +21847,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Later"
+            "state" : "translated",
+            "value" : "Daha Sonra"
           }
         },
         "uk" : {
@@ -21459,8 +22037,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Launch Configurator"
+            "state" : "translated",
+            "value" : "Yapılandırmayı Başlat"
           }
         },
         "uk" : {
@@ -21649,8 +22227,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Launch Winetricks"
+            "state" : "translated",
+            "value" : "Winetricks Başlat"
           }
         },
         "uk" : {
@@ -21839,8 +22417,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next."
+            "state" : "translated",
+            "value" : "Epic Games'te oturum açarak başlayalım.\nEpic Games'i kullanmak istemiyorsan ileri butonuna tıklaman yeterli."
           }
         },
         "uk" : {
@@ -22029,8 +22607,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Library"
+            "state" : "translated",
+            "value" : "Kütüphane"
           }
         },
         "uk" : {
@@ -22249,7 +22827,198 @@
         }
       }
     },
+    "Management" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Management"
+          }
+        }
+      }
+    },
     "MANAGEMENT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22853,8 +23622,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Modify settings for \"%@\""
+            "state" : "translated",
+            "value" : "Einstellungen für \"%@\" ändern"
           }
         },
         "el" : {
@@ -23043,8 +23812,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Move \"%@\""
+            "state" : "translated",
+            "value" : "Verschiebe \"%@\""
           }
         },
         "el" : {
@@ -23549,7 +24318,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mythic"
           }
         },
@@ -23929,8 +24698,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic Engine is not installed!"
+            "state" : "translated",
+            "value" : "Mythic Engine yüklü değil!"
           }
         },
         "uk" : {
@@ -24119,8 +24888,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic is checking the connection to Epic."
+            "state" : "translated",
+            "value" : "Mythic, Epic ile olan bağlantıyı kontrol ediyor."
           }
         },
         "uk" : {
@@ -24309,8 +25078,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic is connected to the internet, but cannot establish a connection to Epic."
+            "state" : "translated",
+            "value" : "Mythic internete bağlı, ancak Epic ile bağlantı kuramıyor."
           }
         },
         "uk" : {
@@ -24499,8 +25268,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic is not connected to the internet."
+            "state" : "translated",
+            "value" : "Mythic internete bağlı değil."
           }
         },
         "uk" : {
@@ -24689,8 +25458,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic is now setting up your default bottle to play Windows® games."
+            "state" : "translated",
+            "value" : "Mythic şimdi Windows® oyunlarını oynamak için varsayılan bottle ayarlıyor."
           }
         },
         "uk" : {
@@ -24879,8 +25648,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic is unable to connect to the internet. App functionality will be limited."
+            "state" : "translated",
+            "value" : "Mythic internete bağlanamıyor. Uygulama işlevselliği sınırlı olacaktır."
           }
         },
         "uk" : {
@@ -25069,8 +25838,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic setup is now complete."
+            "state" : "translated",
+            "value" : "Mythic kurulumu artık tamamlandı."
           }
         },
         "uk" : {
@@ -25200,7 +25969,7 @@
         "mt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mythic ma setax joħloq il-container default ta' Windows® biex jibda logħob ta' Windows®. Jekk jogħġbok ikkuntattja l-appoġġ. (Errur: %@)"
+            "value" : "Mythic ma setax jagħmel il-container default ta' Windows® biex jibda logħob ta' Windows®. Jekk jogħġbok ikkuntattja l-appoġġ. (Errur: %@)"
           }
         },
         "nl" : {
@@ -25259,8 +26028,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)"
+            "state" : "translated",
+            "value" : "Mythic, Windows® oyunlarını başlatmak için varsayılan Windows® kapsayıcısını oluşturamadı. Lütfen destek ekibiyle iletişime geçin. (Hata: %@)"
           }
         },
         "uk" : {
@@ -25449,7 +26218,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mythic!"
           }
         },
@@ -25639,8 +26408,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Next"
+            "state" : "translated",
+            "value" : "Sonraki"
           }
         },
         "uk" : {
@@ -25703,8 +26472,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No games can be shown."
+            "state" : "translated",
+            "value" : "Es können keine Spiele gezeigt werden."
           }
         },
         "el" : {
@@ -25829,8 +26598,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No games can be shown."
+            "state" : "translated",
+            "value" : "Hiçbir oyun gösterilemez."
           }
         },
         "uk" : {
@@ -25893,8 +26662,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No installation is currently running."
+            "state" : "translated",
+            "value" : "Es wird derzeit keine Installation durchgeführt."
           }
         },
         "el" : {
@@ -26019,8 +26788,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "No installation is currently running."
+            "state" : "translated",
+            "value" : "Şu anda herhangi bir kurulum çalışmıyor."
           }
         },
         "uk" : {
@@ -26209,8 +26978,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not implemented yet"
+            "state" : "translated",
+            "value" : "Henüz uygulanmadı"
           }
         },
         "uk" : {
@@ -26273,8 +27042,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not signed in"
+            "state" : "translated",
+            "value" : "Nicht angemeldet"
           }
         },
         "el" : {
@@ -26399,8 +27168,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Not signed in"
+            "state" : "translated",
+            "value" : "Oturum açılmadı"
           }
         },
         "uk" : {
@@ -26463,8 +27232,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Now Installing"
+            "state" : "translated",
+            "value" : "Jetzt Installieren"
           }
         },
         "el" : {
@@ -26589,8 +27358,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Now Installing"
+            "state" : "translated",
+            "value" : "Şimdi Yükleniyor"
           }
         },
         "uk" : {
@@ -26779,8 +27548,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "OK"
+            "state" : "translated",
+            "value" : "Tamam"
           }
         },
         "uk" : {
@@ -26969,8 +27738,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Performance HUD"
+            "state" : "translated",
+            "value" : "Performans HUD"
           }
         },
         "uk" : {
@@ -27033,8 +27802,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play \"%@\""
+            "state" : "translated",
+            "value" : "Spiele \"%@\""
           }
         },
         "el" : {
@@ -27159,8 +27928,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Play \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" Oyna"
           }
         },
         "uk" : {
@@ -27223,8 +27992,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Progress:"
+            "state" : "translated",
+            "value" : "Fortschritt:"
           }
         },
         "el" : {
@@ -27349,8 +28118,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Progress:"
+            "state" : "translated",
+            "value" : "İlerleme:"
           }
         },
         "uk" : {
@@ -27539,8 +28308,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Purchase new games from Epic"
+            "state" : "translated",
+            "value" : "Epic'ten yeni oyunlar satın alın"
           }
         },
         "uk" : {
@@ -27729,8 +28498,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Purge Shader Cache"
+            "state" : "translated",
+            "value" : "Gölgelendirici Önbelleğini Temizle"
           }
         },
         "uk" : {
@@ -27793,8 +28562,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Queued"
+            "state" : "translated",
+            "value" : "In der Warteschlange"
           }
         },
         "el" : {
@@ -27919,8 +28688,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Queued"
+            "state" : "translated",
+            "value" : "Sıraya Eklendi"
           }
         },
         "uk" : {
@@ -28109,8 +28878,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Quit Mythic"
+            "state" : "translated",
+            "value" : "Mythic Çık"
           }
         },
         "uk" : {
@@ -28299,8 +29068,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Refresh library"
+            "state" : "translated",
+            "value" : "Kütüphaneyi yenile"
           }
         },
         "uk" : {
@@ -28363,8 +29132,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Remove"
+            "state" : "translated",
+            "value" : "Entfernen"
           }
         },
         "el" : {
@@ -28489,8 +29258,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Remove"
+            "state" : "translated",
+            "value" : "Kaldır"
           }
         },
         "uk" : {
@@ -28679,8 +29448,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Remove Mythic Engine"
+            "state" : "translated",
+            "value" : "Mythic Engine'i kaldırın"
           }
         },
         "uk" : {
@@ -28869,8 +29638,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Reset Mythic"
+            "state" : "translated",
+            "value" : "Mythic Sıfırla"
           }
         },
         "uk" : {
@@ -29059,8 +29828,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Reset settings to default"
+            "state" : "translated",
+            "value" : "Ayarları varsayılana sıfırla"
           }
         },
         "uk" : {
@@ -29249,8 +30018,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Reset to Default"
+            "state" : "translated",
+            "value" : "Varsayılana Sıfırla"
           }
         },
         "uk" : {
@@ -29439,8 +30208,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Restart Onboarding..."
+            "state" : "translated",
+            "value" : "Onboarding'u Yeniden Başlat..."
           }
         },
         "uk" : {
@@ -29629,8 +30398,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode"
+            "state" : "translated",
+            "value" : "Retina Modu"
           }
         },
         "uk" : {
@@ -29819,8 +30588,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retina Mode cannot be modified: %@"
+            "state" : "translated",
+            "value" : "Retina Modu değiştirilemez: %@"
           }
         },
         "uk" : {
@@ -30009,8 +30778,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Retry"
+            "state" : "translated",
+            "value" : "Tekrar Dene"
           }
         },
         "uk" : {
@@ -30199,8 +30968,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Search"
+            "state" : "translated",
+            "value" : "Ara"
           }
         },
         "uk" : {
@@ -30389,8 +31158,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Select a game:"
+            "state" : "translated",
+            "value" : "Bir oyun seçin:"
           }
         },
         "uk" : {
@@ -30579,8 +31348,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Settings"
+            "state" : "translated",
+            "value" : "Ayarlar"
           }
         },
         "uk" : {
@@ -30769,8 +31538,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Show in Finder"
+            "state" : "translated",
+            "value" : "Finder'da Göster"
           }
         },
         "uk" : {
@@ -30959,8 +31728,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Sign In"
+            "state" : "translated",
+            "value" : "Oturum Aç"
           }
         },
         "uk" : {
@@ -31149,8 +31918,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Sign in to Epic Games"
+            "state" : "translated",
+            "value" : "Epic Games'te Oturum Aç"
           }
         },
         "uk" : {
@@ -31339,8 +32108,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Sign Out"
+            "state" : "translated",
+            "value" : "Çıkış Yap"
           }
         },
         "uk" : {
@@ -31403,8 +32172,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Signed in as \"%@\"."
+            "state" : "translated",
+            "value" : "Angemeldet als \"%@\"."
           }
         },
         "el" : {
@@ -31529,8 +32298,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Signed in as \"%@\"."
+            "state" : "translated",
+            "value" : "%@ olarak oturum açıldı."
           }
         },
         "uk" : {
@@ -31719,8 +32488,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Skip"
+            "state" : "translated",
+            "value" : "Atla"
           }
         },
         "uk" : {
@@ -31909,8 +32678,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Skip this step"
+            "state" : "translated",
+            "value" : "Bu adımı atla"
           }
         },
         "uk" : {
@@ -32099,8 +32868,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Sorry, this isn't implemented yet!"
+            "state" : "translated",
+            "value" : "Üzgünüm, bu henüz uygulanmadı!"
           }
         },
         "uk" : {
@@ -32163,8 +32932,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Status Unknown"
+            "state" : "translated",
+            "value" : "Status Unbekannt"
           }
         },
         "el" : {
@@ -32289,8 +33058,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Status Unknown"
+            "state" : "translated",
+            "value" : "Durum Bilinmiyor"
           }
         },
         "uk" : {
@@ -32479,8 +33248,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Stop"
+            "state" : "translated",
+            "value" : "Durdur"
           }
         },
         "uk" : {
@@ -32543,8 +33312,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Stop installing \"%@\""
+            "state" : "translated",
+            "value" : "Installation von \"%@ \" stoppen"
           }
         },
         "el" : {
@@ -32669,8 +33438,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Stop installing \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" yüklemeyi durdur"
           }
         },
         "uk" : {
@@ -32859,8 +33628,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Store"
+            "state" : "translated",
+            "value" : "Mağaza"
           }
         },
         "uk" : {
@@ -33049,8 +33818,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Submit"
+            "state" : "translated",
+            "value" : "Gönder"
           }
         },
         "uk" : {
@@ -33239,8 +34008,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Support"
+            "state" : "translated",
+            "value" : "Destek"
           }
         },
         "uk" : {
@@ -33429,8 +34198,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "The backend that allows you to play Windows® games on macOS just got an update."
+            "state" : "translated",
+            "value" : "Windows® oyunlarını macOS üzerinde oynamanızı sağlayan arka uç yeni bir güncelleme aldı."
           }
         },
         "uk" : {
@@ -33619,8 +34388,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "This process cannot be undone."
+            "state" : "translated",
+            "value" : "Bu işlem geri alınamaz."
           }
         },
         "uk" : {
@@ -33683,8 +34452,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "This will cancel \"%@\"'s creation."
+            "state" : "translated",
+            "value" : "Dies wird \"%@\"'s Erstellung abbrechen."
           }
         },
         "el" : {
@@ -33809,8 +34578,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "This will cancel \"%@\"'s creation."
+            "state" : "translated",
+            "value" : "Bu, \"%@\"'un oluşturulmasını iptal edecektir."
           }
         },
         "uk" : {
@@ -33999,8 +34768,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "This will sign you out of the account \"%@\"."
+            "state" : "translated",
+            "value" : "Bu sizi \"%@\" hesabından çıkaracaktır."
           }
         },
         "uk" : {
@@ -34189,8 +34958,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Time for an update!"
+            "state" : "translated",
+            "value" : "Güncelleme zamanı!"
           }
         },
         "uk" : {
@@ -34253,8 +35022,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Time Remaining:"
+            "state" : "translated",
+            "value" : "Verbleibende Zeit:"
           }
         },
         "el" : {
@@ -34379,8 +35148,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Time Remaining:"
+            "state" : "translated",
+            "value" : "Kalan Süre:"
           }
         },
         "uk" : {
@@ -34569,8 +35338,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to boot default bottle."
+            "state" : "translated",
+            "value" : "Varsayılan bottle başlatamıyor."
           }
         },
         "uk" : {
@@ -34759,8 +35528,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to fetch bottles."
+            "state" : "translated",
+            "value" : "Bottle alınamıyor."
           }
         },
         "uk" : {
@@ -34823,8 +35592,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to locate %1$@ at its specified path (%2$@)"
+            "state" : "translated",
+            "value" : "Kann %1$@ nicht in dem angegebenen Pfad finden (%2$@)"
           }
         },
         "el" : {
@@ -35019,8 +35788,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to move \"%@\"."
+            "state" : "translated",
+            "value" : "\"%@\" kann nicht verschoben werden."
           }
         },
         "el" : {
@@ -35145,8 +35914,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to move \"%@\"."
+            "state" : "translated",
+            "value" : "\"%@\" taşınamıyor."
           }
         },
         "uk" : {
@@ -35209,8 +35978,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to uninstall \"%@\"."
+            "state" : "translated",
+            "value" : "\"%@\" kann nicht deinstalliert werden."
           }
         },
         "el" : {
@@ -35335,8 +36104,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Unable to uninstall \"%@\"."
+            "state" : "translated",
+            "value" : "\"%@\" kaldırılamıyor."
           }
         },
         "uk" : {
@@ -35525,8 +36294,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uninstall"
+            "state" : "translated",
+            "value" : "Kaldır"
           }
         },
         "uk" : {
@@ -35715,8 +36484,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Uninstall \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" Kaldır"
           }
         },
         "uk" : {
@@ -35905,8 +36674,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Update"
+            "state" : "translated",
+            "value" : "Güncelleme"
           }
         },
         "uk" : {
@@ -35969,8 +36738,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Update \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" aktualisieren"
           }
         },
         "el" : {
@@ -36095,8 +36864,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Update \"%@\""
+            "state" : "translated",
+            "value" : "\"%@\" Güncelleme"
           }
         },
         "uk" : {
@@ -36285,8 +37054,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Verify the game's integrity"
+            "state" : "translated",
+            "value" : "Oyunun bütünlüğünü doğrulayın"
           }
         },
         "uk" : {
@@ -36349,8 +37118,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "View all currently signed in accounts"
+            "state" : "translated",
+            "value" : "Alle derzeit angemeldeten Accounts anzeigen"
           }
         },
         "el" : {
@@ -36475,8 +37244,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "View all currently signed in accounts"
+            "state" : "translated",
+            "value" : "Şu anda oturum açmış tüm hesapları görüntüleyin"
           }
         },
         "uk" : {
@@ -36539,8 +37308,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "View all downloads"
+            "state" : "translated",
+            "value" : "Alle Downloads anzeigen"
           }
         },
         "el" : {
@@ -36665,8 +37434,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "View all downloads"
+            "state" : "translated",
+            "value" : "Tüm indirmeleri görüntüle"
           }
         },
         "uk" : {
@@ -36855,8 +37624,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "View your games"
+            "state" : "translated",
+            "value" : "Oyunlarınızı görüntüleyin"
           }
         },
         "uk" : {
@@ -37045,8 +37814,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Welcome to %@"
+            "state" : "translated",
+            "value" : "%@ Hoş Geldiniz"
           }
         },
         "uk" : {
@@ -37235,8 +38004,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Welcome to Mythic."
+            "state" : "translated",
+            "value" : "Mythic'e Hoş Geldiniz."
           }
         },
         "uk" : {
@@ -37425,8 +38194,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "What should we call this game?"
+            "state" : "translated",
+            "value" : "Bu oyuna ne isim vermeliyiz?"
           }
         },
         "uk" : {
@@ -37615,8 +38384,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Where do you want the bottle's base path to be located?"
+            "state" : "translated",
+            "value" : "Bottle hangi klasöre koymak istiyorsunuz?"
           }
         },
         "uk" : {
@@ -37646,6 +38415,7 @@
       }
     },
     "Where do you want the game's base path to be located?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -37805,8 +38575,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Where do you want the game's base path to be located?"
+            "state" : "translated",
+            "value" : "Bottle hangi klasöre koymak istiyorsunuz?"
           }
         },
         "uk" : {
@@ -37831,6 +38601,196 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "Where do you want the game's base path to be located?"
+          }
+        }
+      }
+    },
+    "Where do you want the game's base path to be located?\n%@" : {
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ca" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "mt" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "no" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Where do you want the game's base path to be located?\n%@"
           }
         }
       }
@@ -37995,8 +38955,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Where is the game located?"
+            "state" : "translated",
+            "value" : "Oyun nerede bulunuyor?"
           }
         },
         "uk" : {
@@ -38185,7 +39145,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Wine"
           }
         },
@@ -38375,7 +39335,7 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Wine/Mythic Engine"
           }
         },
@@ -38439,8 +39399,8 @@
         },
         "de" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Without Mythic Engine, you'll be unable to launch Windows® games."
+            "state" : "translated",
+            "value" : "Ohne Mythic Engine werden Sie keine Windows®-Spiele starten können."
           }
         },
         "el" : {
@@ -38565,8 +39525,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "Without Mythic Engine, you'll be unable to launch Windows® games."
+            "state" : "translated",
+            "value" : "Mythic Engine olmadan Windows® oyunlarını başlatamazsınız."
           }
         },
         "uk" : {
@@ -38755,8 +39715,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "You can't delete the default bottle."
+            "state" : "translated",
+            "value" : "Varsayılan bottle silemezsiniz."
           }
         },
         "uk" : {
@@ -38945,8 +39905,8 @@
         },
         "tr" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "You're all set!"
+            "state" : "translated",
+            "value" : "Her şey hazır!"
           }
         },
         "uk" : {
