@@ -36,13 +36,7 @@ struct AuthView: View {
             isLoggingIn = true
             progressViewPresented = true
             
-            let command = await Legendary.command(args: ["auth", "--code", code], useCache: false, identifier: "signIn")
-            
-            if let commandStderrString = String(data: command.stderr, encoding: .utf8), commandStderrString.contains("Successfully logged in as") {
-                authSuccessful = true
-                $isPresented.wrappedValue = false
-                progressViewPresented = false
-            } else {
+            func displayError() {
                 authSuccessful = false
                 isError = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -52,6 +46,20 @@ struct AuthView: View {
                         isError = false
                     }
                 }
+            }
+            
+            do {
+                try await Legendary.command(arguments: ["auth", "--code", code], identifier: "signin") { output, _ in
+                    if output.stderr.contains("ERROR: Login attempt failed") {
+                        displayError(); return
+                    }
+                }
+                
+                authSuccessful = true
+                $isPresented.wrappedValue = false
+                progressViewPresented = false
+            } catch {
+                displayError()
             }
         }
     }

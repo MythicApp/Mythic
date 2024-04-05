@@ -163,6 +163,7 @@ extension LibraryView.GameImportView {
                                 set: { game.imageURL = .init(string: $0) }
                                          )
                         )
+                        .truncationMode(.tail)
                     }
                     .formStyle(.grouped)
                 }

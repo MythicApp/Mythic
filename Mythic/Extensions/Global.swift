@@ -42,12 +42,12 @@ struct UnknownError: LocalizedError {
 
 // MARK: - Enumerations
 /// Enumeration containing the two different game platforms available.
-enum GamePlatform: String, CaseIterable, Codable {
+enum GamePlatform: String, CaseIterable, Codable, Hashable {
     case macOS = "macOS"
     case windows = "Windows®"
 }
 
-enum GameType: String, CaseIterable, Codable {
+enum GameType: String, CaseIterable, Codable, Hashable {
     case epic = "Epic"
     case local = "Local"
 }
@@ -55,11 +55,22 @@ enum GameType: String, CaseIterable, Codable {
 class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     // MARK: Stubs
     static func == (lhs: Game, rhs: Game) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.type == rhs.type &&
+        lhs.title == rhs.title &&
+        lhs.id == rhs.id &&
+        lhs.platform == rhs.platform &&
+        lhs.imageURL == rhs.imageURL &&
+        lhs.path == rhs.path
     }
     
+    // MARK: Hash
     func hash(into hasher: inout Hasher) {
-        hasher.combine(self)
+        hasher.combine(type)
+        hasher.combine(title)
+        hasher.combine(id)
+        hasher.combine(platform)
+        hasher.combine(imageURL)
+        hasher.combine(path)
     }
     
     // MARK: Initializer
@@ -236,6 +247,7 @@ class GameOperation: ObservableObject {
     static func advance() {
         log.debug("[operation.advance] attempting operation advancement")
         guard shared.current == nil, let first = shared.queue.first else { return }
+        shared.status = .init()
         log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
         DispatchQueue.main.async {
             shared.current = first; shared.queue.removeFirst()

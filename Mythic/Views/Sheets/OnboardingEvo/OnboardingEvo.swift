@@ -30,6 +30,8 @@ struct OnboardingEvo: View {
         case welcome
         case signIn, // only epic as of now
              greetings
+        case rosettaInstaller,
+             rosettaError
         case engineDisclaimer,
              engineDownloader,
              engineInstaller,
@@ -50,7 +52,7 @@ struct OnboardingEvo: View {
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @State private var isOnboardingPresented: Bool = false
     
-    @State private var currentChapter: Chapter
+    @State private var currentChapter: Chapter // TODO: run on change
     
     @State private var animationColors: [Color] = [
         .init(hex: "#5412F6"),
@@ -60,6 +62,9 @@ struct OnboardingEvo: View {
     ]
     @State private var animationSpeed: Double = 1
     @State private var animationNoise: Double = 15
+    
+    @State private var isOpacityAnimated: Bool = true // remember the first view has to be visible
+    @State private var isOffsetAnimated: Bool = false
     
     @State private var isLogoOpacityAnimated: Bool = true
     @State private var isWelcomeOpacityAnimated: Bool = false
@@ -110,8 +115,8 @@ struct OnboardingEvo: View {
     private func epicSignIn() {
         Task(priority: .userInitiated) {
             epicSigningIn = true
-            let success = await Legendary.signIn(authKey: epicAuthKey)
-            epicSigninSuccess = success
+            let success = try? await Legendary.signIn(authKey: epicAuthKey)
+            epicSigninSuccess = success ?? false
             epicSigningIn = false
         }
     }
@@ -335,8 +340,12 @@ struct OnboardingEvo: View {
                             isGreetingsOffsetAnimated = true
                         }
                     }
-                    // MARK: - Engine Disclaimer
+                case .rosettaInstaller:
+                    do {}
+                case .rosettaError:
+                    do {}
                 case .engineDisclaimer:
+                    // MARK: - Engine Disclaimer
                     VStack {
                         Text("Install Mythic Engine")
                             .font(.bold(.title)())

@@ -30,31 +30,22 @@ struct InstallViewEvo: View {
             .font(.title)
             .task(priority: .userInitiated) {
                 fetchingOptionalPacks = true
-                // defer { fetchingOptionalPacks = false }
                 
-                let command = await Legendary.command(
-                    args: ["install", game.id],
-                    useCache: true,
-                    identifier: "parseOptionalPacks"
-                )
-                
-                fetchingOptionalPacks = false // await
-                
-                guard let stdoutString = String(data: command.stdout, encoding: .utf8) else { return }
-                guard stdoutString.contains("The following optional packs are available (tag - name):") else { return }
-                
-                for line in stdoutString.components(separatedBy: "\n") where line.hasPrefix(" * ") {
-                    let components = line
-                        .trimmingPrefix(" * ")
-                        .split(separator: " - ", maxSplits: 1)
-                        .map { String($0) } // convert the substrings to regular strings
+                try? await Legendary.command(arguments: ["install", "Fortnite"], identifier: "parseOptionalPacks") { output, task in
+                    if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
+                        task.terminate() // kill is preferred
+                    }
                     
-                    if components.count >= 2 {
-                        let tag = components[0].trimmingCharacters(in: .whitespaces)
-                        let name = components[1].trimmingCharacters(in: .whitespaces)
-                        optionalPacks[name] = tag
+                    if output.stdout.contains("The following optional packs are available") { // hate hardcoding
+                        output.stdout.enumerateLines { line, _ in
+                            if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
+                                optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
+                            }
+                        }
                     }
                 }
+                
+                fetchingOptionalPacks = false
             }
         
         if operation.current != nil {
@@ -69,16 +60,16 @@ struct InstallViewEvo: View {
                 .foregroundStyle(.placeholder)
             
             Form {
-                ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { name, tag in
+                ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { tag, name in
                     HStack {
-                        VStack {
-                            Text(name)
-                            Text(tag)
-                                .font(.footnote)
-                                .foregroundStyle(.placeholder)
-                                .multilineTextAlignment(.leading)
-                        }
-                        
+                        Text("""
+                        \(name)
+                        \(
+                        Text(tag)
+                            .font(.footnote)
+                            .foregroundStyle(.placeholder)
+                        )
+                        """)
                         Spacer()
                         
                         Toggle(
@@ -100,18 +91,16 @@ struct InstallViewEvo: View {
         }
         
         Form {
-            
             HStack {
                 VStack {
                     HStack {
-                        Text("Where do you want the game's base path to be located?")
-                        Spacer()
-                    }
-                    
-                    HStack {
+                        Text("""
+                        Where do you want the game's base path to be located?
+                        \(
                         Text(baseURL.prettyPath())
                             .foregroundStyle(.placeholder)
-                        
+                        )
+                        """)
                         Spacer()
                     }
                 }

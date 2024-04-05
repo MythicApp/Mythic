@@ -34,6 +34,7 @@ struct InstallStatusView: View {
             
             Text("\(Int(operation.status.progress?.percentage ?? 0))% Complete")
                 .font(.title3)
+                .foregroundStyle(.placeholder)
             
             Form {
                 HStack {

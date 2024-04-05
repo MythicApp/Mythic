@@ -31,12 +31,6 @@ struct MainView: View {
     @State private var isAuthViewPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
     
-    enum ActiveAlert {
-        case signOutConfirmation
-    }
-    @State private var activeAlert: ActiveAlert = .signOutConfirmation
-    @State private var isAlertPresented: Bool = false
-    
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
@@ -52,97 +46,57 @@ struct MainView: View {
         NavigationSplitView(
             sidebar: {
                 List {
-                    Text("DASHBOARD")
-                        .font(.system(size: 10))
-                        .fontWeight(.bold)
-                    
-                    Group {
+                    Section {
                         NavigationLink(destination: HomeView()) {
                             Label("Home", systemImage: "house")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("Everything in one place")
                         }
                         
                         NavigationLink(destination: LibraryView()) {
                             Label("Library", systemImage: "books.vertical")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("View your games")
                         }
                         
                         NavigationLink(destination: StoreView()) {
                             Label("Store", systemImage: "basket")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("Purchase new games from Epic")
                         }
+                    } header: {
+                        Text("Dashboard")
                     }
                     
                     Spacer()
                     
-                    Text("MANAGEMENT")
-                        .font(.system(size: 10))
-                        .fontWeight(.bold)
-                    
-                    Group {
+                    Section {
                         NavigationLink(destination: WineView()) {
                             Label("Wine", systemImage: "wineglass")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("Manage containers for Windows® applications")
                         }
                         
                         NavigationLink(destination: SettingsView()) {
                             Label("Settings", systemImage: "gear")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("Configure Mythic")
                         }
                         
                         NavigationLink(destination: SupportView()) {
                             Label("Support", systemImage: "questionmark.bubble")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("Get support/Support Mythic")
                         }
                         
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("View all currently signed in accounts")
                         }
+                    } header: {
+                        Text("Management")
                     }
-                    /*
-                     Spacer()
-                     
-                     
-                     Divider()
-                     
-                     HStack {
-                     Image(systemName: "person")
-                     .foregroundStyle(.primary)
-                     Text(account)
-                     }
-                     
-                     if account != "Nobody" {
-                     Button {
-                     activeAlert = .signOutConfirmation
-                     isAlertPresented = true
-                     } label: {
-                     HStack {
-                     Image(systemName: "person.slash")
-                     .foregroundStyle(.primary)
-                     Text("Sign Out")
-                     }
-                     }
-                     } else {
-                     Button {
-                     workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
-                     isAuthViewPresented = true
-                     } label: {
-                     HStack {
-                     Image(systemName: "person")
-                     .foregroundStyle(.primary)
-                     Text("Sign In")
-                     }
-                     }
-                     }
-                     */
                 }
                 .sheet(isPresented: $isAuthViewPresented) {
                     AuthView(isPresented: $isAuthViewPresented)
@@ -152,27 +106,6 @@ struct MainView: View {
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
                         .padding()
-                }
-                .alert(isPresented: $isAlertPresented) {
-                    switch activeAlert {
-                    case .signOutConfirmation:
-                        return Alert(
-                            title: .init("Are you sure you want to sign out?"),
-                            message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
-                            primaryButton: .destructive(.init("Sign Out")) {
-                                Task(priority: .high) {
-                                    await Legendary.command(
-                                        args: ["auth", "--delete"],
-                                        useCache: false,
-                                        identifier: "userAreaSignOut"
-                                    )
-                                }
-                            },
-                            secondaryButton: .cancel(.init("Cancel")) {
-                                isAlertPresented = false
-                            }
-                        )
-                    }
                 }
                 .listStyle(SidebarListStyle())
                 .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
@@ -199,7 +132,7 @@ struct MainView: View {
                     List {
                         NavigationLink(destination: DownloadsView()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")
-                                .foregroundStyle(.primary)
+                            // .foregroundStyle(.primary)
                                 .help("View all downloads")
                         }
                     }

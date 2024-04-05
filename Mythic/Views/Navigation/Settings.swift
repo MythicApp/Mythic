@@ -175,8 +175,9 @@ struct SettingsView: View {
                 HStack {
                     Button {
                         Task {
-                            let output = await Legendary.command(args: ["cleanup"], useCache: false, identifier: "cleanup")
-                            isCleanupSuccessful = String(data: output.stderr, encoding: .utf8)!.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                            try? await Legendary.command(arguments: ["cleanu["], identifier: "cleanup") { output, _ in
+                                isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                            }
                         }
                     } label: {
                         Label("Clean Up Miscallaneous Caches", systemImage: "bubbles.and.sparkles")

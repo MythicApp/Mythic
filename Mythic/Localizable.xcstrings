@@ -105,16 +105,16 @@
             "value" : "\nDaħħal l-'authorisationCode' mir-risposta JSON fil-qasam hawn taħt."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\nSkriv inn \"authorisationCode\" fra JSON-svaret i feltet nedenfor."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "\nVoer de 'authorisationCode' uit het JSON-antwoord in het onderstaande veld in."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nSkriv inn \"authorisationCode\" fra JSON-svaret i feltet nedenfor."
           }
         },
         "pl" : {
@@ -295,13 +295,13 @@
             "value" : "(%@ Elapsed)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(%@ Elapsed)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(%@ Elapsed)"
@@ -491,13 +491,13 @@
             "value" : "(%1$lld/%2$lld Objects)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(%1$lld/%2$lld Objects)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(%1$lld/%2$lld Objects)"
@@ -681,16 +681,16 @@
             "value" : "(Tinkwetax, xorta tista' tinstalla Mythic Engine iktar tard.)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(Ikke bekymre deg, du kan fortsatt installere Mythic Engine senere.)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "(Maak je geen zorgen, je kunt Mythic Engine later nog steeds installeren.)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(Ikke bekymre deg, du kan fortsatt installere Mythic Engine senere.)"
           }
         },
         "pl" : {
@@ -871,16 +871,16 @@
             "value" : "(mhux bilfors)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(valgfritt)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "(optioneel)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(valgfritt)"
           }
         },
         "pl" : {
@@ -1061,16 +1061,16 @@
             "value" : "(jekk jogħġbok irristartja Mythic.)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "(vennligst start Mythic på nytt.)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "(Mythic opnieuw opstarten.)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(vennligst start Mythic på nytt.)"
           }
         },
         "pl" : {
@@ -1251,13 +1251,13 @@
             "value" : "(raw)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(raw)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(raw)"
@@ -1441,13 +1441,13 @@
             "value" : "(read)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(read)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(read)"
@@ -1631,13 +1631,13 @@
             "value" : "(Supports selective downloads)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(Supports selective downloads)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(Supports selective downloads)"
@@ -1821,13 +1821,13 @@
             "value" : "(write)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(write)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "(write)"
@@ -2011,15 +2011,15 @@
             "value" : "%@"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%@"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%@"
           }
         },
@@ -2093,6 +2093,16 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%@"
+          }
+        }
+      }
+    },
+    "%@\n%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
           }
         }
       }
@@ -2207,15 +2217,15 @@
             "value" : "%1$@ %2$@ (%3$@)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%1$@ %2$@ (%3$@)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%1$@ %2$@ (%3$@)"
           }
         },
@@ -2397,13 +2407,13 @@
             "value" : "%lld MB Downloaded"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB Downloaded"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB Downloaded"
@@ -2587,13 +2597,13 @@
             "value" : "%lld MB Written"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB Written"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB Written"
@@ -2777,13 +2787,13 @@
             "value" : "%lld MB/s"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB/s"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld MB/s"
@@ -2967,15 +2977,15 @@
             "value" : "%lld%%"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "%lld%%"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "%lld%%"
           }
         },
@@ -3157,16 +3167,16 @@
             "value" : "%lld%% lest"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% fullført"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld%% complete"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld%% fullført"
           }
         },
         "pl" : {
@@ -3347,13 +3357,13 @@
             "value" : "%lld%% Complete"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld%% Complete"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%lld%% Complete"
@@ -3537,16 +3547,16 @@
             "value" : "Link waħda suppost tkun miftuħa fil-browser tiegħek. Jekk le, ikklikkja"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En lenke bør ha åpnet i nettleseren din. Hvis ikke, klikk"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Er zou een link moeten worden geopend in je browser. Zo niet, klik dan op"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En lenke bør ha åpnet i nettleseren din. Hvis ikke, klikk"
           }
         },
         "pl" : {
@@ -3727,13 +3737,13 @@
             "value" : "Accounts"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Accounts"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Accounts"
@@ -3917,16 +3927,16 @@
             "value" : "Żid bottle"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til en bottle"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Een bottle toevoegen"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legg til en bottle"
           }
         },
         "pl" : {
@@ -4107,13 +4117,13 @@
             "value" : "Are you sure you want to cancel bottle creation?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to cancel bottle creation?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to cancel bottle creation?"
@@ -4297,16 +4307,16 @@
             "value" : "Ċert li trid tikkanċella l-installazzjoni ta' Mythic Engine (GPTK)?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil avbryte Mythic Engine (GPTK) installasjonen?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weet je zeker dat je de installatie van Mythic Engine (GPTK) wilt annuleren?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil avbryte Mythic Engine (GPTK) installasjonen?"
           }
         },
         "pl" : {
@@ -4487,16 +4497,16 @@
             "value" : "Ċert li trid tħassar \"%@\"?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil slette \"%@\"?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to delete \"%@\"?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil slette \"%@\"?"
           }
         },
         "pl" : {
@@ -4677,13 +4687,13 @@
             "value" : "Are you sure you want to remove Mythic Engine?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to remove Mythic Engine?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to remove Mythic Engine?"
@@ -4867,16 +4877,16 @@
             "value" : "Ċert li trid tagħmel sign out?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil logge ut?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weet je zeker dat je wilt uitloggen?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil logge ut?"
           }
         },
         "pl" : {
@@ -5057,16 +5067,16 @@
             "value" : "Ċert li trid taqbeż l-installazzjoni ta' Mythic Engine?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil hoppe over Mythic Engine installasjonen?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weet je zeker dat je de installatie van Mythic Engine (GPTK) wilt overslaan?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil hoppe over Mythic Engine installasjonen?"
           }
         },
         "pl" : {
@@ -5253,16 +5263,16 @@
             "value" : "Ċert li trid tieqaf %1$@ %2$@?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil stoppe %1$@ %2$@?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to stop %1$@ %2$@?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil stoppe %1$@ %2$@?"
           }
         },
         "pl" : {
@@ -5443,16 +5453,16 @@
             "value" : "Ċert li trid tħassar \"%@\"?"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er du sikker på at du vil avinstallere \"%@\"?"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Are you sure you want to uninstall \"%@\"?"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er du sikker på at du vil avinstallere \"%@\"?"
           }
         },
         "pl" : {
@@ -5633,16 +5643,16 @@
             "value" : "Iċċekkja għal aġġornamenti awtomatikament"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se etter oppdateringer automatisk"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatisch controleren op updates"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se etter oppdateringer automatisk"
           }
         },
         "pl" : {
@@ -5823,16 +5833,16 @@
             "value" : "Tniżżel aġġornamenti awtomatikament"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last ned oppdateringer automatisk"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Automatisch updates downloaden"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Last ned oppdateringer automatisk"
           }
         },
         "pl" : {
@@ -6013,15 +6023,15 @@
             "value" : "Bottles"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Bottles"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Bottles"
           }
         },
@@ -6203,16 +6213,16 @@
             "value" : "Browse..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utforsk..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bladeren..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utforsk..."
           }
         },
         "pl" : {
@@ -6393,16 +6403,16 @@
             "value" : "Ma jistax jaqbad."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kan ikke koble til."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kan geen verbinding maken."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kan ikke koble til."
           }
         },
         "pl" : {
@@ -6583,16 +6593,16 @@
             "value" : "Ikkanċella"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avbryt"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Annuleer"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avbryt"
           }
         },
         "pl" : {
@@ -6773,13 +6783,13 @@
             "value" : "Cannot fetch selected downloads while other items are downloading."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Cannot fetch selected downloads while other items are downloading."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Cannot fetch selected downloads while other items are downloading."
@@ -6963,16 +6973,16 @@
             "value" : "Iċċekkja ghal Aġġornamenti..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se etter oppdateringer..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Zoek naar updates..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se etter oppdateringer..."
           }
         },
         "pl" : {
@@ -7153,16 +7163,16 @@
             "value" : "Ara aktar fuq Mythic Engine"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sjekk ut Mythic Engine"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bekijk Mythic Engine"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sjekk ut Mythic Engine"
           }
         },
         "pl" : {
@@ -7343,16 +7353,16 @@
             "value" : "Agħżel isem għall-bottle tiegħek:"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg et navn for din bottle:"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kies een naam voor je bottle:"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg et navn for din bottle:"
           }
         },
         "pl" : {
@@ -7533,16 +7543,16 @@
             "value" : "Agħżel il-lokazzjoni bażi ghal logħob default:"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg standardbanen for spill:"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kies het basispad voor games:"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg standardbanen for spill:"
           }
         },
         "pl" : {
@@ -7723,16 +7733,16 @@
             "value" : "Agħżel il-platform indiġeni tal-logħba:"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg spillets innfødte plattform:"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kies het originele platform van het spel:"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Velg spillets innfødte plattform:"
           }
         },
         "pl" : {
@@ -7913,16 +7923,16 @@
             "value" : "Tnaddaf Caches Mixxellanji"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rydd opp diverse cacher"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Overige caches opschonen"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rydd opp diverse cacher"
           }
         },
         "pl" : {
@@ -8103,16 +8113,16 @@
             "value" : "Itfi"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lukk"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sluit"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lukk"
           }
         },
         "pl" : {
@@ -8293,16 +8303,16 @@
             "value" : "Ikkonfigura s-settings default ghal \"%@\""
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurer standardinnstillinger for \"%@\""
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standaardinstellingen configureren voor \"%@\""
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konfigurer standardinnstillinger for \"%@\""
           }
         },
         "pl" : {
@@ -8483,16 +8493,16 @@
             "value" : "Ikkonfigura Mythic"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfigurer Mythic"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mythic configureren"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konfigurer Mythic"
           }
         },
         "pl" : {
@@ -8673,16 +8683,16 @@
             "value" : "Agħmel bottle"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opprett en bottle"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Maak een Bottle"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opprett en bottle"
           }
         },
         "pl" : {
@@ -8863,16 +8873,16 @@
             "value" : "Bottle Kurrenti"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Current Bottle"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Huidige Bottle"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Current Bottle"
           }
         },
         "pl" : {
@@ -9053,16 +9063,16 @@
             "value" : "Bottle kurrenti:"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nåværende bottle:"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Huidige Bottle:"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nåværende bottle:"
           }
         },
         "pl" : {
@@ -9139,7 +9149,11 @@
         }
       }
     },
+    "Dashboard" : {
+
+    },
     "DASHBOARD" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -9243,15 +9257,15 @@
             "value" : "DASHBOARD"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "DASHBOARD"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "DASHBOARD"
           }
         },
@@ -9433,16 +9447,16 @@
             "value" : "Settings tal-Bottle Default"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard bottle-innstillinger"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standaardinstellingen Bottle"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Standard bottle-innstillinger"
           }
         },
         "pl" : {
@@ -9623,16 +9637,16 @@
             "value" : "Setup tal-Bottle Default"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Standard bottle-oppsett"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Standaardinstellingen Bottle"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Standard bottle-oppsett"
           }
         },
         "pl" : {
@@ -9813,16 +9827,16 @@
             "value" : "Ħassar"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verwijder"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett"
           }
         },
         "pl" : {
@@ -10003,16 +10017,16 @@
             "value" : "Ħassar \"%@\""
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slett \"%@\""
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verwijder \"%@\""
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slett \"%@\""
           }
         },
         "pl" : {
@@ -10193,13 +10207,13 @@
             "value" : "Disk Speed:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Disk Speed:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Disk Speed:"
@@ -10383,16 +10397,16 @@
             "value" : "Iwarrab il-loading"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avvis lasting"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Laden sluiten"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avvis lasting"
           }
         },
         "pl" : {
@@ -10573,16 +10587,16 @@
             "value" : "Juri l-istatus tal-attività ta' Mythic fuq Discord"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis Mythic-aktivitetsstatus på Discord"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mythic activiteitsstatus weergeven op Discord"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis Mythic-aktivitetsstatus på Discord"
           }
         },
         "pl" : {
@@ -10763,16 +10777,16 @@
             "value" : "Jekk tagħmel dan, tista' tilgħab logħob ta' macOS biss.\n"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Å gjøre dette betyr at du bare kan spille macOS-støttede spill.\n"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Als je verdergaat, kun je alleen spellen spelen die macOS al ondersteunen.\n"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Å gjøre dette betyr at du bare kan spille macOS-støttede spill.\n"
           }
         },
         "pl" : {
@@ -10953,13 +10967,13 @@
             "value" : "Don't delete the game files (Delete it from Mythic only)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Don't delete the game files (Delete it from Mythic only)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Don't delete the game files (Delete it from Mythic only)"
@@ -11143,13 +11157,13 @@
             "value" : "Don't run uninstaller (If applicable)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Don't run uninstaller (If applicable)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Don't run uninstaller (If applicable)"
@@ -11333,16 +11347,16 @@
             "value" : "Lest"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fullført"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gereed"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fullført"
           }
         },
         "pl" : {
@@ -11523,13 +11537,13 @@
             "value" : "Download \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Download \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Download \"%@\""
@@ -11713,13 +11727,13 @@
             "value" : "Download Speed:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Download Speed:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Download Speed:"
@@ -11903,13 +11917,13 @@
             "value" : "Qed jniżżel il-Game Porting Toolkit..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloading Game Porting Toolkit..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloading Game Porting Toolkit..."
@@ -12093,13 +12107,13 @@
             "value" : "Qed jniżżel il-Mythic Engine..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloading Mythic Engine..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloading Mythic Engine..."
@@ -12283,13 +12297,13 @@
             "value" : "Downloads"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloads"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Downloads"
@@ -12473,13 +12487,13 @@
             "value" : "Enhanced Sync (MSync)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enhanced Sync (MSync)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enhanced Sync (MSync)"
@@ -12663,13 +12677,13 @@
             "value" : "Daħħal l-'authorisation key'..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter authorisation key..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter authorisation key..."
@@ -12853,13 +12867,13 @@
             "value" : "Daħħal l-'authorisationCode' mir-risposta JSON fil-qasam hawn taħt."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter the 'authorisationCode' from the JSON response in the field below."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter the 'authorisationCode' from the JSON response in the field below."
@@ -13043,13 +13057,13 @@
             "value" : "Daħħal il-URL tal-Thumbnail hawnhekk... (mhux bilfors)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter Thumbnail URL here... (optional)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Enter Thumbnail URL here... (optional)"
@@ -13233,13 +13247,13 @@
             "value" : "Epic"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Epic"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Epic"
@@ -13423,13 +13437,13 @@
             "value" : "Errur"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error"
@@ -13613,13 +13627,13 @@
             "value" : "Kien hemm errur waqt l-importazzjoni tal-logħba"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error importing game"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error importing game"
@@ -13803,13 +13817,13 @@
             "value" : "Error installing \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error installing \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error installing \"%@\"."
@@ -13993,13 +14007,13 @@
             "value" : "Kien hemm errur waqt l-installazzjoni ta' GPTK."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error installing GPTK."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error installing GPTK."
@@ -14183,13 +14197,13 @@
             "value" : "Error launching \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error launching \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error launching \"%@\"."
@@ -14373,13 +14387,13 @@
             "value" : "Kien hemm errur waqt il-bidu ta' %@."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error launching %@."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Error launching %@."
@@ -14563,13 +14577,13 @@
             "value" : "Kollox f'post wieħed"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Everything in one place"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Everything in one place"
@@ -14753,13 +14767,13 @@
             "value" : "Falla biex jibda \"%@.\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to boot \"%@.\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to boot \"%@.\""
@@ -14943,13 +14957,13 @@
             "value" : "Falla biex jinstalla l-Mythic Engine."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to install Mythic Engine."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to install Mythic Engine."
@@ -15133,13 +15147,13 @@
             "value" : "Falla biex jillowdja l-webpage."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to load the webpage."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to load the webpage."
@@ -15323,13 +15337,13 @@
             "value" : "Il-bottle default ma setax jiġi fformat."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to set up default bottle."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Failed to set up default bottle."
@@ -15513,13 +15527,13 @@
             "value" : "Favourite \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Favourite \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Favourite \"%@\""
@@ -15703,13 +15717,13 @@
             "value" : "Favoriti (Għadhom mhumiex implimentati)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Favourites (Not implemented yet)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Favourites (Not implemented yet)"
@@ -15893,13 +15907,13 @@
             "value" : "Fajl"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "File"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "File"
@@ -16083,13 +16097,13 @@
             "value" : "Mythic ma jistax jaqra l-fajl/fowlder."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "File/Folder is not readable by Mythic."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "File/Folder is not readable by Mythic."
@@ -16273,13 +16287,13 @@
             "value" : "Dan il-folder ma jistax jinkiteb fih."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Folder is not writable."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Folder is not writable."
@@ -16463,13 +16477,13 @@
             "value" : "Ġiegħel il-logħob kollha titfi meta Mythic jkun mitfi"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Force quit all games when Mythic closes"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Force quit all games when Mythic closes"
@@ -16653,13 +16667,13 @@
             "value" : "Force Quit All Windows® Applications"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Force Quit All Windows® Applications"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Force Quit All Windows® Applications"
@@ -16843,13 +16857,13 @@
             "value" : "Game Location:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Game Location:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Game Location:"
@@ -17033,13 +17047,13 @@
             "value" : "Game verification is required for \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Game verification is required for \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Game verification is required for \"%@\"."
@@ -17223,13 +17237,13 @@
             "value" : "Ikseb appoġġ/Mantna Mythic"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Get support/Support Mythic"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Get support/Support Mythic"
@@ -17413,13 +17427,13 @@
             "value" : "hawn."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "here."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "here."
@@ -17603,13 +17617,13 @@
             "value" : "Bonġu, %@!"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Hey, %@!"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Hey, %@!"
@@ -17793,13 +17807,13 @@
             "value" : "Home"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Home"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Home"
@@ -17878,6 +17892,9 @@
           }
         }
       }
+    },
+    "Import" : {
+
     },
     "Import a game" : {
       "localizations" : {
@@ -17983,13 +18000,13 @@
             "value" : "Daħħal logħba"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import a game"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import a game"
@@ -18070,6 +18087,7 @@
       }
     },
     "Import a Game" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18173,13 +18191,13 @@
             "value" : "Daħħal Logħba"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import a Game"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import a Game"
@@ -18363,13 +18381,13 @@
             "value" : "Import game"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import game"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import game"
@@ -18553,13 +18571,13 @@
             "value" : "Daħħal b'DLCs"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import with DLCs"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Import with DLCs"
@@ -18743,13 +18761,13 @@
             "value" : "Biex jibda logħob ta' Windows®, Mythic għandu jniżżel saff ta' traduzzjoni speċjalizzat. \n\nIl-ħin tat-tniżżil għandu jieħu ~7 minuti jew inqas, jiddependi fuq il-konnessjoni tal-internet tiegħek."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection."
@@ -18933,13 +18951,13 @@
             "value" : "Biex jibda logħob ta' Windows®, Mythic għandu jniżżel saff ta' traduzzjoni speċjalizzat. \n\nIl-ħin tat-tniżżil għandu jieħu ~10 minuti jew inqas, jiddependi fuq il-konnessjoni tal-internet tiegħek."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes or less,\ndepending on your internet connection."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes or less,\ndepending on your internet connection."
@@ -19123,13 +19141,13 @@
             "value" : "Qed jibda..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Initializing..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Initializing..."
@@ -19313,13 +19331,13 @@
             "value" : "Installa"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install"
@@ -19503,13 +19521,13 @@
             "value" : "Installa \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install \"%@\""
@@ -19693,13 +19711,13 @@
             "value" : "Installa Mythic Engine"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install Mythic Engine"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Install Mythic Engine"
@@ -19883,13 +19901,13 @@
             "value" : "Installat"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installed"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installed"
@@ -20073,13 +20091,13 @@
             "value" : "Installing \"%@\"..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing \"%@\"..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing \"%@\"..."
@@ -20263,13 +20281,13 @@
             "value" : "Qed jinstalla Game Porting Toolkit..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing Game Porting Toolkit..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing Game Porting Toolkit..."
@@ -20453,13 +20471,13 @@
             "value" : "Qed jinstalla Mythic Engine..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing Mythic Engine..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Installing Mythic Engine..."
@@ -20643,16 +20661,16 @@
             "value" : "Jidher li l-loading qed jdum."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det ser ut som at innlastingen tar en stund."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "It appears loading's taking a while."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det ser ut som at innlastingen tar en stund."
           }
         },
         "pl" : {
@@ -20833,13 +20851,13 @@
             "value" : "It'll have to be reinstalled in order to play Windows® games."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "It'll have to be reinstalled in order to play Windows® games."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "It'll have to be reinstalled in order to play Windows® games."
@@ -21023,16 +21041,16 @@
             "value" : "Ibqa' tistenna (tista' tikkanċella ma' esc)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett å vente (avvis med esc)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Keep waiting (dismissable with esc)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsett å vente (avvis med esc)"
           }
         },
         "pl" : {
@@ -21213,16 +21231,16 @@
             "value" : "Iktar tard"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senere"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Later"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Senere"
           }
         },
         "pl" : {
@@ -21403,16 +21421,16 @@
             "value" : "Iftaħ il-konfiguratur"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start konfiguratoren"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Launch Configurator"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start konfiguratoren"
           }
         },
         "pl" : {
@@ -21593,16 +21611,16 @@
             "value" : "Iftaħ Winetricks"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Winetricks"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Launch Winetricks"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start Winetricks"
           }
         },
         "pl" : {
@@ -21783,16 +21801,16 @@
             "value" : "Ħa nibdew bis-'sign in' ta' Epic Games.\nJekk ma tridx tuża Epic games, ikklikkja biss il-buttuna 'li jmiss'."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La oss komme i gang ved å logge inn på Epic Games.\nKlikk neste hvis du ikke ønsker å bruke Epic Games."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La oss komme i gang ved å logge inn på Epic Games.\nKlikk neste hvis du ikke ønsker å bruke Epic Games."
           }
         },
         "pl" : {
@@ -21973,16 +21991,16 @@
             "value" : "Librerija"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotek"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Library"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bibliotek"
           }
         },
         "pl" : {
@@ -22163,16 +22181,16 @@
             "value" : "Immaniġġja l-containers għal applikazzjonijet ta' Windows®"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Administrer beholdere for Windows® applikasjoner"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Manage containers for Windows® applications"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrer beholdere for Windows® applikasjoner"
           }
         },
         "pl" : {
@@ -22249,7 +22267,11 @@
         }
       }
     },
+    "Management" : {
+
+    },
     "MANAGEMENT" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22353,16 +22375,16 @@
             "value" : "MANIĠMENT"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BEHANDLING"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "MANAGEMENT"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BEHANDLING"
           }
         },
         "pl" : {
@@ -22543,16 +22565,16 @@
             "value" : "Imminimizza għall-menu bar meta tibda l-logħba"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimer til menylinjen ved oppstart av spillet"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Minimise to menu bar on game launch"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minimer til menylinjen ved oppstart av spillet"
           }
         },
         "pl" : {
@@ -22733,16 +22755,16 @@
             "value" : "Biddel s-settings default ghal \"%@\""
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Endre standardinnstillinger for \"%@\""
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Modify default settings for \"%@\""
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Endre standardinnstillinger for \"%@\""
           }
         },
         "pl" : {
@@ -22923,13 +22945,13 @@
             "value" : "Modify settings for \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Modify settings for \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Modify settings for \"%@\""
@@ -23113,13 +23135,13 @@
             "value" : "Move \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Move \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Move \"%@\""
@@ -23303,16 +23325,16 @@
             "value" : "Mexxi..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Move..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Flytt..."
           }
         },
         "pl" : {
@@ -23493,15 +23515,15 @@
             "value" : "Mythic"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mythic"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Mythic"
           }
         },
@@ -23683,16 +23705,16 @@
             "value" : "Mythic Engine hu l-implimentazzjoni ta' Mythic tal-Game Porting Toolkit (GPTK) ta' Apple, li jgħaqqad Wine u D3DMetal, biex tinħoloq esperjenza tal-logħob ta' Windows fuq macOS. Simili għal Proton, Mythic Engine tipprova tkun esperjenza bħal emulatur li jippermetti li l-logħob nattiv tal-Windows jintlagħab fuq macOS, filwaqt li jersaq eqreb lejn il-performance nattiva minn qatt qabel. (il-performance se tvarja bejn il-logħob)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic Engine er Mythics implementering av Apples game porting toolkit (GPTK),\nsom kombinerer Wine og D3DMetal for å skape en Windows-spillopplevelse på macOS.\nI likhet med Proton prøver Mythic Engine å være en emulatorlignende opplevelse som\ngjør at Windows-spill kan spilles på macOS, samtidig som de kommer nærmere innfødt\nytelse enn noen gang før. (ytelsen vil variere mellom spill)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic Engine er Mythics implementering av Apples game porting toolkit (GPTK),\nsom kombinerer Wine og D3DMetal for å skape en Windows-spillopplevelse på macOS.\nI likhet med Proton prøver Mythic Engine å være en emulatorlignende opplevelse som\ngjør at Windows-spill kan spilles på macOS, samtidig som de kommer nærmere innfødt\nytelse enn noen gang før. (ytelsen vil variere mellom spill)"
           }
         },
         "pl" : {
@@ -23873,16 +23895,16 @@
             "value" : "Mythic Engine mhuwiex installat!"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic Engine er ikke installert!"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic Engine is not installed!"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic Engine er ikke installert!"
           }
         },
         "pl" : {
@@ -24063,16 +24085,16 @@
             "value" : "Mythic qed jiċċekkja l-konnessjoni ma' Epic."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic sjekker koblingen til Epic."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic is checking the connection to Epic."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic sjekker koblingen til Epic."
           }
         },
         "pl" : {
@@ -24253,16 +24275,16 @@
             "value" : "Mythic għandu konnessjoni mal-Internet, iżda ma jistax jistabbilixxi konnessjoni ma' Epic."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic er koblet til Internett, men kan ikke koble til Epic."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic is connected to the internet, but cannot establish a connection to Epic."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic er koblet til Internett, men kan ikke koble til Epic."
           }
         },
         "pl" : {
@@ -24443,16 +24465,16 @@
             "value" : "Mythic mhuwiex imqabbad mal-internet."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic er ikke koblet til internett."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic is not connected to the internet."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic er ikke koblet til internett."
           }
         },
         "pl" : {
@@ -24633,16 +24655,16 @@
             "value" : "Mythic qed jagħmel is-setup tal-bottle default tiegħek sabiex jilgħab il-logħob ta' Windows®."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic setter opp din standard-bottle for å spille Windows®-spill."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic is now setting up your default bottle to play Windows® games."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic setter opp din standard-bottle for å spille Windows®-spill."
           }
         },
         "pl" : {
@@ -24823,16 +24845,16 @@
             "value" : "Mythic ma jistax jaqbad mal-internet. Il-funzjonalità tal-app se tkun limitata."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic kan ikke koble til internett. App-funksjonalitet vil bli begrenset."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic is unable to connect to the internet. App functionality will be limited."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic kan ikke koble til internett. App-funksjonalitet vil bli begrenset."
           }
         },
         "pl" : {
@@ -25013,16 +25035,16 @@
             "value" : "Is-setup ta' Mythic hu lest."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic-oppsett er nå fullført."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic setup is now complete."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic-oppsett er nå fullført."
           }
         },
         "pl" : {
@@ -25203,16 +25225,16 @@
             "value" : "Mythic ma setax joħloq il-container default ta' Windows® biex jibda logħob ta' Windows®. Jekk jogħġbok ikkuntattja l-appoġġ. (Errur: %@)"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mythic kunne ikke opprette standard Windows®-beholder for å starte Windows®-spill. Vennligst kontakt brukerstøtte. (Feilmelding: %@)"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mythic kunne ikke opprette standard Windows®-beholder for å starte Windows®-spill. Vennligst kontakt brukerstøtte. (Feilmelding: %@)"
           }
         },
         "pl" : {
@@ -25393,15 +25415,15 @@
             "value" : "Mythic!"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Mythic!"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "Mythic!"
           }
         },
@@ -25583,16 +25605,16 @@
             "value" : "Li jmiss"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neste"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Next"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neste"
           }
         },
         "pl" : {
@@ -25773,13 +25795,13 @@
             "value" : "No games can be shown."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "No games can be shown."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "No games can be shown."
@@ -25963,13 +25985,13 @@
             "value" : "No installation is currently running."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "No installation is currently running."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "No installation is currently running."
@@ -26153,16 +26175,16 @@
             "value" : "Għadu mhux implimentat"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke implementert ennå"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Not implemented yet"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ikke implementert ennå"
           }
         },
         "pl" : {
@@ -26343,13 +26365,13 @@
             "value" : "Not signed in"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Not signed in"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Not signed in"
@@ -26533,13 +26555,13 @@
             "value" : "Now Installing"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Now Installing"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Now Installing"
@@ -26723,15 +26745,15 @@
             "value" : "OK"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "OK"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "new",
             "value" : "OK"
           }
         },
@@ -26913,13 +26935,13 @@
             "value" : "Performance HUD"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Performance HUD"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Performance HUD"
@@ -27103,13 +27125,13 @@
             "value" : "Play \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Play \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Play \"%@\""
@@ -27293,13 +27315,13 @@
             "value" : "Progress:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Progress:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Progress:"
@@ -27483,16 +27505,16 @@
             "value" : "Ixtri logħob ġdid minn Epic"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kjøp nye spill fra Epic"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Purchase new games from Epic"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kjøp nye spill fra Epic"
           }
         },
         "pl" : {
@@ -27673,16 +27695,16 @@
             "value" : "Tnaddaf is-Shader Cache"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tøm shader cache"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Purge Shader Cache"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tøm shader cache"
           }
         },
         "pl" : {
@@ -27863,13 +27885,13 @@
             "value" : "Queued"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Queued"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Queued"
@@ -28053,16 +28075,16 @@
             "value" : "Itfi Mythic"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avslutt Mythic"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Quit Mythic"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avslutt Mythic"
           }
         },
         "pl" : {
@@ -28243,16 +28265,16 @@
             "value" : "Ġedded il-librerija"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdater biblioteket"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Refresh library"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppdater biblioteket"
           }
         },
         "pl" : {
@@ -28433,13 +28455,13 @@
             "value" : "Remove"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Remove"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Remove"
@@ -28623,16 +28645,16 @@
             "value" : "Neħħi Mythic Engine"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjern Mythic Engine"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Remove Mythic Engine"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fjern Mythic Engine"
           }
         },
         "pl" : {
@@ -28813,16 +28835,16 @@
             "value" : "Irrisettja Mythic"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbakestill Mythic"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Reset Mythic"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilbakestill Mythic"
           }
         },
         "pl" : {
@@ -29003,16 +29025,16 @@
             "value" : "Irrisettja s-settings għad-default"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenopprett standardinnstillinger"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Reset settings to default"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjenopprett standardinnstillinger"
           }
         },
         "pl" : {
@@ -29193,16 +29215,16 @@
             "value" : "Irrisettja għad-Default"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilbakestill til standard"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Reset to Default"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tilbakestill til standard"
           }
         },
         "pl" : {
@@ -29383,16 +29405,16 @@
             "value" : "Irristartja s-Setup Inizjali..."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omstart onboarding..."
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Restart Onboarding..."
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omstart onboarding..."
           }
         },
         "pl" : {
@@ -29573,16 +29595,16 @@
             "value" : "Retina Mode"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retina-modus"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Retina Mode"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retina-modus"
           }
         },
         "pl" : {
@@ -29763,16 +29785,16 @@
             "value" : "Retina Mode ma jistax jiġi modifikat: %@"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retina-modus kan ikke endres: %@"
+          }
+        },
         "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Retina Mode cannot be modified: %@"
-          }
-        },
-        "no" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retina-modus kan ikke endres: %@"
           }
         },
         "pl" : {
@@ -29953,13 +29975,13 @@
             "value" : "Erġa' pprova"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Retry"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Retry"
@@ -30143,13 +30165,13 @@
             "value" : "Fittex"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Search"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Search"
@@ -30333,13 +30355,13 @@
             "value" : "Agħżel logħba:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Select a game:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Select a game:"
@@ -30523,13 +30545,13 @@
             "value" : "Settings"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Settings"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Settings"
@@ -30713,13 +30735,13 @@
             "value" : "Uri fi Finder"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Show in Finder"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Show in Finder"
@@ -30903,13 +30925,13 @@
             "value" : "Sign In"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign In"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign In"
@@ -31093,13 +31115,13 @@
             "value" : "Sign in f'Epic Games"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign in to Epic Games"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign in to Epic Games"
@@ -31283,13 +31305,13 @@
             "value" : "Sign Out"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign Out"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sign Out"
@@ -31473,13 +31495,13 @@
             "value" : "Signed in as \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Signed in as \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Signed in as \"%@\"."
@@ -31663,13 +31685,13 @@
             "value" : "Aqbeż"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Skip"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Skip"
@@ -31853,13 +31875,13 @@
             "value" : "Aqbeż dan il-pass"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Skip this step"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Skip this step"
@@ -32043,13 +32065,13 @@
             "value" : "Skużani, dan għadu mhux implimentat!"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sorry, this isn't implemented yet!"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Sorry, this isn't implemented yet!"
@@ -32233,13 +32255,13 @@
             "value" : "Status Unknown"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Status Unknown"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Status Unknown"
@@ -32423,13 +32445,13 @@
             "value" : "Ieqaf"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Stop"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Stop"
@@ -32613,13 +32635,13 @@
             "value" : "Stop installing \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Stop installing \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Stop installing \"%@\""
@@ -32803,13 +32825,13 @@
             "value" : "Ħanut"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Store"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Store"
@@ -32993,13 +33015,13 @@
             "value" : "Ibgħat"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Submit"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Submit"
@@ -33183,13 +33205,13 @@
             "value" : "Appoġġ"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Support"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Support"
@@ -33373,13 +33395,13 @@
             "value" : "Il-backend li jippermettilek tilgħab logħob ta' Windows® fuq macOS rċieva aġġornament."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "The backend that allows you to play Windows® games on macOS just got an update."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "The backend that allows you to play Windows® games on macOS just got an update."
@@ -33563,13 +33585,13 @@
             "value" : "Dan il-proċess ma jistax jitneħħa."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This process cannot be undone."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This process cannot be undone."
@@ -33753,13 +33775,13 @@
             "value" : "This will cancel \"%@\"'s creation."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This will cancel \"%@\"'s creation."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This will cancel \"%@\"'s creation."
@@ -33943,13 +33965,13 @@
             "value" : "Il-kont \"%@\" se jiġi 'signed out'."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This will sign you out of the account \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "This will sign you out of the account \"%@\"."
@@ -34133,13 +34155,13 @@
             "value" : "Żmien għal aġġornament!"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Time for an update!"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Time for an update!"
@@ -34323,13 +34345,13 @@
             "value" : "Time Remaining:"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Time Remaining:"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Time Remaining:"
@@ -34513,13 +34535,13 @@
             "value" : "Il-bottle default ma jistax jinbeda."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to boot default bottle."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to boot default bottle."
@@ -34703,13 +34725,13 @@
             "value" : "Il-bottles ma jistgħux jinġabru."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to fetch bottles."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to fetch bottles."
@@ -34899,13 +34921,13 @@
             "value" : "Unable to locate %1$@ at its specified path (%2$@)"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to locate %1$@ at its specified path (%2$@)"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to locate %1$@ at its specified path (%2$@)"
@@ -35089,13 +35111,13 @@
             "value" : "Unable to move \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to move \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to move \"%@\"."
@@ -35279,13 +35301,13 @@
             "value" : "Unable to uninstall \"%@\"."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to uninstall \"%@\"."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Unable to uninstall \"%@\"."
@@ -35469,13 +35491,13 @@
             "value" : "Ħassar"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Uninstall"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Uninstall"
@@ -35659,13 +35681,13 @@
             "value" : "Ħassar \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Uninstall \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Uninstall \"%@\""
@@ -35849,13 +35871,13 @@
             "value" : "Aġġorna"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Update"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Update"
@@ -36039,13 +36061,13 @@
             "value" : "Update \"%@\""
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Update \"%@\""
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Update \"%@\""
@@ -36229,13 +36251,13 @@
             "value" : "Ivverifika l-integrità tal-logħba"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Verify the game's integrity"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Verify the game's integrity"
@@ -36419,13 +36441,13 @@
             "value" : "View all currently signed in accounts"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View all currently signed in accounts"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View all currently signed in accounts"
@@ -36609,13 +36631,13 @@
             "value" : "View all downloads"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View all downloads"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View all downloads"
@@ -36799,13 +36821,13 @@
             "value" : "Ara logħobok"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View your games"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "View your games"
@@ -36989,13 +37011,13 @@
             "value" : "Merħba għal %@"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Welcome to %@"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Welcome to %@"
@@ -37179,13 +37201,13 @@
             "value" : "Merħba għal Mythic."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Welcome to Mythic."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Welcome to Mythic."
@@ -37369,13 +37391,13 @@
             "value" : "X'għandna nsejħu din il-logħba?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "What should we call this game?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "What should we call this game?"
@@ -37559,13 +37581,13 @@
             "value" : "Fejn trid tissettja l-mogħdija bażi tal-bottle?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where do you want the bottle's base path to be located?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where do you want the bottle's base path to be located?"
@@ -37646,6 +37668,7 @@
       }
     },
     "Where do you want the game's base path to be located?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -37749,13 +37772,13 @@
             "value" : "Fejn trid tissettja l-mogħdija bażi tal-logħba?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where do you want the game's base path to be located?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where do you want the game's base path to be located?"
@@ -37834,6 +37857,9 @@
           }
         }
       }
+    },
+    "Where do you want the game's base path to be located?\n%@" : {
+
     },
     "Where is the game located?" : {
       "localizations" : {
@@ -37939,13 +37965,13 @@
             "value" : "Fejn hu l-lokazzjoni tal-logħba?"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where is the game located?"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Where is the game located?"
@@ -38129,13 +38155,13 @@
             "value" : "Wine"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Wine"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Wine"
@@ -38319,13 +38345,13 @@
             "value" : "Wine/Mythic Engine"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Wine/Mythic Engine"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Wine/Mythic Engine"
@@ -38509,13 +38535,13 @@
             "value" : "Without Mythic Engine, you'll be unable to launch Windows® games."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Without Mythic Engine, you'll be unable to launch Windows® games."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "Without Mythic Engine, you'll be unable to launch Windows® games."
@@ -38699,13 +38725,13 @@
             "value" : "Ma' tistax tħassar il-bottle default."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "You can't delete the default bottle."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "You can't delete the default bottle."
@@ -38889,13 +38915,13 @@
             "value" : "Kollox sew!"
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "You're all set!"
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "You're all set!"

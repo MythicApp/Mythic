@@ -158,6 +158,7 @@ struct GameSettingsView: View {
                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                 }
                 .disabled(game.platform != .windows)
+                .disabled(!Libraries.isInstalled())
                 .onChange(of: selectedBottle) { game.bottleName = $1 }
             }
             .formStyle(.grouped)

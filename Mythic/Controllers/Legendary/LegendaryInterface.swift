@@ -37,9 +37,7 @@ class Legendary {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
     
     /// Cache for storing command outputs.
-    private static var commandCache: [String: (stdout: Data, stderr: Data)] = .init()
-    
-    private static var downloadQueue: [Mythic.Game] = .init()
+    private static var commandCache: [String: (stderr: Data, stdout: Data)] = .init()
     
     // MARK: runningCommands
     private static var _runningCommands: [String: Process] = .init()
@@ -52,7 +50,7 @@ class Legendary {
                 return _runningCommands
             }
         }
-        set(newValue) {
+        set {
             _runningCommandsQueue.async(flags: .barrier) {
                 _runningCommands = newValue
             }
@@ -61,205 +59,86 @@ class Legendary {
     
     // MARK: - Methods
     
-    // MARK: - Command Method
     /**
-     Run a legendary command using the included legendary binary.
+     Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
      
      - Parameters:
-     - args: The command arguments.
-     - useCache: Flag indicating whether to use cached output.
-     - identifier: String to keep track of individual command functions. (originally UUID-based)
-     - input: Optional input string for the command.
-     - inputIf: Optional condition to be checked for in the output streams before input is appended.
-     - asyncOutput: Optional closure that gets output appended to it immediately.
-     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
+     - args: The arguments to pass to the command-line process.
+     - waits: Indicates whether the function should wait for the command-line process to complete before returning.
+     - identifier: A unique identifier for the command-line process.
+     - input: A closure that processes the output of the command-line process and provides input back to it.
+     - environment: Additional environment variables to set for the command-line process.
+     - completion: A closure to call with the output of the command-line process.
      
-     - Returns: A tuple containing stdout and stderr data.
+     - Throws: An error if the command-line process encounters an issue.
+     
+     This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
+     It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    @discardableResult
-    static func command(
-        args: [String],
-        useCache: Bool,
-        identifier: String,
-        input: String? = nil,
-        inputIf: InputIfCondition? = nil,
-        asyncOutput: OutputHandler? = nil,
-        additionalEnvironmentVariables: [String: String]? = nil
-    ) async -> (stdout: Data, stderr: Data) {
+    @available(*, message: "Revamped recently")
+    static func command(arguments args: [String], waits: Bool = true, identifier: String, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput, Process) -> Void) async throws {
+        let task = Process()
+        task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
         
-        struct QueueContainer {
-            let cache: DispatchQueue = DispatchQueue(label: "legendaryCommandCache")
+        let stdin: Pipe = .init()
+        let stderr: Pipe = .init()
+        let stdout: Pipe = .init()
+        
+        task.standardInput = stdin
+        task.standardError = stderr
+        task.standardOutput = stdout
+        
+        task.arguments = args
+        
+        let constructedEnvironment = ["LEGENDARY_CONFIG_PATH": configLocation].merging(environment ?? .init(), uniquingKeysWith: { $1 })
+        let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
+        task.environment = constructedEnvironment
+        
+        task.qualityOfService = .userInitiated
+        
+        let output: CommandOutput = .init()
+        
+        stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
+                print("wanting to go!!!")
+                stdin.fileHandleForWriting.write(data)
+            }
+            output.stderr = availableOutput
+            completion(output, task)
         }
         
-        let queue = QueueContainer()
-        
-        let commandKey = String(describing: args)
-        
-        if useCache, let cachedOutput = queue.cache.sync(execute: { commandCache[commandKey] }), !cachedOutput.stdout.isEmpty && !cachedOutput.stderr.isEmpty {
-            log.debug("Cached, returning.")
-            Task(priority: .background) {
-                await run()
-                log.debug("New cache appended.")
+        stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
+                print("wanting to go!!!")
+                stdin.fileHandleForWriting.write(data)
             }
-            log.debug("Cache returned.")
-            return cachedOutput
-        } else {
-            log.debug("\( useCache ? "Building new cache" : "Cache disabled for this task." )")
-            return await run()
+            output.stdout = availableOutput
+            completion(output, task)
         }
         
-        // MARK: - Run Method
-        @Sendable
-        @discardableResult
-        func run() async -> (stdout: Data, stderr: Data) {
-            let task = Process()
-            task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
-            
-            struct PipeContainer {
-                let stdout = Pipe()
-                let stderr = Pipe()
-                let stdin = Pipe()
-            }
-            
-            actor DataContainer {
-                private var _stdout = Data()
-                private var _stderr = Data()
-                
-                func append(_ data: Data, to stream: Stream) {
-                    switch stream {
-                    case .stdout:
-                        _stdout.append(data)
-                    case .stderr:
-                        _stderr.append(data)
-                    }
-                }
-                
-                var stdout: Data { return _stdout }
-                var stderr: Data { return _stderr }
-            }
-            
-            let pipe = PipeContainer()
-            let data = DataContainer()
-            
-            // initialise legendary and config env
-            task.standardError = pipe.stderr
-            task.standardOutput = pipe.stdout
-            task.standardInput = input != nil ? pipe.stdin : nil
-            
-            task.arguments = args
-            
-            var defaultEnvironmentVariables = ["LEGENDARY_CONFIG_PATH": configLocation]
-            if let additionalEnvironmentVariables = additionalEnvironmentVariables {
-                defaultEnvironmentVariables.merge(additionalEnvironmentVariables) { (_, new) in new }
-            }
-            task.environment = defaultEnvironmentVariables
-            
-            let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
-            task.qualityOfService = .userInitiated
-            
-            log.debug("Executing: \(fullCommand)")
-            
-            // MARK: Asynchronous stdout Appending
-            Task(priority: .utility) {
-                while true {
-                    let availableData = pipe.stdout.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    await data.append(availableData, to: .stdout)
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stdout {
-                        if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
-                            if let inputData = input?.data(using: .utf8) {
-                                pipe.stdin.fileHandleForWriting.write(inputData)
-                                pipe.stdin.fileHandleForWriting.closeFile()
-                            }
-                        }
-                    }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stdout(outputString)
-                    }
-                }
-            }
-            
-            // MARK: Asynchronous stderr Appending
-            Task(priority: .utility) {
-                while true {
-                    let availableData = pipe.stderr.fileHandleForReading.availableData
-                    if availableData.isEmpty { break }
-                    
-                    await data.append(availableData, to: .stderr)
-                    
-                    if let inputIf = inputIf, inputIf.stream == .stderr {
-                        if let availableData = String(data: availableData, encoding: .utf8) {
-                            if availableData.contains(inputIf.string) {
-                                if let inputData = input?.data(using: .utf8) {
-                                    pipe.stdin.fileHandleForWriting.write(inputData)
-                                    pipe.stdin.fileHandleForWriting.closeFile()
-                                }
-                            }
-                        }
-                    }
-                    
-                    if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                        asyncOutput.stderr(outputString)
-                    }
-                }
-            }
-            
-            if let input = input, !input.isEmpty && inputIf == nil {
-                if let inputData = input.data(using: .utf8) {
-                    pipe.stdin.fileHandleForWriting.write(inputData)
-                    pipe.stdin.fileHandleForWriting.closeFile()
-                }
-            }
-            
-            // MARK: Run
-            do {
-                defer { runningCommands.removeValue(forKey: identifier) }
-                runningCommands[identifier] = task // WHY
-                try task.run()
-                
-                task.waitUntilExit()
-            } catch {
-                log.fault("Legendary fault: \(error.localizedDescription)")
-                return (Data(), Data())
-            }
-            
-            // MARK: - Output (stderr/out) Handler
-            let output: (stdout: Data, stderr: Data) = await (data.stdout, data.stderr)
-            
-            if let stderrString = String(data: output.stderr, encoding: .utf8), !stderrString.isEmpty {
-                switch true {
-                case stderrString.contains("DEBUG:"):
-                    log.debug("\(stderrString)")
-                case stderrString.contains("INFO:"):
-                    log.info("\(stderrString)")
-                case stderrString.contains("WARN:"):
-                    log.warning("\(stderrString)")
-                case stderrString.contains("ERROR:"):
-                    log.error("\(stderrString)")
-                case stderrString.contains("CRITICAL:"):
-                    log.critical("\(stderrString)")
-                default:
-                    log.log("\(stderrString)")
-                }
-            } else {
-                log.warning("empty stderr recieved from [\(commandKey)]")
-            }
-            
-            if let stdoutString = String(data: output.stdout, encoding: .utf8) {
-                if !stdoutString.isEmpty {
-                    log.debug("\(stdoutString)")
-                }
-            } else {
-                log.warning("empty stdout recieved from [\(commandKey)]")
-            }
-            
-            queue.cache.sync { commandCache[commandKey] = output }
-            
-            return output
+        task.terminationHandler = { [stdin] _ in
+            runningCommands.removeValue(forKey: identifier)
+            try? stdin.fileHandleForWriting.close()
         }
+        
+        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInteractive).async {
+                do {
+                    try task.run()
+                    continuation.resume(returning: ())
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+        
+        runningCommands[identifier] = task
+        
+        if waits { task.waitUntilExit() }
     }
     
     // MARK: - Stop Command Method
@@ -285,13 +164,13 @@ class Legendary {
      Installs, updates, or repairs games using legendary.
      
      - Parameters:
-     - game: The game's `app_name`. (referred to as id)
-     - platform: The game's platform.
-     - type: The nature of the game modification.
-     - optionalPacks: Optional packs to install along with the base game.
-     - baseURL: A custom ``URL`` for the game to install to.
-     - gameFolder: The folder where the game should be installed.
-     - priority: Whether the game should interrupt the currently queued game installation.
+      - game: The game's `app_name`. (referred to as id)
+      - platform: The game's platform.
+      - type: The nature of the game modification.
+      - optionalPacks: Optional packs to install along with the base game.
+      - baseURL: A custom ``URL`` for the game to install to.
+      - gameFolder: The folder where the game should be installed.
+      - priority: Whether the game should interrupt the currently queued game installation.
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
@@ -326,9 +205,7 @@ class Legendary {
         
         // TODO: data lock handling
         
-        let variables: VariableManager = .shared
         let operation: GameOperation = .shared
-        var errorThrownExternally: Error?
         
         var argBuilder = [
             "-y",
@@ -356,8 +233,6 @@ class Legendary {
             }
         }
         
-        var verificationStatus: [String: Double] = .init()
-        
         // swiftlint:disable force_try
         let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
         let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
@@ -366,121 +241,69 @@ class Legendary {
         let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
         // swiftlint:enable force_try
         
-        await command(
-            args: argBuilder,
-            useCache: false,
-            identifier: "install",
-            input: "\(Array(args.optionalPacks ?? .init()).joined(separator: ", "))" + "\n",
-            inputIf: .init(
-                stream: .stdout,
-                string: "Additional packs [Enter to confirm]:"
-            ),
-            asyncOutput: .init(
-                stdout: { output in
-                    output.enumerateLines { line, _ in
-                        if line.contains("Failure:") {
-                            /*
-                             FIXME: Example output of error
-                             Installation requirements check returned the following results:
-                             - Warning: This game requires an ownership verification token and likely uses Denuvo DRM.
-                             ! Failure: Not enough available disk space! 12.05 GiB < 12.55 GiB
-                             */
-                            errorThrownExternally = InstallationError(message: String(line.trimmingPrefix(" ! Failure: ")))
-                        } else if line.contains("Verification progress:") {
-                            variables.setVariable("verifying", value: args.game) // FIXME: may cause lag when verifying due to rapid, repeated updating
-                            if let regex = try? NSRegularExpression(pattern: #"Verification progress: (\d+)/(\d+) \((\d+\.\d+)%\) \[(\d+\.\d+) MiB/s\]"#),
-                               let match = regex.firstMatch(in: line, options: [], range: NSRange(location: 0, length: line.count)) {
-                                verificationStatus["verifiedFiles"] = Double((line as NSString).substring(with: match.range(at: 1)))
-                                verificationStatus["totalFiles"] = Double((line as NSString).substring(with: match.range(at: 2)))
-                                verificationStatus["percentage"] = Double((line as NSString).substring(with: match.range(at: 3))) // %
-                                verificationStatus["speed"] = Double((line as NSString).substring(with: match.range(at: 4))) // MiB/s
-                                
-                                if verificationStatus["percentage"] == 100 {
-                                    verificationStatus.removeAll()
-                                    variables.removeVariable("verifying")
-                                }
-                                
-                                variables.setVariable("verificationStatus", value: verificationStatus)
-                            }
-                        }
-                    }
-                },
-                stderr: { output in
-                    output.enumerateLines { line, _ in
-                        guard line.contains("[DLManager] INFO:") else { return }
-                        
-                        if line.contains("All done! Download manager quitting...") {
-                            operation.current = nil
-                        }
-                        
-                        // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
-                        if let match = try? progressRegex.firstMatch(in: line) {
-                            DispatchQueue.main.async {
-                                operation.status.progress = GameOperation.InstallStatus.Progress(
-                                    percentage: Double(match["percentage"]?.value as? Substring ?? "") ?? 0.0,
-                                    downloadedObjects: Int(match["downloadedObjects"]?.value as? Substring ?? "") ?? 0,
-                                    totalObjects: Int(match["totalObjects"]?.value as? Substring ?? "") ?? 0,
-                                    runtime: String(match["runtime"]?.value as? Substring ?? "00:00:00"),
-                                    eta: String(match["eta"]?.value as? Substring ?? "00:00:00")
-                                )
-                            }
-                        } else if let match = try? downloadRegex.firstMatch(in: line) {
-                            DispatchQueue.main.async {
-                                operation.status.download = GameOperation.InstallStatus.Download(
-                                    downloaded: Double(match["downloaded"]?.value as? Substring ?? "") ?? 0.0,
-                                    written: Double(match["written"]?.value as? Substring ?? "") ?? 0.0
-                                )
-                            }
-                        } else if let match = try? cacheRegex.firstMatch(in: line) {
-                            DispatchQueue.main.async {
-                                operation.status.cache = GameOperation.InstallStatus.Cache(
-                                    usage: Double(match["usage"]?.value as? Substring ?? "") ?? 0.0,
-                                    activeTasks: Int(match["activeTasks"]?.value as? Substring ?? "") ?? 0
-                                )
-                            }
-                        } else if let match = try? downloadSpeedRegex.firstMatch(in: line) {
-                            DispatchQueue.main.async {
-                                operation.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
-                                    raw: Double(match["raw"]?.value as? Substring ?? "") ?? 0.0,
-                                    decompressed: Double(match["decompressed"]?.value as? Substring ?? "") ?? 0.0
-                                )
-                            }
-                        } else if let match = try? diskSpeedRegex.firstMatch(in: line) {
-                            DispatchQueue.main.async {
-                                operation.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
-                                    write: Double(match["write"]?.value as? Substring ?? "") ?? 0.0,
-                                    read: Double(match["read"]?.value as? Substring ?? "") ?? 0.0
-                                )
-                            }
-                        }
-                        
-                        GameOperation.log.debug("""
-                            \n-- INSTALLATION --\n
-                            operation.current?.status is being updated with: \(String(describing: operation.status)).
-                            operation.current?.args is currently reading: \(String(describing: operation.current)).
-                            operation.current?.args is \(operation.current?.game == args.game ? .init() : "not ")the same as the current installation's args.
-                            the download queue currently reads: \(operation.queue)
-                            """)
-                    }
+        try await command(arguments: argBuilder, identifier: "install") { output, _ in
+            // MARK: stderr (installation) handling
+            // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
+            
+            guard !output.stdout.contains("All done! Download manager quitting...") else {
+                operation.current = nil; return
+            }
+            
+            if let match = try? progressRegex.firstMatch(in: output.stderr) {
+                DispatchQueue.main.async {
+                    operation.status.progress = GameOperation.InstallStatus.Progress(
+                        percentage: Double(match["percentage"]?.substring ?? "") ?? 0.0,
+                        downloadedObjects: Int(match["downloadedObjects"]?.substring ?? "") ?? 0,
+                        totalObjects: Int(match["totalObjects"]?.substring ?? "") ?? 0,
+                        runtime: String(match["runtime"]?.substring ?? "00:00:00"),
+                        eta: String(match["eta"]?.substring ?? "00:00:00")
+                    )
                 }
-            )
-        )
-        
-        // This exists because throwing an error inside of an OutputHandler isn't possible directly.
-        // Throwing an error directly to install() is preferable
-        // FIXME: withCheckedThrowingContinuation may fix this problem
-        if let error = errorThrownExternally { throw error }
+            }
+            if let match = try? downloadRegex.firstMatch(in: output.stderr) {
+                DispatchQueue.main.async {
+                    operation.status.download = GameOperation.InstallStatus.Download(
+                        downloaded: Double(match["downloaded"]?.substring ?? "") ?? 0.0,
+                        written: Double(match["written"]?.substring ?? "") ?? 0.0
+                    )
+                }
+            }
+            if let match = try? cacheRegex.firstMatch(in: output.stderr) {
+                DispatchQueue.main.async {
+                    operation.status.cache = GameOperation.InstallStatus.Cache(
+                        usage: Double(match["usage"]?.substring ?? "") ?? 0.0,
+                        activeTasks: Int(match["activeTasks"]?.substring ?? "") ?? 0
+                    )
+                }
+            }
+            if let match = try? downloadSpeedRegex.firstMatch(in: output.stderr) {
+                DispatchQueue.main.async {
+                    operation.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                        raw: Double(match["raw"]?.substring ?? "") ?? 0.0,
+                        decompressed: Double(match["decompressed"]?.substring ?? "") ?? 0.0
+                    )
+                }
+            }
+            if let match = try? diskSpeedRegex.firstMatch(in: output.stderr) {
+                DispatchQueue.main.async {
+                    operation.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
+                        write: Double(match["write"]?.substring ?? "") ?? 0.0,
+                        read: Double(match["read"]?.substring ?? "") ?? 0.0
+                    )
+                }
+            }
+        }
     }
     
     static func move(game: Mythic.Game, newPath: String) async throws {
         if let oldPath = try getGamePath(game: game) {
             guard files.isWritableFile(atPath: oldPath) else { throw FileLocations.FileNotModifiableError(.init(filePath: oldPath)) }
             try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
-            await command(
-                args: ["move", game.id, newPath, "--skip-move"],
-                useCache: false,
-                identifier: "moveGame"
-            )
+            
+            try await command(
+                arguments: ["move", game.id, newPath, "--skip-move"],
+                identifier: "move"
+            ) { _, _  in }
             
             try await notifications.add(
                 .init(identifier: UUID().uuidString,
@@ -496,18 +319,23 @@ class Legendary {
         }
     }
     
-    static func signIn(authKey: String) async -> Bool {
-        let command = await Legendary.command(
-            args: ["auth", "--code", authKey],
-            useCache: false,
-            identifier: "signIn"
-        )
-        
-        if let stderr = String(data: command.stderr, encoding: .utf8) {
-            return stderr.contains("Successfully logged in as")
+    static func signIn(authKey: String) async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            Task.sync {
+                do {
+                    try await command(
+                        arguments: ["auth", "--code", authKey],
+                        identifier: "signin"
+                    ) { output, _ in
+                        continuation.resume(returning: output.stderr.contains("Successfully logged in as"))
+                    }
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            continuation.resume(returning: false)
         }
-        
-        return false
     }
     
     /**
@@ -532,7 +360,7 @@ class Legendary {
         
         defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
         
-        var args = [
+        var arguments = [
             "launch",
             game.id,
             needsUpdate(game: game) ? "--skip-version-check" : nil,
@@ -542,12 +370,12 @@ class Legendary {
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
         
         if game.platform == .windows {
-            args += ["--wine", Libraries.directory.appending(path: "Wine/bin/wine64").path]
+            arguments += ["--wine", Libraries.directory.appending(path: "Wine/bin/wine64").path]
             environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
         
-        await command(args: args, useCache: false, identifier: "launch_\(game.id)", additionalEnvironmentVariables: environmentVariables)
+        try await command(arguments: arguments, identifier: "launch\(game.id)") { _, _  in }
         
         DispatchQueue.main.async {
             GameOperation.shared.launching = nil
@@ -767,14 +595,13 @@ class Legendary {
         
         let metadata = "\(configLocation)/metadata"
         
-        if let metadataContents = try? files.contentsOfDirectory(atPath: metadata),
-           !metadataContents.isEmpty {
+        if let metadataContents = try? files.contentsOfDirectory(atPath: metadata), !metadataContents.isEmpty {
             Task(priority: .background) {
-                await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _, _  in }
             }
         } else {
             Task.sync(priority: .high) { // called during onboarding for speed
-                await command(args: ["status"], useCache: false, identifier: "refreshMetadata")
+                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _, _  in }
             }
         }
         
@@ -843,55 +670,6 @@ class Legendary {
         return imageURL
     }
     
-    // MARK: - Get Images Method
-    /**
-     Get game images with "DieselGameBox" metadata.
-     
-     - Parameter imageType: The type of images to retrieve (normal or tall).
-     - Throws: A ``NotSignedInError``.
-     - Returns: A `Dictionary` with app names as keys and image URLs as values.
-     */
-    @available(*, deprecated, message: "Deprecated by `getImage`")
-    static func getImages(imageType: ImageType) async throws -> [String: String] {
-        guard signedIn() else { throw NotSignedInError() }
-        
-        guard let json = try? await JSON(data: command(
-            args: [
-                "list",
-                "--platform",
-                "Windows",
-                "--third-party",
-                "--json"
-            ],
-            useCache: true,
-            identifier: "getImages"
-        ).stdout) else {
-            return .init()
-        }
-        
-        var urls: [String: String] = .init()
-        
-        for game in json {
-            let id = String(describing: game.1["app_name"])
-            if let keyImages = game.1["metadata"]["keyImages"].array {
-                var image: [JSON] = .init()
-                
-                switch imageType {
-                case .normal:
-                    image = keyImages.filter { $0["type"].string == "DieselGameBox" }
-                case .tall:
-                    image = keyImages.filter { $0["type"].string == "DieselGameBoxTall" }
-                }
-                
-                if let imageURL = image.first?["url"].string {
-                    urls[id] = imageURL
-                }
-            }
-        }
-        
-        return urls
-    }
-    
     // MARK: - Is Alias Method
     /**
      Checks if an alias of a game exists.
@@ -919,54 +697,5 @@ class Legendary {
         }
         
         return (nil, of: nil)
-    }
-    
-    // MARK: - Deprecated Methods
-    /**
-     Retrieve the game's app\_name from the game's title.
-     
-     - Parameter appTitle: The title of the game.
-     - Returns: The app name of the game.
-     */
-    @available(*, deprecated, message: "Made redundant by Game")
-    static func getAppNameFromTitle(appTitle: String) async -> String? { // TODO: full removal before launch
-        guard signedIn() else { return String() }
-        let json = try? await JSON(data: command(args: ["info", appTitle, "--json"], useCache: true, identifier: "getAppNameFromTitle").stdout)
-        return json?["game"]["app_name"].stringValue
-    }
-    
-    /**
-     Retrieve the game's title from the game's app\_name.
-     
-     - Parameter id: The app name of the game.
-     - Returns: The title of the game.
-     */
-    @available(*, deprecated, message: "Made redundant by Game")
-    static func getTitleFromAppName(id: String) async -> String? { // TODO: full removal before launch
-        guard signedIn() else { return String() }
-        let json = try? await JSON(data: command(args: ["info", id, "--json"], useCache: true, identifier: "getTitleFromAppName").stdout)
-        return json?["game"]["title"].stringValue
-    }
-    
-    // MARK: - Extract App Names and Titles Method
-    /**
-     Well, what do you think it does?
-     */
-    private static func extractAppNamesAndTitles(from json: JSON?) -> [Mythic.Game] {
-        var games: [Mythic.Game] = .init()
-        
-        if let json = json {
-            for game in json {
-                games.append(
-                    Mythic.Game(
-                        type: .epic,
-                        title: game.1["app_title"].string ?? .init(),
-                        id: game.1["app_name"].string ?? .init()
-                    )
-                )
-            }
-        }
-        
-        return games
     }
 }

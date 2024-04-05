@@ -20,6 +20,8 @@ import SwordRPC
 struct SupportView: View {
     // TODO: https://arc.net/l/quote/icczlrwf
     @State private var game: Game = .init(type: .local, title: "default title")
+    @ObservedObject var operation: GameOperation = .shared
+    @State private var optionalPacks: [String: String] = .init()
     
     var body: some View {
         HStack {

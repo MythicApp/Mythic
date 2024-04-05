@@ -14,13 +14,11 @@
 
 import SwiftUI
 import Sparkle
+import UserNotifications // TODO: TODO
 
 // MARK: - Where it all begins!
 @main
 struct MythicApp: App {
-    // MARK: - App Delegate
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     // MARK: - State Properties
     @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
     @State var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
@@ -37,7 +35,7 @@ struct MythicApp: App {
     }
     
     // MARK: - Updater Controller
-    let updaterController: SPUStandardUpdaterController
+    private let updaterController: SPUStandardUpdaterController
     
     // MARK: - Initialization
     init() {
@@ -47,6 +45,17 @@ struct MythicApp: App {
             userDriverDelegate: nil
         )
     }
+    
+    func toggleTitleBar(_ value: Bool) {
+        if let window = NSApp.mainWindow {
+            window.titlebarAppearsTransparent = !value
+            window.titleVisibility = value ? .visible : .hidden
+            window.isMovableByWindowBackground = !value
+            window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
+            window.standardWindowButton(.zoomButton)?.isHidden = !value
+        }
+    }
+    
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
@@ -54,10 +63,11 @@ struct MythicApp: App {
                 OnboardingEvo(fromChapter: onboardingChapter)
                     .transition(.opacity)
                     .frame(minWidth: 750, minHeight: 390)
-                    .task(priority: .high) {
+                    .onAppear {
                         toggleTitleBar(false)
                         
-                        if let window = NSApp.windows.first {
+                        // Bring to front
+                        if let window = NSApp.mainWindow {
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
                         }
@@ -67,7 +77,7 @@ struct MythicApp: App {
                     .transition(.opacity)
                     .environmentObject(networkMonitor)
                     .frame(minWidth: 750, minHeight: 390)
-                    .task(priority: .high) { toggleTitleBar(true) }
+                    .onAppear { toggleTitleBar(true) }
                     .task(priority: .medium) {
                         if let latestVersion = Libraries.fetchLatestVersion(),
                            let currentVersion = Libraries.getVersion(),
@@ -92,10 +102,8 @@ struct MythicApp: App {
                 // Reference: https://arc.net/l/quote/cflghpbh
                     .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
                         if newValue == false {
-                            /*
                             activeAlert = .offlineAlert
                             isAlertPresented = true
-                             */
                         }
                     }
                 
@@ -108,7 +116,7 @@ struct MythicApp: App {
                                 primaryButton: .default(Text("Update")), // TODO: download over previous engine
                                 secondaryButton: .cancel(Text("Later"))
                             )
-                        case .bootError: // TODO: replace with onboarding-style error
+                        case .bootError:
                             Alert(
                                 title: Text("Unable to boot default bottle."),
                                 message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),

@@ -77,33 +77,27 @@ struct UninstallViewEvo: View {
                             case .epic:
                                 Task(priority: .userInitiated) {
                                     uninstalling = true
-                                    
-                                    let output = await Legendary.command(
-                                        args: [
+                                    do {
+                                        try await Legendary.command(arguments: [
                                             "-y", "uninstall",
                                             keepFiles ? "--keep-files" : nil,
                                             skipUninstaller ? "--skip-uninstaller" : nil,
                                             game.id
-                                        ] .compactMap { $0 },
-                                        useCache: false,
-                                        identifier: "uninstall"
-                                    )
-                                    
-                                    if let stderrString = String(data: output.stderr, encoding: .utf8),
-                                       // swiftlint:disable:next force_try
-                                       let errorLine = stderrString.split(separator: "\n").first(where: { $0.contains("ERROR:") })?.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)) {
-                                        // Dirtyfix for OSError(66, 'Directory not empty') and other legendary game deletion failures
-                                        guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
-                                            if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
-                                            return
+                                        ] .compactMap { $0 }, identifier: "uninstall") { output, _ in
+                                            guard output.stderr.contains("ERROR:") else { return }
+                                            let errorLine = output.stderr.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
+                                            // swiftlint:disable:previous force_try
+                                            guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
+                                                if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
+                                                return
+                                            }
+                                            
+                                            uninstallationErrorReason = String(errorLine)
+                                            isUninstallationErrorPresented = true
                                         }
-                                        
-                                        guard let path = game.path, files.fileExists(atPath: path) else { return }
-                                        
-                                        uninstallationErrorReason = errorLine.replacingOccurrences(of: "ERROR: ", with: "")
+                                    } catch {
+                                        uninstallationErrorReason = error.localizedDescription
                                         isUninstallationErrorPresented = true
-                                    } else {
-                                        isPresented = false
                                     }
                                     
                                     uninstalling = false

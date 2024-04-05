@@ -65,6 +65,11 @@ extension Legendary {
         let stderr: (String) -> Void
     }
     
+    class CommandOutput {
+        var stdout: String = .init()
+        var stderr: String = .init()
+    }
+    
     /// Represents a condition to be checked for in the output streams before input is appended.
     struct InputIfCondition {
         /// The stream to be checked (stdout or stderr).

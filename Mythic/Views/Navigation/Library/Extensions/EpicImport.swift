@@ -152,58 +152,38 @@ extension LibraryView.GameImportView {
                     isProgressViewSheetPresented = true
                     
                     Task(priority: .userInitiated) {
-                        var command: (stdout: Data, stderr: Data)?
-                        
-                        if !game.id.isEmpty && !game.title.isEmpty {
-                            command = await Legendary.command(
-                                args: [
-                                    "import",
-                                    checkIntegrity ? nil : "--disable-check",
-                                    withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                    "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
-                                    game.id,
-                                    path
-                                ] .compactMap { $0 },
-                                useCache: false,
-                                identifier: "gameImport"
-                            )
-                        }
-                        
-                        if command != nil {
-                            if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
-                                if !commandStderrString.isEmpty {
-                                    if !game.id.isEmpty && !game.title.isEmpty {
-                                        if commandStderrString.contains("INFO: Game \"\(game.title)\" has been imported.") {
-                                            isPresented = false
-                                            isGameListRefreshCalled = true
-                                        }
-                                    }
-                                }
-                                
-                                for line in commandStderrString.components(separatedBy: "\n") {
-                                    if line.contains("ERROR:") {
-                                        if let range = line.range(of: "ERROR: ") {
-                                            let substring = line[range.upperBound...]
-                                            errorContent = substring
-                                            isProgressViewSheetPresented = false
-                                            isErrorPresented = true
-                                            break // first err
-                                        }
-                                    }
-                                    
-                                    // legendary/cli.py line 1372 as of hash 4507842
-                                    if line.contains(
-                                        "Some files are missing from the game installation, install may not"
-                                        + " match latest Epic Games Store version or might be corrupted."
-                                    ) {
-                                        // TODO: implement
-                                    }
-                                }
+                        try? await Legendary.command(arguments: [
+                            "import",
+                            checkIntegrity ? nil : "--disable-check",
+                            withDLCs ? "--with-dlcs" : "--skip-dlcs",
+                            "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
+                            game.id,
+                            path
+                        ] .compactMap { $0 }, identifier: "epicImport") { output, _ in
+                            if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
+                                isPresented = false
+                                isGameListRefreshCalled = true
+                            }
+                            
+                            let commandError = output.stderr.trimmingPrefix("ERROR: ")
+                            if !commandError.isEmpty {
+                                errorContent = commandError
+                                isProgressViewSheetPresented = false
+                                isErrorPresented = true
+                            }
+                            
+                            // legendary/cli.py line 1372 as of hash 4507842
+                            if output.stderr.contains(
+                                "Some files are missing from the game installation, install may not"
+                                + " match latest Epic Games Store version or might be corrupted."
+                            ) {
+                                // TODO: implement
                             }
                         }
                     }
                 }
                 .disabled(path.isEmpty)
+                .disabled(game.title.isEmpty)
                 .disabled(supportedPlatforms == nil)
                 .buttonStyle(.borderedProminent)
             }

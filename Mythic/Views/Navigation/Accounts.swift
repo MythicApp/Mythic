@@ -63,11 +63,7 @@ struct AccountsView: View {
                         message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
                         primaryButton: .destructive(.init("Sign Out")) {
                             Task.sync(priority: .high) {
-                                await Legendary.command(
-                                    args: ["auth", "--delete"],
-                                    useCache: false,
-                                    identifier: "userAreaSignOut"
-                                )
+                                try? await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _, _  in }
                             }
                             
                             signedIn = Legendary.signedIn()

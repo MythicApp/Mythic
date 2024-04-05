@@ -36,11 +36,9 @@ extension LibraryView {
         // MARK: - Body
         var body: some View {
             VStack {
-                Text("Import a Game")
+                Text("Import")
                     .font(.title)
                     .multilineTextAlignment(.leading)
-                
-                Divider()
                 
                 Picker(String(), selection: $type) {
                     ForEach(Swift.type(of: type).allCases, id: \.self) {
@@ -64,7 +62,7 @@ extension LibraryView {
                         isPresented: $isPresented,
                         isGameListRefreshCalled: $isGameListRefreshCalled
                     )
-                    .scaledToFit()
+                    .scaledToFit() // FIXME: dirtyfix for clipping
                 }
             }
             
