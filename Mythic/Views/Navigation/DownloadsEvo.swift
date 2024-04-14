@@ -46,7 +46,7 @@ struct DownloadCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.windowBackground)
             .frame(maxHeight: 120)
             .opacity({
                 switch style {
@@ -64,7 +64,7 @@ struct DownloadCard: View {
                             switch style {
                             case .normal:
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.windowBackground)
+                                    .fill(.background)
                                     .shimmering(
                                         animation: .easeInOut(duration: 1)
                                             .repeatForever(autoreverses: false),

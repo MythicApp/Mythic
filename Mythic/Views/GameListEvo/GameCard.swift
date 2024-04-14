@@ -34,7 +34,7 @@ struct GameCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.windowBackground)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay { // MARK: Image
                 CachedAsyncImage(url: game.imageURL) { phase in
