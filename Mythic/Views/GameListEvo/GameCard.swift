@@ -34,7 +34,7 @@ struct GameCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.windowBackground)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay { // MARK: Image
                 CachedAsyncImage(url: game.imageURL) { phase in
@@ -54,7 +54,7 @@ struct GameCard: View {
                                 .modifier(FadeInModifier())
                         } else {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(.background)
+                                .fill(.windowBackground)
                                 .shimmering(
                                     animation: .easeInOut(duration: 1)
                                         .repeatForever(autoreverses: false),
@@ -77,10 +77,10 @@ struct GameCard: View {
                     case .failure:
                         // fallthrough
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
+                            .fill(.windowBackground)
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
+                            .fill(.windowBackground)
                     }
                 }
                 .overlay(alignment: .bottom) {
