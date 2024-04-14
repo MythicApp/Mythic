@@ -46,7 +46,7 @@ struct DownloadCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.windowBackground)
+            .fill(.background)
             .frame(maxHeight: 120)
             .opacity({
                 switch style {
@@ -64,7 +64,7 @@ struct DownloadCard: View {
                             switch style {
                             case .normal:
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.background)
+                                    .fill(.windowBackground)
                                     .shimmering(
                                         animation: .easeInOut(duration: 1)
                                             .repeatForever(autoreverses: false),
@@ -72,7 +72,7 @@ struct DownloadCard: View {
                                     )
                             case .prominent:
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.background)
+                                    .fill(.windowBackground)
                                     .shimmering(
                                         animation: .easeInOut(duration: 1)
                                             .repeatForever(autoreverses: false),
@@ -96,13 +96,13 @@ struct DownloadCard: View {
                         case .failure:
                             // fallthrough
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(.background)
+                                .fill(.windowBackground)
                                 .overlay {
                                     Image(systemName: "exclamationmark.triangle.fill")
                                 }
                         @unknown default:
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(.background)
+                                .fill(.windowBackground)
                                 .overlay {
                                     Image(systemName: "questionmark.circle.fill")
                                 }

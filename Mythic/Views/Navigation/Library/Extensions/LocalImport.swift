@@ -47,7 +47,7 @@ extension LibraryView.GameImportView {
                 HStack {
                     if game.imageURL != nil {
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                             .aspectRatio(3/4, contentMode: .fit)
                             .overlay { // MARK: Image
                                 CachedAsyncImage(url: game.imageURL) { phase in
@@ -67,7 +67,7 @@ extension LibraryView.GameImportView {
                                                 .modifier(FadeInModifier())
                                         } else {
                                             RoundedRectangle(cornerRadius: 20)
-                                                .fill(.background)
+                                                .fill(.windowBackground)
                                                 .shimmering(
                                                     animation: .easeInOut(duration: 1)
                                                         .repeatForever(autoreverses: false),
@@ -88,10 +88,10 @@ extension LibraryView.GameImportView {
                                             .modifier(FadeInModifier())
                                     case .failure:
                                         RoundedRectangle(cornerRadius: 20)
-                                            .fill(.background)
+                                            .fill(.windowBackground)
                                     @unknown default:
                                         RoundedRectangle(cornerRadius: 20)
-                                            .fill(.background)
+                                            .fill(.windowBackground)
                                     }
                                 }
                             }
