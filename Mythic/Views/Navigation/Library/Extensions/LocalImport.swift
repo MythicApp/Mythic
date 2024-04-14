@@ -67,7 +67,7 @@ extension LibraryView.GameImportView {
                                                 .modifier(FadeInModifier())
                                         } else {
                                             RoundedRectangle(cornerRadius: 20)
-                                                .fill(.background)
+                                                .fill(.windowBackground)
                                                 .shimmering(
                                                     animation: .easeInOut(duration: 1)
                                                         .repeatForever(autoreverses: false),
