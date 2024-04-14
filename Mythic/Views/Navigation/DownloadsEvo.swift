@@ -163,9 +163,11 @@ struct DownloadCard: View {
                             }
                             .foregroundStyle(.white)
                             
-                            InstallationProgressView(withPercentage: false)
+                            if operation.current?.game == game {
+                                InstallationProgressView(withPercentage: false)
+                            }
                         }
-                        .padding(.leading)
+                        .padding(.horizontal)
                     }
                 }
             }
