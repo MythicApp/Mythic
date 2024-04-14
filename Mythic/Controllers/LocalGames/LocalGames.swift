@@ -85,14 +85,14 @@ class LocalGames {
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             try await Wine.command(
-                args: [game.path!],
+                arguments: [game.path!],
                 identifier: "launch_\(game.title)",
-                bottleURL: bottle.url, // TODO: whichever prefix is set for it or as default
-                additionalEnvironmentVariables: [
+                bottleURL: bottle.url,
+                environment: [
                     "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
                     "WINEMSYNC": bottle.settings.msync ? "1" : "0"
                 ]
-            )
+            ) { _, _/* task */  in } // TODO: pass task over through launch
             
         case .none: do { /* TODO: Error */ }
         }

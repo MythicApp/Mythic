@@ -12,7 +12,7 @@ class Rosetta {
     
     struct AgreementFailure: LocalizedError {
         var errorDescription: String? = """
-        You failed to agree to the software license agreement. Rosetta 2 cannot be installed.
+        Rosetta 2 cannot be installed, you failed to agree to the software license agreement.
         A list of Apple SLAs may be found here: https://www.apple.com/legal/sla/
         """
     }

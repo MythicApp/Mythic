@@ -63,12 +63,12 @@ class Legendary {
      Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
      
      - Parameters:
-     - args: The arguments to pass to the command-line process.
-     - waits: Indicates whether the function should wait for the command-line process to complete before returning.
-     - identifier: A unique identifier for the command-line process.
-     - input: A closure that processes the output of the command-line process and provides input back to it.
-     - environment: Additional environment variables to set for the command-line process.
-     - completion: A closure to call with the output of the command-line process.
+      - args: The arguments to pass to the command-line process.
+      - waits: Indicates whether the function should wait for the command-line process to complete before returning.
+      - identifier: A unique identifier for the command-line process.
+      - input: A closure that processes the output of the command-line process and provides input back to it.
+      - environment: Additional environment variables to set for the command-line process.
+      - completion: A closure to call with the output of the command-line process.
      
      - Throws: An error if the command-line process encounters an issue.
      
@@ -76,7 +76,7 @@ class Legendary {
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
     @available(*, message: "Revamped recently")
-    static func command(arguments args: [String], waits: Bool = true, identifier: String, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput, Process) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput, Process) -> Void) async throws {
         let task = Process()
         task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
         

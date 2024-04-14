@@ -135,174 +135,86 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      
      - Returns: A tuple containing stdout and stderr data.
      */
-    @discardableResult
-    static func command(
-        args: [String],
-        identifier: String,
-        bottleURL: URL,
-        input: String? = nil,
-        inputIf: InputIfCondition? = nil,
-        asyncOutput: OutputHandler? = nil,
-        additionalEnvironmentVariables: [String: String]? = nil
-    ) async throws -> (stdout: Data, stderr: Data) {
-        
-        guard Libraries.isInstalled() else {
-            log.error(
-                """
-                Unable to execute wine command, Mythic Engine is not installed!
-                If you see this error, it needs to be handled by the script that invokes it.
-                Contact blackxfiied on Discord or open an issue on GitHub.
-                """
-            )
-            throw Libraries.NotInstalledError()
-        }
-        
-        guard files.fileExists(atPath: bottleURL.path) else {
-            log.error("Unable to execute wine command, prefix does not exist.")
-            throw FileLocations.FileDoesNotExistError(bottleURL)
-        }
-        
-        guard files.isWritableFile(atPath: bottleURL.path) else {
-            log.error("Unable to execute wine command, prefix directory is not writable.")
-            throw FileLocations.FileNotModifiableError(bottleURL)
-        }
-        
-        let commandKey = String(describing: args)
-        
+    /**
+     Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
+     
+     - Parameters:
+      - args: The arguments to pass to the command-line process.
+      - waits: Indicates whether the function should wait for the command-line process to complete before returning.
+      - identifier: A unique identifier for the command-line process.
+      - input: A closure that processes the output of the command-line process and provides input back to it.
+      - environment: Additional environment variables to set for the command-line process.
+      - completion: A closure to call with the output of the command-line process.
+     
+     - Throws: An error if the command-line process encounters an issue.
+     
+     This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
+     It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
+     */
+    @available(*, message: "Revamped recently")
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput, Process) -> Void) async throws {
         let task = Process()
         task.executableURL = Libraries.directory.appending(path: "Wine/bin/wine64")
         
-        struct PipeContainer {
-            let stdout = Pipe()
-            let stderr = Pipe()
-            let stdin = Pipe()
-        }
+        let stdin: Pipe = .init()
+        let stderr: Pipe = .init()
+        let stdout: Pipe = .init()
         
-        actor DataContainer {
-            private var _stdout = Data()
-            private var _stderr = Data()
-            
-            func append(_ data: Data, to stream: Stream) {
-                switch stream {
-                case .stdout:
-                    _stdout.append(data)
-                case .stderr:
-                    _stderr.append(data)
-                }
-            }
-            
-            var stdout: Data { return _stdout }
-            var stderr: Data { return _stderr }
-        }
-        
-        let pipe = PipeContainer()
-        let data = DataContainer()
-        
-        task.standardError = pipe.stderr
-        task.standardOutput = pipe.stdout
-        task.standardInput = input != nil ? pipe.stdin : nil
+        task.standardInput = stdin
+        task.standardError = stderr
+        task.standardOutput = stdout
         
         task.arguments = args
         
-        var defaultEnvironmentVariables: [String: String] = bottleURL.path.isEmpty ? .init() : ["WINEPREFIX": bottleURL.path]
-        if let additionalEnvironmentVariables = additionalEnvironmentVariables {
-            defaultEnvironmentVariables.merge(additionalEnvironmentVariables) { (_, new) in new }
-        }
-        task.environment = defaultEnvironmentVariables
+        let constructedEnvironment = ["WINEPREFIX": bottleURL.path].merging(environment ?? .init(), uniquingKeysWith: { $1 })
+        let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
+        task.environment = constructedEnvironment
         
-        let fullCommand = "\((defaultEnvironmentVariables.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
         task.qualityOfService = .userInitiated
         
-        log.debug("Executing: \(fullCommand)")
+        let output: Legendary.CommandOutput = .init()
         
-        // MARK: Asynchronous stdout Appending
-        Task(priority: .utility) {
-            while true {
-                let availableData = pipe.stdout.fileHandleForReading.availableData
-                if availableData.isEmpty { break }
-                
-                await data.append(availableData, to: .stdout)
-                
-                if let inputIf = inputIf, inputIf.stream == .stdout {
-                    if let availableData = String(data: availableData, encoding: .utf8), availableData.contains(inputIf.string) {
-                        if let inputData = input?.data(using: .utf8) {
-                            pipe.stdin.fileHandleForWriting.write(inputData)
-                            pipe.stdin.fileHandleForWriting.closeFile()
-                        }
-                    }
-                }
-                
-                if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                    asyncOutput.stdout(outputString)
-                }
+        stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
+                print("wanting to go!!!")
+                stdin.fileHandleForWriting.write(data)
             }
+            output.stderr = availableOutput
+            completion(output, task)
         }
         
-        // MARK: Asynchronous stderr Appending
-        Task(priority: .utility) {
-            while true {
-                let availableData = pipe.stderr.fileHandleForReading.availableData
-                if availableData.isEmpty { break }
-                
-                await data.append(availableData, to: .stderr)
-                
-                if let inputIf = inputIf, inputIf.stream == .stderr {
-                    if let availableData = String(data: availableData, encoding: .utf8) {
-                        if availableData.contains(inputIf.string) {
-                            if let inputData = input?.data(using: .utf8) {
-                                pipe.stdin.fileHandleForWriting.write(inputData)
-                                pipe.stdin.fileHandleForWriting.closeFile()
-                            }
-                        }
-                    }
-                }
-                
-                if let asyncOutput = asyncOutput, let outputString = String(data: availableData, encoding: .utf8) {
-                    asyncOutput.stderr(outputString)
+        stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
+                print("wanting to go!!!")
+                stdin.fileHandleForWriting.write(data)
+            }
+            output.stdout = availableOutput
+            completion(output, task)
+        }
+        
+        task.terminationHandler = { [stdin] _ in
+            runningCommands.removeValue(forKey: identifier)
+            try? stdin.fileHandleForWriting.close()
+        }
+        
+        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInteractive).async {
+                do {
+                    try task.run()
+                    continuation.resume(returning: ())
+                } catch {
+                    continuation.resume(throwing: error)
                 }
             }
         }
         
-        if let input = input, !input.isEmpty && inputIf == nil {
-            if let inputData = input.data(using: .utf8) {
-                pipe.stdin.fileHandleForWriting.write(inputData)
-                pipe.stdin.fileHandleForWriting.closeFile()
-            }
-        }
+        runningCommands[identifier] = task
         
-        // MARK: Run
-        do {
-            defer { runningCommands.removeValue(forKey: identifier) }
-            runningCommands[identifier] = task // WHAT
-            
-            try task.run()
-            
-            task.waitUntilExit()
-        } catch {
-            log.fault("Legendary fault: \(error.localizedDescription)")
-            return (Data(), Data())
-        }
-        
-        // MARK: - Output (stderr/out) Handler
-        let output: (stdout: Data, stderr: Data) = await (
-            data.stdout, data.stderr
-        )
-        
-        if let stderrString = String(data: output.stderr, encoding: .utf8), !stderrString.isEmpty {
-            log.debug("\(stderrString)")
-        } else {
-            log.debug("stderr empty or nonexistent for command \(commandKey)")
-        }
-        
-        if let stdoutString = String(data: output.stdout, encoding: .utf8) {
-            if !stdoutString.isEmpty {
-                log.debug("\(stdoutString)")
-            }
-        } else {
-            log.debug("stdout empty or nonexistent for command \(commandKey)")
-        }
-        
-        return output
+        if waits { task.waitUntilExit() }
     }
     
     // TODO: implement
@@ -363,26 +275,20 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
         
         do {
-            let output = try await command(
-                args: ["wineboot"],
-                identifier: "wineboot",
-                bottleURL: bottleURL
-            )
-            
-            if let stderr = String(data: output.stderr, encoding: .utf8),
-               !stderr.contains(try Regex(#"wine: configuration in (.*?) has been updated\."#)),
-               !bottleExists(bottleURL: bottleURL) {
-                log.error("Unable to boot prefix \"\(name)\"")
-                completion(.failure(BootError()))
+            let newBottle: Bottle = .init(url: bottleURL, settings: settings, busy: false)
+            try await command(arguments: ["wineboot"], identifier: "wineboot", bottleURL: bottleURL) { output, _ in
+                // swiftlint:disable:next force_try
+                if output.stderr.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) {
+                    allBottles?[name] = newBottle
+                    completion(.success(newBottle))
+                }
             }
             
+            // how to throw bottle error now??
+            
             log.notice("Successfully booted prefix \"\(name)\"")
-            let newBottle: Bottle = .init(url: bottleURL, settings: settings, busy: false)
             
             try await toggleRetinaMode(bottleURL: bottleURL, toggle: settings.retinaMode)
-            
-            allBottles?[name] = newBottle
-            completion(.success(newBottle))
         } catch {
             completion(.failure(error))
         }
@@ -463,28 +369,27 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        try await command( // FIXME: errors aren't handled
-            args: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
-            identifier: "regadd",
-            bottleURL: bottleURL
-        )
+        try await command(arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"], identifier: "regadd", bottleURL: bottleURL) { _, _  in
+            // FIXME: errors aren't handled
+        }
     }
     
     // MARK: - Query Registry Key Method
     private static func queryRegistryKey(bottleURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
         do {
-            let output = try await command(
-                args: ["reg", "query", key, "-v", name],
-                identifier: "regquery",
-                bottleURL: bottleURL
-            )
             
-            guard let lines = String(data: output.stdout, encoding: .utf8)?.split(omittingEmptySubsequences: true, whereSeparator: \.isNewline) else { completion(.failure(UnableToQueryRegistyError())); return }
-            guard let line = lines.first(where: { $0.contains(type.rawValue) }) else { completion(.failure(UnableToQueryRegistyError())); return }
-            let array = line.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
-            guard let value = array.last else { completion(.failure(UnableToQueryRegistyError())); return }
-            
-            completion(.success(String(value)))
+            try await command(arguments: ["reg", "query", key, "-v", name], identifier: "regquery", bottleURL: bottleURL) { output, task  in
+                if output.stdout.contains(type.rawValue) {
+                    let array = output.stdout.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
+                    if !array.isEmpty {
+                        completion(.success(String(array.last!)))
+                    } else {
+                        completion(.failure(UnableToQueryRegistyError()))
+                        task.suspend(); return
+                    }
+                }
+                // FIXME: outside errors aren't handled
+            }
         } catch {
             log.error("\("Failed to query regkey \(type) \(name) \(key) in bottle at \(bottleURL)")")
             completion(.failure(error))
