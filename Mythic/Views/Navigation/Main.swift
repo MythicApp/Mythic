@@ -130,7 +130,7 @@ struct MainView: View {
                 
                 if operation.current != nil || !operation.queue.isEmpty {
                     List {
-                        NavigationLink(destination: DownloadsView()) {
+                        NavigationLink(destination: DownloadsEvo()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")
                             // .foregroundStyle(.primary)
                                 .help("View all downloads")
