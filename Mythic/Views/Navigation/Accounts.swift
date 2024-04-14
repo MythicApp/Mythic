@@ -12,6 +12,7 @@ struct AccountsView: View {
     @State private var isSignOutConfirmationPresented: Bool = false
     @State private var isAuthViewPresented: Bool = false
     @State private var isHoveringOverDestructiveEpicButton: Bool = false
+    @State private var isHoveringOverDestructiveSteamButton: Bool = false
     @State private var signedIn: Bool = false
     
     var body: some View {
@@ -59,7 +60,7 @@ struct AccountsView: View {
                 })
                 .alert(isPresented: $isSignOutConfirmationPresented) {
                     Alert(
-                        title: .init("Are you sure you want to sign out?"),
+                        title: .init("Are you sure you want to sign out from Epic?"),
                         message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
                         primaryButton: .destructive(.init("Sign Out")) {
                             Task.sync(priority: .high) {
@@ -73,6 +74,41 @@ struct AccountsView: View {
                 }
             }
             .task { signedIn = Legendary.signedIn() }
+            
+            HStack {
+                Image("Steam")
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                
+                VStack {
+                    HStack {
+                        Text("Steam")
+                        Spacer()
+                    }
+                    HStack {
+                        Text("Coming Soon")
+                            .font(.bold(.title3)())
+                        Spacer()
+                    }
+                }
+                
+                Spacer()
+                
+                Button {
+                    
+                } label: {
+                    Image(systemName: signedIn ? "person.slash" : "person")
+                        .foregroundStyle(isHoveringOverDestructiveSteamButton ? .red : .primary)
+                        .padding(5)
+                }
+                .clipShape(.circle)
+                .disabled(true)
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isHoveringOverDestructiveSteamButton = (hovering && signedIn)
+                    }
+                }
+            }
         }
         .navigationTitle("Accounts")
         .task(priority: .background) {
