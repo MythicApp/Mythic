@@ -647,7 +647,7 @@ class Legendary {
      - of: The game to fetch the thumbnail of.
      - type: The aspect ratio of the image to fetch the thumbnail of.
      
-     - Returns: The WebURL of the retrieved image.
+     - Returns: The URL of the retrieved image.
      */
     static func getImage(of game: Mythic.Game, type: ImageType) -> String {
         let metadata = try? getGameMetadata(game: game)

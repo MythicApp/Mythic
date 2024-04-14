@@ -3063,6 +3063,16 @@
         }
       }
     },
+    "%lld%% • ↓ %lld MB/s • ⏲︎ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld%% • ↓ %2$lld MB/s • ⏲︎ %3$@"
+          }
+        }
+      }
+    },
     "%lld%% complete" : {
       "localizations" : {
         "af" : {
@@ -11813,6 +11823,9 @@
         }
       }
     },
+    "DOWNLOADING %@" : {
+
+    },
     "Downloading Game Porting Toolkit..." : {
       "localizations" : {
         "af" : {
@@ -14664,6 +14677,7 @@
       }
     },
     "Failed to boot \"%@.\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -14852,6 +14866,9 @@
           }
         }
       }
+    },
+    "Failed to boot \"%@\"." : {
+
     },
     "Failed to install Mythic Engine." : {
       "localizations" : {
@@ -27971,6 +27988,9 @@
         }
       }
     },
+    "QUEUED %@" : {
+
+    },
     "Quit Mythic" : {
       "localizations" : {
         "af" : {
@@ -35766,6 +35786,9 @@
           }
         }
       }
+    },
+    "Unknown %@" : {
+
     },
     "Update" : {
       "localizations" : {

@@ -66,7 +66,7 @@ extension LibraryView.GameImportView {
                                                 .modifier(FadeInModifier())
                                         } else {
                                             RoundedRectangle(cornerRadius: 20)
-                                                .fill(.windowBackground)
+                                                .fill(.background)
                                                 .shimmering(
                                                     animation: .easeInOut(duration: 1)
                                                         .repeatForever(autoreverses: false),
@@ -87,10 +87,10 @@ extension LibraryView.GameImportView {
                                             .modifier(FadeInModifier())
                                     case .failure:
                                         RoundedRectangle(cornerRadius: 20)
-                                            .fill(.windowBackground)
+                                            .fill(.background)
                                     @unknown default:
                                         RoundedRectangle(cornerRadius: 20)
-                                            .fill(.windowBackground)
+                                            .fill(.background)
                                     }
                                 }
                             }

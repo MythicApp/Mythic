@@ -122,7 +122,7 @@ struct BottleCreationView: View {
         
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(
-                title: .init("Failed to boot \"\(bottleName).\""),
+                title: .init("Failed to boot \"\(bottleName)\"."),
                 message: .init(bootErrorDescription)
             )
         }

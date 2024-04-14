@@ -55,7 +55,7 @@ struct GameSettingsView: View {
                                         .scaledToFit()
                                 } else {
                                     RoundedRectangle(cornerRadius: 20)
-                                        .fill(.windowBackground)
+                                        .fill(.background)
                                         .shimmering(
                                             animation: .easeInOut(duration: 1)
                                                 .repeatForever(autoreverses: false),
@@ -77,10 +77,16 @@ struct GameSettingsView: View {
                             case .failure:
                                 // fallthrough
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.windowBackground)
+                                    .fill(.background)
+                                    .overlay {
+                                        Image(systemName: "exclamationmark.triangle.fill")
+                                    }
                             @unknown default:
                                 RoundedRectangle(cornerRadius: 20)
-                                    .fill(.windowBackground)
+                                    .fill(.background)
+                                    .overlay {
+                                        Image(systemName: "questionmark.circle.fill")
+                                    }
                             }
                         }
                     }

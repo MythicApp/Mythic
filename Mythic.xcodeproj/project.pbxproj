@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A008E9B2BC0AF350039AEF3 /* DownloadsEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A008E9A2BC0AF350039AEF3 /* DownloadsEvo.swift */; };
 		6A009E5F2AB5816A00A1397F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A009E5E2AB5816A00A1397F /* Logger.swift */; };
 		6A00F2052AC5F7450054858A /* GameImport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F2042AC5F7450054858A /* GameImport.swift */; };
 		6A00F20B2AC5F8730054858A /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A00F20A2AC5F8730054858A /* Auth.swift */; };
@@ -84,6 +85,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6A008E9A2BC0AF350039AEF3 /* DownloadsEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsEvo.swift; sourceTree = "<group>"; };
 		6A009E5E2AB5816A00A1397F /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		6A00F1FF2AC5EC490054858A /* Install.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Install.swift; sourceTree = "<group>"; };
 		6A00F2042AC5F7450054858A /* GameImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameImport.swift; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 		6A0BB7AE2B52029000C8A693 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6A64B6462BCC45BC001770C8 /* Navigation */,
 				6A00F2012AC5F51A0054858A /* GameList */,
 				6ABA8DAF2B791B0600D446CF /* Sheets */,
 				6A00F20A2AC5F8730054858A /* Auth.swift */,
@@ -387,6 +390,14 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		6A64B6462BCC45BC001770C8 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				6AEF7BC52BA6D873002FFE26 /* Downloads.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		6A7F00B22B231EEA00D801CD /* Alerts */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,7 +504,7 @@
 				6AD506592AAFF6E2008A28C1 /* Wine.swift */,
 				6AD5065B2AAFF6F0008A28C1 /* Support.swift */,
 				6ABEEEB42BA096BC00D24A4E /* Accounts.swift */,
-				6AEF7BC52BA6D873002FFE26 /* Downloads.swift */,
+				6A008E9A2BC0AF350039AEF3 /* DownloadsEvo.swift */,
 				6AB474A72AACBC0100AB9C63 /* Main.swift */,
 			);
 			path = Navigation;
@@ -703,6 +714,7 @@
 				6A1ECF722B0CA0560010DC17 /* EventManager.swift in Sources */,
 				6AA6CCE32AD52B2600F664A5 /* LegendaryInterface.swift in Sources */,
 				6AC3E1892B374D2E000EB765 /* VariableManager.swift in Sources */,
+				6A008E9B2BC0AF350039AEF3 /* DownloadsEvo.swift in Sources */,
 				6A00F20B2AC5F8730054858A /* Auth.swift in Sources */,
 				6AAAFBA82B8323940072B5BB /* BottleList.swift in Sources */,
 				6A371B5B2AE7E93B0054BF7A /* Libraries.swift in Sources */,
@@ -853,7 +865,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2575;
+				CURRENT_PROJECT_VERSION = 2581;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -892,7 +904,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2575;
+				CURRENT_PROJECT_VERSION = 2581;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
