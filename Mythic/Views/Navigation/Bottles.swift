@@ -1,5 +1,5 @@
 //
-//  Wine.swift
+//  Bottles.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 12/9/2023.
@@ -16,7 +16,7 @@
 import SwiftUI
 import SwordRPC
 
-struct WineView: View {
+struct BottlesView: View {
     @State private var isBottleCreationViewPresented = false
     
     var body: some View {
@@ -55,5 +55,5 @@ struct WineView: View {
 }
 
 #Preview {
-    WineView()
+    BottlesView()
 }

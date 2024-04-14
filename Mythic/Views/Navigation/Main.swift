@@ -71,7 +71,7 @@ struct MainView: View {
                     Spacer()
                     
                     Section {
-                        NavigationLink(destination: WineView()) {
+                        NavigationLink(destination: BottlesView()) {
                             Label("Wine", systemImage: "wineglass")
                             // .foregroundStyle(.primary)
                                 .help("Manage containers for Windows® applications")

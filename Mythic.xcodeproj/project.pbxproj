@@ -65,7 +65,7 @@
 		6AC742E12B933487000EA1B2 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6AC742E02B933487000EA1B2 /* Localizable.xcstrings */; };
 		6AD506562AAFF671008A28C1 /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506552AAFF671008A28C1 /* Home.swift */; };
 		6AD506582AAFF6CB008A28C1 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506572AAFF6CB008A28C1 /* Library.swift */; };
-		6AD5065A2AAFF6E2008A28C1 /* Wine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506592AAFF6E2008A28C1 /* Wine.swift */; };
+		6AD5065A2AAFF6E2008A28C1 /* Bottles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD506592AAFF6E2008A28C1 /* Bottles.swift */; };
 		6AD5065C2AAFF6F0008A28C1 /* Support.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD5065B2AAFF6F0008A28C1 /* Support.swift */; };
 		6AD6658D2BB94F6C003BF392 /* Rosetta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD6658C2BB94F6B003BF392 /* Rosetta.swift */; };
 		6ADF47FF2ADECD880039CDC9 /* WhiskyInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADF47FE2ADECD880039CDC9 /* WhiskyInterfaceExt.swift */; };
@@ -143,7 +143,7 @@
 		6AC742E02B933487000EA1B2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6AD506552AAFF671008A28C1 /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		6AD506572AAFF6CB008A28C1 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
-		6AD506592AAFF6E2008A28C1 /* Wine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wine.swift; sourceTree = "<group>"; };
+		6AD506592AAFF6E2008A28C1 /* Bottles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bottles.swift; sourceTree = "<group>"; };
 		6AD5065B2AAFF6F0008A28C1 /* Support.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Support.swift; sourceTree = "<group>"; };
 		6AD6658C2BB94F6B003BF392 /* Rosetta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rosetta.swift; sourceTree = "<group>"; };
 		6ADF47FE2ADECD880039CDC9 /* WhiskyInterfaceExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhiskyInterfaceExt.swift; sourceTree = "<group>"; };
@@ -501,7 +501,7 @@
 				6A00F2032AC5F7220054858A /* Library */,
 				6AF0EB292AADE1780044C09C /* Store.swift */,
 				6AC25CBC2AAED24700D395CF /* Settings.swift */,
-				6AD506592AAFF6E2008A28C1 /* Wine.swift */,
+				6AD506592AAFF6E2008A28C1 /* Bottles.swift */,
 				6AD5065B2AAFF6F0008A28C1 /* Support.swift */,
 				6ABEEEB42BA096BC00D24A4E /* Accounts.swift */,
 				6A008E9A2BC0AF350039AEF3 /* DownloadsEvo.swift */,
@@ -697,7 +697,7 @@
 				6AD5065C2AAFF6F0008A28C1 /* Support.swift in Sources */,
 				6A1322382B1C98AE0049BB64 /* InstallStatus.swift in Sources */,
 				6A6D03EE2B9EFBD30064CEBB /* GameSettingsView.swift in Sources */,
-				6AD5065A2AAFF6E2008A28C1 /* Wine.swift in Sources */,
+				6AD5065A2AAFF6E2008A28C1 /* Bottles.swift in Sources */,
 				6AF0EB1F2AAD4E0A0044C09C /* Onboarding.swift in Sources */,
 				6AC25CBD2AAED24700D395CF /* Settings.swift in Sources */,
 				6A371B562AE7A5E20054BF7A /* Installer.swift in Sources */,
