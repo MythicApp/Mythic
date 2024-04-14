@@ -54,7 +54,7 @@ struct GameCard: View {
                                 .modifier(FadeInModifier())
                         } else {
                             RoundedRectangle(cornerRadius: 20)
-                                .fill(.windowBackground)
+                                .fill(.background)
                                 .shimmering(
                                     animation: .easeInOut(duration: 1)
                                         .repeatForever(autoreverses: false),
@@ -77,10 +77,10 @@ struct GameCard: View {
                     case .failure:
                         // fallthrough
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                     }
                 }
                 .overlay(alignment: .bottom) {
@@ -106,7 +106,7 @@ struct GameCard: View {
                         HStack {
                             if operation.current?.game.id == game.id { // MARK: View if game is being installed
                                 InstallationProgressView()
-                                    .padding([.leading, .trailing])
+                                    .padding(.horizontal)
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Libraries.isInstalled() {
                                     // MARK: Engine Install Button

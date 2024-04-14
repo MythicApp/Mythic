@@ -30,7 +30,7 @@ struct GameListEvo: View {
                 LazyHStack {
                     ForEach(games) { game in
                         GameCard(game: .constant(game))
-                            .padding()
+                            .padding([.leading, .vertical])
                     }
                 }
                 .searchable(text: $searchString, placement: .toolbar)
