@@ -4783,7 +4783,11 @@
         }
       }
     },
+    "Are you sure you want to sign out from Epic?" : {
+
+    },
     "Are you sure you want to sign out?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8208,6 +8212,9 @@
           }
         }
       }
+    },
+    "Coming Soon" : {
+
     },
     "Configure default settings for \"%@\"" : {
       "localizations" : {
@@ -32360,6 +32367,9 @@
           }
         }
       }
+    },
+    "Steam" : {
+
     },
     "Stop" : {
       "localizations" : {

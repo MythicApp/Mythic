@@ -18,16 +18,17 @@ struct DownloadsEvo: View {
             VStack {
                 DownloadCard(game: operation.current!.game, style: .prominent)
                 
-                if !operation.queue.isEmpty {
-                    Divider()
-                }
+                Divider()
                 
-                ForEach(operation.queue, id: \.self) { args in
-                    DownloadCard(game: args.game, style: .normal)
+                if operation.queue.isEmpty {
+                    Text("No other downloads are pending.")
+                        .font(.bold(.title)())
+                } else {
+                    ForEach(operation.queue, id: \.self) { args in
+                        DownloadCard(game: args.game, style: .normal)
+                    }
+                    .animation(.easeInOut, value: cardsUpdated)
                 }
-                .animation(.easeInOut, value: cardsUpdated)
-                
-                Spacer()
             }
             .padding()
         }
