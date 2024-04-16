@@ -29,6 +29,8 @@ struct DownloadsEvo: View {
                     }
                     .animation(.easeInOut, value: cardsUpdated)
                 }
+                
+                Spacer()
             }
             .padding()
         }
