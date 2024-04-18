@@ -605,6 +605,7 @@ struct OnboardingEvo: View {
                         
                         ProgressView()
                             .controlSize(.small)
+                            .foregroundStyle(.white)
                     }
                     .foregroundStyle(.white)
                     .onAppear {
