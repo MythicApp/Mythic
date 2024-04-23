@@ -27,7 +27,7 @@ struct GameListEvo: View {
     var body: some View {
         if !games.isEmpty {
             ScrollView(.horizontal) {
-                LazyHStack {
+                LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
                     ForEach(games) { game in
                         GameCard(game: .constant(game))
                             .padding([.leading, .vertical])
