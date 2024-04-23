@@ -22,7 +22,8 @@ struct DownloadsEvo: View {
                 
                 if operation.queue.isEmpty {
                     Text("No other downloads are pending.")
-                        .font(.bold(.title)())
+                        .bold()
+                        .padding()
                 } else {
                     ForEach(operation.queue, id: \.self) { args in
                         DownloadCard(game: args.game, style: .normal)
@@ -40,6 +41,7 @@ struct DownloadsEvo: View {
 struct DownloadCard: View {
     
     @ObservedObject private var operation: GameOperation = .shared
+    @State private var isHoveringOverDestructiveButton: Bool = false
     
     var game: Game
     var style: DownloadCardStyle
@@ -156,7 +158,7 @@ struct DownloadCard: View {
                                                 case .normal:
                                                     return .caption
                                                 case .prominent:
-                                                    return .callout
+                                                      return .callout
                                                 }
                                             }())
                                         
@@ -168,6 +170,16 @@ struct DownloadCard: View {
                             
                             if operation.current?.game == game {
                                 InstallationProgressView(withPercentage: false)
+                            } else if operation.queue.contains(where: { $0.game == game }) {
+                                Button {
+                                    operation.queue.removeAll(where: { $0.game == game })
+                                } label: {
+                                    Image(systemName: "minus")
+                                        .padding(5)
+                                        .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
+                                }
+                                .clipShape(.circle)
+                                .help("Remove from download queue")
                             }
                         }
                         .padding(.horizontal)

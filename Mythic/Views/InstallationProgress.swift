@@ -13,7 +13,7 @@ struct InstallationProgressView: View {
     @ObservedObject private var operation: GameOperation = .shared
     @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
-    @State private var hoveringOverDestructiveButton: Bool = false
+    @State private var isHoveringOverDestructiveButton: Bool = false
     
     @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
     
@@ -44,12 +44,12 @@ struct InstallationProgressView: View {
                 } label: {
                     Image(systemName: "xmark")
                         .padding(5)
-                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
+                        .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
                 }
                 .clipShape(.circle)
                 .help("Stop installing \"\(game.title)\"")
                 .onHover { hovering in
-                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
+                    withAnimation(.easeInOut(duration: 0.1)) { isHoveringOverDestructiveButton = hovering }
                 }
                 .alert(isPresented: $isStopGameModificationAlertPresented) {
                     stopGameOperationAlert(

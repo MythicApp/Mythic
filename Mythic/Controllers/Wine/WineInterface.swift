@@ -181,7 +181,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
-            completion(output, task)
+            completion(output, task) // ⚠️ FIXME: critical performance issues
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
@@ -191,7 +191,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
-            completion(output, task)
+            completion(output, task) // ⚠️ FIXME: critical performance issues
         }
         
         task.terminationHandler = { [stdin] _ in

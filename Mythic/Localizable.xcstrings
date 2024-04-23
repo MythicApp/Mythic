@@ -26095,6 +26095,9 @@
         }
       }
     },
+    "No other downloads are pending." : {
+
+    },
     "Not implemented yet" : {
       "localizations" : {
         "af" : {
@@ -28567,6 +28570,9 @@
           }
         }
       }
+    },
+    "Remove from download queue" : {
+
     },
     "Remove Mythic Engine" : {
       "localizations" : {

@@ -8,7 +8,7 @@
 import Foundation
 
 extension Double {
-    func rounded(_ to: Int) -> Double {
+    func rounded(toPlaces: Int) -> Double {
         let multiplier = pow(10, Double(to))
         return Darwin.round(self * multiplier) / multiplier
     }

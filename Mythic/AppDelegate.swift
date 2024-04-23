@@ -65,6 +65,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     )
                 } catch {
                     Logger.file.error("Unable to move Mythic to Applications: \(error)")
+                    
+                    let error = NSAlert()
+                    error.messageText = "Unable to move Mythic to \"\(globalApps.prettyPath())\"."
+                    error.addButton(withTitle: "Quit")
+                    
+                    if error.runModal() == .alertFirstButtonReturn {
+                        exit(1)
+                    }
                 }
             }
         }
@@ -109,8 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     
     func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
-        // TODO: stop download alert if downloading before closure
-        Legendary.stopAllCommands()
+        Legendary.stopAllCommands(forced: true)
     }
 }
 

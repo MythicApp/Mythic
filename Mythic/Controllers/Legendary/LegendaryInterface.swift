@@ -63,12 +63,12 @@ class Legendary {
      Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
      
      - Parameters:
-      - args: The arguments to pass to the command-line process.
-      - waits: Indicates whether the function should wait for the command-line process to complete before returning.
-      - identifier: A unique identifier for the command-line process.
-      - input: A closure that processes the output of the command-line process and provides input back to it.
-      - environment: Additional environment variables to set for the command-line process.
-      - completion: A closure to call with the output of the command-line process.
+     - args: The arguments to pass to the command-line process.
+     - waits: Indicates whether the function should wait for the command-line process to complete before returning.
+     - identifier: A unique identifier for the command-line process.
+     - input: A closure that processes the output of the command-line process and provides input back to it.
+     - environment: Additional environment variables to set for the command-line process.
+     - completion: A closure to call with the output of the command-line process.
      
      - Throws: An error if the command-line process encounters an issue.
      
@@ -105,7 +105,7 @@ class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
-            completion(output, task)
+            completion(output, task) // ⚠️ FIXME: critical performance issues
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
@@ -115,7 +115,7 @@ class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
-            completion(output, task)
+            completion(output, task) // ⚠️ FIXME: critical performance issues
         }
         
         task.terminationHandler = { [stdin] _ in
@@ -147,9 +147,13 @@ class Legendary {
      
      - Parameter identifier: The unique identifier of the command to be stopped.
      */
-    static func stopCommand(identifier: String) { // TODO: pause and replay downloads using task.suspend() and task.resume()
+    static func stopCommand(identifier: String, forced: Bool = false) { // TODO: pause and replay downloads using task.suspend() and task.resume()
         if let task = runningCommands[identifier] {
-            task.interrupt() // SIGTERM
+            if forced {
+                task.interrupt() // SIGTERM
+            } else {
+                task.terminate() // SIGKILL
+            }
             runningCommands.removeValue(forKey: identifier)
         } else {
             log.error("Unable to stop Legendary command: Bad identifier.")
@@ -157,20 +161,20 @@ class Legendary {
     }
     
     /// Stops the execution of all commands.
-    static func stopAllCommands() { runningCommands.keys.forEach { stopCommand(identifier: $0) } }
+    static func stopAllCommands(forced: Bool) { runningCommands.keys.forEach { stopCommand(identifier: $0, forced: forced) } }
     
     // MARK: Install Method
     /**
      Installs, updates, or repairs games using legendary.
      
      - Parameters:
-      - game: The game's `app_name`. (referred to as id)
-      - platform: The game's platform.
-      - type: The nature of the game modification.
-      - optionalPacks: Optional packs to install along with the base game.
-      - baseURL: A custom ``URL`` for the game to install to.
-      - gameFolder: The folder where the game should be installed.
-      - priority: Whether the game should interrupt the currently queued game installation.
+     - game: The game's `app_name`. (referred to as id)
+     - platform: The game's platform.
+     - type: The nature of the game modification.
+     - optionalPacks: Optional packs to install along with the base game.
+     - baseURL: A custom ``URL`` for the game to install to.
+     - gameFolder: The folder where the game should be installed.
+     - priority: Whether the game should interrupt the currently queued game installation.
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
@@ -323,18 +327,21 @@ class Legendary {
         return try await withCheckedThrowingContinuation { continuation in
             Task.sync {
                 do {
+                    var isLoggedIn = true
+                    
                     try await command(
                         arguments: ["auth", "--code", authKey],
-                        identifier: "signin"
+                        identifier: "signin",
+                        waits: true
                     ) { output, _ in
-                        continuation.resume(returning: output.stderr.contains("Successfully logged in as"))
+                        isLoggedIn = (isLoggedIn == true ? true : output.stderr.contains("Successfully logged in as"))
                     }
+                    
+                    continuation.resume(returning: isLoggedIn)
                 } catch {
                     continuation.resume(throwing: error)
                 }
             }
-            
-            continuation.resume(returning: false)
         }
     }
     
