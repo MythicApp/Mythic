@@ -175,7 +175,7 @@ struct SettingsView: View {
                 HStack {
                     Button {
                         Task {
-                            try? await Legendary.command(arguments: ["cleanu["], identifier: "cleanup") { output, _ in
+                            try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output, _ in
                                 isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
                             }
                         }
