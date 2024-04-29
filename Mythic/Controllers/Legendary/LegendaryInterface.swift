@@ -101,7 +101,7 @@ class Legendary {
         stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                print("wanting to go!!!")
+                log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
@@ -111,7 +111,7 @@ class Legendary {
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                print("wanting to go!!!")
+                log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
@@ -125,18 +125,9 @@ class Legendary {
         
         log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
         
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .userInteractive).async {
-                do {
-                    try task.run()
-                    continuation.resume(returning: ())
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try task.run()
         
-        runningCommands[identifier] = task
+        runningCommands[identifier] = task // What if two commands with the same identifier execute close to each other?
         
         if waits { task.waitUntilExit() }
     }

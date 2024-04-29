@@ -211,7 +211,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         try task.run()
         
-        runningCommands[identifier] = task
+        runningCommands[identifier] = task // What if two commands with the same identifier execute close to each other?
         
         if waits { task.waitUntilExit() }
     }
