@@ -152,7 +152,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
     @available(*, message: "Revamped recently")
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput, Process) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput, Process) -> Void) async throws {
         let task = Process()
         task.executableURL = Libraries.directory.appending(path: "Wine/bin/wine64")
         
@@ -166,7 +166,15 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         task.arguments = args
         
-        let constructedEnvironment = ["WINEPREFIX": bottleURL.path].merging(environment ?? .init(), uniquingKeysWith: { $1 })
+        // Construct environment variables (I prefer it this way instead of all at once)
+        var constructedEnvironment: [String: String] = .init()
+        
+        if let bottleURL = bottleURL {
+            constructedEnvironment["WINEPREFIX"] = bottleURL.path
+        }
+        
+        constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
+                                     
         let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
         task.environment = constructedEnvironment
         
@@ -177,7 +185,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                print("wanting to go!!!")
+                log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
@@ -187,7 +195,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                print("wanting to go!!!")
+                log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
@@ -201,16 +209,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
         
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .userInteractive).async {
-                do {
-                    try task.run()
-                    continuation.resume(returning: ())
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try task.run()
         
         runningCommands[identifier] = task
         
