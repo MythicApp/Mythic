@@ -83,7 +83,7 @@ struct UninstallViewEvo: View {
                                             keepFiles ? "--keep-files" : nil,
                                             skipUninstaller ? "--skip-uninstaller" : nil,
                                             game.id
-                                        ] .compactMap { $0 }, identifier: "uninstall") { output, _ in
+                                        ] .compactMap { $0 }, identifier: "uninstall") { output in
                                             guard output.stderr.contains("ERROR:") else { return }
                                             let errorLine = output.stderr.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
                                             // swiftlint:disable:previous force_try

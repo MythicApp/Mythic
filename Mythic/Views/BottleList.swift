@@ -96,7 +96,7 @@ struct BottleListView: View {
                         
                         Button("Launch Configurator") {
                             Task {
-                                try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) {_, _ in }
+                                try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) { _ in }
                             }
                         }
                         .disabled(configuratorActive)

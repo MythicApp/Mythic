@@ -44,7 +44,7 @@ class Legendary {
     private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
     
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] {
+    static var runningCommands: [String: Process] {
         get {
             _runningCommandsQueue.sync {
                 return _runningCommands
@@ -76,7 +76,7 @@ class Legendary {
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
     @available(*, message: "Revamped recently")
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput, Process) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws {
         let task = Process()
         task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
         
@@ -105,7 +105,7 @@ class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
-            completion(output, task) // ⚠️ FIXME: critical performance issues
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
@@ -115,12 +115,11 @@ class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
-            completion(output, task) // ⚠️ FIXME: critical performance issues
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
         
-        task.terminationHandler = { [stdin] _ in
+        task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
-            try? stdin.fileHandleForWriting.close()
         }
         
         log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
@@ -236,7 +235,7 @@ class Legendary {
         let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
         // swiftlint:enable force_try
         
-        try await command(arguments: argBuilder, identifier: "install") { output, _ in
+        try await command(arguments: argBuilder, identifier: "install") { output in
             // MARK: stderr (installation) handling
             // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
             
@@ -298,7 +297,7 @@ class Legendary {
             try await command(
                 arguments: ["move", game.id, newPath, "--skip-move"],
                 identifier: "move"
-            ) { _, _  in }
+            ) { _ in }
             
             try await notifications.add(
                 .init(identifier: UUID().uuidString,
@@ -324,7 +323,7 @@ class Legendary {
                         arguments: ["auth", "--code", authKey],
                         identifier: "signin",
                         waits: true
-                    ) { output, _ in
+                    ) { output in
                         isLoggedIn = (isLoggedIn == true ? true : output.stderr.contains("Successfully logged in as"))
                     }
                     
@@ -373,7 +372,7 @@ class Legendary {
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
         
-        try await command(arguments: arguments, identifier: "launch\(game.id)") { _, _  in }
+        try await command(arguments: arguments, identifier: "launch\(game.id)") { _  in }
         
         DispatchQueue.main.async {
             GameOperation.shared.launching = nil
@@ -595,11 +594,11 @@ class Legendary {
         
         if let metadataContents = try? files.contentsOfDirectory(atPath: metadata), !metadataContents.isEmpty {
             Task(priority: .background) {
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _, _  in }
+                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
             }
         } else {
             Task.sync(priority: .high) { // called during onboarding for speed
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _, _  in }
+                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
             }
         }
         

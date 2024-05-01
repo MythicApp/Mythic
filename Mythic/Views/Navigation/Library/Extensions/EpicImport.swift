@@ -159,7 +159,7 @@ extension LibraryView.GameImportView {
                             "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
                             game.id,
                             path
-                        ] .compactMap { $0 }, identifier: "epicImport") { output, _ in
+                        ] .compactMap { $0 }, identifier: "epicImport") { output in
                             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                                 isPresented = false
                                 isGameListRefreshCalled = true

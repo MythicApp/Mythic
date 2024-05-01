@@ -49,7 +49,7 @@ struct AuthView: View {
             }
             
             do {
-                try await Legendary.command(arguments: ["auth", "--code", code], identifier: "signin") { output, _ in
+                try await Legendary.command(arguments: ["auth", "--code", code], identifier: "signin") { output in
                     if output.stderr.contains("ERROR: Login attempt failed") {
                         displayError(); return
                     }

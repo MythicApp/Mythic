@@ -28,7 +28,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
     
     /// Dictionary to monitor running commands and their identifiers.
-    private static var runningCommands: [String: Process] {
+    static var runningCommands: [String: Process] {
         get {
             var result: [String: Process]?
             _runningCommandsQueue.sync {
@@ -152,7 +152,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
     @available(*, message: "Revamped recently")
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput, Process) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
         let task = Process()
         task.executableURL = Libraries.directory.appending(path: "Wine/bin/wine64")
         
@@ -189,7 +189,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
-            completion(output, task) // ⚠️ FIXME: critical performance issues
+            completion(output)
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
@@ -199,12 +199,11 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
-            completion(output, task) // ⚠️ FIXME: critical performance issues
+            completion(output)
         }
         
-        task.terminationHandler = { [stdin] _ in
+        task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
-            try? stdin.fileHandleForWriting.close()
         }
         
         log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
@@ -275,7 +274,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         do {
             let newBottle: Bottle = .init(url: bottleURL, settings: settings, busy: false)
-            try await command(arguments: ["wineboot"], identifier: "wineboot", bottleURL: bottleURL) { output, _ in
+            try await command(arguments: ["wineboot"], identifier: "wineboot", bottleURL: bottleURL) { output in
                 // swiftlint:disable:next force_try
                 if output.stderr.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) {
                     allBottles?[name] = newBottle
@@ -368,7 +367,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        try await command(arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"], identifier: "regadd", bottleURL: bottleURL) { _, _  in
+        try await command(arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"], identifier: "regadd", bottleURL: bottleURL) { _  in
             // FIXME: errors aren't handled
         }
     }
@@ -376,15 +375,14 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Query Registry Key Method
     private static func queryRegistryKey(bottleURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
         do {
-            
-            try await command(arguments: ["reg", "query", key, "-v", name], identifier: "regquery", bottleURL: bottleURL) { output, task  in
+            try await command(arguments: ["reg", "query", key, "-v", name], identifier: "regquery", bottleURL: bottleURL) { output in
                 if output.stdout.contains(type.rawValue) {
                     let array = output.stdout.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
                     if !array.isEmpty {
                         completion(.success(String(array.last!)))
                     } else {
                         completion(.failure(UnableToQueryRegistyError()))
-                        task.suspend(); return
+                        runningCommands["regquery"]?.terminate(); return
                     }
                 }
                 // FIXME: outside errors aren't handled
