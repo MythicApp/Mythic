@@ -92,7 +92,7 @@ class LocalGames {
                     "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
                     "WINEMSYNC": bottle.settings.msync ? "1" : "0"
                 ]
-            ) { _ in } // TODO: pass task over through launch
+            ) { _ in }
             
         case .none: do { /* TODO: Error */ }
         }

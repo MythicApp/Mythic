@@ -342,7 +342,7 @@ class Legendary {
      - game: The game to launch.
      - bottle: The
      */
-    static func launch(game: Mythic.Game, online: Bool) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game, online: Bool) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
             throw GameDoesNotExistError(game)
@@ -372,7 +372,7 @@ class Legendary {
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
         
-        try await command(arguments: arguments, identifier: "launch\(game.id)") { _  in }
+        try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
         
         DispatchQueue.main.async {
             GameOperation.shared.launching = nil
