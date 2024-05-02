@@ -861,7 +861,7 @@
 		6AB474A52AACBBEA00AB9C63 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BetaAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Mythic/Mythic.entitlements;
@@ -869,7 +869,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2607;
+				CURRENT_PROJECT_VERSION = 2608;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -887,7 +887,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MARKETING_VERSION = 0.0.0;
+				MARKETING_VERSION = 0.0.0a;
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.blackxfiied.Mythic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -908,7 +908,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2607;
+				CURRENT_PROJECT_VERSION = 2608;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -926,7 +926,7 @@
 					"@executable_path/../Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				MARKETING_VERSION = 0.0.0;
+				MARKETING_VERSION = 0.0.0a;
 				PRODUCT_BUNDLE_IDENTIFIER = xyz.blackxfiied.Mythic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
