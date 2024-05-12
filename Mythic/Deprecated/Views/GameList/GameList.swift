@@ -249,8 +249,8 @@ struct GameListView: View {
                                 
                                 HStack {
                                     // MARK: For installed games
-                                    if installedGames.contains(game) { // TODO: FIXME: IMPORTANT: if game path doesn't exist, grey out the game.
-                                        if variables.getVariable("launching_\(game.id)") != true {
+                                    if installedGames.contains(game) {
+                                        if variables.getVariable("launching_\(game.id)") != true { // TODO: deprecate
                                             // MARK: Settings icon
                                             Button {
                                                 updateCurrentGame(game: game, mode: .normal)

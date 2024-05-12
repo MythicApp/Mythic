@@ -86,7 +86,7 @@ struct InstallStatusView: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                /* works! // TODO: maybe add an advanced metrics settigns thing that uses this
+                /* works! // TODO: maybe add an advanced metrics setting that uses this
                  ForEach(Array(Mirror(reflecting: operation.status.progress ?? .init(percentage: 0, downloadedObjects: 0, totalObjects: 0, runtime: "0", eta: "0")).children), id: \.label) { child in
                  if let label = child.label {
                  Text("\(String(describing: label)): \(String(describing: child.value))")

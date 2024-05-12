@@ -57,7 +57,7 @@ struct DownloadsView: View {
                     Spacer()
                     
                     if operation.current == args {
-                        InstallationProgressView()
+                        GameInstallProgressView()
                     } else if operation.queue.contains(args) {
                         Button {
                             operation.queue.removeAll(where: {$0 == args})

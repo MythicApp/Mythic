@@ -1,5 +1,5 @@
 //
-//  InstallationProgressView.swift
+//  GameInstallProgress.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 18/2/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InstallationProgressView: View {
+struct GameInstallProgressView: View {
     var withPercentage: Bool = true
     
     @ObservedObject private var operation: GameOperation = .shared
@@ -67,5 +67,5 @@ struct InstallationProgressView: View {
 }
 
 #Preview {
-    InstallationProgressView()
+    GameInstallProgressView()
 }

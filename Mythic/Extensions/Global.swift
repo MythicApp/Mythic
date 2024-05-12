@@ -288,7 +288,7 @@ class GameOperation: ObservableObject {
         }())
 
         while isOpen {
-            GameOperation.log.debug("checking \(game.title) is alive")
+            GameOperation.log.debug("checking if \"\(game.title)\" is still running")
             
             let isRunning = {
                 switch gamePlatform {
@@ -305,6 +305,8 @@ class GameOperation: ObservableObject {
             } else {
                 sleep(3)
             }
+            
+            GameOperation.log.debug("\(game.title) \(isRunning ? "is still running" : "has been quit" )")
         }
     }
     

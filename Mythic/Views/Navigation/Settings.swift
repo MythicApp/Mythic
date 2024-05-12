@@ -98,7 +98,7 @@ struct SettingsView: View {
                 }
                 
                 Button {
-                    // TODO: mythic's folder in Libary/Preferences
+                    // TODO: mythic's data folder in ~/Libary/Preferences
                     // TODO: beat up legendary
                 } label: {
                     Label("Reset Mythic", systemImage: "power.dotted")
@@ -107,7 +107,7 @@ struct SettingsView: View {
                 .help("Not implemented yet")
                 
                 Button {
-                    // TODO: mythic's folder in Libary/Preferences
+                    // TODO: mythic's data folder in ~/Libary/Preferences
                 } label: {
                     Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
                 }

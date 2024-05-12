@@ -105,7 +105,7 @@ struct GameCard: View {
                         // MARK: Button Stack
                         HStack {
                             if operation.current?.game.id == game.id { // MARK: View if game is being installed
-                                InstallationProgressView()
+                                GameInstallProgressView()
                                     .padding(.horizontal)
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Libraries.isInstalled() {

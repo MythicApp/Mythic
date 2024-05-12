@@ -169,7 +169,7 @@ struct DownloadCard: View {
                             .foregroundStyle(.white)
                             
                             if operation.current?.game == game {
-                                InstallationProgressView(withPercentage: false)
+                                GameInstallProgressView(withPercentage: false)
                             } else if operation.queue.contains(where: { $0.game == game }) {
                                 Button {
                                     operation.queue.removeAll(where: { $0.game == game })
