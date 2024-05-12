@@ -13,8 +13,9 @@ struct GameListEvo: View {
     
     @State private var isGameImportViewPresented: Bool = false
     
+    private let unifiedGames = (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? [])
+    
     private var games: [Game] {
-        let unifiedGames = (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? [])
         return unifiedGames
             .filter {
                 searchString.isEmpty ||
@@ -25,7 +26,7 @@ struct GameListEvo: View {
     }
     
     var body: some View {
-        if !games.isEmpty {
+        if !unifiedGames.isEmpty {
             ScrollView(.horizontal) {
                 LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
                     ForEach(games) { game in
