@@ -133,7 +133,7 @@ struct BottleListView: View {
             Button {
                 let app = MythicApp() // FIXME: is this dangerous or just stupid
                 app.onboardingChapter = .engineDisclaimer
-                app.isFirstLaunch = true
+                app.isOnboardingPresented = true
             } label: {
                 Label("Install Mythic Engine", systemImage: "arrow.down.to.line")
                     .padding(5)

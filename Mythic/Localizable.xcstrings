@@ -191,6 +191,9 @@
         }
       }
     },
+    "?%" : {
+
+    },
     "(%@ Elapsed)" : {
       "localizations" : {
         "af" : {
@@ -3642,6 +3645,9 @@
           }
         }
       }
+    },
+    "A list of Apple SLAs may be found" : {
+
     },
     "Accounts" : {
       "localizations" : {
@@ -12593,6 +12599,9 @@
         }
       }
     },
+    "Enter authorisation code..." : {
+
+    },
     "Enter authorisation key..." : {
       "localizations" : {
         "af" : {
@@ -17347,6 +17356,12 @@
         }
       }
     },
+    "Hello, world!" : {
+
+    },
+    "Help" : {
+
+    },
     "here." : {
       "localizations" : {
         "af" : {
@@ -17916,6 +17931,9 @@
           }
         }
       }
+    },
+    "I have read and agreed to the terms of the software license agreement." : {
+
     },
     "Import" : {
 
@@ -19061,6 +19079,9 @@
         }
       }
     },
+    "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes,\nwith an average internet connection." : {
+
+    },
     "Initializing..." : {
       "localizations" : {
         "af" : {
@@ -19821,6 +19842,9 @@
         }
       }
     },
+    "Install Rosetta 2" : {
+
+    },
     "Installed" : {
       "localizations" : {
         "af" : {
@@ -20580,6 +20604,9 @@
           }
         }
       }
+    },
+    "Installing Rosetta 2..." : {
+
     },
     "It appears loading's taking a while." : {
       "localizations" : {
@@ -24575,6 +24602,9 @@
         }
       }
     },
+    "Mythic is now ready to use." : {
+
+    },
     "Mythic is now setting up your default bottle to play Windows® games." : {
       "localizations" : {
         "af" : {
@@ -24764,6 +24794,9 @@
           }
         }
       }
+    },
+    "Mythic is setting up the default filesystem container for Windows®.\nThis shouldn't take too long." : {
+
     },
     "Mythic is unable to connect to the internet. App functionality will be limited." : {
       "localizations" : {
@@ -30094,6 +30127,9 @@
         }
       }
     },
+    "Rosetta 2 enables a Mac with Apple silicon to use apps\nbuilt for a Mac with an Intel processor.\n\nIt's a key component for Windows® game functionality.\n\nTo install Rosetta, you must confirm you have read and agreed\nto the terms of the software license agreement." : {
+
+    },
     "Search" : {
       "localizations" : {
         "af" : {
@@ -30473,6 +30509,9 @@
           }
         }
       }
+    },
+    "Setting up default bottle..." : {
+
     },
     "Settings" : {
       "localizations" : {
@@ -32756,6 +32795,12 @@
           }
         }
       }
+    },
+    "Stop installing Mythic Engine" : {
+
+    },
+    "Stop installing Rosetta 2" : {
+
     },
     "Store" : {
       "localizations" : {

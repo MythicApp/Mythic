@@ -743,5 +743,5 @@ struct OnboardingEvo: View {
 }
 
 #Preview {
-    OnboardingEvo(fromChapter: .logo)
+    OnboardingEvo(fromChapter: .signIn)
 }

@@ -42,9 +42,8 @@
 		6A721B2D2B8B3D5A00A4EA3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A721B2C2B8B3D5A00A4EA3C /* AppDelegate.swift */; };
 		6A7A81132B76F9E900D19E32 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81122B76F9E900D19E32 /* Task.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
-		6A7A81182B77097200D19E32 /* OnboardingEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81172B77097200D19E32 /* OnboardingEvo.swift */; };
 		6A7F00B12B231EDF00D801CD /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */; };
-		6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */; };
+		6A8109DE2B822B9E00DF5034 /* GameInstallProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8109DD2B822B9E00DF5034 /* GameInstallProgress.swift */; };
 		6A9866802BB090920069BEFE /* Process.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A98667F2BB090910069BEFE /* Process.swift */; };
 		6AA6CCE32AD52B2600F664A5 /* LegendaryInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE22AD52B2600F664A5 /* LegendaryInterface.swift */; };
 		6AA6CCE72AD571C500F664A5 /* LegendaryInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA6CCE62AD571C500F664A5 /* LegendaryInterfaceExt.swift */; };
@@ -74,6 +73,7 @@
 		6ADF5ABB2B98B9710041D04E /* UninstallGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADF5ABA2B98B9710041D04E /* UninstallGameView.swift */; };
 		6ADFD97B2B975B3300557086 /* GameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADFD97A2B975B3300557086 /* GameCard.swift */; };
 		6AE4A9A32B44682E0060D483 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE4A9A22B44682E0060D483 /* Lock.swift */; };
+		6AE70ACE2BE4B2A200B76295 /* OnboardingEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7A81172B77097200D19E32 /* OnboardingEvo.swift */; };
 		6AEF7BC62BA6D873002FFE26 /* Downloads.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEF7BC52BA6D873002FFE26 /* Downloads.swift */; };
 		6AF0EB1F2AAD4E0A0044C09C /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0EB1E2AAD4E0A0044C09C /* Onboarding.swift */; };
 		6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF0EB202AAD4F1E0044C09C /* NotImplemented.swift */; };
@@ -120,7 +120,7 @@
 		6A7A81122B76F9E900D19E32 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		6A7A81172B77097200D19E32 /* OnboardingEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingEvo.swift; sourceTree = "<group>"; };
 		6A7F00B02B231EDF00D801CD /* StopDownloadAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
-		6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallationProgress.swift; sourceTree = "<group>"; };
+		6A8109DD2B822B9E00DF5034 /* GameInstallProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameInstallProgress.swift; sourceTree = "<group>"; };
 		6A82830D2AC71DAF005CA9AC /* Uninstall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Uninstall.swift; sourceTree = "<group>"; };
 		6A98667F2BB090910069BEFE /* Process.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Process.swift; sourceTree = "<group>"; };
 		6AA5307E2AB5E1DD002D238E /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -467,7 +467,7 @@
 				6AD506542AAFF52B008A28C1 /* Navigation */,
 				6A12FF8F2B73AFCE00AA948C /* BottleSettings.swift */,
 				6AAAFBA72B8323940072B5BB /* BottleList.swift */,
-				6A8109DD2B822B9E00DF5034 /* InstallationProgress.swift */,
+				6A8109DD2B822B9E00DF5034 /* GameInstallProgress.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -691,8 +691,9 @@
 				6AF0EB212AAD4F1E0044C09C /* NotImplemented.swift in Sources */,
 				6A00F2052AC5F7450054858A /* GameImport.swift in Sources */,
 				6ABEEEB52BA096BC00D24A4E /* Accounts.swift in Sources */,
+				6AE70ACE2BE4B2A200B76295 /* OnboardingEvo.swift in Sources */,
 				6ADF5AB72B9877C30041D04E /* GameListEvo.swift in Sources */,
-				6A8109DE2B822B9E00DF5034 /* InstallationProgress.swift in Sources */,
+				6A8109DE2B822B9E00DF5034 /* GameInstallProgress.swift in Sources */,
 				6AD506562AAFF671008A28C1 /* Home.swift in Sources */,
 				6A0BB7AB2B501A2200C8A693 /* LocalImport.swift in Sources */,
 				6A1C6F462AEFD9B100F89AE7 /* WineInterfaceExt.swift in Sources */,
@@ -729,7 +730,6 @@
 				6A6923522AD6D83D00157E3E /* Global.swift in Sources */,
 				6A7A81132B76F9E900D19E32 /* Task.swift in Sources */,
 				6A3E23DE2B74BE0A00A79969 /* NetworkMonitor.swift in Sources */,
-				6A7A81182B77097200D19E32 /* OnboardingEvo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -869,7 +869,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2611;
+				CURRENT_PROJECT_VERSION = 2614;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -910,7 +910,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2611;
+				CURRENT_PROJECT_VERSION = 2614;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

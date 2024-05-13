@@ -113,7 +113,7 @@ struct GameCard: View {
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid
                                         app.onboardingChapter = .engineDisclaimer
-                                        app.isFirstLaunch = true
+                                        app.isOnboardingPresented = true
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")
                                             .padding(5)

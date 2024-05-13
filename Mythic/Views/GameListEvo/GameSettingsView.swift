@@ -28,6 +28,9 @@ struct GameSettingsView: View {
     
     @State private var isFileSectionExpanded: Bool = true
     @State private var isWineSectionExpanded: Bool = true
+    @State private var isGameSectionExpanded: Bool = true
+    
+    @State private var isThumbnailURLChangeSheetPresented: Bool = false
     
     var body: some View {
         HStack {
@@ -96,6 +99,34 @@ struct GameSettingsView: View {
             Divider()
             
             Form {
+                Section("Options", isExpanded: $isGameSectionExpanded) {
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Thumbnail URL")
+                                
+                                Spacer()
+                            }
+                            HStack {
+                                Text(game.imageURL?.host ?? "Unknown")
+                                    .foregroundStyle(.secondary)
+                                    .truncationMode(.middle)
+                                    .lineLimit(1)
+                                
+                                Spacer()
+                            }
+                        }
+                        Spacer()
+                        Button("Change...") {
+                            isThumbnailURLChangeSheetPresented = true
+                        }
+                        .sheet(isPresented: $isThumbnailURLChangeSheetPresented) {
+                            
+                        }
+                        .disabled(game.type != .local)
+                    }
+                }
+                
                 Section("File", isExpanded: $isFileSectionExpanded) {
                     HStack {
                         Text("Move \"\(game.title)\"")

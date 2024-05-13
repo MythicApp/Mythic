@@ -14,13 +14,13 @@
 
 import SwiftUI
 import Sparkle
-import UserNotifications // TODO: TODO
+import UserNotifications
 
 // MARK: - Where it all begins!
 @main
 struct MythicApp: App {
     // MARK: - State Properties
-    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
+    @AppStorage("isFirstLaunch") var isOnboardingPresented: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
     @State var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false
@@ -59,10 +59,13 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isFirstLaunch {
+            if isOnboardingPresented {
+                /*
                 OnboardingEvo(fromChapter: onboardingChapter)
                     .transition(.opacity)
                     .frame(minWidth: 750, minHeight: 390)
+                 */
+                OnboardingR2()
                     .onAppear {
                         toggleTitleBar(false)
                         
@@ -89,7 +92,7 @@ struct MythicApp: App {
                     .task(priority: .background) {
                         if Libraries.isInstalled(), Wine.allBottles?["Default"] == nil {
                             onboardingChapter = .defaultBottleSetup
-                            isFirstLaunch = true
+                            isOnboardingPresented = true
                         }
                     }
                 
@@ -113,7 +116,7 @@ struct MythicApp: App {
                             Alert(
                                 title: Text("Time for an update!"),
                                 message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
-                                primaryButton: .default(Text("Update")), // TODO: download over previous engine
+                                primaryButton: .default(Text("Update")), // TODO: implement
                                 secondaryButton: .cancel(Text("Later"))
                             )
                         case .bootError:
@@ -137,10 +140,10 @@ struct MythicApp: App {
                 Button("Check for Updates...", action: updaterController.updater.checkForUpdates)
                     .disabled(!updaterController.updater.canCheckForUpdates)
                 
-                if !isFirstLaunch {
+                if !isOnboardingPresented {
                     Button("Restart Onboarding...") {
                         withAnimation(.easeInOut(duration: 2)) {
-                            isFirstLaunch = true
+                            isOnboardingPresented = true
                         }
                     }
                 }
