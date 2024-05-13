@@ -489,6 +489,14 @@ struct OnboardingR2: View {
             }
             .foregroundStyle(.white)
             .frame(width: 450)
+            
+            VStack {
+                Spacer()
+                Text("(alpha)")
+                    .font(.footnote)
+                    .foregroundStyle(.placeholder)
+                    .padding(.bottom)
+            }
         }
         .task(priority: .background) {
             discordRPC.setPresence({
