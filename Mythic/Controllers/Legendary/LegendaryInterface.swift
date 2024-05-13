@@ -317,7 +317,7 @@ class Legendary {
         return try await withCheckedThrowingContinuation { continuation in
             Task.sync {
                 do {
-                    var isLoggedIn = true
+                    var isLoggedIn = false
                     
                     try await command(
                         arguments: ["auth", "--code", authKey],

@@ -141,9 +141,9 @@ struct OnboardingR2: View {
             Task(priority: .userInitiated) {
                 isSigningIn = true
                 do {
-                    _ = try await Legendary.signIn(authKey: epicSigninAuthKey)
+                    epicUnsuccessfulSignInAttempt = !(try await Legendary.signIn(authKey: epicSigninAuthKey))
                 } catch {
-                    epicUnsuccessfulSignInAttempt = true
+                    errorString = error.localizedDescription
                 }
                 isSigningIn = false
             }
