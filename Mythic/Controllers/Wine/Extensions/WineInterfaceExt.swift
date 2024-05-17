@@ -71,6 +71,19 @@ extension Wine {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool // TODO: FIXME: turn into func
+        // var windowsVersion: WindowsVersion
+    }
+    
+    enum WindowsVersion: String, Codable {
+        case win11 = "11"
+        case win10 = "10"
+        case win8_1 = "8.1" // swiftlint:disable:this identifier_name
+        case win8 = "8"
+        case win7 = "7"
+        case win2008 = "2008"
+        case winvista = "Vista"
+        case win2003 = "2003"
+        case winxp = "XP"
     }
     
     enum BottleScope: String, CaseIterable {
