@@ -121,7 +121,15 @@ struct GameSettingsView: View {
                             isThumbnailURLChangeSheetPresented = true
                         }
                         .sheet(isPresented: $isThumbnailURLChangeSheetPresented) {
-                            
+                            TextField( // TODO: better implementation
+                                "Enter New Thumbnail URL here...",
+                                text: Binding(
+                                    get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
+                                    set: { game.imageURL = .init(string: $0) }
+                                             )
+                            )
+                            .truncationMode(.tail)
+                            .padding()
                         }
                         .disabled(game.type != .local)
                     }
@@ -194,6 +202,7 @@ struct GameSettingsView: View {
                 Section("Wine", isExpanded: $isWineSectionExpanded) {
                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                 }
+                // TODO: DXVK
                 .disabled(game.platform != .windows)
                 .disabled(!Engine.exists)
                 .onChange(of: selectedBottle) { game.bottleName = $1 }
