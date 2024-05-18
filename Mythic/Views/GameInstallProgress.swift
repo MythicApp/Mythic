@@ -20,30 +20,36 @@ struct GameInstallProgressView: View {
     var body: some View {
         if let game = operation.current?.game {
             HStack {
-                Button {
-                    isInstallStatusViewPresented = true
-                } label: {
-                    if let percentage = operation.status.progress?.percentage {
-                        ProgressView(value: percentage, total: 100)
-                            .progressViewStyle(.linear)
-                            .help("\(Int(percentage))% complete")
-                    } else {
-                        ProgressView()
-                            .progressViewStyle(.linear)
-                            .help("Initializing...")
-                    }
+                if let percentage = operation.status.progress?.percentage {
+                    ProgressView(value: percentage, total: 100)
+                        .progressViewStyle(.linear)
+                        .help("\(Int(percentage))% complete")
+                        .buttonStyle(.plain)
+                } else {
+                    ProgressView()
+                        .progressViewStyle(.linear)
+                        .help("Initializing...")
+                        .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
                 
                 if withPercentage, let percentage = operation.status.progress?.percentage {
                     Text("\(Int(percentage))%")
                 }
+                
+                Button {
+                    isInstallStatusViewPresented = true
+                } label: {
+                    Image(systemName: "info")
+                        .padding([.vertical, .trailing], 5)
+                }
+                .clipShape(.circle)
+                .help("Stop installing \"\(game.title)\"")
                     
                 Button {
                     isStopGameModificationAlertPresented = true
                 } label: {
                     Image(systemName: "xmark")
-                        .padding(5)
+                        .padding([.vertical, .trailing], 5)
                         .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
                 }
                 .clipShape(.circle)
