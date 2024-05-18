@@ -179,7 +179,7 @@ struct OnboardingEvo: View {
                                     currentChapter = .signIn
                                 } else if Legendary.signedIn() {
                                     currentChapter = .greetings
-                                } else if !Libraries.isInstalled() {
+                                } else if !Engine.exists {
                                     currentChapter = .engineDisclaimer
                                 } else if Wine.allBottles?["Default"] == nil {
                                     currentChapter = .defaultBottleSetup
@@ -325,7 +325,7 @@ struct OnboardingEvo: View {
                                 withAnimation(.easeInOut(duration: 1)) {
                                     isGreetingsOpacityAnimated = false
                                 } completion: {
-                                    if !Libraries.isInstalled() {
+                                    if !Engine.exists {
                                         currentChapter = .engineDisclaimer
                                     } else if Wine.allBottles?["Default"] == nil {
                                         currentChapter = .defaultBottleSetup
@@ -424,7 +424,7 @@ struct OnboardingEvo: View {
                                 currentChapter.next()
                             }
                             Task(priority: .userInitiated) {
-                                Libraries.install(
+                                Engine.install(
                                     downloadProgressHandler: { progress in
                                         librariesDownloadProgress = progress
                                         
@@ -622,7 +622,7 @@ struct OnboardingEvo: View {
                         }
                         
                         Task(priority: .userInitiated) {
-                            if Libraries.isInstalled() {
+                            if Engine.exists {
                                 await Wine.boot(name: "Default") { result in
                                     switch result {
                                     case .success:

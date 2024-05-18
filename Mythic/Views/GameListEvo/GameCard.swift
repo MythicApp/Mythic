@@ -108,7 +108,7 @@ struct GameCard: View {
                                 GameInstallProgressView()
                                     .padding(.horizontal)
                             } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
-                                if case .windows = game.platform, !Libraries.isInstalled() {
+                                if case .windows = game.platform, !Engine.exists {
                                     // MARK: Engine Install Button
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid

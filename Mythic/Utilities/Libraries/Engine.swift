@@ -1,5 +1,5 @@
 //
-//  Libraries.swift
+//  Engine.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 24/10/2023.
@@ -22,46 +22,77 @@ import SwiftyJSON
 import OSLog
 import UserNotifications
 
-// MARK: - Libraries Class
-/// Manages the installation, removal, and versioning of Mythic's libraries. (Mythic Engine)
-class Libraries {
+// MARK: - Engine Class
+/// Manages the installation, removal, and versioning of Mythic Engine.
+class Engine {
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
-        category: "Libraries"
+        category: "Engine"
     )
     
     /// The directory where Mythic Engine is installed.
-    static let directory = Bundle.appHome!.appending(path: "Libraries")
+    static let directory = Bundle.appHome!.appending(path: "Engine")
+    static let properties = try? Data(contentsOf: directory.appending(path: "properties.plist"))
     
     private static let dataLock = NSLock()
     
-    static func
-    
-    // MARK: - isInstalled Method
-    /**
-     Checks if Mythic Engine is installed.
-     
-     - Returns: `true` if installed, `false` otherwise.
-     */
-    static func isInstalled() -> Bool {
+    static var exists: Bool {
         guard files.fileExists(atPath: directory.path) else { return false }
-        // defaults.register(defaults: ["engineChecksum": checksum!])
-        return true // defaults.string(forKey: "engineChecksum") == checksum
+        return true
+    }
+    
+    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/7.7/Engine.zip")!) { tempfile, response, error in
+                guard error == nil else { continuation.resume(throwing: error!); return }
+                guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
+                
+                if let tempfile = tempfile {
+                    do {
+                        installHandler(false)
+                        let unzipProgress: Progress = .init()
+                        try files.unzipItem(at: tempfile, to: Bundle.appHome!, progress: unzipProgress)
+                        if unzipProgress.isFinished {
+                            let archive = Bundle.appHome!.appending(path: "Engine.txz")
+                            _ = try Process.execute("/usr/bin/tar", arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
+                            try files.removeItem(at: archive)
+                        }
+                        installHandler(true)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+            
+            download.resume()
+            
+            Task(priority: .utility) {
+                var debounce: Bool = false
+                while true {
+                    downloadHandler(download.progress)
+                    print("engine: download: \(download.progress.fractionCompleted * 100)% complete")
+                    try await Task.sleep(nanoseconds: 500000000) // 0.5 s
+                    if download.progress.isFinished { if !debounce { debounce = true } else { break } }
+                }
+            }
+            
+            continuation.resume()
+        }
     }
     
     // MARK: - getVersion Method
     /** Gets the version of the installed Mythic Engine.
      
-     - Returns: The semantic version of the installed libraries.
+     - Returns: The installed Mythic Engine version.
      */
     static func getVersion() -> SemanticVersion? {
-        guard isInstalled() else { return nil }
+        guard exists else { return nil }
         
         guard
-            let versionData = try? Data(contentsOf: directory.appending(path: "version.plist")),
-            let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: versionData)["version"]
+            let properties = properties,
+            let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: properties)["version"]
         else {
-            log.error("Unable to get installed GPTK version")
+            log.error("Unable to get installed Engine version")
             return nil
         }
         
@@ -118,7 +149,7 @@ class Libraries {
      */
     static func remove() throws {
         defer { dataLock.unlock() }
-        guard isInstalled() else { throw NotInstalledError() }
+        guard exists else { throw NotInstalledError() }
         
         dataLock.lock()
         try files.removeItem(at: directory)

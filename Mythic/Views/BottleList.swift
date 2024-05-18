@@ -126,7 +126,7 @@ struct BottleListView: View {
                     }())
                 }
             }
-        } else if !Libraries.isInstalled() {
+        } else if !Engine.exists {
             Text("Mythic Engine is not installed!")
                 .font(.bold(.title)())
             

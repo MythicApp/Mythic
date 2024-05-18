@@ -65,7 +65,7 @@ extension OnboardingView {
                 HStack {
                     // MARK: Close Button
                     Button("Close") {
-                        if /* alreadyShownCloseConfirmation == false || */ Libraries.isInstalled() == false {
+                        if /* alreadyShownCloseConfirmation == false || */ Engine.exists == false {
                             // alreadyShownCloseConfirmation = true
                             activeAlert = .closeConfirmation
                             isAlertPresented = true
@@ -110,8 +110,8 @@ extension OnboardingView {
                     Spacer()
                     
                     // MARK: Install Button
-                    Button(Libraries.isInstalled() ? "Installed" : "Install") {
-                        Libraries.install(
+                    Button(Engine.exists ? "Installed" : "Install") {
+                        Engine.install(
                             downloadProgressHandler: { progress in
                                 downloadProgress = progress
                                 
@@ -146,7 +146,7 @@ extension OnboardingView {
                             }
                         )
                     }
-                    .disabled(Libraries.isInstalled())
+                    .disabled(Engine.exists)
                     .buttonStyle(.borderedProminent)
                 }
             }

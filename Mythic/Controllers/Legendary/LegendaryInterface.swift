@@ -98,8 +98,9 @@ class Legendary {
         
         let output: CommandOutput = .init()
         
-        stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+        stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
@@ -348,7 +349,7 @@ class Legendary {
             throw GameDoesNotExistError(game)
         }
         
-        guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+        guard Engine.exists else { throw Engine.NotInstalledError() }
         guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
         
         DispatchQueue.main.async {
@@ -367,7 +368,7 @@ class Legendary {
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
         
         if game.platform == .windows {
-            arguments += ["--wine", Libraries.directory.appending(path: "Wine/bin/wine64").path]
+            arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
             environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
@@ -378,80 +379,6 @@ class Legendary {
             GameOperation.shared.launching = nil
         }
     }
-    
-    /*
-     static func play(game: Game, bottle: WhiskyInterface.Bottle) async {
-     var environmentVariables: [String: String] = Dictionary()
-     environmentVariables["WINEPREFIX"] = "/Users/blackxfiied/Library/Containers/xyz.blackxfiied.Mythic/Bottles/Test" // in containers, libraries in applicaiton support
-     
-     if let dxvkConfig = bottle.metadata["dxvkConfig"] as? [String: Any] {
-     if let dxvk = dxvkConfig["dxvk"] as? Bool {
-     print("dxvk: \(dxvk)")
-     }
-     if let dxvkAsync = dxvkConfig["dxvkAsync"] as? Bool {
-     print("dxvkAsync: \(dxvkAsync)")
-     }
-     if let dxvkHud = dxvkConfig["dxvkHud"] as? [String: Any] {
-     if let fps = dxvkHud["fps"] as? [String: Any] {
-     print("fps: \(fps)")
-     }
-     }
-     }
-     
-     if let fileVersion = bottle.metadata["fileVersion"] as? [String: Any] {
-     if let major = fileVersion["major"] as? Int {
-     print("fileVersion major: \(major)")
-     }
-     if let minor = fileVersion["minor"] as? Int {
-     print("fileVersion minor: \(minor)")
-     }
-     }
-     
-     if let metalConfig = bottle.metadata["metalConfig"] as? [String: Any] {
-     if let metalHud = metalConfig["metalHud"] as? Bool,
-     metalHud == true {
-     environmentVariables["MTL_HUD_ENABLED"] = "1"
-     }
-     if let metalTrace = metalConfig["metalTrace"] as? Bool {
-     print("metal trace: \(metalTrace)")
-     }
-     }
-     
-     if let wineConfig = bottle.metadata["wineConfig"] as? [String: Any] {
-     if let msync = wineConfig["msync"] as? Bool,
-     msync == true {
-     environmentVariables["WINEMSYNC"] = "1"
-     }
-     
-     if let windowsVersion = wineConfig["windowsVersion"] as? String {
-     print("windowsVersion: \(windowsVersion.trimmingPrefix("win"))")
-     }
-     
-     if let wineVersion = wineConfig["wineVersion"] as? [String: Any] {
-     if let major = wineVersion["major"] as? Int {
-     print("wineVersion major: \(major)")
-     }
-     if let minor = wineVersion["minor"] as? Int {
-     print("wineVersion minor: \(minor)")
-     }
-     if let patch = wineVersion["patch"] as? Int {
-     print("wineVersion patch: \(patch)")
-     }
-     }
-     }
-     
-     _ = await command(args: [
-     "launch",
-     game.id,
-     "--wine",
-     "/Users/blackxfiied/Library/Application Support/com.isaacmarovitz.Whisky/Libraries/Wine/bin/wine64"
-     ]
-     .compactMap { $0 },
-     useCache: false,
-     additionalEnvironmentVariables: environmentVariables
-     )
-     }
-     */
     
     // MARK: Get Game Platform Method
     /**

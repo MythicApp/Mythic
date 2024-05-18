@@ -79,7 +79,7 @@ class LocalGames {
                 log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
             }
         case .windows: // FIXME: unneeded unification
-            guard Libraries.isInstalled() else { throw Libraries.NotInstalledError() }
+            guard Engine.exists else { throw Engine.NotInstalledError() }
             guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
             
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")

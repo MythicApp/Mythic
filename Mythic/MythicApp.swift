@@ -82,15 +82,15 @@ struct MythicApp: App {
                     .frame(minWidth: 750, minHeight: 390)
                     .onAppear { toggleTitleBar(true) }
                     .task(priority: .medium) {
-                        if let latestVersion = Libraries.fetchLatestVersion(),
-                           let currentVersion = Libraries.getVersion(),
+                        if let latestVersion = Engine.fetchLatestVersion(),
+                           let currentVersion = Engine.getVersion(),
                            latestVersion > currentVersion {
                             activeAlert = .updatePrompt
                             isAlertPresented = true // TODO: add to onboarding chapter
                         }
                     }
                     .task(priority: .background) {
-                        if Libraries.isInstalled(), Wine.allBottles?["Default"] == nil {
+                        if Engine.exists, Wine.allBottles?["Default"] == nil {
                             onboardingChapter = .defaultBottleSetup
                             isOnboardingPresented = true
                         }

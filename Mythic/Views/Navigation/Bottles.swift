@@ -36,7 +36,7 @@ struct BottlesView: View {
             }
         
             .toolbar {
-                if Libraries.isInstalled() {
+                if Engine.exists {
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
                             isBottleCreationViewPresented = true

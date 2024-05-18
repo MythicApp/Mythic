@@ -325,7 +325,7 @@ struct GameListView: View {
                                                         do {
                                                             switch game.type {
                                                             case .epic:
-                                                                if Libraries.isInstalled() {
+                                                                if Engine.exists {
                                                                     try await Legendary.launch(
                                                                         game: game,
                                                                         bottle: Wine.allBottles![game.bottleName]!,
@@ -352,8 +352,8 @@ struct GameListView: View {
                                                         }
                                                     }
                                                 } label: {
-                                                    Image(systemName: Libraries.isInstalled() ? "play.fill" : "arrow.down.circle.dotted") // .disabled when game is running
-                                                        .foregroundStyle(Libraries.isInstalled() ? .green : .orange)
+                                                    Image(systemName: Engine.exists ? "play.fill" : "arrow.down.circle.dotted") // .disabled when game is running
+                                                        .foregroundStyle(Engine.exists ? .green : .orange)
                                                         .padding()
                                                 }
                                                 .buttonStyle(.plain)

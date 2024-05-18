@@ -153,7 +153,7 @@ struct SettingsView: View {
                             message: .init("It'll have to be reinstalled in order to play Windows® games."),
                             primaryButton: .destructive(.init("Remove")) {
                                 do {
-                                    try Libraries.remove()
+                                    try Engine.remove()
                                     isEngineRemovalSuccessful = true
                                 } catch {
                                     isEngineRemovalSuccessful = false
@@ -168,8 +168,8 @@ struct SettingsView: View {
                     }
                 }
             }
-            .disabled(!Libraries.isInstalled())
-            .help(Libraries.isInstalled() ? "Mythic Engine is not installed." : .init())
+            .disabled(!Engine.exists)
+            .help(Engine.exists ? "Mythic Engine is not installed." : .init())
             
             Section("Epic", isExpanded: $isEpicSectionExpanded) {
                 HStack {

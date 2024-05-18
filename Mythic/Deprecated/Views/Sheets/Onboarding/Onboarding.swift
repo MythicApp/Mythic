@@ -62,7 +62,7 @@ struct OnboardingView: View {
             // MARK: - Action Buttons
             HStack {
                 // MARK: Close Button
-                if Libraries.isInstalled() {
+                if Engine.exists {
                     Button("Close") {
                         isPresented = false
                     }

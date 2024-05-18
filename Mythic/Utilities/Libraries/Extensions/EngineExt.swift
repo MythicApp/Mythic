@@ -1,5 +1,5 @@
 //
-//  LibrariesExt.swift
+//  EngineExt.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 25/10/2023.
@@ -16,7 +16,7 @@
 
 import Foundation
 
-extension Libraries {
+extension Engine {
     /// An error indicating that the libraries are already installed.
     struct AlreadyInstalledError: LocalizedError { 
         var errorDescription: String? = "Mythic Engine is already installed."

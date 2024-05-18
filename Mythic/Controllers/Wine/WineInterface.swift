@@ -154,7 +154,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     @available(*, message: "Revamped recently")
     static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
         let task = Process()
-        task.executableURL = Libraries.directory.appending(path: "Wine/bin/wine64")
+        task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
         
         let stdin: Pipe = .init()
         let stderr: Pipe = .init()

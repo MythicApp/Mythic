@@ -230,7 +230,7 @@ class GameOperation: ObservableObject {
                     
                     GameOperation.advance()
                 }
-            case .local: // this should literally never happen
+            case .local: // this should literally never happen how do you install a local game
                 DispatchQueue.main.asyncAndWait {
                     GameOperation.shared.current = nil
                 }
@@ -238,7 +238,7 @@ class GameOperation: ObservableObject {
         }
     }
     
-    @Published var status: GameOperation.InstallStatus = .init() // FIXME: replace tuple current
+    @Published var status: GameOperation.InstallStatus = .init()
     
     @Published var queue: [InstallArguments] = .init() {
         didSet { GameOperation.advance() }

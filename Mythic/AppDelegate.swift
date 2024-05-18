@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if Libraries.isInstalled() {
+        if Engine.exists {
             Wine.allBottles = Wine.allBottles // creates default bottle automatically due to custom getter
         }
         
