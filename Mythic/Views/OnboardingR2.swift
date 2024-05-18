@@ -44,12 +44,16 @@ struct OnboardingR2: View {
         mutating func next(forceNext: Bool = false) {
             let allCases = Self.allCases
             guard let currentIndex = allCases.firstIndex(of: self) else { return }
-            var nextIndex = allCases.index(after: currentIndex) % allCases.count
+            var nextIndex = allCases.index(after: currentIndex)
             if !forceNext {
                 if case .signin = allCases[nextIndex], Legendary.signedIn() {
-                    nextIndex = allCases.index(after: nextIndex)
-                } else if case .rosettaDisclaimer = allCases[nextIndex], Rosetta.exists {
-                    // TODO: do for rosetta
+                    nextIndex += 1
+                }
+                if case .rosettaDisclaimer = allCases[nextIndex], Rosetta.exists {
+                    nextIndex += 2 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
+                }
+                if case .engineDisclaimer = allCases[nextIndex], Engine.exists {
+                    nextIndex += 3 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
                 }
             }
             self = allCases[nextIndex]
@@ -92,6 +96,7 @@ struct OnboardingR2: View {
     
     @State private var installationProgress: Double = 0.0
     @State private var isStopInstallAlertPresented: Bool = false
+    @State private var engineInstallationComplete: Bool = false
     
     func nextAnimation() {
         withAnimation(.easeOut(duration: 2)) {
@@ -117,7 +122,9 @@ struct OnboardingR2: View {
         }
     }
     
+    var animationLock: NSLock = .init()
     func animateNextPhase(phase: Phase? = nil) {
+        animationLock.lock()
         withAnimation(.easeInOut(duration: 1)) {
             isOpacityAnimated = false
             isSecondRowPresented = false
@@ -132,6 +139,7 @@ struct OnboardingR2: View {
                 currentPhase.next()
             }
             nextAnimation()
+            animationLock.unlock()
         }
     }
     
@@ -352,19 +360,22 @@ struct OnboardingR2: View {
                                             )
                                         }
                                     }
-                                        .onAppear {
-                                            Task {
-                                                do {
-                                                    try await Rosetta.install(agreeToSLA: agreedToRosettaSLA) {
-                                                        installationProgress = $0
-                                                    }
-                                                } catch {
-                                                    errorString = error.localizedDescription
+                                        .task(priority: .userInitiated) {
+                                            do {
+                                                try await Rosetta.install(agreeToSLA: agreedToRosettaSLA) {
+                                                    installationProgress = $0
                                                 }
+                                            } catch {
+                                                errorString = error.localizedDescription
                                             }
                                         }
+                                    
                                         .onChange(of: installationProgress) {
                                             if $1 == 100 { animateNextPhase() }
+                                        }
+                                    
+                                        .onDisappear {
+                                            installationProgress = 0.0
                                         }
                                 )
                             )
@@ -403,28 +414,73 @@ struct OnboardingR2: View {
                                 label: Text("Downloading Mythic Engine..."),
                                 secondRow: .init(
                                     HStack {
-                                        ProgressView()
-                                            .progressViewStyle(.linear)
+                                        if installationProgress > 0.0 {
+                                            ProgressView(value: installationProgress)
+                                                .progressViewStyle(.linear)
+                                        } else {
+                                            ProgressView()
+                                                .progressViewStyle(.linear)
+                                        }
                                         
-                                        Text("?%")
+                                        Text("\(Int(installationProgress * 100))%")
                                             
                                         Button {
-                                            
+                                            isStopInstallAlertPresented = true
                                         } label: {
                                             Image(systemName: "xmark")
                                                 .padding(5)
                                                 .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
                                         }
                                         .clipShape(.circle)
-                                        .help("Stop installing Mythic Engine")
+                                        .help("Stop installing Mythic Engine (Not implemented)")
                                         .onHover { hovering in
                                             withAnimation(.easeInOut(duration: 0.1)) { isHoveringOverDestructiveButton = hovering }
                                         }
+                                        .alert(isPresented: $isStopInstallAlertPresented) {
+                                            Alert(
+                                                title: .init("Are you sure you want to stop installing Mythic Engine?"),
+                                                message: .init("This will limit your ability to play Windows® games."),
+                                                primaryButton: .destructive(.init("Stop")) {
+                                                    animateNextPhase()
+                                                },
+                                                secondaryButton: .cancel()
+                                            )
+                                        }
+                                        .disabled(true)
                                     }
                                 )
                             )
+                            .task(priority: .userInitiated) {
+                                do {
+                                    try await Engine.install(
+                                        downloadHandler: { progress in
+                                            installationProgress = progress.fractionCompleted
+                                        }, installHandler: { completion in
+                                            engineInstallationComplete = completion
+                                        }
+                                    )
+                                } catch {
+                                    errorString = error.localizedDescription
+                                }
+                            }
+                            .onChange(of: installationProgress) {
+                                if $1 == 1.0 { animateNextPhase() }
+                            }
+                            
                         case .engineInstaller: // MARK: Phase: Mythic Engine Installer (might get unified)
-                            do {}
+                            ContentView(
+                                isOpacityAnimated: $isOpacityAnimated,
+                                isSecondRowPresented: $isSecondRowPresented,
+                                isThirdRowPresented: $isThirdRowPresented,
+                                label: Text("Installing Mythic Engine..."),
+                                secondRow: .init(
+                                    ProgressView()
+                                        .progressViewStyle(.linear)
+                                )
+                            )
+                            .onChange(of: engineInstallationComplete) {
+                                if $1 == true { animateNextPhase() }
+                            }
                         case .defaultBottleSetup: // MARK: Phase: Default Bottle Setup
                             ContentView(
                                 isOpacityAnimated: $isOpacityAnimated,
@@ -444,19 +500,18 @@ struct OnboardingR2: View {
                                     }
                                 )
                             )
-                            .onAppear {
-                                Task(priority: .userInitiated) {
-                                    await Wine.boot(name: "Default") { result in
-                                        switch result {
-                                        case .success:
-                                            animateNextPhase()
-                                        case .failure(let failure):
-                                            // guard type(of: failure) != Wine.BottleAlreadyExistsError.self else { currentChapter = .finished; return }
-                                            errorString = failure.localizedDescription
-                                        }
+                            .task(priority: .userInitiated) {
+                                await Wine.boot(name: "Default") { result in
+                                    switch result {
+                                    case .success:
+                                        animateNextPhase()
+                                    case .failure(let failure):
+                                        guard type(of: failure) != Wine.BottleAlreadyExistsError.self else { animateNextPhase(); return }
+                                        errorString = failure.localizedDescription
                                     }
                                 }
                             }
+                            
                         case .finished: // MARK: Phase: Finished
                             ContentView(
                                 isOpacityAnimated: $isOpacityAnimated,
@@ -471,7 +526,25 @@ struct OnboardingR2: View {
                             )
                         }
                     } else {
-                        // TODO: Add error
+                        ContentView(
+                            isOpacityAnimated: $isOpacityAnimated,
+                            isSecondRowPresented: $isSecondRowPresented,
+                            isThirdRowPresented: $isThirdRowPresented,
+                            label: Text("Onboarding has failed to complete."),
+                            secondRow: .init(
+                                VStack {
+                                    Text("\(errorString!)")
+                                    Text("(Please restart Mythic.)")
+                                        .font(.caption)
+                                        .foregroundStyle(.placeholder)
+                                }
+                            ), thirdRow: []
+                        )
+                        .task {
+                            colorfulAnimationColors = [
+                                .init(hex: "#000000")
+                            ]
+                        }
                     }
                 }
                 .opacity(isOpacityAnimated ? 1.0 : 0.0)
@@ -614,6 +687,6 @@ extension OnboardingR2 {
 }
 
 #Preview {
-    OnboardingR2(fromPhase: .signin)
+    OnboardingR2(fromPhase: .logo)
         .environmentObject(NetworkMonitor())
 }

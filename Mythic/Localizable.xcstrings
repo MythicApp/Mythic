@@ -191,9 +191,6 @@
         }
       }
     },
-    "?%" : {
-
-    },
     "(%@ Elapsed)" : {
       "localizations" : {
         "af" : {
@@ -580,7 +577,11 @@
         }
       }
     },
+    "(alpha)" : {
+
+    },
     "(Don't worry, you can still install Mythic Engine later.)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -961,6 +962,7 @@
       }
     },
     "(please restart Mythic.)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1149,6 +1151,9 @@
           }
         }
       }
+    },
+    "(Please restart Mythic.)" : {
+
     },
     "(raw)" : {
       "localizations" : {
@@ -4220,6 +4225,7 @@
       }
     },
     "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4984,6 +4990,7 @@
       }
     },
     "Are you sure you want to skip Mythic Engine installation?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5172,6 +5179,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to skip this section?" : {
+
     },
     "Are you sure you want to stop %@ %@?" : {
       "localizations" : {
@@ -5368,6 +5378,12 @@
           }
         }
       }
+    },
+    "Are you sure you want to stop installing Mythic Engine?" : {
+
+    },
+    "Are you sure you want to stop installing Rosetta 2?" : {
+
     },
     "Are you sure you want to uninstall \"%@\"?" : {
       "localizations" : {
@@ -6889,6 +6905,9 @@
         }
       }
     },
+    "Change..." : {
+
+    },
     "Check for Updates..." : {
       "localizations" : {
         "af" : {
@@ -7080,6 +7099,7 @@
       }
     },
     "Check out Mythic Engine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -9557,6 +9577,7 @@
       }
     },
     "Default Bottle Setup" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10697,6 +10718,7 @@
       }
     },
     "Doing this means you can only play macOS-supported games.\n" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11840,6 +11862,7 @@
 
     },
     "Downloading Game Porting Toolkit..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13933,6 +13956,7 @@
       }
     },
     "Error installing GPTK." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -14887,6 +14911,7 @@
 
     },
     "Failed to install Mythic Engine." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15267,6 +15292,7 @@
       }
     },
     "Failed to set up default bottle." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18699,7 +18725,11 @@
         }
       }
     },
+    "In order to launch and run Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes,\nwith an average internet connection." : {
+
+    },
     "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~7 minutes or less,\ndepending on your internet connection." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18890,6 +18920,7 @@
       }
     },
     "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes or less,\ndepending on your internet connection." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -19078,9 +19109,6 @@
           }
         }
       }
-    },
-    "In order to launch Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes,\nwith an average internet connection." : {
-
     },
     "Initializing..." : {
       "localizations" : {
@@ -19846,6 +19874,7 @@
 
     },
     "Installed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -20226,6 +20255,7 @@
       }
     },
     "Installing Game Porting Toolkit..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23653,6 +23683,7 @@
       }
     },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -24606,6 +24637,7 @@
 
     },
     "Mythic is now setting up your default bottle to play Windows® games." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -24989,6 +25021,7 @@
       }
     },
     "Mythic setup is now complete." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25367,6 +25400,9 @@
           }
         }
       }
+    },
+    "Mythic was unable to sign you in. Please try again." : {
+
     },
     "Mythic!" : {
       "localizations" : {
@@ -26890,6 +26926,12 @@
           }
         }
       }
+    },
+    "Onboarding has failed to complete." : {
+
+    },
+    "Options" : {
+
     },
     "Performance HUD" : {
       "localizations" : {
@@ -31844,6 +31886,7 @@
       }
     },
     "Skip this step" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32796,7 +32839,7 @@
         }
       }
     },
-    "Stop installing Mythic Engine" : {
+    "Stop installing Mythic Engine (Not implemented)" : {
 
     },
     "Stop installing Rosetta 2" : {
@@ -33942,6 +33985,9 @@
         }
       }
     },
+    "This will limit your ability to play Windows® games." : {
+
+    },
     "This will sign you out of the account \"%@\"." : {
       "localizations" : {
         "af" : {
@@ -34131,6 +34177,9 @@
           }
         }
       }
+    },
+    "Thumbnail URL" : {
+
     },
     "Time for an update!" : {
       "localizations" : {
@@ -38135,6 +38184,9 @@
         }
       }
     },
+    "Where it reads:\n\"authorizationCode\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\nPaste the 32 character long text into the text field." : {
+
+    },
     "Wine" : {
       "localizations" : {
         "af" : {
@@ -38516,6 +38568,7 @@
       }
     },
     "Without Mythic Engine, you'll be unable to launch Windows® games." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

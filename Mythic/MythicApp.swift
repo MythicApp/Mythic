@@ -21,7 +21,7 @@ import UserNotifications
 struct MythicApp: App {
     // MARK: - State Properties
     @AppStorage("isFirstLaunch") var isOnboardingPresented: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
-    @State var onboardingChapter: OnboardingEvo.Chapter = .allCases.first!
+    @State var onboardingChapter: OnboardingR2.Phase = .allCases.first!
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false
     @State private var isInstallViewPresented: Bool = false
@@ -97,11 +97,6 @@ struct MythicApp: App {
                     }
                 
                 // MARK: - Other Properties
-                
-                    .sheet(isPresented: $isInstallViewPresented) {
-                        OnboardingView.InstallView(isPresented: $isInstallViewPresented)
-                    }
-                
                 // Reference: https://arc.net/l/quote/cflghpbh
                     .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
                         if newValue == false {
