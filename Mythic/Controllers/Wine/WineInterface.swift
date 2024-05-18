@@ -182,8 +182,9 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         let output: Legendary.CommandOutput = .init()
         
-        stderr.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+        stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
@@ -192,8 +193,9 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             completion(output)
         }
         
-        stdout.fileHandleForReading.readabilityHandler = { [stdin, output] handle in
+        stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
             guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
                 stdin.fileHandleForWriting.write(data)
@@ -218,13 +220,13 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // TODO: implement
     @available(*, message: "Not implemented completely.")
     static func launchWinetricks(prefix: URL) throws {
-        guard Libraries.isInstalled() else {
+        guard Engine.exists else {
             log.error("Unable to launch winetricks, Mythic Engine is not installed!")
-            throw Libraries.NotInstalledError()
+            throw Engine.NotInstalledError()
         }
         
         let task = Process()
-        task.executableURL = Libraries.directory.appending(path: "winetricks")
+        task.executableURL = Engine.directory.appending(path: "winetricks")
         task.environment = ["WINEPREFIX": prefix.path(percentEncoded: false)]
         do {
             try task.run()
@@ -250,7 +252,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         guard files.fileExists(atPath: baseURL.path) else { completion(.failure(FileLocations.FileDoesNotExistError(baseURL))); return }
         let bottleURL = baseURL.appending(path: name)
         
-        guard Libraries.isInstalled() else { completion(.failure(Libraries.NotInstalledError())); return }
+        guard Engine.exists else { completion(.failure(Engine.NotInstalledError())); return }
         guard FileLocations.isWritableFolder(url: baseURL) else { completion(.failure(FileLocations.FileNotModifiableError(bottleURL))); return }
         
         if !files.fileExists(atPath: bottleURL.path) {
@@ -308,7 +310,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     @discardableResult
     static func killAll(bottleURL: URL? = nil) -> Bool {
         let task = Process()
-        task.executableURL = Libraries.directory.appending(path: "Wine/bin/wineserver")
+        task.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
         task.arguments = ["-k"]
         
         if let bottleURL = bottleURL {
