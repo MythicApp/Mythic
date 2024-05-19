@@ -12815,6 +12815,9 @@
         }
       }
     },
+    "Enter New Thumbnail URL here..." : {
+
+    },
     "Enter the 'authorisationCode' from the JSON response in the field below." : {
       "localizations" : {
         "af" : {
@@ -15673,6 +15676,7 @@
       }
     },
     "Favourites (Not implemented yet)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

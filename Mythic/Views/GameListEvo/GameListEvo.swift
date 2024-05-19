@@ -13,8 +13,6 @@ struct GameListEvo: View {
     
     @State private var isGameImportViewPresented: Bool = false
     
-    private let unifiedGames = (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? [])
-    
     private var games: [Game] {
         return unifiedGames
             .filter {

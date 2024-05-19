@@ -49,8 +49,6 @@ struct HomeView: View {
     @State private var isAlertPresented: Bool = false
     @State private var activeAlert: ActiveAlert = .launchError
     
-    @State private var animateStar: Bool = false
-    let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so lengthy on swift to repeat something every 2 seconds
     @Environment(\.colorScheme) var colorScheme
     
     // MARK: - Body
@@ -67,18 +65,20 @@ struct HomeView: View {
             VStack {
                 // MARK: View 1 (Top)
                 VStack {
-                    Image(systemName: animateStar ? "star.fill" : "calendar.badge.clock")
-                        .resizable()
-                        .symbolRenderingMode(.palette)
-                        .contentTransition(.symbolEffect(.replace.upUp.byLayer))
-                        .foregroundStyle(animateStar ? .yellow : .yellow, (colorScheme == .light ? .black : .white))
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 35, height: 35)
-                        .onReceive(animateStarTimer) { _ in
-                            animateStar.toggle()
+                    if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
+                        ScrollView(.horizontal) {
+                            LazyHStack {
+                                ForEach(unifiedGames.filter({ $0.isFavourited == true }), id: \.self) { game in
+                                    CompactGameCard(game: .constant(game))
+                                }
+                            }
                         }
-                    
-                    Text("Favourites (Not implemented yet)")
+                    } else {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("No games are favourited.")
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)

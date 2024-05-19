@@ -36,6 +36,8 @@ let mainLock: NSRecursiveLock = .init()
 
 let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
 
+let unifiedGames = (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? [])
+
 struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
 }
@@ -70,16 +72,18 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         hasher.combine(id)
         hasher.combine(platform)
         hasher.combine(imageURL)
+        hasher.combine(wideImageURL)
         hasher.combine(path)
     }
     
     // MARK: Initializer
-    init(type: GameType, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, path: String? = nil) {
+    init(type: GameType, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
         self.type = type
         self.title = title
         self.id = id ?? UUID().uuidString
         self.platform = platform
         self.imageURL = imageURL
+        self.wideImageURL = wideImageURL
         self.path = path
     }
     
@@ -97,6 +101,12 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     private var _imageURL: URL?
     var imageURL: URL? {
         get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        set { _imageURL = newValue }
+    }
+    
+    private var _wideImageURL: URL?
+    var wideImageURL: URL? {
+        get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .normal)) : nil) }
         set { _imageURL = newValue }
     }
 

@@ -90,7 +90,6 @@ struct GameCard: View {
                             Text(game.title)
                                 .font(.bold(.title3)())
                                 // .foregroundStyle(.white)
-                                .padding(.leading)
                             
                             SubscriptedTextView(game.type.rawValue)
                             
@@ -101,6 +100,7 @@ struct GameCard: View {
                             
                             Spacer()
                         }
+                        .padding(.leading)
                         
                         // MARK: Button Stack
                         HStack {
@@ -156,6 +156,7 @@ struct GameCard: View {
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
+                                    // ! Changes made here must also be reflected in CompactGameCard's play button
                                     if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
