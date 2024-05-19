@@ -26,11 +26,13 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 - [x] Discord Integration
 
 
-There are more big things coming your way for Mythic's full release, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
+There are more big things coming your way for Mythic, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
 If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or create a [pull request](https://github.com/MythicApp/Mythic/compare).
 
 ## Download
-We're working our hardest to release Mythic. For now, sign up for the [waitlist](https://getmythic.app).
+At midnight on the 19th of May, Mythic finally released!
+
+[Download it now!](https://github.com/MythicApp/Mythic/releases)
 
 ## Dependencies
 Mythic uses the following Swift dependencies:
