@@ -49,7 +49,7 @@ struct OnboardingR2: View {
                 if case .signin = allCases[nextIndex], Legendary.signedIn() {
                     nextIndex += 1
                 }
-                if case .rosettaDisclaimer = allCases[nextIndex], Rosetta.exists {
+                if case .rosettaDisclaimer = allCases[nextIndex], (Rosetta.exists || !workspace.isARM()) {
                     nextIndex += 2 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
                 }
                 if case .engineDisclaimer = allCases[nextIndex], Engine.exists {
