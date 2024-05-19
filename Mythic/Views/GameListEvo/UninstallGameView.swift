@@ -113,6 +113,8 @@ struct UninstallViewEvo: View {
                                     isUninstallationErrorPresented = true
                                 }
                             }
+                            
+                            isPresented = false
                         },
                         secondaryButton: .cancel(Text("Cancel")) {
                             isConfirmationPresented = false
