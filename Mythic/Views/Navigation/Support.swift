@@ -23,45 +23,44 @@ struct SupportView: View {
     @ObservedObject var operation: GameOperation = .shared
     @State private var optionalPacks: [String: String] = .init()
     
+    @State private var discordWidgetIsLoading: Bool = false
     var body: some View {
         HStack {
             VStack {
-                
+                WebView(
+                    loadingError: Binding(get: {false}, set: {_ in}), // FIXME: terrible placeholders, webview refactor soon
+                    canGoBack: Binding(get: {false}, set: {_ in}),
+                    canGoForward: Binding(get: {false}, set: {_ in}),
+                    isLoading: $discordWidgetIsLoading,
+                    urlString: "https://discord.com/widget?id=1154998702650425397&theme=dark"
+                )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
-            .shimmering(
-                animation: .easeInOut(duration: 1)
-                    .repeatForever(autoreverses: false),
-                bandSize: 1
-            )
             
             VStack {
-                VStack {
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
-                .shimmering(
-                    animation: .easeInOut(duration: 1)
-                        .repeatForever(autoreverses: false),
-                    bandSize: 1
+                WebView(
+                    loadingError: Binding(get: {false}, set: {_ in}),
+                    canGoBack: Binding(get: {false}, set: {_ in}),
+                    canGoForward: Binding(get: {false}, set: {_ in}),
+                    isLoading: $discordWidgetIsLoading,
+                    urlString: "https://patreon.com/mythicapp"
                 )
-                
-                VStack {
-                    
+                .overlay(alignment: .bottomTrailing) {
+                    Button {
+                        workspace.open(.init(string: "https://patreon.com/mythicapp")!)
+                    } label: {
+                        Image(systemName: "arrow.up.forward")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .padding()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
-                .shimmering(
-                    animation: .easeInOut(duration: 1)
-                        .repeatForever(autoreverses: false),
-                    bandSize: 1
-                )
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.background)
+            .clipShape(.rect(cornerRadius: 10))
         }
         .padding()
         
