@@ -38,7 +38,6 @@ let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's disco
 
 var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
 
-
 struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
 }
