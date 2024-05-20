@@ -404,7 +404,16 @@ struct OnboardingR2: View {
                                     .multilineTextAlignment(.center)
                                 ), thirdRow: [
                                     .nextArrow(function: { animateNextPhase() }),
-                                    .skipArrow(function: { isSkipAlertPresented = true })
+                                    .skipArrow(function: { isSkipAlertPresented = true }),
+                                    .help(content: .init(
+                                        Text("""
+                                        Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),
+                                        which combines wine and D3DMetal, to create a windows gaming experience on macOS.
+                                        Similar to Proton, Mythic Engine attempts to be an emulator-like experience that
+                                        enables native Windows games to be playable on macOS, while coming closer to native
+                                        performance than ever before. (performance will vary between games)
+                                        """)
+                                    ))
                                 ]
                             )
                         case .engineDownloader: // MARK: Phase: Mythic Engine Downloader
