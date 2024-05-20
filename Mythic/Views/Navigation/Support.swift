@@ -26,6 +26,7 @@ struct SupportView: View {
     @State private var discordWidgetIsLoading: Bool = false
     var body: some View {
         HStack {
+            Text("\(Engine.fetchLatestVersion())")
             VStack {
                 WebView(
                     loadingError: Binding(get: {false}, set: {_ in}), // FIXME: terrible placeholders, webview refactor soon

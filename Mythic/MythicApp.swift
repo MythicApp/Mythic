@@ -83,7 +83,7 @@ struct MythicApp: App {
                     .onAppear { toggleTitleBar(true) }
                     .task(priority: .medium) {
                         if let latestVersion = Engine.fetchLatestVersion(),
-                           let currentVersion = Engine.getVersion(),
+                           let currentVersion = Engine.version,
                            latestVersion > currentVersion {
                             activeAlert = .updatePrompt
                             isAlertPresented = true // TODO: add to onboarding chapter

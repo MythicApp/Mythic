@@ -30,15 +30,28 @@ class Engine {
         category: "Engine"
     )
     
+    private static let lock = NSLock()
+    
     /// The directory where Mythic Engine is installed.
     static let directory = Bundle.appHome!.appending(path: "Engine")
-    static let properties = try? Data(contentsOf: directory.appending(path: "properties.plist"))
     
-    private static let dataLock = NSLock()
+    /// The file location of Mythic Engine's property list.
+    static let properties = try? Data(contentsOf: directory.appending(path: "properties.plist"))
     
     static var exists: Bool {
         guard files.fileExists(atPath: directory.path) else { return false }
         return true
+    }
+    
+    static var version: SemanticVersion? {
+        guard exists else { return nil }
+        guard let properties = properties,
+              let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: properties)["version"]
+        else {
+            log.error("Unable to get installed engine version.")
+            return nil
+        }
+        return version
     }
     
     static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
@@ -80,25 +93,6 @@ class Engine {
         }
     }
     
-    // MARK: - getVersion Method
-    /** Gets the version of the installed Mythic Engine.
-     
-     - Returns: The installed Mythic Engine version.
-     */
-    static func getVersion() -> SemanticVersion? {
-        guard exists else { return nil }
-        
-        guard
-            let properties = properties,
-            let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: properties)["version"]
-        else {
-            log.error("Unable to get installed Engine version")
-            return nil
-        }
-        
-        return version
-    }
-    
     // MARK: - fetchLatestVersion Method
     /**
      Fetches the latest version of Mythic Engine.
@@ -106,52 +100,35 @@ class Engine {
      - Returns: The semantic version of the latest libraries.
      */
     static func fetchLatestVersion() -> SemanticVersion? {
-        guard let currentVersion = getVersion() else {
-            return nil
-        }
-        
-        let session = URLSession(configuration: .default)
         let group = DispatchGroup()
-        var latestVersion: SemanticVersion = currentVersion
+        var latestVersion: SemanticVersion?
         
-        group.enter()
-        session.dataTask(
-            with: URL(string: "https://raw.githubusercontent.com/MythicApp/GPTKBuilder/main/version.plist")!
-        ) { (data, _, error) in
+        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/7.7/properties.plist")!) { data, _, error in
             defer { group.leave() }
             
-            guard error == nil else {
-                log.error("Unable to check for new GPTK version: \(error?.localizedDescription ?? "Unknown Error.")")
-                return
-            }
-            
-            guard let data = data else {
-                return
-            }
+            guard error == nil else { log.error("Unable to check for new Engine version: \(error!.localizedDescription)"); return }
+            guard let data = data else { log.error("Fetching latest Engine version returned no data"); return }
             
             do {
-                latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"] ?? latestVersion
+                latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"]
             } catch {
-                log.error("Unable to decode upstream GPTK version.")
+                log.error("Unable to decode upstream Engine version.")
             }
         }
-        .resume()
-        group.wait()
+        
+        group.enter()
+        task.resume()
+        _ = group.wait(timeout: .now() + 2)
         
         return latestVersion
     }
     
-    // MARK: - Remove Method
-    /**
-     Removes Mythic Engine.
-     
-     - Parameter completion: A closure to be called upon completion of the removal.
-     */
+    /// Removes Mythic Engine.
     static func remove() throws {
-        defer { dataLock.unlock() }
+        defer { lock.unlock() }
         guard exists else { throw NotInstalledError() }
         
-        dataLock.lock()
+        lock.lock()
         try files.removeItem(at: directory)
     }
 }
