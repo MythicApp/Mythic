@@ -2115,6 +2115,16 @@
         }
       }
     },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "%@ %@ (%@)" : {
       "localizations" : {
         "af" : {
@@ -26934,6 +26944,9 @@
       }
     },
     "Onboarding has failed to complete." : {
+
+    },
+    "Open Bottles directory" : {
 
     },
     "Options" : {
