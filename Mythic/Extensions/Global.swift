@@ -205,8 +205,7 @@ class GameOperation: ObservableObject {
     @Published var current: InstallArguments? = nil {
         didSet {
             // @ObservedObject var operation: GameOperation = .shared
-            guard GameOperation.shared.current != oldValue else { return } // FIXME: might cause lag
-            guard GameOperation.shared.current != nil else { return }
+            guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
             switch GameOperation.shared.current!.game.type {
             case .epic:
                 Task(priority: .high) { [weak self] in

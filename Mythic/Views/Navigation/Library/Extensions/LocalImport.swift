@@ -102,7 +102,7 @@ extension LibraryView.GameImportView {
                         
                         HStack {
                             VStack {
-                                HStack { // FIXME: jank
+                                HStack {
                                     Text("Where is the game located?")
                                     Spacer()
                                 }

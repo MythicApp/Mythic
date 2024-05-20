@@ -151,7 +151,7 @@ struct GameSettingsView: View {
                                 openPanel.directoryURL = .init(filePath: game.path ?? .init())
                                 
                                 if case .OK = openPanel.runModal(), let newLocation = openPanel.urls.first {
-                                    Task.sync { // FIXME: can lock main, replace with async and progressview
+                                    Task {
                                         do {
                                             moving = true
                                             try await game.move(to: newLocation)
