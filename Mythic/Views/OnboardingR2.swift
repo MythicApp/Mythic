@@ -50,6 +50,7 @@ struct OnboardingR2: View {
                     nextIndex += 1
                 }
                 if case .rosettaDisclaimer = allCases[nextIndex], (Rosetta.exists || !workspace.isARM()) {
+                    // swiftlint:disable:previous control_statement
                     nextIndex += 2 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
                 }
                 if case .engineDisclaimer = allCases[nextIndex], Engine.exists {
