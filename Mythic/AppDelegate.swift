@@ -40,21 +40,18 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if Engine.exists {
-            Wine.allBottles = Wine.allBottles // creates default bottle automatically due to custom getter
-        }
+        if Engine.exists { _ = Wine.allBottles } // creates default bottle automatically because of custom getter
         
         // MARK: Applications folder disclaimer
-#if !DEBUG // TODO: possibly turn this into an onboarding-style message.
+        // TODO: possibly turn this into an onboarding-style message.
+#if !DEBUG
         let appURL = Bundle.main.bundleURL
         
         // MARK: Move to Applications
         if !appURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
             alert.messageText = "Move Mythic to the Applications folder?"
-            alert.informativeText = """
-            Mythic has detected it's running outside of the applications folder.
-            """
+            alert.informativeText = "Mythic has detected it's running outside of the applications folder."
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
@@ -103,9 +100,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             alert.informativeText = "Mythic is still modifying games."
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
-            let result = alert.runModal()
-            
-            if result == .alertFirstButtonReturn {
+            if alert.runModal() == .alertFirstButtonReturn {
                 return .terminateNow
             } else {
                 return .terminateCancel

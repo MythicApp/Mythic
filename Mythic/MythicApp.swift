@@ -19,6 +19,8 @@ import UserNotifications
 // MARK: - Where it all begins!
 @main
 struct MythicApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     // MARK: - State Properties
     @AppStorage("isFirstLaunch") var isOnboardingPresented: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
     @State var onboardingChapter: OnboardingR2.Phase = .allCases.first!
