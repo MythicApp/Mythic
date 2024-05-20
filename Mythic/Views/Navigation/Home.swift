@@ -67,7 +67,7 @@ struct HomeView: View {
                 VStack {
                     if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
                         ScrollView(.horizontal) {
-                            LazyHStack {
+                            LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
                                 ForEach(unifiedGames.filter({ $0.isFavourited == true }), id: \.self) { game in
                                     CompactGameCard(game: .constant(game))
                                 }
@@ -121,4 +121,5 @@ struct HomeView: View {
 // MARK: - Preview
 #Preview {
     HomeView()
+        .environmentObject(NetworkMonitor())
 }
