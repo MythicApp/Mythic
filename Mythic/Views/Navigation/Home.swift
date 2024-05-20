@@ -70,6 +70,7 @@ struct HomeView: View {
                             LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
                                 ForEach(unifiedGames.filter({ $0.isFavourited == true }), id: \.self) { game in
                                     CompactGameCard(game: .constant(game))
+                                        .padding(5)
                                 }
                             }
                         }
@@ -82,7 +83,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
+                .clipShape(.rect(cornerRadius: 20))
                 
                 // MARK: View 2 (Bottom)
                 VStack {
@@ -90,7 +91,7 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
+                .clipShape(.rect(cornerRadius: 20))
             }
         }
         .navigationTitle("Home")
