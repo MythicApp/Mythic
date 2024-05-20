@@ -151,7 +151,7 @@ struct DownloadCard: View {
                                 
                                 if operation.current?.game == game {
                                     HStack {
-                                        Text("\(Int(operation.status.progress?.percentage ?? 0))% • ↓ \(Int(operation.status.downloadSpeed?.raw ?? 0.0)) MB/s • ⏲︎ \(operation.status.progress?.eta ?? "00:00:00")")
+                                        Text("\(Int(operation.status.progress?.percentage ?? 0))% • ↓ \(Int(operation.status.downloadSpeed?.raw ?? 0.0) * (1000000/1048576)) MB/s • ⏲︎ \(operation.status.progress?.eta ?? "00:00:00")")
                                             .foregroundStyle(.tertiary)
                                             .font({
                                                 switch style {
