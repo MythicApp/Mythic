@@ -25,22 +25,9 @@ extension LibraryView.GameImportView {
         @Binding var isGameListRefreshCalled: Bool
         
         @State private var game: Game = .init(type: .local, title: .init())
+        @State private var title: String = .init()
         @State private var platform: GamePlatform = .macOS
         @State private var path: String = .init()
-        
-        private func updateGameTitle() {
-            if !path.isEmpty, game.title.isEmpty {
-                switch platform {
-                case .macOS:
-                    if let bundle = Bundle(path: path),
-                        let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
-                        game.title = selectedAppName // not to be confused with game.id
-                    }
-                case .windows:
-                    game.title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
-                }
-            }
-        }
         
         var body: some View {
             VStack {
@@ -98,7 +85,8 @@ extension LibraryView.GameImportView {
                     }
                     
                     Form {
-                        TextField("What should we call this game?", text: $game.title)
+                        TextField("What should we call this game?", text: $title)
+                            .onChange(of: title, { game.title = title })
                         
                         Picker("Choose the game's native platform:", selection: $platform) {
                             ForEach(type(of: platform).allCases, id: \.self) {
@@ -107,7 +95,7 @@ extension LibraryView.GameImportView {
                         }
                         .onChange(of: platform) {
                             game.platform = $1
-                            game.title = .init()
+                            title = .init()
                             path = .init()
                         }
                         .task { game.platform = platform }
@@ -153,7 +141,20 @@ extension LibraryView.GameImportView {
                         }
                         
                         .onChange(of: path) {
-                            updateGameTitle()
+                            if !path.isEmpty, title.isEmpty {
+                                switch platform {
+                                case .macOS:
+                                    if let bundle = Bundle(path: path),
+                                        let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
+                                        title = selectedAppName
+                                        print("gametitle should be \(title)")
+                                    }
+                                case .windows:
+                                    title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
+                                    print("gametitlew should be \(title)")
+                                }
+                            }
+                            
                             game.path = $1
                         }
                         
@@ -182,15 +183,15 @@ extension LibraryView.GameImportView {
                         isGameListRefreshCalled = true
                     }
                     .disabled(path.isEmpty)
-                    .disabled(game.title.isEmpty)
+                    .disabled(title.isEmpty)
                     .buttonStyle(.borderedProminent)
                 }
                 
                 .task(priority: .background) { // TODO: same as in epicimport, can be unified?
                     discordRPC.setPresence({
                         var presence: RichPresence = .init()
-                        presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""
-                        presence.state = "Importing \(game.title)"
+                        presence.details = "Importing & Configuring \(platform.rawValue) game \"\(title)\""
+                        presence.state = "Importing \(title)"
                         presence.timestamps.start = .now
                         presence.assets.largeImage = "macos_512x512_2x"
                         
