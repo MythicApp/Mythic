@@ -49,10 +49,10 @@ struct MythicApp: App {
     }
     
     func toggleTitleBar(_ value: Bool) {
-        if let window = NSApp.mainWindow {
+        if let window = NSApp.windows.first {
             window.titlebarAppearsTransparent = !value
-            window.titleVisibility = value ? .visible : .hidden
             window.isMovableByWindowBackground = !value
+            window.titleVisibility = value ? .visible : .hidden
             window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
             window.standardWindowButton(.zoomButton)?.isHidden = !value
         }
