@@ -24,10 +24,16 @@ struct BottleListView: View {
                 ForEach(Array(bottles.keys), id: \.self) { name in
                     HStack {
                         Text(name)
-                        Text(bottles[name]!.url.prettyPath())
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .scaledToFit()
+                        
+                        Button {
+                            workspace.open(bottles[name]!.url)
+                        } label: {
+                            Text("\(bottles[name]!.url.prettyPath()) \(Image(systemName: "link"))")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                                .scaledToFit()
+                        }
+                        .buttonStyle(.accessoryBar)
                         
                         Spacer()
                         Button(action: {

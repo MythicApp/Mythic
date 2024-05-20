@@ -45,6 +45,17 @@ struct BottlesView: View {
                         }
                         .help("Add a bottle")
                     }
+                    
+                    if let bottlesDirectory = Wine.bottlesDirectory {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                workspace.open(bottlesDirectory)
+                            } label: {
+                                Image(systemName: "folder")
+                            }
+                            .help("Open Bottles directory")
+                        }
+                    }
                 }
             }
         
