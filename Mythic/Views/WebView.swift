@@ -19,14 +19,12 @@ import OSLog
 /// SwiftUI view representing a WebView.
 struct WebView: NSViewRepresentable {
     
-    // MARK: - Bindings
-    @Binding var loadingError: Bool
-    @Binding var canGoBack: Bool
-    @Binding var canGoForward: Bool
-    @Binding var isLoading: Bool
+    var url: URL
     
-    // MARK: - Variables
-    var urlString: String
+    @Binding var error: Error?
+    @Binding var isLoading: Bool?
+    var canGoBack: Bool?
+    var canGoForward: Bool?
     
     // MARK: - Logger
     /// Logger for the WebView.
@@ -42,10 +40,8 @@ struct WebView: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: WKWebView, context: Context) {
-        if let url = URL(string: urlString) {
-            let request = URLRequest(url: url)
-            nsView.load(request)
-        }
+        let request = URLRequest(url: self.url)
+        nsView.load(request)
     }
     
     // MARK: Coordinator Creation
@@ -68,7 +64,7 @@ struct WebView: NSViewRepresentable {
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
             DispatchQueue.main.async { [self] in
                 parent.log.error("\(error.localizedDescription)")
-                parent.loadingError = true
+                parent.error = error
             }
         }
         
@@ -76,10 +72,9 @@ struct WebView: NSViewRepresentable {
         /// Called when navigation finishes successfully.
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
             DispatchQueue.main.async { [self] in
+                parent.isLoading = false
                 parent.canGoBack = webView.canGoBack
                 parent.canGoForward = webView.canGoForward
-                parent.isLoading = false
-                parent.loadingError = false
             }
         }
         
@@ -95,11 +90,5 @@ struct WebView: NSViewRepresentable {
 
 // MARK: - Preview
 #Preview {
-    WebView(
-        loadingError: .constant(false),
-        canGoBack: .constant(false),
-        canGoForward: .constant(false),
-        isLoading: .constant(false),
-        urlString: "https://example.com"
-    )
+    WebView(url: .init(string: "https://example.com")!, error: .constant(nil), isLoading: .constant(nil))
 }

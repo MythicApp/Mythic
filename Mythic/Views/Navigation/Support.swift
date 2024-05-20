@@ -18,45 +18,28 @@ import Shimmer
 import SwordRPC
 
 struct SupportView: View {
-    // TODO: https://arc.net/l/quote/icczlrwf
-    @State private var game: Game = .init(type: .local, title: "default title")
-    @ObservedObject var operation: GameOperation = .shared
-    @State private var optionalPacks: [String: String] = .init()
-    
-    @State private var discordWidgetIsLoading: Bool = false
     var body: some View {
         HStack {
-            Text("\(Engine.fetchLatestVersion())")
             VStack {
-                WebView(
-                    loadingError: Binding(get: {false}, set: {_ in}), // FIXME: terrible placeholders, webview refactor soon
-                    canGoBack: Binding(get: {false}, set: {_ in}),
-                    canGoForward: Binding(get: {false}, set: {_ in}),
-                    isLoading: $discordWidgetIsLoading,
-                    urlString: "https://discord.com/widget?id=1154998702650425397&theme=dark"
-                )
+                WebView(url: .init(string: "https://discord.com/widget?id=1154998702650425397&theme=dark")!, error: .constant(nil), isLoading: .constant(nil))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
             
             VStack {
-                WebView(
-                    loadingError: Binding(get: {false}, set: {_ in}),
-                    canGoBack: Binding(get: {false}, set: {_ in}),
-                    canGoForward: Binding(get: {false}, set: {_ in}),
-                    isLoading: $discordWidgetIsLoading,
-                    urlString: "https://patreon.com/mythicapp"
-                )
-                .overlay(alignment: .bottomTrailing) {
-                    Button {
-                        workspace.open(.init(string: "https://patreon.com/mythicapp")!)
-                    } label: {
-                        Image(systemName: "arrow.up.forward")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .padding()
+                if let patreonURL: URL = .init(string: "https://patreon.com/mythicapp") {
+                    WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
+                        .overlay(alignment: .bottomTrailing) {
+                            Button {
+                                workspace.open(patreonURL)
+                            } label: {
+                                Image(systemName: "arrow.up.forward")
+                                    .padding(5)
+                            }
+                            .clipShape(.circle)
+                            .padding()
+                        }
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

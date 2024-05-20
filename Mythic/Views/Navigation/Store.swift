@@ -17,28 +17,22 @@ import SwiftUI
 import SwordRPC
 
 struct StoreView: View {
-    @State private var loadingError = false
-    @State private var isLoading = false
+    @State private var loadingError: Error?
+    @State private var isLoading: Bool? = false
     @State private var canGoBack = false
     @State private var canGoForward = false
-    @State private var urlString = "https://store.epicgames.com/"
+    @State private var url: URL = .init(string: "https://store.epicgames.com/")!
     @State private var refreshAnimation: Angle = .degrees(0)
     
     var body: some View {
-        WebView(
-            loadingError: $loadingError,
-            canGoBack: $canGoBack,
-            canGoForward: $canGoForward,
-            isLoading: $isLoading,
-            urlString: urlString
-        )
+        WebView(url: url, error: .constant(nil), isLoading: .constant(nil), canGoBack: canGoBack, canGoForward: canGoForward)
         
         .navigationTitle("Store")
         
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.details = "Currently browsing \(urlString)"
+                presence.details = "Currently browsing \(url)"
                 presence.state = "Looking for games to purchase"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
@@ -48,7 +42,6 @@ struct StoreView: View {
         }
         
         .toolbar {
-            
             // FIXME: Loading view update creates view update race condition with webview
             /*
              if isLoading {
@@ -68,7 +61,7 @@ struct StoreView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if canGoBack {
-                        urlString = "javascript:history.back();"
+                        url = .init(string: "javascript:history.back();")!
                     }
                 } label: {
                     Image(systemName: "arrow.left.circle")
@@ -79,7 +72,7 @@ struct StoreView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if canGoForward {
-                        urlString = "javascript:history.forward();"
+                        url = .init(string: "javascript:history.forward();")!
                     }
                 } label: {
                     Image(systemName: "arrow.right.circle")
@@ -89,7 +82,7 @@ struct StoreView: View {
             
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    urlString = "javascript:location.reload();"
+                    url = .init(string: "javascript:location.reload();")!
                     withAnimation(.default) {
                         refreshAnimation = .degrees(360)
                     } completion: {
@@ -102,26 +95,11 @@ struct StoreView: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    if let url = URL(string: urlString) {
-                        workspace.open(url)
-                    }
+                    workspace.open(url)
                 } label: {
                     Image(systemName: "arrow.up.forward")
                 }
             }
-        }
-        
-        .alert(isPresented: $loadingError) { // FIXME: Error pops up continuously, making Mythic unusable.
-            Alert(
-                title: Text("Error"),
-                message: Text("Failed to load the webpage."),
-                primaryButton: .default(Text("Retry")) {
-                    _ = NotImplementedView()
-                },
-                secondaryButton: .cancel(Text("Cancel")) {
-                    loadingError = false
-                }
-            )
         }
     }
 }
