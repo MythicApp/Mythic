@@ -22,7 +22,7 @@ struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     // MARK: - State Properties
-    @AppStorage("isFirstLaunch") var isOnboardingPresented: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
+    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingChapter: OnboardingR2.Phase = .allCases.first!
     @StateObject var networkMonitor = NetworkMonitor()
     @State private var showNetworkAlert = false

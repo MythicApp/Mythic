@@ -25,7 +25,7 @@ struct OnboardingR2: View {
         self.currentPhase = fromPhase
     }
     
-    @AppStorage("isFirstLaunch") var isOnboardingPresented: Bool = true // TODO: FIXME: RENAME BEFORE LAUNCH!
+    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     enum Phase: CaseIterable {
