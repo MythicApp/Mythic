@@ -134,7 +134,9 @@ extension LibraryView.GameImportView {
                             }
                         }
                     
-                    platform = supportedPlatforms!.first!
+                    if let platform = supportedPlatforms?.first {
+                        self.platform = platform
+                    }
                 } else {
                     Logger.app.info("Unable to fetch supported platforms for \(game.title).")
                     supportedPlatforms = GamePlatform.allCases
@@ -192,7 +194,7 @@ extension LibraryView.GameImportView {
                 let games = try? Legendary.getInstallable()
                 guard let games = games, !games.isEmpty else { return }
                 installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
-                game = installableGames.first!
+                if let game = installableGames.first { self.game = game }
                 isProgressViewSheetPresented = false
             }
             
