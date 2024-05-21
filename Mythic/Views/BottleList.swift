@@ -130,6 +130,8 @@ struct BottleListView: View {
                         Button("Launch Winetricks") {
                             try? Wine.launchWinetricks(prefix: bottles[selectedBottleName]!.url)
                         }
+                        .disabled(true)
+                        .help("Winetricks GUI support is currently broken.")
                         
                         Button("Launch Configurator") {
                             Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) { _ in } }
