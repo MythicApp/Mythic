@@ -228,9 +228,12 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "winetricks")
         task.environment = ["WINEPREFIX": prefix.path(percentEncoded: false)]
+        task.arguments = ["--gui"]
+        
         do {
             try task.run()
         } catch {
+            throw error
             // TODO: implement
             // doesn't work if zenity isn't installed
         }

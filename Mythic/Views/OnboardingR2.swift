@@ -72,7 +72,7 @@ struct OnboardingR2: View {
         .init(NSColor.windowBackgroundColor)
     ]
     @State private var colorfulAnimationSpeed: Double = 1
-    @State private var colorfulAnimationNoise: Double = 15
+    @State private var colorfulAnimationNoise: Double = 0
     
     @State private var isOpacityAnimated: Bool = false
     @State private var areOthersAnimated: Bool = false
