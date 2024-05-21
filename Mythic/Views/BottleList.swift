@@ -19,6 +19,7 @@ struct BottleListView: View {
     @State private var openError: Error?
     
     @State private var configuratorActive: Bool = false
+    @State private var registryEditorActive: Bool = false
     
     var body: some View {
         if let bottles = Wine.allBottles, !bottles.isEmpty {
@@ -131,16 +132,22 @@ struct BottleListView: View {
                         }
                         
                         Button("Launch Configurator") {
-                            Task {
-                                try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) { _ in }
+                            Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) { _ in } }
+                            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                                configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
+                                if !configuratorActive { timer.invalidate() }
                             }
                         }
                         .disabled(configuratorActive)
-                        .task(priority: .background) { // FIXME: Will keep going even when view loses focus
-                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _/*timer*/ in
-                                configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg | grep -v grep"]))?.isEmpty == false
+                        
+                        Button("Launch Registry Editor") {
+                            Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", bottleURL: bottles[selectedBottleName]!.url) { _ in } }
+                            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                                registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false
+                                if !registryEditorActive { timer.invalidate() }
                             }
                         }
+                        .disabled(registryEditorActive)
                         
                         Button("Close") {
                             isBottleSettingsViewPresented = false
