@@ -11,10 +11,12 @@ import SwordRPC
 
 struct BottleListView: View {
     @State private var isBottleSettingsViewPresented = false
+    @State private var isOpenAlertPresented = false
     @State private var isDeletionAlertPresented = false
     
     @State private var selectedBottleName: String = .init()
     @State private var bottleNameToDelete: String = .init()
+    @State private var openError: Error?
     
     @State private var configuratorActive: Bool = false
     
@@ -95,6 +97,34 @@ struct BottleListView: View {
                     
                     HStack {
                         Spacer()
+                        
+                        Button("Open...") {
+                            let openPanel = NSOpenPanel()
+                            openPanel.canChooseFiles = true
+                            openPanel.allowsMultipleSelection = false
+                            openPanel.allowedContentTypes = [.exe]
+                            
+                            if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
+                                Task {
+                                    do {
+                                        try await Wine.command(arguments: [url.absoluteString], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottles[selectedBottleName]!.url) { _ in }
+                                    } catch {
+                                        openError = error
+                                        isOpenAlertPresented = true
+                                    }
+                                }
+                            }
+                        }
+                        .alert(isPresented: $isOpenAlertPresented) {
+                            Alert(
+                                title: .init("Error opening executable."),
+                                message: .init(openError?.localizedDescription ?? "Unknown Error"),
+                                dismissButton: .default(.init("OK"))
+                            )
+                        }
+                        .onChange(of: isOpenAlertPresented) {
+                            if !$1 { openError = nil }
+                        }
                         
                         Button("Launch Winetricks") {
                             try? Wine.launchWinetricks(prefix: bottles[selectedBottleName]!.url)
