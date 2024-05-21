@@ -24,9 +24,8 @@ struct LibraryView: View {
     @ObservedObject private var operation: GameOperation = .shared
     
     // MARK: - State Variables
-    @State private var addGameModalPresented = false
+    @State private var isGameImportSheetPresented = false
     @State private var legendaryStatus: JSON = JSON()
-    @State private var isGameListRefreshCalled: Bool = false
     @State private var isDownloadsPopoverPresented: Bool = false
     
     @State private var searchText: String = .init()
@@ -42,7 +41,7 @@ struct LibraryView: View {
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        addGameModalPresented = true
+                        isGameImportSheetPresented = true
                     } label: {
                         Image(systemName: "plus.app")
                     }
@@ -50,11 +49,12 @@ struct LibraryView: View {
                 
                 // MARK: Refresh Button
                     Button {
-                        isGameListRefreshCalled = true
+                        _ = unifiedGames // getter updates computer property
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
                     .help("Refresh library")
+                    .disabled(true)
                 }
             }
         
@@ -71,12 +71,9 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
-            .sheet(isPresented: $addGameModalPresented) {
-                LibraryView.GameImportView(
-                    isPresented: $addGameModalPresented,
-                    isGameListRefreshCalled: $isGameListRefreshCalled
-                )
-                .fixedSize()
+            .sheet(isPresented: $isGameImportSheetPresented) {
+                LibraryView.GameImportView(isPresented: $isGameImportSheetPresented)
+                    .fixedSize()
             }
     }
 }

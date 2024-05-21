@@ -117,10 +117,11 @@ struct AuthView: View {
                 
                 Spacer()
             }
-            
+            /*
             .sheet(isPresented: $progressViewPresented) {
                 ProgressViewSheetWithError(isError: $isError, isPresented: $isProgressViewSheetPresented)
             }
+             */
         }
         .padding()
         .fixedSize()

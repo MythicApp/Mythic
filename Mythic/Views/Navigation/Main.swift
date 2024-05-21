@@ -26,13 +26,10 @@ import Combine
 struct MainView: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    
-    // MARK: - State Variables
-    @State private var isAuthViewPresented: Bool = false
-    @State private var isInstallStatusViewPresented: Bool = false
-    
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
+    
+    @State private var isInstallStatusViewPresented: Bool = false
     
     @State var account: String = Legendary.whoAmI()
     
@@ -97,10 +94,6 @@ struct MainView: View {
                     } header: {
                         Text("Management")
                     }
-                }
-                .sheet(isPresented: $isAuthViewPresented) {
-                    AuthView(isPresented: $isAuthViewPresented)
-                        .onDisappear { updateEpicSignin() }
                 }
                 
                 .sheet(isPresented: $isInstallStatusViewPresented) {

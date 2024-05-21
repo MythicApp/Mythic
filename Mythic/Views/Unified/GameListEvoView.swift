@@ -46,11 +46,8 @@ struct GameListEvo: View {
             }
             .buttonStyle(.borderedProminent)
             .sheet(isPresented: $isGameImportViewPresented) {
-                LibraryView.GameImportView(
-                    isPresented: $isGameImportViewPresented,
-                    isGameListRefreshCalled: .constant(false) // FIXME: refactor gameimport
-                )
-                .fixedSize()
+                LibraryView.GameImportView(isPresented: $isGameImportViewPresented)
+                    .fixedSize()
             }
             
         }

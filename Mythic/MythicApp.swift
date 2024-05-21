@@ -62,11 +62,6 @@ struct MythicApp: App {
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
-                /*
-                OnboardingEvo(fromChapter: onboardingChapter)
-                    .transition(.opacity)
-                    .frame(minWidth: 750, minHeight: 390)
-                 */
                 OnboardingR2()
                     .onAppear {
                         toggleTitleBar(false)
@@ -88,7 +83,7 @@ struct MythicApp: App {
                            let currentVersion = Engine.version,
                            latestVersion > currentVersion {
                             activeAlert = .updatePrompt
-                            isAlertPresented = true // TODO: add to onboarding chapter
+                            isAlertPresented = true
                         }
                     }
                     .task(priority: .background) {

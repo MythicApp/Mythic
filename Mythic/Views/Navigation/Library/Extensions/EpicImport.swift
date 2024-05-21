@@ -20,10 +20,11 @@ import OSLog
 
 extension LibraryView.GameImportView {
     struct Epic: View {
-        @State private var installableGames: [Game] = .init()
-        
         @Binding var isPresented: Bool
+        @State private var errorDescription: String = .init()
+        @State private var isErrorAlertPresented = false
         
+        @State private var installableGames: [Game] = .init()
         @State private var game: Game = .init(type: .epic, title: .init())
         @State private var path: String = .init()
         @State private var platform: GamePlatform = .macOS
@@ -33,10 +34,7 @@ extension LibraryView.GameImportView {
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
         
-        @Binding var isProgressViewSheetPresented: Bool
-        @Binding var isGameListRefreshCalled: Bool
-        @Binding var isErrorPresented: Bool
-        @Binding var errorContent: Substring
+        @State private var isOperating: Bool = false
         
         var body: some View {
             Form {
@@ -150,8 +148,14 @@ extension LibraryView.GameImportView {
                 
                 Spacer()
                 
+                if isOperating {
+                    ProgressView()
+                        .controlSize(.small)
+                        .padding(0.5)
+                }
+                
                 Button("Done", role: .none) {
-                    isProgressViewSheetPresented = true
+                    isOperating = true
                     
                     Task(priority: .userInitiated) {
                         try? await Legendary.command(arguments: [
@@ -164,14 +168,13 @@ extension LibraryView.GameImportView {
                         ] .compactMap { $0 }, identifier: "epicImport") { output in
                             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                                 isPresented = false
-                                isGameListRefreshCalled = true
                             }
                             
                             let commandError = output.stderr.trimmingPrefix("ERROR: ")
                             if !commandError.isEmpty {
-                                errorContent = commandError
-                                isProgressViewSheetPresented = false
-                                isErrorPresented = true
+                                isOperating = false
+                                errorDescription = .init(commandError)
+                                isErrorAlertPresented = true
                             }
                             
                             // legendary/cli.py line 1372 as of hash 4507842
@@ -187,6 +190,7 @@ extension LibraryView.GameImportView {
                 .disabled(path.isEmpty)
                 .disabled(game.title.isEmpty)
                 .disabled(supportedPlatforms == nil)
+                .disabled(isOperating)
                 .buttonStyle(.borderedProminent)
             }
             
@@ -195,7 +199,7 @@ extension LibraryView.GameImportView {
                 guard let games = games, !games.isEmpty else { return }
                 installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
                 if let game = installableGames.first { self.game = game }
-                isProgressViewSheetPresented = false
+                isOperating = false
             }
             
             .task(priority: .background) {
@@ -209,16 +213,22 @@ extension LibraryView.GameImportView {
                     return presence
                 }())
             }
+            
+            .alert(isPresented: $isErrorAlertPresented) {
+                Alert(
+                    title: .init("Error importing game \"\(game.title)\"."),
+                    message: .init(errorDescription),
+                    dismissButton: .default(.init(""))
+                )
+            }
+            
+            .onChange(of: isErrorAlertPresented) {
+                if !$1 { errorDescription = .init() }
+            }
         }
     }
 }
 
 #Preview {
-    LibraryView.GameImportView.Epic(
-        isPresented: .constant(true),
-        isProgressViewSheetPresented: .constant(false),
-        isGameListRefreshCalled: .constant(false),
-        isErrorPresented: .constant(false),
-        errorContent: .constant(.init())
-    )
+    LibraryView.GameImportView.Epic(isPresented: .constant(true))
 }

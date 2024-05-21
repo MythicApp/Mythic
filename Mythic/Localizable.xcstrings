@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
       "localizations" : {
         "af" : {
@@ -10348,6 +10351,7 @@
       }
     },
     "Dismiss loading" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13590,6 +13594,7 @@
       }
     },
     "Error importing game" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13778,6 +13783,9 @@
           }
         }
       }
+    },
+    "Error importing game \"%@\"." : {
+
     },
     "Error installing \"%@\"." : {
       "localizations" : {
@@ -14539,6 +14547,9 @@
           }
         }
       }
+    },
+    "Error opening executable." : {
+
     },
     "Everything in one place" : {
       "localizations" : {
@@ -20655,6 +20666,7 @@
 
     },
     "It appears loading's taking a while." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21035,6 +21047,7 @@
       }
     },
     "Keep waiting (dismissable with esc)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21604,6 +21617,9 @@
         }
       }
     },
+    "Launch Registry Editor" : {
+
+    },
     "Launch Winetricks" : {
       "localizations" : {
         "af" : {
@@ -21795,6 +21811,7 @@
       }
     },
     "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25420,6 +25437,7 @@
 
     },
     "Mythic!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26566,6 +26584,7 @@
       }
     },
     "Now Installing" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26949,6 +26968,9 @@
 
     },
     "Open Bottles directory" : {
+
+    },
+    "Open..." : {
 
     },
     "Options" : {
@@ -27905,6 +27927,7 @@
       }
     },
     "Queued" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -30195,6 +30218,7 @@
 
     },
     "Search" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -30958,6 +30982,7 @@
       }
     },
     "Sign In" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32289,6 +32314,7 @@
       }
     },
     "Status Unknown" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -37063,6 +37089,7 @@
       }
     },
     "Welcome to %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -38588,6 +38615,9 @@
           }
         }
       }
+    },
+    "Winetricks GUI support is currently broken." : {
+
     },
     "Without Mythic Engine, you'll be unable to launch Windows® games." : {
       "extractionState" : "stale",

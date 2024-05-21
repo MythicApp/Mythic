@@ -21,7 +21,8 @@ import Network
 
 import SwiftUI
 
-@Observable class NetworkMonitor: ObservableObject {
+@Observable
+class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
     

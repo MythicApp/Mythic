@@ -195,10 +195,15 @@ enum GameModificationType: String {
 
 class GameOperation: ObservableObject {
     static var shared: GameOperation = .init()
+    
     internal static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "GameOperation"
     )
+    
+    func install() throws {
+        
+    }
     
     // swiftlint:disable:next redundant_optional_initialization
     @Published var current: InstallArguments? = nil {

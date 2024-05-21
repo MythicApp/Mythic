@@ -18,18 +18,8 @@ import SwiftUI
 import OSLog
 
 extension LibraryView {
-    
-    // MARK: - GameImportView Struct
     struct GameImportView: View {
-        
-        // MARK: - Binding Variables
         @Binding var isPresented: Bool
-        @Binding var isGameListRefreshCalled: Bool
-        
-        // MARK: - State Variables
-        @State private var isProgressViewSheetPresented: Bool = false
-        @State private var isErrorPresented: Bool = false
-        @State private var errorContent: Substring = .init()
         
         @State private var type: GameType = .epic
         
@@ -50,41 +40,18 @@ extension LibraryView {
                 // MARK: - Import Epic (Legendary) Games
                 switch type {
                 case .epic:
-                    LibraryView.GameImportView.Epic(
-                        isPresented: $isPresented,
-                        isProgressViewSheetPresented: $isProgressViewSheetPresented,
-                        isGameListRefreshCalled: $isGameListRefreshCalled,
-                        isErrorPresented: $isErrorPresented,
-                        errorContent: $errorContent
-                    )
+                    LibraryView.GameImportView.Epic(isPresented: $isPresented)
                 case .local:
-                    LibraryView.GameImportView.Local(
-                        isPresented: $isPresented,
-                        isGameListRefreshCalled: $isGameListRefreshCalled
-                    )
-                    .scaledToFit() // FIXME: dirtyfix for clipping
+                    LibraryView.GameImportView.Local(isPresented: $isPresented)
+                        .scaledToFit() // FIXME: dirtyfix for clipping
                 }
             }
             
             .padding()
-            
-            .sheet(isPresented: $isProgressViewSheetPresented) {
-                ProgressViewSheet(isPresented: $isProgressViewSheetPresented)
-            }
-            
-            .alert(isPresented: $isErrorPresented) {
-                Alert(
-                    title: Text("Error importing game"),
-                    message: Text(errorContent)
-                )
-            }
         }
     }
 }
 
 #Preview {
-    LibraryView.GameImportView(
-        isPresented: .constant(true),
-        isGameListRefreshCalled: .constant(false)
-    )
+    LibraryView.GameImportView(isPresented: .constant(true))
 }

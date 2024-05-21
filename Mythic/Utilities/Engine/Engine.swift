@@ -77,7 +77,7 @@ class Engine {
                 }
             }
             
-            download.resume()
+            download.resume() // observer?
             
             Task(priority: .utility) {
                 var debounce: Bool = false

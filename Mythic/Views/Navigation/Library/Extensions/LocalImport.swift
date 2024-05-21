@@ -22,7 +22,6 @@ import Shimmer
 extension LibraryView.GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
-        @Binding var isGameListRefreshCalled: Bool
         
         @State private var game: Game = .init(type: .local, title: .init())
         @State private var title: String = .init()
@@ -180,7 +179,6 @@ extension LibraryView.GameImportView {
                     Button("Done") {
                         LocalGames.library?.insert(game)
                         isPresented = false
-                        isGameListRefreshCalled = true
                     }
                     .disabled(path.isEmpty)
                     .disabled(title.isEmpty)
@@ -204,8 +202,5 @@ extension LibraryView.GameImportView {
 }
 
 #Preview {
-    LibraryView.GameImportView.Local(
-        isPresented: .constant(true),
-        isGameListRefreshCalled: .constant(false)
-    )
+    LibraryView.GameImportView.Local(isPresented: .constant(true))
 }
