@@ -4,10 +4,10 @@
 <dict>
 	<key>CFBundleIdentifier</key>
 	<string></string>
-    <key>SUPublicEDKey</key>
-    <string>Ev17yu2/wWMhmGGbJiGZYSSdZ3p73mTpGIB26yVc2SU=</string>
+	<key>SUPublicEDKey</key>
+	<string>g+sJ+Hhxtb5ziscjMaoIvjMcvycB1PpZhhRJeoF+YSM=</string>
 	<key>SUFeedURL</key>
-	<string>https://cast.appcastify.com/blackxfiied/Mythic.xml</string>
+	<string>https://getmythic.app/appcast.xml</string>
 	<key>GCSupportedGameControllers</key>
 	<array>
 		<dict>
