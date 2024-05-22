@@ -65,7 +65,7 @@ extension Legendary {
         let stderr: (String) -> Void
     }
     
-    class CommandOutput {
+    final class CommandOutput {
         var stdout: String = .init()
         var stderr: String = .init()
     }

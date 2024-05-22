@@ -33,13 +33,10 @@ struct BottleSettingsView: View {
     private func fetchRetinaStatus() async {
         modifyingRetinaMode = true
         if let bottle = Wine.allBottles?[selectedBottle] {
-            await Wine.getRetinaMode(bottleURL: bottle.url) { result in
-                switch result {
-                case .success(let success):
-                    retinaMode = success
-                case .failure(let failure):
-                    retinaModeError = failure
-                }
+            do {
+                retinaMode = try await Wine.getRetinaMode(bottleURL: bottle.url)
+            } catch {
+                retinaModeError = error
             }
         }
         modifyingRetinaMode = false

@@ -16,6 +16,7 @@ import SwiftUI
 // MARK: - AuthView Struct
 /// SwiftUI view for authentication with Epic Games.
 struct AuthView: View {
+    // FIXME: oh god refactor
     
     // MARK: - Binding Properties
     @Binding var isPresented: Bool

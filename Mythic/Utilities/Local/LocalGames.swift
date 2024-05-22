@@ -18,7 +18,7 @@ import Foundation
 import SwiftUI
 import OSLog
 
-class LocalGames {
+final class LocalGames {
     public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
     
     // TODO: DocC

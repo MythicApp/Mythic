@@ -1,5 +1,5 @@
 //
-//  UpdaterSettings.swift
+//  UpdaterSettingsView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 29/9/2023.

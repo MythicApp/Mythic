@@ -14359,6 +14359,7 @@
       }
     },
     "Error launching %@." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

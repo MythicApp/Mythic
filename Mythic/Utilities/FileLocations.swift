@@ -18,7 +18,7 @@ import Foundation
 import OSLog
 
 // MARK: - File Locations Class
-class FileLocations {
+final class FileLocations {
     
     // MARK: - Functions
     

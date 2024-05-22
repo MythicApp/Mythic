@@ -24,7 +24,7 @@ import UserNotifications
 
 // MARK: - Engine Class
 /// Manages the installation, removal, and versioning of Mythic Engine.
-class Engine {
+final class Engine {
     private static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Engine"

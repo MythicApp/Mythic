@@ -26,7 +26,7 @@ import RegexBuilder
  
  [Legendary GitHub Repository](https://github.com/derrod/legendary)
  */
-class Legendary {
+final class Legendary {
     
     // MARK: - Properties
     
@@ -34,12 +34,11 @@ class Legendary {
     static let configLocation = Bundle.appHome!.appending(path: "Config").path
     
     /// Logger instance for legendary.
-    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
+    static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
     
     /// Cache for storing command outputs.
     private static var commandCache: [String: (stderr: Data, stdout: Data)] = .init()
     
-    // MARK: runningCommands
     private static var _runningCommands: [String: Process] = .init()
     private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
     
@@ -75,7 +74,6 @@ class Legendary {
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    @available(*, message: "Revamped recently")
     static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws {
         let task = Process()
         task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
@@ -153,7 +151,11 @@ class Legendary {
     }
     
     /// Stops the execution of all commands.
-    static func stopAllCommands(forced: Bool) { runningCommands.keys.forEach { stopCommand(identifier: $0, forced: forced) } }
+    static func stopAllCommands(forced: Bool) {
+        runningCommands.keys.forEach {
+            stopCommand(identifier: $0, forced: forced)
+        }
+    }
     
     // MARK: Install Method
     /**
@@ -317,7 +319,7 @@ class Legendary {
     
     static func signIn(authKey: String) async throws -> Bool {
         return try await withCheckedThrowingContinuation { continuation in
-            Task.sync {
+            Task {
                 do {
                     var isLoggedIn = false
                     
@@ -342,7 +344,6 @@ class Legendary {
      
      - Parameters:
      - game: The game to launch.
-     - bottle: The
      */
     static func launch(game: Mythic.Game, online: Bool) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
@@ -350,7 +351,7 @@ class Legendary {
             throw GameDoesNotExistError(game)
         }
         
-        guard Engine.exists else { throw Engine.NotInstalledError() }
+        guard game.platform == .windows && Engine.exists else { throw Engine.NotInstalledError() }
         guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
         
         DispatchQueue.main.async {

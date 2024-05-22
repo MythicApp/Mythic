@@ -22,7 +22,7 @@ import Network
 import SwiftUI
 
 @Observable
-class NetworkMonitor: ObservableObject {
+final class NetworkMonitor: ObservableObject {
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
     
@@ -51,7 +51,6 @@ class NetworkMonitor: ObservableObject {
                     guard error == nil, let httpResponse = response as? HTTPURLResponse else { self.updateAccessibility(false); return }
                     self.updateAccessibility((200...299) ~= httpResponse.statusCode)
                 }.resume()
-                
             }
         }
         networkMonitor.start(queue: queue)

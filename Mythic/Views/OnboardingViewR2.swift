@@ -19,7 +19,7 @@ import ColorfulX
 import SwordRPC
 import UserNotifications
 
-struct OnboardingR2: View {
+struct OnboardingR2: View { // TODO: ViewModel
     
     init(fromPhase: Phase = .logo) {
         self.currentPhase = fromPhase

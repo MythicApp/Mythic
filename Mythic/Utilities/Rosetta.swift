@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Rosetta {
+final class Rosetta {
     static var exists: Bool { files.fileExists(atPath: "/Library/Apple/usr/share/rosetta") }
     
     struct AgreementFailure: LocalizedError {

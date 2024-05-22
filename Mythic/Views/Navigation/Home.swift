@@ -26,16 +26,6 @@ import SwordRPC
  The main view displaying the home screen of the Mythic app.
  */
 struct HomeView: View {
-    enum ActiveAlert {
-        case launchError
-    }
-    
-    struct LaunchError {
-        static var message: String = .init()
-        static var game: Game? = nil // swiftlint:disable:this redundant_optional_initialization
-    }
-    
-    // MARK: - State Variables
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
@@ -47,7 +37,6 @@ struct HomeView: View {
     @State private var urlString = "https://store.epicgames.com/"
     
     @State private var isAlertPresented: Bool = false
-    @State private var activeAlert: ActiveAlert = .launchError
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -96,15 +85,6 @@ struct HomeView: View {
         }
         .navigationTitle("Home")
         .padding()
-        .alert(isPresented: $isAlertPresented) {
-            switch activeAlert {
-            case .launchError:
-                Alert(
-                    title: Text("Error launching \(LaunchError.game?.title ?? "game")."),
-                    message: Text(LaunchError.message)
-                )
-            }
-        }
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()

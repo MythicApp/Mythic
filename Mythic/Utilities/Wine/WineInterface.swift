@@ -17,7 +17,7 @@
 import Foundation
 import OSLog
 
-class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
+final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // FIXME: TODO: all funcs should take urls as params not bottles
     // MARK: - Variables
     
@@ -89,7 +89,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     static var defaultBottleSettings: BottleSettings {
-        get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true) }
+        get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true, windowsVersion: .win11) }
         set { defaults.set(newValue, forKey: "defaultBottleSettings") }
     }
     
@@ -151,7 +151,6 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    @available(*, message: "Revamped recently")
     static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
@@ -352,11 +351,7 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         task.waitUntilExit()
         
         var error: NSDictionary?
-        if let scriptObject = NSAppleScript(
-            source: """
-            do shell script \"sudo rm -rf \(d3dmcache)\" with administrator privileges
-            """) {
-            
+        if let scriptObject = NSAppleScript(source: "do shell script \"sudo rm -rf \(d3dmcache)\" with administrator privileges") {
             let output = scriptObject.executeAndReturnError(&error)
             Logger.app.debug("output from shader cache purge: \(output.stringValue ?? "none")")
             
@@ -407,15 +402,19 @@ class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
     
-    static func getRetinaMode(bottleURL: URL, completion: @escaping (Result<Bool, Error>) -> Void) async {
-        await Wine.queryRegistryKey(
-            bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
-        ) { result in
-            switch result {
-            case .success(let value):
-                completion(.success(value == "y"))
-            case .failure(let error):
-                completion(.failure(error))
+    static func getRetinaMode(bottleURL: URL) async throws -> Bool {
+        return try await withCheckedThrowingContinuation { continuation in
+            Task {
+                await Wine.queryRegistryKey(
+                    bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
+                ) { result in
+                    switch result {
+                    case .success(let value):
+                        continuation.resume(returning: value == "y")
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
             }
         }
     }
