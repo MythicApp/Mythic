@@ -62,6 +62,7 @@ extension Wine {
     }
     
     struct Bottle: Codable, Hashable {
+        // var name: String // TODO: TODO
         var url: URL
         var settings: BottleSettings
         var busy: Bool
@@ -71,7 +72,7 @@ extension Wine {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool
-        var windowsVersion: WindowsVersion
+        // var windowsVersion: WindowsVersion // TODO: TODO
     }
     
     enum WindowsVersion: String, Codable {

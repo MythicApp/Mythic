@@ -60,6 +60,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }()
     
+    static var bottles: [Bottle]? {
+        return nil // TODO: wineinterfaceext line 65
+    }
+    
     // MARK: - All Bottles Variable
     static var allBottles: [String: Bottle]? {
         get {
@@ -89,7 +93,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     static var defaultBottleSettings: BottleSettings {
-        get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true, windowsVersion: .win11) }
+        get { return defaults.object(forKey: "defaultBottleSettings") as? BottleSettings ?? .init(metalHUD: false, msync: true, retinaMode: true) }
         set { defaults.set(newValue, forKey: "defaultBottleSettings") }
     }
     
