@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-    <key>SUPublicEDKey</key>
-    <string>Ev17yu2/wWMhmGGbJiGZYSSdZ3p73mTpGIB26yVc2SU=</string>
-	<key>SUFeedURL</key>
-	<string>https://cast.appcastify.com/blackxfiied/Mythic.xml</string>
 	<key>GCSupportedGameControllers</key>
 	<array>
 		<dict>
@@ -17,5 +11,9 @@
 	</array>
 	<key>GCSupportsControllerUserInteraction</key>
 	<true/>
+	<key>SUFeedURL</key>
+	<string>https://getmythic.app/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>g+sJ+Hhxtb5ziscjMaoIvjMcvycB1PpZhhRJeoF+YSM=</string>
 </dict>
 </plist>

@@ -23,14 +23,16 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
-- [ ] Discord Intergration
+- [x] Discord Integration
 
 
-There are more big things coming your way for Mythic's full release, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
+There are more big things coming your way for Mythic, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
 If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or create a [pull request](https://github.com/MythicApp/Mythic/compare).
 
 ## Download
-We're working our hardest to release Mythic. For now, sign up for the [waitlist](https://getmythic.app).
+At midnight on the 19th of May, Mythic finally released!
+
+[Download it now!](https://github.com/MythicApp/Mythic/releases)
 
 ## Dependencies
 Mythic uses the following Swift dependencies:
@@ -44,7 +46,7 @@ Mythic uses the following Swift dependencies:
 - [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
 
 ## License
-Copyright © 2023 blackxfiied, Jecta
+Copyright © 2024 blackxfiied, Jecta
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

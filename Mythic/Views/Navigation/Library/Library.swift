@@ -21,59 +21,48 @@ import SwordRPC
 // MARK: - LibraryView Struct
 /// A view displaying the user's library of games.
 struct LibraryView: View {
-    @ObservedObject private var gameModification: GameModification = .shared
+    @ObservedObject private var operation: GameOperation = .shared
     
     // MARK: - State Variables
-    @State private var addGameModalPresented = false
+    @State private var isGameImportSheetPresented = false
     @State private var legendaryStatus: JSON = JSON()
-    @State private var isGameListRefreshCalled: Bool = false
     @State private var isDownloadsPopoverPresented: Bool = false
     
     @State private var searchText: String = .init()
     
     // MARK: - Body
     var body: some View {
-        GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
+        // GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
+        GameListEvo()
             .navigationTitle("Library")
         
         // MARK: - Toolbar
             .toolbar {
-                if gameModification.game != nil {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button {
-                            isDownloadsPopoverPresented.toggle()
-                        } label: {
-                            Image(systemName: "arrow.down.app")
-                        }
-                        .help("Manage Downloads")
-                    }
-                }
-                
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        addGameModalPresented = true
+                        isGameImportSheetPresented = true
                     } label: {
                         Image(systemName: "plus.app")
                     }
                     .help("Import a game")
-                }
                 
                 // MARK: Refresh Button
-                ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        isGameListRefreshCalled = true
+                        _ = unifiedGames // getter updates computer property
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
                     .help("Refresh library")
+                    .disabled(true)
                 }
             }
         
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
-                    presence.state = "Looking through their game library"
+                    presence.details = "Looking through their game library"
+                    presence.state = "Viewing Library"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
                     
@@ -82,20 +71,9 @@ struct LibraryView: View {
             }
         
         // MARK: - Other Properties
-            .popover(isPresented: $isDownloadsPopoverPresented, arrowEdge: .top) {
-                List {
-                    Text("Installing \(GameModification.shared.game?.title ?? "game")")
-                    InstallationProgressView()
-                }
-                .listStyle(.automatic)
-            }
-        
-            .sheet(isPresented: $addGameModalPresented) {
-                LibraryView.GameImportView(
-                    isPresented: $addGameModalPresented,
-                    isGameListRefreshCalled: $isGameListRefreshCalled
-                )
-                .fixedSize()
+            .sheet(isPresented: $isGameImportSheetPresented) {
+                LibraryView.GameImportView(isPresented: $isGameImportSheetPresented)
+                    .fixedSize()
             }
     }
 }

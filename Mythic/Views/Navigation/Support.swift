@@ -18,44 +18,41 @@ import Shimmer
 import SwordRPC
 
 struct SupportView: View {
-    // TODO: https://arc.net/l/quote/icczlrwf
-    
     var body: some View {
         HStack {
             VStack {
-                
+                WebView(url: .init(string: "https://discord.com/widget?id=1154998702650425397&theme=dark")!, error: .constant(nil), isLoading: .constant(nil))
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
-            .shimmering(bandSize: 1)
             
             VStack {
-                VStack {
-                    HStack {
-                        
-                    }
+                if let patreonURL: URL = .init(string: "https://patreon.com/mythicapp") {
+                    WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
+                        .overlay(alignment: .bottomTrailing) {
+                            Button {
+                                workspace.open(patreonURL)
+                            } label: {
+                                Image(systemName: "arrow.up.forward")
+                                    .padding(5)
+                            }
+                            .clipShape(.circle)
+                            .padding()
+                        }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
-                .shimmering(bandSize: 1)
-                
-                VStack {
-                    
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
-                .shimmering(bandSize: 1)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.background)
+            .clipShape(.rect(cornerRadius: 10))
         }
         .padding()
         
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.state = "Looking for help"
+                presence.details = "Looking for help"
+                presence.state = "Viewing Support"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
                 
@@ -64,7 +61,7 @@ struct SupportView: View {
         }
         
         .navigationTitle("Support")
-}
+    }
 }
 
 #Preview {

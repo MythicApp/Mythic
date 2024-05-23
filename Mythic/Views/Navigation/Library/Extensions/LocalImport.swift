@@ -17,34 +17,75 @@
 import SwiftUI
 import CachedAsyncImage
 import SwordRPC
+import Shimmer
 
 extension LibraryView.GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
-        @Binding var isGameListRefreshCalled: Bool
         
-        @State private var game: Game = placeholderGame(type: .local)
+        @State private var game: Game = .init(type: .local, title: .init())
+        @State private var title: String = .init()
         @State private var platform: GamePlatform = .macOS
-        
-        private func updateGameTitle() {
-            if let path = game.path, !path.isEmpty, !game.title.isEmpty {
-                switch platform {
-                case .macOS:
-                    if let bundle = Bundle(path: path),
-                        let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
-                        game.title = selectedAppName // not to be confused with game.appName
-                    }
-                case .windows:
-                    game.title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
-                }
-            }
-        }
+        @State private var path: String = .init()
         
         var body: some View {
             VStack {
                 HStack {
+                    if game.imageURL != nil {
+                        RoundedRectangle(cornerRadius: 20)
+                            .fill(.background)
+                            .aspectRatio(3/4, contentMode: .fit)
+                            .overlay { // MARK: Image
+                                CachedAsyncImage(url: game.imageURL) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        if case .local = game.type {
+                                            let image = Image(nsImage: workspace.icon(forFile: path))
+                                            
+                                            image
+                                                .resizable()
+                                                .aspectRatio(3/4, contentMode: .fill)
+                                                .blur(radius: 20.0)
+                                            
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .modifier(FadeInModifier())
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .fill(.windowBackground)
+                                                .shimmering(
+                                                    animation: .easeInOut(duration: 1)
+                                                        .repeatForever(autoreverses: false),
+                                                    bandSize: 1
+                                                )
+                                        }
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fill)
+                                            .clipShape(.rect(cornerRadius: 20))
+                                            .blur(radius: 10.0)
+                                        
+                                        image
+                                            .resizable()
+                                            .aspectRatio(3/4, contentMode: .fill)
+                                            .clipShape(.rect(cornerRadius: 20))
+                                            .modifier(FadeInModifier())
+                                    case .failure:
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.windowBackground)
+                                    @unknown default:
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.windowBackground)
+                                    }
+                                }
+                            }
+                    }
+                    
                     Form {
-                        TextField("What should we call this game?", text: $game.title)
+                        TextField("What should we call this game?", text: $title)
+                            .onChange(of: title, { game.title = title })
                         
                         Picker("Choose the game's native platform:", selection: $platform) {
                             ForEach(type(of: platform).allCases, id: \.self) {
@@ -53,18 +94,19 @@ extension LibraryView.GameImportView {
                         }
                         .onChange(of: platform) {
                             game.platform = $1
-                            game.title = .init()
-                            game.path = .init()
+                            title = .init()
+                            path = .init()
                         }
+                        .task { game.platform = platform }
                         
                         HStack {
                             VStack {
-                                HStack { // FIXME: jank
+                                HStack {
                                     Text("Where is the game located?")
                                     Spacer()
                                 }
                                 HStack {
-                                    Text(URL(filePath: game.path ?? .init()).prettyPath())
+                                    Text(URL(filePath: path).prettyPath())
                                         .foregroundStyle(.placeholder)
                                     
                                     Spacer()
@@ -73,7 +115,7 @@ extension LibraryView.GameImportView {
                             
                             Spacer()
                             
-                            if !files.isReadableFile(atPath: game.path ?? .init()) {
+                            if !files.isReadableFile(atPath: path), !path.isEmpty {
                                 Image(systemName: "exclamationmark.triangle.fill")
                                     .help("File/Folder is not readable by Mythic.")
                             }
@@ -92,59 +134,39 @@ extension LibraryView.GameImportView {
                                 openPanel.allowsMultipleSelection = false
                                 
                                 if openPanel.runModal() == .OK {
-                                    game.path = openPanel.urls.first?.path ?? .init()
+                                    path = openPanel.urls.first?.path ?? .init()
                                 }
                             }
                         }
                         
-                        .onChange(of: game.path) { updateGameTitle() }
+                        .onChange(of: path) {
+                            if !path.isEmpty, title.isEmpty {
+                                switch platform {
+                                case .macOS:
+                                    if let bundle = Bundle(path: path),
+                                        let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
+                                        title = selectedAppName
+                                        print("gametitle should be \(title)")
+                                    }
+                                case .windows:
+                                    title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
+                                    print("gametitlew should be \(title)")
+                                }
+                            }
+                            
+                            game.path = $1
+                        }
                         
                         TextField(
                             "Enter Thumbnail URL here... (optional)",
-                            text: Binding( // FIXME: interacting with anything else will malform the image URL for some reason
-                                get: { game.imageURL?.path ?? .init() },
+                            text: Binding(
+                                get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
                                 set: { game.imageURL = .init(string: $0) }
-                            )
+                                         )
                         )
+                        .truncationMode(.tail)
                     }
                     .formStyle(.grouped)
-                    
-                    CachedAsyncImage(url: game.imageURL, urlCache: gameImageURLCache) { phase in
-                        switch phase {
-                        case .empty:
-                            EmptyView()
-                        case .success(let image):
-                            HStack {
-                                Divider()
-                                    .padding()
-                                
-                                ZStack {
-                                    image // fix image stretching and try to zoom instead
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .blur(radius: 20)
-                                        .frame(width: 150)
-                                    
-                                    image
-                                        .resizable()
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                        .modifier(FadeInModifier())
-                                        .frame(width: 150)
-                                }
-                            }
-                            .scaledToFit()
-                        case .failure:
-                            Image(systemName: "network.slash")
-                                .symbolEffect(.appear)
-                                .imageScale(.large)
-                        @unknown default:
-                            Image(systemName: "exclamationmark.triangle")
-                                .symbolEffect(.appear)
-                                .imageScale(.large)
-                        }
-                    }
                 }
                 
                 HStack {
@@ -157,22 +179,17 @@ extension LibraryView.GameImportView {
                     Button("Done") {
                         LocalGames.library?.insert(game)
                         isPresented = false
-                        isGameListRefreshCalled = true
                     }
-                    .disabled(game.path?.isEmpty ?? false)
-                    .disabled(game.title.isEmpty)
+                    .disabled(path.isEmpty)
+                    .disabled(title.isEmpty)
                     .buttonStyle(.borderedProminent)
-                }
-                
-                .task(priority: .high) {
-                    game.path = .init()
                 }
                 
                 .task(priority: .background) { // TODO: same as in epicimport, can be unified?
                     discordRPC.setPresence({
                         var presence: RichPresence = .init()
-                        presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""
-                        presence.state = "Importing \(game.title)"
+                        presence.details = "Importing & Configuring \(platform.rawValue) game \"\(title)\""
+                        presence.state = "Importing \(title)"
                         presence.timestamps.start = .now
                         presence.assets.largeImage = "macos_512x512_2x"
                         
@@ -185,8 +202,5 @@ extension LibraryView.GameImportView {
 }
 
 #Preview {
-    LibraryView.GameImportView.Local(
-        isPresented: .constant(true),
-        isGameListRefreshCalled: .constant(false)
-    )
+    LibraryView.GameImportView.Local(isPresented: .constant(true))
 }

@@ -27,23 +27,24 @@ struct SettingsView: View {
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     @AppStorage("discordRPC") private var rpc: Bool = true
     
-    @State private var isAlertPresented: Bool = false
-    enum ActiveAlert {
-        case reset
-        case forceQuit
-        case removeEngine
-    }
-    @State private var activeAlert: ActiveAlert = .reset
-    
-    @State private var forceQuitSuccessful: Bool?
-    @State private var shaderCachePurgeSuccessful: Bool?
-    @State private var engineRemovalSuccessful: Bool?
+    @State private var isForceQuitSuccessful: Bool?
+    @State private var isShaderCachePurgeSuccessful: Bool?
+    @State private var isEngineRemovalSuccessful: Bool?
     @State private var isCleanupSuccessful: Bool?
+    
+    @State private var isEngineRemovalAlertPresented: Bool = false
     
     var body: some View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
                 Toggle("Display Mythic activity status on Discord", isOn: $rpc)
+                    .onChange(of: rpc) { _, newValue in
+                        if newValue {
+                            _ = discordRPC.connect()
+                        } else {
+                            discordRPC.disconnect()
+                        }
+                    }
                 
                 Toggle("Minimise to menu bar on game launch", isOn: $minimize)
                 
@@ -51,7 +52,7 @@ struct SettingsView: View {
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Choose the default base path for games:")
                             Spacer()
                         }
@@ -97,87 +98,89 @@ struct SettingsView: View {
                 }
                 
                 Button {
-                    // TODO: mythic's folder in Libary/Preferences
+                    // TODO: mythic's data folder in ~/Libary/Preferences
                     // TODO: beat up legendary
                 } label: {
-                    Image(systemName: "power.dotted")
-                    Text("Reset Mythic")
+                    Label("Reset Mythic", systemImage: "power.dotted")
                 }
                 .disabled(true)
                 .help("Not implemented yet")
                 
                 Button {
-                    // TODO: mythic's folder in Libary/Preferences
+                    // TODO: mythic's data folder in ~/Libary/Preferences
                 } label: {
-                    Image(systemName: "clock.arrow.circlepath")
-                    Text("Reset settings to default")
+                    Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
                 }
                 .disabled(true)
                 .help("Not implemented yet")
                 
-                UpdaterSettingsView(updater: MythicApp().updaterController.updater)
             }
             
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
                     Button {
-                        forceQuitSuccessful = Wine.killAll()
+                        isForceQuitSuccessful = Wine.killAll()
                     } label: {
-                        Image(systemName: "xmark.app")
-                        Text("Force Quit Applications")
+                        Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
                     }
                     
-                    if forceQuitSuccessful != nil {
-                        Image(systemName: forceQuitSuccessful! ? "checkmark" : "xmark")
+                    if isForceQuitSuccessful != nil {
+                        Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
                     }
                 }
                 
                 HStack {
                     Button {
-                        shaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                        isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
                     } label: {
-                        Image(systemName: "square.stack.3d.up.slash.fill")
-                        Text("Purge Shader Cache")
+                        Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
                     }
                     
-                    if shaderCachePurgeSuccessful != nil {
-                        Image(systemName: shaderCachePurgeSuccessful! ? "checkmark" : "xmark")
+                    if isShaderCachePurgeSuccessful != nil {
+                        Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
                     }
                 }
                 
                 HStack {
                     Button {
-                        Libraries.remove { result in
-                            switch result {
-                            case .success:
-                                engineRemovalSuccessful = true
-                            case .failure: // TODO: add reason to .help
-                                engineRemovalSuccessful = false
-                            }
-                        }
+                        isEngineRemovalAlertPresented = true
                     } label: {
-                        Image(systemName: "gear.badge.xmark")
-                        Text("Remove Mythic Engine")
+                        Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
+                    }
+                    .alert(isPresented: $isEngineRemovalAlertPresented) {
+                        Alert(
+                            title: .init("Are you sure you want to remove Mythic Engine?"),
+                            message: .init("It'll have to be reinstalled in order to play Windows® games."),
+                            primaryButton: .destructive(.init("Remove")) {
+                                do {
+                                    try Engine.remove()
+                                    isEngineRemovalSuccessful = true
+                                } catch {
+                                    isEngineRemovalSuccessful = false
+                                }
+                            },
+                            secondaryButton: .cancel()
+                        )
                     }
                     
-                    if engineRemovalSuccessful != nil {
-                        Image(systemName: engineRemovalSuccessful! ? "checkmark" : "xmark")
+                    if isEngineRemovalSuccessful != nil {
+                        Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
                     }
                 }
             }
-            .disabled(!Libraries.isInstalled())
-            .help(Libraries.isInstalled() ? "Mythic Engine is not installed." : .init())
+            .disabled(!Engine.exists)
+            .help(Engine.exists ? "Mythic Engine is not installed." : .init())
             
             Section("Epic", isExpanded: $isEpicSectionExpanded) {
                 HStack {
                     Button {
                         Task {
-                            let output = await Legendary.command(args: ["cleanup"], useCache: false, identifier: "cleanup")
-                            isCleanupSuccessful = String(data: output.stderr, encoding: .utf8)!.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                            try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output in
+                                isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                            }
                         }
                     } label: {
-                        Image(systemName: "bubbles.and.sparkles")
-                        Text("Clean Up Miscallaneous Caches")
+                        Label("Clean Up Miscallaneous Caches", systemImage: "bubbles.and.sparkles")
                     }
                     
                     if isCleanupSuccessful != nil {
@@ -193,6 +196,7 @@ struct SettingsView: View {
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
+                presence.details = "Tweaking some settings"
                 presence.state = "Configuring Mythic"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
@@ -202,9 +206,6 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Settings")
-        // .alert(isPresented: $isAlertPresented) {
-            
-        // }
     }
 }
 

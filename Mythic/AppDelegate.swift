@@ -20,11 +20,12 @@ import SwordRPC
 import UserNotifications
 import OSLog
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     var updaterController: SPUStandardUpdaterController?
     var networkMonitor: NetworkMonitor?
+    var window: NSWindow!
     
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    func applicationDidFinishLaunching(_: Notification) {
         // MARK: initialize default UserDefaults Values
         UserDefaults.standard.register(
             defaults: [
@@ -32,17 +33,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ]
         )
         
+        // MARK: Bottle removal if folder was deleted externally
+        if let bottles = Wine.allBottles {
+            for (key, value) in bottles where !files.fileExists(atPath: value.url.path(percentEncoded: false)) {
+                Wine.allBottles?.removeValue(forKey: key)
+            }
+        }
+        
+        if Engine.exists { _ = Wine.allBottles } // creates default bottle automatically because of custom getter
+        
         // MARK: Applications folder disclaimer
-#if !DEBUG // TODO: possibly turn this into an onboarding-style message.
+        // TODO: possibly turn this into an onboarding-style message.
+#if !DEBUG
         let appURL = Bundle.main.bundleURL
         
         // MARK: Move to Applications
         if !appURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
             alert.messageText = "Move Mythic to the Applications folder?"
-            alert.informativeText = """
-            Mythic has detected it's running outside of the applications folder.
-            """
+            alert.informativeText = "Mythic has detected it's running outside of the applications folder."
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
@@ -53,6 +62,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                     )
                 } catch {
                     Logger.file.error("Unable to move Mythic to Applications: \(error)")
+                    
+                    let error = NSAlert()
+                    error.messageText = "Unable to move Mythic to \"\(globalApps.prettyPath())\"."
+                    error.addButton(withTitle: "Quit")
+                    
+                    if error.runModal() == .alertFirstButtonReturn {
+                        exit(1)
+                    }
                 }
             }
         }
@@ -76,8 +93,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
     }
     
-    func applicationWillTerminate(_ notification: Notification) {
+    func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {
+        if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
+            let alert = NSAlert()
+            alert.messageText = "Are you sure you want to quit?"
+            alert.informativeText = "Mythic is still modifying games."
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            if alert.runModal() == .alertFirstButtonReturn {
+                return .terminateNow
+            } else {
+                return .terminateCancel
+            }
+        }
+        
+        return .terminateNow
+    }
+    
+    func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
+        Legendary.stopAllCommands(forced: true)
     }
 }
 

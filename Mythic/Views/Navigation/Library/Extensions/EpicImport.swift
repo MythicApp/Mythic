@@ -16,24 +16,25 @@
 
 import SwiftUI
 import SwordRPC
+import OSLog
 
 extension LibraryView.GameImportView {
     struct Epic: View {
-        @State private var installableGames: [Game] = .init()
-        
         @Binding var isPresented: Bool
+        @State private var errorDescription: String = .init()
+        @State private var isErrorAlertPresented = false
         
-        @State private var game: Game = placeholderGame(type: .epic)
+        @State private var installableGames: [Game] = .init()
+        @State private var game: Game = .init(type: .epic, title: .init())
         @State private var path: String = .init()
         @State private var platform: GamePlatform = .macOS
         
-        @State private var withDLCs: Bool = false
-        @State private var checkIntegrity: Bool = false
+        @State private var supportedPlatforms: [GamePlatform]?
         
-        @Binding var isProgressViewSheetPresented: Bool
-        @Binding var isGameListRefreshCalled: Bool
-        @Binding var isErrorPresented: Bool
-        @Binding var errorContent: Substring
+        @State private var withDLCs: Bool = true
+        @State private var checkIntegrity: Bool = true
+        
+        @State private var isOperating: Bool = false
         
         var body: some View {
             Form {
@@ -51,16 +52,24 @@ extension LibraryView.GameImportView {
                             .controlSize(.small)
                     }
                 }
-                
-                Picker("Choose the game's native platform:", selection: $platform) { // FIXME: some games dont have macos binaries
-                    ForEach(type(of: platform).allCases, id: \.self) {
-                        Text($0.rawValue)
+                if supportedPlatforms == nil {
+                    HStack {
+                        Text("Choose the game's native platform:")
+                        Spacer()
+                        ProgressView()
+                            .controlSize(.small)
+                    }
+                } else {
+                    Picker("Choose the game's native platform:", selection: $platform) {
+                        ForEach(supportedPlatforms!, id: \.self) {
+                            Text($0.rawValue)
+                        }
                     }
                 }
                 
                 HStack {
                     VStack {
-                        HStack { // FIXME: jank
+                        HStack {
                             Text("Where is the game located?")
                             Spacer()
                         }
@@ -112,6 +121,25 @@ extension LibraryView.GameImportView {
                 }
             }
             .formStyle(.grouped)
+            .onChange(of: game) {
+                if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
+                    supportedPlatforms = fetchedPlatforms.keys
+                        .compactMap { key in
+                            switch key {
+                            case "Windows": return .windows
+                            case "Mac": return .macOS
+                            default: return nil
+                            }
+                        }
+                    
+                    if let platform = supportedPlatforms?.first {
+                        self.platform = platform
+                    }
+                } else {
+                    Logger.app.info("Unable to fetch supported platforms for \(game.title).")
+                    supportedPlatforms = GamePlatform.allCases
+                }
+            }
             
             HStack {
                 Button("Cancel", role: .cancel) {
@@ -120,74 +148,61 @@ extension LibraryView.GameImportView {
                 
                 Spacer()
                 
+                if isOperating {
+                    ProgressView()
+                        .controlSize(.small)
+                        .padding(0.5)
+                }
+                
                 Button("Done", role: .none) {
-                    isProgressViewSheetPresented = true
+                    isOperating = true
                     
                     Task(priority: .userInitiated) {
-                        var command: (stdout: Data, stderr: Data)?
-                        
-                        if !game.appName.isEmpty && !game.title.isEmpty { // FIXME: appName force-unwrap hurts, alternative??
-                            command = await Legendary.command(
-                                args: [
-                                    "import",
-                                    checkIntegrity ? nil : "--disable-check",
-                                    withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                                    "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
-                                    game.appName,
-                                    path
-                                ]
-                                    .compactMap { $0 },
-                                useCache: false,
-                                identifier: "gameImport"
-                            )
-                        }
-                        
-                        if command != nil {
-                            if let commandStderrString = String(data: command!.stderr, encoding: .utf8) {
-                                if !commandStderrString.isEmpty {
-                                    if !game.appName.isEmpty && !game.title.isEmpty {
-                                        if commandStderrString.contains("INFO: Game \"\(game.title)\" has been imported.") {
-                                            isPresented = false
-                                            isGameListRefreshCalled = true
-                                        }
-                                    }
-                                }
-                                
-                                for line in commandStderrString.components(separatedBy: "\n") {
-                                    if line.contains("ERROR:") {
-                                        if let range = line.range(of: "ERROR: ") {
-                                            let substring = line[range.upperBound...]
-                                            errorContent = substring
-                                            isProgressViewSheetPresented = false
-                                            isErrorPresented = true
-                                            break // first err
-                                        }
-                                    }
-                                    
-                                    // legendary/cli.py line 1372 as of hash 4507842
-                                    if line.contains(
-                                        "Some files are missing from the game installation, install may not"
-                                        + " match latest Epic Games Store version or might be corrupted."
-                                    ) {
-                                        // TODO: implement
-                                    }
-                                }
+                        try? await Legendary.command(arguments: [
+                            "import",
+                            checkIntegrity ? nil : "--disable-check",
+                            withDLCs ? "--with-dlcs" : "--skip-dlcs",
+                            "--platform", platform == .macOS ? "Mac" : platform == .windows ? "Windows" : "Mac",
+                            game.id,
+                            path
+                        ] .compactMap { $0 }, identifier: "epicImport") { output in
+                            if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
+                                isPresented = false
+                            }
+                            
+                            let commandError = output.stderr.trimmingPrefix("ERROR: ")
+                            if !commandError.isEmpty {
+                                isOperating = false
+                                errorDescription = .init(commandError)
+                                isErrorAlertPresented = true
+                            }
+                            
+                            // legendary/cli.py line 1372 as of hash 4507842
+                            if output.stderr.contains(
+                                "Some files are missing from the game installation, install may not"
+                                + " match latest Epic Games Store version or might be corrupted."
+                            ) {
+                                // TODO: implement
                             }
                         }
                     }
                 }
                 .disabled(path.isEmpty)
+                .disabled(game.title.isEmpty)
+                .disabled(supportedPlatforms == nil)
+                .disabled(isOperating)
                 .buttonStyle(.borderedProminent)
             }
             
             .task(priority: .userInitiated) {
-                let games = try? await Legendary.getInstallable()
-                if let games = games, !games.isEmpty { game = games.first! }
-                installableGames = games ?? installableGames
-                isProgressViewSheetPresented = false
+                let games = try? Legendary.getInstallable()
+                guard let games = games, !games.isEmpty else { return }
+                installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
+                if let game = installableGames.first { self.game = game }
+                isOperating = false
             }
             
-            .task(priority: .background) { // TODO: same as in localimport, can be unified?
+            .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
                     presence.details = "Importing & Configuring \(platform.rawValue) game \"\(game.title)\""
@@ -198,16 +213,22 @@ extension LibraryView.GameImportView {
                     return presence
                 }())
             }
+            
+            .alert(isPresented: $isErrorAlertPresented) {
+                Alert(
+                    title: .init("Error importing game \"\(game.title)\"."),
+                    message: .init(errorDescription),
+                    dismissButton: .default(.init(""))
+                )
+            }
+            
+            .onChange(of: isErrorAlertPresented) {
+                if !$1 { errorDescription = .init() }
+            }
         }
     }
 }
 
 #Preview {
-    LibraryView.GameImportView.Epic(
-        isPresented: .constant(true),
-        isProgressViewSheetPresented: .constant(false),
-        isGameListRefreshCalled: .constant(false),
-        isErrorPresented: .constant(false),
-        errorContent: .constant(.init())
-    )
+    LibraryView.GameImportView.Epic(isPresented: .constant(true))
 }

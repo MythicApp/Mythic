@@ -26,16 +26,6 @@ import SwordRPC
  The main view displaying the home screen of the Mythic app.
  */
 struct HomeView: View {
-    enum ActiveAlert {
-        case launchError
-    }
-    
-    struct LaunchError {
-        static var message: String = .init()
-        static var game: Game? = nil // swiftlint:disable:this redundant_optional_initialization
-    }
-    
-    // MARK: - State Variables
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
@@ -47,147 +37,42 @@ struct HomeView: View {
     @State private var urlString = "https://store.epicgames.com/"
     
     @State private var isAlertPresented: Bool = false
-    @State private var activeAlert: ActiveAlert = .launchError
     
-    @State private var animateStar: Bool = false
-    let animateStarTimer = Timer.publish(every: 2, on: .main, in: .common).autoconnect() // why on god's green earth is it so lengthy on swift to repeat something every 2 seconds
     @Environment(\.colorScheme) var colorScheme
     
     // MARK: - Body
     var body: some View {
         HStack {
             // MARK: - Recent Game Display
-            VStack {
-                ZStack {
-                    HStack {
-                        if let recentlyPlayedGame: Game? = try? PropertyListDecoder().decode(
-                            Game.self,
-                            from: defaults.object(forKey: "recentlyPlayed") as? Data ?? Data()
-                        ), Legendary.signedIn() {
-                            // MARK: Image
-                            CachedAsyncImage(url: URL(string: Legendary.getImage(of: recentlyPlayedGame!, type: .tall)), urlCache: gameImageURLCache) { phase in
-                                switch phase {
-                                case .empty:
-                                    ProgressView()
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                        .clipShape(.rect(cornerRadius: 10))
-                                        .shimmering()
-                                case .success(let image):
-                                    ZStack {
-                                        // MARK: Main Image
-                                        image
-                                            .resizable()
-                                            .aspectRatio(3/4, contentMode: .fill)
-                                            .clipped()
-                                            .glur(radius: 20, offset: 0.5, interpolation: 0.4)
-                                    }
-                                    .aspectRatio(3/4, contentMode: .fit)
-                                case .failure:
-                                    Image(systemName: "network.slash")
-                                        .symbolEffect(.appear)
-                                        .imageScale(.large)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                @unknown default:
-                                    Image(systemName: "exclamationmark.triangle")
-                                        .symbolEffect(.appear)
-                                        .imageScale(.large)
-                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                        .aspectRatio(3/4, contentMode: .fit)
-                                }
-                            }
-                            .clipShape(.rect(cornerRadius: 10))
-                            .overlay(
-                                ZStack(alignment: .bottom) {
-                                    VStack {
-                                        Spacer()
-                                        
-                                        HStack {
-                                            VStack {
-                                                HStack {
-                                                    Text("RECENTLY PLAYED")
-                                                        .font(.footnote)
-                                                        .foregroundStyle(.placeholder)
-                                                    
-                                                    Spacer()
-                                                }
-                                                
-                                                HStack {
-                                                    // MARK: Game Title
-                                                    Text(recentlyPlayedGame?.title ?? "Unknown") // TODO: marquee effect
-                                                        .font(.title)
-                                                        .scaledToFit()
-                                                    
-                                                    Spacer()
-                                                }
-                                            }
-                                            
-                                            Spacer()
-                                            
-                                            if variables.getVariable("launching_\(recentlyPlayedGame?.appName ?? .init())") != true {
-                                                Button {
-                                                    Task(priority: .userInitiated) {
-                                                        do {
-                                                            if let recentlyPlayedGame = recentlyPlayedGame {
-                                                                try await Legendary.launch(
-                                                                    game: recentlyPlayedGame,
-                                                                    bottle: Wine.allBottles![recentlyPlayedGame.bottleName]!,
-                                                                    online: networkMonitor.isEpicAccessible
-                                                                )
-                                                                
-                                                                if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
-                                                            }
-                                                        } catch {
-                                                            LaunchError.game = recentlyPlayedGame
-                                                            LaunchError.message = "\(error.localizedDescription)"
-                                                            activeAlert = .launchError
-                                                            isAlertPresented = true
-                                                        }
-                                                    }
-                                                } label: {
-                                                    Image(systemName: "play.fill")
-                                                        .padding()
-                                                }
-                                                .buttonStyle(.bordered)
-                                                .controlSize(.extraLarge)
-                                            } else {
-                                                ProgressView()
-                                                    .padding()
-                                            }
-                                        }
-                                        .padding()
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
+            if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,
+               var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(Game.self, from: recentlyPlayedObject
+               ) {
+                GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
             }
-            .background(.background)
-            .clipShape(.rect(cornerRadius: 10))
             
             // MARK: - Side Views
             VStack {
                 // MARK: View 1 (Top)
                 VStack {
-                    Image(systemName: animateStar ? "star.fill" : "calendar.badge.clock")
-                        .resizable()
-                        .symbolRenderingMode(.palette)
-                        .symbolEffect(.bounce, value: animateStar)
-                        .contentTransition(.symbolEffect(.replace))
-                        .foregroundStyle(animateStar ? .yellow : .yellow, (colorScheme == .light ? .black : .white))
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 35, height: 35)
-                        .onReceive(animateStarTimer) { _ in
-                            animateStar.toggle()
+                    if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
+                        ScrollView(.horizontal) {
+                            LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
+                                ForEach(unifiedGames.filter({ $0.isFavourited == true }), id: \.self) { game in
+                                    CompactGameCard(game: .constant(game))
+                                        .padding(5)
+                                }
+                            }
                         }
-                    
-                    Text("Favourites (Not implemented yet)")
+                    } else {
+                        HStack {
+                            Image(systemName: "star.fill")
+                            Text("No games are favourited.")
+                        }
+                    }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
+                .clipShape(.rect(cornerRadius: 20))
                 
                 // MARK: View 2 (Bottom)
                 VStack {
@@ -195,24 +80,15 @@ struct HomeView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)
-                .clipShape(.rect(cornerRadius: 10))
+                .clipShape(.rect(cornerRadius: 20))
             }
         }
         .navigationTitle("Home")
         .padding()
-        .alert(isPresented: $isAlertPresented) {
-            switch activeAlert {
-            case .launchError:
-                Alert(
-                    title: Text("Error launching \(LaunchError.game?.title ?? "game")."),
-                    message: Text(LaunchError.message)
-                )
-            }
-        }
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.details = "Looking at the Home View"
+                presence.details = "Viewing home"
                 presence.state = "Idle"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
@@ -226,4 +102,5 @@ struct HomeView: View {
 // MARK: - Preview
 #Preview {
     HomeView()
+        .environmentObject(NetworkMonitor())
 }
