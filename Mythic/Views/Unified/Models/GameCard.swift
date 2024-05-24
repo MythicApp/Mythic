@@ -112,7 +112,7 @@ struct GameCard: View {
                                     // MARK: Engine Install Button
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                        app.onboardingChapter = .engineDisclaimer
+                                        app.onboardingPhase = .engineDisclaimer
                                         app.isOnboardingPresented = true
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")

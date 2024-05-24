@@ -6349,6 +6349,7 @@
       }
     },
     "Can't connect." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21239,6 +21240,7 @@
       }
     },
     "Later" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22191,6 +22193,9 @@
           }
         }
       }
+    },
+    "Local" : {
+
     },
     "Manage containers for Windows® applications" : {
       "localizations" : {
@@ -24864,6 +24869,7 @@
 
     },
     "Mythic is unable to connect to the internet. App functionality will be limited." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25245,6 +25251,7 @@
       }
     },
     "Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: %@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -28122,6 +28129,7 @@
 
     },
     "Quit Mythic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -33465,6 +33473,7 @@
       }
     },
     "The backend that allows you to play Windows® games on macOS just got an update." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -34231,6 +34240,7 @@
 
     },
     "Time for an update!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -34611,6 +34621,7 @@
       }
     },
     "Unable to boot default bottle." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -35950,6 +35961,7 @@
 
     },
     "Update" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

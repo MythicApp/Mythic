@@ -23,15 +23,12 @@ import OSLog
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     var updaterController: SPUStandardUpdaterController?
     var networkMonitor: NetworkMonitor?
-    var window: NSWindow!
     
     func applicationDidFinishLaunching(_: Notification) {
         // MARK: initialize default UserDefaults Values
-        UserDefaults.standard.register(
-            defaults: [
-                "discordRPC": true
-            ]
-        )
+        defaults.register(defaults: [
+            "discordRPC": true
+        ])
         
         // MARK: Bottle removal if folder was deleted externally
         if let bottles = Wine.allBottles {
@@ -40,31 +37,35 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
+        // MARK: DiscordRPC Connection and Delegation Setting
+        discordRPC.delegate = self
+        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        
         if Engine.exists { _ = Wine.allBottles } // creates default bottle automatically because of custom getter
         
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
-#if !DEBUG
-        let appURL = Bundle.main.bundleURL
+// #if !DEBUG
+        let currentAppURL = Bundle.main.bundleURL
+        let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
         
         // MARK: Move to Applications
-        if !appURL.pathComponents.contains("Applications") {
+        if !currentAppURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
             alert.messageText = "Move Mythic to the Applications folder?"
             alert.informativeText = "Mythic has detected it's running outside of the applications folder."
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
-            if alert.runModal() == .alertFirstButtonReturn, let globalApps = FileLocations.globalApplications {
+            if case .alertFirstButtonReturn = alert.runModal(), let optimalAppURL = optimalAppURL {
                 do {
-                    _ = try files.replaceItemAt(appURL, withItemAt: globalApps)
-                    workspace.open(globalApps.appending(path: "Mythic.app")
-                    )
+                    _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
+                    workspace.open(optimalAppURL)
                 } catch {
                     Logger.file.error("Unable to move Mythic to Applications: \(error)")
                     
                     let error = NSAlert()
-                    error.messageText = "Unable to move Mythic to \"\(globalApps.prettyPath())\"."
+                    error.messageText = "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\"."
                     error.addButton(withTitle: "Quit")
                     
                     if error.runModal() == .alertFirstButtonReturn {
@@ -73,7 +74,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
-#endif
+// #endif
         
         // MARK: Notification Authorisation Request and Delegation Setting
         notifications.delegate = self
@@ -88,9 +89,37 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        // MARK: DiscordRPC Connection and Delegation Setting
-        discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        if Engine.needsUpdate() == true {
+            let alert = NSAlert()
+            alert.messageText = "Time for an update!"
+            alert.informativeText = "A new Mythic Engine update has been pushed."
+            alert.addButton(withTitle: "Update")
+            alert.addButton(withTitle: "Cancel")
+            
+            if case .alertFirstButtonReturn = alert.runModal() {
+                let confirmation = NSAlert()
+                confirmation.messageText = "Are you sure you want to update now?"
+                confirmation.informativeText = "Updating will remove the current version of Mythic Engine before installing the new one."
+                confirmation.addButton(withTitle: "Update")
+                confirmation.addButton(withTitle: "Cancel")
+                
+                if case .alertFirstButtonReturn = confirmation.runModal() {
+                    do {
+                        try Engine.remove()
+                        let app = MythicApp() // FIXME: is this dangerous or just stupid
+                        app.onboardingPhase = .engineDisclaimer
+                        app.isOnboardingPresented = true
+                    } catch {
+                        let error = NSAlert()
+                        error.messageText = "Unable to remove Mythic Engine."
+                        error.addButton(withTitle: "Quit")
+                        if case .OK = error.runModal() {
+                            exit(1)
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {

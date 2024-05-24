@@ -123,6 +123,15 @@ final class Engine {
         return latestVersion
     }
     
+    static func needsUpdate() -> Bool? {
+        guard let latestVersion = fetchLatestVersion(),
+              let currentVersion = version
+        else {
+            return nil
+        }
+        return latestVersion > currentVersion
+    }
+    
     /// Removes Mythic Engine.
     static func remove() throws {
         defer { lock.unlock() }

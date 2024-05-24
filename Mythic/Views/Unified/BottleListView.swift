@@ -177,7 +177,7 @@ struct BottleListView: View {
             
             Button {
                 let app = MythicApp() // FIXME: is this dangerous or just stupid
-                app.onboardingChapter = .engineDisclaimer
+                app.onboardingPhase = .engineDisclaimer
                 app.isOnboardingPresented = true
             } label: {
                 Label("Install Mythic Engine", systemImage: "arrow.down.to.line")
@@ -185,10 +185,8 @@ struct BottleListView: View {
             }
             .buttonStyle(.borderedProminent)
         } else {
-            Image(systemName: "exclamationmark.triangle")
+            Label("Unable to fetch bottles.", systemImage: "exclamationmark.triangle")
                 .imageScale(.large)
-                .symbolEffect(.pulse)
-                .help("Unable to fetch bottles.")
         }
     }
 }
