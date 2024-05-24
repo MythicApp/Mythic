@@ -318,27 +318,15 @@ final class Legendary {
     }
     
     static func signIn(authKey: String) async throws -> Bool {
-        return try await withCheckedThrowingContinuation { continuation in
-            Task {
-                do {
-                    var isLoggedIn = false
-                    
-                    try await command(
-                        arguments: ["auth", "--code", authKey],
-                        identifier: "signin",
-                        waits: true
-                    ) { output in
-                        isLoggedIn = (isLoggedIn == true ? true : output.stderr.contains("Successfully logged in as"))
-                    }
-                    
-                    continuation.resume(returning: isLoggedIn)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
+        var isLoggedIn = false
+        
+        try await command(arguments: ["auth", "--code", authKey], identifier: "signin", waits: true ) { output in
+            isLoggedIn = (isLoggedIn == true ? true : output.stderr.contains("Successfully logged in as"))
         }
+        
+        return isLoggedIn
     }
-    
+
     /**
      Launches games.
      
