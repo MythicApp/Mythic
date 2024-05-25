@@ -45,7 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
-// #if !DEBUG
+#if !DEBUG
         let currentAppURL = Bundle.main.bundleURL
         let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
         
@@ -74,7 +74,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
-// #endif
+#endif
         
         // MARK: Notification Authorisation Request and Delegation Setting
         notifications.delegate = self
