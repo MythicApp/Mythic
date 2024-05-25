@@ -42,12 +42,12 @@ extension Process {
         
         stderr.fileHandleForReading.readabilityHandler = { handle in
             output.stderr = String(data: handle.availableData, encoding: .utf8) ?? .init()
-            completion(output)
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
         
         stderr.fileHandleForReading.readabilityHandler = { handle in
             output.stdout = String(data: handle.availableData, encoding: .utf8) ?? .init()
-            completion(output)
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
     }
 }

@@ -94,13 +94,15 @@ struct BottleSettingsView: View {
                     get: { retinaMode },
                     set: { value in
                         Task(priority: .userInitiated) {
-                            modifyingRetinaMode = true
+                            withAnimation { modifyingRetinaMode = true }
                             do {
                                 try await Wine.toggleRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url, toggle: value)
                                 retinaMode = value
                                 Wine.allBottles![selectedBottle]!.settings.retinaMode = value
-                                modifyingRetinaMode = false
-                            } catch { }
+                                withAnimation { modifyingRetinaMode = false }
+                            } catch {
+                                
+                            }
                         }
                     }
                                                    )

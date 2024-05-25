@@ -402,7 +402,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         do {
             try await addRegistryKey(bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
         } catch {
-            log.error("Unable to toggle retina mode to \(toggle ? "on" : "off") in bottle at \(bottleURL)")
+            log.error("Unable to toggle retina mode to \(toggle) in bottle at \(bottleURL)")
         }
     }
     
