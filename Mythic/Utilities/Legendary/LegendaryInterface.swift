@@ -352,7 +352,7 @@ final class Legendary {
             "launch",
             game.id,
             needsUpdate(game: game) ? "--skip-version-check" : nil,
-            online ? nil : "--offline",
+            online ? nil : "--offline"
         ] .compactMap { $0 }
         
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
