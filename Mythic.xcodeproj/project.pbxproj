@@ -63,7 +63,6 @@
 		6A2935662BFCFAFD0035CE4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */; };
 		6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */; };
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
-		6A2935692BFCFAFD0035CE4B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F32BFCFAFD0035CE4B /* Info.plist */; };
 		6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */; };
 		6A29356B2BFCFAFD0035CE4B /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
@@ -253,8 +252,8 @@
 		6A2934CF2BFCFAFD0035CE4B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				6A2934CB2BFCFAFD0035CE4B /* EpicImport.swift */,
 				6A2934CC2BFCFAFD0035CE4B /* GameImport.swift */,
+				6A2934CB2BFCFAFD0035CE4B /* EpicImport.swift */,
 				6A2934CE2BFCFAFD0035CE4B /* LocalImport.swift */,
 			);
 			path = Extensions;
@@ -410,7 +409,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					6AB474942AACBBE900AB9C63 = {
 						CreatedOnToolsVersion = 15.0;
@@ -455,7 +454,6 @@
 				6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */,
 				6A71D3D92BFD01AB00A2C74D /* legendary in Resources */,
 				6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */,
-				6A2935692BFCFAFD0035CE4B /* Info.plist in Resources */,
 				6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -681,7 +679,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2642;
+				CURRENT_PROJECT_VERSION = 2655;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -726,7 +724,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2642;
+				CURRENT_PROJECT_VERSION = 2655;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
