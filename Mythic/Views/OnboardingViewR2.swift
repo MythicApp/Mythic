@@ -49,6 +49,9 @@ struct OnboardingR2: View { // TODO: ViewModel
                 if case .signin = allCases[nextIndex], Legendary.signedIn() {
                     nextIndex += 1
                 }
+                if case .greetings = allCases[nextIndex], !Legendary.signedIn() {
+                    nextIndex += 1
+                }
                 if case .rosettaDisclaimer = allCases[nextIndex], (Rosetta.exists || !workspace.isARM()) {
                     // swiftlint:disable:previous control_statement
                     nextIndex += 2 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
@@ -604,7 +607,7 @@ extension OnboardingR2 {
         @State private var isHelpPopoverPresented: Bool = false
         
         // swiftlint:disable:next nesting
-        enum ThirdRow {
+        enum ThirdRow { // TODO: ViewBuilder?
             case help(content: AnyView?)
             case nextArrow(
                 function: (() -> Void)?,
