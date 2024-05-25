@@ -352,7 +352,7 @@ final class Legendary {
             "launch",
             game.id,
             needsUpdate(game: game) ? "--skip-version-check" : nil,
-            online ? nil : "--offline"
+            online ? nil : "--offline",
         ] .compactMap { $0 }
         
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
@@ -362,6 +362,8 @@ final class Legendary {
             environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
+        
+        arguments.append(contentsOf: game.launchArguments)
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
         

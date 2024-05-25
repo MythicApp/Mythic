@@ -85,7 +85,7 @@ final class LocalGames {
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             
             try await Wine.command(
-                arguments: [game.path!],
+                arguments: [game.path!] + game.launchArguments,
                 identifier: "launch_\(game.title)",
                 bottleURL: bottle.url,
                 environment: [

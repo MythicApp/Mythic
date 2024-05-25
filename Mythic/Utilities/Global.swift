@@ -119,15 +119,31 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     // MARK: Properties
     var bottleName: String {
         get {
-            let bottleKey: String = id.appending("_defaultBottle")
+            let key: String = id.appending("_defaultBottle")
             
-            if Wine.allBottles?[bottleKey] == nil { defaults.removeObject(forKey: bottleKey) }
-            defaults.register(defaults: [bottleKey: "Default"]) // reregister after removal
-            return defaults.string(forKey: bottleKey)!
+            if Wine.allBottles?[key] == nil { defaults.removeObject(forKey: key) }
+            defaults.register(defaults: [key: "Default"]) // reregister after removal
+            return defaults.string(forKey: key)!
         }
         set {
             if Wine.allBottles?[newValue] != nil {
                 defaults.set(newValue, forKey: id.appending("_defaultBottle"))
+            }
+        }
+    }
+    
+    var launchArguments: [String] {
+        get {
+            let key: String = id.appending("_launchArguments")
+            
+            defaults.register(defaults: [key: []])
+            return (try? PropertyListDecoder().decode([String].self, from: defaults.object(forKey: key) as? Data ?? .init())) ?? .init()
+        }
+        set {
+            do {
+                defaults.set(try PropertyListEncoder().encode(newValue), forKey: id.appending("_launchArguments"))
+            } catch {
+                Logger.app.error("Unable to set to launch: \(error.localizedDescription)")
             }
         }
     }

@@ -20,11 +20,16 @@ struct GameSettingsView: View {
         _game = game
         _isPresented = isPresented
         _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
+        _launchArguments = State(initialValue: game.launchArguments.wrappedValue)
     }
     
     @State private var moving: Bool = false
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
+    
+    @State private var typingArgument: String = .init()
+    @State private var launchArguments: [String] = .init()
+    @State private var isHoveringOverArg: Bool = false
     
     @State private var isFileSectionExpanded: Bool = true
     @State private var isWineSectionExpanded: Bool = true
@@ -116,7 +121,9 @@ struct GameSettingsView: View {
                                 Spacer()
                             }
                         }
+                        
                         Spacer()
+                        
                         Button("Change...") {
                             isThumbnailURLChangeSheetPresented = true
                         }
@@ -126,12 +133,42 @@ struct GameSettingsView: View {
                                 text: Binding(
                                     get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
                                     set: { game.imageURL = .init(string: $0) }
-                                             )
+                                )
                             )
                             .truncationMode(.tail)
                             .padding()
                         }
                         .disabled(game.type != .local)
+                    }
+                    
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Launch Arguments")
+                                Spacer()
+                            }
+                            
+                            if !launchArguments.isEmpty {
+                                ScrollView(.horizontal) {
+                                    HStack {
+                                        ForEach(launchArguments, id: \.self) { argument in
+                                            ArgumentItem(launchArguments: $launchArguments, argument: argument)
+                                        }
+                                        .onChange(of: launchArguments, { game.launchArguments = $1 })
+                                        
+                                        Spacer()
+                                    }
+                                }
+                                .scrollIndicators(.never)
+                            }
+                        }
+                        
+                        Spacer()
+                        TextField("", text: $typingArgument)
+                            .onSubmit {
+                                launchArguments.append(typingArgument)
+                                typingArgument = .init()
+                            }
                     }
                 }
                 
@@ -199,7 +236,7 @@ struct GameSettingsView: View {
                     }
                 }
                 
-                Section("Wine", isExpanded: $isWineSectionExpanded) {
+                Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
                     BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
                 }
                 // TODO: DXVK
@@ -238,6 +275,44 @@ struct GameSettingsView: View {
                 
                 return presence
             }())
+        }
+    }
+}
+
+extension GameSettingsView {
+    struct ArgumentItem: View {
+        @Binding var launchArguments: [String]
+        var argument: String
+        
+        @State private var isHoveringOverArg: Bool = false
+        
+        var body: some View {
+            HStack {
+                if isHoveringOverArg {
+                    Image(systemName: "xmark.bin")
+                        .imageScale(.small)
+                }
+                
+                Text(argument)
+                    .monospaced()
+                    .foregroundStyle(isHoveringOverArg ? .red : .secondary)
+            }
+            .padding(3)
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 7)
+                    .foregroundStyle(.tertiary)
+                    .shadow(radius: 5)
+            })
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isHoveringOverArg = hovering
+                }
+            }
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    launchArguments.removeAll(where: { $0 == argument })
+                }
+            }
         }
     }
 }
