@@ -72,6 +72,7 @@
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
+		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
 		6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC02802ABE02970004AB77 /* Sparkle */; };
 /* End PBXBuildFile section */
@@ -151,6 +152,7 @@
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +203,7 @@
 				6A2934B82BFCFAFD0035CE4B /* Task.swift */,
 				6A2934B92BFCFAFD0035CE4B /* URL.swift */,
 				6A2934BA2BFCFAFD0035CE4B /* Workspace.swift */,
+				6AF630D82C077A17001F4E10 /* UserDefaults.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				6A29353C2BFCFAFD0035CE4B /* Workspace.swift in Sources */,
 				6A2935452BFCFAFD0035CE4B /* NetworkMonitor.swift in Sources */,
 				6A29356B2BFCFAFD0035CE4B /* MythicApp.swift in Sources */,
+				6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */,
 				6A2935342BFCFAFD0035CE4B /* EngineExt.swift in Sources */,
 				6A2935392BFCFAFD0035CE4B /* Process.swift in Sources */,
 				6A2935492BFCFAFD0035CE4B /* GameImport.swift in Sources */,
