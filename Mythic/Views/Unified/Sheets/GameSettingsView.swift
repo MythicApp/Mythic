@@ -167,8 +167,10 @@ struct GameSettingsView: View {
                         Spacer()
                         TextField("", text: $typingArgument)
                             .onSubmit {
-                                launchArguments.append(typingArgument)
-                                typingArgument = .init()
+                                if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    launchArguments.append(typingArgument)
+                                    typingArgument = .init()
+                                }
                             }
                     }
                     
