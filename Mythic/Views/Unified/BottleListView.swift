@@ -128,7 +128,7 @@ struct BottleListView: View {
                         }
                         
                         Button("Launch Winetricks") {
-                            try? Wine.launchWinetricks(prefix: bottles[selectedBottleName]!.url)
+                            try? Wine.launchWinetricks(bottleURL: bottles[selectedBottleName]!.url)
                         }
                         .disabled(true)
                         .help("Winetricks GUI support is currently broken.")

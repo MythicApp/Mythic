@@ -222,7 +222,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     // TODO: implement
     @available(*, message: "Not implemented completely.")
-    static func launchWinetricks(prefix: URL) throws {
+    static func launchWinetricks(bottleURL: URL) throws {
         guard Engine.exists else {
             log.error("Unable to launch winetricks, Mythic Engine is not installed!")
             throw Engine.NotInstalledError()
@@ -230,7 +230,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "winetricks")
-        task.environment = ["WINEPREFIX": prefix.path(percentEncoded: false)]
+        task.environment = ["WINEPREFIX": bottleURL.path(percentEncoded: false)]
         task.arguments = ["--gui"]
         
         do {
