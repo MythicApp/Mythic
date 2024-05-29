@@ -14,6 +14,7 @@ struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
     
+    @State private var operation: GameOperation = .shared
     @State private var selectedBottle: String
     
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
@@ -169,6 +170,42 @@ struct GameSettingsView: View {
                                 launchArguments.append(typingArgument)
                                 typingArgument = .init()
                             }
+                    }
+                    
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Verify File Integrity")
+                                Spacer()
+                            }
+                            
+                            if operation.current?.game == game {
+                                HStack {
+                                    if operation.status.progress != nil {
+                                        ProgressView(value: operation.status.progress?.percentage)
+                                            .controlSize(.small)
+                                            .progressViewStyle(.linear)
+                                    } else {
+                                        ProgressView()
+                                            .controlSize(.small)
+                                            .progressViewStyle(.linear)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                            
+                        Spacer()
+                        
+                        Button("Verify") {
+                            operation.queue.append(
+                                GameOperation.InstallArguments(
+                                    game: game, platform: game.platform!, type: .repair
+                                )
+                            )
+                        }
+                        .disabled(operation.queue.contains(where: { $0.game == game }))
+                        .disabled(operation.current?.game == game)
                     }
                 }
                 
