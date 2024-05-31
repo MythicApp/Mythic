@@ -17,29 +17,22 @@ extension UserDefaults {
     @discardableResult
     func encodeAndSet<T: Encodable>(_ data: T, forKey key: String) throws -> Data {
         let encodedData = try PropertyListEncoder().encode(data)
-        defaults.set(encodedData, forKey: key)
+        set(encodedData, forKey: key)
         return encodedData
     }
     
     @discardableResult
-    func encodeAndRegister(defaults registrationDictionary: [String: Any]) throws -> [String: Any] {
+    func encodeAndRegister(defaults registrationDictionary: [String: Encodable]) throws -> [String: Any] {
         for (key, value) in registrationDictionary {
-            guard let value = value as? Encodable else {
-                throw EncodingError.invalidValue(
-                    value,
-                    .init(codingPath: [], debugDescription: "Attempted to encode non-encodable value \(value)")
-                )
-            }
-            
             let encodedData = try PropertyListEncoder().encode(value)
-            defaults.register(defaults: [key: encodedData])
+            register(defaults: [key: encodedData])
         }
         
-        return defaults.dictionaryRepresentation()
+        return dictionaryRepresentation()
     }
     
     func decodeAndGet<T: Decodable>(_ type: T.Type, forKey key: String) throws -> T? {
-        guard let data = defaults.data(forKey: key) else { return nil }
+        guard let data = data(forKey: key) else { return nil }
         let decodedData = try PropertyListDecoder().decode(T.self, from: data)
         return decodedData
     }
