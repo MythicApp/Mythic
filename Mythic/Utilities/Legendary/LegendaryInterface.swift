@@ -511,14 +511,8 @@ final class Legendary {
         
         let metadata = "\(configLocation)/metadata"
         
-        if let metadataContents = try? files.contentsOfDirectory(atPath: metadata), !metadataContents.isEmpty {
-            Task(priority: .background) {
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-            }
-        } else {
-            Task.sync(priority: .high) { // called during onboarding for speed
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-            }
+        Task(priority: .utility) {
+            try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
         }
         
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
