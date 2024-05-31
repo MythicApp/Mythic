@@ -71,21 +71,8 @@ struct BottleSettingsView: View {
         }
         if Wine.allBottles?[selectedBottle] != nil {
             Toggle("Performance HUD", isOn: Binding(
-                get: { /* TODO: add support for different games having different configs under the same bottle
-                        switch bottleScope {
-                        case .individual:
-                        return Wine.individualBottleSettings![game.id]!.metalHUD
-                        case .global: */
-                    return Wine.allBottles![selectedBottle]!.settings.metalHUD
-                    // }
-                }, set: { /* TODO: add support for different games having different configs under the same bottle
-                           switch bottleScope {
-                           case .individual:
-                           <#code#>
-                           case .global: */
-                    Wine.allBottles![selectedBottle]!.settings.metalHUD = $0
-                    // }
-                }
+                get: { return Wine.allBottles![selectedBottle]!.settings.metalHUD },
+                set: { Wine.allBottles![selectedBottle]!.settings.metalHUD = $0 }
             ))
             .disabled(variables.getVariable("booting") == true)
             

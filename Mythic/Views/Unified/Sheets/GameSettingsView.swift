@@ -199,7 +199,7 @@ struct GameSettingsView: View {
                             
                         Spacer()
                         
-                        Button("Verify") {
+                        Button("Verify...") {
                             operation.queue.append(
                                 GameOperation.InstallArguments(
                                     game: game, platform: game.platform!, type: .repair
