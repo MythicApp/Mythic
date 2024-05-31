@@ -21,6 +21,8 @@ struct BottleListView: View {
     @State private var configuratorActive: Bool = false
     @State private var registryEditorActive: Bool = false
     
+    @State private var isBottleCreationViewPresented: Bool = false
+    
     var body: some View {
         if let bottles = Wine.allBottles, !bottles.isEmpty {
             Form {
@@ -185,8 +187,19 @@ struct BottleListView: View {
             }
             .buttonStyle(.borderedProminent)
         } else {
-            Label("Unable to fetch bottles.", systemImage: "exclamationmark.triangle")
-                .imageScale(.large)
+            Text("No bottles can be shown.")
+                .font(.bold(.title)())
+            
+            Button {
+                isBottleCreationViewPresented = true
+            } label: {
+                Label("Create a bottle", systemImage: "plus")
+                    .padding(5)
+            }
+            .buttonStyle(.borderedProminent)
+            .sheet(isPresented: $isBottleCreationViewPresented) {
+                BottleCreationView(isPresented: $isBottleCreationViewPresented)
+            }
         }
     }
 }
