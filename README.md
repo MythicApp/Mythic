@@ -19,7 +19,7 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 
 ## Features
 - [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX9-12) (64-bit)
-- [ ] Steam Support (Coming in update 0.2.x)
+- [ ] Steam Support (Coming in update <1.x.x)
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
