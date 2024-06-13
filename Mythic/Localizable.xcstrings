@@ -8256,7 +8256,11 @@
     "Coming Soon" : {
 
     },
+    "Configure \"%@\"" : {
+
+    },
     "Configure default settings for \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
