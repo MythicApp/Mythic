@@ -47,7 +47,6 @@ struct GameListEvo: View {
             .buttonStyle(.borderedProminent)
             .sheet(isPresented: $isGameImportViewPresented) {
                 LibraryView.GameImportView(isPresented: $isGameImportViewPresented)
-                    .fixedSize()
             }
             
         }

@@ -205,7 +205,6 @@ struct BottleConfigurationView: View {
                 }
             }
             .padding()
-            .fixedSize()
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
