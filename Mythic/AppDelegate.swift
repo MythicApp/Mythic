@@ -25,6 +25,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     var networkMonitor: NetworkMonitor?
     
     func applicationDidFinishLaunching(_: Notification) {
+        setenv("CX_ROOT", Bundle.main.bundlePath, 1)
+        
         // MARK: initialize default UserDefaults Values
         defaults.register(defaults: [
             "discordRPC": true
