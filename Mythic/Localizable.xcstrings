@@ -8256,7 +8256,11 @@
     "Coming Soon" : {
 
     },
+    "Configure \"%@\"" : {
+
+    },
     "Configure default settings for \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -9017,6 +9021,7 @@
       }
     },
     "Current bottle:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -9401,6 +9406,7 @@
       }
     },
     "Default Bottle Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11873,9 +11879,6 @@
         }
       }
     },
-    "DOWNLOADING %@" : {
-
-    },
     "Downloading Game Porting Toolkit..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -12446,6 +12449,9 @@
           }
         }
       }
+    },
+    "Engine (Wine)" : {
+
     },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
@@ -21430,6 +21436,9 @@
         }
       }
     },
+    "Launch Arguments" : {
+
+    },
     "Launch Configurator" : {
       "localizations" : {
         "af" : {
@@ -22193,9 +22202,6 @@
           }
         }
       }
-    },
-    "Local" : {
-
     },
     "Manage containers for Windows® applications" : {
       "localizations" : {
@@ -23151,6 +23157,9 @@
         }
       }
     },
+    "MODIFYING" : {
+
+    },
     "Move \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -23912,6 +23921,7 @@
       }
     },
     "Mythic Engine is not installed!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26212,6 +26222,7 @@
 
     },
     "Not implemented yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -28892,6 +28903,9 @@
         }
       }
     },
+    "Reset" : {
+
+    },
     "Reset Mythic" : {
       "localizations" : {
         "af" : {
@@ -29081,6 +29095,12 @@
           }
         }
       }
+    },
+    "Reset Mythic Settings?" : {
+
+    },
+    "Reset Mythic?" : {
+
     },
     "Reset settings to default" : {
       "localizations" : {
@@ -34043,6 +34063,12 @@
         }
       }
     },
+    "This will erase every persistent setting and bottle." : {
+
+    },
+    "This will erase every persistent setting." : {
+
+    },
     "This will limit your ability to play Windows® games." : {
 
     },
@@ -34812,6 +34838,7 @@
       }
     },
     "Unable to fetch bottles." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -35957,9 +35984,6 @@
         }
       }
     },
-    "Unknown %@" : {
-
-    },
     "Update" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -36341,6 +36365,9 @@
         }
       }
     },
+    "Verify File Integrity" : {
+
+    },
     "Verify the game's integrity" : {
       "localizations" : {
         "af" : {
@@ -36530,6 +36557,9 @@
           }
         }
       }
+    },
+    "Verify..." : {
+
     },
     "View all currently signed in accounts" : {
       "localizations" : {
@@ -38249,6 +38279,15 @@
     "Where it reads:\n\"authorizationCode\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\nPaste the 32 character long text into the text field." : {
 
     },
+    "Windows Version" : {
+
+    },
+    "Windows version cannot be modified: %@" : {
+
+    },
+    "Windows® %@" : {
+
+    },
     "Wine" : {
       "localizations" : {
         "af" : {
@@ -38824,6 +38863,7 @@
       }
     },
     "You can't delete the default bottle." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

@@ -14,17 +14,23 @@ struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
     
-    @State private var selectedBottle: String
+    @State private var operation: GameOperation = .shared
+    @State private var selectedBottleURL: URL?
     
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
         _game = game
         _isPresented = isPresented
-        _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
+        _selectedBottleURL = State(initialValue: game.wrappedValue.bottleURL)
+        _launchArguments = State(initialValue: game.launchArguments.wrappedValue)
     }
     
     @State private var moving: Bool = false
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
+    
+    @State private var typingArgument: String = .init()
+    @State private var launchArguments: [String] = .init()
+    @State private var isHoveringOverArg: Bool = false
     
     @State private var isFileSectionExpanded: Bool = true
     @State private var isWineSectionExpanded: Bool = true
@@ -116,7 +122,9 @@ struct GameSettingsView: View {
                                 Spacer()
                             }
                         }
+                        
                         Spacer()
+                        
                         Button("Change...") {
                             isThumbnailURLChangeSheetPresented = true
                         }
@@ -126,12 +134,80 @@ struct GameSettingsView: View {
                                 text: Binding(
                                     get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
                                     set: { game.imageURL = .init(string: $0) }
-                                             )
+                                )
                             )
                             .truncationMode(.tail)
                             .padding()
                         }
                         .disabled(game.type != .local)
+                    }
+                    
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Launch Arguments")
+                                Spacer()
+                            }
+                            
+                            if !launchArguments.isEmpty {
+                                ScrollView(.horizontal) {
+                                    HStack {
+                                        ForEach(launchArguments, id: \.self) { argument in
+                                            ArgumentItem(launchArguments: $launchArguments, argument: argument)
+                                        }
+                                        .onChange(of: launchArguments, { game.launchArguments = $1 })
+                                        
+                                        Spacer()
+                                    }
+                                }
+                                .scrollIndicators(.never)
+                            }
+                        }
+                        
+                        Spacer()
+                        TextField("", text: $typingArgument)
+                            .onSubmit {
+                                if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                                    launchArguments.append(typingArgument)
+                                    typingArgument = .init()
+                                }
+                            }
+                    }
+                    
+                    HStack {
+                        VStack {
+                            HStack {
+                                Text("Verify File Integrity")
+                                Spacer()
+                            }
+                            
+                            if operation.current?.game == game {
+                                HStack {
+                                    if operation.status.progress != nil {
+                                        ProgressView(value: operation.status.progress?.percentage)
+                                            .controlSize(.small)
+                                            .progressViewStyle(.linear)
+                                    } else {
+                                        ProgressView()
+                                            .controlSize(.small)
+                                            .progressViewStyle(.linear)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                            
+                        Spacer()
+                        
+                        Button("Verify...") {
+                            operation.queue.append(
+                                GameOperation.InstallArguments(
+                                    game: game, platform: game.platform!, type: .repair
+                                )
+                            )
+                        }
+                        .disabled(operation.queue.contains(where: { $0.game == game }))
+                        .disabled(operation.current?.game == game)
                     }
                 }
                 
@@ -199,13 +275,15 @@ struct GameSettingsView: View {
                     }
                 }
                 
-                Section("Wine", isExpanded: $isWineSectionExpanded) {
-                    BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
+                Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
+                    if selectedBottleURL != nil {
+                        BottleSettingsView(selectedBottleURL: $selectedBottleURL, withPicker: true) // FIXME: Bottle Revamp
+                    }
                 }
                 // TODO: DXVK
                 .disabled(game.platform != .windows)
                 .disabled(!Engine.exists)
-                .onChange(of: selectedBottle) { game.bottleName = $1 }
+                .onChange(of: selectedBottleURL) { game.bottleURL = $1 }
             }
             .formStyle(.grouped)
         }
@@ -215,7 +293,7 @@ struct GameSettingsView: View {
             
             SubscriptedTextView(game.type.rawValue)
             
-            if (try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init())) == game {
+            if (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) == game {
                 SubscriptedTextView("Recent")
             }
             
@@ -238,6 +316,44 @@ struct GameSettingsView: View {
                 
                 return presence
             }())
+        }
+    }
+}
+
+extension GameSettingsView {
+    struct ArgumentItem: View {
+        @Binding var launchArguments: [String]
+        var argument: String
+        
+        @State private var isHoveringOverArg: Bool = false
+        
+        var body: some View {
+            HStack {
+                if isHoveringOverArg {
+                    Image(systemName: "xmark.bin")
+                        .imageScale(.small)
+                }
+                
+                Text(argument)
+                    .monospaced()
+                    .foregroundStyle(isHoveringOverArg ? .red : .secondary)
+            }
+            .padding(3)
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 7)
+                    .foregroundStyle(.tertiary)
+                    .shadow(radius: 5)
+            })
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isHoveringOverArg = hovering
+                }
+            }
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    launchArguments.removeAll(where: { $0 == argument })
+                }
+            }
         }
     }
 }

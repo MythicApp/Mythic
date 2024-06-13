@@ -93,7 +93,7 @@ struct GameCard: View {
                             
                             SubscriptedTextView(game.type.rawValue)
                             
-                            if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
+                            if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                                recent == game {
                                 SubscriptedTextView("Recent")
                             }
@@ -191,6 +191,7 @@ struct GameCard: View {
                                         .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                                         .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
                                         .disabled(operation.runningGames.contains(game))
+                                        .disabled(Wine.bottleURLs.isEmpty)
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),

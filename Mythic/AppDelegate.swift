@@ -25,27 +25,55 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     var networkMonitor: NetworkMonitor?
     
     func applicationDidFinishLaunching(_: Notification) {
+        setenv("CX_ROOT", Bundle.main.bundlePath, 1)
+        
         // MARK: initialize default UserDefaults Values
         defaults.register(defaults: [
             "discordRPC": true
         ])
         
-        // MARK: Bottle removal if folder was deleted externally
-        if let bottles = Wine.allBottles {
-            for (key, value) in bottles where !files.fileExists(atPath: value.url.path(percentEncoded: false)) {
-                Wine.allBottles?.removeValue(forKey: key)
+        // MARK: Bottle cleanup in the event of external deletion
+        Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+        
+        // MARK: 0.1.x bottle migration
+        if let data = defaults.data(forKey: "allBottles"),
+           let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
+            
+            Logger.app.log("Older bottle format detected, commencing bottle management system migration")
+            
+            var iterations = 0
+            var convertedBottles: [Wine.Bottle] = .init()
+            
+            for (name, bottle) in decodedData {
+                guard let urlArray = bottle["url"] as? [String: String], // unable to cast directly to URL
+                      let relativeURL = urlArray["relative"],
+                      let url: URL = .init(string: relativeURL.removingPercentEncoding ?? relativeURL) else {
+                    return
+                }
+                
+                var settings = Wine.defaultBottleSettings
+                guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
+                settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
+                settings.msync = oldSettings["msync"] ?? settings.msync
+                settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
+                
+                convertedBottles.append(.init(name: name, url: url, settings: settings))
+                Wine.bottleURLs.insert(url)
+                iterations += 1
+                Logger.app.log("converted \(url.prettyPath()) (\(iterations)/\(decodedData.count))")
             }
+            
+            Logger.file.notice("Bottle management system migration complete.")
+            defaults.removeObject(forKey: "allBottles")
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
         discordRPC.delegate = self
         if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
         
-        if Engine.exists { _ = Wine.allBottles } // creates default bottle automatically because of custom getter
-        
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
-// #if !DEBUG
+#if !DEBUG
         let currentAppURL = Bundle.main.bundleURL
         let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
         
@@ -74,7 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
-// #endif
+#endif
         
         // MARK: Notification Authorisation Request and Delegation Setting
         notifications.delegate = self
@@ -140,7 +168,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
     
     func applicationWillTerminate(_: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
+        if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
         Legendary.stopAllCommands(forced: true)
     }
 }

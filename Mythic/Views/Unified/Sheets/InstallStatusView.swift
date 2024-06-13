@@ -58,14 +58,14 @@ struct InstallStatusView: View {
                 HStack {
                     Text("Download Speed:")
                     Spacer()
-                    Text("\(Int(operation.status.downloadSpeed?.raw ?? 0) * (1000000/1048576)) MB/s")  // using (pow(10, 6) / pow(2, 20)) will resullt in the compiler waving the middle finger at us
+                    Text("\(Int((operation.status.downloadSpeed?.raw ?? 0) * 1.048576)) MB/s")
                     Text("(raw)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     
                     VStack {
-                        Text("\(Int(operation.status.download?.downloaded ?? 0) * (1000000/1048576)) MB Downloaded")
-                        Text("\(Int(operation.status.download?.written ?? 0) * (1000000/1048576)) MB Written")
+                        Text("\(Int((operation.status.download?.downloaded ?? 0) * 1.048576)) MB Downloaded")
+                        Text("\(Int((operation.status.download?.written ?? 0) * 1.048576)) MB Written")
                     }
                     .font(.bold(.footnote)())
                     .foregroundStyle(.secondary)
@@ -75,12 +75,12 @@ struct InstallStatusView: View {
                     Text("Disk Speed:")
                     Spacer()
                     
-                    Text("\(Int(operation.status.diskSpeed?.read ?? 0) * (1000000/1048576)) MB/s")
+                    Text("\(Int((operation.status.diskSpeed?.read ?? 0) * 1.048576)) MB/s")
                     Text("(read)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     
-                    Text("\(Int(operation.status.diskSpeed?.write ?? 0) * (1000000/1048576)) MB/s")
+                    Text("\(Int((operation.status.diskSpeed?.write ?? 0) * 1.048576)) MB/s")
                     Text("(write)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)

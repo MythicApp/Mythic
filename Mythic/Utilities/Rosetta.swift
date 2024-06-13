@@ -31,7 +31,7 @@ final class Rosetta {
         try task.run()
         
         stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
-            guard let line = String(data: handle.availableData, encoding: .utf8) else { return }
+            let line = String(decoding: handle.availableData, as: UTF8.self)
             if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: line) {
                 completion(Double(match.last?.substring ?? .init()) ?? 0.0)
             }

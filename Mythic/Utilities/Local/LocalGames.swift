@@ -24,26 +24,13 @@ final class LocalGames {
     // TODO: DocC
     static var library: Set<Mythic.Game>? {
         get {
-            if let library = defaults.object(forKey: "localGamesLibrary") as? Data {
-                do {
-                    return try PropertyListDecoder().decode(Set.self, from: library)
-                } catch {
-                    Logger.app.error("Unable to retrieve local game library: \(error.localizedDescription)")
-                    return nil
-                }
-            } else {
-                Logger.app.warning("Local games library does not exist, returning blank array")
-                return .init()
-            }
+            return (try? defaults.decodeAndGet(Set.self, forKey: "localGamesLibrary")) ?? .init()
         }
         set {
             do {
-                defaults.set(
-                    try PropertyListEncoder().encode(newValue),
-                    forKey: "localGamesLibrary"
-                )
+                try defaults.encodeAndSet(newValue, forKey: "localGamesLibrary")
             } catch {
-                Logger.app.error("Unable to set local game library: \(error.localizedDescription)")
+                Logger.app.error("Unable to set to local games library: \(error.localizedDescription)")
             }
         }
     }
@@ -80,12 +67,13 @@ final class LocalGames {
             }
         case .windows: // FIXME: unneeded unification
             guard Engine.exists else { throw Engine.NotInstalledError() }
-            guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
+            guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
+            let bottle = try Wine.getBottleObject(url: bottleURL)
             
-            defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
+            try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
             
             try await Wine.command(
-                arguments: [game.path!],
+                arguments: [game.path!] + game.launchArguments,
                 identifier: "launch_\(game.title)",
                 bottleURL: bottle.url,
                 environment: [

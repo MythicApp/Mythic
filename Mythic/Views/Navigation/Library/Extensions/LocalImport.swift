@@ -146,11 +146,9 @@ extension LibraryView.GameImportView {
                                     if let bundle = Bundle(path: path),
                                         let selectedAppName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
                                         title = selectedAppName
-                                        print("gametitle should be \(title)")
                                     }
                                 case .windows:
                                     title = URL(filePath: path).lastPathComponent.replacingOccurrences(of: ".exe", with: "") // add support for other
-                                    print("gametitlew should be \(title)")
                                 }
                             }
                             

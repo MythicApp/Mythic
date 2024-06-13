@@ -97,7 +97,8 @@ final class Legendary {
         let output: CommandOutput = .init()
         
         stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
@@ -108,7 +109,8 @@ final class Legendary {
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
@@ -340,13 +342,14 @@ final class Legendary {
         }
         
         guard game.platform == .windows && Engine.exists else { throw Engine.NotInstalledError() }
-        guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
+        guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
+        let bottle = try Wine.getBottleObject(url: bottleURL)
         
         DispatchQueue.main.async {
             GameOperation.shared.launching = game
         }
         
-        defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
+        try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
         
         var arguments = [
             "launch",
@@ -362,6 +365,8 @@ final class Legendary {
             environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
         }
+        
+        arguments.append(contentsOf: game.launchArguments)
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
         
@@ -509,14 +514,8 @@ final class Legendary {
         
         let metadata = "\(configLocation)/metadata"
         
-        if let metadataContents = try? files.contentsOfDirectory(atPath: metadata), !metadataContents.isEmpty {
-            Task(priority: .background) {
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-            }
-        } else {
-            Task.sync(priority: .high) { // called during onboarding for speed
-                try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-            }
+        Task(priority: .utility) {
+            try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
         }
         
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
