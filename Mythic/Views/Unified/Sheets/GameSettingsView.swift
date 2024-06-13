@@ -15,12 +15,12 @@ struct GameSettingsView: View {
     @Binding var isPresented: Bool
     
     @State private var operation: GameOperation = .shared
-    @State private var selectedBottle: String
+    @State private var selectedBottleURL: URL?
     
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
         _game = game
         _isPresented = isPresented
-        _selectedBottle = State(initialValue: game.wrappedValue.bottleName)
+        _selectedBottleURL = State(initialValue: game.wrappedValue.bottleURL)
         _launchArguments = State(initialValue: game.launchArguments.wrappedValue)
     }
     
@@ -276,12 +276,14 @@ struct GameSettingsView: View {
                 }
                 
                 Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
-                    BottleSettingsView(selectedBottle: $selectedBottle, withPicker: true)
+                    if selectedBottleURL != nil {
+                        BottleSettingsView(selectedBottleURL: $selectedBottleURL, withPicker: true) // FIXME: Bottle Revamp
+                    }
                 }
                 // TODO: DXVK
                 .disabled(game.platform != .windows)
                 .disabled(!Engine.exists)
-                .onChange(of: selectedBottle) { game.bottleName = $1 }
+                .onChange(of: selectedBottleURL) { game.bottleURL = $1 }
             }
             .formStyle(.grouped)
         }

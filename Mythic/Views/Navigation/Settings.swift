@@ -33,6 +33,8 @@ struct SettingsView: View {
     @State private var isCleanupSuccessful: Bool?
     
     @State private var isEngineRemovalAlertPresented: Bool = false
+    @State private var isResetAlertPresented: Bool = false
+    @State private var isResetSettingsAlertPresented: Bool = false
     
     var body: some View {
         Form {
@@ -98,28 +100,58 @@ struct SettingsView: View {
                 }
                 
                 Button {
-                    // TODO: mythic's data folder in ~/Libary/Preferences
-                    // TODO: beat up legendary
+                    isResetAlertPresented = true
                 } label: {
                     Label("Reset Mythic", systemImage: "power.dotted")
                 }
-                .disabled(true)
-                .help("Not implemented yet")
+                .alert(isPresented: $isResetAlertPresented) {
+                    .init(
+                        title: .init("Reset Mythic?"),
+                        message: .init("This will erase every persistent setting and bottle."),
+                        primaryButton: .cancel(),
+                        secondaryButton: .destructive(.init("Reset")) {
+                            if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                                defaults.removePersistentDomain(forName: bundleIdentifier)
+                            }
+                            if let appHome = Bundle.appHome {
+                                try? files.removeItem(at: appHome)
+                            }
+                            if let bottlesDirectory = Wine.bottlesDirectory {
+                                try? files.removeItem(at: bottlesDirectory)
+                            }
+                        }
+                    )
+                }
                 
                 Button {
-                    // TODO: mythic's data folder in ~/Libary/Preferences
+                    isResetSettingsAlertPresented = true
                 } label: {
                     Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
                 }
-                .disabled(true)
-                .help("Not implemented yet")
+                .alert(isPresented: $isResetSettingsAlertPresented) {
+                    .init(
+                        title: .init("Reset Mythic Settings?"),
+                        message: .init("This will erase every persistent setting."),
+                        primaryButton: .cancel(),
+                        secondaryButton: .destructive(.init("Reset")) {
+                            if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                                defaults.removePersistentDomain(forName: bundleIdentifier)
+                            }
+                        }
+                    )
+                }
                 
             }
             
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
                     Button {
-                        isForceQuitSuccessful = Wine.killAll()
+                        do {
+                            try Wine.killAll()
+                            isForceQuitSuccessful = true
+                        } catch {
+                            isForceQuitSuccessful = false
+                        }
                     } label: {
                         Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
                     }
@@ -189,9 +221,11 @@ struct SettingsView: View {
                 }
             }
             
-            Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) { // TODO: to replace with Wine.defaultBottleSettings
-                BottleSettingsView(selectedBottle: .constant("Default"), withPicker: false)
+            /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
+            Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) {
+                // BottleSettingsView something
             }
+             */
         }
         .task(priority: .background) {
             discordRPC.setPresence({

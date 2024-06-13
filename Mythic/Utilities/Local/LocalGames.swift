@@ -32,7 +32,7 @@ final class LocalGames {
                     return nil
                 }
             } else {
-                Logger.app.warning("Local games library does not exist, returning blank array")
+                Logger.app.debug("Local games library does not exist, returning blank array.")
                 return .init()
             }
         }
@@ -80,7 +80,8 @@ final class LocalGames {
             }
         case .windows: // FIXME: unneeded unification
             guard Engine.exists else { throw Engine.NotInstalledError() }
-            guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
+            guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
+            let bottle = try Wine.getBottleObject(url: bottleURL)
             
             defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
             

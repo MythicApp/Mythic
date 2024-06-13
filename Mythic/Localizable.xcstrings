@@ -9017,6 +9017,7 @@
       }
     },
     "Current bottle:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11872,9 +11873,6 @@
           }
         }
       }
-    },
-    "DOWNLOADING %@" : {
-
     },
     "Downloading Game Porting Toolkit..." : {
       "extractionState" : "stale",
@@ -23154,6 +23152,9 @@
         }
       }
     },
+    "MODIFYING" : {
+
+    },
     "Move \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -23915,6 +23916,7 @@
       }
     },
     "Mythic Engine is not installed!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26215,6 +26217,7 @@
 
     },
     "Not implemented yet" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -28895,6 +28898,9 @@
         }
       }
     },
+    "Reset" : {
+
+    },
     "Reset Mythic" : {
       "localizations" : {
         "af" : {
@@ -29084,6 +29090,12 @@
           }
         }
       }
+    },
+    "Reset Mythic Settings?" : {
+
+    },
+    "Reset Mythic?" : {
+
     },
     "Reset settings to default" : {
       "localizations" : {
@@ -33475,6 +33487,9 @@
         }
       }
     },
+    "t" : {
+
+    },
     "The backend that allows you to play Windows® games on macOS just got an update." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -34045,6 +34060,12 @@
           }
         }
       }
+    },
+    "This will erase every persistent setting and bottle." : {
+
+    },
+    "This will erase every persistent setting." : {
+
     },
     "This will limit your ability to play Windows® games." : {
 
@@ -34815,6 +34836,7 @@
       }
     },
     "Unable to fetch bottles." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -35960,9 +35982,6 @@
         }
       }
     },
-    "Unknown %@" : {
-
-    },
     "Update" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -36344,6 +36363,9 @@
         }
       }
     },
+    "Verify File Integrity" : {
+
+    },
     "Verify the game's integrity" : {
       "localizations" : {
         "af" : {
@@ -36533,6 +36555,9 @@
           }
         }
       }
+    },
+    "Verify..." : {
+
     },
     "View all currently signed in accounts" : {
       "localizations" : {
@@ -38827,6 +38852,7 @@
       }
     },
     "You can't delete the default bottle." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

@@ -20,8 +20,9 @@ struct BottleSettingsView: View {
     // TODO: Add DXVK
     // TODO: FSR 3?
     
-    @Binding var selectedBottle: String
+    @Binding var selectedBottleURL: URL?
     var withPicker: Bool
+    
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var bottleScope: Wine.BottleScope = .individual
@@ -31,94 +32,91 @@ struct BottleSettingsView: View {
     @State private var retinaModeError: Error?
     
     private func fetchRetinaStatus() async {
-        modifyingRetinaMode = true
-        if let bottle = Wine.allBottles?[selectedBottle] {
-            do {
-                retinaMode = try await Wine.getRetinaMode(bottleURL: bottle.url)
-            } catch {
-                retinaModeError = error
-            }
+        withAnimation { modifyingRetinaMode = true }
+        do {
+            guard let selectedBottleURL = selectedBottleURL else { return } // nothrow
+            let bottle = try Wine.getBottleObject(url: selectedBottleURL)
+            retinaMode = try await Wine.getRetinaMode(bottleURL: bottle.url)
+        } catch {
+            retinaModeError = error
         }
-        modifyingRetinaMode = false
+        withAnimation { modifyingRetinaMode = false }
     }
     
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
-                /* TODO: add support for different games having different configs under the same bottle
-                 Picker("Bottle Scope", selection: $bottleScope) {
-                 ForEach(type(of: bottleScope).allCases, id: \.self) {
-                 Text($0.rawValue)
-                 }
-                 }
-                 .pickerStyle(InlinePickerStyle())
-                 */
-                
-                Picker("Current Bottle", selection: $selectedBottle) { // also remember to make that the bottle it launches with
-                    ForEach(Array((Wine.allBottles ?? .init()).keys), id: \.self) { name in
-                        Text(name)
+                Picker("Current Bottle", selection: $selectedBottleURL) { // also remember to make that the bottle it launches with
+                    ForEach(Wine.bottleObjects) { bottle in
+                        Text(bottle.name)
+                            .tag(bottle.url)
                     }
                 }
-                .disabled(((Wine.allBottles?.contains { $0.key == "Default" }) == nil))
             } else {
                 HStack {
-                    Text("Current bottle:")
+                    Text("Current Bottle")
                     Spacer()
                     ProgressView()
                         .controlSize(.small)
                 }
             }
         }
-        if Wine.allBottles?[selectedBottle] != nil {
-            Toggle("Performance HUD", isOn: Binding(
-                get: { return Wine.allBottles![selectedBottle]!.settings.metalHUD },
-                set: { Wine.allBottles![selectedBottle]!.settings.metalHUD = $0 }
-            ))
-            .disabled(variables.getVariable("booting") == true)
-            
-            if !modifyingRetinaMode {
-                Toggle("Retina Mode", isOn: Binding(
-                    get: { retinaMode },
-                    set: { value in
-                        Task(priority: .userInitiated) {
-                            withAnimation { modifyingRetinaMode = true }
-                            do {
-                                try await Wine.toggleRetinaMode(bottleURL: Wine.allBottles![selectedBottle]!.url, toggle: value)
-                                retinaMode = value
-                                Wine.allBottles![selectedBottle]!.settings.retinaMode = value
-                                withAnimation { modifyingRetinaMode = false }
-                            } catch {
-                                
+        
+        if selectedBottleURL != nil {
+            if let bottle = try? Wine.getBottleObject(url: selectedBottleURL!) {
+                Toggle("Performance HUD", isOn: Binding(
+                    get: { return bottle.settings.metalHUD },
+                    set: { bottle.settings.metalHUD = $0 }
+                ))
+                .disabled(variables.getVariable("booting") == true)
+                
+                if !modifyingRetinaMode {
+                    Toggle("Retina Mode", isOn: Binding(
+                        get: { retinaMode },
+                        set: { value in
+                            Task(priority: .userInitiated) {
+                                withAnimation { modifyingRetinaMode = true }
+                                do {
+                                    try await Wine.toggleRetinaMode(bottleURL: bottle.url, toggle: value)
+                                    retinaMode = value
+                                    bottle.settings.retinaMode = value
+                                    withAnimation { modifyingRetinaMode = false }
+                                } catch {
+                                    print("errored out lol \(error.localizedDescription)")
+                                }
                             }
                         }
-                    }
-                                                   )
-                )
-                .disabled(variables.getVariable("booting") == true)
-                .disabled(modifyingRetinaMode)
-            } else {
-                HStack {
-                    Text("Retina Mode")
-                    Spacer()
-                    if retinaModeError == nil {
-                        ProgressView()
-                            .controlSize(.small)
-                    } else {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .controlSize(.small)
-                            .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                    ))
+                    .disabled(variables.getVariable("booting") == true)
+                    .disabled(modifyingRetinaMode)
+                } else {
+                    HStack {
+                        Text("Retina Mode")
+                        Spacer()
+                        if retinaModeError == nil {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .controlSize(.small)
+                                .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                        }
                     }
                 }
-            }
-            
-            Toggle("Enhanced Sync (MSync)", isOn: Binding(
-                get: { return Wine.allBottles![selectedBottle]!.settings.msync },
-                set: { Wine.allBottles![selectedBottle]!.settings.msync = $0 }
-            ))
-            .disabled(variables.getVariable("booting") == true)
-            .task(priority: .userInitiated) { await fetchRetinaStatus() }
-            .onChange(of: selectedBottle) {
-                Task(priority: .userInitiated) { await fetchRetinaStatus() }
+                
+                Toggle("Enhanced Sync (MSync)", isOn: Binding(
+                    get: { return bottle.settings.msync },
+                    set: { bottle.settings.msync = $0 }
+                ))
+                .disabled(variables.getVariable("booting") == true)
+                .task(priority: .userInitiated) { await fetchRetinaStatus() }
+                .onChange(of: selectedBottleURL) {
+                    Task(priority: .userInitiated) { await fetchRetinaStatus() }
+                }
+            } else if Wine.bottleExists(bottleURL: selectedBottleURL!) {
+                
+            } else {
+                
             }
         }
     }
@@ -127,7 +125,7 @@ struct BottleSettingsView: View {
 #Preview {
     Form {
         BottleSettingsView(
-            selectedBottle: .constant("Default"),
+            selectedBottleURL: .constant(nil),
             withPicker: true
         )
     }

@@ -108,6 +108,23 @@ struct AccountsView: View {
                         isHoveringOverDestructiveSteamButton = (hovering && signedIn)
                     }
                 }
+                
+                Button("t") {
+                    if let bottleURL = Wine.bottleURLs.first {
+                        Task {
+                            await Wine.queryRegistryKey(
+                                bottleURL: bottleURL, key: Wine.RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
+                            ) { result in
+                                switch result {
+                                case .success(let value):
+                                    print("fortnite \(value)")
+                                case .failure(let error):
+                                    print("fortnite \(error)")
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         .navigationTitle("Accounts")

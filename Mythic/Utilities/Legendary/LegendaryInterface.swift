@@ -340,7 +340,8 @@ final class Legendary {
         }
         
         guard game.platform == .windows && Engine.exists else { throw Engine.NotInstalledError() }
-        guard let bottle = Wine.allBottles?[game.bottleName] else { throw Wine.BottleDoesNotExistError() }
+        guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
+        let bottle = try Wine.getBottleObject(url: bottleURL)
         
         DispatchQueue.main.async {
             GameOperation.shared.launching = game

@@ -70,6 +70,7 @@
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* Auth.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
+		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
@@ -151,6 +152,7 @@
 		6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MythicApp.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -195,15 +197,7 @@
 		6A2934BB2BFCFAFD0035CE4B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				6A2934B32BFCFAFD0035CE4B /* Bundle.swift */,
-				6A2934B42BFCFAFD0035CE4B /* Color.swift */,
-				6A2934B52BFCFAFD0035CE4B /* Data.swift */,
-				6A2934B62BFCFAFD0035CE4B /* Logger.swift */,
-				6A2934B72BFCFAFD0035CE4B /* Process.swift */,
-				6A2934B82BFCFAFD0035CE4B /* Task.swift */,
-				6A2934B92BFCFAFD0035CE4B /* URL.swift */,
-				6A2934BA2BFCFAFD0035CE4B /* Workspace.swift */,
-				6AF630D82C077A17001F4E10 /* UserDefaults.swift */,
+				6AD44DE52C0A29BF00824C06 /* Built-in */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -345,6 +339,7 @@
 				6A2934EF2BFCFAFD0035CE4B /* Views */,
 				6A2934CA2BFCFAFD0035CE4B /* Utilities */,
 				6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */,
+				6AACEF742C18846700258A7E /* exeIcon.icns */,
 				6A2934F22BFCFAFD0035CE4B /* Credits.rtf */,
 				6A2934F32BFCFAFD0035CE4B /* Info.plist */,
 				6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */,
@@ -369,6 +364,22 @@
 				6AB474952AACBBE900AB9C63 /* Mythic.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		6AD44DE52C0A29BF00824C06 /* Built-in */ = {
+			isa = PBXGroup;
+			children = (
+				6A2934B32BFCFAFD0035CE4B /* Bundle.swift */,
+				6A2934B42BFCFAFD0035CE4B /* Color.swift */,
+				6A2934B52BFCFAFD0035CE4B /* Data.swift */,
+				6A2934B62BFCFAFD0035CE4B /* Logger.swift */,
+				6A2934B72BFCFAFD0035CE4B /* Process.swift */,
+				6A2934B82BFCFAFD0035CE4B /* Task.swift */,
+				6A2934B92BFCFAFD0035CE4B /* URL.swift */,
+				6A2934BA2BFCFAFD0035CE4B /* Workspace.swift */,
+				6AF630D82C077A17001F4E10 /* UserDefaults.swift */,
+			);
+			path = "Built-in";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -457,6 +468,7 @@
 				6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */,
 				6A71D3D92BFD01AB00A2C74D /* legendary in Resources */,
 				6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */,
+				6AACEF752C18846700258A7E /* exeIcon.icns in Resources */,
 				6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -683,7 +695,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2655;
+				CURRENT_PROJECT_VERSION = 2711;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -728,7 +740,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2655;
+				CURRENT_PROJECT_VERSION = 2711;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;

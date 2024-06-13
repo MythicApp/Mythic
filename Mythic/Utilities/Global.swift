@@ -117,17 +117,19 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Properties
-    var bottleName: String {
+    var bottleURL: URL? {
         get {
-            let key: String = id.appending("_defaultBottle")
-            
-            if Wine.allBottles?[key] == nil { defaults.removeObject(forKey: key) }
-            defaults.register(defaults: [key: "Default"]) // reregister after removal
-            return defaults.string(forKey: key)!
+            let key: String = id.appending("_bottleURL")
+            if !Wine.bottleURLs.isEmpty {
+                defaults.register(defaults: [key: Wine.bottleURLs.first!])
+            }
+            return defaults.url(forKey: key) ?? Wine.bottleURLs.first
         }
         set {
-            if Wine.allBottles?[newValue] != nil {
-                defaults.set(newValue, forKey: id.appending("_defaultBottle"))
+            let key: String = id.appending("_bottleURL")
+            guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
+            if Wine.bottleURLs.contains(newValue) {
+                defaults.set(newValue, forKey: key)
             }
         }
     }
@@ -218,7 +220,7 @@ class GameOperation: ObservableObject {
     )
     
     func install() throws {
-        
+        // TODO: implement
     }
     
     // swiftlint:disable:next redundant_optional_initialization
