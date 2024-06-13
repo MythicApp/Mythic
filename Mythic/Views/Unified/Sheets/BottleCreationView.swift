@@ -116,6 +116,7 @@ struct BottleCreationView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(isBooting)
                 .disabled(!FileLocations.isWritableFolder(url: bottleURL))
+                .disabled((Wine.bottleURLs.first(where: { $0.lastPathComponent == bottleName}) != nil))
             }
         }
         .padding()
