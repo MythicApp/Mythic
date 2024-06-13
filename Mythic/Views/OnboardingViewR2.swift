@@ -568,7 +568,15 @@ struct OnboardingR2: View { // TODO: ViewModel
                 .alert(isPresented: $isSkipAlertPresented) {
                     Alert(
                         title: .init("Are you sure you want to skip this section?"),
-                        primaryButton: .default(.init("Skip")) { animateNextPhase() },
+                        primaryButton: .default(.init("Skip")) { // FIXME: dirtyfix
+                            if case .signin = currentPhase {
+                                animateNextPhase(phase: .rosettaDisclaimer)
+                            } else if case .rosettaDisclaimer = currentPhase {
+                                animateNextPhase(phase: .engineDisclaimer)
+                            } else if case .engineDisclaimer = currentPhase {
+                                animateNextPhase(phase: .finished)
+                            }
+                        },
                         secondaryButton: .cancel()
                     )
                 }
@@ -694,7 +702,7 @@ extension OnboardingR2 {
     
     struct InstallerView: View {
         var body: some View {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/ // TODO: TODO
         }
     }
 }
