@@ -32,14 +32,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "discordRPC": true
         ])
         
-        // MARK: Bottle removal if folder was deleted externally
-        /*
-        if let bottles = Wine.allBottles {
-            for (key, value) in bottles where !files.fileExists(atPath: value.url.path(percentEncoded: false)) {
-                Wine.allBottles?.removeValue(forKey: key)
-            }
-        }
-         */
+        // MARK: Bottle cleanup in the event of external deletion
+        Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
         
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
