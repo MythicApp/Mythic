@@ -8827,7 +8827,6 @@
       }
     },
     "Current Bottle" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12451,7 +12450,6 @@
 
     },
     "Enhanced Sync (MSync)" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26994,7 +26992,6 @@
 
     },
     "Performance HUD" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29672,7 +29669,6 @@
       }
     },
     "Retina Mode" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29863,7 +29859,6 @@
       }
     },
     "Retina Mode cannot be modified: %@" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
