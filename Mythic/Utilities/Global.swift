@@ -426,19 +426,19 @@ func toggleTitleBar(_ value: Bool) {
  - Returns: `true` if the app is installed; otherwise, `false`.
  */
 func isAppInstalled(bundleIdentifier: String) -> Bool {
-    let process = Process()
+    let process: Process = .init()
     process.launchPath = "/usr/bin/env"
     process.arguments = [
         "bash", "-c",
         "mdfind \"kMDItemCFBundleIdentifier == '\(bundleIdentifier)'\""
     ]
     
-    let stdout = Pipe()
+    let stdout: Pipe = .init()
     process.standardOutput = stdout
     process.launch()
     
-    let data = stdout.fileHandleForReading.readDataToEndOfFile()
-    let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? .init()
+    let data: Data = stdout.fileHandleForReading.readDataToEndOfFile()
+    let output: String = .init(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
     
     return !output.isEmpty
 }

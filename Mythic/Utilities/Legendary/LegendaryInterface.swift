@@ -97,7 +97,8 @@ final class Legendary {
         let output: CommandOutput = .init()
         
         stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
@@ -108,7 +109,8 @@ final class Legendary {
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")

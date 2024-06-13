@@ -62,7 +62,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     static var bottleURLs: Set<URL> { // FIXME: migrate from allBottles using plist decoder
         get { return .init((try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs")) ?? []) }
-        set { try? defaults.encodeAndSet(Array(newValue), forKey: "bottleURLs") }
+        set {
+            do {
+                try defaults.encodeAndSet(Array(newValue), forKey: "bottleURLs")
+            } catch {
+                log.error("Unable to encode and/or set/update bottleURLs array to UserDefaults: \(error.localizedDescription)")
+            }
+        }
     }
     
     static func getBottleObject(url: URL) throws -> Bottle {
@@ -93,10 +99,20 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static var defaultBottleSettings: BottleSettings { // Registered by AppDelegate
         get {
             let defaultValues: BottleSettings = .init(metalHUD: false, msync: true, retinaMode: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 0.0)
-            try? defaults.encodeAndRegister(defaults: ["defaultBottleSettings": defaultValues])
+            do {
+                try defaults.encodeAndRegister(defaults: ["defaultBottleSettings": defaultValues])
+            } catch {
+                log.error("Unable to decode and/or get default bottle settings to UserDefaults: \(error.localizedDescription)")
+            }
             return (try? defaults.decodeAndGet(BottleSettings.self, forKey: "defaultBottleSettings")) ?? defaultValues
         }
-        set { try? defaults.encodeAndSet(newValue, forKey: "defaultBottleSettings") }
+        set {
+            do {
+                try defaults.encodeAndSet(newValue, forKey: "defaultBottleSettings")
+            } catch {
+                log.error("Unable to encode and/or get default bottle settings to UserDefaults: \(error.localizedDescription)")
+            }
+        }
     }
     
     // MARK: - Command Method
@@ -161,7 +177,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let output: Legendary.CommandOutput = .init()
         
         stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
@@ -172,7 +189,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
-            guard let availableOutput = String(data: handle.availableData, encoding: .utf8), !availableOutput.isEmpty else { return }
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
             guard let stdin = stdin, let output = output else { return }
             if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
                 log.debug("input detected, but current implementation is not tested.")
@@ -212,7 +230,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // TODO: Implement tasklist
-    @available(*, message: "do NOT use this yet dawg 😭")
+    /// Not implemented yet -- unnecessary at this time
     static func tasklist(bottleURL url: URL) throws -> [String: Int] {
         let list: [String: Int] = .init()
         Task {
@@ -313,12 +331,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         task.standardOutput = pipe
         do { try task.run() } catch { return false }
         
-        guard let userCachePath = String(
-            data: pipe.fileHandleForReading.readDataToEndOfFile(),
-            encoding: .utf8
-        )?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        else { return false }
+        let userCachePath = String(
+            decoding: pipe.fileHandleForReading.readDataToEndOfFile(),
+            as: UTF8.self
+        ).trimmingCharacters(in: .whitespacesAndNewlines)
         
         let d3dmcache = "\(userCachePath)/d3dm"
         
