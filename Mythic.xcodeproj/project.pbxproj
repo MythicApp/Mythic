@@ -73,6 +73,7 @@
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
 		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
+		6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
@@ -156,6 +157,7 @@
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormView.swift; sourceTree = "<group>"; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -287,6 +289,7 @@
 		6A2934DF2BFCFAFD0035CE4B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */,
 				6A2934DB2BFCFAFD0035CE4B /* CompactGameCard.swift */,
 				6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */,
 				6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */,
@@ -530,6 +533,7 @@
 				6A2935382BFCFAFD0035CE4B /* Logger.swift in Sources */,
 				6A2935372BFCFAFD0035CE4B /* Data.swift in Sources */,
 				6A2935482BFCFAFD0035CE4B /* EpicImport.swift in Sources */,
+				6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */,
 				6A29353D2BFCFAFD0035CE4B /* LegendaryInterface.swift in Sources */,
 				6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */,
 				6A2935552BFCFAFD0035CE4B /* CompactGameCard.swift in Sources */,
@@ -699,7 +703,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2740;
+				CURRENT_PROJECT_VERSION = 2744;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
@@ -744,7 +748,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2740;
+				CURRENT_PROJECT_VERSION = 2744;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = 67ZBY275P8;
