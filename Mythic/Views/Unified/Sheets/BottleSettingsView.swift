@@ -86,7 +86,7 @@ struct BottleSettingsView: View {
                 ))
                 .disabled(variables.getVariable("booting") == true)
                 
-                if !modifyingRetinaMode {
+                if !modifyingRetinaMode, retinaModeError == nil {
                     Toggle("Retina Mode", isOn: Binding(
                         get: { retinaMode },
                         set: { value in
@@ -128,7 +128,7 @@ struct BottleSettingsView: View {
                     Task(priority: .userInitiated) { await fetchWindowsVersion() }
                 }
                 
-                if !modifyingWindowsVersion {
+                if !modifyingWindowsVersion, windowsVersionError == nil {
                     Picker("Windows Version", selection: Binding(
                         get: { windowsVersion },
                         set: { value in
