@@ -115,7 +115,6 @@ extension Wine {
 
         /// Saves the bottle properties to disk.
         func saveProperties() {
-            guard files.fileExists(atPath: url.path()) else { return }
             let encoder = PropertyListEncoder()
             do {
                 let data = try encoder.encode(self)
