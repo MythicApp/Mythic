@@ -100,7 +100,7 @@ struct BottleConfigurationView: View {
     var body: some View {
         if let bottle = try? Wine.getBottleObject(url: self.bottleURL) {
             VStack {
-                Text("Configure default settings for \"\(bottle.name)\"") // FIXME: glitch
+                Text("Configure \"\(bottle.name)\"")
                     .font(.title)
                 
                 Form {
