@@ -16,8 +16,6 @@ struct BottleListView: View {
     @State private var selectedBottleURL: URL = .init(filePath: .init())
     @State private var bottleURLToDelete: URL = .init(filePath: .init())
     
-    @State private var isBottleCreationViewPresented: Bool = false
-    
     var body: some View {
         Form {
             ForEach(Wine.bottleObjects) { bottle in
@@ -81,43 +79,12 @@ struct BottleListView: View {
         .sheet(isPresented: $isBottleConfigurationViewPresented) {
             BottleConfigurationView(bottleURL: $selectedBottleURL, isPresented: $isBottleConfigurationViewPresented)
         }
-        /* } else if !Engine.exists {
-         Text("Mythic Engine is not installed!")
-         .font(.bold(.title)())
-         
-         Button {
-         let app = MythicApp() // FIXME: is this dangerous or just stupid
-         app.onboardingPhase = .engineDisclaimer
-         app.isOnboardingPresented = true
-         } label: {
-         Label("Install Mythic Engine", systemImage: "arrow.down.to.line")
-         .padding(5)
-         }
-         .buttonStyle(.borderedProminent)
-         } else {
-         Text("No bottles can be shown.")
-         .font(.bold(.title)())
-         
-         Button {
-         isBottleCreationViewPresented = true
-         } label: {
-         Label("Create a bottle", systemImage: "plus")
-         .padding(5)
-         }
-         .buttonStyle(.borderedProminent)
-         .sheet(isPresented: $isBottleCreationViewPresented) {
-         BottleCreationView(isPresented: $isBottleCreationViewPresented)
-         }
-         }
-         */
     }
 }
 
 struct BottleConfigurationView: View {
     @Binding var bottleURL: URL
     @Binding var isPresented: Bool
-    
-    // @State private var bottle: Wine.Bottle?
     
     @State private var configuratorActive: Bool = false
     @State private var registryEditorActive: Bool = false
@@ -137,7 +104,7 @@ struct BottleConfigurationView: View {
                     .font(.title)
                 
                 Form {
-                    BottleSettingsView(selectedBottleURL: .constant(bottle.url), withPicker: false)
+                    BottleSettingsView(selectedBottleURL: $bottleURL, withPicker: false)
                     // TODO: Add slider for scaling
                     // TODO: Add slider for winver
                 }
