@@ -31,22 +31,38 @@ struct BottleSettingsView: View {
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
     
+    @State private var windowsVersion: Wine.WindowsVersion = .win10
+    @State private var modifyingWindowsVersion: Bool = true
+    @State private var windowsVersionError: Error?
+    
     private func fetchRetinaStatus() async {
         withAnimation { modifyingRetinaMode = true }
         do {
             guard let selectedBottleURL = selectedBottleURL else { return } // nothrow
-            let bottle = try Wine.getBottleObject(url: selectedBottleURL)
-            retinaMode = try await Wine.getRetinaMode(bottleURL: bottle.url)
+            retinaMode = try await Wine.getRetinaMode(bottleURL: selectedBottleURL)
         } catch {
             retinaModeError = error
         }
         withAnimation { modifyingRetinaMode = false }
     }
     
+    private func fetchWindowsVersion() async {
+        withAnimation { modifyingWindowsVersion = true }
+        do {
+            guard let selectedBottleURL = selectedBottleURL else { return } // nothrow
+            if let fetchedWindowsVersion = try await Wine.getWindowsVersion(bottleURL: selectedBottleURL) {
+                windowsVersion = fetchedWindowsVersion
+            }
+        } catch {
+            windowsVersionError = error
+        }
+        withAnimation { modifyingWindowsVersion = false }
+    }
+    
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
-                Picker("Current Bottle", selection: $selectedBottleURL) { // also remember to make that the bottle it launches with
+                Picker("Current Bottle", selection: $selectedBottleURL) {
                     ForEach(Wine.bottleObjects) { bottle in
                         Text(bottle.name)
                             .tag(bottle.url)
@@ -76,19 +92,14 @@ struct BottleSettingsView: View {
                         set: { value in
                             Task(priority: .userInitiated) {
                                 withAnimation { modifyingRetinaMode = true }
-                                do {
-                                    try await Wine.toggleRetinaMode(bottleURL: bottle.url, toggle: value)
-                                    retinaMode = value
-                                    bottle.settings.retinaMode = value
-                                    withAnimation { modifyingRetinaMode = false }
-                                } catch {
-                                    print("errored out lol \(error.localizedDescription)")
-                                }
+                                await Wine.toggleRetinaMode(bottleURL: bottle.url, toggle: value)
+                                retinaMode = value
+                                bottle.settings.retinaMode = value
+                                withAnimation { modifyingRetinaMode = false }
                             }
                         }
                     ))
                     .disabled(variables.getVariable("booting") == true)
-                    .disabled(modifyingRetinaMode)
                 } else {
                     HStack {
                         Text("Retina Mode")
@@ -109,9 +120,44 @@ struct BottleSettingsView: View {
                     set: { bottle.settings.msync = $0 }
                 ))
                 .disabled(variables.getVariable("booting") == true)
-                .task(priority: .userInitiated) { await fetchRetinaStatus() }
+                
+                .task(priority: .high) { await fetchRetinaStatus() }
+                .task(priority: .high) { await fetchWindowsVersion() }
                 .onChange(of: selectedBottleURL) {
                     Task(priority: .userInitiated) { await fetchRetinaStatus() }
+                    Task(priority: .userInitiated) { await fetchWindowsVersion() }
+                }
+                
+                if !modifyingWindowsVersion {
+                    Picker("Windows Version", selection: Binding(
+                        get: { windowsVersion },
+                        set: { value in
+                            Task(priority: .userInitiated) {
+                                withAnimation { modifyingWindowsVersion = true }
+                                await Wine.setWindowsVersion(value, bottleURL: bottle.url)
+                                windowsVersion = value
+                                bottle.settings.windowsVersion = value
+                                withAnimation { modifyingWindowsVersion = false }
+                            }
+                        }
+                    )) {
+                        ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in
+                            Text("Windows® \(version.rawValue)").tag(version)
+                        }
+                    }
+                } else {
+                    HStack {
+                        Text("Windows Version")
+                        Spacer()
+                        if windowsVersionError == nil {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .controlSize(.small)
+                                .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                        }
+                    }
                 }
             } else if Wine.bottleExists(bottleURL: selectedBottleURL!) {
                 

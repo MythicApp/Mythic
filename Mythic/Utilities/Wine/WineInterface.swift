@@ -289,7 +289,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 return
             }
             
-            try await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
+            await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
             
             log.notice("Successfully booted prefix \"\(name)\"")
         } catch {
@@ -386,18 +386,18 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Toggle Retina Mode Method
-    static func toggleRetinaMode(bottleURL: URL, toggle: Bool) async throws {
+    static func toggleRetinaMode(bottleURL: URL, toggle: Bool) async {
         do {
             try await addRegistryKey(bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
         } catch {
-            log.error("Unable to toggle retina mode to \(toggle) in bottle at \(bottleURL)")
+            log.error("Unable to toggle retina mode to \(toggle) in bottle at \(bottleURL): \(error)")
         }
     }
     
     static func getRetinaMode(bottleURL: URL) async throws -> Bool {
         return try await withCheckedThrowingContinuation { continuation in
             Task {
-                await Wine.queryRegistryKey(
+                await queryRegistryKey(
                     bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
                 ) { result in
                     switch result {
@@ -408,6 +408,30 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                     }
                 }
             }
+        }
+    }
+    
+    static func getWindowsVersion(bottleURL: URL) async throws -> WindowsVersion? { // conv to combine
+        return try await withCheckedThrowingContinuation { continuation in
+            Task {
+                do {
+                    try await command(arguments: ["winecfg", "-v"], identifier: "getWindowsVersion", bottleURL: bottleURL) { output in
+                        if let version: WindowsVersion = .allCases.first(where: { String(describing: $0) == output.stdout.trimmingCharacters(in: .whitespacesAndNewlines) }) {
+                            continuation.resume(returning: version)
+                        }
+                    }
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    static func setWindowsVersion(_ version: WindowsVersion, bottleURL: URL) async {
+        do {
+            try await command(arguments: ["winecfg", "-v", String(describing: version)], identifier: "getWindowsVersion", bottleURL: bottleURL) { _ in }
+        } catch {
+            log.error("Unable to set windows version in \(bottleURL.prettyPath()) to \(version.rawValue): \(error.localizedDescription)")
         }
     }
     

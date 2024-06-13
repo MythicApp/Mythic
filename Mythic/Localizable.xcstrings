@@ -33488,9 +33488,6 @@
         }
       }
     },
-    "t" : {
-
-    },
     "The backend that allows you to play Windows® games on macOS just got an update." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -38276,6 +38273,15 @@
       }
     },
     "Where it reads:\n\"authorizationCode\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\nPaste the 32 character long text into the text field." : {
+
+    },
+    "Windows Version" : {
+
+    },
+    "Windows version cannot be modified: %@" : {
+
+    },
+    "Windows® %@" : {
 
     },
     "Wine" : {

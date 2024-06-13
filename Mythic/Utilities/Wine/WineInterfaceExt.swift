@@ -115,6 +115,7 @@ extension Wine {
 
         /// Saves the bottle properties to disk.
         func saveProperties() {
+            guard files.fileExists(atPath: url.path()) else { return }
             let encoder = PropertyListEncoder()
             do {
                 let data = try encoder.encode(self)
@@ -142,7 +143,7 @@ extension Wine {
         var scaling: Double
     }
     
-    enum WindowsVersion: String, Codable {
+    enum WindowsVersion: String, Codable, CaseIterable {
         case win11 = "11"
         case win10 = "10"
         case win81 = "8.1"
