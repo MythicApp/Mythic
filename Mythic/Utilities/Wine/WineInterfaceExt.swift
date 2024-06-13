@@ -111,7 +111,7 @@ extension Wine {
             self.init(name: url.lastPathComponent, url: url, settings: defaultBottleSettings)
         }
 
-        deinit { saveProperties() }
+        // deinit { saveProperties() }
 
         /// Saves the bottle properties to disk.
         func saveProperties() {
@@ -124,10 +124,11 @@ extension Wine {
             }
         }
 
-        var name: String
-        var url: URL
-        var id: UUID
-        var settings: BottleSettings
+        // hardcoding 👎🏾
+        var name: String { didSet { saveProperties() } }
+        var url: URL { didSet { saveProperties() } }
+        var id: UUID { didSet { saveProperties() } }
+        var settings: BottleSettings { didSet { saveProperties() } }
 
         private(set) var propertiesFile: URL
     }
