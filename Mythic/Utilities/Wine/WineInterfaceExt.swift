@@ -88,6 +88,8 @@ extension Wine {
             self.id = existingBottle?.id ?? id
             self.settings = existingBottle?.settings ?? settings
             self.propertiesFile = url.appendingPathComponent("properties.plist")
+            
+            saveProperties()
         }
         
         init?(knownURL: URL) {
@@ -111,7 +113,7 @@ extension Wine {
             self.init(name: url.lastPathComponent, url: url, settings: defaultBottleSettings)
         }
 
-        // deinit { saveProperties() }
+        deinit { saveProperties() }
 
         /// Saves the bottle properties to disk.
         func saveProperties() {
@@ -123,12 +125,11 @@ extension Wine {
                 Logger.app.error("Error encoding & writing to properties file for bottle \"\(self.name)\" (\(self.url.prettyPath()))")
             }
         }
-
-        // hardcoding 👎🏾
-        var name: String { didSet { saveProperties() } }
-        var url: URL { didSet { saveProperties() } }
-        var id: UUID { didSet { saveProperties() } }
-        var settings: BottleSettings { didSet { saveProperties() } }
+        
+        var name: String
+        var url: URL
+        var id: UUID
+        var settings: BottleSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
 
         private(set) var propertiesFile: URL
     }
