@@ -259,7 +259,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         guard Engine.exists else { completion(.failure(Engine.NotInstalledError())); return }
         guard FileLocations.isWritableFolder(url: baseURL) else { completion(.failure(FileLocations.FileNotModifiableError(url))); return }
-        guard !bottleExists(bottleURL: url) else { completion(.failure(BottleAlreadyExistsError())); return } // FIXME: not intended at this time; boot should boot regardless of bottle existence
+        let hasExisted = bottleExists(bottleURL: url)
         
         if !files.fileExists(atPath: url.path) {
             do {
@@ -289,7 +289,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 return
             }
             
-            await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
+            if !hasExisted {
+                await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
+                await setWindowsVersion(settings.windowsVersion, bottleURL: url)
+            }
             
             log.notice("Successfully booted prefix \"\(name)\"")
         } catch {
