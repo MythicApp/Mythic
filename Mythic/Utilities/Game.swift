@@ -106,13 +106,11 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     var launchArguments: [String] {
         get {
             let key: String = id.appending("_launchArguments")
-            
-            defaults.register(defaults: [key: []])
-            return (try? PropertyListDecoder().decode([String].self, from: defaults.object(forKey: key) as? Data ?? .init())) ?? .init()
+            return (try? defaults.decodeAndGet([String].self, forKey: key)) ?? .init()
         }
         set {
             do {
-                defaults.set(try PropertyListEncoder().encode(newValue), forKey: id.appending("_launchArguments"))
+                try defaults.encodeAndSet(newValue, forKey: id.appending("_launchArguments"))
             } catch {
                 Logger.app.error("Unable to set to launch: \(error.localizedDescription)")
             }

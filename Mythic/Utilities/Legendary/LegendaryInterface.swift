@@ -349,7 +349,7 @@ final class Legendary {
             GameOperation.shared.launching = game
         }
         
-        defaults.set(try PropertyListEncoder().encode(game), forKey: "recentlyPlayed")
+        try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
         
         var arguments = [
             "launch",

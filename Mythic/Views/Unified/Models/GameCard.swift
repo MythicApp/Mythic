@@ -93,7 +93,7 @@ struct GameCard: View {
                             
                             SubscriptedTextView(game.type.rawValue)
                             
-                            if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
+                            if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                                recent == game {
                                 SubscriptedTextView("Recent")
                             }

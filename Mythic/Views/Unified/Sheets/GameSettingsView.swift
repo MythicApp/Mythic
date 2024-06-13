@@ -293,7 +293,7 @@ struct GameSettingsView: View {
             
             SubscriptedTextView(game.type.rawValue)
             
-            if (try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init())) == game {
+            if (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) == game {
                 SubscriptedTextView("Recent")
             }
             
