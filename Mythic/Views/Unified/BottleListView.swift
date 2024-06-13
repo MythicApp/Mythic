@@ -104,7 +104,7 @@ struct BottleConfigurationView: View {
                     .font(.title)
                 
                 Form {
-                    BottleSettingsView(selectedBottleURL: $bottleURL, withPicker: false)
+                    BottleSettingsView(selectedBottleURL: Binding($bottleURL), withPicker: false)
                     // TODO: Add slider for scaling
                     // TODO: Add slider for winver
                 }
