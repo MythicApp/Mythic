@@ -156,16 +156,16 @@ extension Wine {
     }
     
     enum BottleScope: String, CaseIterable {
-        case individual = "Individual"
-        case global = "Global"
+        case individual
+        case global
     }
     
     struct BottleDoesNotExistError: LocalizedError {
-        var errorDescription: String? = "This bottle doesn't exist."
+        var errorDescription: String? = "Attempted to modify a bottle which doesn't exist."
     }
     
     struct BottleAlreadyExistsError: LocalizedError {
-        var errorDescription: String? = "This bottle already exists."
+        var errorDescription: String? = "Attempted to modify a bottle which already exists."
     }
     
     struct UnableToQueryRegistryError: LocalizedError {
