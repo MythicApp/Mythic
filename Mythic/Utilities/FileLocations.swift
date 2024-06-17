@@ -87,8 +87,8 @@ final class FileLocations {
         return nil
     }()
     
-    static func isWritableFolder(url: URL) -> Bool { // does the same as files.isWritableFile, just a second opinion
-        let tempFileName = "Mythic_temp\(UUID().uuidString)"
+    static func isWritableFolder(url: URL) -> Bool { // does the same as files.isWritableFile, just a second option
+        let tempFileName = "_Mythic\(UUID().uuidString).temp"
         let tempFileURL = url.appendingPathComponent(tempFileName)
 
         do {

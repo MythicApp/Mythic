@@ -31,11 +31,10 @@ extension Bundle {
         if let userApplicationSupport = FileLocations.userApplicationSupport {
             let homeURL = userApplicationSupport.appending(
                 path: Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "")
-            let homePath = homeURL.path
             
-            if !files.fileExists(atPath: homePath) {
+            if !files.fileExists(atPath: homeURL.path) {
                 do {
-                    try files.createDirectory(atPath: homePath, withIntermediateDirectories: true, attributes: nil)
+                    try files.createDirectory(atPath: homeURL.path, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating application support directory")
                 } catch {
                     Logger.app.error("Error creating application support directory: \(error.localizedDescription)")

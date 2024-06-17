@@ -231,6 +231,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     // TODO: Implement tasklist
     /// Not implemented yet -- unnecessary at this time
+    /*
     static func tasklist(bottleURL url: URL) throws -> [String: Int] {
         let list: [String: Int] = .init()
         Task {
@@ -240,6 +241,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
         return list
     }
+     */
     
     // MARK: - Boot Method
     /**
@@ -292,6 +294,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             if !hasExisted {
                 await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
                 await setWindowsVersion(settings.windowsVersion, bottleURL: url)
+            } else {
+                completion(.failure(BottleAlreadyExistsError()))
             }
             
             log.notice("Successfully booted prefix \"\(name)\"")

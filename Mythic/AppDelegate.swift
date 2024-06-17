@@ -57,9 +57,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 settings.msync = oldSettings["msync"] ?? settings.msync
                 settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
                 
-                convertedBottles.append(.init(name: name, url: url, settings: settings))
-                Wine.bottleURLs.insert(url)
+                DispatchQueue.main.async {
+                    convertedBottles.append(.init(name: name, url: url, settings: settings))
+                    Wine.bottleURLs.insert(url)
+                }
+                
                 iterations += 1
+                
                 Logger.app.log("converted \(url.prettyPath()) (\(iterations)/\(decodedData.count))")
             }
             
