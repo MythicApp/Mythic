@@ -89,7 +89,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
-            if case .alertFirstButtonReturn = alert.runModal(), let optimalAppURL = optimalAppURL {
+            if let window = NSApp.windows.first,
+               let optimalAppURL = optimalAppURL,
+               case .alertFirstButtonReturn = alert.beginSheetModal(for: window) {
                 do {
                     _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
                     workspace.open(optimalAppURL)
@@ -124,29 +126,41 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         if Engine.needsUpdate() == true {
             let alert = NSAlert()
             alert.messageText = "Time for an update!"
-            alert.informativeText = "A new Mythic Engine update has been pushed."
+            alert.informativeText = "A new Mythic Engine update has released."
             alert.addButton(withTitle: "Update")
             alert.addButton(withTitle: "Cancel")
             
-            if case .alertFirstButtonReturn = alert.runModal() {
-                let confirmation = NSAlert()
-                confirmation.messageText = "Are you sure you want to update now?"
-                confirmation.informativeText = "Updating will remove the current version of Mythic Engine before installing the new one."
-                confirmation.addButton(withTitle: "Update")
-                confirmation.addButton(withTitle: "Cancel")
-                
-                if case .alertFirstButtonReturn = confirmation.runModal() {
-                    do {
-                        try Engine.remove()
-                        let app = MythicApp() // FIXME: is this dangerous or just stupid
-                        app.onboardingPhase = .engineDisclaimer
-                        app.isOnboardingPresented = true
-                    } catch {
-                        let error = NSAlert()
-                        error.messageText = "Unable to remove Mythic Engine."
-                        error.addButton(withTitle: "Quit")
-                        if case .OK = error.runModal() {
-                            exit(1)
+            alert.showsHelp = true
+            
+            if let window = NSApp.windows.first { // no alternative ATM, swift compiler is clueless.
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        let confirmation = NSAlert()
+                        confirmation.messageText = "Are you sure you want to update now?"
+                        confirmation.informativeText = "Updating will remove the current version of Mythic Engine before installing the new one."
+                        confirmation.addButton(withTitle: "Update")
+                        confirmation.addButton(withTitle: "Cancel")
+                        
+                        confirmation.beginSheetModal(for: window) { response in
+                            if case .alertFirstButtonReturn = response {
+                                do {
+                                    try Engine.remove()
+                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                    app.onboardingPhase = .engineDisclaimer
+                                    app.isOnboardingPresented = true
+                                } catch {
+                                    let error = NSAlert()
+                                    error.alertStyle = .critical
+                                    error.messageText = "Unable to remove Mythic Engine."
+                                    error.addButton(withTitle: "Quit")
+                                    
+                                    error.beginSheetModal(for: window) { response in
+                                        if case .OK = response {
+                                            exit(1)
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -155,20 +169,28 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
     
     func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {
+        var terminateReply: NSApplication.TerminateReply = .terminateNow
+        
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()
             alert.messageText = "Are you sure you want to quit?"
             alert.informativeText = "Mythic is still modifying games."
+            alert.alertStyle = .warning
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
-            if alert.runModal() == .alertFirstButtonReturn {
-                return .terminateNow
-            } else {
-                return .terminateCancel
+            
+            if let window = NSApp.windows.first {
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        terminateReply = .terminateNow
+                    } else {
+                        terminateReply = .terminateLater
+                    }
+                }
             }
         }
         
-        return .terminateNow
+        return terminateReply
     }
     
     func applicationWillTerminate(_: Notification) {

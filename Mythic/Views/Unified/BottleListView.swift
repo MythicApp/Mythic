@@ -159,7 +159,7 @@ struct BottleConfigurationView: View {
                     Button("Launch Registry Editor") {
                         Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", bottleURL: bottle.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // @isaacmarovitz has a better way
+                            registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
                             if !registryEditorActive { timer.invalidate() }
                         }
                     }

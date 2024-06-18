@@ -10,6 +10,7 @@ import Combine
 import OSLog
 import UserNotifications
 import SwordRPC
+import SwiftUI
 
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable, Hashable {
@@ -89,10 +90,15 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     var bottleURL: URL? {
         get {
             let key: String = id.appending("_bottleURL")
-            if !Wine.bottleURLs.isEmpty {
-                defaults.register(defaults: [key: Wine.bottleURLs.first!])
+            if let url = defaults.url(forKey: key), !Wine.bottleExists(bottleURL: url) {
+                defaults.removeObject(forKey: key)
             }
-            return defaults.url(forKey: key) ?? Wine.bottleURLs.first
+            
+            if defaults.url(forKey: key) == nil {
+                defaults.set(Wine.bottleURLs.first, forKey: key)
+            }
+            
+            return defaults.url(forKey: key)
         }
         set {
             let key: String = id.appending("_bottleURL")
@@ -211,16 +217,17 @@ class GameOperation: ObservableObject {
                                   trigger: nil)
                         )
                     } catch {
-                        try await notifications.add(
-                            .init(identifier: UUID().uuidString,
-                                  content: {
-                                      let content = UNMutableNotificationContent()
-                                      content.title = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
-                                      content.body = error.localizedDescription
-                                      return content
-                                  }(),
-                                  trigger: nil)
-                        )
+                        DispatchQueue.main.async {
+                            let alert = NSAlert()
+                            alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+                            alert.informativeText = error.localizedDescription
+                            alert.alertStyle = .warning
+                            alert.addButton(withTitle: "OK")
+                            
+                            if let window = NSApp.windows.first {
+                                alert.beginSheetModal(for: window)
+                            }
+                        }
                     }
                     
                     DispatchQueue.main.asyncAndWait {

@@ -337,7 +337,7 @@ final class Legendary {
      */
     static func launch(game: Mythic.Game, online: Bool) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
-            log.error("Unable to launch game, not installed or missing") // TODO: add alert in unified alert system
+            log.error("Unable to launch game, not installed or missing")
             throw GameDoesNotExistError(game)
         }
         
