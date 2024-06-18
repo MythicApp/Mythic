@@ -170,9 +170,10 @@ extension LibraryView.GameImportView {
                                 isPresented = false
                             }
                             
-                            if !output.stderr.contains("ERROR: ") {
+                            let commandError = output.stderr.trimmingPrefix("ERROR: ")
+                            if !commandError.isEmpty {
                                 isOperating = false
-                                errorDescription = .init(output.stderr.trimmingPrefix("ERROR: "))
+                                errorDescription = .init(commandError)
                                 isErrorAlertPresented = true
                             }
                             
