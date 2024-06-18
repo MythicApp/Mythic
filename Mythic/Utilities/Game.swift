@@ -10,6 +10,7 @@ import Combine
 import OSLog
 import UserNotifications
 import SwordRPC
+import SwiftUI
 
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable, Hashable {
@@ -211,16 +212,17 @@ class GameOperation: ObservableObject {
                                   trigger: nil)
                         )
                     } catch {
-                        try await notifications.add(
-                            .init(identifier: UUID().uuidString,
-                                  content: {
-                                      let content = UNMutableNotificationContent()
-                                      content.title = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
-                                      content.body = error.localizedDescription
-                                      return content
-                                  }(),
-                                  trigger: nil)
-                        )
+                        DispatchQueue.main.async {
+                            let alert = NSAlert()
+                            alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+                            alert.informativeText = error.localizedDescription
+                            alert.alertStyle = .warning
+                            alert.addButton(withTitle: "OK")
+                            
+                            if let window = NSApp.windows.first {
+                                alert.beginSheetModal(for: window)
+                            }
+                        }
                     }
                     
                     DispatchQueue.main.asyncAndWait {
