@@ -19,8 +19,21 @@ struct GameListEvo: View {
                 searchString.isEmpty ||
                 $0.title.localizedCaseInsensitiveContains(searchString)
             }
-            .sorted(by: { $0.title < $1.title })
-            .sorted(by: { $0.isFavourited && !$1.isFavourited })
+            .sorted {
+                if $0.isFavourited != $1.isFavourited {
+                    return $0.isFavourited && !$1.isFavourited
+                }
+                
+                if let games = try? Legendary.getInstalledGames(), games.contains($0) != games.contains($1) {
+                    return games.contains($0)
+                }
+                
+                if let games = LocalGames.library, games.contains($0) != games.contains($1) {
+                    return games.contains($0)
+                }
+                
+                return $0.title < $1.title
+            }
     }
     
     var body: some View {
