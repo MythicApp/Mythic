@@ -89,21 +89,25 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
-            if let window = NSApp.windows.first,
-               let optimalAppURL = optimalAppURL,
-               case .alertFirstButtonReturn = alert.beginSheetModal(for: window) {
-                do {
-                    _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
-                    workspace.open(optimalAppURL)
-                } catch {
-                    Logger.file.error("Unable to move Mythic to Applications: \(error)")
-                    
-                    let error = NSAlert()
-                    error.messageText = "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\"."
-                    error.addButton(withTitle: "Quit")
-                    
-                    if error.runModal() == .alertFirstButtonReturn {
-                        exit(1)
+            if let window = NSApp.windows.first, let optimalAppURL = optimalAppURL {
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        do {
+                            _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
+                            workspace.open(optimalAppURL)
+                        } catch {
+                            Logger.file.error("Unable to move Mythic to Applications: \(error)")
+                            
+                            let error = NSAlert()
+                            error.messageText = "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\"."
+                            error.addButton(withTitle: "Quit")
+                            
+                            error.beginSheetModal(for: window) { response in
+                                if case .alertFirstButtonReturn = response {
+                                    exit(1)
+                                }
+                            }
+                        }
                     }
                 }
             }
