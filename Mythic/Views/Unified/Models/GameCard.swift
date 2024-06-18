@@ -89,7 +89,7 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
-                                // .foregroundStyle(.white)
+                                .foregroundStyle(.white)
                             
                             SubscriptedTextView(game.type.rawValue)
                             
