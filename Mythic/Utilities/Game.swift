@@ -90,10 +90,15 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     var bottleURL: URL? {
         get {
             let key: String = id.appending("_bottleURL")
-            if !Wine.bottleURLs.isEmpty {
-                defaults.register(defaults: [key: Wine.bottleURLs.first!])
+            if let url = defaults.url(forKey: key), !Wine.bottleExists(bottleURL: url) {
+                defaults.removeObject(forKey: key)
             }
-            return defaults.url(forKey: key) ?? Wine.bottleURLs.first
+            
+            if defaults.url(forKey: key) == nil {
+                defaults.set(Wine.bottleURLs.first, forKey: key)
+            }
+            
+            return defaults.url(forKey: key)
         }
         set {
             let key: String = id.appending("_bottleURL")
