@@ -25,14 +25,9 @@ struct LibraryView: View {
     
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @State private var legendaryStatus: JSON = JSON()
-    @State private var isDownloadsPopoverPresented: Bool = false
-    
-    @State private var searchText: String = .init()
     
     // MARK: - Body
     var body: some View {
-        // GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
         GameListEvo()
             .navigationTitle("Library")
         
@@ -49,7 +44,7 @@ struct LibraryView: View {
                 
                 // MARK: Refresh Button
                     Button {
-                        _ = unifiedGames // getter updates computer property
+                        
                     } label: {
                         Image(systemName: "arrow.clockwise")
                     }
