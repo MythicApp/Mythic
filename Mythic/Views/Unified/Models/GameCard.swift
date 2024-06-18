@@ -89,7 +89,7 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
-                                // .foregroundStyle(.white)
+                                .foregroundStyle(.white)
                             
                             SubscriptedTextView(game.type.rawValue)
                             
@@ -132,19 +132,6 @@ struct GameCard: View {
                                                     game: game, platform: game.platform!, type: .repair
                                                 )
                                             )
-                                            
-                                            /*
-                                            do {
-                                                try await Legendary.install(
-                                                    game: game,
-                                                    platform: game.platform!,
-                                                    type: .repair
-                                                )
-                                            } catch {
-                                                Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
-                                                // TODO: add repair error
-                                            }
-                                             */
                                         }
                                     } label: {
                                         Image(systemName: "checkmark.circle.badge.questionmark")

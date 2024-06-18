@@ -24,7 +24,9 @@ struct DownloadsEvo: View {
         if let currentGame = operation.current?.game {
             VStack {
                 DownloadCard(game: currentGame, style: .prominent)
+                
                 Divider()
+                
                 if operation.queue.isEmpty {
                     Text("No other downloads are pending.")
                         .bold()

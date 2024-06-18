@@ -40,7 +40,7 @@ final class LocalGames {
         
         guard let library = library,
               library.contains(game) else {
-            log.error("Unable to launch local game, not installed or missing") // TODO: add alert in unified alert system
+            log.error("Unable to launch local game, not installed or missing")
             throw GameDoesNotExistError(game)
         }
         

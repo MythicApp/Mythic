@@ -16,6 +16,8 @@ struct InstallViewEvo: View {
     @State var selectedOptionalPacks: Set<String> = .init()
     @State var fetchingOptionalPacks: Bool = true
     
+    @State var installSize: Double?
+    
     @State private var supportedPlatforms: [GamePlatform]?
     @State var platform: GamePlatform = .macOS
     
@@ -41,6 +43,12 @@ struct InstallViewEvo: View {
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
                                 optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
                             }
+                        }
+                    }
+                    
+                    if output.stderr.contains("Install size:") {
+                        if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: output.stderr) {
+                            installSize = Double(match[1].substring ?? "") ?? 0.0
                         }
                     }
                 }
@@ -167,6 +175,12 @@ struct InstallViewEvo: View {
             Spacer()
             
             HStack {
+                if let installSize = installSize {
+                    Text("\(String(format: "%.2f", Double(installSize * (1000000 / 1048576)) / (installSize > 1024 ? 1024 : 1))) \(installSize > 1024 ? "GB" : "MB")")
+                        .font(.footnote)
+                        .foregroundStyle(.placeholder)
+                }
+                
                 if fetchingOptionalPacks {
                     ProgressView()
                         .controlSize(.small)
