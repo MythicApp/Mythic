@@ -4,120 +4,120 @@
     "" : {
 
     },
-    "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
+    "\nEnter the 'authorizationCode' from the JSON response in the field below." : {
       "localizations" : {
         "af" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "ar" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "ca" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "cs" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nGeben Sie den \"authorisationCode\" aus der JSON-Antwort in das unten stehende Feld ein."
+            "value" : "\nGeben Sie den \"authorizationCode\" aus der JSON-Antwort in das unten stehende Feld ein."
           }
         },
         "el" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "fi" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nEntrez la valeur 'authorisationCode' depuis les données JSON ci-dessous."
+            "value" : "\nEntrez la valeur 'authorizationCode' depuis les données JSON ci-dessous."
           }
         },
         "he" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "hu" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nÍrd be a JSON-válaszban szereplő \"authorisationCode\"-ot az alábbi mezőbe."
+            "value" : "\nÍrd be a JSON-válaszban szereplő \"authorizationCode\"-ot az alábbi mezőbe."
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nMasukkan 'authorisationCode' dari respons JSON pada bidang di bawah ini."
+            "value" : "\nMasukkan 'authorizationCode' dari respons JSON pada bidang di bawah ini."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nInserisci l'«authorisationCode» dalla risposta JSON nel campo sottostante."
+            "value" : "\nInserisci l'«authorizationCode» dalla risposta JSON nel campo sottostante."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "mt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nDaħħal l-'authorisationCode' mir-risposta JSON fil-qasam hawn taħt."
+            "value" : "\nDaħħal l-'authorizationCode' mir-risposta JSON fil-qasam hawn taħt."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nSkriv inn \"authorisationCode\" fra JSON-svaret i feltet nedenfor."
+            "value" : "\nSkriv inn \"authorizationCode\" fra JSON-svaret i feltet nedenfor."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nVoer de 'authorisationCode' uit het JSON-antwoord in het onderstaande veld in."
+            "value" : "\nVoer de 'authorizationCode' uit het JSON-antwoord in het onderstaande veld in."
           }
         },
         "pl" : {
@@ -129,67 +129,67 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "pt-PT" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "\nВведите 'authorisationCode' из ответа JSON ниже."
+            "value" : "\nВведите 'authorizationCode' из ответа JSON ниже."
           }
         },
         "sr" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "uk" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在下面输入 JSON 结果中的 'authorisationCode'"
+            "value" : "在下面输入 JSON 结果中的 'authorizationCode'"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
+            "value" : "\nEnter the 'authorizationCode' from the JSON response in the field below."
           }
         }
       }
