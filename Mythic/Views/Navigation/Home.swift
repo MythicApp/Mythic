@@ -57,7 +57,7 @@ struct HomeView: View {
                     if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
                         ScrollView(.horizontal) {
                             LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
-                                ForEach(unifiedGames.filter({ $0.isFavourited == true }), id: \.self) { game in
+                                ForEach(unifiedGames.filter({ $0.isFavourited == true })) { game in
                                     CompactGameCard(game: .constant(game))
                                         .padding(5)
                                 }
