@@ -122,7 +122,7 @@ struct BottleConfigurationView: View {
                         if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
                             Task {
                                 do {
-                                    try await Wine.command(arguments: [bottle.url.absoluteString], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottle.url) { _ in }
+                                    try await Wine.command(arguments: [url.path(percentEncoded: false)], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottle.url) { _ in }
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true
