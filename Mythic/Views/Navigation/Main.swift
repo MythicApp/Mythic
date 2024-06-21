@@ -25,6 +25,9 @@ import Combine
 // MARK: - MainView Struct
 struct MainView: View {
     
+    @Binding var automaticallyChecksForUpdates: Bool
+    @Binding var automaticallyDownloadsUpdates: Bool
+    
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
@@ -74,7 +77,12 @@ struct MainView: View {
                                 .help("Manage containers for Windows® applications")
                         }
                         
-                        NavigationLink(destination: SettingsView()) {
+                        NavigationLink(
+                            destination: SettingsView(
+                                automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
+                                automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
+                            )
+                        ) {
                             Label("Settings", systemImage: "gear")
                             // .foregroundStyle(.primary)
                                 .help("Configure Mythic")
@@ -157,6 +165,9 @@ struct MainView: View {
 
 // MARK: - Preview
 #Preview {
-    MainView()
-        .environmentObject(NetworkMonitor())
+    MainView(
+        automaticallyChecksForUpdates: .constant(true),
+        automaticallyDownloadsUpdates: .constant(false)
+    )
+    .environmentObject(NetworkMonitor())
 }

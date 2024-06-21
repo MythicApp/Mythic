@@ -74,6 +74,9 @@ struct LibraryView: View {
 }
 
 #Preview {
-    MainView()
-        .environmentObject(NetworkMonitor())
+    MainView(
+        automaticallyChecksForUpdates: .constant(true),
+        automaticallyDownloadsUpdates: .constant(false)
+    )
+    .environmentObject(NetworkMonitor())
 }

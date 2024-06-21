@@ -27,6 +27,9 @@ struct MythicApp: App {
     
     @State private var bootError: Error?
     
+    @State private var automaticallyChecksForUpdates: Bool
+    @State private var automaticallyDownloadsUpdates: Bool
+    
     // MARK: - Updater Controller
     private let updaterController: SPUStandardUpdaterController
     
@@ -37,6 +40,8 @@ struct MythicApp: App {
             updaterDelegate: nil,
             userDriverDelegate: nil
         )
+        _automaticallyChecksForUpdates = State(initialValue: updaterController.updater.automaticallyChecksForUpdates)
+        _automaticallyDownloadsUpdates = State(initialValue: updaterController.updater.automaticallyDownloadsUpdates)
     }
     
     func toggleTitleBar(_ value: Bool) {
@@ -64,11 +69,14 @@ struct MythicApp: App {
                         }
                     }
             } else {
-                MainView()
-                    .transition(.opacity)
-                    .environmentObject(networkMonitor)
-                    .frame(minWidth: 750, minHeight: 390)
-                    .onAppear { toggleTitleBar(true) }
+                MainView(
+                    automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
+                    automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
+                )
+                .transition(.opacity)
+                .environmentObject(networkMonitor)
+                .frame(minWidth: 750, minHeight: 390)
+                .onAppear { toggleTitleBar(true) }
             }
         }
         
@@ -89,12 +97,18 @@ struct MythicApp: App {
         
         // MARK: - Settings View
         Settings {
-            UpdaterSettingsView(updater: updaterController.updater)
+            SettingsView(
+                automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
+                automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
+            )
         }
     }
 }
 
 #Preview {
-    MainView()
+    MainView(
+        automaticallyChecksForUpdates: .constant(true),
+        automaticallyDownloadsUpdates: .constant(false)
+    )
         .environmentObject(NetworkMonitor())
 }

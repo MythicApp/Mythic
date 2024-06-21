@@ -21,7 +21,11 @@ struct SettingsView: View {
     @State private var isEpicSectionExpanded: Bool = true
     @State private var isMythicSectionExpanded: Bool = true
     @State private var isDefaultBottleSectionExpanded: Bool = true
+    @State private var isUpdaterSettingsExpanded: Bool = true
     
+    @Binding var automaticallyChecksForUpdates: Bool
+    @Binding var automaticallyDownloadsUpdates: Bool
+
     @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
@@ -221,12 +225,21 @@ struct SettingsView: View {
                 }
             }
             
+            Section("Updater Settings", isExpanded: $isUpdaterSettingsExpanded) {
+                VStack {
+                    Toggle("Automatically check for updates", isOn: $automaticallyChecksForUpdates)
+                    Toggle("Automatically download updates", isOn: $automaticallyDownloadsUpdates)
+                }
+                .padding(.horizontal)
+            }
+            
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
             Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) {
                 // BottleSettingsView something
             }
              */
         }
+        .frame(minHeight: 750)
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -244,5 +257,8 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView()
+    SettingsView(
+        automaticallyChecksForUpdates: .constant(true),
+        automaticallyDownloadsUpdates: .constant(false)
+    )
 }

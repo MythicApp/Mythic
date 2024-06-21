@@ -65,6 +65,9 @@ final class NetworkMonitor: ObservableObject {
 }
 
 #Preview {
-    MainView()
+    MainView(
+        automaticallyChecksForUpdates: .constant(true),
+        automaticallyDownloadsUpdates: .constant(false)
+    )
         .environmentObject(NetworkMonitor())
 }
