@@ -59,7 +59,6 @@
 		6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */; };
 		6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EB2BFCFAFD0035CE4B /* WebView.swift */; };
 		6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */; };
-		6A2935652BFCFAFD0035CE4B /* UpdaterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EE2BFCFAFD0035CE4B /* UpdaterSettingsView.swift */; };
 		6A2935662BFCFAFD0035CE4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */; };
 		6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */; };
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
@@ -144,7 +143,6 @@
 		6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplementedView.swift; sourceTree = "<group>"; };
 		6A2934EB2BFCFAFD0035CE4B /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewR2.swift; sourceTree = "<group>"; };
-		6A2934EE2BFCFAFD0035CE4B /* UpdaterSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdaterSettingsView.swift; sourceTree = "<group>"; };
 		6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A2934F22BFCFAFD0035CE4B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
@@ -332,7 +330,6 @@
 				6A2934DA2BFCFAFD0035CE4B /* Navigation */,
 				6A2934EC2BFCFAFD0035CE4B /* Unified */,
 				6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */,
-				6A2934EE2BFCFAFD0035CE4B /* UpdaterSettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -521,7 +518,6 @@
 				6A29355D2BFCFAFD0035CE4B /* InstallStatusView.swift in Sources */,
 				6A29354C2BFCFAFD0035CE4B /* Library.swift in Sources */,
 				6A2935472BFCFAFD0035CE4B /* VariableManager.swift in Sources */,
-				6A2935652BFCFAFD0035CE4B /* UpdaterSettingsView.swift in Sources */,
 				6A2935332BFCFAFD0035CE4B /* Engine.swift in Sources */,
 				6A2935462BFCFAFD0035CE4B /* Rosetta.swift in Sources */,
 				6A2935532BFCFAFD0035CE4B /* Store.swift in Sources */,
