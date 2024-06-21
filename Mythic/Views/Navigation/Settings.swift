@@ -228,9 +228,9 @@ struct SettingsView: View {
             Section("Updater Settings", isExpanded: $isUpdaterSettingsExpanded) {
                 VStack {
                     Toggle("Automatically check for updates", isOn: $automaticallyChecksForUpdates)
+                    Divider()
                     Toggle("Automatically download updates", isOn: $automaticallyDownloadsUpdates)
                 }
-                .padding(.horizontal)
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
