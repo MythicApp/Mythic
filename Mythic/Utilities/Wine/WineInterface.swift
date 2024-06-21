@@ -14,6 +14,7 @@
 
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
+import AppKit
 import Foundation
 import OSLog
 
@@ -361,11 +362,49 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Add Registry Key Method
+    enum RegistryError: Error {
+        case commandFailed(String)
+        case unexpectedOutput
+    }
+    
     private static func addRegistryKey(bottleURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard bottleExists(bottleURL: bottleURL) else { throw BottleDoesNotExistError() }
         
-        try await command(arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"], identifier: "regadd", bottleURL: bottleURL) { _  in
-            // FIXME: errors aren't handled
+        var errorOutput = ""
+        var successOutput = ""
+        
+        try await command(
+            arguments: [
+                "reg",
+                "add",
+                key,
+                "-v",
+                name,
+                "-t",
+                type.rawValue,
+                "-d",
+                data,
+                "-f"
+            ],
+            identifier: "regadd",
+            bottleURL: bottleURL
+        ) { output in
+            if !output.stderr.isEmpty {
+                errorOutput += output.stderr
+            }
+            if !output.stdout.isEmpty {
+                successOutput += output.stdout
+            }
+        }
+        
+        if successOutput.lowercased().contains("the operation completed successfully") {
+            return
+        } else if !errorOutput.isEmpty {
+            throw RegistryError.commandFailed(errorOutput)
+        } else if !successOutput.isEmpty {
+            throw RegistryError.unexpectedOutput
+        } else {
+            throw RegistryError.unexpectedOutput
         }
     }
     
@@ -396,8 +435,22 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func toggleRetinaMode(bottleURL: URL, toggle: Bool) async {
         do {
             try await addRegistryKey(bottleURL: bottleURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
+            log.info("Successfully toggled retina mode to \(toggle) in bottle at \(bottleURL)")
+        } catch let error as BottleDoesNotExistError {
+            log.error("Failed to toggle retina mode: Bottle does not exist at \(bottleURL)")
+            showErrorAlert(message: "Failed to toggle Retina mode", informativeText: "The wine bottle does not exist.")
+        } catch let error as RegistryError {
+            switch error {
+            case .commandFailed(let errorMessage):
+                log.error("Failed to toggle retina mode to \(toggle) in bottle at \(bottleURL): Command failed with error: \(errorMessage)")
+                showErrorAlert(message: "Failed to toggle Retina mode", informativeText: "The registry command failed. Please try again.")
+            case .unexpectedOutput:
+                log.error("Failed to toggle retina mode to \(toggle) in bottle at \(bottleURL): Unexpected output from command")
+                showErrorAlert(message: "Failed to toggle Retina mode", informativeText: "An unexpected error occurred. Please try again.")
+            }
         } catch {
             log.error("Unable to toggle retina mode to \(toggle) in bottle at \(bottleURL): \(error)")
+            showErrorAlert(message: "Failed to toggle Retina mode", informativeText: "An unexpected error occurred. Please try again.")
         }
     }
     
@@ -414,6 +467,21 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                         continuation.resume(throwing: error)
                     }
                 }
+            }
+        }
+    }
+    
+    private static func showErrorAlert(message: String, informativeText: String) {
+        DispatchQueue.main.async {
+            let alert = NSAlert()
+            alert.messageText = message
+            alert.informativeText = informativeText
+            alert.addButton(withTitle: "OK")
+            
+            if let window = NSApp.windows.first {
+                alert.beginSheetModal(for: window) { _ in }
+            } else {
+                alert.runModal()
             }
         }
     }
