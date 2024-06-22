@@ -56,7 +56,7 @@ struct CompactGameCard: View {
                             .resizable()
                             .aspectRatio(1, contentMode: .fill)
                             .clipShape(.rect(cornerRadius: 20))
-                            .blur(radius: 20.0)
+                            .modifier(FadeInModifier())
                     case .failure:
                         // fallthrough
                         RoundedRectangle(cornerRadius: 20)
