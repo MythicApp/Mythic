@@ -89,10 +89,7 @@ struct CompactGameCard: View {
                                     do {
                                         switch game.type {
                                         case .epic:
-                                            try await Legendary.launch(
-                                                game: game,
-                                                online: networkMonitor.isEpicAccessible
-                                            )
+                                            try await Legendary.launch(game: game)
                                         case .local:
                                             try await LocalGames.launch(game: game)
                                         }

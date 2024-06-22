@@ -86,7 +86,13 @@ final class Legendary {
         task.standardError = stderr
         task.standardOutput = stdout
         
-        task.arguments = args
+        var mutableArgs = args
+        
+        if !NetworkMonitor().isEpicAccessible {
+            mutableArgs.append("--offline")
+        }
+        
+        task.arguments = mutableArgs
         
         let constructedEnvironment = ["LEGENDARY_CONFIG_PATH": configLocation].merging(environment ?? .init(), uniquingKeysWith: { $1 })
         let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
@@ -335,7 +341,7 @@ final class Legendary {
      - Parameters:
      - game: The game to launch.
      */
-    static func launch(game: Mythic.Game, online: Bool) async throws {
+    static func launch(game: Mythic.Game) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing")
             throw GameDoesNotExistError(game)
@@ -354,8 +360,7 @@ final class Legendary {
         var arguments = [
             "launch",
             game.id,
-            needsUpdate(game: game) ? "--skip-version-check" : nil,
-            online ? nil : "--offline"
+            needsUpdate(game: game) ? "--skip-version-check" : nil
         ] .compactMap { $0 }
         
         var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]

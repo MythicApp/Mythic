@@ -23,7 +23,7 @@ struct MythicApp: App {
     // MARK: - State Properties
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
-    @StateObject var networkMonitor = NetworkMonitor()
+    @StateObject var networkMonitor: NetworkMonitor = .init()
     
     @State private var bootError: Error?
     
