@@ -321,13 +321,15 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         task.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
         task.arguments = ["-k"]
         
-        let urls = bottleURL.map { [$0] } ?? bottleURLs
+        let urls: [URL] = bottleURL.map { [$0] } ?? .init(bottleURLs)
+        
         for url in urls {
             task.environment = ["WINEPREFIX": url.path(percentEncoded: false)]
+            task.qualityOfService = .utility
             try task.run()
         }
-
     }
+    
     // MARK: - Clear Shader Cache Method
     static func purgeShaderCache(game: Game? = nil) -> Bool {
         let task = Process()
