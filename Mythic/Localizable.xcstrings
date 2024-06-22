@@ -19909,7 +19909,6 @@
 
     },
     "Installed" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -27185,6 +27184,9 @@
         }
       }
     },
+    "Platform" : {
+
+    },
     "Play \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -32341,6 +32343,9 @@
           }
         }
       }
+    },
+    "Source" : {
+
     },
     "Status Unknown" : {
       "extractionState" : "stale",
