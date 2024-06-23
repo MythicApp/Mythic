@@ -3,13 +3,56 @@ import SwiftUI
 struct GameListEvo: View {
     @State private var viewModel = GameListVM()
     @State private var isGameImportViewPresented: Bool = false
+    @State private var filterOptions: FilterOptions = .init()
+    @State private var isListView: Bool = false
+
+    struct FilterOptions {
+        var showInstalled: Bool = false
+        var platform: Platform = .all
+        var source: GameSource = .all
+    }
+
+    enum Platform: String, CaseIterable {
+        case all = "All"
+        case mac = "macOS"
+        case windows = "Windows®"
+    }
+
+    enum GameSource: String, CaseIterable {
+        case all = "All"
+        case epic = "Epic"
+        case steam = "Steam"
+        case local = "Local"
+    }
+
+    private var games: [Game] {
+        let filteredGames = filterGames(unifiedGames)
+        return sortGames(filteredGames)
+    }
     
     var body: some View {
         VStack {
             filterBar
             
             if !unifiedGames.isEmpty {
-                gameList
+                if isListView {
+                    List {
+                        ForEach(games) { game in
+                            GameListRow(game: .constant(game))
+                        }
+                    }
+                    .searchable(text: $searchString, placement: .toolbar)
+                } else {
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                            ForEach(games) { game in
+                                GameCard(game: .constant(game))
+                                    .padding([.leading, .vertical])
+                            }
+                        }
+                        .searchable(text: $searchString, placement: .toolbar)
+                    }
+                }
             } else {
                 emptyStateView
             }
@@ -37,6 +80,14 @@ private extension GameListEvo {
                 ForEach(GameSource.allCases, id: \.self) { source in
                     Text(source.rawValue).tag(source)
                 }
+            }
+
+            Spacer()
+
+            Button {
+                isListView.toggle()
+            } label: {
+                Image(systemName: isListView ? "square.grid.2x2" : "list.bullet")
             }
         }
         .padding()
