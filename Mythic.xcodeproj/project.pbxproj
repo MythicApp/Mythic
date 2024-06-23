@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -167,6 +167,10 @@
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		5A275D2C2C29EFA000FD3883 /* ViewModifiers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModifiers; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		6AB474922AACBBE900AB9C63 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -242,6 +246,7 @@
 		6A2934CA2BFCFAFD0035CE4B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				5A275D2C2C29EFA000FD3883 /* ViewModifiers */,
 				6A2934B22BFCFAFD0035CE4B /* Engine */,
 				6A2934BB2BFCFAFD0035CE4B /* Extensions */,
 				6A2934BE2BFCFAFD0035CE4B /* Legendary */,
@@ -413,6 +418,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				5A275D2C2C29EFA000FD3883 /* ViewModifiers */,
 			);
 			name = Mythic;
 			packageProductDependencies = (
