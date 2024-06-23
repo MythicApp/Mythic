@@ -132,14 +132,22 @@ struct MainView: View {
                     .frame(maxHeight: 40)
                 }
                 
-                if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
-                   let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-                   let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-                    Text("\(displayName) \(shortVersion) (\(bundleVersion))")
-                        .font(.footnote)
-                        .foregroundStyle(.placeholder)
-                        .padding(.bottom)
+#if DEBUG
+                VStack {
+                    if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
+                       let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                       let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
+                        Text("\(displayName) \(shortVersion) (\(bundleVersion))")
+                    }
+                    
+                    if let version = Engine.version {
+                        Text("Mythic Engine \(version)")
+                    }
                 }
+                .font(.footnote)
+                .foregroundStyle(.placeholder)
+                .padding(.bottom)
+#endif
             }, detail: {
                 HomeView()
             }
