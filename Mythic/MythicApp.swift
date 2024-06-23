@@ -23,26 +23,13 @@ struct MythicApp: App {
     // MARK: - State Properties
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
-    @StateObject var networkMonitor: NetworkMonitor = .init()
+    @StateObject private var networkMonitor: NetworkMonitor = .init()
+    @StateObject private var sparkleController: SparkleController = .init()
     
     @State private var bootError: Error?
     
-    @State private var automaticallyChecksForUpdates: Bool
-    @State private var automaticallyDownloadsUpdates: Bool
-    
-    // MARK: - Updater Controller
-    private let updaterController: SPUStandardUpdaterController
-    
-    // MARK: - Initialization
-    init() {
-        updaterController = SPUStandardUpdaterController(
-            startingUpdater: true,
-            updaterDelegate: nil,
-            userDriverDelegate: nil
-        )
-        _automaticallyChecksForUpdates = State(initialValue: updaterController.updater.automaticallyChecksForUpdates)
-        _automaticallyDownloadsUpdates = State(initialValue: updaterController.updater.automaticallyDownloadsUpdates)
-    }
+    @State private var automaticallyChecksForUpdates: Bool = false
+    @State private var automaticallyDownloadsUpdates: Bool = false
     
     func toggleTitleBar(_ value: Bool) {
         if let window = NSApp.windows.first {
@@ -57,33 +44,37 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isOnboardingPresented {
-                OnboardingR2(fromPhase: onboardingPhase)
-                    .onAppear {
-                        toggleTitleBar(false)
-                        
-                        // Bring to front
-                        if let window = NSApp.mainWindow {
-                            window.makeKeyAndOrderFront(nil)
-                            NSApp.activate(ignoringOtherApps: true)
+            Group {
+                if isOnboardingPresented {
+                    OnboardingR2(fromPhase: onboardingPhase)
+                        .onAppear {
+                            toggleTitleBar(false)
+                            
+                            // Bring to front
+                            if let window = NSApp.mainWindow {
+                                window.makeKeyAndOrderFront(nil)
+                                NSApp.activate(ignoringOtherApps: true)
+                            }
                         }
-                    }
-            } else {
-                MainView(
-                    automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
-                    automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
-                )
-                .transition(.opacity)
-                .environmentObject(networkMonitor)
-                .frame(minWidth: 750, minHeight: 390)
-                .onAppear { toggleTitleBar(true) }
+                } else {
+                    MainView()
+                        .transition(.opacity)
+                        .environmentObject(networkMonitor)
+                        .environmentObject(sparkleController)
+                        .frame(minWidth: 750, minHeight: 390)
+                        .onAppear { toggleTitleBar(true) }
+                }
+            }
+            .onAppear {
+                automaticallyChecksForUpdates = sparkleController.updater.automaticallyChecksForUpdates
+                automaticallyDownloadsUpdates = sparkleController.updater.automaticallyDownloadsUpdates
             }
         }
         
         .commands {
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates...", action: updaterController.updater.checkForUpdates)
-                    .disabled(!updaterController.updater.canCheckForUpdates)
+                Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
+                    .disabled(!sparkleController.updater.canCheckForUpdates)
                 
                 if !isOnboardingPresented {
                     Button("Restart Onboarding...") {
@@ -97,18 +88,13 @@ struct MythicApp: App {
         
         // MARK: - Settings View
         Settings {
-            SettingsView(
-                automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
-                automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
-            )
+            SettingsView()
         }
     }
 }
 
 #Preview {
-    MainView(
-        automaticallyChecksForUpdates: .constant(true),
-        automaticallyDownloadsUpdates: .constant(false)
-    )
+    MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

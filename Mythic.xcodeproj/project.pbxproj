@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A059CF82C2875D5004A19BF /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A059CF72C2875D5004A19BF /* SparkleController.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A2935322BFCFAFD0035CE4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */; };
@@ -93,6 +94,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5A059CF72C2875D5004A19BF /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
 		6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6A2934B02BFCFAFD0035CE4B /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		6A2934B12BFCFAFD0035CE4B /* EngineExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineExt.swift; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 				6A496A722C1AF75600FD637B /* Game.swift */,
 				6A2934C62BFCFAFD0035CE4B /* Global.swift */,
 				6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */,
+				5A059CF72C2875D5004A19BF /* SparkleController.swift */,
 				6A2934C82BFCFAFD0035CE4B /* Rosetta.swift */,
 				6A2934C92BFCFAFD0035CE4B /* VariableManager.swift */,
 			);
@@ -537,6 +540,7 @@
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
 				6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */,
 				6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */,
+				5A059CF82C2875D5004A19BF /* SparkleController.swift in Sources */,
 				6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */,
 				6A2935542BFCFAFD0035CE4B /* Support.swift in Sources */,
 				6A29354E2BFCFAFD0035CE4B /* Bottles.swift in Sources */,

@@ -23,8 +23,7 @@ struct SettingsView: View {
     @State private var isDefaultBottleSectionExpanded: Bool = true
     @State private var isUpdaterSettingsExpanded: Bool = true
     
-    @Binding var automaticallyChecksForUpdates: Bool
-    @Binding var automaticallyDownloadsUpdates: Bool
+    @EnvironmentObject var sparkle: SparkleController
 
     @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
@@ -227,9 +226,15 @@ struct SettingsView: View {
             
             Section("Updater Settings", isExpanded: $isUpdaterSettingsExpanded) {
                 VStack {
-                    Toggle("Automatically check for updates", isOn: $automaticallyChecksForUpdates)
+                    Toggle("Automatically check for updates", isOn: Binding(
+                        get: { sparkle.updater.automaticallyChecksForUpdates },
+                        set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
+                    ))
                     Divider()
-                    Toggle("Automatically download updates", isOn: $automaticallyDownloadsUpdates)
+                    Toggle("Automatically download updates", isOn: Binding(
+                        get: { sparkle.updater.automaticallyDownloadsUpdates },
+                        set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
+                    ))
                 }
             }
             
@@ -257,8 +262,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(
-        automaticallyChecksForUpdates: .constant(true),
-        automaticallyDownloadsUpdates: .constant(false)
-    )
+    SettingsView()
+        .environmentObject(SparkleController())
 }

@@ -65,9 +65,7 @@ final class NetworkMonitor: ObservableObject {
 }
 
 #Preview {
-    MainView(
-        automaticallyChecksForUpdates: .constant(true),
-        automaticallyDownloadsUpdates: .constant(false)
-    )
+    MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

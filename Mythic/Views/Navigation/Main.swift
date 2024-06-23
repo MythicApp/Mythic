@@ -25,10 +25,8 @@ import Combine
 // MARK: - MainView Struct
 struct MainView: View {
     
-    @Binding var automaticallyChecksForUpdates: Bool
-    @Binding var automaticallyDownloadsUpdates: Bool
-    
     @EnvironmentObject var networkMonitor: NetworkMonitor
+    @EnvironmentObject var sparkle: SparkleController
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
@@ -78,10 +76,7 @@ struct MainView: View {
                         }
                         
                         NavigationLink(
-                            destination: SettingsView(
-                                automaticallyChecksForUpdates: $automaticallyChecksForUpdates,
-                                automaticallyDownloadsUpdates: $automaticallyDownloadsUpdates
-                            )
+                            destination: SettingsView()
                         ) {
                             Label("Settings", systemImage: "gear")
                             // .foregroundStyle(.primary)
@@ -165,9 +160,7 @@ struct MainView: View {
 
 // MARK: - Preview
 #Preview {
-    MainView(
-        automaticallyChecksForUpdates: .constant(true),
-        automaticallyDownloadsUpdates: .constant(false)
-    )
-    .environmentObject(NetworkMonitor())
+    MainView()
+        .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

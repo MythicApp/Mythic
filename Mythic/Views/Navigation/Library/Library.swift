@@ -74,9 +74,7 @@ struct LibraryView: View {
 }
 
 #Preview {
-    MainView(
-        automaticallyChecksForUpdates: .constant(true),
-        automaticallyDownloadsUpdates: .constant(false)
-    )
-    .environmentObject(NetworkMonitor())
+    MainView()
+        .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }
