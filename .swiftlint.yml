@@ -6,6 +6,7 @@ disabled_rules:
   - cyclomatic_complexity
   - trailing_whitespace
   - todo
+  - opening_brace
 
 opt_in_rules:
   - toggle_bool
