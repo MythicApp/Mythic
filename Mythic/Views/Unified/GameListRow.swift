@@ -74,7 +74,9 @@ private extension GameListRow {
                 .help("Play \"\(game.title)\"")
                 .disabled(!isGamePlayable)
             } else {
-                Button(action: { isInstallSheetPresented = true }) {
+                Button {
+                    isInstallSheetPresented = true
+                } label: {
                     Image(systemName: "arrow.down.to.line")
                 }
                 .keyboardShortcut("i", modifiers: [.command])
@@ -95,7 +97,9 @@ private extension GameListRow {
     }
 
     var settingsButton: some View {
-        Button(action: { isGameSettingsSheetPresented = true }) {
+        Button {
+            isGameSettingsSheetPresented = true
+        } label: {
             Image(systemName: "gear")
         }
         .keyboardShortcut(",", modifiers: [.command])
