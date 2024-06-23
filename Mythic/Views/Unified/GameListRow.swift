@@ -26,6 +26,8 @@ struct GameListRow: View {
         .alert(isPresented: $isLaunchErrorAlertPresented) {
             launchErrorAlert
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Game: \(game.title)")
     }
 }
 
@@ -39,6 +41,7 @@ private extension GameListRow {
         }
         .frame(width: 60, height: 60)
         .cornerRadius(8)
+        .accessibilityHidden(true)
     }
 
     var gameInfo: some View {
@@ -49,6 +52,8 @@ private extension GameListRow {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Game: \(game.title), Type: \(game.type.rawValue)")
     }
 
     var actionButtons: some View {
@@ -65,12 +70,14 @@ private extension GameListRow {
                 Button(action: launchGame) {
                     Image(systemName: "play")
                 }
+                .keyboardShortcut("p", modifiers: [.command])
                 .help("Play \"\(game.title)\"")
                 .disabled(!isGamePlayable)
             } else {
                 Button(action: { isInstallSheetPresented = true }) {
                     Image(systemName: "arrow.down.to.line")
                 }
+                .keyboardShortcut("i", modifiers: [.command])
                 .help("Download \"\(game.title)\"")
                 .sheet(isPresented: $isInstallSheetPresented) {
                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
@@ -83,17 +90,19 @@ private extension GameListRow {
         Button(action: toggleFavourite) {
             Image(systemName: game.isFavourited ? "star.fill" : "star")
         }
-        .help("Favourite \"\(game.title)\"")
+        .keyboardShortcut("f", modifiers: [.command])
+        .help(game.isFavourited ? "Remove from favorites" : "Add to favorites")
     }
 
     var settingsButton: some View {
         Button(action: { isGameSettingsSheetPresented = true }) {
             Image(systemName: "gear")
         }
+        .keyboardShortcut(",", modifiers: [.command])
+        .help("Modify settings for \"\(game.title)\"")
         .sheet(isPresented: $isGameSettingsSheetPresented) {
             GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
         }
-        .help("Modify settings for \"\(game.title)\"")
     }
 
     var launchErrorAlert: Alert {
@@ -117,7 +126,7 @@ private extension GameListRow {
             do {
                 switch game.type {
                 case .epic:
-                    try await Legendary.launch(game: game, online: networkMonitor.isEpicAccessible)
+                    try await Legendary.launch(game: game)
                 case .local:
                     try await LocalGames.launch(game: game)
                 }

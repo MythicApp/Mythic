@@ -4047,6 +4047,9 @@
         }
       }
     },
+    "Add to favorites" : {
+
+    },
     "Are you sure you want to cancel bottle creation?" : {
       "localizations" : {
         "af" : {
@@ -17227,6 +17230,19 @@
         }
       }
     },
+    "Game: %@" : {
+
+    },
+    "Game: %@, Type: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Game: %1$@, Type: %2$@"
+          }
+        }
+      }
+    },
     "Get support/Support Mythic" : {
       "localizations" : {
         "af" : {
@@ -28713,6 +28729,9 @@
       }
     },
     "Remove from download queue" : {
+
+    },
+    "Remove from favorites" : {
 
     },
     "Remove Mythic Engine" : {
