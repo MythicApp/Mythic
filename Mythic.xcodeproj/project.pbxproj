@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5A059CF82C2875D5004A19BF /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A059CF72C2875D5004A19BF /* SparkleController.swift */; };
+		5A1584F12C27B0B300401048 /* GameListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1584F02C27B0B300401048 /* GameListRow.swift */; };
 		5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */; };
 		5A62AE9C2C27E1C400BA31D2 /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE9B2C27E1C400BA31D2 /* GameList.swift */; };
+		5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9573A92C29BBEC009C8F85 /* SparkleController.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A2935322BFCFAFD0035CE4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */; };
@@ -96,9 +97,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5A059CF72C2875D5004A19BF /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
+		5A1584F02C27B0B300401048 /* GameListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListRow.swift; sourceTree = "<group>"; };
 		5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvoVM.swift; sourceTree = "<group>"; };
 		5A62AE9B2C27E1C400BA31D2 /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
+		5A9573A92C29BBEC009C8F85 /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
 		6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6A2934B02BFCFAFD0035CE4B /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		6A2934B12BFCFAFD0035CE4B /* EngineExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineExt.swift; sourceTree = "<group>"; };
@@ -249,7 +251,7 @@
 				6A496A722C1AF75600FD637B /* Game.swift */,
 				6A2934C62BFCFAFD0035CE4B /* Global.swift */,
 				6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */,
-				5A059CF72C2875D5004A19BF /* SparkleController.swift */,
+				5A9573A92C29BBEC009C8F85 /* SparkleController.swift */,
 				6A2934C82BFCFAFD0035CE4B /* Rosetta.swift */,
 				6A2934C92BFCFAFD0035CE4B /* VariableManager.swift */,
 			);
@@ -328,6 +330,7 @@
 				6A2934E82BFCFAFD0035CE4B /* BottleListView.swift */,
 				6A2934E92BFCFAFD0035CE4B /* GameListEvoView.swift */,
 				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
+				5A1584F02C27B0B300401048 /* GameListRow.swift */,
 				6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */,
 			);
 			path = Unified;
@@ -544,10 +547,10 @@
 				6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */,
 				6A2935552BFCFAFD0035CE4B /* CompactGameCard.swift in Sources */,
 				6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */,
+				5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */,
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
 				6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */,
 				6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */,
-				5A059CF82C2875D5004A19BF /* SparkleController.swift in Sources */,
 				6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */,
 				6A2935542BFCFAFD0035CE4B /* Support.swift in Sources */,
 				6A29354E2BFCFAFD0035CE4B /* Bottles.swift in Sources */,
@@ -559,6 +562,7 @@
 				6A29354B2BFCFAFD0035CE4B /* LocalImport.swift in Sources */,
 				6A29355C2BFCFAFD0035CE4B /* InstallGameView.swift in Sources */,
 				6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */,
+				5A1584F12C27B0B300401048 /* GameListRow.swift in Sources */,
 				6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* Home.swift in Sources */,
 				6A29354D2BFCFAFD0035CE4B /* Accounts.swift in Sources */,
