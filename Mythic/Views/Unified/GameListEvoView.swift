@@ -4,7 +4,7 @@ struct GameListEvo: View {
     @State private var viewModel = GameListVM()
     @State private var isGameImportViewPresented: Bool = false
     @State private var filterOptions: FilterOptions = .init()
-    @AppStorage("isListView") private var isListView: Bool = false
+    @AppStorage("isLibraryListVertical") private var isListView: Bool = false
 
     struct FilterOptions {
         var showInstalled: Bool = false
