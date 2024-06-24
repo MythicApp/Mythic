@@ -1,33 +1,55 @@
 name: Build
-
 on:
- push:
-  paths:
-   - '.github/workflows/build.yml'
-   - 'Mythic.xcodeproj/**'
-   - 'Mythic/**'
- pull_request:
-  paths:
-   - '.github/workflows/build.yml'
-   - 'Mythic.xcodeproj/**'
-   - 'Mythic/**'
- workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+      - 'Mythic.xcodeproj/**'
+      - 'Mythic/**'
+  pull_request:
+    paths:
+      - '.github/workflows/build.yml'
+      - 'Mythic.xcodeproj/**'
+      - 'Mythic/**'
+  workflow_dispatch:
 
 jobs:
- build:
+  build:
     runs-on: macos-14
-
     steps:
-    - uses: actions/checkout@v4
-
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Debug - List directory contents
+      run: ls -R
+      
+    - name: Debug - Print environment variables
+      run: env
+      
     - name: Install Command Line Tools for Xcode (if it's not installed)
       run: |
-         if xcode-select --version >/dev/null 2>&1; then
-             echo "Xcode Command Line Tools is installed, skipping."
-         else
-             echo "Xcode Command Line Tools is not installed, installing."
-             xcode-select --install
-         fi
-
+        echo "Checking Xcode Command Line Tools..."
+        if xcode-select --version >/dev/null 2>&1; then
+          echo "Xcode Command Line Tools is installed, skipping."
+        else
+          echo "Xcode Command Line Tools is not installed, installing."
+          xcode-select --install
+        fi
+        
+    - name: Debug - Xcode version
+      run: xcodebuild -version
+      
+    - name: Debug - Available Xcode schemes
+      run: xcodebuild -list -project Mythic.xcodeproj
+      
     - name: Build
-      run: xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO
+      run: |
+        echo "Starting build process..."
+        set -x  # Enable command echoing
+        xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO -verbose
+        set +x  # Disable command echoing
+      
+    - name: Debug - Build artifacts
+      if: failure()
+      run: |
+        echo "Listing build artifacts..."
+        ls -R ~/Library/Developer/Xcode/DerivedData
