@@ -75,9 +75,7 @@ struct MainView: View {
                                 .help("Manage containers for Windows® applications")
                         }
                         
-                        NavigationLink(
-                            destination: SettingsView()
-                        ) {
+                        NavigationLink(destination: SettingsView()) {
                             Label("Settings", systemImage: "gear")
                             // .foregroundStyle(.primary)
                                 .help("Configure Mythic")
