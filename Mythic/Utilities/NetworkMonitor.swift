@@ -67,4 +67,5 @@ final class NetworkMonitor: ObservableObject {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

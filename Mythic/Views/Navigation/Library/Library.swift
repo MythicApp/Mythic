@@ -76,4 +76,5 @@ struct LibraryView: View {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }
