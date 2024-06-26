@@ -12,6 +12,9 @@ import UserNotifications
 import SwordRPC
 import SwiftUI
 
+// TODO: Move enums into `Game` class
+// TODO: Rename GameType to GameSource
+
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable, Hashable {
     case macOS = "macOS"
@@ -27,14 +30,12 @@ enum GameType: String, CaseIterable, Codable, Hashable {
 class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     // MARK: Stubs
     static func == (lhs: Game, rhs: Game) -> Bool {
-        return lhs.id == rhs.id && lhs.platform == rhs.platform && lhs.path == rhs.path
+        return lhs.id == rhs.id
     }
     
     // MARK: Hash
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-        hasher.combine(platform)
-        hasher.combine(path)
     }
     
     // MARK: Initializer
