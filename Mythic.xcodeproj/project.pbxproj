@@ -11,6 +11,8 @@
 		5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */; };
 		5A62AE9C2C27E1C400BA31D2 /* GameList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE9B2C27E1C400BA31D2 /* GameList.swift */; };
 		5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9573A92C29BBEC009C8F85 /* SparkleController.swift */; };
+		6A0688442C2BCE8B004DF10F /* DownloadCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0688432C2BCE87004DF10F /* DownloadCard.swift */; };
+		6A0688462C2BD144004DF10F /* CircularButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0688452C2BD141004DF10F /* CircularButton.swift */; };
 		6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6A0C66842ABC4092004B0755 /* CachedAsyncImage */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A2935322BFCFAFD0035CE4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */; };
@@ -41,7 +43,7 @@
 		6A29354C2BFCFAFD0035CE4B /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D02BFCFAFD0035CE4B /* Library.swift */; };
 		6A29354D2BFCFAFD0035CE4B /* Accounts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D22BFCFAFD0035CE4B /* Accounts.swift */; };
 		6A29354E2BFCFAFD0035CE4B /* Bottles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D32BFCFAFD0035CE4B /* Bottles.swift */; };
-		6A29354F2BFCFAFD0035CE4B /* DownloadsEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D42BFCFAFD0035CE4B /* DownloadsEvo.swift */; };
+		6A29354F2BFCFAFD0035CE4B /* DownloadsViewEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D42BFCFAFD0035CE4B /* DownloadsViewEvo.swift */; };
 		6A2935502BFCFAFD0035CE4B /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D52BFCFAFD0035CE4B /* Home.swift */; };
 		6A2935512BFCFAFD0035CE4B /* Main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D62BFCFAFD0035CE4B /* Main.swift */; };
 		6A2935522BFCFAFD0035CE4B /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D72BFCFAFD0035CE4B /* Settings.swift */; };
@@ -59,7 +61,7 @@
 		6A29355E2BFCFAFD0035CE4B /* StopDownloadAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E52BFCFAFD0035CE4B /* StopDownloadAlert.swift */; };
 		6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E62BFCFAFD0035CE4B /* UninstallGameView.swift */; };
 		6A2935602BFCFAFD0035CE4B /* BottleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E82BFCFAFD0035CE4B /* BottleListView.swift */; };
-		6A2935612BFCFAFD0035CE4B /* GameListEvoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E92BFCFAFD0035CE4B /* GameListEvoView.swift */; };
+		6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */; };
 		6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */; };
 		6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EB2BFCFAFD0035CE4B /* WebView.swift */; };
 		6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */; };
@@ -101,6 +103,8 @@
 		5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvoVM.swift; sourceTree = "<group>"; };
 		5A62AE9B2C27E1C400BA31D2 /* GameList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameList.swift; sourceTree = "<group>"; };
 		5A9573A92C29BBEC009C8F85 /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
+		6A0688432C2BCE87004DF10F /* DownloadCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCard.swift; sourceTree = "<group>"; };
+		6A0688452C2BD141004DF10F /* CircularButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularButton.swift; sourceTree = "<group>"; };
 		6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6A2934B02BFCFAFD0035CE4B /* Engine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		6A2934B12BFCFAFD0035CE4B /* EngineExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EngineExt.swift; sourceTree = "<group>"; };
@@ -129,7 +133,7 @@
 		6A2934D02BFCFAFD0035CE4B /* Library.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		6A2934D22BFCFAFD0035CE4B /* Accounts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accounts.swift; sourceTree = "<group>"; };
 		6A2934D32BFCFAFD0035CE4B /* Bottles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bottles.swift; sourceTree = "<group>"; };
-		6A2934D42BFCFAFD0035CE4B /* DownloadsEvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadsEvo.swift; sourceTree = "<group>"; };
+		6A2934D42BFCFAFD0035CE4B /* DownloadsViewEvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadsViewEvo.swift; sourceTree = "<group>"; };
 		6A2934D52BFCFAFD0035CE4B /* Home.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
 		6A2934D62BFCFAFD0035CE4B /* Main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Main.swift; sourceTree = "<group>"; };
 		6A2934D72BFCFAFD0035CE4B /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
@@ -147,7 +151,7 @@
 		6A2934E52BFCFAFD0035CE4B /* StopDownloadAlert.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StopDownloadAlert.swift; sourceTree = "<group>"; };
 		6A2934E62BFCFAFD0035CE4B /* UninstallGameView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UninstallGameView.swift; sourceTree = "<group>"; };
 		6A2934E82BFCFAFD0035CE4B /* BottleListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottleListView.swift; sourceTree = "<group>"; };
-		6A2934E92BFCFAFD0035CE4B /* GameListEvoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameListEvoView.swift; sourceTree = "<group>"; };
+		6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameListViewEvo.swift; sourceTree = "<group>"; };
 		6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplementedView.swift; sourceTree = "<group>"; };
 		6A2934EB2BFCFAFD0035CE4B /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewR2.swift; sourceTree = "<group>"; };
@@ -280,11 +284,11 @@
 		6A2934DA2BFCFAFD0035CE4B /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				6A2934D12BFCFAFD0035CE4B /* Library */,
 				6A2934D22BFCFAFD0035CE4B /* Accounts.swift */,
 				6A2934D32BFCFAFD0035CE4B /* Bottles.swift */,
-				6A2934D42BFCFAFD0035CE4B /* DownloadsEvo.swift */,
+				6A2934D42BFCFAFD0035CE4B /* DownloadsViewEvo.swift */,
 				6A2934D52BFCFAFD0035CE4B /* Home.swift */,
+				6A2934D12BFCFAFD0035CE4B /* Library */,
 				6A2934D62BFCFAFD0035CE4B /* Main.swift */,
 				6A2934D72BFCFAFD0035CE4B /* Settings.swift */,
 				6A2934D82BFCFAFD0035CE4B /* Store.swift */,
@@ -296,6 +300,8 @@
 		6A2934DF2BFCFAFD0035CE4B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6A0688452C2BD141004DF10F /* CircularButton.swift */,
+				6A0688432C2BCE87004DF10F /* DownloadCard.swift */,
 				6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */,
 				6A2934DB2BFCFAFD0035CE4B /* CompactGameCard.swift */,
 				6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */,
@@ -328,7 +334,7 @@
 				6A2934DF2BFCFAFD0035CE4B /* Models */,
 				6A2934E72BFCFAFD0035CE4B /* Sheets */,
 				6A2934E82BFCFAFD0035CE4B /* BottleListView.swift */,
-				6A2934E92BFCFAFD0035CE4B /* GameListEvoView.swift */,
+				6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */,
 				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
 				5A1584F02C27B0B300401048 /* GameListRow.swift */,
 				6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */,
@@ -519,10 +525,11 @@
 			files = (
 				6A29353A2BFCFAFD0035CE4B /* Task.swift in Sources */,
 				6A2935592BFCFAFD0035CE4B /* BottleCreationView.swift in Sources */,
+				6A0688462C2BD144004DF10F /* CircularButton.swift in Sources */,
 				6A2935562BFCFAFD0035CE4B /* GameCard.swift in Sources */,
 				6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */,
-				6A2935612BFCFAFD0035CE4B /* GameListEvoView.swift in Sources */,
-				6A29354F2BFCFAFD0035CE4B /* DownloadsEvo.swift in Sources */,
+				6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */,
+				6A29354F2BFCFAFD0035CE4B /* DownloadsViewEvo.swift in Sources */,
 				6A496A732C1AF75B00FD637B /* Game.swift in Sources */,
 				6A2935602BFCFAFD0035CE4B /* BottleListView.swift in Sources */,
 				6A29355E2BFCFAFD0035CE4B /* StopDownloadAlert.swift in Sources */,
@@ -532,6 +539,7 @@
 				6A29354C2BFCFAFD0035CE4B /* Library.swift in Sources */,
 				6A2935472BFCFAFD0035CE4B /* VariableManager.swift in Sources */,
 				6A2935332BFCFAFD0035CE4B /* Engine.swift in Sources */,
+				6A0688442C2BCE8B004DF10F /* DownloadCard.swift in Sources */,
 				6A2935462BFCFAFD0035CE4B /* Rosetta.swift in Sources */,
 				6A2935532BFCFAFD0035CE4B /* Store.swift in Sources */,
 				6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */,
