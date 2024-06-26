@@ -6,7 +6,7 @@ struct GameListEvo: View {
     @State private var refresh: Bool = false
     @State private var isGameImportViewPresented: Bool = false
     @State private var filterOptions: FilterOptions = .init()
-    @AppStorage("game_libary/is_list_layout_enabled") private var isListLayoutEnabled: Bool = false
+    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
 
     struct FilterOptions {
         var showInstalled: Bool = false
