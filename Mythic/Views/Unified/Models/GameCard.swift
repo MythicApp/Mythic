@@ -107,7 +107,7 @@ struct GameCard: View {
                             if operation.current?.game.id == game.id { // MARK: View if game is being installed
                                 GameInstallProgressView()
                                     .padding(.horizontal)
-                            } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
+                            } else if game.isInstalled { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Engine.exists {
                                     // MARK: Engine Install Button
                                     Button {
@@ -139,11 +139,11 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    // .disabled(operation.current?.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
                                     // ! Changes made here must also be reflected in CompactGameCard's play button
+                                    // TODO: Unify ^^
                                     if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
@@ -194,28 +194,15 @@ struct GameCard: View {
                                                     game: game, platform: game.platform!, type: .update
                                                 )
                                             )
-                                            /*
-                                            do {
-                                                try await Legendary.install(
-                                                    game: game,
-                                                    platform: game.platform!,
-                                                    type: .update
-                                                )
-                                            } catch {
-                                                Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
-                                                // TODO: add update error
-                                            }
-                                             */
                                         }
                                     } label: {
                                         Image(systemName: "arrow.triangle.2.circlepath")
                                             .padding(5)
                                     }
                                     .clipShape(.circle)
+                                    .help("Update \"\(game.title)\"")
                                     .disabled(!networkMonitor.isEpicAccessible)
                                     .disabled(operation.runningGames.contains(game))
-                                    // .disabled(operation.current?.game != nil)
-                                    .help("Update \"\(game.title)\"")
                                 }
                                 
                                 // MARK: Settings Button
@@ -243,9 +230,9 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .help("Favourite \"\(game.title)\"")
+                                .task { animateFavouriteIcon = game.isFavourited }
                                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
                                 .symbolEffect(.bounce, value: animateFavouriteIcon)
-                                .task { animateFavouriteIcon = game.isFavourited } // causes bounce on view appearance
                                 
                                 // MARK: Delete Button
                                 Button {
@@ -260,7 +247,9 @@ struct GameCard: View {
                                 .disabled(operation.runningGames.contains(game))
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
-                                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
+                                    withAnimation(.easeInOut(duration: 0.1)) {
+                                        hoveringOverDestructiveButton = hovering
+                                    }
                                 }
                                 .sheet(isPresented: $isUninstallSheetPresented) {
                                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
@@ -290,7 +279,7 @@ struct GameCard: View {
     }
 }
 
-/// ViewModifier that enables views to have a fade in effect
+/// ViewModifier that enables views to have a fade in effect.
 struct FadeInModifier: ViewModifier {
     @State private var opacity: Double = 0
     

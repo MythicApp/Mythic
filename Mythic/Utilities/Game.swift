@@ -27,22 +27,13 @@ enum GameType: String, CaseIterable, Codable, Hashable {
 class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     // MARK: Stubs
     static func == (lhs: Game, rhs: Game) -> Bool {
-        return lhs.type == rhs.type &&
-        lhs.title == rhs.title &&
-        lhs.id == rhs.id &&
-        lhs.platform == rhs.platform &&
-        lhs.imageURL == rhs.imageURL &&
-        lhs.path == rhs.path
+        return lhs.id == rhs.id && lhs.platform == rhs.platform && lhs.path == rhs.path
     }
     
     // MARK: Hash
     func hash(into hasher: inout Hasher) {
-        hasher.combine(type)
-        hasher.combine(title)
         hasher.combine(id)
         hasher.combine(platform)
-        hasher.combine(imageURL)
-        hasher.combine(wideImageURL)
         hasher.combine(path)
     }
     
@@ -131,6 +122,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             } else {
                 favouriteGames.remove(id)
             }
+        }
+    }
+    
+    var isInstalled: Bool {
+        switch self.type {
+        case .epic:
+            let games = try? Legendary.getInstalledGames()
+            return games?.contains(self) == true
+        case .local:
+            return true
         }
     }
     
