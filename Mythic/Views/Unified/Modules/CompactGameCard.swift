@@ -57,6 +57,7 @@ struct CompactGameCard: View {
                             .aspectRatio(1, contentMode: .fill)
                             .clipShape(.rect(cornerRadius: 20))
                             .blur(radius: 20.0)
+                            .modifier(FadeInModifier())
                     case .failure:
                         // fallthrough
                         RoundedRectangle(cornerRadius: 20)
@@ -132,6 +133,6 @@ struct CompactGameCard: View {
 }
 
 #Preview {
-    CompactGameCard(game: .constant(.init(type: .epic, title: "firtbite;", wideImageURL: .init(string: "https://i.imgur.com/CZt2F4s.png"))))
+    CompactGameCard(game: .constant(.init(type: .epic, title: "test", wideImageURL: .init(string: "https://i.imgur.com/CZt2F4s.png"))))
         .padding()
 }
