@@ -275,8 +275,8 @@
 		6A2934D12BFCFAFD0035CE4B /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				6A2934CF2BFCFAFD0035CE4B /* Extensions */,
 				6A2934D02BFCFAFD0035CE4B /* Library.swift */,
+				6A2934CF2BFCFAFD0035CE4B /* Extensions */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -297,7 +297,7 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
-		6A2934DF2BFCFAFD0035CE4B /* Models */ = {
+		6A2934DF2BFCFAFD0035CE4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
 				6A0688452C2BD141004DF10F /* CircularButton.swift */,
@@ -310,7 +310,7 @@
 				6A2934EB2BFCFAFD0035CE4B /* WebView.swift */,
 				5A62AE9B2C27E1C400BA31D2 /* GameList.swift */,
 			);
-			path = Models;
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		6A2934E72BFCFAFD0035CE4B /* Sheets */ = {
@@ -331,11 +331,11 @@
 		6A2934EC2BFCFAFD0035CE4B /* Unified */ = {
 			isa = PBXGroup;
 			children = (
-				6A2934DF2BFCFAFD0035CE4B /* Models */,
+				6A2934DF2BFCFAFD0035CE4B /* Modules */,
+				6A91FEC02C2BFB8100D9F153 /* Models */,
 				6A2934E72BFCFAFD0035CE4B /* Sheets */,
 				6A2934E82BFCFAFD0035CE4B /* BottleListView.swift */,
 				6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */,
-				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
 				5A1584F02C27B0B300401048 /* GameListRow.swift */,
 				6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */,
 			);
@@ -369,6 +369,14 @@
 				6A2934AF2BFCFAFD0035CE4B /* Preview Content */,
 			);
 			path = Mythic;
+			sourceTree = "<group>";
+		};
+		6A91FEC02C2BFB8100D9F153 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		6AB4748C2AACBBE900AB9C63 = {

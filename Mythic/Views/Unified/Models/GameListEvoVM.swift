@@ -1,8 +1,7 @@
 import Foundation
 import SwiftUI
 
-@Observable
-final class GameListVM {
+@Observable final class GameListVM {
     var searchString: String = ""
     var refresh: Bool = false
     var filterOptions: FilterOptions = .init()
@@ -28,7 +27,6 @@ final class GameListVM {
 }
 
 private extension GameListVM {
-    
     func updateGames() {
         let filteredGames = filterGames(unifiedGames)
         games = sortGames(filteredGames)

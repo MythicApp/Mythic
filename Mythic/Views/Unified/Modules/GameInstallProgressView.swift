@@ -64,7 +64,9 @@ struct GameInstallProgressView: View {
                 .clipShape(.circle)
                 .help("Stop installing \"\(game.title)\"")
                 .onHover { hovering in
-                    withAnimation(.easeInOut(duration: 0.1)) { isHoveringOverDestructiveButton = hovering }
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isHoveringOverDestructiveButton = hovering
+                    }
                 }
                 .alert(isPresented: $isStopGameModificationAlertPresented) {
                     stopGameOperationAlert(
