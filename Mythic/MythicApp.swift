@@ -23,13 +23,11 @@ struct MythicApp: App {
     // MARK: - State Properties
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
+    
     @StateObject private var networkMonitor: NetworkMonitor = .init()
     @StateObject private var sparkleController: SparkleController = .init()
     
     @State private var bootError: Error?
-    
-    @State private var automaticallyChecksForUpdates: Bool = false
-    @State private var automaticallyDownloadsUpdates: Bool = false
     
     func toggleTitleBar(_ value: Bool) {
         if let window = NSApp.windows.first {
@@ -44,30 +42,24 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            Group {
-                if isOnboardingPresented {
-                    OnboardingR2(fromPhase: onboardingPhase)
-                        .onAppear {
-                            toggleTitleBar(false)
-                            
-                            // Bring to front
-                            if let window = NSApp.mainWindow {
-                                window.makeKeyAndOrderFront(nil)
-                                NSApp.activate(ignoringOtherApps: true)
-                            }
+            if isOnboardingPresented {
+                OnboardingR2(fromPhase: onboardingPhase)
+                    .onAppear {
+                        toggleTitleBar(false)
+                        
+                        // Bring to front
+                        if let window = NSApp.mainWindow {
+                            window.makeKeyAndOrderFront(nil)
+                            NSApp.activate(ignoringOtherApps: true)
                         }
-                } else {
-                    MainView()
-                        .transition(.opacity)
-                        .environmentObject(networkMonitor)
-                        .environmentObject(sparkleController)
-                        .frame(minWidth: 750, minHeight: 390)
-                        .onAppear { toggleTitleBar(true) }
-                }
-            }
-            .onAppear {
-                automaticallyChecksForUpdates = sparkleController.updater.automaticallyChecksForUpdates
-                automaticallyDownloadsUpdates = sparkleController.updater.automaticallyDownloadsUpdates
+                    }
+            } else {
+                MainView()
+                    .transition(.opacity)
+                    .environmentObject(networkMonitor)
+                    .environmentObject(sparkleController)
+                    .frame(minWidth: 750, minHeight: 390)
+                    .onAppear { toggleTitleBar(true) }
             }
         }
         
@@ -76,20 +68,21 @@ struct MythicApp: App {
                 Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
                     .disabled(!sparkleController.updater.canCheckForUpdates)
                 
-                if !isOnboardingPresented {
-                    Button("Restart Onboarding...") {
-                        withAnimation(.easeInOut(duration: 2)) {
-                            isOnboardingPresented = true
-                        }
+                Button("Restart Onboarding...") {
+                    withAnimation(.easeInOut(duration: 2)) {
+                        isOnboardingPresented = true
                     }
                 }
+                .disabled(isOnboardingPresented)
             }
         }
         
         // MARK: - Settings View
+        /*
         Settings {
             SettingsView()
         }
+         */
     }
 }
 
