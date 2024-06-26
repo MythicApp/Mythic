@@ -21,9 +21,6 @@ import UserNotifications
 import OSLog
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
-    var updaterController: SPUStandardUpdaterController?
-    var networkMonitor: NetworkMonitor?
-    
     func applicationDidFinishLaunching(_: Notification) {
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
@@ -204,6 +201,10 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+}
+
+extension AppDelegate: SPUUpdaterDelegate {
     
 }
 

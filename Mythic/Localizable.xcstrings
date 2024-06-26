@@ -2129,6 +2129,7 @@
       }
     },
     "%@ %@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5591,7 +5592,11 @@
         }
       }
     },
+    "Automatically check for app updates" : {
+
+    },
     "Automatically check for updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5781,7 +5786,11 @@
         }
       }
     },
+    "Automatically download app updates" : {
+
+    },
     "Automatically download updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -36389,7 +36398,7 @@
         }
       }
     },
-    "Updater Settings" : {
+    "Updates" : {
 
     },
     "Verify File Integrity" : {

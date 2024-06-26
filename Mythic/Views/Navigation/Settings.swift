@@ -224,18 +224,16 @@ struct SettingsView: View {
                 }
             }
             
-            Section("Updater Settings", isExpanded: $isUpdaterSettingsExpanded) {
-                VStack {
-                    Toggle("Automatically check for updates", isOn: Binding(
-                        get: { sparkle.updater.automaticallyChecksForUpdates },
-                        set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
-                    ))
-                    Divider()
-                    Toggle("Automatically download updates", isOn: Binding(
-                        get: { sparkle.updater.automaticallyDownloadsUpdates },
-                        set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
-                    ))
-                }
+            Section("Updates", isExpanded: $isUpdaterSettingsExpanded) {
+                Toggle("Automatically check for app updates", isOn: Binding(
+                    get: { sparkle.updater.automaticallyChecksForUpdates },
+                    set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
+                ))
+                
+                Toggle("Automatically download app updates", isOn: Binding(
+                    get: { sparkle.updater.automaticallyDownloadsUpdates },
+                    set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
+                ))
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
@@ -244,7 +242,6 @@ struct SettingsView: View {
             }
              */
         }
-        .frame(minHeight: 750)
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
