@@ -83,7 +83,7 @@ final class Engine {
                 var debounce: Bool = false
                 while true {
                     downloadHandler(download.progress)
-                    print("engine: download: \(download.progress.fractionCompleted * 100)% complete")
+                    log.debug("[engine] [download] \(download.progress.fractionCompleted * 100)% complete")
                     try await Task.sleep(nanoseconds: 500000000) // 0.5 s
                     if download.progress.isFinished { if !debounce { debounce = true } else { break } }
                 }
@@ -121,6 +121,15 @@ final class Engine {
         _ = group.wait(timeout: .now() + 2)
         
         return latestVersion
+    }
+    
+    static func needsUpdate() -> Bool? {
+        guard let latestVersion = fetchLatestVersion(),
+              let currentVersion = version
+        else {
+            return nil
+        }
+        return latestVersion > currentVersion
     }
     
     /// Removes Mythic Engine.

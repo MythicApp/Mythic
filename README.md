@@ -19,7 +19,7 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 
 ## Features
 - [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX9-12) (64-bit)
-- [ ] Steam Support (Coming in update 0.2.x)
+- [ ] Steam Support (Coming in update <1.x.x)
 - [x] Epic Games Support
 - [x] Manual Game Imports
 - [x] Game management
@@ -27,12 +27,15 @@ Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendar
 
 
 There are more big things coming your way for Mythic, see the [roadmap](https://github.com/orgs/MythicApp/projects/2/views/2).
-If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or create a [pull request](https://github.com/MythicApp/Mythic/compare).
+If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or open a [pull request](https://github.com/MythicApp/Mythic/pulls).
 
 ## Download
 At midnight on the 19th of May, Mythic finally released!
 
 [Download it now!](https://github.com/MythicApp/Mythic/releases)
+
+* Please note Mythic is only available for macOS 14 (Sonoma) and above.
+  To verify your Mac's compatibility with Sonoma, visit https://support.apple.com/en-us/105113
 
 ## Dependencies
 Mythic uses the following Swift dependencies:

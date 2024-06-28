@@ -26,6 +26,7 @@ import Combine
 struct MainView: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
+    @EnvironmentObject var sparkle: SparkleController
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
@@ -151,4 +152,5 @@ struct MainView: View {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

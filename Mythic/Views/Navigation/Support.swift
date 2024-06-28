@@ -18,10 +18,20 @@ import Shimmer
 import SwordRPC
 
 struct SupportView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
+    private var colorSchemeValue: String {
+        colorScheme == .dark ? "dark" : "light"
+    }
+    
     var body: some View {
         HStack {
             VStack {
-                WebView(url: .init(string: "https://discord.com/widget?id=1154998702650425397&theme=dark")!, error: .constant(nil), isLoading: .constant(nil))
+                WebView(
+                    url: .init(string: "https://discord.com/widget?id=1154998702650425397&theme=\(colorSchemeValue)")!,
+                    error: .constant(nil),
+                    isLoading: .constant(nil)
+                )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)

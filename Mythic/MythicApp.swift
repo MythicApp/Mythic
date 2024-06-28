@@ -14,7 +14,6 @@
 
 import SwiftUI
 import Sparkle
-import UserNotifications
 
 // MARK: - Where it all begins!
 @main
@@ -23,30 +22,12 @@ struct MythicApp: App {
     
     // MARK: - State Properties
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
-    @State var onboardingChapter: OnboardingR2.Phase = .allCases.first!
-    @StateObject var networkMonitor = NetworkMonitor()
-    @State private var showNetworkAlert = false
-    @State private var isInstallViewPresented: Bool = false
-    @State private var isAlertPresented: Bool = false
-    @State private var isNotificationPermissionsGranted = false
+    @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
+    
+    @StateObject private var networkMonitor: NetworkMonitor = .init()
+    @StateObject private var sparkleController: SparkleController = .init()
+    
     @State private var bootError: Error?
-    
-    @State private var activeAlert: ActiveAlert = .updatePrompt
-    enum ActiveAlert {
-        case updatePrompt, bootError, offlineAlert
-    }
-    
-    // MARK: - Updater Controller
-    private let updaterController: SPUStandardUpdaterController
-    
-    // MARK: - Initialization
-    init() {
-        updaterController = SPUStandardUpdaterController(
-            startingUpdater: true,
-            updaterDelegate: nil,
-            userDriverDelegate: nil
-        )
-    }
     
     func toggleTitleBar(_ value: Bool) {
         if let window = NSApp.windows.first {
@@ -62,7 +43,7 @@ struct MythicApp: App {
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
-                OnboardingR2()
+                OnboardingR2(fromPhase: onboardingPhase)
                     .onAppear {
                         toggleTitleBar(false)
                         
@@ -76,80 +57,37 @@ struct MythicApp: App {
                 MainView()
                     .transition(.opacity)
                     .environmentObject(networkMonitor)
+                    .environmentObject(sparkleController)
                     .frame(minWidth: 750, minHeight: 390)
                     .onAppear { toggleTitleBar(true) }
-                    .task(priority: .medium) {
-                        if let latestVersion = Engine.fetchLatestVersion(),
-                           let currentVersion = Engine.version,
-                           latestVersion > currentVersion {
-                            activeAlert = .updatePrompt
-                            isAlertPresented = true
-                        }
-                    }
-                    .task(priority: .background) {
-                        if Engine.exists, Wine.allBottles?["Default"] == nil {
-                            onboardingChapter = .defaultBottleSetup
-                            isOnboardingPresented = true
-                        }
-                    }
-                
-                // MARK: - Other Properties
-                // Reference: https://arc.net/l/quote/cflghpbh
-                    .onChange(of: networkMonitor.isEpicAccessible) { _, newValue in
-                        if newValue == false {
-                            activeAlert = .offlineAlert
-                            isAlertPresented = true
-                        }
-                    }
-                
-                    .alert(isPresented: $isAlertPresented) {
-                        switch activeAlert {
-                        case .updatePrompt:
-                            Alert(
-                                title: Text("Time for an update!"),
-                                message: Text("The backend that allows you to play Windows® games on macOS just got an update."),
-                                primaryButton: .default(Text("Update")), // TODO: implement
-                                secondaryButton: .cancel(Text("Later"))
-                            )
-                        case .bootError:
-                            Alert(
-                                title: Text("Unable to boot default bottle."),
-                                message: Text("Mythic was unable to create the default Windows® container to launch Windows® games. Please contact support. (Error: \((bootError ?? UnknownError()).localizedDescription))"),
-                                dismissButton: .destructive(Text("Quit Mythic")) { NSApp.terminate(nil) }
-                            )
-                        case .offlineAlert:
-                            Alert(
-                                title: Text("Can't connect."),
-                                message: Text("Mythic is unable to connect to the internet. App functionality will be limited.")
-                            )
-                        }
-                    }
             }
         }
         
         .commands {
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates...", action: updaterController.updater.checkForUpdates)
-                    .disabled(!updaterController.updater.canCheckForUpdates)
+                Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
+                    .disabled(!sparkleController.updater.canCheckForUpdates)
                 
-                if !isOnboardingPresented {
-                    Button("Restart Onboarding...") {
-                        withAnimation(.easeInOut(duration: 2)) {
-                            isOnboardingPresented = true
-                        }
+                Button("Restart Onboarding...") {
+                    withAnimation(.easeInOut(duration: 2)) {
+                        isOnboardingPresented = true
                     }
                 }
+                .disabled(isOnboardingPresented)
             }
         }
         
         // MARK: - Settings View
+        /*
         Settings {
-            UpdaterSettingsView(updater: updaterController.updater)
+            SettingsView()
         }
+         */
     }
 }
 
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }

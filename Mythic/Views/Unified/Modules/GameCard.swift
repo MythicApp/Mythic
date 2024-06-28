@@ -89,11 +89,10 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
-                                // .foregroundStyle(.white)
                             
                             SubscriptedTextView(game.type.rawValue)
                             
-                            if let recent = try? PropertyListDecoder().decode(Game.self, from: defaults.object(forKey: "recentlyPlayed") as? Data ?? .init()),
+                            if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                                recent == game {
                                 SubscriptedTextView("Recent")
                             }
@@ -101,18 +100,19 @@ struct GameCard: View {
                             Spacer()
                         }
                         .padding(.leading)
+                        .foregroundStyle(.white)
                         
                         // MARK: Button Stack
                         HStack {
                             if operation.current?.game.id == game.id { // MARK: View if game is being installed
                                 GameInstallProgressView()
                                     .padding(.horizontal)
-                            } else if game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game) { // MARK: Buttons if game is installed
+                            } else if game.isInstalled { // MARK: Buttons if game is installed
                                 if case .windows = game.platform, !Engine.exists {
                                     // MARK: Engine Install Button
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                        app.onboardingChapter = .engineDisclaimer
+                                        app.onboardingPhase = .engineDisclaimer
                                         app.isOnboardingPresented = true
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")
@@ -132,19 +132,6 @@ struct GameCard: View {
                                                     game: game, platform: game.platform!, type: .repair
                                                 )
                                             )
-                                            
-                                            /*
-                                            do {
-                                                try await Legendary.install(
-                                                    game: game,
-                                                    platform: game.platform!,
-                                                    type: .repair
-                                                )
-                                            } catch {
-                                                Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
-                                                // TODO: add repair error
-                                            }
-                                             */
                                         }
                                     } label: {
                                         Image(systemName: "checkmark.circle.badge.questionmark")
@@ -152,11 +139,11 @@ struct GameCard: View {
                                     }
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isEpicAccessible)
-                                    // .disabled(operation.current?.game != nil)
                                     .help("Game verification is required for \"\(game.title)\".")
                                 } else {
                                     // MARK: Play Button
                                     // ! Changes made here must also be reflected in CompactGameCard's play button
+                                    // TODO: Unify ^^
                                     if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
@@ -169,10 +156,7 @@ struct GameCard: View {
                                                 do {
                                                     switch game.type {
                                                     case .epic:
-                                                        try await Legendary.launch(
-                                                            game: game,
-                                                            online: networkMonitor.isEpicAccessible
-                                                        )
+                                                        try await Legendary.launch(game: game)
                                                     case .local:
                                                         try await LocalGames.launch(game: game)
                                                     }
@@ -191,6 +175,7 @@ struct GameCard: View {
                                         .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                                         .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
                                         .disabled(operation.runningGames.contains(game))
+                                        .disabled(Wine.bottleURLs.isEmpty)
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),
@@ -209,28 +194,15 @@ struct GameCard: View {
                                                     game: game, platform: game.platform!, type: .update
                                                 )
                                             )
-                                            /*
-                                            do {
-                                                try await Legendary.install(
-                                                    game: game,
-                                                    platform: game.platform!,
-                                                    type: .update
-                                                )
-                                            } catch {
-                                                Logger.app.error("Error repairing \(game.title): \(error.localizedDescription)")
-                                                // TODO: add update error
-                                            }
-                                             */
                                         }
                                     } label: {
                                         Image(systemName: "arrow.triangle.2.circlepath")
                                             .padding(5)
                                     }
                                     .clipShape(.circle)
+                                    .help("Update \"\(game.title)\"")
                                     .disabled(!networkMonitor.isEpicAccessible)
                                     .disabled(operation.runningGames.contains(game))
-                                    // .disabled(operation.current?.game != nil)
-                                    .help("Update \"\(game.title)\"")
                                 }
                                 
                                 // MARK: Settings Button
@@ -258,9 +230,9 @@ struct GameCard: View {
                                 }
                                 .clipShape(.circle)
                                 .help("Favourite \"\(game.title)\"")
+                                .task { animateFavouriteIcon = game.isFavourited }
                                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
                                 .symbolEffect(.bounce, value: animateFavouriteIcon)
-                                .task { animateFavouriteIcon = game.isFavourited } // causes bounce on view appearance
                                 
                                 // MARK: Delete Button
                                 Button {
@@ -275,7 +247,9 @@ struct GameCard: View {
                                 .disabled(operation.runningGames.contains(game))
                                 .help("Delete \"\(game.title)\"")
                                 .onHover { hovering in
-                                    withAnimation(.easeInOut(duration: 0.1)) { hoveringOverDestructiveButton = hovering }
+                                    withAnimation(.easeInOut(duration: 0.1)) {
+                                        hoveringOverDestructiveButton = hovering
+                                    }
                                 }
                                 .sheet(isPresented: $isUninstallSheetPresented) {
                                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
@@ -305,7 +279,7 @@ struct GameCard: View {
     }
 }
 
-/// ViewModifier that enables views to have a fade in effect
+/// ViewModifier that enables views to have a fade in effect.
 struct FadeInModifier: ViewModifier {
     @State private var opacity: Double = 0
     

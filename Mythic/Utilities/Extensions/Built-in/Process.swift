@@ -20,7 +20,7 @@ extension Process {
         process.waitUntilExit()
         
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8) ?? .init()
+        let output = String(decoding: data, as: UTF8.self)
         
         return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -41,13 +41,13 @@ extension Process {
         let output: Legendary.CommandOutput = .init()
         
         stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stderr = String(data: handle.availableData, encoding: .utf8) ?? .init()
-            completion(output)
+            output.stderr = String(decoding: handle.availableData, as: UTF8.self)
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
         
         stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stdout = String(data: handle.availableData, encoding: .utf8) ?? .init()
-            completion(output)
+            output.stdout = String(decoding: handle.availableData, as: UTF8.self)
+            completion(output) // ⚠️ FIXME: critical performance issues
         }
     }
 }

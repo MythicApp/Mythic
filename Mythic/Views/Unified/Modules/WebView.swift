@@ -61,23 +61,29 @@ struct WebView: NSViewRepresentable {
         
         // MARK: Provisional Navigation Failure
         /// Called when a navigation fails.
-        @MainActor func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
-            parent.log.error("\(error.localizedDescription)")
-            parent.error = error
+        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
+            DispatchQueue.main.async { [self] in
+                parent.log.error("\(error.localizedDescription)")
+                parent.error = error
+            }
         }
         
         // MARK: - Provisional Navigation Completion
         /// Called when navigation finishes successfully.
-        @MainActor func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-            parent.isLoading = false
-            parent.canGoBack = webView.canGoBack
-            parent.canGoForward = webView.canGoForward
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
+            DispatchQueue.main.async { [self] in
+                parent.isLoading = false
+                parent.canGoBack = webView.canGoBack
+                parent.canGoForward = webView.canGoForward
+            }
         }
         
         // MARK: - Provisional Navigation Commencing
         /// Called when the WebView starts provisional navigation.
-        @MainActor func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation) {
-            parent.isLoading = true
+        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation) {
+            DispatchQueue.main.async { [self] in
+                parent.isLoading = true
+            }
         }
     }
 }

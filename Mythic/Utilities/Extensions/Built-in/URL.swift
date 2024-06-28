@@ -21,5 +21,6 @@ extension URL {
         return path(percentEncoded: false)
             .replacingOccurrences(of: Bundle.main.bundleIdentifier!, with: "Mythic")
             .replacingOccurrences(of: "/Users/\(NSUserName())", with: "~")
+            .replacingOccurrences(of: "file://", with: "")
     }
 }

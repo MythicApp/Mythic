@@ -21,54 +21,90 @@ import UserNotifications
 import OSLog
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
-    var updaterController: SPUStandardUpdaterController?
-    var networkMonitor: NetworkMonitor?
-    var window: NSWindow!
-    
     func applicationDidFinishLaunching(_: Notification) {
-        // MARK: initialize default UserDefaults Values
-        UserDefaults.standard.register(
-            defaults: [
-                "discordRPC": true
-            ]
-        )
+        setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
-        // MARK: Bottle removal if folder was deleted externally
-        if let bottles = Wine.allBottles {
-            for (key, value) in bottles where !files.fileExists(atPath: value.url.path(percentEncoded: false)) {
-                Wine.allBottles?.removeValue(forKey: key)
+        // MARK: initialize default UserDefaults Values
+        defaults.register(defaults: [
+            "discordRPC": true
+        ])
+        
+        // MARK: Bottle cleanup in the event of external deletion
+        Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+        
+        // MARK: 0.1.x bottle migration
+        if let data = defaults.data(forKey: "allBottles"),
+           let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
+            
+            Logger.app.log("Older bottle format detected, commencing bottle management system migration")
+            
+            var iterations = 0
+            var convertedBottles: [Wine.Bottle] = .init()
+            
+            for (name, bottle) in decodedData {
+                guard let urlArray = bottle["url"] as? [String: String], // unable to cast directly to URL
+                      let relativeURL = urlArray["relative"],
+                      let url: URL = .init(string: relativeURL.removingPercentEncoding ?? relativeURL) else {
+                    return
+                }
+                
+                var settings = Wine.defaultBottleSettings
+                guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
+                settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
+                settings.msync = oldSettings["msync"] ?? settings.msync
+                settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
+                
+                DispatchQueue.main.async {
+                    convertedBottles.append(.init(name: name, url: url, settings: settings))
+                    Wine.bottleURLs.insert(url)
+                }
+                
+                iterations += 1
+                
+                Logger.app.log("converted \(url.prettyPath()) (\(iterations)/\(decodedData.count))")
             }
+            
+            Logger.file.notice("Bottle management system migration complete.")
+            defaults.removeObject(forKey: "allBottles")
         }
         
-        if Engine.exists { _ = Wine.allBottles } // creates default bottle automatically because of custom getter
+        // MARK: DiscordRPC Connection and Delegation Setting
+        discordRPC.delegate = self
+        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
         
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
 #if !DEBUG
-        let appURL = Bundle.main.bundleURL
+        let currentAppURL = Bundle.main.bundleURL
+        let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
         
         // MARK: Move to Applications
-        if !appURL.pathComponents.contains("Applications") {
+        if !currentAppURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
             alert.messageText = "Move Mythic to the Applications folder?"
             alert.informativeText = "Mythic has detected it's running outside of the applications folder."
             alert.addButton(withTitle: "Move")
             alert.addButton(withTitle: "Cancel")
             
-            if alert.runModal() == .alertFirstButtonReturn, let globalApps = FileLocations.globalApplications {
-                do {
-                    _ = try files.replaceItemAt(appURL, withItemAt: globalApps)
-                    workspace.open(globalApps.appending(path: "Mythic.app")
-                    )
-                } catch {
-                    Logger.file.error("Unable to move Mythic to Applications: \(error)")
-                    
-                    let error = NSAlert()
-                    error.messageText = "Unable to move Mythic to \"\(globalApps.prettyPath())\"."
-                    error.addButton(withTitle: "Quit")
-                    
-                    if error.runModal() == .alertFirstButtonReturn {
-                        exit(1)
+            if let window = NSApp.windows.first, let optimalAppURL = optimalAppURL {
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        do {
+                            _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
+                            workspace.open(optimalAppURL)
+                        } catch {
+                            Logger.file.error("Unable to move Mythic to Applications: \(error)")
+                            
+                            let error = NSAlert()
+                            error.messageText = "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\"."
+                            error.addButton(withTitle: "Quit")
+                            
+                            error.beginSheetModal(for: window) { response in
+                                if case .alertFirstButtonReturn = response {
+                                    exit(1)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -88,35 +124,87 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        // MARK: DiscordRPC Connection and Delegation Setting
-        discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        if Engine.needsUpdate() == true {
+            let alert = NSAlert()
+            alert.messageText = "Time for an update!"
+            alert.informativeText = "A new Mythic Engine update has released."
+            alert.addButton(withTitle: "Update")
+            alert.addButton(withTitle: "Cancel")
+            
+            alert.showsHelp = true
+            
+            if let window = NSApp.windows.first { // no alternative ATM, swift compiler is clueless.
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        let confirmation = NSAlert()
+                        confirmation.messageText = "Are you sure you want to update now?"
+                        confirmation.informativeText = "Updating will remove the current version of Mythic Engine before installing the new one."
+                        confirmation.addButton(withTitle: "Update")
+                        confirmation.addButton(withTitle: "Cancel")
+                        
+                        confirmation.beginSheetModal(for: window) { response in
+                            if case .alertFirstButtonReturn = response {
+                                do {
+                                    try Engine.remove()
+                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                    app.onboardingPhase = .engineDisclaimer
+                                    app.isOnboardingPresented = true
+                                } catch {
+                                    let error = NSAlert()
+                                    error.alertStyle = .critical
+                                    error.messageText = "Unable to remove Mythic Engine."
+                                    error.addButton(withTitle: "Quit")
+                                    
+                                    error.beginSheetModal(for: window) { response in
+                                        if case .OK = response {
+                                            exit(1)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {
+        var terminateReply: NSApplication.TerminateReply = .terminateNow
+        
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()
             alert.messageText = "Are you sure you want to quit?"
             alert.informativeText = "Mythic is still modifying games."
+            alert.alertStyle = .warning
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
-            if alert.runModal() == .alertFirstButtonReturn {
-                return .terminateNow
-            } else {
-                return .terminateCancel
+            
+            if let window = NSApp.windows.first {
+                alert.beginSheetModal(for: window) { response in
+                    if case .alertFirstButtonReturn = response {
+                        terminateReply = .terminateNow
+                    } else {
+                        terminateReply = .terminateLater
+                    }
+                }
             }
         }
         
-        return .terminateNow
+        return terminateReply
     }
     
     func applicationWillTerminate(_: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") { Wine.killAll() }
+        if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
         Legendary.stopAllCommands(forced: true)
     }
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
+    
+}
+
+extension AppDelegate: SPUUpdaterDelegate {
     
 }
 

@@ -5543,6 +5543,9 @@
         }
       }
     },
+    "Add to favorites" : {
+
+    },
     "Are you sure you want to cancel bottle creation?" : {
       "localizations" : {
         "af" : {
@@ -8022,6 +8025,9 @@
         }
       }
     },
+    "Automatically check for app updates" : {
+
+    },
     "Automatically check for updates" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8402,6 +8408,9 @@
           }
         }
       }
+    },
+    "Automatically download app updates" : {
+
     },
     "Automatically download updates" : {
       "extractionState" : "stale",
@@ -11445,6 +11454,9 @@
           }
         }
       }
+    },
+    "Configure \"%@\"" : {
+
     },
     "Configure default settings for \"%@\"" : {
       "extractionState" : "stale",
@@ -16203,6 +16215,12 @@
           }
         }
       }
+    },
+    "Engine (Wine)" : {
+
+    },
+    "Engine %@" : {
+
     },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
@@ -22299,6 +22317,19 @@
         }
       }
     },
+    "Game: %@" : {
+
+    },
+    "Game: %@, Type: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Game: %1$@, Type: %2$@"
+          }
+        }
+      }
+    },
     "Get support/Support Mythic" : {
       "localizations" : {
         "af" : {
@@ -22678,6 +22709,9 @@
           }
         }
       }
+    },
+    "Grid" : {
+
     },
     "Hello, world!" : {
       "localizations" : {
@@ -28196,6 +28230,9 @@
         }
       }
     },
+    "Launch Arguments" : {
+
+    },
     "Launch Configurator" : {
       "localizations" : {
         "af" : {
@@ -29336,6 +29373,9 @@
           }
         }
       }
+    },
+    "List" : {
+
     },
     "Manage containers for Windows® applications" : {
       "localizations" : {
@@ -30667,6 +30707,9 @@
           }
         }
       }
+    },
+    "MODIFYING" : {
+
     },
     "Move \"%@\"" : {
       "localizations" : {
@@ -36566,6 +36609,9 @@
         }
       }
     },
+    "Platform" : {
+
+    },
     "Play \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -38659,6 +38705,9 @@
         }
       }
     },
+    "Remove from favorites" : {
+
+    },
     "Remove Mythic Engine" : {
       "localizations" : {
         "af" : {
@@ -39038,6 +39087,9 @@
           }
         }
       }
+    },
+    "Reset" : {
+
     },
     "Reset Mythic" : {
       "localizations" : {
@@ -39608,6 +39660,12 @@
           }
         }
       }
+    },
+    "Reset Mythic Settings?" : {
+
+    },
+    "Reset Mythic?" : {
+
     },
     "Reset settings to default" : {
       "localizations" : {
@@ -45885,6 +45943,12 @@
         }
       }
     },
+    "This will erase every persistent setting and bottle." : {
+
+    },
+    "This will erase every persistent setting." : {
+
+    },
     "This will limit your ability to play Windows® games." : {
       "localizations" : {
         "af" : {
@@ -47025,6 +47089,9 @@
           }
         }
       }
+    },
+    "Type" : {
+
     },
     "Unable to boot default bottle." : {
       "extractionState" : "stale",
@@ -49125,6 +49192,12 @@
         }
       }
     },
+    "Updates" : {
+
+    },
+    "Verify File Integrity" : {
+
+    },
     "Verify the game's integrity" : {
       "localizations" : {
         "af" : {
@@ -49694,6 +49767,12 @@
           }
         }
       }
+    },
+    "Verify..." : {
+
+    },
+    "View" : {
+
     },
     "View all currently signed in accounts" : {
       "localizations" : {
@@ -52356,6 +52435,15 @@
           }
         }
       }
+    },
+    "Windows Version" : {
+
+    },
+    "Windows version cannot be modified: %@" : {
+
+    },
+    "Windows® %@" : {
+
     },
     "Wine" : {
       "localizations" : {

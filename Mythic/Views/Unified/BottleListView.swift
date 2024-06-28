@@ -10,185 +10,181 @@ import OSLog
 import SwordRPC
 
 struct BottleListView: View {
-    @State private var isBottleSettingsViewPresented = false
-    @State private var isOpenAlertPresented = false
+    @State private var isBottleConfigurationViewPresented = false
     @State private var isDeletionAlertPresented = false
     
-    @State private var selectedBottleName: String = .init()
-    @State private var bottleNameToDelete: String = .init()
-    @State private var openError: Error?
+    @State private var selectedBottleURL: URL = .init(filePath: .init())
+    @State private var bottleURLToDelete: URL = .init(filePath: .init())
+    
+    var body: some View {
+        Form {
+            ForEach(Wine.bottleObjects) { bottle in
+                HStack {
+                    Text(bottle.name)
+                    
+                    Button {
+                        workspace.open(bottle.url)
+                    } label: {
+                        Text("\(bottle.url.prettyPath()) \(Image(systemName: "link"))")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .scaledToFit()
+                    }
+                    .buttonStyle(.accessoryBar)
+                    
+                    Spacer()
+                    Button(action: {
+                        selectedBottleURL = bottle.url
+                        isBottleConfigurationViewPresented = true
+                    }, label: {
+                        Image(systemName: "gear")
+                    })
+                    .buttonStyle(.borderless)
+                    .help("Modify default settings for \"\(bottle.name)\"")
+                    
+                    Button {
+                        bottleURLToDelete = bottle.url
+                        isDeletionAlertPresented = true
+                    } label: {
+                        Image(systemName: "xmark.bin")
+                    }
+                    .buttonStyle(.borderless)
+                    .foregroundStyle(.secondary)
+                    .alert(isPresented: $isDeletionAlertPresented) {
+                        let bottle = try? Wine.getBottleObject(url: bottleURLToDelete)
+                        return Alert(
+                            title: .init("Are you sure you want to delete \"\(bottle?.name ?? "Unknown")\"?"),
+                            message: .init("This process cannot be undone."),
+                            primaryButton: .destructive(.init("Delete")) {
+                                do {
+                                    guard let bottleURL = bottle?.url else { throw Wine.BottleDoesNotExistError() }
+                                    try Wine.deleteBottle(bottleURL: bottleURL)
+                                } catch {
+                                    Logger.file.error("Unable to delete bottle \(bottle?.name ?? ""): \(error.localizedDescription)")
+                                    bottleURLToDelete = .init(filePath: .init())
+                                    isDeletionAlertPresented = false
+                                }
+                            },
+                            secondaryButton: .cancel(.init("Cancel")) {
+                                bottleURLToDelete = .init(filePath: .init())
+                                isDeletionAlertPresented = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        .formStyle(.grouped)
+        
+        .sheet(isPresented: $isBottleConfigurationViewPresented) {
+            BottleConfigurationView(bottleURL: $selectedBottleURL, isPresented: $isBottleConfigurationViewPresented)
+        }
+    }
+}
+
+struct BottleConfigurationView: View {
+    @Binding var bottleURL: URL
+    @Binding var isPresented: Bool
     
     @State private var configuratorActive: Bool = false
     @State private var registryEditorActive: Bool = false
     
+    @State private var isOpenAlertPresented = false
+    @State private var openError: Error?
+    
+    init(bottleURL: Binding<URL>, isPresented: Binding<Bool>) {
+        self._bottleURL = bottleURL
+        self._isPresented = isPresented
+    }
+    
     var body: some View {
-        if let bottles = Wine.allBottles, !bottles.isEmpty {
-            Form {
-                ForEach(Array(bottles.keys), id: \.self) { name in
-                    HStack {
-                        Text(name)
-                        
-                        Button {
-                            workspace.open(bottles[name]!.url)
-                        } label: {
-                            Text("\(bottles[name]!.url.prettyPath()) \(Image(systemName: "link"))")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .scaledToFit()
-                        }
-                        .buttonStyle(.accessoryBar)
-                        
-                        Spacer()
-                        Button(action: {
-                            selectedBottleName = name
-                            isBottleSettingsViewPresented = true
-                        }, label: {
-                            Image(systemName: "gear")
-                        })
-                        .buttonStyle(.borderless)
-                        .help("Modify default settings for \"\(name)\"")
-                        
-                        Button(action: {
-                            if name != "Default" {
-                                bottleNameToDelete = name
-                                isDeletionAlertPresented = true
-                            }
-                        }, label: {
-                            Image(systemName: "xmark.bin")
-                        })
-                        .buttonStyle(.borderless)
-                        .foregroundStyle(.secondary)
-                        .opacity(name == "Default" ? 0.5 : 1)
-                        .help(name == "Default" ? "You can't delete the default bottle." : "Delete \"\(name)\"")
-                        .alert(isPresented: $isDeletionAlertPresented) {
-                            Alert(
-                                title: .init("Are you sure you want to delete \"\(bottleNameToDelete)\"?"),
-                                message: .init("This process cannot be undone."),
-                                primaryButton: .destructive(.init("Delete")) {
-                                    do {
-                                        try Wine.deleteBottle(bottleURL: bottles[bottleNameToDelete]!.url) // FIXME: may produce crashes
-                                    } catch {
-                                        Logger.file.error("Unable to delete bottle \(bottleNameToDelete): \(error.localizedDescription)")
-                                        bottleNameToDelete = .init()
-                                        isDeletionAlertPresented = false
-                                    }
-                                },
-                                secondaryButton: .cancel(.init("Cancel")) {
-                                    bottleNameToDelete = .init()
-                                    isDeletionAlertPresented = false
-                                }
-                            )
-                        }
-                    }
+        if let bottle = try? Wine.getBottleObject(url: self.bottleURL) {
+            VStack {
+                Text("Configure \"\(bottle.name)\"")
+                    .font(.title)
+                
+                Form {
+                    BottleSettingsView(selectedBottleURL: Binding($bottleURL), withPicker: false)
+                    // TODO: Add slider for scaling
+                    // TODO: Add slider for winver
                 }
-            }
-            .formStyle(.grouped)
-            
-            .sheet(isPresented: $isBottleSettingsViewPresented) {
-                VStack {
-                    Text("Configure default settings for \"\(selectedBottleName)\"") // FIXME: glitch
-                        .font(.title)
+                .formStyle(.grouped)
+                
+                HStack {
+                    Spacer()
                     
-                    Form {
-                        BottleSettingsView(selectedBottle: $selectedBottleName, withPicker: false)
-                        // TODO: Add slider for scaling
-                        // TODO: Add slider for winver
-                    }
-                    .formStyle(.grouped)
-                    
-                    HStack {
-                        Spacer()
+                    Button("Open...") {
+                        let openPanel = NSOpenPanel()
+                        openPanel.canChooseFiles = true
+                        openPanel.allowsMultipleSelection = false
+                        openPanel.allowedContentTypes = [.exe]
                         
-                        Button("Open...") {
-                            let openPanel = NSOpenPanel()
-                            openPanel.canChooseFiles = true
-                            openPanel.allowsMultipleSelection = false
-                            openPanel.allowedContentTypes = [.exe]
-                            
-                            if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
-                                Task {
-                                    do {
-                                        try await Wine.command(arguments: [url.absoluteString], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottles[selectedBottleName]!.url) { _ in }
-                                    } catch {
-                                        openError = error
-                                        isOpenAlertPresented = true
-                                    }
+                        if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
+                            Task {
+                                do {
+                                    try await Wine.command(arguments: [url.path(percentEncoded: false)], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottle.url) { _ in }
+                                } catch {
+                                    openError = error
+                                    isOpenAlertPresented = true
                                 }
                             }
                         }
-                        .alert(isPresented: $isOpenAlertPresented) {
-                            Alert(
-                                title: .init("Error opening executable."),
-                                message: .init(openError?.localizedDescription ?? "Unknown Error"),
-                                dismissButton: .default(.init("OK"))
-                            )
-                        }
-                        .onChange(of: isOpenAlertPresented) {
-                            if !$1 { openError = nil }
-                        }
-                        
-                        Button("Launch Winetricks") {
-                            try? Wine.launchWinetricks(prefix: bottles[selectedBottleName]!.url)
-                        }
-                        .disabled(true)
-                        .help("Winetricks GUI support is currently broken.")
-                        
-                        Button("Launch Configurator") {
-                            Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottles[selectedBottleName]!.url) { _ in } }
-                            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                                configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
-                                if !configuratorActive { timer.invalidate() }
-                            }
-                        }
-                        .disabled(configuratorActive)
-                        
-                        Button("Launch Registry Editor") {
-                            Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", bottleURL: bottles[selectedBottleName]!.url) { _ in } }
-                            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                                registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // @isaacmarovitz has a better way
-                                if !registryEditorActive { timer.invalidate() }
-                            }
-                        }
-                        .disabled(registryEditorActive)
-                        
-                        Button("Close") {
-                            isBottleSettingsViewPresented = false
-                        }
-                        .buttonStyle(.borderedProminent)
                     }
-                }
-                .padding()
-                .fixedSize()
-                .task(priority: .background) {
-                    discordRPC.setPresence({
-                        var presence: RichPresence = .init()
-                        presence.details = "Configuring bottle \"\(selectedBottleName)\""
-                        presence.state = "Configuring Bottle"
-                        presence.timestamps.start = .now
-                        presence.assets.largeImage = "macos_512x512_2x"
-                        
-                        return presence
-                    }())
+                    .alert(isPresented: $isOpenAlertPresented) {
+                        Alert(
+                            title: .init("Error opening executable."),
+                            message: .init(openError?.localizedDescription ?? "Unknown Error"),
+                            dismissButton: .default(.init("OK"))
+                        )
+                    }
+                    .onChange(of: isOpenAlertPresented) {
+                        if !$1 { openError = nil }
+                    }
+                    
+                    Button("Launch Winetricks") {
+                        try? Wine.launchWinetricks(bottleURL: bottle.url)
+                    }
+                    .disabled(true)
+                    .help("Winetricks GUI support is currently broken.")
+                    
+                    Button("Launch Configurator") {
+                        Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottle.url) { _ in } }
+                        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                            configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
+                            if !configuratorActive { timer.invalidate() }
+                        }
+                    }
+                    .disabled(configuratorActive)
+                    
+                    Button("Launch Registry Editor") {
+                        Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", bottleURL: bottle.url) { _ in } }
+                        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                            registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
+                            if !registryEditorActive { timer.invalidate() }
+                        }
+                    }
+                    .disabled(registryEditorActive)
+                    
+                    Button("Close") {
+                        isPresented = false
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             }
-        } else if !Engine.exists {
-            Text("Mythic Engine is not installed!")
-                .font(.bold(.title)())
-            
-            Button {
-                let app = MythicApp() // FIXME: is this dangerous or just stupid
-                app.onboardingChapter = .engineDisclaimer
-                app.isOnboardingPresented = true
-            } label: {
-                Label("Install Mythic Engine", systemImage: "arrow.down.to.line")
-                    .padding(5)
+            .padding()
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.details = "Configuring bottle \"\(bottle.name)\""
+                    presence.state = "Configuring Bottle"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
             }
-            .buttonStyle(.borderedProminent)
         } else {
-            Image(systemName: "exclamationmark.triangle")
-                .imageScale(.large)
-                .symbolEffect(.pulse)
-                .help("Unable to fetch bottles.")
+            
         }
     }
 }

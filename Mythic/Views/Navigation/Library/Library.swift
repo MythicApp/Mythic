@@ -25,15 +25,12 @@ struct LibraryView: View {
     
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @State private var legendaryStatus: JSON = JSON()
-    @State private var isDownloadsPopoverPresented: Bool = false
-    
-    @State private var searchText: String = .init()
+    @State private var filterOptions: GameListFilterOptions = .init()
+    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
     var body: some View {
-        // GameListView(isRefreshCalled: $isGameListRefreshCalled, searchText: $searchText)
-        GameListEvo()
+        GameListEvo(filterOptions: $filterOptions)
             .navigationTitle("Library")
         
         // MARK: - Toolbar
@@ -46,14 +43,39 @@ struct LibraryView: View {
                         Image(systemName: "plus.app")
                     }
                     .help("Import a game")
+                }
                 
-                // MARK: Refresh Button
-                    Button {
-                        _ = unifiedGames // getter updates computer property
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
+                ToolbarItem(placement: .confirmationAction) {
+                    Toggle("Installed", isOn: $filterOptions.showInstalled)
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Picker("Type", systemImage: "gamecontroller", selection: $filterOptions.type) {
+                        ForEach(InclusiveGameType.allCases, id: \.self) { type in
+                            Text(type.rawValue)
+                        }
                     }
-                    .help("Refresh library")
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $filterOptions.platform) {
+                        ForEach(InclusiveGamePlatform.allCases, id: \.self) { platform in
+                            Label(platform.rawValue, systemImage: {
+                                switch platform {
+                                case .all: "display"
+                                case .mac: "macwindow"
+                                case .windows: "pc"
+                                }
+                            }())
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .confirmationAction) {
+                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
+                        Label("List", systemImage: "list.triangle").tag(true)
+                        Label("Grid", systemImage: "square.grid.2x2").tag(false)
+                    }
                     .disabled(true)
                 }
             }
@@ -81,4 +103,5 @@ struct LibraryView: View {
 #Preview {
     MainView()
         .environmentObject(NetworkMonitor())
+        .environmentObject(SparkleController())
 }
