@@ -14,7 +14,7 @@ struct GameSettingsView: View {
     @State private var isMovingErrorPresented: Bool = false
     @State private var typingArgument: String = .init()
     @State private var launchArguments: [String] = .init()
-    @State private var isHoveringOverArg: Bool = false
+    
     @State private var isFileSectionExpanded: Bool = true
     @State private var isWineSectionExpanded: Bool = true
     @State private var isGameSectionExpanded: Bool = true
@@ -33,12 +33,8 @@ struct GameSettingsView: View {
             Divider()
             gameSettingsForm
         }
-        .overlay(alignment: .bottom) {
-            bottomBar
-        }
-        .task(priority: .background) {
-            setDiscordPresence()
-        }
+        
+        bottomBar
     }
 }
 
@@ -342,7 +338,6 @@ private extension GameSettingsView {
             }
         }
         .disabled(game.platform != .windows)
-        .disabled(!Engine.exists)
         .onChange(of: selectedBottleURL) { game.bottleURL = $1 }
     }
 
@@ -360,15 +355,14 @@ private extension GameSettingsView {
     }
 
     func setDiscordPresence() {
-        discordRPC.setPresence(
-            {
-                var presence: RichPresence = .init()
-                presence.details = "Configuring \(game.platform?.rawValue ?? .init()) game \"\(game.title)\""
-                presence.state = "Configuring \(game.title)"
-                presence.timestamps.start = .now
-                presence.assets.largeImage = "macos_512x512_2x"
-                return presence
-            }())
+        discordRPC.setPresence({
+            var presence: RichPresence = .init()
+            presence.details = "Configuring \(game.platform?.rawValue ?? .init()) game \"\(game.title)\""
+            presence.state = "Configuring \(game.title)"
+            presence.timestamps.start = .now
+            presence.assets.largeImage = "macos_512x512_2x"
+            return presence
+        }())
     }
 }
 
@@ -376,18 +370,18 @@ struct ArgumentItem: View {
     @Binding var launchArguments: [String]
     var argument: String
 
-    @State var isHoveringOverArg: Bool = false
+    @State var isHoveringOverArgument: Bool = false
 
     var body: some View {
         HStack {
-            if isHoveringOverArg {
+            if isHoveringOverArgument {
                 Image(systemName: "xmark.bin")
                     .imageScale(.small)
             }
 
             Text(argument)
                 .monospaced()
-                .foregroundStyle(isHoveringOverArg ? .red : .secondary)
+                .foregroundStyle(isHoveringOverArgument ? .red : .secondary)
         }
         .padding(3)
         .overlay(content: {
@@ -397,7 +391,7 @@ struct ArgumentItem: View {
         })
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.3)) {
-                isHoveringOverArg = hovering
+                isHoveringOverArgument = hovering
             }
         }
         .onTapGesture {
