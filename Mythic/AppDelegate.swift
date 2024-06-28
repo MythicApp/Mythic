@@ -169,9 +169,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
     }
     
-    func applicationShouldTerminate(_: NSApplication) -> NSApplication.TerminateReply {
-        var terminateReply: NSApplication.TerminateReply = .terminateNow
-        
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()
             alert.messageText = "Are you sure you want to quit?"
@@ -180,18 +178,18 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
             
-            if let window = NSApp.windows.first {
+            if let window = sender.windows.first {
                 alert.beginSheetModal(for: window) { response in
-                    if case .alertFirstButtonReturn = response {
-                        terminateReply = .terminateNow
+                    if response == .alertFirstButtonReturn {
+                        sender.reply(toApplicationShouldTerminate: true)
                     } else {
-                        terminateReply = .terminateLater
+                        sender.reply(toApplicationShouldTerminate: false)
                     }
                 }
             }
         }
         
-        return terminateReply
+        return .terminateNow
     }
     
     func applicationWillTerminate(_: Notification) {
