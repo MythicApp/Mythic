@@ -251,7 +251,9 @@ class GameOperation: ObservableObject {
     static func advance() {
         log.debug("[operation.advance] attempting operation advancement")
         guard shared.current == nil, let first = shared.queue.first else { return }
-        shared.status = InstallStatus()
+        DispatchQueue.main.async {
+            shared.status = InstallStatus()
+        }
         log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
         DispatchQueue.main.async {
             shared.current = first; shared.queue.removeFirst()
