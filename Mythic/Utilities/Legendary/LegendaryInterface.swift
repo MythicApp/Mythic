@@ -247,9 +247,22 @@ final class Legendary {
         let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
         // swiftlint:enable force_try
         
+        var error: Error?
+        
         try await command(arguments: argBuilder, identifier: "install") { output in
-            // MARK: stderr (installation) handling
-            // TODO: ONLY APPEND RAW DATA HERE, MAY SAVE ON PERFORMANCE
+            if output.stdout.contains("Installation requirements check returned the following results:") {
+                output.stdout.enumerateLines { line, _ in
+                    if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
+                        stopCommand(identifier: "install")
+                        error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
+                        return
+                    }
+                }
+            } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
+                stopCommand(identifier: "install")
+                error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
+                return
+            }
             
             guard !output.stdout.contains("All done! Download manager quitting...") else {
                 operation.current = nil; return
@@ -299,6 +312,8 @@ final class Legendary {
                 }
             }
         }
+        
+        if error != nil { throw error! }
     }
     
     static func move(game: Mythic.Game, newPath: String) async throws {
