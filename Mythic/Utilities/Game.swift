@@ -205,7 +205,7 @@ class GameOperation: ObservableObject {
                     guard self != nil else { return }
                     do {
                         try await Legendary.install(args: GameOperation.shared.current!, priority: false)
-                        try await notifications.add(
+                        try? await notifications.add(
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
