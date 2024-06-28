@@ -174,16 +174,35 @@ private extension GameSettingsView {
             .disabled(game.type != .local)
         }
     }
+    
+    func modifyThumbnailURL() {
+        if case .local = game.type {
+            LocalGames.library?.remove(game)
+            LocalGames.library?.insert(game)
+            isThumbnailURLChangeSheetPresented = false
+        }
+    }
 
     var thumbnailURLChangeSheet: some View {
-        TextField(
-            "Enter New Thumbnail URL here...",
-            text: Binding(
-                get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
-                set: { game.imageURL = .init(string: $0) }
+        HStack {
+            TextField(
+                "Enter New Thumbnail URL here...",
+                text: Binding(
+                    get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init()
+                    },
+                    set: {
+                        game.imageURL = .init(string: $0)
+                    }
+                )
             )
-        )
-        .truncationMode(.tail)
+            .truncationMode(.tail)
+            .onSubmit {
+                modifyThumbnailURL()
+            }
+            
+            Button("Done", action: { modifyThumbnailURL() })
+                .buttonStyle(.borderedProminent)
+        }
         .padding()
     }
 
