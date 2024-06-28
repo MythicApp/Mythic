@@ -90,7 +90,7 @@ jobs:
         
         xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO -verbose
         
-        exit 1
+        exit 0
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
