@@ -94,7 +94,7 @@ struct LibraryView: View {
         
         // MARK: - Other Properties
             .sheet(isPresented: $isGameImportSheetPresented) {
-                LibraryView.GameImportView(isPresented: $isGameImportSheetPresented)
+                GameImportView(isPresented: $isGameImportSheetPresented)
                     .fixedSize()
             }
     }

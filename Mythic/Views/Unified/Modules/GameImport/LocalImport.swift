@@ -19,7 +19,7 @@ import CachedAsyncImage
 import SwordRPC
 import Shimmer
 
-extension LibraryView.GameImportView {
+extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
         
@@ -200,5 +200,5 @@ extension LibraryView.GameImportView {
 }
 
 #Preview {
-    LibraryView.GameImportView.Local(isPresented: .constant(true))
+    GameImportView.Local(isPresented: .constant(true))
 }
