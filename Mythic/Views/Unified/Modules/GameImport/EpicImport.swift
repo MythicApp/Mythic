@@ -170,7 +170,7 @@ extension GameImportView {
                                 isPresented = false
                             }
                             
-                            if let match = try? Regex(#"ERROR: (.*)"#).firstMatch(in: output.stderr) {
+                            if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
                                 isOperating = false
                                 errorDescription = .init(match[1].substring ?? "Unknown Error")
                                 isErrorAlertPresented = true
