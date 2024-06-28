@@ -4050,9 +4050,6 @@
     "Add to favorites" : {
 
     },
-    "All" : {
-
-    },
     "Are you sure you want to cancel bottle creation?" : {
       "localizations" : {
         "af" : {
@@ -17447,6 +17444,9 @@
         }
       }
     },
+    "Grid" : {
+
+    },
     "Hello, world!" : {
 
     },
@@ -22231,6 +22231,9 @@
           }
         }
       }
+    },
+    "List" : {
+
     },
     "Manage containers for Windows® applications" : {
       "localizations" : {
@@ -32378,9 +32381,6 @@
         }
       }
     },
-    "Source" : {
-
-    },
     "Status Unknown" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -34685,6 +34685,9 @@
         }
       }
     },
+    "Type" : {
+
+    },
     "Unable to boot default bottle." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -36601,6 +36604,9 @@
       }
     },
     "Verify..." : {
+
+    },
+    "View" : {
 
     },
     "View all currently signed in accounts" : {

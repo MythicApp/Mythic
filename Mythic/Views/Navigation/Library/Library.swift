@@ -50,7 +50,7 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Filter by type", systemImage: "gamecontroller", selection: $filterOptions.type) {
+                    Picker("Type", systemImage: "gamecontroller", selection: $filterOptions.type) {
                         ForEach(InclusiveGameType.allCases, id: \.self) { type in
                             Text(type.rawValue)
                         }
@@ -58,7 +58,7 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Filter by platform", systemImage: "desktopcomputer.and.arrow.down", selection: $filterOptions.platform) {
+                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $filterOptions.platform) {
                         ForEach(InclusiveGamePlatform.allCases, id: \.self) { platform in
                             Label(platform.rawValue, systemImage: {
                                 switch platform {
@@ -76,6 +76,7 @@ struct LibraryView: View {
                         Label("List", systemImage: "list.triangle").tag(true)
                         Label("Grid", systemImage: "square.grid.2x2").tag(false)
                     }
+                    .disabled(true)
                 }
             }
         

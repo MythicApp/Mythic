@@ -1,7 +1,7 @@
 import CachedAsyncImage
 import SwiftUI
 
-struct GameListRow: View {
+struct GameListRow: View { // TODO: will redo myself
     @Binding var game: Game
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
