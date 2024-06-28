@@ -24,9 +24,6 @@ struct InstallViewEvo: View {
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
     @ObservedObject var operation: GameOperation = .shared
     
-    @State private var isInstallErrorPresented: Bool = false
-    @State private var installError: Error?
-    
     var body: some View {
         Text("Install \"\(game.title)\"")
             .font(.title)
@@ -199,31 +196,10 @@ struct InstallViewEvo: View {
                                 baseURL: baseURL
                             )
                         )
-                        
-                        /*
-                        do {
-                            try await Legendary.install(
-                                game: game,
-                                platform: platform,
-                                optionalPacks: Array(selectedOptionalPacks),
-                                baseURL: baseURL
-                            )
-                            // isGameListRefreshCalled = true
-                        } catch {
-                            installError = error
-                            isInstallErrorPresented = true
-                        }
-                         */
                     }
                 }
                 .disabled(fetchingOptionalPacks)
                 .buttonStyle(.borderedProminent)
-            }
-            .alert(isPresented: $isInstallErrorPresented) {
-                Alert(
-                    title: .init("Error installing \"\(game.title)\"."),
-                    message: .init(installError?.localizedDescription ?? "Unknown Error.")
-                )
             }
         }
     }
