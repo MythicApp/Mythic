@@ -22,7 +22,6 @@ enum InclusiveGamePlatform: String, CaseIterable {
 enum InclusiveGameType: String, CaseIterable {
     case all = "All"
     case epic = "Epic"
-    case steam = "Steam"
     case local = "Local"
 }
 
