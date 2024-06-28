@@ -2129,7 +2129,6 @@
       }
     },
     "%@ %@ (%@)" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4049,6 +4048,9 @@
       }
     },
     "Add to favorites" : {
+
+    },
+    "All" : {
 
     },
     "Are you sure you want to cancel bottle creation?" : {
@@ -12463,6 +12465,9 @@
       }
     },
     "Engine (Wine)" : {
+
+    },
+    "Engine %@" : {
 
     },
     "Enhanced Sync (MSync)" : {
@@ -28358,6 +28363,7 @@
       }
     },
     "Refresh library" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
