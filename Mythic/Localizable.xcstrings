@@ -18108,6 +18108,7 @@
       }
     },
     "Error installing \"%@\"." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
