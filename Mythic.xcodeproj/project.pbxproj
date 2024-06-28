@@ -260,25 +260,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		6A2934CF2BFCFAFD0035CE4B /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				6A2934CC2BFCFAFD0035CE4B /* GameImport.swift */,
-				6A2934CB2BFCFAFD0035CE4B /* EpicImport.swift */,
-				6A2934CE2BFCFAFD0035CE4B /* LocalImport.swift */,
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		6A2934D12BFCFAFD0035CE4B /* Library */ = {
-			isa = PBXGroup;
-			children = (
-				6A2934D02BFCFAFD0035CE4B /* Library.swift */,
-				6A2934CF2BFCFAFD0035CE4B /* Extensions */,
-			);
-			path = Library;
-			sourceTree = "<group>";
-		};
 		6A2934DA2BFCFAFD0035CE4B /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,7 +267,7 @@
 				6A2934D32BFCFAFD0035CE4B /* Bottles.swift */,
 				6A2934D42BFCFAFD0035CE4B /* DownloadsViewEvo.swift */,
 				6A2934D52BFCFAFD0035CE4B /* Home.swift */,
-				6A2934D12BFCFAFD0035CE4B /* Library */,
+				6A2934D02BFCFAFD0035CE4B /* Library.swift */,
 				6A2934D62BFCFAFD0035CE4B /* Main.swift */,
 				6A2934D72BFCFAFD0035CE4B /* Settings.swift */,
 				6A2934D82BFCFAFD0035CE4B /* Store.swift */,
@@ -298,6 +279,7 @@
 		6A2934DF2BFCFAFD0035CE4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				6AB463A92C2F1682008FFA63 /* GameImport */,
 				6A0688452C2BD141004DF10F /* CircularButton.swift */,
 				6A0688432C2BCE87004DF10F /* DownloadCard.swift */,
 				6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */,
@@ -374,6 +356,16 @@
 				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		6AB463A92C2F1682008FFA63 /* GameImport */ = {
+			isa = PBXGroup;
+			children = (
+				6A2934CC2BFCFAFD0035CE4B /* GameImport.swift */,
+				6A2934CB2BFCFAFD0035CE4B /* EpicImport.swift */,
+				6A2934CE2BFCFAFD0035CE4B /* LocalImport.swift */,
+			);
+			path = GameImport;
 			sourceTree = "<group>";
 		};
 		6AB4748C2AACBBE900AB9C63 = {

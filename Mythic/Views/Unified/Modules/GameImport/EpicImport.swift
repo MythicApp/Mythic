@@ -18,7 +18,7 @@ import SwiftUI
 import SwordRPC
 import OSLog
 
-extension LibraryView.GameImportView {
+extension GameImportView {
     struct Epic: View {
         @Binding var isPresented: Bool
         @State private var errorDescription: String = .init()
@@ -229,5 +229,5 @@ extension LibraryView.GameImportView {
 }
 
 #Preview {
-    LibraryView.GameImportView.Epic(isPresented: .constant(true))
+    GameImportView.Epic(isPresented: .constant(true))
 }
