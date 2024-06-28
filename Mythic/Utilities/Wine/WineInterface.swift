@@ -286,7 +286,9 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 }
             }
             
-            if !bottleURLs.contains(url) {
+            if hasExisted {
+                bottleURLs.insert(url)
+            } else if !bottleURLs.contains(url) {
                 completion(.failure(UnableToBootError()))
                 return
             }
@@ -295,7 +297,12 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 await toggleRetinaMode(bottleURL: url, toggle: settings.retinaMode)
                 await setWindowsVersion(settings.windowsVersion, bottleURL: url)
             } else {
-                completion(.failure(BottleAlreadyExistsError()))
+                log.notice("Bottle already exists at \(url.prettyPath())")
+                if let bottle: Bottle = .init(knownURL: url) {
+                    completion(.success(bottle))
+                } else {
+                    completion(.failure(BottleAlreadyExistsError()))
+                }
             }
             
             log.notice("Successfully booted prefix \"\(name)\"")
