@@ -170,10 +170,9 @@ extension LibraryView.GameImportView {
                                 isPresented = false
                             }
                             
-                            let commandError = output.stderr.trimmingPrefix("ERROR: ")
-                            if !commandError.isEmpty {
+                            if let match = try? Regex(#"ERROR: (.*)"#).firstMatch(in: output.stderr) {
                                 isOperating = false
-                                errorDescription = .init(commandError)
+                                errorDescription = .init(match[1].substring ?? "Unknown Error")
                                 isErrorAlertPresented = true
                             }
                             
