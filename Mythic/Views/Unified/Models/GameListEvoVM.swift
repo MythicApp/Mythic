@@ -1,10 +1,35 @@
 import Foundation
 import SwiftUI
 
+// temporarily moved during refactor
+struct GameListFilterOptions {
+    var showInstalled: Bool = false
+    var platform: InclusiveGamePlatform = .all
+    var type: InclusiveGameType = .all
+}
+
+enum ViewStyle: String, CaseIterable { // TODO: replace isGameListLayoutEnabled
+    case grid = "Grid"
+    case list = "List"
+}
+
+enum InclusiveGamePlatform: String, CaseIterable {
+    case all = "All"
+    case mac = "macOS"
+    case windows = "Windows®"
+}
+
+enum InclusiveGameType: String, CaseIterable {
+    case all = "All"
+    case epic = "Epic"
+    case steam = "Steam"
+    case local = "Local"
+}
+
 @Observable final class GameListVM {
     var searchString: String = ""
     var refresh: Bool = false
-    var filterOptions: FilterOptions = .init()
+    var filterOptions: GameListFilterOptions = .init()
     var games: [Game] = []
     
     init() {
@@ -14,12 +39,10 @@ import SwiftUI
     func debouncedUpdateGames() {
         debounceTask?.cancel()
         debounceTask = Task { @MainActor in
-            do {
-                try await Task.sleep(for: .seconds(0.3))
-                if !Task.isCancelled {
-                    updateGames()
-                }
-            } catch {}
+            try? await Task.sleep(for: .seconds(0.3))
+            if !Task.isCancelled {
+                updateGames()
+            }
         }
     }
     
@@ -37,7 +60,7 @@ private extension GameListVM {
             let matchesSearch = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
             let matchesInstalled = !filterOptions.showInstalled || isGameInstalled(game)
             let matchesPlatform = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
-            let matchesSource = filterOptions.source == .all || game.type.rawValue == filterOptions.source.rawValue
+            let matchesSource = filterOptions.type == .all || game.type.rawValue == filterOptions.type.rawValue
             
             return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
         }

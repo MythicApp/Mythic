@@ -2,30 +2,11 @@ import Foundation
 import SwiftUI
 
 struct GameListEvo: View {
-    @State private var searchString: String = .init()
-    @State private var refresh: Bool = false
-    @State private var isGameImportViewPresented: Bool = false
-    @State private var filterOptions: FilterOptions = .init()
+    @Binding var filterOptions: GameListFilterOptions
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
-
-    struct FilterOptions {
-        var showInstalled: Bool = false
-        var platform: Platform = .all
-        var source: GameSource = .all
-    }
     
-    enum Platform: String, CaseIterable {
-        case all = "All"
-        case mac = "macOS"
-        case windows = "Windows®"
-    }
-    
-    enum GameSource: String, CaseIterable {
-        case all = "All"
-        case epic = "Epic"
-        case steam = "Steam"
-        case local = "Local"
-    }
+    @State private var searchString: String = .init()
+    @State private var isGameImportViewPresented: Bool = false
     
     private var games: [Game] {
         let filteredGames = filterGames(unifiedGames)
@@ -37,7 +18,7 @@ struct GameListEvo: View {
             let matchesSearch = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
             let matchesInstalled = !filterOptions.showInstalled || isGameInstalled(game)
             let matchesPlatform = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
-            let matchesSource = filterOptions.source == .all || game.type.rawValue == filterOptions.source.rawValue
+            let matchesSource = filterOptions.type == .all || game.type.rawValue == filterOptions.type.rawValue
             
             return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
         }
@@ -66,28 +47,7 @@ struct GameListEvo: View {
     
     var body: some View {
         VStack {
-            filterBar
-            
-            if !unifiedGames.isEmpty {
-                if isListLayoutEnabled {
-                    List {
-                        ForEach(games) { game in
-                            GameListRow(game: .constant(game))
-                        }
-                    }
-                    .searchable(text: $searchString, placement: .toolbar)
-                } else {
-                    ScrollView(.horizontal) {
-                        LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
-                            ForEach(games) { game in
-                                GameCard(game: .constant(game))
-                                    .padding([.leading, .vertical])
-                            }
-                        }
-                        .searchable(text: $searchString, placement: .toolbar)
-                    }
-                }
-            } else {
+            if unifiedGames.isEmpty {
                 Text("No games can be shown.")
                     .font(.bold(.title)())
                 Button {
@@ -100,39 +60,29 @@ struct GameListEvo: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     LibraryView.GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            }
-        }
-    }
-    
-    private var filterBar: some View {
-        HStack {
-            Toggle("Installed", isOn: $filterOptions.showInstalled)
-            
-            Picker("Platform", selection: $filterOptions.platform) {
-                ForEach(Platform.allCases, id: \.self) { platform in
-                    Text(platform.rawValue).tag(platform)
+            } else if isListLayoutEnabled {
+                List {
+                    ForEach(games) { game in
+                        GameListRow(game: .constant(game))
+                    }
+                }
+                .searchable(text: $searchString, placement: .toolbar)
+            } else {
+                ScrollView(.horizontal) {
+                    LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                        ForEach(games) { game in
+                            GameCard(game: .constant(game))
+                                .padding([.leading, .vertical])
+                        }
+                    }
+                    .searchable(text: $searchString, placement: .toolbar)
                 }
             }
-            
-            Picker("Source", selection: $filterOptions.source) {
-                ForEach(GameSource.allCases, id: \.self) { source in
-                    Text(source.rawValue).tag(source)
-                }
-            }
-            
-            Spacer()
-            
-            Button {
-                isListLayoutEnabled.toggle()
-            } label: {
-                Image(systemName: isListLayoutEnabled ? "square.grid.2x2" : "list.bullet")
-            }
         }
-        .padding()
     }
 }
 
 #Preview {
-    GameListEvo()
+    GameListEvo(filterOptions: .constant(.init()))
         .environmentObject(NetworkMonitor())
 }
