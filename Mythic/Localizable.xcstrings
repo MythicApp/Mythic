@@ -47796,6 +47796,9 @@
         }
       }
     },
+    "Unable to proceed with installation." : {
+
+    },
     "Unable to uninstall \"%@\"." : {
       "localizations" : {
         "af" : {
