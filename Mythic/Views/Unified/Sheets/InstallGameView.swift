@@ -21,6 +21,9 @@ struct InstallViewEvo: View {
     @State private var supportedPlatforms: [GamePlatform]?
     @State var platform: GamePlatform = .macOS
     
+    @State private var isInstallationErrorPresented: Bool = false
+    @State private var installationError: Error?
+    
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
     @ObservedObject var operation: GameOperation = .shared
     
@@ -31,12 +34,25 @@ struct InstallViewEvo: View {
                 fetchingOptionalPacks = true
                 
                 try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output in
+                    
+                    if output.stdout.contains("Installation requirements check returned the following results:") {
+                        if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
+                            Legendary.stopCommand(identifier: "install")
+                            installationError = Legendary.InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
+                            isInstallationErrorPresented = true
+                            return
+                        }
+                    }
+                    
                     if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
                         Legendary.runningCommands["parseOptionalPacks"]?.terminate(); return
                     }
                     
+                    print("\noptipacks stdout interation \(output.stdout)\n")
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
+                        print("optipacks found")
                         output.stdout.enumerateLines { line, _ in
+                            print("optipack enum \(line)")
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
                                 optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
                             }
@@ -51,6 +67,13 @@ struct InstallViewEvo: View {
                 }
                 
                 fetchingOptionalPacks = false
+            }
+            .alert(isPresented: $isInstallationErrorPresented) {
+                Alert(
+                    title: .init("Unable to proceed with installation."),
+                    message: .init(installationError?.localizedDescription ?? "Unknown error."),
+                    dismissButton: .default(Text("OK"))
+                )
             }
         
         if operation.current != nil {
@@ -200,6 +223,7 @@ struct InstallViewEvo: View {
                 }
                 .disabled(fetchingOptionalPacks)
                 .buttonStyle(.borderedProminent)
+                .disabled(installationError != nil)
             }
         }
     }
