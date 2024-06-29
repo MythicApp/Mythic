@@ -100,7 +100,7 @@ final class Legendary {
         
         task.qualityOfService = .userInitiated
         
-        let output: CommandOutput = .init()
+        let output: CommandOutput = .init() // weakly captured output tends to deallocate prematurely
         
         stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
@@ -111,7 +111,7 @@ final class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stderr = availableOutput
-            completion(output) // ⚠️ FIXME: critical performance issues
+            completion(output)
         }
         
         stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
@@ -123,7 +123,7 @@ final class Legendary {
                 stdin.fileHandleForWriting.write(data)
             }
             output.stdout = availableOutput
-            completion(output) // ⚠️ FIXME: critical performance issues
+            completion(output)
         }
         
         task.terminationHandler = { _ in
@@ -250,22 +250,20 @@ final class Legendary {
         var error: Error?
         
         try await command(arguments: argBuilder, identifier: "install") { output in
-            if output.stdout.contains("Installation requirements check returned the following results:") {
-                output.stdout.enumerateLines { line, _ in
-                    if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                        stopCommand(identifier: "install")
-                        error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
-                        return
-                    }
-                }
-            } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
+            guard !output.stdout.contains("All done! Download manager quitting...") else {
+                operation.current = nil; return
+            }
+            
+            if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
                 stopCommand(identifier: "install")
                 error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
                 return
             }
             
-            guard !output.stdout.contains("All done! Download manager quitting...") else {
-                operation.current = nil; return
+            if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
+                stopCommand(identifier: "install")
+                error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
+                return
             }
             
             if let match = try? progressRegex.firstMatch(in: output.stderr) {
