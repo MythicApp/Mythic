@@ -12,14 +12,20 @@ struct UninstallViewEvo: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
     
-    @State private var keepFiles: Bool = false
-    @State private var skipUninstaller: Bool = false
+    @State private var deleteFiles: Bool = true
+    @State private var runUninstaller: Bool
     @State private var isConfirmationPresented: Bool = false
     
     @State var uninstalling: Bool = false
     
     @State private var isUninstallationErrorPresented: Bool = false
     @State private var uninstallationErrorReason: String?
+    
+    init(game: Binding<Game>, isPresented: Binding<Bool>) {
+        self._game = game
+        self._isPresented = isPresented
+        self.runUninstaller = (game.wrappedValue.type != .local)
+    }
     
     var body: some View {
         VStack {
@@ -28,15 +34,15 @@ struct UninstallViewEvo: View {
             
             Form {
                 HStack {
-                    Toggle(isOn: $keepFiles) {
-                        Text("Don't delete the game files (Delete it from Mythic only)")
+                    Toggle(isOn: $deleteFiles) {
+                        Text("Remove game files")
                     }
                     Spacer()
                 }
                 
                 HStack {
-                    Toggle(isOn: $skipUninstaller) {
-                        Text("Don't run uninstaller (If applicable)")
+                    Toggle(isOn: $runUninstaller) {
+                        Text("Run specialised uninstaller (If applicable)")
                     }
                     .disabled(game.type == .local)
                     Spacer()
@@ -80,8 +86,8 @@ struct UninstallViewEvo: View {
                                     do {
                                         try await Legendary.command(arguments: [
                                             "-y", "uninstall",
-                                            keepFiles ? "--keep-files" : nil,
-                                            skipUninstaller ? "--skip-uninstaller" : nil,
+                                            deleteFiles ? nil : "--keep-files",
+                                            runUninstaller ? nil : "--skip-uninstaller",
                                             game.id
                                         ] .compactMap { $0 }, identifier: "uninstall") { output in
                                             guard output.stderr.contains("ERROR:") else { return }
@@ -106,7 +112,7 @@ struct UninstallViewEvo: View {
                                 do {
                                     guard let gamePath = game.path else { throw FileLocations.FileDoesNotExistError(.init(filePath: game.path ?? .init())) }
                                     uninstalling = true
-                                    if !keepFiles { try files.removeItem(atPath: gamePath) }
+                                    if deleteFiles { try files.removeItem(atPath: gamePath) }
                                     LocalGames.library?.remove(game)
                                     uninstalling = false
                                     isPresented = false

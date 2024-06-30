@@ -14304,6 +14304,7 @@
       }
     },
     "Don't delete the game files (Delete it from Mythic only)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -14494,6 +14495,7 @@
       }
     },
     "Don't run uninstaller (If applicable)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -38661,6 +38663,9 @@
         }
       }
     },
+    "Remove game files" : {
+
+    },
     "Remove Mythic Engine" : {
       "localizations" : {
         "af" : {
@@ -40941,6 +40946,9 @@
           }
         }
       }
+    },
+    "Run specialised uninstaller (If applicable)" : {
+
     },
     "Search" : {
       "extractionState" : "stale",
