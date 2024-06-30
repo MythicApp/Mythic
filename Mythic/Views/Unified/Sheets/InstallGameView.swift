@@ -48,7 +48,6 @@ struct InstallViewEvo: View {
                         Legendary.runningCommands["parseOptionalPacks"]?.terminate(); return
                     }
                     
-                    print("\noptipacks stdout interation \(output.stdout)\n")
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
                         print("optipacks found")
                         output.stdout.enumerateLines { line, _ in
@@ -72,7 +71,9 @@ struct InstallViewEvo: View {
                 Alert(
                     title: .init("Unable to proceed with installation."),
                     message: .init(installationError?.localizedDescription ?? "Unknown error."),
-                    dismissButton: .default(Text("OK"))
+                    dismissButton: .default(.init("OK")) {
+                        isPresented = false
+                    }
                 )
             }
         
