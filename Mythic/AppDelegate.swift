@@ -32,6 +32,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: Bottle cleanup in the event of external deletion
         Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
         
+        // MARK: Refresh legendary metadata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
+        }
+        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {

@@ -532,10 +532,6 @@ final class Legendary {
         
         let metadata = "\(configLocation)/metadata"
         
-        Task(priority: .utility) {
-            try? await command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-        }
-        
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
             return .init(type: .epic, title: json["app_title"].stringValue, id: json["app_name"].stringValue)
