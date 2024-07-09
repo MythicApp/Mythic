@@ -231,5 +231,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(.init(type: .local, title: .init())), isPresented: .constant(true))
+    InstallViewEvo(game: .constant(.init(source: .local, title: .init())), isPresented: .constant(true))
 }

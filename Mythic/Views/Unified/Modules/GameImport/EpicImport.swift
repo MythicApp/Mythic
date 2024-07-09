@@ -25,7 +25,7 @@ extension GameImportView {
         @State private var isErrorAlertPresented = false
         
         @State private var installableGames: [Game] = .init()
-        @State private var game: Game = .init(type: .epic, title: .init())
+        @State private var game: Game = .init(source: .epic, title: .init())
         @State private var path: String = .init()
         @State private var platform: Game.Platform = .macOS
         

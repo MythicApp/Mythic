@@ -24,8 +24,8 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Initializer
-    init(type: Source, title: String, id: String? = nil, platform: Platform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
-        self.type = type
+    init(source: Source, title: String, id: String? = nil, platform: Platform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
+        self.source = source
         self.title = title
         self.id = id ?? UUID().uuidString
         self.platform = platform
@@ -35,31 +35,31 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Mutables
-    var type: Source
+    var source: Source
     var title: String
     var id: String
     
     private var _platform: Platform?
     var platform: Platform? {
-        get { return _platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
+        get { return _platform ?? (self.source == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
         set { _platform = newValue }
     }
     
     private var _imageURL: URL?
     var imageURL: URL? {
-        get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
         set { _imageURL = newValue }
     }
     
     private var _wideImageURL: URL?
     var wideImageURL: URL? {
-        get { _imageURL ?? (self.type == .epic ? .init(string: Legendary.getImage(of: self, type: .normal)) : nil) }
+        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .normal)) : nil) }
         set { _imageURL = newValue }
     }
 
     private var _path: String?
     var path: String? {
-        get { _path ?? (self.type == .epic ? try? Legendary.getGamePath(game: self) : nil) }
+        get { _path ?? (self.source == .epic ? try? Legendary.getGamePath(game: self) : nil) }
         set { _path = newValue }
     }
     
@@ -108,7 +108,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     var isInstalled: Bool {
-        switch self.type {
+        switch self.source {
         case .epic:
             let games = try? Legendary.getInstalledGames()
             return games?.contains(self) == true
@@ -119,7 +119,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     
     // MARK: Functions
     func move(to newLocation: URL) async throws {
-        switch type {
+        switch source {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
             path = try! Legendary.getGamePath(game: self) // swiftlint:disable:this force_try
@@ -196,7 +196,7 @@ class GameOperation: ObservableObject {
         didSet {
             // @ObservedObject var operation: GameOperation = .shared
             guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
-            switch GameOperation.shared.current!.game.type {
+            switch GameOperation.shared.current!.game.source {
             case .epic:
                 Task(priority: .high) { [weak self] in
                     guard self != nil else { return }

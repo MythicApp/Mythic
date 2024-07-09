@@ -79,7 +79,7 @@ struct DownloadCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.system(style == .normal ? .title : .largeTitle, weight: .bold))
-                            SubscriptedTextView(game.type.rawValue)
+                            SubscriptedTextView(game.source.rawValue)
                             Spacer()
                         }
                         

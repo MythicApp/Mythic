@@ -5,7 +5,7 @@ import SwiftUI
 struct GameListFilterOptions {
     var showInstalled: Bool = false
     var platform: InclusiveGamePlatform = .all
-    var type: InclusiveGameType = .all
+    var source: InclusiveGameSource = .all
 }
 
 enum ViewStyle: String, CaseIterable { // TODO: replace isGameListLayoutEnabled
@@ -19,7 +19,7 @@ enum InclusiveGamePlatform: String, CaseIterable {
     case windows = "Windows®"
 }
 
-enum InclusiveGameType: String, CaseIterable {
+enum InclusiveGameSource: String, CaseIterable {
     case all = "All"
     case epic = "Epic"
     case local = "Local"
@@ -59,7 +59,7 @@ private extension GameListVM {
             let matchesSearch = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
             let matchesInstalled = !filterOptions.showInstalled || isGameInstalled(game)
             let matchesPlatform = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
-            let matchesSource = filterOptions.type == .all || game.type.rawValue == filterOptions.type.rawValue
+            let matchesSource = filterOptions.source == .all || game.source.rawValue == filterOptions.source.rawValue
             
             return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
         }

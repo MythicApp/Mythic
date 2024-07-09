@@ -20,7 +20,7 @@ import OSLog
 struct GameImportView: View {
     @Binding var isPresented: Bool
     
-    @State private var type: Game.Source = .epic
+    @State private var source: Game.Source = .epic
     
     // MARK: - Body
     var body: some View {
@@ -29,15 +29,15 @@ struct GameImportView: View {
                 .font(.title)
                 .multilineTextAlignment(.leading)
             
-            Picker(String(), selection: $type) {
-                ForEach(Swift.type(of: type).allCases, id: \.self) {
+            Picker(String(), selection: $source) {
+                ForEach(Swift.type(of: source).allCases, id: \.self) {
                     Text($0.rawValue)
                 }
             }
             .pickerStyle(.segmented)
             
             // MARK: - Import Epic (Legendary) Games
-            switch type {
+            switch source {
             case .epic:
                 GameImportView.Epic(isPresented: $isPresented)
             case .local:
