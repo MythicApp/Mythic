@@ -20,7 +20,7 @@ import OSLog
 struct GameImportView: View {
     @Binding var isPresented: Bool
     
-    @State private var type: GameType = .epic
+    @State private var type: GameSource = .epic
     
     // MARK: - Body
     var body: some View {
