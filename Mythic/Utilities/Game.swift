@@ -12,20 +12,6 @@ import UserNotifications
 import SwordRPC
 import SwiftUI
 
-// TODO: Move enums into `Game` class
-
-/// Enumeration containing the two different game platforms available.
-enum GamePlatform: String, CaseIterable, Codable, Hashable {
-    case macOS = "macOS"
-    case windows = "Windows®"
-}
-
-/// Enumeration containing all available game types.
-enum GameSource: String, CaseIterable, Codable, Hashable {
-    case epic = "Epic"
-    case local = "Local"
-}
-
 class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     // MARK: Stubs
     static func == (lhs: Game, rhs: Game) -> Bool {
@@ -38,7 +24,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Initializer
-    init(type: GameSource, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
+    init(type: Source, title: String, id: String? = nil, platform: Platform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
         self.type = type
         self.title = title
         self.id = id ?? UUID().uuidString
@@ -49,12 +35,12 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Mutables
-    var type: GameSource
+    var type: Source
     var title: String
     var id: String
     
-    private var _platform: GamePlatform?
-    var platform: GamePlatform? {
+    private var _platform: Platform?
+    var platform: Platform? {
         get { return _platform ?? (self.type == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
         set { _platform = newValue }
     }
@@ -146,6 +132,18 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
                 }
             }
         }
+    }
+    
+    /// Enumeration containing the two different game platforms available.
+    enum Platform: String, CaseIterable, Codable, Hashable {
+        case macOS = "macOS"
+        case windows = "Windows®"
+    }
+
+    /// Enumeration containing all available game types.
+    enum Source: String, CaseIterable, Codable, Hashable {
+        case epic = "Epic"
+        case local = "Local"
     }
 }
 
@@ -325,7 +323,7 @@ class GameOperation: ObservableObject {
     
     struct InstallArguments: Equatable, Hashable {
         var game: Mythic.Game,
-            platform: GamePlatform,
+            platform: Mythic.Game.Platform,
             type: GameModificationType,
             // swiftlint:disable redundant_optional_initialization
             optionalPacks: [String]? = nil,
