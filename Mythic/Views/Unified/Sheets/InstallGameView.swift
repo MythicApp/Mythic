@@ -18,8 +18,8 @@ struct InstallViewEvo: View {
     
     @State var installSize: Double?
     
-    @State private var supportedPlatforms: [GamePlatform]?
-    @State var platform: GamePlatform = .macOS
+    @State private var supportedPlatforms: [Game.Platform]?
+    @State var platform: Game.Platform = .macOS
     
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?

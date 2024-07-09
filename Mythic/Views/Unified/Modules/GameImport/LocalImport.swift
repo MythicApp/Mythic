@@ -25,7 +25,7 @@ extension GameImportView {
         
         @State private var game: Game = .init(type: .local, title: .init())
         @State private var title: String = .init()
-        @State private var platform: GamePlatform = .macOS
+        @State private var platform: Game.Platform = .macOS
         @State private var path: String = .init()
         
         var body: some View {

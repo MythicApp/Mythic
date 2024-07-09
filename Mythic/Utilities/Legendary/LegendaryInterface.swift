@@ -182,7 +182,7 @@ final class Legendary {
      */
     static func install(
         game: Mythic.Game,
-        platform: GamePlatform,
+        platform: Mythic.Game.Platform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
         baseURL: URL? = defaults.url(forKey: "installBaseURL"),
@@ -401,7 +401,7 @@ final class Legendary {
      - Throws: `UnableToGetPlatformError` if the platform is not "Mac" or "Windows".
      - Returns: The platform of the game as a `Platform` enum.
      */
-    static func getGamePlatform(game: Mythic.Game) throws -> GamePlatform {
+    static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform {
         guard game.type == .epic else { throw IsNotLegendaryError() }
         
         let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.id]["platform"].string
