@@ -147,7 +147,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         }
     }
     
-    func signIn(type: GameType) {
+    func signIn(type: GameSource) {
         switch type {
         case .epic:
             Task(priority: .userInitiated) {

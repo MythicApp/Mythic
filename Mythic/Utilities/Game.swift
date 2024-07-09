@@ -13,7 +13,6 @@ import SwordRPC
 import SwiftUI
 
 // TODO: Move enums into `Game` class
-// TODO: Rename GameType to GameSource
 
 /// Enumeration containing the two different game platforms available.
 enum GamePlatform: String, CaseIterable, Codable, Hashable {
@@ -22,7 +21,7 @@ enum GamePlatform: String, CaseIterable, Codable, Hashable {
 }
 
 /// Enumeration containing all available game types.
-enum GameType: String, CaseIterable, Codable, Hashable {
+enum GameSource: String, CaseIterable, Codable, Hashable {
     case epic = "Epic"
     case local = "Local"
 }
@@ -39,7 +38,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Initializer
-    init(type: GameType, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
+    init(type: GameSource, title: String, id: String? = nil, platform: GamePlatform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
         self.type = type
         self.title = title
         self.id = id ?? UUID().uuidString
@@ -50,7 +49,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Mutables
-    var type: GameType
+    var type: GameSource
     var title: String
     var id: String
     
