@@ -48,12 +48,12 @@ private extension GameListRow {
         VStack(alignment: .leading) {
             Text(game.title)
                 .font(.headline)
-            Text(game.type.rawValue)
+            Text(game.source.rawValue)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Game: \(game.title), Type: \(game.type.rawValue)")
+        .accessibilityLabel("Game: \(game.title), Type: \(game.source.rawValue)")
     }
 
     var actionButtons: some View {
@@ -117,7 +117,7 @@ private extension GameListRow {
     }
 
     var isGameInstalled: Bool {
-        game.type == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game)
+        game.source == .local || ((try? Legendary.getInstalledGames()) ?? .init()).contains(game)
     }
 
     var isGamePlayable: Bool {
@@ -128,7 +128,7 @@ private extension GameListRow {
     func launchGame() {
         Task(priority: .userInitiated) {
             do {
-                switch game.type {
+                switch game.source {
                 case .epic:
                     try await Legendary.launch(game: game)
                 case .local:
@@ -153,7 +153,7 @@ private extension GameListRow {
     GameListRow(
         game: .constant(
             .init(
-                type: .epic,
+                source: .epic,
                 title: "firtbite;",
                 wideImageURL: .init(
                     string: "https://i.imgur.com/CZt2F4s.png"

@@ -72,7 +72,7 @@ private extension GameSettingsView {
 
     var emptyThumbnailPlaceholder: some View {
         Group {
-            if case .local = game.type, game.imageURL == nil {
+            if case .local = game.source, game.imageURL == nil {
                 localGameIcon
             } else {
                 shimmeringPlaceholder
@@ -171,12 +171,12 @@ private extension GameSettingsView {
             .sheet(isPresented: $isThumbnailURLChangeSheetPresented) {
                 thumbnailURLChangeSheet
             }
-            .disabled(game.type != .local)
+            .disabled(game.source != .local)
         }
     }
     
     func modifyThumbnailURL() {
-        if case .local = game.type {
+        if case .local = game.source {
             LocalGames.library?.remove(game)
             LocalGames.library?.insert(game)
             isThumbnailURLChangeSheetPresented = false
@@ -363,7 +363,7 @@ private extension GameSettingsView {
     var bottomBar: some View {
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
-            SubscriptedTextView(game.type.rawValue)
+            SubscriptedTextView(game.source.rawValue)
             if (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) == game {
                 SubscriptedTextView("Recent")
             }
@@ -422,5 +422,5 @@ struct ArgumentItem: View {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(.init(type: .epic, title: .init())), isPresented: .constant(true))
+    GameSettingsView(game: .constant(.init(source: .epic, title: .init())), isPresented: .constant(true))
 }

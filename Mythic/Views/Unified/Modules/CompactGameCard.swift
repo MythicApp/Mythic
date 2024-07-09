@@ -35,7 +35,7 @@ struct CompactGameCard: View {
                 CachedAsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
                     switch phase {
                     case .empty:
-                        if case .local = game.type, game.imageURL == nil {
+                        if case .local = game.source, game.imageURL == nil {
                             let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
                             
                             image
@@ -88,7 +88,7 @@ struct CompactGameCard: View {
                             Button {
                                 Task(priority: .userInitiated) {
                                     do {
-                                        switch game.type {
+                                        switch game.source {
                                         case .epic:
                                             try await Legendary.launch(game: game)
                                         case .local:
@@ -133,6 +133,6 @@ struct CompactGameCard: View {
 }
 
 #Preview {
-    CompactGameCard(game: .constant(.init(type: .epic, title: "test", wideImageURL: .init(string: "https://i.imgur.com/CZt2F4s.png"))))
+    CompactGameCard(game: .constant(.init(source: .epic, title: "test", wideImageURL: .init(string: "https://i.imgur.com/CZt2F4s.png"))))
         .padding()
 }

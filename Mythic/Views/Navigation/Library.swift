@@ -50,9 +50,9 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Type", systemImage: "gamecontroller", selection: $filterOptions.type) {
-                        ForEach(InclusiveGameType.allCases, id: \.self) { type in
-                            Text(type.rawValue)
+                    Picker("Source", systemImage: "gamecontroller", selection: $filterOptions.source) {
+                        ForEach(InclusiveGameSource.allCases, id: \.self) { source in
+                            Text(source.rawValue)
                         }
                     }
                 }
