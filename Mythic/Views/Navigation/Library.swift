@@ -73,10 +73,15 @@ struct LibraryView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
-                        Label("List", systemImage: "list.triangle").tag(true)
-                        Label("Grid", systemImage: "square.grid.2x2").tag(false)
+                        Label("List", systemImage: "list.triangle")
+                            .tag(true)
+                        
+                        Label("Grid", systemImage: "square.grid.2x2")
+                            .tag(false)
                     }
+#if !DEBUG
                     .disabled(true)
+#endif
                 }
             }
         
