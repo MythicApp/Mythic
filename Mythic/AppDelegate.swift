@@ -174,6 +174,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
     }
     
+    func applicationDidBecomeActive(_: Notification) {
+        _ = discordRPC.connect()
+    }
+    
+    func applicationDidResignActive(_: Notification) {
+        discordRPC.disconnect()
+    }
+    
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()
@@ -217,7 +225,7 @@ extension AppDelegate: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {
         rpc.setPresence({
             var presence: RichPresence = .init()
-            presence.details = "Just launched Mythic"
+            presence.details = "Idling in Mythic"
             presence.state = "Idle"
             presence.timestamps.start = .now
             presence.assets.largeImage = "macos_512x512_2x"

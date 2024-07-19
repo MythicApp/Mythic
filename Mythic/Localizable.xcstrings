@@ -43233,6 +43233,9 @@
         }
       }
     },
+    "Source" : {
+
+    },
     "Status Unknown" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -46847,6 +46850,7 @@
       }
     },
     "Type" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
