@@ -35,6 +35,9 @@ struct SettingsView: View {
     @State private var isShaderCachePurgeSuccessful: Bool?
     @State private var isEngineRemovalSuccessful: Bool?
     @State private var isCleanupSuccessful: Bool?
+    @State private var isEpicCloudSyncSuccessful: Bool?
+    
+    @State private var isEpicCloudSynchronising: Bool = false
     
     @State private var isEngineRemovalAlertPresented: Bool = false
     @State private var isResetAlertPresented: Bool = false
@@ -147,14 +150,16 @@ struct SettingsView: View {
                 
             }
             
-            Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
+            Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
                     Button {
-                        do {
-                            try Wine.killAll()
-                            isForceQuitSuccessful = true
-                        } catch {
-                            isForceQuitSuccessful = false
+                        withAnimation {
+                            do {
+                                try Wine.killAll()
+                                isForceQuitSuccessful = true
+                            } catch {
+                                isForceQuitSuccessful = false
+                            }
                         }
                     } label: {
                         Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
@@ -167,7 +172,9 @@ struct SettingsView: View {
                 
                 HStack {
                     Button {
-                        isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                        withAnimation {
+                            isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                        }
                     } label: {
                         Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
                     }
@@ -188,11 +195,13 @@ struct SettingsView: View {
                             title: .init("Are you sure you want to remove Mythic Engine?"),
                             message: .init("It'll have to be reinstalled in order to play Windows® games."),
                             primaryButton: .destructive(.init("Remove")) {
-                                do {
-                                    try Engine.remove()
-                                    isEngineRemovalSuccessful = true
-                                } catch {
-                                    isEngineRemovalSuccessful = false
+                                withAnimation {
+                                    do {
+                                        try Engine.remove()
+                                        isEngineRemovalSuccessful = true
+                                    } catch {
+                                        isEngineRemovalSuccessful = false
+                                    }
                                 }
                             },
                             secondaryButton: .cancel()
@@ -212,7 +221,9 @@ struct SettingsView: View {
                     Button {
                         Task {
                             try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output in
-                                isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                                withAnimation {
+                                    isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
+                                }
                             }
                         }
                     } label: {
@@ -221,6 +232,38 @@ struct SettingsView: View {
                     
                     if isCleanupSuccessful != nil {
                         Image(systemName: isCleanupSuccessful! ? "checkmark" : "xmark")
+                    }
+                }
+                
+                HStack {
+                    Button {
+                        Task {
+                            withAnimation {
+                                isEpicCloudSynchronising = true
+                            }
+                            
+                            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { output in // TODO: turn into Legendary function
+                                if (try? Regex(#"Got [0-9]+ remote save game"#).firstMatch(in: output.stderr)) != nil {
+                                    withAnimation {
+                                        isEpicCloudSyncSuccessful = true
+                                    }
+                                }
+                            }
+                            
+                            withAnimation {
+                                isEpicCloudSyncSuccessful = (isEpicCloudSyncSuccessful == true)
+                                isEpicCloudSynchronising = false
+                            }
+                        }
+                    } label: {
+                        Label("Manually Synchronise Cloud Saves", systemImage: "arrow.triangle.2.circlepath")
+                    }
+                    
+                    if isEpicCloudSynchronising {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else if isEpicCloudSyncSuccessful != nil {
+                        Image(systemName: isEpicCloudSyncSuccessful! ? "checkmark" : "xmark")
                     }
                 }
             }
