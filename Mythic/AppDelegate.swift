@@ -129,10 +129,16 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if Engine.needsUpdate() == true {
+        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
             let alert = NSAlert()
-            alert.messageText = "Time for an update!"
-            alert.informativeText = "A new Mythic Engine update has released."
+            if let currentEngineVersion = Engine.version,
+               let latestEngineVersion = Engine.fetchLatestVersion() {
+                alert.messageText = "Update available. (\(currentEngineVersion) → \(latestEngineVersion))"
+            } else {
+                alert.messageText = "Update available."
+            }
+            
+            alert.informativeText = "A new version of Mythic Engine has released. You're currently using \(Engine.version?.description ?? "an unknown version")."
             alert.addButton(withTitle: "Update")
             alert.addButton(withTitle: "Cancel")
             

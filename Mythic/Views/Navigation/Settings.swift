@@ -21,7 +21,7 @@ struct SettingsView: View {
     @State private var isEpicSectionExpanded: Bool = true
     @State private var isMythicSectionExpanded: Bool = true
     @State private var isDefaultBottleSectionExpanded: Bool = true
-    @State private var isUpdaterSettingsExpanded: Bool = true
+    @State private var isUpdateSettingsExpanded: Bool = true
     
     @EnvironmentObject var sparkle: SparkleController
 
@@ -29,6 +29,7 @@ struct SettingsView: View {
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     @AppStorage("discordRPC") private var rpc: Bool = true
+    @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -224,15 +225,20 @@ struct SettingsView: View {
                 }
             }
             
-            Section("Updates", isExpanded: $isUpdaterSettingsExpanded) {
-                Toggle("Automatically check for app updates", isOn: Binding(
+            Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
+                Toggle("Automatically check for Mythic updates", isOn: Binding(
                     get: { sparkle.updater.automaticallyChecksForUpdates },
                     set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
                 ))
                 
-                Toggle("Automatically download app updates", isOn: Binding(
+                Toggle("Automatically download Mythic updates", isOn: Binding(
                     get: { sparkle.updater.automaticallyDownloadsUpdates },
                     set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
+                ))
+                
+                Toggle("Automatically check for Mythic Engine updates", isOn: Binding(
+                    get: { sparkle.updater.automaticallyChecksForUpdates },
+                    set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
                 ))
             }
             

@@ -7833,6 +7833,7 @@
       }
     },
     "Automatically check for app updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8021,6 +8022,12 @@
           }
         }
       }
+    },
+    "Automatically check for Mythic Engine updates" : {
+
+    },
+    "Automatically check for Mythic updates" : {
+
     },
     "Automatically check for updates" : {
       "extractionState" : "stale",
@@ -8214,6 +8221,7 @@
       }
     },
     "Automatically download app updates" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8402,6 +8410,9 @@
           }
         }
       }
+    },
+    "Automatically download Mythic updates" : {
+
     },
     "Automatically download updates" : {
       "extractionState" : "stale",
