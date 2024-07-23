@@ -37,6 +37,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
         }
         
+        // MARK: Autosync Epic savedata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
+        }
+        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
