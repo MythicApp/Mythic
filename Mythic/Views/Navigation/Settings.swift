@@ -212,6 +212,9 @@ struct SettingsView: View {
                         Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
                     }
                 }
+                
+                Text("Version \(Engine.version?.description ?? "Unknown")")
+                    .foregroundStyle(.placeholder)
             }
             .disabled(!Engine.exists)
             .help(Engine.exists ? "Mythic Engine is not installed." : .init())
@@ -266,6 +269,8 @@ struct SettingsView: View {
                         Image(systemName: isEpicCloudSyncSuccessful! ? "checkmark" : "xmark")
                     }
                 }
+                
+                // TODO: potenially add manual cloud save deletion
             }
             
             Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
