@@ -12,7 +12,7 @@ extension LocalGames {
     struct Game: Codable {
         var title: String
         var imageURL: URL?
-        var platform: GamePlatform
+        var platform: Mythic.Game.Platform
         var path: String
     }
 }

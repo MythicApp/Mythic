@@ -25,11 +25,11 @@ extension GameImportView {
         @State private var isErrorAlertPresented = false
         
         @State private var installableGames: [Game] = .init()
-        @State private var game: Game = .init(type: .epic, title: .init())
+        @State private var game: Game = .init(source: .epic, title: .init())
         @State private var path: String = .init()
-        @State private var platform: GamePlatform = .macOS
+        @State private var platform: Game.Platform = .macOS
         
-        @State private var supportedPlatforms: [GamePlatform]?
+        @State private var supportedPlatforms: [Game.Platform]?
         
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
@@ -137,7 +137,7 @@ extension GameImportView {
                     }
                 } else {
                     Logger.app.info("Unable to fetch supported platforms for \(game.title).")
-                    supportedPlatforms = GamePlatform.allCases
+                    supportedPlatforms = Game.Platform.allCases
                 }
             }
             

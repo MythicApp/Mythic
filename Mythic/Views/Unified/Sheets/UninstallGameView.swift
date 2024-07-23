@@ -24,7 +24,7 @@ struct UninstallViewEvo: View {
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
         self._game = game
         self._isPresented = isPresented
-        self.runUninstaller = (game.wrappedValue.type != .local)
+        self.runUninstaller = (game.wrappedValue.source != .local)
     }
     
     var body: some View {
@@ -44,7 +44,7 @@ struct UninstallViewEvo: View {
                     Toggle(isOn: $runUninstaller) {
                         Text("Run specialised uninstaller (If applicable)")
                     }
-                    .disabled(game.type == .local)
+                    .disabled(game.source == .local)
                     Spacer()
                 }
             }
@@ -79,7 +79,7 @@ struct UninstallViewEvo: View {
                     Alert(
                         title: Text("Are you sure you want to uninstall \"\(game.title)\"?"),
                         primaryButton: .destructive(Text("Uninstall")) {
-                            switch game.type {
+                            switch game.source {
                             case .epic:
                                 Task(priority: .userInitiated) {
                                     uninstalling = true
@@ -136,5 +136,5 @@ struct UninstallViewEvo: View {
 }
 
 #Preview {
-    UninstallViewEvo(game: .constant(.init(type: .local, title: .init())), isPresented: .constant(true))
+    UninstallViewEvo(game: .constant(.init(source: .local, title: .init())), isPresented: .constant(true))
 }

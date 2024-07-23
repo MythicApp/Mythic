@@ -18,8 +18,8 @@ struct InstallViewEvo: View {
     
     @State var installSize: Double?
     
-    @State private var supportedPlatforms: [GamePlatform]?
-    @State var platform: GamePlatform = .macOS
+    @State private var supportedPlatforms: [Game.Platform]?
+    @State var platform: Game.Platform = .macOS
     
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
@@ -231,5 +231,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(.init(type: .local, title: .init())), isPresented: .constant(true))
+    InstallViewEvo(game: .constant(.init(source: .local, title: .init())), isPresented: .constant(true))
 }

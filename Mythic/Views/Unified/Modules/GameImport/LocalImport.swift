@@ -23,9 +23,9 @@ extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
         
-        @State private var game: Game = .init(type: .local, title: .init())
+        @State private var game: Game = .init(source: .local, title: .init())
         @State private var title: String = .init()
-        @State private var platform: GamePlatform = .macOS
+        @State private var platform: Game.Platform = .macOS
         @State private var path: String = .init()
         
         var body: some View {
@@ -39,7 +39,7 @@ extension GameImportView {
                                 CachedAsyncImage(url: game.imageURL) { phase in
                                     switch phase {
                                     case .empty:
-                                        if case .local = game.type {
+                                        if case .local = game.source {
                                             let image = Image(nsImage: workspace.icon(forFile: path))
                                             
                                             image

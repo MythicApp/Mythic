@@ -40,7 +40,7 @@ struct GameCard: View {
                 CachedAsyncImage(url: game.imageURL) { phase in
                     switch phase {
                     case .empty:
-                        if case .local = game.type, game.imageURL == nil {
+                        if case .local = game.source, game.imageURL == nil {
                             let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
                             
                             image
@@ -90,7 +90,7 @@ struct GameCard: View {
                             Text(game.title)
                                 .font(.bold(.title3)())
                             
-                            SubscriptedTextView(game.type.rawValue)
+                            SubscriptedTextView(game.source.rawValue)
                             
                             if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                                recent == game {
@@ -121,7 +121,7 @@ struct GameCard: View {
                                     .clipShape(.circle)
                                     .disabled(!networkMonitor.isConnected)
                                     .help("Install Mythic Engine")
-                                } else if case .epic = game.type, // if verification required, FIXME: turn this block into a Legendary function
+                                } else if case .epic = game.source, // if verification required, FIXME: turn this block into a Legendary function
                                           let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))),
                                           let needsVerification = json[game.id]["needs_verification"].bool, needsVerification {
                                     // MARK: Verify Button
@@ -154,7 +154,7 @@ struct GameCard: View {
                                         Button {
                                             Task(priority: .userInitiated) {
                                                 do {
-                                                    switch game.type {
+                                                    switch game.source {
                                                     case .epic:
                                                         try await Legendary.launch(game: game)
                                                     case .local:
@@ -186,7 +186,7 @@ struct GameCard: View {
                                 }
                                 
                                 // MARK: Update Button
-                                if case .epic = game.type, Legendary.needsUpdate(game: game) {
+                                if case .epic = game.source, Legendary.needsUpdate(game: game) {
                                     Button {
                                         Task(priority: .userInitiated) {
                                             operation.queue.append(
@@ -295,6 +295,6 @@ struct FadeInModifier: ViewModifier {
 }
 
 #Preview {
-    GameCard(game: .constant(.init(type: .local, title: .init())))
+    GameCard(game: .constant(.init(source: .local, title: .init())))
         .environmentObject(NetworkMonitor())
 }
