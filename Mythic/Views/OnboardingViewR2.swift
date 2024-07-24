@@ -45,6 +45,9 @@ struct OnboardingR2: View { // TODO: ViewModel
             let allCases = Self.allCases
             guard let currentIndex = allCases.firstIndex(of: self) else { return }
             var nextIndex = allCases.index(after: currentIndex)
+            if nextIndex >= allCases.count {
+                return
+            }
             if !forceNext {
                 if case .signin = allCases[nextIndex], Legendary.signedIn() {
                     nextIndex += 1
@@ -71,8 +74,7 @@ struct OnboardingR2: View { // TODO: ViewModel
     @State private var colorfulAnimationColors: [Color] = [
         .init(hex: "#5412F6"),
         .init(hex: "#7E1ED8"),
-        .init(hex: "#2C2C2C"),
-        .init(NSColor.windowBackgroundColor)
+        .init(hex: "#2C2C2C")
     ]
     @State private var colorfulAnimationSpeed: Double = 1
     @State private var colorfulAnimationNoise: Double = 0
