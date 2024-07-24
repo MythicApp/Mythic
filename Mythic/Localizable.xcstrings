@@ -16207,6 +16207,9 @@
         }
       }
     },
+    "Engine Type" : {
+
+    },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
         "af" : {
@@ -43233,6 +43236,15 @@
         }
       }
     },
+    "Source" : {
+
+    },
+    "Stable" : {
+      "comment" : "Within the context of Mythic Engine"
+    },
+    "Staging" : {
+      "comment" : "Within the context of Mythic Engine"
+    },
     "Status Unknown" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -46846,7 +46858,11 @@
         }
       }
     },
+    "To change the engine type, Mythic Engine must be reinstalled." : {
+
+    },
     "Type" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -53130,6 +53146,9 @@
           }
         }
       }
+    },
+    "Would you like to reinstall Mythic Engine?" : {
+
     },
     "You can't delete the default bottle." : {
       "extractionState" : "stale",
