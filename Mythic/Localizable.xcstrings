@@ -16218,6 +16218,9 @@
         }
       }
     },
+    "Engine Type" : {
+
+    },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
         "af" : {
@@ -46876,6 +46879,9 @@
         }
       }
     },
+    "To change the engine type, Mythic Engine must be reinstalled." : {
+
+    },
     "Type" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -53165,6 +53171,9 @@
           }
         }
       }
+    },
+    "Would you like to reinstall Mythic Engine?" : {
+
     },
     "You can't delete the default bottle." : {
       "extractionState" : "stale",
