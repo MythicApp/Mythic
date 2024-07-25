@@ -321,10 +321,7 @@ struct SettingsView: View {
                     set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
                 ))
                 
-                Toggle("Automatically check for Mythic Engine updates", isOn: Binding(
-                    get: { sparkle.updater.automaticallyChecksForUpdates },
-                    set: { sparkle.updater.automaticallyChecksForUpdates = $0 }
-                ))
+                Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
