@@ -16207,9 +16207,6 @@
         }
       }
     },
-    "Engine Type" : {
-
-    },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
         "af" : {
@@ -36763,6 +36760,9 @@
         }
       }
     },
+    "Preview" : {
+      "comment" : "Within the context of Mythic Engine"
+    },
     "Progress:" : {
       "localizations" : {
         "af" : {
@@ -43242,9 +43242,6 @@
     "Stable" : {
       "comment" : "Within the context of Mythic Engine"
     },
-    "Staging" : {
-      "comment" : "Within the context of Mythic Engine"
-    },
     "Status Unknown" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -44576,6 +44573,9 @@
         }
       }
     },
+    "Stream" : {
+
+    },
     "Submit" : {
       "localizations" : {
         "af" : {
@@ -45146,6 +45146,12 @@
           }
         }
       }
+    },
+    "The experimental (staging) stream of Mythic Engine.\nNew features will be available here before being released onto the stable stream, but more issues may be present.\nUse at your own risk." : {
+
+    },
+    "The stable stream of Mythic Engine." : {
+
     },
     "This process cannot be undone." : {
       "localizations" : {
@@ -46858,7 +46864,7 @@
         }
       }
     },
-    "To change the engine type, Mythic Engine must be reinstalled." : {
+    "To change the engine type, Mythic Engine must be reinstalled through onboarding." : {
 
     },
     "Type" : {
@@ -53147,7 +53153,7 @@
         }
       }
     },
-    "Would you like to reinstall Mythic Engine?" : {
+    "Would you like to remove Mythic Engine?" : {
 
     },
     "You can't delete the default bottle." : {

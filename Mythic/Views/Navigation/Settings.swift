@@ -29,7 +29,7 @@ struct SettingsView: View {
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     @AppStorage("discordRPC") private var rpc: Bool = true
-    @AppStorage("engineType") private var engineType: String = Engine.EngineType.stable.rawValue
+    @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
     
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -113,18 +113,20 @@ struct SettingsView: View {
                     .init(
                         title: .init("Reset Mythic?"),
                         message: .init("This will erase every persistent setting and bottle."),
-                        primaryButton: .cancel(),
-                        secondaryButton: .destructive(.init("Reset")) {
+                        primaryButton: .destructive(.init("Reset")) {
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
+                            
                             if let appHome = Bundle.appHome {
                                 try? files.removeItem(at: appHome)
                             }
+                            
                             if let bottlesDirectory = Wine.bottlesDirectory {
                                 try? files.removeItem(at: bottlesDirectory)
                             }
-                        }
+                        },
+                        secondaryButton: .cancel()
                     )
                 }
                 
@@ -137,12 +139,12 @@ struct SettingsView: View {
                     .init(
                         title: .init("Reset Mythic Settings?"),
                         message: .init("This will erase every persistent setting."),
-                        primaryButton: .cancel(),
-                        secondaryButton: .destructive(.init("Reset")) {
+                        primaryButton: .destructive(.init("Reset")) {
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
-                        }
+                        },
+                        secondaryButton: .cancel()
                     )
                 }
                 
@@ -150,24 +152,34 @@ struct SettingsView: View {
             
             Section("Wine/Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
-                    Picker("Engine Type", selection: $engineType) {
-                        Text("Stable", comment: "Within the context of Mythic Engine").tag(Engine.EngineType.stable.rawValue)
-                        Text("Staging", comment: "Within the context of Mythic Engine").tag(Engine.EngineType.staging.rawValue)
+                    Picker("Stream", selection: $engineBranch) {
+                        Text("Stable", comment: "Within the context of Mythic Engine")
+                            .tag(Engine.Stream.stable.rawValue)
+                            .help("The stable stream of Mythic Engine.")
+                        
+                        Text("Preview", comment: "Within the context of Mythic Engine")
+                            .tag(Engine.Stream.staging.rawValue)
+                            .help("""
+                            The experimental (staging) stream of Mythic Engine.
+                            New features will be available here before being released onto the stable stream, but more issues may be present.
+                            Use at your own risk.
+                            """)
                     }
-                    .onChange(of: engineType) {
+                    .onChange(of: engineBranch) {
                         isEngineChangeAlertPresented = true
                     }
                     .alert(isPresented: $isEngineChangeAlertPresented) {
                         .init(
                             title: .init("Would you like to remove Mythic Engine?"),
                             message: .init("To change the engine type, Mythic Engine must be reinstalled through onboarding."),
-                            primaryButton: .cancel(),
-                            secondaryButton: .destructive(.init("OK")) {
+                            primaryButton: .destructive(.init("OK")) {
                                 try? Engine.remove()
-                            }
+                            },
+                            secondaryButton: .cancel()
                         )
                     }
                 }
+                
                 Group {
                     HStack {
                         Button {
