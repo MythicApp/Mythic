@@ -24,7 +24,7 @@ struct SettingsView: View {
     @State private var isUpdateSettingsExpanded: Bool = true
     
     @EnvironmentObject var sparkle: SparkleController
-
+    
     @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
@@ -187,13 +187,13 @@ struct SettingsView: View {
                 Group {
                     HStack {
                         Button {
-                        withAnimation {
+                            withAnimation {
                                 do {
                                     try Wine.killAll()
                                     isForceQuitSuccessful = true
                                 } catch {
                                     isForceQuitSuccessful = false
-                            }
+                                }
                             }
                         } label: {
                             Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
@@ -203,12 +203,12 @@ struct SettingsView: View {
                             Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
                         }
                     }
-                
+                    
                     HStack {
                         Button {
-                        withAnimation {
+                            withAnimation {
                                 isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
-                        }
+                            }
                         } label: {
                             Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
                         }
@@ -229,13 +229,13 @@ struct SettingsView: View {
                                 title: .init("Are you sure you want to remove Mythic Engine?"),
                                 message: .init("It'll have to be reinstalled in order to play Windows® games."),
                                 primaryButton: .destructive(.init("Remove")) {
-                                withAnimation {
+                                    withAnimation {
                                         do {
                                             try Engine.remove()
                                             isEngineRemovalSuccessful = true
                                         } catch {
                                             isEngineRemovalSuccessful = false
-                                    }
+                                        }
                                     }
                                 },
                                 secondaryButton: .cancel()
@@ -246,9 +246,9 @@ struct SettingsView: View {
                             Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
                         }
                     }
-                
-                Text("Version \(Engine.version?.description ?? "Unknown")")
-                    .foregroundStyle(.placeholder)
+                    
+                    Text("Version \(Engine.version?.description ?? "Unknown")")
+                        .foregroundStyle(.placeholder)
                 }
                 .disabled(!Engine.exists)
                 .help(Engine.exists ? "Mythic Engine is not installed." : .init())
@@ -326,9 +326,9 @@ struct SettingsView: View {
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
-            Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) {
-                // BottleSettingsView something
-            }
+             Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) {
+             // BottleSettingsView something
+             }
              */
         }
         .task(priority: .background) {
