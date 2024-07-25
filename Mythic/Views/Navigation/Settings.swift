@@ -186,72 +186,103 @@ struct SettingsView: View {
                 
                 Group {
                     HStack {
-                        Button {
-                        withAnimation {
-                                do {
-                                    try Wine.killAll()
-                                    isForceQuitSuccessful = true
-                                } catch {
-                                    isForceQuitSuccessful = false
-                            }
-                            }
-                        } label: {
-                            Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
-                        }
+                    Picker("Stream", selection: $engineBranch) {
+                        Text("Stable", comment: "Within the context of Mythic Engine")
+                            .tag(Engine.Stream.stable.rawValue)
+                            .help("The stable stream of Mythic Engine.")
                         
-                        if isForceQuitSuccessful != nil {
-                            Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
-                        }
+                        Text("Preview", comment: "Within the context of Mythic Engine")
+                            .tag(Engine.Stream.staging.rawValue)
+                            .help("""
+                            The experimental (staging) stream of Mythic Engine.
+                            New features will be available here before being released onto the stable stream, but more issues may be present.
+                            Use at your own risk.
+                            """)
                     }
+                    .onChange(of: engineBranch) {
+                        isEngineChangeAlertPresented = true
+                    }
+                    .alert(isPresented: $isEngineChangeAlertPresented) {
+                        .init(
+                            title: .init("Would you like to remove Mythic Engine?"),
+                            message: .init("To change the engine type, Mythic Engine must be reinstalled through onboarding."),
+                            primaryButton: .destructive(.init("OK")) {
+                                try? Engine.remove()
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                }
                 
+                Group {
                     HStack {
-                        Button {
+                            Button {
                         withAnimation {
-                                isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                                    do {
+                                        try Wine.killAll()
+                                        isForceQuitSuccessful = true
+                                    } catch {
+                                        isForceQuitSuccessful = false
+                                }
+                            }
+                            } label: {
+                                Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
+                            }
+                            
+                            if isForceQuitSuccessful != nil {
+                                Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
+                            }
                         }
-                        } label: {
-                            Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
+                
+                        HStack {
+                            Button {
+                        withAnimation {
+                                    isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                        }
+                            } label: {
+                                Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
+                            }
+                            
+                            if isShaderCachePurgeSuccessful != nil {
+                                Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
+                            }
                         }
                         
-                        if isShaderCachePurgeSuccessful != nil {
-                            Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
-                        }
-                    }
-                    
-                    HStack {
-                        Button {
-                            isEngineRemovalAlertPresented = true
-                        } label: {
-                            Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
-                        }
-                        .alert(isPresented: $isEngineRemovalAlertPresented) {
-                            Alert(
-                                title: .init("Are you sure you want to remove Mythic Engine?"),
-                                message: .init("It'll have to be reinstalled in order to play Windows® games."),
-                                primaryButton: .destructive(.init("Remove")) {
+                        HStack {
+                            Button {
+                                isEngineRemovalAlertPresented = true
+                            } label: {
+                                Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
+                            }
+                            .alert(isPresented: $isEngineRemovalAlertPresented) {
+                                Alert(
+                                    title: .init("Are you sure you want to remove Mythic Engine?"),
+                                    message: .init("It'll have to be reinstalled in order to play Windows® games."),
+                                    primaryButton: .destructive(.init("Remove")) {
                                 withAnimation {
-                                        do {
-                                            try Engine.remove()
-                                            isEngineRemovalSuccessful = true
-                                        } catch {
-                                            isEngineRemovalSuccessful = false
+                                            do {
+                                                try Engine.remove()
+                                                isEngineRemovalSuccessful = true
+                                            } catch {
+                                                isEngineRemovalSuccessful = false
+                                        }
                                     }
-                                    }
-                                },
-                                secondaryButton: .cancel()
-                            )
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            }
+                            
+                            if isEngineRemovalSuccessful != nil {
+                                Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
+                            }
                         }
-                        
-                        if isEngineRemovalSuccessful != nil {
-                            Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
-                        }
-                    }
                 
                 Text("Version \(Engine.version?.description ?? "Unknown")")
                     .foregroundStyle(.placeholder)
-                }
-                .disabled(!Engine.exists)
-                .help(Engine.exists ? "Mythic Engine is not installed." : .init())
+                    }
+                    .disabled(!Engine.exists)
+                    .help(Engine.exists ? "Mythic Engine is not installed." : .init())
+            }
             }
             
             Section("Epic", isExpanded: $isEpicSectionExpanded) {
