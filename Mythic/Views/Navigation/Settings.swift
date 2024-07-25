@@ -40,7 +40,7 @@ struct SettingsView: View {
     
     @State private var isEpicCloudSynchronising: Bool = false
     
-    @State private var isEngineChangeAlertPresented: Bool = false
+    @State private var isEngineStreamChangeAlertPresented: Bool = false
     @State private var isEngineRemovalAlertPresented: Bool = false
     @State private var isResetAlertPresented: Bool = false
     @State private var isResetSettingsAlertPresented: Bool = false
@@ -170,14 +170,18 @@ struct SettingsView: View {
                             """)
                     }
                     .onChange(of: engineBranch) {
-                        isEngineChangeAlertPresented = true
+                        isEngineStreamChangeAlertPresented = true
                     }
-                    .alert(isPresented: $isEngineChangeAlertPresented) {
+                    .alert(isPresented: $isEngineStreamChangeAlertPresented) {
                         .init(
-                            title: .init("Would you like to remove Mythic Engine?"),
+                            title: .init("Would you like to reinstall Mythic Engine?"),
                             message: .init("To change the engine type, Mythic Engine must be reinstalled through onboarding."),
                             primaryButton: .destructive(.init("OK")) {
                                 try? Engine.remove()
+                                
+                                let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                app.onboardingPhase = .engineDisclaimer
+                                app.isOnboardingPresented = true
                             },
                             secondaryButton: .cancel()
                         )
