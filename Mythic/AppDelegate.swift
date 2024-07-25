@@ -26,7 +26,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: initialize default UserDefaults Values
         defaults.register(defaults: [
-            "discordRPC": true
+            "discordRPC": true,
+            "engineAutomaticallyChecksForUpdates": true,
+            "quitOnAppClose": false
         ])
         
         // MARK: Bottle cleanup in the event of external deletion
