@@ -247,8 +247,10 @@ struct SettingsView: View {
                         }
                     }
                     
-                    Text("Version \(Engine.version?.description ?? "Unknown")")
-                        .foregroundStyle(.placeholder)
+                    if Engine.exists {
+                        Text("Version \(Engine.version?.description ?? "Unknown")")
+                            .foregroundStyle(.placeholder)
+                    }
                 }
                 .disabled(!Engine.exists)
                 .help(Engine.exists ? "Mythic Engine is not installed." : .init())
