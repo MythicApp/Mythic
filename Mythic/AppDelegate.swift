@@ -66,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 settings.msync = oldSettings["msync"] ?? settings.msync
                 settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
                 
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     convertedBottles.append(.init(name: name, url: url, settings: settings))
                     Wine.bottleURLs.insert(url)
                 }

@@ -91,7 +91,7 @@ final class Engine {
                 while true {
                     downloadHandler(download.progress)
                     log.debug("[engine] [download] \(download.progress.fractionCompleted * 100)% complete")
-                    try await Task.sleep(nanoseconds: 500000000) // 0.5 s
+                    try await Task.sleep(for: .seconds(0.5))
                     if download.progress.isFinished { if !debounce { debounce = true } else { break } }
                 }
             }
