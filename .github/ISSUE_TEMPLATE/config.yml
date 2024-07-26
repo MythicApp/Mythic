@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: View documentation
+    url: https://docs.getmythic.app/
+    about: If you're looking for documentation on how to use Mythic, check out our documentation.
+  - name: Get Help on Discord
+    url: https://discord.gg/qbc32gtZDt
+    about: If you can't get something to work or just want to chat, join our Discord server.
