@@ -169,7 +169,7 @@ enum GameModificationType: String {
     var status: [String: [String: Any]]?
     
     static func reset() {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             shared.game = nil
             shared.type = nil
             shared.status = nil
@@ -212,7 +212,7 @@ class GameOperation: ObservableObject {
                                   trigger: nil)
                         )
                     } catch {
-                        DispatchQueue.main.async {
+                        Task { @MainActor in
                             let alert = NSAlert()
                             alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
                             alert.informativeText = error.localizedDescription
@@ -248,11 +248,11 @@ class GameOperation: ObservableObject {
     static func advance() {
         log.debug("[operation.advance] attempting operation advancement")
         guard shared.current == nil, let first = shared.queue.first else { return }
-        DispatchQueue.main.async {
+        Task { @MainActor in
             shared.status = InstallStatus()
         }
         log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
-        DispatchQueue.main.async {
+        Task { @MainActor in
             shared.current = first; shared.queue.removeFirst()
             log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.game.title))")
         }
@@ -277,7 +277,7 @@ class GameOperation: ObservableObject {
 
         GameOperation.log.debug("now monitoring \(gamePlatform.rawValue) game \(game.title)")
 
-        DispatchQueue.main.async {
+        Task { @MainActor in
             GameOperation.shared.runningGames.insert(game)
         }
 
@@ -303,10 +303,10 @@ class GameOperation: ObservableObject {
             }()
             
             if !isRunning {
-                DispatchQueue.main.async { GameOperation.shared.runningGames.remove(game) }
+                Task { @MainActor in GameOperation.shared.runningGames.remove(game) }
                 isOpen = false
             } else {
-                sleep(3)
+                try? await Task.sleep(for: .seconds(3))
             }
             
             GameOperation.log.debug("\(game.title) \(isRunning ? "is still running" : "has been quit" )")

@@ -44,7 +44,7 @@ final class LocalGames {
             throw GameDoesNotExistError(game)
         }
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             GameOperation.shared.launching = game
         }
         
@@ -85,7 +85,7 @@ final class LocalGames {
         case .none: do { /* TODO: Error */ }
         }
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             GameOperation.shared.launching = nil
         }
     }

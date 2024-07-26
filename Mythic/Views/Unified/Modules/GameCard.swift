@@ -174,7 +174,13 @@ struct GameCard: View {
                                         }
                                         .clipShape(.circle)
                                         .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
-                                        .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
+                                        .disabled({
+                                            if let path = game.path {
+                                                return !files.fileExists(atPath: path)
+                                            } else {
+                                                return false
+                                            }
+                                        }())
                                         .disabled(operation.runningGames.contains(game))
                                         .disabled(Wine.bottleURLs.isEmpty)
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
