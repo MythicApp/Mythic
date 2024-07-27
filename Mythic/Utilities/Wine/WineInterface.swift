@@ -120,23 +120,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      Run a wine command, using Mythic Engine's integrated wine.
      
      - Parameters:
-     - args: The command arguments.
-     - identifier: String to keep track of individual command functions. (originally UUID-based)
-     - prefix: File URL to prefix wine should use to execute command.
-     - input: Optional input string for the command.
-     - inputIf: Optional condition to be checked for in the output streams before input is appended.
-     - asyncOutput: Optional closure that gets output appended to it immediately.
-     - additionalEnvironmentVariables: Optional dictionary that may contain other environment variables you wish to run with a command.
-     
-     - Returns: A tuple containing stdout and stderr data.
-     */
-    /**
-     Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
-     
-     - Parameters:
       - args: The arguments to pass to the command-line process.
       - waits: Indicates whether the function should wait for the command-line process to complete before returning.
       - identifier: A unique identifier for the command-line process.
+      - bottleURL: The bottle wine should execute the command in the scope of.
       - input: A closure that processes the output of the command-line process and provides input back to it.
       - environment: Additional environment variables to set for the command-line process.
       - completion: A closure to call with the output of the command-line process.

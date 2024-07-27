@@ -8,6 +8,7 @@
 import Foundation
 
 extension Process {
+    @discardableResult
     static func execute(_ executablePath: String, arguments: [String]) throws -> String {
         let process = Process()
         process.launchPath = executablePath
@@ -27,6 +28,7 @@ extension Process {
     
     static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
         let process = Process()
+        
         process.launchPath = executablePath
         process.arguments = arguments
         
