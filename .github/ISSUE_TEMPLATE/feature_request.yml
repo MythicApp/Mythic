@@ -1,0 +1,30 @@
+name: "Feature request"
+description: Create a feature request for Mythic.
+title: "[feat]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for taking the time to create a feature request! Please search existing issues before submitting, as the issue may have already been addressed.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature description
+      description: Tell us about your feature request
+      placeholder: "I think this feature would be nice to have because..."
+      value: "Describe your feature request..."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Before submitting
+      description: By submitting this request, you confirm you did the following things.
+      options:
+        - label: I've made research efforts and searched the documentation
+          required: true
+        - label: I've searched for existing issues and PRs
+          required: true

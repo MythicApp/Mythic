@@ -147,8 +147,9 @@ struct GameCard: View {
                                     if operation.launching == game {
                                         ProgressView()
                                             .controlSize(.small)
-                                            .padding(5)
                                             .clipShape(.circle)
+                                            .foregroundStyle(.white)
+                                            .padding(5)
                                         
                                     } else {
                                         Button {

@@ -30,7 +30,14 @@ final class Engine {
         category: "Engine"
     )
     
-    private static let lock = NSLock()
+    enum Stream: String {
+        case stable = "7.7"
+        case staging = "staging"
+    }
+    
+    static let downloadBranch: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
+    
+    private static let lock = NSLock() // unused
     
     /// The directory where Mythic Engine is installed.
     static let directory = Bundle.appHome!.appending(path: "Engine")
@@ -56,7 +63,7 @@ final class Engine {
     
     static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
         return try await withCheckedThrowingContinuation { continuation in
-            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/7.7/Engine.zip")!) { tempfile, response, error in
+            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(downloadBranch)/Engine.zip")!) { tempfile, response, error in
                 guard error == nil else { continuation.resume(throwing: error!); return }
                 guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
                 
@@ -99,11 +106,11 @@ final class Engine {
      
      - Returns: The semantic version of the latest libraries.
      */
-    static func fetchLatestVersion() -> SemanticVersion? {
+    static func fetchLatestVersion(stream: Stream = .stable) -> SemanticVersion? {
         let group = DispatchGroup()
         var latestVersion: SemanticVersion?
         
-        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/7.7/properties.plist")!) { data, _, error in
+        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(downloadBranch)/properties.plist")!) { data, _, error in
             defer { group.leave() }
             
             guard error == nil else { log.error("Unable to check for new Engine version: \(error!.localizedDescription)"); return }

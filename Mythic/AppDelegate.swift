@@ -37,6 +37,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
         }
         
+        // MARK: Autosync Epic savedata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
+        }
+        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
@@ -129,10 +134,16 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if Engine.needsUpdate() == true {
+        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
             let alert = NSAlert()
-            alert.messageText = "Time for an update!"
-            alert.informativeText = "A new Mythic Engine update has released."
+            if let currentEngineVersion = Engine.version,
+               let latestEngineVersion = Engine.fetchLatestVersion() {
+                alert.messageText = "Update available. (\(currentEngineVersion) → \(latestEngineVersion))"
+            } else {
+                alert.messageText = "Update available."
+            }
+            
+            alert.informativeText = "A new version of Mythic Engine has released. You're currently using \(Engine.version?.description ?? "an unknown version")."
             alert.addButton(withTitle: "Update")
             alert.addButton(withTitle: "Cancel")
             
@@ -172,6 +183,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
+    }
+    
+    func applicationDidBecomeActive(_: Notification) {
+        _ = discordRPC.connect()
+    }
+    
+    func applicationDidResignActive(_: Notification) {
+        discordRPC.disconnect()
     }
     
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
@@ -217,7 +236,7 @@ extension AppDelegate: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {
         rpc.setPresence({
             var presence: RichPresence = .init()
-            presence.details = "Just launched Mythic"
+            presence.details = "Idling in Mythic"
             presence.state = "Idle"
             presence.timestamps.start = .now
             presence.assets.largeImage = "macos_512x512_2x"

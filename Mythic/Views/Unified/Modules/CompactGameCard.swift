@@ -74,6 +74,7 @@ struct CompactGameCard: View {
                     HStack {
                         Text(game.title)
                             .font(.bold(.title3)())
+                            .foregroundStyle(.white)
                         
                         Spacer()
                         
@@ -126,6 +127,7 @@ struct CompactGameCard: View {
             .overlay(alignment: .topLeading) {
                 if game.isFavourited {
                     Image(systemName: "star.fill")
+                        .foregroundStyle(.white)
                         .padding()
                 }
             }
