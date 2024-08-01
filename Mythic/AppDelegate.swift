@@ -139,7 +139,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
-               let latestEngineVersion = Engine.fetchLatestVersion() {
+               let latestEngineVersion = Engine.fetchLatestVersion(stream: DatabaseData.shared.data.engineReleaseStream) {
                 alert.messageText = "Update available. (\(currentEngineVersion) → \(latestEngineVersion))"
             } else {
                 alert.messageText = "Update available."
