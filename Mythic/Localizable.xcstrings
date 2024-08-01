@@ -16218,9 +16218,6 @@
         }
       }
     },
-    "Engine Release Stream" : {
-
-    },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
         "af" : {
@@ -36793,9 +36790,6 @@
         }
       }
     },
-    "Preview" : {
-      "comment" : "Within the context of Mythic Engine"
-    },
     "Progress:" : {
       "localizations" : {
         "af" : {
@@ -38128,6 +38122,9 @@
           }
         }
       }
+    },
+    "Release Stream" : {
+
     },
     "Remove" : {
       "localizations" : {
@@ -44605,9 +44602,6 @@
           }
         }
       }
-    },
-    "Stream" : {
-
     },
     "Submit" : {
       "localizations" : {
@@ -53190,7 +53184,7 @@
         }
       }
     },
-    "Would you like to remove Mythic Engine?" : {
+    "Would you like to reinstall Mythic Engine?" : {
 
     },
     "You can't delete the default bottle." : {

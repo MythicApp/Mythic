@@ -33,8 +33,10 @@ public final class DatabaseData: ObservableObject, Sendable {
     public struct AppData: Codable, Hashable, Equatable {
         /// Onboarding
         public var hasCompletedOnboarding: Bool = false
-        // Engine release stream
+        /// Engine release stream
         public var engineReleaseStream: EngineReleaseStream = .stable
+        /// Auto check for engine updates
+        public var engineUpdatesAutoCheck: Bool = true
         
         /// Library Display Mode
         public var libraryDisplayMode: LibraryDisplayMode = .grid

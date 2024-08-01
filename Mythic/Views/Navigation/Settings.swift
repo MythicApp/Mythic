@@ -151,7 +151,7 @@ struct SettingsView: View {
                     Picker("Release Stream", selection: $data.data.engineReleaseStream) {
                         Text("Stable", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.stable)
                             .help("The stable stream of Mythic Engine.")
-                        Text("Experimental", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.stable)
+                        Text("Experimental", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.experimental)
                         .help("""
                             The experimental (staging) stream of Mythic Engine.
                             New features will be available here before being released onto the stable stream, but more issues may be present.
@@ -170,7 +170,7 @@ struct SettingsView: View {
                                 
                                 let app = MythicApp() // FIXME: is this dangerous or just stupid
                                 app.onboardingPhase = .engineDisclaimer
-                                app.isOnboardingPresented = true
+                                data.data.hasCompletedOnboarding = false
                             },
                             secondaryButton: .cancel()
                         )
@@ -314,7 +314,7 @@ struct SettingsView: View {
                     set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
                 ))
                 
-                Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
+                Toggle("Automatically check for Mythic Engine updates", isOn: $data.data.engineUpdatesAutoCheck)
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
