@@ -185,7 +185,7 @@ final class Legendary {
         platform: Mythic.Game.Platform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        baseURL: URL? = defaults.url(forKey: "installBaseURL"),
+        baseURL: URL? = DatabaseData.shared.data.gameInstallPath,
         gameFolder: URL? = nil,
         priority: Bool = false
     ) async throws {

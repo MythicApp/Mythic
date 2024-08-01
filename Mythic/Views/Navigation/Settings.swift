@@ -114,6 +114,9 @@ struct SettingsView: View {
                         message: .init("This will erase every persistent setting and bottle."),
                         primaryButton: .destructive(.init("Reset")) {
                             data.data = DatabaseData.AppData()
+                            if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                                defaults.removePersistentDomain(forName: bundleIdentifier)
+                            }
                             if let appHome = Bundle.appHome {
                                 try? files.removeItem(at: appHome)
                             }
@@ -136,6 +139,7 @@ struct SettingsView: View {
                         title: .init("Reset Mythic Settings?"),
                         message: .init("This will erase every persistent setting."),
                         primaryButton: .destructive(.init("Reset")) {
+                            data.data = DatabaseData.AppData()
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }

@@ -24,13 +24,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationDidFinishLaunching(_: Notification) {
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
-        // MARK: initialize default UserDefaults Values
-        defaults.register(defaults: [
-            "discordRPC": true,
-            "engineAutomaticallyChecksForUpdates": true,
-            "quitOnAppClose": false
-        ])
-        
         // MARK: Bottle cleanup in the event of external deletion
         Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
         
@@ -82,7 +75,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: DiscordRPC Connection and Delegation Setting
         discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        if DatabaseData.shared.data.discordRPCEnabled {
+            _ = discordRPC.connect()
+        }
         
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
@@ -136,7 +131,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
+        if DatabaseData.shared.data.engineUpdatesAutoCheck && Engine.needsUpdate() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
                let latestEngineVersion = Engine.fetchLatestVersion(stream: DatabaseData.shared.data.engineReleaseStream) {
@@ -219,7 +214,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
     
     func applicationWillTerminate(_: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
+        if DatabaseData.shared.data.closeGamesWithMythic { try? Wine.killAll() }
         Legendary.stopAllCommands(forced: true)
         
         Task { try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { _ in } }
