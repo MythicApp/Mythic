@@ -75,7 +75,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: DiscordRPC Connection and Delegation Setting
         discordRPC.delegate = self
-        if DatabaseData.shared.data.discordRPCEnabled {
+        if DatabaseData.shared.data.enableDiscordRPC {
             _ = discordRPC.connect()
         }
         
