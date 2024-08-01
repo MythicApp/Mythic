@@ -3,7 +3,7 @@ import SwiftUI
 
 struct GameListEvo: View {
     @Binding var filterOptions: GameListFilterOptions
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @ObservedObject private var data = DatabaseData.shared
     
     @State private var searchString: String = .init()
     @State private var isGameImportViewPresented: Bool = false
@@ -60,7 +60,7 @@ struct GameListEvo: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            } else if isListLayoutEnabled {
+            } else if data.data.libraryDisplayMode == .list {
                 List {
                     ForEach(games) { game in
                         GameListRow(game: .constant(game))

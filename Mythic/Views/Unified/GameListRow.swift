@@ -11,7 +11,7 @@ struct GameListRow: View { // TODO: will redo myself
     @State private var isInstallSheetPresented: Bool = false
     @State private var animateFavouriteIcon: Bool = false
 
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
+    @ObservedObject private var data = DatabaseData.shared
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
 
@@ -135,7 +135,7 @@ private extension GameListRow {
                     try await LocalGames.launch(game: game)
                 }
 
-                if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
+                if data.data.hideMythicOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
             } catch {
                 launchError = error
                 isLaunchErrorAlertPresented = true

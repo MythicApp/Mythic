@@ -19,7 +19,7 @@ struct GameCard: View {
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
+    @ObservedObject private var data = DatabaseData.shared
     
     @State private var isGameSettingsSheetPresented: Bool = false
     @State private var isUninstallSheetPresented: Bool = false
@@ -113,7 +113,7 @@ struct GameCard: View {
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid
                                         app.onboardingPhase = .engineDisclaimer
-                                        app.isOnboardingPresented = true
+                                        DatabaseData.shared.data.hasCompletedOnboarding = false
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")
                                             .padding(5)
@@ -162,7 +162,7 @@ struct GameCard: View {
                                                         try await LocalGames.launch(game: game)
                                                     }
                                                     
-                                                    if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
+                                                    if data.data.hideMythicOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
                                                 } catch {
                                                     launchError = error
                                                     isLaunchErrorAlertPresented = true

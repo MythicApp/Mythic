@@ -26,7 +26,7 @@ struct LibraryView: View {
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @State private var filterOptions: GameListFilterOptions = .init()
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @ObservedObject private var data = DatabaseData.shared
     
     // MARK: - Body
     var body: some View {
@@ -72,12 +72,9 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
-                        Label("List", systemImage: "list.triangle")
-                            .tag(true)
-                        
-                        Label("Grid", systemImage: "square.grid.2x2")
-                            .tag(false)
+                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $data.data.libraryDisplayMode) {
+                        Label("List", systemImage: "list.triangle").tag(DatabaseData.LibraryDisplayMode.list)
+                        Label("Grid", systemImage: "square.grid.2x2").tag(DatabaseData.LibraryDisplayMode.grid)
                     }
 #if !DEBUG
                     .disabled(true)

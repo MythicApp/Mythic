@@ -166,7 +166,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                                     try Engine.remove()
                                     let app = MythicApp() // FIXME: is this dangerous or just stupid
                                     app.onboardingPhase = .engineDisclaimer
-                                    app.isOnboardingPresented = true
+                                    DatabaseData.shared.data.hasCompletedOnboarding = false
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical

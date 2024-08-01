@@ -16218,6 +16218,9 @@
         }
       }
     },
+    "Engine Release Stream" : {
+
+    },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
         "af" : {
@@ -19262,6 +19265,9 @@
           }
         }
       }
+    },
+    "Experimental" : {
+      "comment" : "Within the context of Mythic Engine"
     },
     "Failed to boot \"%@.\"" : {
       "extractionState" : "stale",
@@ -53184,7 +53190,7 @@
         }
       }
     },
-    "Would you like to reinstall Mythic Engine?" : {
+    "Would you like to remove Mythic Engine?" : {
 
     },
     "You can't delete the default bottle." : {

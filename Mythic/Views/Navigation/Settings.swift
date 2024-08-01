@@ -24,13 +24,8 @@ struct SettingsView: View {
     @State private var isUpdateSettingsExpanded: Bool = true
     
     @EnvironmentObject var sparkle: SparkleController
-    
-    @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
-    @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
-    @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
-    @AppStorage("discordRPC") private var rpc: Bool = true
-    @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
-    @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
+
+    @ObservedObject private var data = DatabaseData.shared
     
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -48,8 +43,8 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
-                Toggle("Display Mythic activity status on Discord", isOn: $rpc)
-                    .onChange(of: rpc) { _, newValue in
+                Toggle("Display Mythic activity status on Discord", isOn: $data.data.enableDiscordRPC)
+                    .onChange(of: data.data.enableDiscordRPC) { _, newValue in
                         if newValue {
                             _ = discordRPC.connect()
                         } else {
@@ -57,9 +52,9 @@ struct SettingsView: View {
                         }
                     }
                 
-                Toggle("Minimise to menu bar on game launch", isOn: $minimize)
+                Toggle("Minimise to menu bar on game launch", isOn: $data.data.hideMythicOnGameLaunch)
                 
-                Toggle("Force quit all games when Mythic closes", isOn: $quitOnClose)
+                Toggle("Force quit all games when Mythic closes", isOn: $data.data.closeGamesWithMythic)
                 
                 HStack {
                     VStack {
@@ -68,7 +63,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         HStack {
-                            Text(installBaseURL.prettyPath())
+                            Text(data.data.gameInstallPath.prettyPath())
                                 .foregroundStyle(.placeholder)
                             
                             Spacer()
@@ -77,7 +72,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    if !FileLocations.isWritableFolder(url: installBaseURL) {
+                    if !FileLocations.isWritableFolder(url: data.data.gameInstallPath) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("Folder is not writable.")
                     }
@@ -93,7 +88,7 @@ struct SettingsView: View {
                                 openPanel.allowsMultipleSelection = false
                                 
                                 if openPanel.runModal() == .OK {
-                                    installBaseURL = openPanel.urls.first!
+                                    data.data.gameInstallPath = openPanel.urls.first!
                                 }
                             }
                             .buttonStyle(.borderedProminent)
@@ -102,7 +97,7 @@ struct SettingsView: View {
                         HStack {
                             Spacer()
                             Button("Reset to Default") {
-                                installBaseURL = Bundle.appGames!
+                                data.data.gameInstallPath = Bundle.appGames!
                             }
                         }
                     }
@@ -118,10 +113,7 @@ struct SettingsView: View {
                         title: .init("Reset Mythic?"),
                         message: .init("This will erase every persistent setting and bottle."),
                         primaryButton: .destructive(.init("Reset")) {
-                            if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                                defaults.removePersistentDomain(forName: bundleIdentifier)
-                            }
-                            
+                            data.data = DatabaseData.AppData()
                             if let appHome = Bundle.appHome {
                                 try? files.removeItem(at: appHome)
                             }
@@ -156,20 +148,17 @@ struct SettingsView: View {
             
             Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
-                    Picker("Stream", selection: $engineBranch) {
-                        Text("Stable", comment: "Within the context of Mythic Engine")
-                            .tag(Engine.Stream.stable.rawValue)
+                    Picker("Release Stream", selection: $data.data.engineReleaseStream) {
+                        Text("Stable", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.stable)
                             .help("The stable stream of Mythic Engine.")
-                        
-                        Text("Preview", comment: "Within the context of Mythic Engine")
-                            .tag(Engine.Stream.staging.rawValue)
-                            .help("""
+                        Text("Experimental", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.stable)
+                        .help("""
                             The experimental (staging) stream of Mythic Engine.
                             New features will be available here before being released onto the stable stream, but more issues may be present.
                             Use at your own risk.
                             """)
                     }
-                    .onChange(of: engineBranch) {
+                    .onChange(of: data.data.engineReleaseStream) {
                         isEngineStreamChangeAlertPresented = true
                     }
                     .alert(isPresented: $isEngineStreamChangeAlertPresented) {
