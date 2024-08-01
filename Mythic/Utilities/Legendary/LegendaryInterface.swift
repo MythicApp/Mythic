@@ -180,15 +180,16 @@ final class Legendary {
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
-    static func install(
+    @MainActor static func install(
         game: Mythic.Game,
         platform: Mythic.Game.Platform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        baseURL: URL? = DatabaseData.shared.data.gameInstallPath,
+        baseURL: URL? = nil,
         gameFolder: URL? = nil,
         priority: Bool = false
     ) async throws {
+        let baseURL = baseURL ?? DatabaseData.shared.data.gameInstallPath
         try await install(
             args: .init(
                 game: game,
