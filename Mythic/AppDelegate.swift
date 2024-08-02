@@ -159,8 +159,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                    app.onboardingPhase = .engineDisclaimer
                                     DatabaseData.shared.data.hasCompletedOnboarding = false
                                 } catch {
                                     let error = NSAlert()

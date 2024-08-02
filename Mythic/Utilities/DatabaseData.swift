@@ -32,23 +32,67 @@ public final class DatabaseData: ObservableObject, Sendable {
     /// App data.
     public struct AppData: Codable, Hashable, Equatable {
         /// Onboarding
-        public var hasCompletedOnboarding: Bool = false
+        public var hasCompletedOnboarding: Bool
         /// Engine release stream
-        public var engineReleaseStream: EngineReleaseStream = .stable
+        public var engineReleaseStream: EngineReleaseStream
         /// Auto check for engine updates
-        public var engineUpdatesAutoCheck: Bool = true
+        public var engineUpdatesAutoCheck: Bool
         
         /// Library Display Mode
-        public var libraryDisplayMode: LibraryDisplayMode = .grid
+        public var libraryDisplayMode: LibraryDisplayMode
         
         /// Hide the Mythic client when games launch
-        public var hideMythicOnGameLaunch: Bool = false
+        public var hideMythicOnGameLaunch: Bool
         /// Close games opened with Mythic when Mythic closes
-        public var closeGamesWithMythic: Bool = false
+        public var closeGamesWithMythic: Bool
         /// Enable Discord RPC
-        public var enableDiscordRPC: Bool = true
+        public var enableDiscordRPC: Bool
         /// Installation path for games
-        public var gameInstallPath: URL = Bundle.appGames ?? .init(filePath: "")
+        public var gameInstallPath: URL
+
+        /// All coding keys
+        private enum CodingKeys: String, CodingKey {
+            // swiftlint:disable:previous nesting
+            case hasCompletedOnboarding
+            case engineReleaseStream
+            case engineUpdatesAutoCheck
+            case libraryDisplayMode
+            case hideMythicOnGameLaunch
+            case closeGamesWithMythic
+            case enableDiscordRPC
+            case gameInstallPath
+        }
+
+        /// Default values
+        public init() {
+            // Default values
+            hasCompletedOnboarding = false
+            engineReleaseStream = .stable
+            engineUpdatesAutoCheck = true
+            libraryDisplayMode = .grid
+            hideMythicOnGameLaunch = false
+            closeGamesWithMythic = false
+            enableDiscordRPC = true
+            gameInstallPath = Bundle.appGames ?? .init(filePath: "")
+        }
+
+        /// Decoding (safely)
+        public init(from decoder: Decoder) throws {
+            let defaultValues = AppData()
+
+            // For each key, if it's missing, use the default value.
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            // Actually decode the values
+            hasCompletedOnboarding = try container.decodeIfPresent(Bool.self, forKey: .hasCompletedOnboarding) ?? defaultValues.hasCompletedOnboarding
+            engineReleaseStream = try container.decodeIfPresent(EngineReleaseStream.self, forKey: .engineReleaseStream) ?? defaultValues.engineReleaseStream
+            engineUpdatesAutoCheck = try container.decodeIfPresent(Bool.self, forKey: .engineUpdatesAutoCheck) ?? defaultValues.engineUpdatesAutoCheck
+            libraryDisplayMode = try container.decodeIfPresent(LibraryDisplayMode.self, forKey: .libraryDisplayMode) ?? defaultValues.libraryDisplayMode
+            hideMythicOnGameLaunch = try container.decodeIfPresent(Bool.self, forKey: .hideMythicOnGameLaunch) ?? defaultValues.hideMythicOnGameLaunch
+            closeGamesWithMythic = try container.decodeIfPresent(Bool.self, forKey: .closeGamesWithMythic) ?? defaultValues.closeGamesWithMythic
+            enableDiscordRPC = try container.decodeIfPresent(Bool.self, forKey: .enableDiscordRPC) ?? defaultValues.enableDiscordRPC
+            gameInstallPath = try container.decodeIfPresent(URL.self, forKey: .gameInstallPath) ?? defaultValues.gameInstallPath
+        }
         
     }
 

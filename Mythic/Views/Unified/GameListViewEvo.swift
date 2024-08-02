@@ -60,19 +60,22 @@ struct GameListEvo: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            } else if data.data.libraryDisplayMode == .list {
-                List {
-                    ForEach(games) { game in
-                        GameListRow(game: .constant(game))
-                    }
-                }
-                .searchable(text: $searchString, placement: .toolbar)
             } else {
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                switch data.data.libraryDisplayMode {
+                case .grid:
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                            ForEach(games) { game in
+                                GameCard(game: .constant(game))
+                                    .padding([.leading, .vertical])
+                            }
+                        }
+                        .searchable(text: $searchString, placement: .toolbar)
+                    }
+                case .list:
+                    List {
                         ForEach(games) { game in
-                            GameCard(game: .constant(game))
-                                .padding([.leading, .vertical])
+                            GameListRow(game: .constant(game))
                         }
                     }
                     .searchable(text: $searchString, placement: .toolbar)
