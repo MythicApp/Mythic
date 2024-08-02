@@ -19263,6 +19263,9 @@
         }
       }
     },
+    "Experimental" : {
+      "comment" : "Within the context of Mythic Engine"
+    },
     "Failed to boot \"%@.\"" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -36787,9 +36790,6 @@
         }
       }
     },
-    "Preview" : {
-      "comment" : "Within the context of Mythic Engine"
-    },
     "Progress:" : {
       "localizations" : {
         "af" : {
@@ -38122,6 +38122,9 @@
           }
         }
       }
+    },
+    "Release Stream" : {
+
     },
     "Remove" : {
       "localizations" : {
@@ -44599,9 +44602,6 @@
           }
         }
       }
-    },
-    "Stream" : {
-
     },
     "Submit" : {
       "localizations" : {

@@ -22,7 +22,7 @@ struct CompactGameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
+    @ObservedObject private var data = DatabaseData.shared
     
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
@@ -96,7 +96,7 @@ struct CompactGameCard: View {
                                             try await LocalGames.launch(game: game)
                                         }
                                         
-                                        if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
+                                        if data.data.hideMythicOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
                                     } catch {
                                         launchError = error
                                         isLaunchErrorAlertPresented = true

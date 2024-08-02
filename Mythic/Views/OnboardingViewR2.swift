@@ -25,7 +25,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         self.currentPhase = fromPhase
     }
     
-    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
+    @ObservedObject private var data = DatabaseData.shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     enum Phase: CaseIterable {
@@ -536,7 +536,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 secondRow: .init(
                                     Text("Mythic is now ready to use.")
                                 ), thirdRow: [
-                                    .nextArrow(function: { isOnboardingPresented = false })
+                                    .nextArrow(function: { data.data.hasCompletedOnboarding = true })
                                 ]
                             )
                         }

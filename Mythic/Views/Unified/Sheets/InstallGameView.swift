@@ -24,7 +24,8 @@ struct InstallViewEvo: View {
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
     
-    @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
+    @State private var baseURL = DatabaseData.shared.data.gameInstallPath
+    
     @ObservedObject var operation: GameOperation = .shared
     
     var body: some View {

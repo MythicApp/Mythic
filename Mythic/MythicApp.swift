@@ -21,7 +21,7 @@ struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     // MARK: - State Properties
-    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
+    @ObservedObject private var data = DatabaseData.shared
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
     @StateObject private var networkMonitor: NetworkMonitor = .init()
@@ -42,7 +42,7 @@ struct MythicApp: App {
     // MARK: - App Body
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isOnboardingPresented {
+            if !data.data.hasCompletedOnboarding {
                 OnboardingR2(fromPhase: onboardingPhase)
                     .onAppear {
                         toggleTitleBar(false)
@@ -70,10 +70,10 @@ struct MythicApp: App {
                 
                 Button("Restart Onboarding...") {
                     withAnimation(.easeInOut(duration: 2)) {
-                        isOnboardingPresented = true
+                        data.data.hasCompletedOnboarding = false
                     }
                 }
-                .disabled(isOnboardingPresented)
+                .disabled(!data.data.hasCompletedOnboarding)
                 .keyboardShortcut("O", modifiers: [.command])
             }
         }

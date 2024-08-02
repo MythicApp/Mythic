@@ -28,7 +28,6 @@ import SwordRPC
 struct HomeView: View {
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var loadingError = false
     @State private var isLoading = false

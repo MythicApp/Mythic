@@ -29,13 +29,18 @@ final class Engine {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Engine"
     )
-    
-    enum Stream: String {
-        case stable = "7.7"
-        case staging = "staging"
-    }
-    
-    static let downloadBranch: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
+
+    /// The URLs for the different engine types.
+    private static let engineDownloadURLs: [DatabaseData.EngineReleaseStream: URL] = [
+        .stable: URL(string: "https://nightly.link/MythicApp/Engine/workflows/build/7.7/Engine.zip")!,
+        .experimental: URL(string: "https://nightly.link/MythicApp/Engine/workflows/build/staging/Engine.zip")!
+    ]
+
+    /// The base URLs for the different engine types's repo's metadata.
+    private static let engineMetadataURLs: [DatabaseData.EngineReleaseStream: URL] = [
+        .stable: URL(string: "https://raw.githubusercontent.com/MythicApp/Engine/7.7/properties.plist")!,
+        .experimental: URL(string: "https://raw.githubusercontent.com/MythicApp/Engine/staging/properties.plist")!
+    ]
     
     private static let lock = NSLock() // unused
     
@@ -61,9 +66,13 @@ final class Engine {
         return version
     }
     
-    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
+    @MainActor static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
         return try await withCheckedThrowingContinuation { continuation in
-            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(downloadBranch)/Engine.zip")!) { tempfile, response, error in
+            // Get engine URL
+            let storageValue = DatabaseData.shared.data.engineReleaseStream
+            let engineUrl = engineDownloadURLs[storageValue]!
+
+            let download = URLSession.shared.downloadTask(with: engineUrl) { tempfile, response, error in
                 guard error == nil else { continuation.resume(throwing: error!); return }
                 guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
                 
@@ -106,11 +115,13 @@ final class Engine {
      
      - Returns: The semantic version of the latest libraries.
      */
-    static func fetchLatestVersion(stream: Stream = .stable) -> SemanticVersion? {
+    static func fetchLatestVersion(stream: DatabaseData.EngineReleaseStream = .stable) -> SemanticVersion? {
         let group = DispatchGroup()
         var latestVersion: SemanticVersion?
+    
+        let metadata = engineMetadataURLs[stream]!
         
-        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(downloadBranch)/properties.plist")!) { data, _, error in
+        let task = URLSession.shared.dataTask(with: metadata) { data, _, error in
             defer { group.leave() }
             
             guard error == nil else { log.error("Unable to check for new Engine version: \(error!.localizedDescription)"); return }
