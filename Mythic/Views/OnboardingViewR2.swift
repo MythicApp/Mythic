@@ -68,6 +68,8 @@ struct OnboardingR2: View { // TODO: ViewModel
         
     }
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var currentPhase: Phase
     @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultBottleSetup]
     
@@ -214,8 +216,11 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         Text("Enter the 'authorisationCode' from the JSON response in the field below.")
                                         
                                         HStack {
-                                            TextField("Enter authorisation code...", text: $epicSigninAuthKey)
+                                            SecureField("Enter authorisation code...", text: $epicSigninAuthKey)
                                                 .onSubmit { signIn(type: .epic) }
+                                                .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                                .textFieldStyle(.roundedBorder)
+                                            
                                             // .frame(width: 400, alignment: .center)
                                             
                                             if isSigningIn {

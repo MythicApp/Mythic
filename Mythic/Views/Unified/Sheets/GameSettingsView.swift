@@ -196,6 +196,7 @@ private extension GameSettingsView {
                 )
             )
             .truncationMode(.tail)
+            .textFieldStyle(.roundedBorder)
             .onSubmit {
                 modifyThumbnailURL()
             }
