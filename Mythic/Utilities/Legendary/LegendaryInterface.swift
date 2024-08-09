@@ -33,6 +33,8 @@ final class Legendary {
     /// The file location for legendary's configuration files.
     static let configLocation = Bundle.appHome!.appending(path: "Config").path
     
+    static let legendary: URL = .init(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
+    
     /// Logger instance for legendary.
     static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
     
@@ -74,9 +76,9 @@ final class Legendary {
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((String) -> String?)? = nil, environment: [String: String] = .init(), completion: @escaping (CommandOutput) -> Void) async throws {
         let task = Process()
-        task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
+        task.executableURL = legendary
         
         let stdin: Pipe = .init()
         let stderr: Pipe = .init()
@@ -94,7 +96,8 @@ final class Legendary {
         
         task.arguments = mutableArgs
         
-        let constructedEnvironment = ["LEGENDARY_CONFIG_PATH": configLocation].merging(environment ?? .init(), uniquingKeysWith: { $1 })
+        let constructedEnvironment = ["LEGENDARY_CONFIG_PATH": configLocation].merging(environment, uniquingKeysWith: { $1 })
+        
         let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
         task.environment = constructedEnvironment
         
@@ -130,7 +133,7 @@ final class Legendary {
             runningCommands.removeValue(forKey: identifier)
         }
         
-        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        log.debug("[Legendary.command] executing command [\(identifier)]: `\(terminalFormat)`")
         
         try task.run()
         

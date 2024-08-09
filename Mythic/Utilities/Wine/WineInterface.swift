@@ -24,8 +24,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     /// Logger instance for swift parsing of wine.
     internal static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
+    static let wine64: URL = Engine.directory.appending(path: "wine/bin/wine64")
+    
     private static var _runningCommands: [String: Process] = .init()
-    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
+    private static let _runningCommandsQueue = DispatchQueue(label: "wineRunningCommands", attributes: .concurrent)
     
     /// Dictionary to monitor running commands and their identifiers.
     static var runningCommands: [String: Process] {
@@ -133,9 +135,9 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, bottleURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String] = .init(), completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
         let task = Process()
-        task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
+        task.executableURL = wine64
         
         let stdin: Pipe = .init()
         let stderr: Pipe = .init()
@@ -154,7 +156,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             constructedEnvironment["WINEPREFIX"] = bottleURL.path
         }
         
-        constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
+        constructedEnvironment.merge(environment, uniquingKeysWith: { $1 })
                                      
         let terminalFormat = "\((constructedEnvironment.map { "\($0.key)=\"\($0.value)\"" }).joined(separator: " ")) \(task.executableURL!.relativePath.replacingOccurrences(of: " ", with: "\\ ")) \(task.arguments!.joined(separator: " "))"
         task.environment = constructedEnvironment
@@ -191,7 +193,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             runningCommands.removeValue(forKey: identifier)
         }
         
-        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        log.debug("[Wine.command] executing command [\(identifier)]: `\(terminalFormat)`")
         
         try task.run()
         
