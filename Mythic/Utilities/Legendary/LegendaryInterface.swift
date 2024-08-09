@@ -360,7 +360,8 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
         
-        guard game.platform == .windows && Engine.exists else { throw Engine.NotInstalledError() }
+        if case .windows = game.platform, !Engine.exists { throw Engine.NotInstalledError() }
+        
         guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
         let bottle = try Wine.getBottleObject(url: bottleURL)
         
