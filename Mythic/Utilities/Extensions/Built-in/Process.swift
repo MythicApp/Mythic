@@ -10,35 +10,38 @@ import Foundation
 extension Process {
     @discardableResult
     static func execute(_ executablePath: String, arguments: [String]) throws -> String {
-        let process = Process()
-        process.launchPath = executablePath
-        process.arguments = arguments
+        let task = Process()
+        task.launchPath = executablePath
+        task.arguments = arguments
         
-        let pipe = Pipe()
-        process.standardOutput = pipe
+        let stdout: Pipe = .init()
+        let stderr: Pipe = .init()
         
-        try? process.run()
-        process.waitUntilExit()
+        task.standardOutput = stdout
+        task.standardError = stderr
         
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        try task.run()
+        task.waitUntilExit()
+        
+        let data = stdout.fileHandleForReading.readDataToEndOfFile()
         let output = String(decoding: data, as: UTF8.self)
         
-        return output.trimmingCharacters(in: .whitespacesAndNewlines)
+        return output
     }
     
     static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
-        let process = Process()
+        let task = Process()
         
-        process.launchPath = executablePath
-        process.arguments = arguments
+        task.launchPath = executablePath
+        task.arguments = arguments
         
         let stderr = Pipe()
         let stdout = Pipe()
         
-        process.standardError = stdout
-        process.standardOutput = stdout
+        task.standardError = stdout
+        task.standardOutput = stdout
         
-        try? process.run()
+        try task.run()
         
         let output: Legendary.CommandOutput = .init()
         
