@@ -37,7 +37,7 @@ struct InstallViewEvo: View {
                     
                     if output.stdout.contains("Installation requirements check returned the following results:") {
                         if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                            Legendary.stopCommand(identifier: "install")
+                            Legendary.stopCommand(identifier: "parseOptionalPacks")
                             installationError = Legendary.InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
                             isInstallationErrorPresented = true
                             return
@@ -75,6 +75,9 @@ struct InstallViewEvo: View {
                         isPresented = false
                     }
                 )
+            }
+            .onDisappear {
+                Legendary.stopCommand(identifier: "parseOptionalPacks")
             }
         
         if operation.current != nil {
