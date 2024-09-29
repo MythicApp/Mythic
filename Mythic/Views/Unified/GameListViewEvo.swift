@@ -69,7 +69,7 @@ struct GameListEvo: View {
                 .searchable(text: $searchString, placement: .toolbar)
             } else {
                 ScrollView(.horizontal) {
-                    LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                    LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
                         ForEach(games) { game in
                             GameCard(game: .constant(game))
                                 .padding([.leading, .vertical])
