@@ -69,6 +69,7 @@
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
 		6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */; };
 		6A29356B2BFCFAFD0035CE4B /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */; };
+		6A2E7EA52CAAE44700A18BA2 /* MainEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E7EA42CAAE44700A18BA2 /* MainEvo.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
@@ -80,7 +81,6 @@
 		6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */; };
-		6AEEFA4A2CA93A090025C840 /* MainEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEFA492CA93A060025C840 /* MainEvo.swift */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
 		6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC02802ABE02970004AB77 /* Sparkle */; };
@@ -162,6 +162,7 @@
 		6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6A2934F52BFCFAFD0035CE4B /* Mythic.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Mythic.entitlements; sourceTree = "<group>"; };
 		6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MythicApp.swift; sourceTree = "<group>"; };
+		6A2E7EA42CAAE44700A18BA2 /* MainEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEvo.swift; sourceTree = "<group>"; };
 		6A496A722C1AF75600FD637B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
@@ -169,7 +170,6 @@
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormView.swift; sourceTree = "<group>"; };
 		6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBlurView.swift; sourceTree = "<group>"; };
-		6AEEFA492CA93A060025C840 /* MainEvo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEvo.swift; sourceTree = "<group>"; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -268,7 +268,7 @@
 		6A2934DA2BFCFAFD0035CE4B /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
-				6AEEFA492CA93A060025C840 /* MainEvo.swift */,
+				6A2E7EA42CAAE44700A18BA2 /* MainEvo.swift */,
 				6A2934D22BFCFAFD0035CE4B /* Accounts.swift */,
 				6A2934D32BFCFAFD0035CE4B /* Bottles.swift */,
 				6A2934D42BFCFAFD0035CE4B /* DownloadsViewEvo.swift */,
@@ -530,6 +530,7 @@
 				6A2935592BFCFAFD0035CE4B /* BottleCreationView.swift in Sources */,
 				6A0688462C2BD144004DF10F /* CircularButton.swift in Sources */,
 				6A2935562BFCFAFD0035CE4B /* GameCard.swift in Sources */,
+				6A2E7EA52CAAE44700A18BA2 /* MainEvo.swift in Sources */,
 				6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */,
 				6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */,
 				6A29354F2BFCFAFD0035CE4B /* DownloadsViewEvo.swift in Sources */,
@@ -537,7 +538,6 @@
 				6A2935602BFCFAFD0035CE4B /* BottleListView.swift in Sources */,
 				6A29355E2BFCFAFD0035CE4B /* StopDownloadAlert.swift in Sources */,
 				6A2935662BFCFAFD0035CE4B /* AppDelegate.swift in Sources */,
-				6AEEFA4A2CA93A090025C840 /* MainEvo.swift in Sources */,
 				6A29355D2BFCFAFD0035CE4B /* InstallStatusView.swift in Sources */,
 				5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */,
 				6A29354C2BFCFAFD0035CE4B /* Library.swift in Sources */,
