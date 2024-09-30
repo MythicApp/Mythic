@@ -41,16 +41,6 @@ struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
 }
 
-func toggleTitleBar(_ value: Bool) {
-    if let window = NSApp.windows.first {
-        window.titlebarAppearsTransparent = !value
-        window.titleVisibility = value ? .visible : .hidden
-        window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
-        window.standardWindowButton(.zoomButton)?.isHidden = !value
-        window.isMovableByWindowBackground = !value
-    }
-}
-
 // MARK: - Functions
 // MARK: App Install Checker
 /**
