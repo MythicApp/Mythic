@@ -217,7 +217,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     /// ⚠︎ Incomplete implementation
     static func launchWinetricks(bottleURL: URL) throws {
         guard Engine.exists else {
-            log.error("Unable to launch winetricks, Mythic Engine is not installed!")
+            log.error("Unable to launch winetricks, Mythic Engine is not installed.")
             throw Engine.NotInstalledError()
         }
         

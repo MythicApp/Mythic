@@ -117,6 +117,9 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         }
     }
     
+    var isInstalling: Bool { GameOperation.shared.current?.game == self }
+    var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
+    
     // MARK: Functions
     func move(to newLocation: URL) async throws {
         switch source {
@@ -296,7 +299,7 @@ class GameOperation: ObservableObject {
             let isRunning = {
                 switch gamePlatform {
                 case .macOS:
-                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
                 case .windows:
                     (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
                 }
@@ -309,7 +312,7 @@ class GameOperation: ObservableObject {
                 try? await Task.sleep(for: .seconds(3))
             }
             
-            GameOperation.log.debug("\(game.title) \(isRunning ? "is still running" : "has been quit" )")
+            GameOperation.log.debug("\"\(game.title)\" \(isRunning ? "is still running" : "has been quit" )")
         }
     }
     
