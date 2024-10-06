@@ -97,14 +97,17 @@ extension Wine {
                 log.error("Container Initializer: Unable to fetch object for existing container.")
                 return nil
             }
-            if object.url != knownURL {
-                log.warning("Container Initializer: Fetched URL doesn't match known URL; updating.")
-            }
+            
             self.name = object.name
             self.url = knownURL
             self.id = object.id
             self.settings = object.settings
             self.propertiesFile = knownURL.appendingPathComponent("properties.plist")
+            
+            if object.url != knownURL {
+                log.warning("Container Initializer: Fetched URL doesn't match known URL; updating.")
+                saveProperties()
+            }
         }
 
         /// Convenience initializer to create a container from a URL.

@@ -88,6 +88,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             
             do {
                 try files.moveItem(at: oldBottles, to: newBottles)
+                if let contents = try? files.contentsOfDirectory(at: oldBottles, includingPropertiesForKeys: nil) {
+                    for container in contents {
+                        _ = Wine.Container(knownURL: container) // thank me for designing smart initializer!!
+                    }
+                }
             } catch {
                 Logger.app.error("Unable to rename default 'Bottles' folder to 'Containers': \(error.localizedDescription)")
             }
