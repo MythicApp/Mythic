@@ -65,7 +65,7 @@ struct BottleSettingsView: View {
                 Picker("Current Bottle", selection: $selectedBottleURL) {
                     ForEach(Wine.bottleObjects) { bottle in
                         Text(bottle.name)
-                            .tag(bottle.url)
+                            .tag(bottle.url as URL?)
                     }
                 }
             } else {
