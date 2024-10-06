@@ -35,7 +35,7 @@ final class Engine {
         case staging = "staging"
     }
     
-    static let downloadBranch: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
+    static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
     
     private static let lock = NSLock() // unused
     
@@ -61,9 +61,9 @@ final class Engine {
         return version
     }
     
-    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
+    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
         return try await withCheckedThrowingContinuation { continuation in
-            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(downloadBranch)/Engine.zip")!) { tempfile, response, error in
+            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!) { tempfile, response, error in
                 guard error == nil else { continuation.resume(throwing: error!); return }
                 guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
                 
@@ -75,7 +75,7 @@ final class Engine {
                         if unzipProgress.isFinished {
                             let archive = Bundle.appHome!.appending(path: "Engine.txz")
                             _ = try Process.execute("/usr/bin/tar", arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
-                            try files.removeItem(at: archive)
+                            try? files.removeItem(at: archive)
                         }
                         installHandler(true)
                     } catch {
@@ -106,11 +106,11 @@ final class Engine {
      
      - Returns: The semantic version of the latest libraries.
      */
-    static func fetchLatestVersion(stream: Stream = .stable) -> SemanticVersion? {
+    static func fetchLatestVersion(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> SemanticVersion? {
         let group = DispatchGroup()
         var latestVersion: SemanticVersion?
         
-        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(downloadBranch)/properties.plist")!) { data, _, error in
+        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(stream.rawValue)/properties.plist")!) { data, _, error in
             defer { group.leave() }
             
             guard error == nil else { log.error("Unable to check for new Engine version: \(error!.localizedDescription)"); return }
@@ -125,9 +125,49 @@ final class Engine {
         
         group.enter()
         task.resume()
-        _ = group.wait(timeout: .now() + 2)
+        
+        group.wait()
         
         return latestVersion
+    }
+    
+    static func isLatestVersionReadyForDownload(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> Bool? {
+        let group = DispatchGroup()
+        var result: Bool?
+        
+        let task = URLSession.shared.dataTask(with: .init(string: "https://api.github.com/repos/MythicApp/Engine/actions/runs")!) { data, _, error in
+            defer { group.leave() }
+            
+            guard error == nil else { log.error("Unable to connect to GitHub API, cannot verify if Mythic Engine is ready for download: \(error!.localizedDescription)"); return }
+            guard let data = data else { log.error("GitHub API returned nil data, unable to verify if Mythic Engine is ready for download."); return }
+            
+            do {
+                let json = try JSON(data: data)
+                let runs = json["workflow_runs"]
+                
+                func isSuccessfulRun(_ run: (key: String, value: JSON)) -> Bool {
+                    guard let branch = run.1["head_branch"].string,
+                          let status = run.1["status"].string,
+                          let conclusion = run.1["conclusion"].string else {
+                        return false
+                    }
+                    return branch == stream.rawValue && status == "completed" && conclusion == "success"
+                }
+                
+                let recent = runs.first(where: isSuccessfulRun)
+                result = (recent != nil)
+            } catch {
+                log.error("Unable to verify if Engine has finished cloud-compilation: \(error.localizedDescription)")
+            }
+
+        }
+        
+        group.enter()
+        task.resume()
+        
+        group.wait()
+        
+        return result
     }
     
     static func needsUpdate() -> Bool? {

@@ -136,7 +136,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
+        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true, Engine.isLatestVersionReadyForDownload() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
                let latestEngineVersion = Engine.fetchLatestVersion() {
