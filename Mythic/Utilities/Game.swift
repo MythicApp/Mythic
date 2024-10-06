@@ -64,23 +64,23 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Properties
-    var bottleURL: URL? {
+    var containerURL: URL? {
         get {
-            let key: String = id.appending("_bottleURL")
-            if let url = defaults.url(forKey: key), !Wine.bottleExists(bottleURL: url) {
+            let key: String = id.appending("_containerURL")
+            if let url = defaults.url(forKey: key), !Wine.containerExists(at: url) {
                 defaults.removeObject(forKey: key)
             }
             
             if defaults.url(forKey: key) == nil {
-                defaults.set(Wine.bottleURLs.first, forKey: key)
+                defaults.set(Wine.containerURLs.first, forKey: key)
             }
             
             return defaults.url(forKey: key)
         }
         set {
-            let key: String = id.appending("_bottleURL")
+            let key: String = id.appending("_containerURL")
             guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
-            if Wine.bottleURLs.contains(newValue) {
+            if Wine.containerURLs.contains(newValue) {
                 defaults.set(newValue, forKey: key)
             }
         }

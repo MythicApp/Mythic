@@ -38,7 +38,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         case engineDisclaimer,
              engineDownloader,
              engineInstaller
-        case defaultBottleSetup
+        case defaultContainerSetup
         case finished
         
         mutating func next(forceNext: Bool = false) {
@@ -71,7 +71,7 @@ struct OnboardingR2: View { // TODO: ViewModel
     @Environment(\.colorScheme) var colorScheme
     
     @State private var currentPhase: Phase
-    @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultBottleSetup]
+    @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultContainerSetup]
     
     @State private var colorfulAnimationColors: [Color] = [
         .init(hex: "#5412F6"),
@@ -501,12 +501,12 @@ struct OnboardingR2: View { // TODO: ViewModel
                             .onChange(of: engineInstallationComplete) {
                                 if $1 == true { animateNextPhase() }
                             }
-                        case .defaultBottleSetup: // MARK: Phase: Default Bottle Setup
+                        case .defaultContainerSetup: // MARK: Phase: Default Container Setup
                             ContentView(
                                 isOpacityAnimated: $isOpacityAnimated,
                                 isSecondRowPresented: $isSecondRowPresented,
                                 isThirdRowPresented: $isThirdRowPresented,
-                                label: Text("Setting up default bottle..."),
+                                label: Text("Setting up default container..."),
                                 secondRow: .init(
                                     VStack {
                                         Text(
@@ -526,7 +526,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                     case .success:
                                         animateNextPhase()
                                     case .failure(let failure):
-                                        guard type(of: failure) != Wine.BottleAlreadyExistsError.self else { animateNextPhase(); return }
+                                        guard type(of: failure) != Wine.ContainerAlreadyExistsError.self else { animateNextPhase(); return }
                                         errorString = failure.localizedDescription
                                     }
                                 }

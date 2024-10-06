@@ -1,5 +1,5 @@
 //
-//  BottleList.swift
+//  ContainerListView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 19/2/2024.
@@ -9,23 +9,23 @@ import SwiftUI
 import OSLog
 import SwordRPC
 
-struct BottleListView: View {
-    @State private var isBottleConfigurationViewPresented = false
+struct ContainerListView: View {
+    @State private var isContainerConfigurationViewPresented = false
     @State private var isDeletionAlertPresented = false
     
-    @State private var selectedBottleURL: URL = .init(filePath: .init())
-    @State private var bottleURLToDelete: URL = .init(filePath: .init())
+    @State private var selectedContainerURL: URL = .init(filePath: .init())
+    @State private var containerURLToDelete: URL = .init(filePath: .init())
     
     var body: some View {
         Form {
-            ForEach(Wine.bottleObjects) { bottle in
+            ForEach(Wine.containerObjects) { container in
                 HStack {
-                    Text(bottle.name)
+                    Text(container.name)
                     
                     Button {
-                        workspace.open(bottle.url)
+                        workspace.open(container.url)
                     } label: {
-                        Text("\(bottle.url.prettyPath()) \(Image(systemName: "link"))")
+                        Text("\(container.url.prettyPath()) \(Image(systemName: "link"))")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .scaledToFit()
@@ -34,16 +34,16 @@ struct BottleListView: View {
                     
                     Spacer()
                     Button(action: {
-                        selectedBottleURL = bottle.url
-                        isBottleConfigurationViewPresented = true
+                        selectedContainerURL = container.url
+                        isContainerConfigurationViewPresented = true
                     }, label: {
                         Image(systemName: "gear")
                     })
                     .buttonStyle(.borderless)
-                    .help("Modify default settings for \"\(bottle.name)\"")
+                    .help("Modify default settings for \"\(container.name)\"")
                     
                     Button {
-                        bottleURLToDelete = bottle.url
+                        containerURLToDelete = container.url
                         isDeletionAlertPresented = true
                     } label: {
                         Image(systemName: "xmark.bin")
@@ -51,22 +51,22 @@ struct BottleListView: View {
                     .buttonStyle(.borderless)
                     .foregroundStyle(.secondary)
                     .alert(isPresented: $isDeletionAlertPresented) {
-                        let bottle = try? Wine.getBottleObject(url: bottleURLToDelete)
+                        let container = try? Wine.getContainerObject(url: containerURLToDelete)
                         return Alert(
-                            title: .init("Are you sure you want to delete \"\(bottle?.name ?? "Unknown")\"?"),
+                            title: .init("Are you sure you want to delete \"\(container?.name ?? "Unknown")\"?"),
                             message: .init("This process cannot be undone."),
                             primaryButton: .destructive(.init("Delete")) {
                                 do {
-                                    guard let bottleURL = bottle?.url else { throw Wine.BottleDoesNotExistError() }
-                                    try Wine.deleteBottle(bottleURL: bottleURL)
+                                    guard let containerURL = container?.url else { throw Wine.ContainerDoesNotExistError() }
+                                    try Wine.deleteContainer(containerURL: containerURL)
                                 } catch {
-                                    Logger.file.error("Unable to delete bottle \(bottle?.name ?? ""): \(error.localizedDescription)")
-                                    bottleURLToDelete = .init(filePath: .init())
+                                    Logger.file.error("Unable to delete container \(container?.name ?? ""): \(error.localizedDescription)")
+                                    containerURLToDelete = .init(filePath: .init())
                                     isDeletionAlertPresented = false
                                 }
                             },
                             secondaryButton: .cancel(.init("Cancel")) {
-                                bottleURLToDelete = .init(filePath: .init())
+                                containerURLToDelete = .init(filePath: .init())
                                 isDeletionAlertPresented = false
                             }
                         )
@@ -76,14 +76,14 @@ struct BottleListView: View {
         }
         .formStyle(.grouped)
         
-        .sheet(isPresented: $isBottleConfigurationViewPresented) {
-            BottleConfigurationView(bottleURL: $selectedBottleURL, isPresented: $isBottleConfigurationViewPresented)
+        .sheet(isPresented: $isContainerConfigurationViewPresented) {
+            ContainerConfigurationView(containerURL: $selectedContainerURL, isPresented: $isContainerConfigurationViewPresented)
         }
     }
 }
 
-struct BottleConfigurationView: View {
-    @Binding var bottleURL: URL
+struct ContainerConfigurationView: View {
+    @Binding var containerURL: URL
     @Binding var isPresented: Bool
     
     @State private var configuratorActive: Bool = false
@@ -92,19 +92,19 @@ struct BottleConfigurationView: View {
     @State private var isOpenAlertPresented = false
     @State private var openError: Error?
     
-    init(bottleURL: Binding<URL>, isPresented: Binding<Bool>) {
-        self._bottleURL = bottleURL
+    init(containerURL: Binding<URL>, isPresented: Binding<Bool>) {
+        self._containerURL = containerURL
         self._isPresented = isPresented
     }
     
     var body: some View {
-        if let bottle = try? Wine.getBottleObject(url: self.bottleURL) {
+        if let container = try? Wine.getContainerObject(url: self.containerURL) {
             VStack {
-                Text("Configure \"\(bottle.name)\"")
+                Text("Configure \"\(container.name)\"")
                     .font(.title)
                 
                 Form {
-                    BottleSettingsView(selectedBottleURL: Binding($bottleURL), withPicker: false)
+                    ContainerSettingsView(selectedContainerURL: Binding($containerURL), withPicker: false)
                     // TODO: Add slider for scaling
                     // TODO: Add slider for winver
                 }
@@ -122,7 +122,7 @@ struct BottleConfigurationView: View {
                         if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
                             Task {
                                 do {
-                                    try await Wine.command(arguments: [url.path(percentEncoded: false)], identifier: "custom_launch_\(url)", waits: true, bottleURL: bottle.url) { _ in }
+                                    try await Wine.command(arguments: [url.path(percentEncoded: false)], identifier: "custom_launch_\(url)", waits: true, containerURL: container.url) { _ in }
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true
@@ -142,13 +142,13 @@ struct BottleConfigurationView: View {
                     }
                     
                     Button("Launch Winetricks") {
-                        try? Wine.launchWinetricks(bottleURL: bottle.url)
+                        try? Wine.launchWinetricks(containerURL: container.url)
                     }
                     .disabled(true)
                     .help("Winetricks GUI support is currently broken.")
                     
                     Button("Launch Configurator") {
-                        Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", bottleURL: bottle.url) { _ in } }
+                        Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
                             if !configuratorActive { timer.invalidate() }
@@ -157,7 +157,7 @@ struct BottleConfigurationView: View {
                     .disabled(configuratorActive)
                     
                     Button("Launch Registry Editor") {
-                        Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", bottleURL: bottle.url) { _ in } }
+                        Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
                             if !registryEditorActive { timer.invalidate() }
@@ -175,8 +175,8 @@ struct BottleConfigurationView: View {
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
-                    presence.details = "Configuring bottle \"\(bottle.name)\""
-                    presence.state = "Configuring Bottle"
+                    presence.details = "Configuring container \"\(container.name)\""
+                    presence.state = "Configuring Container"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
                     
@@ -190,5 +190,5 @@ struct BottleConfigurationView: View {
 }
 
 #Preview {
-    BottleListView()
+    ContainerListView()
 }

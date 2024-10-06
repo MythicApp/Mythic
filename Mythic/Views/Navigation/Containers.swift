@@ -1,5 +1,5 @@
 //
-//  Bottles.swift
+//  Containers.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 12/9/2023.
@@ -16,18 +16,18 @@
 import SwiftUI
 import SwordRPC
 
-struct BottlesView: View {
-    @State private var isBottleCreationViewPresented = false
+struct ContainersView: View {
+    @State private var isContainerCreationViewPresented = false
     
     var body: some View {
-        BottleListView()
-            .navigationTitle("Bottles")
+        ContainerListView()
+            .navigationTitle("Containers")
         
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
                     presence.details = "Managing their Windows® Instances"
-                    presence.state = "Managing bottles"
+                    presence.state = "Managing containers"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
                     
@@ -39,32 +39,32 @@ struct BottlesView: View {
                 if Engine.exists {
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
-                            isBottleCreationViewPresented = true
+                            isContainerCreationViewPresented = true
                         } label: {
                             Image(systemName: "plus")
                         }
-                        .help("Add a bottle")
+                        .help("Add a container")
                     }
                     
-                    if let bottlesDirectory = Wine.bottlesDirectory {
+                    if let containersDirectory = Wine.containersDirectory {
                         ToolbarItem(placement: .confirmationAction) {
                             Button {
-                                workspace.open(bottlesDirectory)
+                                workspace.open(containersDirectory)
                             } label: {
                                 Image(systemName: "folder")
                             }
-                            .help("Open Bottles directory")
+                            .help("Open Containers directory")
                         }
                     }
                 }
             }
         
-            .sheet(isPresented: $isBottleCreationViewPresented) {
-                BottleCreationView(isPresented: $isBottleCreationViewPresented)
+            .sheet(isPresented: $isContainerCreationViewPresented) {
+                ContainerCreationView(isPresented: $isContainerCreationViewPresented)
             }
     }
 }
 
 #Preview {
-    BottlesView()
+    ContainersView()
 }

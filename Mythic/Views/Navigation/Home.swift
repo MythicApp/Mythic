@@ -75,7 +75,7 @@ struct HomeView: View {
                 
                 // MARK: View 2 (Bottom)
                 VStack {
-                    BottleListView()
+                    ContainerListView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(.background)

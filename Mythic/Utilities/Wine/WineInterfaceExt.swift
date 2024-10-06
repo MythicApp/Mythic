@@ -42,10 +42,9 @@ extension Wine {
         let string: String
     }
     
-    /// Signifies that a wineprefix is unable to boot.
+    /// Signifies that a container is unable to boot.
     struct UnableToBootError: LocalizedError {
-        // TODO: proper implementation, see `Wine.boot(prefix: <#URL#>)`
-        var errorDescription: String? = "Bottle unable to boot." // TODO: add reason if possible
+        var errorDescription: String? = "Container unable to boot." // TODO: add reason if possible
     }
     
     internal enum RegistryType: String {
@@ -61,8 +60,8 @@ extension Wine {
         case desktop = #"HKCU\Control Panel\Desktop"#
     }
     
-    class Bottle: Codable, Hashable, Identifiable, Equatable {
-        static func == (lhs: Bottle, rhs: Bottle) -> Bool {
+    class Container: Codable, Hashable, Identifiable, Equatable {
+        static func == (lhs: Container, rhs: Container) -> Bool {
             return (lhs.url == rhs.url && lhs.id == rhs.id)
         }
         
@@ -71,35 +70,35 @@ extension Wine {
             hasher.combine(id)
         }
 
-        /// Initializes a new bottle, checking if a bottle at the given URL already exists and attempting to fetch its properties.
-        init(name: String, url: URL, id: UUID = .init(), settings: BottleSettings) {
-            let existingBottle = try? getBottleObject(url: url)
-            if existingBottle != nil {
-                log.notice("Bottle Initializer: Bottle already exists at \(url.prettyPath()); fetching known properties.")
-                if existingBottle?.url != url {
-                    log.debug("Bottle Initializer: Fetched URL doesn't match known URL; updating.")
+        /// Initializes a new container, checking if a container at the given URL already exists and attempting to fetch its properties.
+        init(name: String, url: URL, id: UUID = .init(), settings: ContainerSettings) {
+            let existingContainer = try? getContainerObject(url: url)
+            if existingContainer != nil {
+                log.notice("Container Initializer: Container already exists at \(url.prettyPath()); fetching known properties.")
+                if existingContainer?.url != url {
+                    log.debug("Container Initializer: Fetched URL doesn't match known URL; updating.")
                 }
-            } else if bottleExists(bottleURL: url) {
-                log.warning("Bottle Initializer: Bottle already exists at \(url.prettyPath()), but unable to fetch known properties; overwriting")
+            } else if containerExists(at: url) {
+                log.warning("Container Initializer: Container already exists at \(url.prettyPath()), but unable to fetch known properties; overwriting")
             }
             
-            self.name = existingBottle?.name ?? name
+            self.name = existingContainer?.name ?? name
             self.url = url
-            self.id = existingBottle?.id ?? id
-            self.settings = existingBottle?.settings ?? settings
+            self.id = existingContainer?.id ?? id
+            self.settings = existingContainer?.settings ?? settings
             self.propertiesFile = url.appendingPathComponent("properties.plist")
             
             saveProperties()
         }
         
         init?(knownURL: URL) {
-            guard bottleExists(bottleURL: knownURL) else { log.warning("Bottle Initializer: Unable to intialize nonexistent bottle."); return nil }
-            guard let object = try? getBottleObject(url: knownURL) else {
-                log.error("Bottle Initializer: Unable to fetch object for existing bottle.")
+            guard containerExists(at: knownURL) else { log.warning("Container Initializer: Unable to intialize nonexistent container."); return nil }
+            guard let object = try? getContainerObject(url: knownURL) else {
+                log.error("Container Initializer: Unable to fetch object for existing container.")
                 return nil
             }
             if object.url != knownURL {
-                log.warning("Bottle Initializer: Fetched URL doesn't match known URL; updating.")
+                log.warning("Container Initializer: Fetched URL doesn't match known URL; updating.")
             }
             self.name = object.name
             self.url = knownURL
@@ -108,33 +107,33 @@ extension Wine {
             self.propertiesFile = knownURL.appendingPathComponent("properties.plist")
         }
 
-        /// Convenience initializer to create a bottle from a URL.
+        /// Convenience initializer to create a container from a URL.
         convenience init(createFrom url: URL) {
-            self.init(name: url.lastPathComponent, url: url, settings: defaultBottleSettings)
+            self.init(name: url.lastPathComponent, url: url, settings: defaultContainerSettings)
         }
 
         deinit { saveProperties() }
 
-        /// Saves the bottle properties to disk.
+        /// Saves the container properties to disk.
         func saveProperties() {
             let encoder = PropertyListEncoder()
             do {
                 let data = try encoder.encode(self)
                 try data.write(to: propertiesFile)
             } catch {
-                Logger.app.error("Error encoding & writing to properties file for bottle \"\(self.name)\" (\(self.url.prettyPath()))")
+                Logger.app.error("Error encoding & writing to properties file for container \"\(self.name)\" (\(self.url.prettyPath()))")
             }
         }
         
         var name: String
         var url: URL
         var id: UUID
-        var settings: BottleSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
+        var settings: ContainerSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
 
         private(set) var propertiesFile: URL
     }
     
-    struct BottleSettings: Codable, Hashable {
+    struct ContainerSettings: Codable, Hashable {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool
@@ -155,20 +154,20 @@ extension Wine {
         case win98 = "98"
     }
     
-    enum BottleScope: String, CaseIterable {
+    enum ContainerScope: String, CaseIterable {
         case individual
         case global
     }
     
-    struct BottleDoesNotExistError: LocalizedError {
-        var errorDescription: String? = "Attempted to modify a bottle which doesn't exist."
+    struct ContainerDoesNotExistError: LocalizedError {
+        var errorDescription: String? = "Attempted to modify a container which doesn't exist."
     }
     
-    struct BottleAlreadyExistsError: LocalizedError {
-        var errorDescription: String? = "Attempted to modify a bottle which already exists."
+    struct ContainerAlreadyExistsError: LocalizedError {
+        var errorDescription: String? = "Attempted to modify a container which already exists."
     }
     
     struct UnableToQueryRegistryError: LocalizedError {
-        var errorDescription: String? = "Unable to query registry of bottle."
+        var errorDescription: String? = "Unable to query registry of container."
     }
 }
