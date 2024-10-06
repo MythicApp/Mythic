@@ -5164,6 +5164,7 @@
       }
     },
     "Add a bottle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5352,6 +5353,9 @@
           }
         }
       }
+    },
+    "Add a container" : {
+
     },
     "Add to favorites" : {
       "localizations" : {
@@ -5544,6 +5548,7 @@
       }
     },
     "Are you sure you want to cancel bottle creation?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5732,6 +5737,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to cancel container creation?" : {
+
     },
     "Are you sure you want to cancel Mythic Engine (GPTK) installation?" : {
       "extractionState" : "stale",
@@ -8606,6 +8614,7 @@
       }
     },
     "Bottles" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10128,6 +10137,7 @@
       }
     },
     "Choose a name for your bottle:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -10316,6 +10326,9 @@
           }
         }
       }
+    },
+    "Choose a name for your container:" : {
+
     },
     "Choose the default base path for games:" : {
       "localizations" : {
@@ -11838,7 +11851,11 @@
         }
       }
     },
+    "Containers" : {
+
+    },
     "Create a bottle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12028,7 +12045,11 @@
         }
       }
     },
+    "Create a container" : {
+
+    },
     "Current Bottle" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12408,6 +12429,9 @@
           }
         }
       }
+    },
+    "Current Container" : {
+
     },
     "Dashboard" : {
       "localizations" : {
@@ -35648,6 +35672,7 @@
       }
     },
     "Open Bottles directory" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -35836,6 +35861,9 @@
           }
         }
       }
+    },
+    "Open Containers directory" : {
+
     },
     "Open..." : {
       "localizations" : {
@@ -41362,6 +41390,7 @@
       }
     },
     "Setting up default bottle..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -41550,6 +41579,9 @@
           }
         }
       }
+    },
+    "Setting up default container..." : {
+
     },
     "Settings" : {
       "localizations" : {
@@ -45561,6 +45593,7 @@
       }
     },
     "This will erase every persistent setting and bottle." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -45749,6 +45782,9 @@
           }
         }
       }
+    },
+    "This will erase every persistent setting and container." : {
+
     },
     "This will erase every persistent setting." : {
       "localizations" : {
@@ -50902,6 +50938,7 @@
       }
     },
     "Where do you want the bottle's base path to be located?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -51090,6 +51127,9 @@
           }
         }
       }
+    },
+    "Where do you want the container's base path to be located?" : {
+
     },
     "Where do you want the game's base path to be located?" : {
       "extractionState" : "stale",
@@ -52423,6 +52463,7 @@
       }
     },
     "Wine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

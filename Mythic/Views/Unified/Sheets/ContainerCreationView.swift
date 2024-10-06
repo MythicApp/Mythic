@@ -1,5 +1,5 @@
 //
-//  BottleCreation.swift
+//  ContainerCreation.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 29/1/2024.
@@ -17,11 +17,11 @@
 import SwiftUI
 import SwordRPC
 
-struct BottleCreationView: View {
+struct ContainerCreationView: View {
     @Binding var isPresented: Bool
     
-    @State private var bottleName: String = "My Bottle"
-    @State private var bottleURL: URL = Wine.bottlesDirectory!
+    @State private var containerName: String = "My Container"
+    @State private var containerURL: URL = Wine.containersDirectory!
     
     @State private var isBooting: Bool = false
     @State private var isCancellationAlertPresented: Bool = false
@@ -31,20 +31,20 @@ struct BottleCreationView: View {
     
     var body: some View {
         VStack {
-            Text("Create a bottle")
+            Text("Create a container")
                 .font(.title)
             
             Form {
-                TextField("Choose a name for your bottle:", text: $bottleName)
+                TextField("Choose a name for your container:", text: $containerName)
                 
                 HStack {
                     VStack {
                         HStack {
-                            Text("Where do you want the bottle's base path to be located?")
+                            Text("Where do you want the container's base path to be located?")
                             Spacer()
                         }
                         HStack {
-                            Text(bottleURL.prettyPath())
+                            Text(containerURL.prettyPath())
                                 .foregroundStyle(.placeholder)
                             
                             Spacer()
@@ -53,7 +53,7 @@ struct BottleCreationView: View {
                     
                     Spacer()
                     
-                    if !FileLocations.isWritableFolder(url: bottleURL) {
+                    if !FileLocations.isWritableFolder(url: containerURL) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("Folder is not writable.")
                     }
@@ -66,7 +66,7 @@ struct BottleCreationView: View {
                         openPanel.allowsMultipleSelection = false
                         
                         if openPanel.runModal() == .OK {
-                            bottleURL = openPanel.urls.first!
+                            containerURL = openPanel.urls.first!
                         }
                     }
                 }
@@ -83,8 +83,8 @@ struct BottleCreationView: View {
                 }
                 .alert(isPresented: $isCancellationAlertPresented) {
                     Alert(
-                        title: .init("Are you sure you want to cancel bottle creation?"),
-                        message: .init("This will cancel \"\(bottleName)\"'s creation."),
+                        title: .init("Are you sure you want to cancel container creation?"),
+                        message: .init("This will cancel \"\(containerName)\"'s creation."),
                         primaryButton: .destructive(.init("OK")),
                         secondaryButton: .cancel()
                     )
@@ -100,7 +100,7 @@ struct BottleCreationView: View {
                 Button("Done") {
                     Task(priority: .userInitiated) {
                         isBooting = true
-                        await Wine.boot(baseURL: bottleURL, name: bottleName) { result in
+                        await Wine.boot(baseURL: containerURL, name: containerName) { result in
                             switch result {
                             case .success:
                                 isBooting = false
@@ -115,15 +115,15 @@ struct BottleCreationView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(isBooting)
-                .disabled(!FileLocations.isWritableFolder(url: bottleURL))
-                .disabled((Wine.bottleURLs.first(where: { $0.lastPathComponent == bottleName}) != nil))
+                .disabled(!FileLocations.isWritableFolder(url: containerURL))
+                .disabled((Wine.containerURLs.first(where: { $0.lastPathComponent == containerName}) != nil))
             }
         }
         .padding()
         
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(
-                title: .init("Failed to boot \"\(bottleName)\"."),
+                title: .init("Failed to boot \"\(containerName)\"."),
                 message: .init(bootErrorDescription)
             )
         }
@@ -131,8 +131,8 @@ struct BottleCreationView: View {
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
-                presence.details = "Currently creating bottle \"\(bottleName)\""
-                presence.state = "Creating a bottle"
+                presence.details = "Currently creating container \"\(containerName)\""
+                presence.state = "Creating a container"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
                 
@@ -143,5 +143,5 @@ struct BottleCreationView: View {
 }
 
 #Preview {
-    BottleCreationView(isPresented: .constant(true))
+    ContainerCreationView(isPresented: .constant(true))
 }

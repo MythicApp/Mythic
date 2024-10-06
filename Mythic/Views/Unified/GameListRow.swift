@@ -122,7 +122,7 @@ private extension GameListRow {
 
     var isGamePlayable: Bool {
         let gameExists = game.path != nil ? files.fileExists(atPath: game.path!) : false
-        return gameExists && !operation.runningGames.contains(game) && !Wine.bottleURLs.isEmpty
+        return gameExists && !operation.runningGames.contains(game) && !Wine.containerURLs.isEmpty
     }
 
     func launchGame() {

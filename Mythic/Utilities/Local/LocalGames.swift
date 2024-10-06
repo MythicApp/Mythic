@@ -67,18 +67,18 @@ final class LocalGames {
             }
         case .windows: // FIXME: unneeded unification
             guard Engine.exists else { throw Engine.NotInstalledError() }
-            guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
-            let bottle = try Wine.getBottleObject(url: bottleURL)
+            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+            let container = try Wine.getContainerObject(url: containerURL)
             
             try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
             
             try await Wine.command(
                 arguments: [game.path!] + game.launchArguments,
                 identifier: "launch_\(game.title)",
-                bottleURL: bottle.url,
+                containerURL: container.url,
                 environment: [
-                    "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
-                    "WINEMSYNC": bottle.settings.msync ? "1" : "0"
+                    "MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0",
+                    "WINEMSYNC": container.settings.msync ? "1" : "0"
                 ]
             ) { _ in }
             

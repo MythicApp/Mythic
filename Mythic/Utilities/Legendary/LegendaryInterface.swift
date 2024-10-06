@@ -362,8 +362,8 @@ final class Legendary {
         
         if game.platform == .windows && Engine.exists == false { throw Engine.NotInstalledError() }
         
-        guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
-        let bottle = try Wine.getBottleObject(url: bottleURL)
+        guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+        let container = try Wine.getContainerObject(url: containerURL)
         
         Task { @MainActor in
             GameOperation.shared.launching = game
@@ -377,12 +377,12 @@ final class Legendary {
             needsUpdate(game: game) ? "--skip-version-check" : nil
         ] .compactMap { $0 }
         
-        var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
+        var environmentVariables = ["MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0"]
         
         if game.platform == .windows {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
-            environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
-            environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
+            environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
+            environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
         }
         
         arguments.append(contentsOf: game.launchArguments)

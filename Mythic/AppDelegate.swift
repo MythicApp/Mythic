@@ -31,8 +31,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
         
-        // MARK: Bottle cleanup in the event of external deletion
-        Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+        // MARK: Container cleanup in the event of external deletion
+        Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
         
         // MARK: Refresh legendary metadata
         Task(priority: .utility) {
@@ -51,7 +51,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             Logger.app.log("Older bottle format detected, commencing bottle management system migration")
             
             var iterations = 0
-            var convertedBottles: [Wine.Bottle] = .init()
+            var convertedBottles: [Wine.Container] = .init()
             
             for (name, bottle) in decodedData {
                 guard let urlArray = bottle["url"] as? [String: String], // unable to cast directly to URL
@@ -60,7 +60,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     return
                 }
                 
-                var settings = Wine.defaultBottleSettings
+                var settings = Wine.defaultContainerSettings
                 guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
                 settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
                 settings.msync = oldSettings["msync"] ?? settings.msync
@@ -68,7 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 
                 Task { @MainActor in
                     convertedBottles.append(.init(name: name, url: url, settings: settings))
-                    Wine.bottleURLs.insert(url)
+                    Wine.containerURLs.insert(url)
                 }
                 
                 iterations += 1
@@ -78,6 +78,48 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             
             Logger.file.notice("Bottle management system migration complete.")
             defaults.removeObject(forKey: "allBottles")
+        }
+        
+        // MARK: >= 0.3.2 Bottle → Container migration
+        let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
+        let newBottles = Bundle.appContainer!.appending(path: "Containers")
+        if files.fileExists(atPath: oldBottles.path(percentEncoded: false)) {
+            Logger.app.log("Commencing bottle renaming (Bottle → Container)")
+            
+            do {
+                try files.moveItem(at: oldBottles, to: newBottles)
+            } catch {
+                Logger.app.error("Unable to rename default 'Bottles' folder to 'Containers': \(error.localizedDescription)")
+            }
+            
+            if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
+                do {
+                    try defaults.encodeAndSet(bottleURLs, forKey: "containerURLs")
+                    defaults.removeObject(forKey: "bottleURLs")
+                } catch {
+                    Logger.app.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
+                }
+            }
+            
+            // Game-specific bottleURL migration
+            for (key, value) in defaults.dictionaryRepresentation() where key.hasSuffix("_bottleURL") {
+                guard let currentURL = value as? URL else { return }
+                let currentPath = currentURL.path(percentEncoded: false)
+                guard files.fileExists(atPath: currentPath) else { continue } // next loop
+
+                let filteredURL: URL
+                if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                    let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                    filteredURL = .init(fileURLWithPath: newPath)
+                } else {
+                    filteredURL = currentURL
+                }
+                
+                defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
+                defaults.removeObject(forKey: key)
+            }
+            
+            Logger.app.notice("Bottle renaming complete.")
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
@@ -185,6 +227,12 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
+        
+        /*
+         MARK: Defaults version
+         Useful for migration after non-backwards-compatible update
+         */
+        defaults.register(defaults: ["defaultsVersion": 1])
     }
     
     func applicationDidBecomeActive(_: Notification) {

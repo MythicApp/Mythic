@@ -182,7 +182,7 @@ struct GameCard: View {
                                             }
                                         }())
                                         .disabled(operation.runningGames.contains(game))
-                                        .disabled(Wine.bottleURLs.isEmpty)
+                                        .disabled(Wine.containerURLs.isEmpty)
                                         .alert(isPresented: $isLaunchErrorAlertPresented) {
                                             Alert(
                                                 title: .init("Error launching \"\(game.title)\"."),
