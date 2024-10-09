@@ -30,8 +30,9 @@ final class Legendary {
     
     // MARK: - Properties
     
+    static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
     /// The file location for legendary's configuration files.
-    static let configLocation = Bundle.appHome!.appending(path: "Config").path
+    static let configLocation = configurationFolder.path // TODO: phase out of use
     
     /// Logger instance for legendary.
     static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")

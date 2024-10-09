@@ -34,16 +34,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: Container cleanup in the event of external deletion
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
         
-        // MARK: Refresh legendary metadata
-        Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-        }
-        
-        // MARK: Autosync Epic savedata
-        Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
-        }
-        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
@@ -125,6 +115,22 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
             
             Logger.app.notice("Bottle renaming complete.")
+        }
+        
+        // MARK: <0.3.2 Config folder rename (Config → Epic)
+        let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
+        if files.fileExists(atPath: legendaryOldConfig.path) {
+            try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
+        }
+
+        // MARK: Refresh legendary metadata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
+        }
+        
+        // MARK: Autosync Epic savedata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
