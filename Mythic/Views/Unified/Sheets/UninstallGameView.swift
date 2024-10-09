@@ -122,6 +122,7 @@ struct UninstallViewEvo: View {
                                 }
                             }
                             
+                            favouriteGames.remove(game.id)
                             isPresented = false
                         },
                         secondaryButton: .cancel(Text("Cancel")) {
