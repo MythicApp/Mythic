@@ -38,7 +38,7 @@ struct SupportView: View {
             .clipShape(.rect(cornerRadius: 10))
             
             VStack {
-                if let patreonURL: URL = .init(string: "https://patreon.com/mythicapp") {
+                if let patreonURL: URL = .init(string: /* temp comment "https://patreon.com/mythicapp" */ "https://ko-fi.com/blackxfiied") {
                     WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
                         .overlay(alignment: .bottomTrailing) {
                             Button {
