@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Steam@1x.png",
+      "filename" : "steam.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Steam@2x.png",
+      "filename" : "steam@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Steam@3x.png",
+      "filename" : "steam@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
