@@ -65,7 +65,7 @@ struct ContainerSettingsView: View {
                 Picker("Current Container", selection: $selectedContainerURL) {
                     ForEach(Wine.containerObjects) { container in
                         Text(container.name)
-                            .tag(container.url as URL?)
+                            .tag(container.url.appending(path: "") as URL?) // dirtyfix for picker error -- a little primitive but that's swift's fault
                     }
                 }
             } else {
