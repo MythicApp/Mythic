@@ -89,6 +89,8 @@ struct GameCard: View {
                         HStack {
                             Text(game.title)
                                 .font(.bold(.title3)())
+                                .truncationMode(.tail)
+                                .lineLimit(1)
                             
                             SubscriptedTextView(game.source.rawValue)
                             
