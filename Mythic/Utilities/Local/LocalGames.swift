@@ -48,6 +48,8 @@ final class LocalGames {
             GameOperation.shared.launching = game
         }
         
+        try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
+        
         switch game.platform {
         case .macOS:
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
@@ -69,8 +71,6 @@ final class LocalGames {
             guard Engine.exists else { throw Engine.NotInstalledError() }
             guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
             let container = try Wine.getContainerObject(url: containerURL)
-            
-            try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
             
             try await Wine.command(
                 arguments: [game.path!] + game.launchArguments,

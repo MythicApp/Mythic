@@ -3062,6 +3062,7 @@
       }
     },
     "%@ %@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31282,16 +31283,6 @@
     },
     "Mythic Engine" : {
 
-    },
-    "Mythic Engine %lld.%lld.%lld (%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic Engine %1$lld.%2$lld.%3$lld (%4$@)"
-          }
-        }
-      }
     },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
       "localizations" : {
