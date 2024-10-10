@@ -53,7 +53,7 @@ private extension GameSettingsView {
     var gameThumbnail: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.background)
-            .aspectRatio(3 / 4, contentMode: .fit)
+            .aspectRatio(3/4, contentMode: .fit)
             .overlay {
                 CachedAsyncImage(url: game.imageURL) { phase in
                     switch phase {
@@ -85,7 +85,7 @@ private extension GameSettingsView {
         return ZStack {
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .blur(radius: 20.0)
 
             image
@@ -108,13 +108,13 @@ private extension GameSettingsView {
         ZStack {
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .clipShape(.rect(cornerRadius: 20))
                 .blur(radius: 10.0)
 
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .clipShape(.rect(cornerRadius: 20))
                 .modifier(FadeInModifier())
         }
