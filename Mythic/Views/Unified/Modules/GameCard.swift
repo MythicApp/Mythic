@@ -282,6 +282,7 @@ struct GameCard: View {
                             }
                         }
                         .padding(.bottom)
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }
