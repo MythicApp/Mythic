@@ -78,7 +78,9 @@ struct ContainerListView: View {
         
         .sheet(isPresented: $isContainerConfigurationViewPresented) {
             ContainerConfigurationView(containerURL: $selectedContainerURL, isPresented: $isContainerConfigurationViewPresented)
+                .frame(minWidth: 600)
         }
+        
     }
 }
 
@@ -111,8 +113,6 @@ struct ContainerConfigurationView: View {
                 .formStyle(.grouped)
                 
                 HStack {
-                    Spacer()
-                    
                     Button("Open...") {
                         let openPanel = NSOpenPanel()
                         openPanel.canChooseFiles = true
