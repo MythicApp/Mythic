@@ -53,7 +53,7 @@ final class LocalGames {
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
                 workspace.open(
                     URL(filePath: game.path ?? .init()),
-                    configuration: NSWorkspace.OpenConfiguration(),
+                    configuration: .init(),
                     completionHandler: { (_/*game*/, error) in
                         if let error = error {
                             log.error("Error launching local macOS game \"\(game.title)\": \(error)")
