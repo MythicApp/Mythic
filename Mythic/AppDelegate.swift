@@ -26,7 +26,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: initialize default UserDefaults Values
         defaults.register(defaults: [
-            "discordRPC": true
+            "discordRPC": true,
+            "engineAutomaticallyChecksForUpdates": true,
+            "quitOnAppClose": false
         ])
         
         // MARK: Bottle cleanup in the event of external deletion
@@ -64,7 +66,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 settings.msync = oldSettings["msync"] ?? settings.msync
                 settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
                 
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     convertedBottles.append(.init(name: name, url: url, settings: settings))
                     Wine.bottleURLs.insert(url)
                 }

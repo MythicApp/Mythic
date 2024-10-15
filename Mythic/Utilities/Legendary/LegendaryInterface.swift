@@ -267,7 +267,7 @@ final class Legendary {
             }
             
             if let match = try? progressRegex.firstMatch(in: output.stderr) {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     operation.status.progress = GameOperation.InstallStatus.Progress(
                         percentage: Double(match["percentage"]?.substring ?? "") ?? 0.0,
                         downloadedObjects: Int(match["downloadedObjects"]?.substring ?? "") ?? 0,
@@ -278,7 +278,7 @@ final class Legendary {
                 }
             }
             if let match = try? downloadRegex.firstMatch(in: output.stderr) {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     operation.status.download = GameOperation.InstallStatus.Download(
                         downloaded: Double(match["downloaded"]?.substring ?? "") ?? 0.0,
                         written: Double(match["written"]?.substring ?? "") ?? 0.0
@@ -286,7 +286,7 @@ final class Legendary {
                 }
             }
             if let match = try? cacheRegex.firstMatch(in: output.stderr) {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     operation.status.cache = GameOperation.InstallStatus.Cache(
                         usage: Double(match["usage"]?.substring ?? "") ?? 0.0,
                         activeTasks: Int(match["activeTasks"]?.substring ?? "") ?? 0
@@ -294,7 +294,7 @@ final class Legendary {
                 }
             }
             if let match = try? downloadSpeedRegex.firstMatch(in: output.stderr) {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     operation.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
                         raw: Double(match["raw"]?.substring ?? "") ?? 0.0,
                         decompressed: Double(match["decompressed"]?.substring ?? "") ?? 0.0
@@ -302,7 +302,7 @@ final class Legendary {
                 }
             }
             if let match = try? diskSpeedRegex.firstMatch(in: output.stderr) {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     operation.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
                         write: Double(match["write"]?.substring ?? "") ?? 0.0,
                         read: Double(match["read"]?.substring ?? "") ?? 0.0
@@ -364,7 +364,7 @@ final class Legendary {
         guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
         let bottle = try Wine.getBottleObject(url: bottleURL)
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             GameOperation.shared.launching = game
         }
         
@@ -388,7 +388,7 @@ final class Legendary {
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
         
-        DispatchQueue.main.async {
+        Task { @MainActor in
             GameOperation.shared.launching = nil
         }
     }

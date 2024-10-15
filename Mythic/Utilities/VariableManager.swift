@@ -48,7 +48,7 @@ import Foundation
 
     /// Set variable data within the variable manager.
     func setVariable(_ key: String, value: Any) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.objectWillChange.send()
             self.variables[key] = value
         }
@@ -61,7 +61,7 @@ import Foundation
 
     /// Remove variable data from the variable manager.
     func removeVariable(_ key: String) {
-        DispatchQueue.main.async {
+        Task { @MainActor in
             self.objectWillChange.send()
             self.variables[key] = nil
         }

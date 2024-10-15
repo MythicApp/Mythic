@@ -35,7 +35,7 @@ final class NetworkMonitor: ObservableObject {
             guard let self = self else { return }
             guard isCheckingEpicAccessibility == false else { return }
             
-            DispatchQueue.global(qos: .background).async {
+            Task(priority: .background) {
                 self.isConnected = (path.status == .satisfied)
                 guard self.isConnected == true else { self.updateAccessibility(false); return }
                 
@@ -57,7 +57,7 @@ final class NetworkMonitor: ObservableObject {
     }
 
     private func updateAccessibility(_ isAccessible: Bool) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             self?.isEpicAccessible = isAccessible
             self?.isCheckingEpicAccessibility = false
         }
