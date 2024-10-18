@@ -216,7 +216,7 @@ private extension GameSettingsView {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(launchArguments, id: \.self) { argument in
-                                ArgumentItem(launchArguments: $launchArguments, argument: argument)
+                                ArgumentItem(game: $game, launchArguments: $launchArguments, argument: argument)
                             }
                             .onChange(of: launchArguments, { game.launchArguments = $1 })
 
@@ -386,6 +386,7 @@ private extension GameSettingsView {
 }
 
 struct ArgumentItem: View {
+    @Binding var game: Game
     @Binding var launchArguments: [String]
     var argument: String
 
@@ -416,6 +417,9 @@ struct ArgumentItem: View {
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.3)) {
                 launchArguments.removeAll(where: { $0 == argument })
+                if launchArguments.isEmpty { // fix for `.onChange` not firing when args become empty
+                    game.launchArguments = .init()
+                }
             }
         }
     }
