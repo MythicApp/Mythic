@@ -235,8 +235,7 @@ private extension GameSettingsView {
 
     func submitLaunchArgument() {
         if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
-        {
+            .isEmpty, !launchArguments.contains(typingArgument) {
             launchArguments.append(typingArgument)
             typingArgument = .init()
         }
