@@ -187,12 +187,12 @@ extension GameImportView {
                 guard let games = games, !games.isEmpty else { return }
                 installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
                 game = installableGames.first ?? Game(source: .epic, title: "")
-                isOperating = false
+                withAnimation { isOperating = false }
             }
         }
 
         private func performGameImport() {
-            isOperating = true
+            withAnimation { isOperating = true }
 
             Task(priority: .userInitiated) {
                 try? await Legendary.command(
@@ -214,7 +214,7 @@ extension GameImportView {
             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                 isPresented = false
             } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
-                isOperating = false
+                withAnimation { isOperating = false }
                 errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
                 isErrorAlertPresented = true
             }

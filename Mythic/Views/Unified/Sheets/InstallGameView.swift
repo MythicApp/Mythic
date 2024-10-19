@@ -31,8 +31,8 @@ struct InstallViewEvo: View {
         Text("Install \"\(game.title)\"")
             .font(.title)
             .task(priority: .userInitiated) {
-                fetchingOptionalPacks = true
-                
+                withAnimation { fetchingOptionalPacks = true }
+
                 try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output in
                     
                     if output.stdout.contains("Installation requirements check returned the following results:") {
@@ -65,7 +65,7 @@ struct InstallViewEvo: View {
                     }
                 }
                 
-                fetchingOptionalPacks = false
+                withAnimation { fetchingOptionalPacks = false }
             }
             .alert(isPresented: $isInstallationErrorPresented) {
                 Alert(
@@ -176,15 +176,17 @@ struct InstallViewEvo: View {
         .formStyle(.grouped)
         .task {
             if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
-                supportedPlatforms = fetchedPlatforms.keys
-                    .compactMap { key in
-                        switch key {
-                        case "Windows": return .windows
-                        case "Mac": return .macOS
-                        default: return nil
+                withAnimation {
+                    supportedPlatforms = fetchedPlatforms.keys
+                        .compactMap { key in
+                            switch key {
+                            case "Windows": return .windows
+                            case "Mac": return .macOS
+                            default: return nil
+                            }
                         }
-                    }
-                
+                }
+
                 platform = supportedPlatforms!.first!
             } else {
                 Logger.app.info("Unable to fetch supported platforms for \(game.title).")

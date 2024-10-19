@@ -155,13 +155,13 @@ struct OnboardingR2: View { // TODO: ViewModel
         switch type {
         case .epic:
             Task(priority: .userInitiated) {
-                isSigningIn = true
+                withAnimation { isSigningIn = true }
                 do {
                     epicUnsuccessfulSignInAttempt = !(try await Legendary.signIn(authKey: epicSigninAuthKey))
                 } catch {
                     errorString = error.localizedDescription
                 }
-                isSigningIn = false
+                withAnimation { isSigningIn = false }
             }
         case .local:
             do {} // why

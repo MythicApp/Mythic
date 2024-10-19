@@ -91,23 +91,24 @@ struct ContainerCreationView: View {
                 }
                 
                 Spacer()
-                
-                ProgressView()
-                    .controlSize(.small)
-                    .padding(0.5)
-                    .opacity(isBooting ? 1 : 0)
-                
+
+                if isBooting {
+                    ProgressView()
+                        .controlSize(.small)
+                        .padding(0.5)
+                }
+
                 Button("Done") {
                     Task(priority: .userInitiated) {
-                        isBooting = true
+                        withAnimation { isBooting = true }
                         await Wine.boot(baseURL: containerURL, name: containerName) { result in
                             switch result {
                             case .success:
-                                isBooting = false
+                                withAnimation { isBooting = false }
                                 isPresented = false
                             case .failure(let error):
                                 bootErrorDescription = error.localizedDescription
-                                isBooting = false
+                                withAnimation { isBooting = false }
                                 isBootFailureAlertPresented = true
                             }
                         }
