@@ -24,6 +24,7 @@ extension GameImportView {
         @Binding var isPresented: Bool
         
         @State private var game: Game = .init(source: .local, title: .init())
+        @State private var imageURLString: String = .init()
         @State private var title: String = .init()
         @State private var platform: Game.Platform = .macOS
         @State private var path: String = .init()
@@ -31,12 +32,12 @@ extension GameImportView {
         var body: some View {
             VStack {
                 HStack {
-                    if game.imageURL != nil {
+                    if !imageURLString.isEmpty {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.background)
                             .aspectRatio(3/4, contentMode: .fit)
                             .overlay { // MARK: Image
-                                CachedAsyncImage(url: game.imageURL) { phase in
+                                CachedAsyncImage(url: .init(string: imageURLString)) { phase in
                                     switch phase {
                                     case .empty:
                                         if case .local = game.source {
@@ -154,17 +155,14 @@ extension GameImportView {
                             
                             game.path = $1
                         }
-                        
-                        TextField(
-                            "Enter Thumbnail URL here... (optional)",
-                            text: Binding(
-                                get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init() },
-                                set: { game.imageURL = .init(string: $0) }
-                                         )
-                        )
-                        .truncationMode(.tail)
+
+                        TextField("Enter Thumbnail URL here... (optional)", text: $imageURLString)
+                            .truncationMode(.tail)
                     }
                     .formStyle(.grouped)
+                    .onChange(of: imageURLString) {
+                        game.imageURL = .init(string: $1)
+                    }
                 }
                 
                 HStack {
@@ -182,7 +180,8 @@ extension GameImportView {
                     .disabled(title.isEmpty)
                     .buttonStyle(.borderedProminent)
                 }
-                
+                .padding()
+
                 .task(priority: .background) { // TODO: same as in epicimport, can be unified?
                     discordRPC.setPresence({
                         var presence: RichPresence = .init()

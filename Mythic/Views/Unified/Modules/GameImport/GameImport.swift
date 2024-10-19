@@ -1,5 +1,5 @@
 //
-//  AddGameView.swift
+//  ImportGameView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 29/9/2023.
@@ -25,28 +25,36 @@ struct GameImportView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            Text("Import")
-                .font(.title)
-                .multilineTextAlignment(.leading)
-            
-            Picker(String(), selection: $source) {
-                ForEach(Swift.type(of: source).allCases, id: \.self) {
-                    Text($0.rawValue)
+            if #available(macOS 15.0, *) {
+                TabView {
+                    Tab("Epic", systemImage: "gamecontroller") {
+                        GameImportView.Epic(isPresented: $isPresented)
+                    }
+
+                    Tab("Steam", systemImage: "gamecontroller") {
+                        NotImplementedView()
+                    }
+                    .hidden()
+
+                    Tab("Local", systemImage: "gamecontroller") {
+                        GameImportView.Local(isPresented: $isPresented)
+                    }
                 }
-            }
-            .pickerStyle(.segmented)
-            
-            // MARK: - Import Epic (Legendary) Games
-            switch source {
-            case .epic:
-                GameImportView.Epic(isPresented: $isPresented)
-            case .local:
-                GameImportView.Local(isPresented: $isPresented)
-                    .scaledToFit() // FIXME: dirtyfix for clipping
+                .tabViewStyle(.sidebarAdaptable)
+                .tabViewSidebarHeader(content: { Text("Select a source:") })
+            } else { // FIXME: doesnt work lol
+                TabView {
+                    GameImportView.Epic(isPresented: $isPresented)
+                        .tabItem { Label("Epic", systemImage: "gamecontroller") }
+
+                    GameImportView.Local(isPresented: $isPresented)
+                        .tabItem { Label("Local", systemImage: "gamecontroller") }
+                }
+                .padding()
             }
         }
-        
-        .padding()
+        .navigationTitle("Import")
+        .frame(minWidth: 750, minHeight: 300, idealHeight: 350)
     }
 }
 
