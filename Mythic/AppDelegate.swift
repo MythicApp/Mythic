@@ -140,7 +140,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
         }
 
-        Legendary.updateMetadata()
+        Task {
+            Legendary.updateMetadata()
+
+            Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+                Legendary.updateMetadata()
+            }
+        }
 
         // MARK: Autosync Epic savedata
         Task(priority: .utility) {
