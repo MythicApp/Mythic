@@ -31,9 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
         
-        // MARK: Container cleanup in the event of external deletion
-        Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
-        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
@@ -73,50 +70,70 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: >= 0.3.2 Bottle → Container migration
         let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
         let newBottles = Bundle.appContainer!.appending(path: "Containers")
-        if files.fileExists(atPath: oldBottles.path(percentEncoded: false)) {
+        if defaults.integer(forKey: "defaultsVersion") == 0 {
             Logger.app.log("Commencing bottle renaming (Bottle → Container)")
-            
             do {
                 try files.moveItem(at: oldBottles, to: newBottles)
-                if let contents = try? files.contentsOfDirectory(at: oldBottles, includingPropertiesForKeys: nil) {
+                if let contents = try? files.contentsOfDirectory(at: newBottles, includingPropertiesForKeys: nil) {
                     for container in contents {
-                        _ = Wine.Container(knownURL: container) // thank me for designing smart initializer!!
+                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: container)))") // thank me for designing smart initializer!!
                     }
                 }
-            } catch {
-                Logger.app.error("Unable to rename default 'Bottles' folder to 'Containers': \(error.localizedDescription)")
-            }
-            
-            if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
-                do {
-                    try defaults.encodeAndSet(bottleURLs, forKey: "containerURLs")
-                    defaults.removeObject(forKey: "bottleURLs")
-                } catch {
-                    Logger.app.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
-                }
-            }
-            
-            // Game-specific bottleURL migration
-            for (key, value) in defaults.dictionaryRepresentation() where key.hasSuffix("_bottleURL") {
-                guard let currentURL = value as? URL else { return }
-                let currentPath = currentURL.path(percentEncoded: false)
-                guard files.fileExists(atPath: currentPath) else { continue } // next loop
 
-                let filteredURL: URL
-                if currentPath.contains(oldBottles.path(percentEncoded: false)) {
-                    let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
-                    filteredURL = .init(fileURLWithPath: newPath)
-                } else {
-                    filteredURL = currentURL
+                if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
+                    var containerURLs: [URL] = .init()
+
+                    for bottleURL in bottleURLs {
+                        let currentPath = bottleURL.path(percentEncoded: false)
+
+                        let filteredURL: URL
+                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                            filteredURL = .init(fileURLWithPath: newPath)
+                        } else {
+                            filteredURL = bottleURL
+                        }
+
+                        Logger.app.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(filteredURL))...")
+                        containerURLs.append(filteredURL)
+                    }
+
+                    do {
+                        try defaults.encodeAndSet(containerURLs, forKey: "containerURLs")
+                        defaults.removeObject(forKey: "bottleURLs")
+                    } catch {
+                        Logger.app.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
+                    }
                 }
-                
-                defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
-                defaults.removeObject(forKey: key)
+
+                // Game-specific bottleURL migration
+                for (key, value) in defaults.dictionaryRepresentation() where key.hasSuffix("_bottleURL") {
+                    guard let currentURL = value as? URL else { return }
+                    let currentPath = currentURL.path(percentEncoded: false)
+                    guard files.fileExists(atPath: currentPath) else { continue } // next loop
+
+                    let filteredURL: URL
+                    if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                        let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                        filteredURL = .init(fileURLWithPath: newPath)
+                    } else {
+                        filteredURL = currentURL
+                    }
+
+                    Logger.app.debug("Migrating game \(key.replacingOccurrences(of: "_bottleURL", with: ""))'s container URL...")
+                    defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
+                    defaults.removeObject(forKey: key)
+                }
+
+                Logger.app.notice("Container renaming complete.")
+            } catch {
+
             }
-            
-            Logger.app.notice("Bottle renaming complete.")
         }
-        
+
+        // MARK: Container cleanup in the event of external deletion
+        Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+
         // MARK: <0.3.2 Config folder rename (Config → Epic)
         let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
         if files.fileExists(atPath: legendaryOldConfig.path) {
