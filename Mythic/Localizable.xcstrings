@@ -31867,6 +31867,9 @@
         }
       }
     },
+    "Mythic is checking your Epic library for new games." : {
+
+    },
     "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
       "localizations" : {
         "af" : {
@@ -41391,6 +41394,9 @@
           }
         }
       }
+    },
+    "Select a source:" : {
+
     },
     "Setting up default bottle..." : {
       "extractionState" : "stale",
