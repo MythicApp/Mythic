@@ -42,13 +42,17 @@ struct GameImportView: View {
                 }
                 .tabViewStyle(.sidebarAdaptable)
                 .tabViewSidebarHeader(content: { Text("Select a source:") })
-            } else { // FIXME: doesnt work lol
+            } else {
                 TabView {
                     GameImportView.Epic(isPresented: $isPresented)
-                        .tabItem { Label("Epic", systemImage: "gamecontroller") }
+                        .tabItem {
+                            Label("Epic", systemImage: "gamecontroller")
+                        }
 
                     GameImportView.Local(isPresented: $isPresented)
-                        .tabItem { Label("Local", systemImage: "gamecontroller") }
+                        .tabItem {
+                            Label("Local", systemImage: "gamecontroller")
+                        }
                 }
                 .padding()
             }
