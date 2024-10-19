@@ -123,11 +123,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
         }
 
-        // MARK: Refresh legendary metadata
-        Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-        }
-        
+        Legendary.updateMetadata()
+
         // MARK: Autosync Epic savedata
         Task(priority: .utility) {
             try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }

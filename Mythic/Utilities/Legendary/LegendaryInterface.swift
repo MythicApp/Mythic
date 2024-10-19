@@ -568,13 +568,24 @@ final class Legendary {
         
         return nil
     }
-    
+
+    /// Create an asynchronous task to update Legendary's stored metadata.
+    static func updateMetadata() {
+        if VariableManager.shared.getVariable("isLegendaryFetchingInstallableGames") != true {
+            Task(priority: .utility) {
+                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: true)
+                try? await command(arguments: ["list"], identifier: "fetchInstallableGames", waits: true) { _ in }
+                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: false)
+            }
+        }
+    }
+
     /**
      Retrieves game thumbnail image from legendary's downloaded metadata.
      
      - Parameters:
-     - of: The game to fetch the thumbnail of.
-     - type: The aspect ratio of the image to fetch the thumbnail of.
+      - of: The game to fetch the thumbnail of.
+      - type: The aspect ratio of the image to fetch the thumbnail of.
      
      - Returns: The URL of the retrieved image.
      */

@@ -22,7 +22,8 @@ import SwordRPC
 /// A view displaying the user's library of games.
 struct LibraryView: View {
     @ObservedObject private var operation: GameOperation = .shared
-    
+    @ObservedObject private var variables: VariableManager = .shared
+
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @State private var filterOptions: GameListFilterOptions = .init()
@@ -44,7 +45,15 @@ struct LibraryView: View {
                     }
                     .help("Import a game")
                 }
-                
+
+                ToolbarItem(placement: .status) {
+                    if variables.getVariable("isLegendaryFetchingInstallableGames") == true {
+                        ProgressView()
+                            .controlSize(.small)
+                            .help("Mythic is checking your Epic library for new games.")
+                    }
+                }
+
                 ToolbarItem(placement: .confirmationAction) {
                     Toggle("Installed", isOn: $filterOptions.showInstalled)
                 }
