@@ -74,7 +74,7 @@ struct MythicApp: App {
                     }
                 }
                 .disabled(isOnboardingPresented)
-                .keyboardShortcut("O", modifiers: [.command])
+                // .keyboardShortcut("O", modifiers: [.command])
             }
         }
         
