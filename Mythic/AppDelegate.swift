@@ -70,32 +70,29 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: >= 0.3.2 Bottle → Container migration
         let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
         let newBottles = Bundle.appContainer!.appending(path: "Containers")
+
         if defaults.integer(forKey: "defaultsVersion") == 0 {
             Logger.app.log("Commencing bottle renaming (Bottle → Container)")
+
             do {
                 try files.moveItem(at: oldBottles, to: newBottles)
                 if let contents = try? files.contentsOfDirectory(at: newBottles, includingPropertiesForKeys: nil) {
-                    for container in contents {
-                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: container)))") // thank me for designing smart initializer!!
+                    contents.forEach { containerURL in
+                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: containerURL)))")
                     }
                 }
 
+                // Migrate bottleURLs to containerURLs
                 if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
-                    var containerURLs: [URL] = .init()
-
-                    for bottleURL in bottleURLs {
+                    let containerURLs = bottleURLs.map { bottleURL -> URL in
                         let currentPath = bottleURL.path(percentEncoded: false)
-
-                        let filteredURL: URL
                         if currentPath.contains(oldBottles.path(percentEncoded: false)) {
                             let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
-                            filteredURL = .init(fileURLWithPath: newPath)
+                            Logger.app.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(newPath))...")
+                            return URL(fileURLWithPath: newPath)
                         } else {
-                            filteredURL = bottleURL
+                            return bottleURL
                         }
-
-                        Logger.app.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(filteredURL))...")
-                        containerURLs.append(filteredURL)
                     }
 
                     do {
@@ -107,27 +104,30 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
 
                 // Game-specific bottleURL migration
-                for (key, value) in defaults.dictionaryRepresentation() where key.hasSuffix("_bottleURL") {
-                    guard let currentURL = value as? URL else { return }
-                    let currentPath = currentURL.path(percentEncoded: false)
-                    guard files.fileExists(atPath: currentPath) else { continue } // next loop
+                defaults.dictionaryRepresentation()
+                    .filter { $0.key.hasSuffix("_bottleURL") }
+                    .forEach { key, value in
+                        guard let currentURL = value as? URL else { return }
+                        let currentPath = currentURL.path(percentEncoded: false)
+                        guard files.fileExists(atPath: currentPath) else { return }
 
-                    let filteredURL: URL
-                    if currentPath.contains(oldBottles.path(percentEncoded: false)) {
-                        let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
-                        filteredURL = .init(fileURLWithPath: newPath)
-                    } else {
-                        filteredURL = currentURL
+                        let filteredURL: URL
+                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                            filteredURL = URL(fileURLWithPath: newPath)
+                        } else {
+                            filteredURL = currentURL
+                        }
+
+                        let gameKey = key.replacingOccurrences(of: "_bottleURL", with: "")
+                        Logger.app.debug("Migrating game \(gameKey)'s container URL...")
+                        defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
+                        defaults.removeObject(forKey: key)
                     }
-
-                    Logger.app.debug("Migrating game \(key.replacingOccurrences(of: "_bottleURL", with: ""))'s container URL...")
-                    defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
-                    defaults.removeObject(forKey: key)
-                }
 
                 Logger.app.notice("Container renaming complete.")
             } catch {
-
+                Logger.app.error("Unable to rename Bottles to Containers: \(error.localizedDescription) -- Mythic may not function correctly.")
             }
         }
 
