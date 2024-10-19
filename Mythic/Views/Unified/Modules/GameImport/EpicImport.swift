@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 // Licensed under GNU GPL v3 or later.
 
 import SwiftUI
