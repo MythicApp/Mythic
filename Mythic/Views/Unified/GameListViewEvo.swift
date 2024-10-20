@@ -63,7 +63,7 @@ struct GameListEvo: View {
                     LazyVStack {
                         ForEach(games) { game in
                             GameListCard(game: .constant(game))
-                                .padding()
+                                .padding([.top, .horizontal])
                         }
                     }
                     .searchable(text: $viewModel.searchString, placement: .toolbar)
