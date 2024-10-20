@@ -26,12 +26,12 @@ struct LibraryView: View {
 
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @State private var filterOptions: GameListFilterOptions = .init()
+    @StateObject var gameListViewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
     var body: some View {
-        GameListEvo(filterOptions: $filterOptions)
+        GameListEvo()
             .navigationTitle("Library")
         
         // MARK: - Toolbar
@@ -55,20 +55,23 @@ struct LibraryView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Toggle("Installed", isOn: $filterOptions.showInstalled)
+                    Toggle("Installed", isOn: $gameListViewModel.filterOptions.showInstalled)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Source", systemImage: "gamecontroller", selection: $filterOptions.source) {
-                        ForEach(InclusiveGameSource.allCases, id: \.self) { source in
+                    Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
+                        ForEach(
+                            Game.InclusiveSource.allCases,
+                            id: \.self
+                        ) { source in
                             Text(source.rawValue)
                         }
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $filterOptions.platform) {
-                        ForEach(InclusiveGamePlatform.allCases, id: \.self) { platform in
+                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
+                        ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
                             Label(platform.rawValue, systemImage: {
                                 switch platform {
                                 case .all: "display"
@@ -88,9 +91,7 @@ struct LibraryView: View {
                         Label("Grid", systemImage: "square.grid.2x2")
                             .tag(false)
                     }
-#if !DEBUG
                     .disabled(true)
-#endif
                 }
             }
         

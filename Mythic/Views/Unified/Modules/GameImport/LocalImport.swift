@@ -34,7 +34,14 @@ extension GameImportView {
             VStack {
                 HStack {
                     if !imageURLString.isEmpty {
-                        gameImageOverlay()
+                        VStack {
+                            GameCard.ImageCard(game: $game)
+
+                            Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info.circle")
+                                .font(.footnote)
+                                .foregroundStyle(.placeholder)
+                        }
+                        .padding([.leading, .top])
                     }
 
                     Form {
@@ -59,55 +66,6 @@ extension GameImportView {
                         }())
                     }
             }
-        }
-
-        private func gameImageOverlay() -> some View {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.background)
-                .aspectRatio(3/4, contentMode: .fit)
-                .overlay {
-                    CachedAsyncImage(url: .init(string: imageURLString)) { phase in
-                        switch phase {
-                        case .empty:
-                            if case .local = game.source {
-                                let image = Image(nsImage: workspace.icon(forFile: path))
-
-                                image
-                                    .resizable()
-                                    .aspectRatio(3/4, contentMode: .fill)
-                                    .blur(radius: 20.0)
-
-                                image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .modifier(FadeInModifier())
-                            } else {
-                                shimmerPlaceholder()
-                            }
-
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(3/4, contentMode: .fill)
-                                .clipShape(.rect(cornerRadius: 20))
-                                .blur(radius: 10.0)
-
-                            image
-                                .resizable()
-                                .aspectRatio(3/4, contentMode: .fill)
-                                .clipShape(.rect(cornerRadius: 20))
-                                .modifier(FadeInModifier())
-
-                        case .failure:
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.windowBackground)
-
-                        @unknown default:
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.windowBackground)
-                        }
-                    }
-                }
         }
 
         private func shimmerPlaceholder() -> some View {
