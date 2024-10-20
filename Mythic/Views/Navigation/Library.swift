@@ -91,7 +91,6 @@ struct LibraryView: View {
                         Label("Grid", systemImage: "square.grid.2x2")
                             .tag(false)
                     }
-                    .disabled(true)
                 }
             }
         
