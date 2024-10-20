@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5A1584F12C27B0B300401048 /* GameListRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A1584F02C27B0B300401048 /* GameListRow.swift */; };
 		5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */; };
 		5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9573A92C29BBEC009C8F85 /* SparkleController.swift */; };
 		6A0688442C2BCE8B004DF10F /* DownloadCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0688432C2BCE87004DF10F /* DownloadCard.swift */; };
@@ -71,6 +70,8 @@
 		6A29356B2BFCFAFD0035CE4B /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
+		6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* GameListCard.swift */; };
+		6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* Auth.swift */; };
@@ -99,7 +100,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5A1584F02C27B0B300401048 /* GameListRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListRow.swift; sourceTree = "<group>"; };
 		5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvoVM.swift; sourceTree = "<group>"; };
 		5A9573A92C29BBEC009C8F85 /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
 		6A0688432C2BCE87004DF10F /* DownloadCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCard.swift; sourceTree = "<group>"; };
@@ -161,6 +161,8 @@
 		6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6A2934F52BFCFAFD0035CE4B /* Mythic.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = Mythic.entitlements; sourceTree = "<group>"; };
 		6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MythicApp.swift; sourceTree = "<group>"; };
+		6A448E0D2CC4A531001E9F47 /* GameListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListCard.swift; sourceTree = "<group>"; };
+		6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCardVM.swift; sourceTree = "<group>"; };
 		6A496A722C1AF75600FD637B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
@@ -211,7 +213,6 @@
 		6A2934BB2BFCFAFD0035CE4B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */,
 				6AD44DE52C0A29BF00824C06 /* Built-in */,
 			);
 			path = Extensions;
@@ -288,9 +289,11 @@
 				6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */,
 				6A2934DB2BFCFAFD0035CE4B /* CompactGameCard.swift */,
 				6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */,
+				6A448E0D2CC4A531001E9F47 /* GameListCard.swift */,
 				6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */,
 				6A2934DE2BFCFAFD0035CE4B /* SubscriptedTextView.swift */,
 				6A2934EB2BFCFAFD0035CE4B /* WebView.swift */,
+				6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -318,7 +321,6 @@
 				6A2934E72BFCFAFD0035CE4B /* Sheets */,
 				6A2934E82BFCFAFD0035CE4B /* ContainerListView.swift */,
 				6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */,
-				5A1584F02C27B0B300401048 /* GameListRow.swift */,
 				6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */,
 			);
 			path = Unified;
@@ -356,6 +358,7 @@
 		6A91FEC02C2BFB8100D9F153 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */,
 				5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */,
 			);
 			path = Models;
@@ -526,6 +529,7 @@
 				6A29353A2BFCFAFD0035CE4B /* Task.swift in Sources */,
 				6A2935592BFCFAFD0035CE4B /* ContainerCreationView.swift in Sources */,
 				6A0688462C2BD144004DF10F /* CircularButton.swift in Sources */,
+				6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */,
 				6A2935562BFCFAFD0035CE4B /* GameCard.swift in Sources */,
 				6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */,
 				6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */,
@@ -544,6 +548,7 @@
 				6A2935532BFCFAFD0035CE4B /* Store.swift in Sources */,
 				6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */,
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
+				6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
 				6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */,
@@ -570,7 +575,6 @@
 				6A29354B2BFCFAFD0035CE4B /* LocalImport.swift in Sources */,
 				6A29355C2BFCFAFD0035CE4B /* InstallGameView.swift in Sources */,
 				6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */,
-				5A1584F12C27B0B300401048 /* GameListRow.swift in Sources */,
 				6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* Home.swift in Sources */,
 				6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */,
@@ -723,7 +727,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2931;
+				CURRENT_PROJECT_VERSION = 2936;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -768,7 +772,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2931;
+				CURRENT_PROJECT_VERSION = 2936;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
