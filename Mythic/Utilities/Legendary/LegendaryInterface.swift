@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import SwiftUI
 import SwiftyJSON
 import OSLog
 import UserNotifications
@@ -389,7 +390,11 @@ final class Legendary {
         arguments.append(contentsOf: game.launchArguments)
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
-        
+
+        if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            await NSApp.windows.first?.miniaturize(nil)
+        }
+
         Task { @MainActor in
             GameOperation.shared.launching = nil
         }

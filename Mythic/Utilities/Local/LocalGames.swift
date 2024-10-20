@@ -82,9 +82,13 @@ final class LocalGames {
                 ]
             ) { _ in }
             
-        case .none: do { /* TODO: Error */ }
+        case .none:
+            do {  } // this should never happen
         }
-        
+
+        if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            await NSApp.windows.first?.miniaturize(nil)
+        }
         Task { @MainActor in
             GameOperation.shared.launching = nil
         }
