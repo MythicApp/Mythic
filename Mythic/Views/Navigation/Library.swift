@@ -64,6 +64,16 @@ struct LibraryView: View {
                             Game.InclusiveSource.allCases,
                             id: \.self
                         ) { source in
+                            /*
+                            Label(platform.rawValue, systemImage: {
+                                switch platform {
+                                case .all: "display"
+                                case .macOS: "macwindow"
+                                case .windows: "pc"
+                                }
+                            }())
+                             */
+
                             Text(source.rawValue)
                         }
                     }
@@ -72,13 +82,7 @@ struct LibraryView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
                         ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
-                            Label(platform.rawValue, systemImage: {
-                                switch platform {
-                                case .all: "display"
-                                case .mac: "macwindow"
-                                case .windows: "pc"
-                                }
-                            }())
+                            Text(platform.rawValue)
                         }
                     }
                 }
