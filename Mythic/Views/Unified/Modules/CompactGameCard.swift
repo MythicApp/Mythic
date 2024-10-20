@@ -89,14 +89,7 @@ struct CompactGameCard: View {
                             Button {
                                 Task(priority: .userInitiated) {
                                     do {
-                                        switch game.source {
-                                        case .epic:
-                                            try await Legendary.launch(game: game)
-                                        case .local:
-                                            try await LocalGames.launch(game: game)
-                                        }
-                                        
-                                        if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
+                                        try await game.launch()
                                     } catch {
                                         launchError = error
                                         isLaunchErrorAlertPresented = true
