@@ -84,7 +84,8 @@ import Shimmer
                     app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
                     app.isOnboardingPresented = true
                 } label: {
-                    Image(systemName: "arrow.down.circle.dotted").padding(5)
+                    Image(systemName: "arrow.down.circle.dotted")
+                        .padding(5)
                 }
                 .clipShape(.circle)
                 .disabled(!networkMonitor.isConnected)
@@ -102,9 +103,10 @@ import Shimmer
                 Button {
                     operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
                 } label: {
-                    Image(systemName: "checkmark.circle.badge.questionmark").padding(5)
+                    Image(systemName: "checkmark.circle.badge.questionmark")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .disabled(!networkMonitor.isEpicAccessible)
                 .help("Game verification is required for \"\(game.title)\".")
             }
@@ -120,9 +122,10 @@ import Shimmer
                         }
                     }
                 } label: {
-                    Image(systemName: "play").padding(5)
+                    Image(systemName: "play")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .disabled(isPlayDisabled)
                 .alert(isPresented: $isLaunchErrorAlertPresented) {
                     Alert(
@@ -140,9 +143,10 @@ import Shimmer
                 Button {
                     operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
                 } label: {
-                    Image(systemName: "arrow.triangle.2.circlepath").padding(5)
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .disabled(!networkMonitor.isEpicAccessible || operation.runningGames.contains(game))
                 .help("Update \"\(game.title)\"")
             }
@@ -151,9 +155,10 @@ import Shimmer
                 Button {
                     isGameSettingsSheetPresented = true
                 } label: {
-                    Image(systemName: "gear").padding(5)
+                    Image(systemName: "gear")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .sheet(isPresented: $isGameSettingsSheetPresented) {
                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
                         .padding()
@@ -167,9 +172,10 @@ import Shimmer
                     game.isFavourited.toggle()
                     withAnimation { animateFavouriteIcon = game.isFavourited }
                 } label: {
-                    Image(systemName: animateFavouriteIcon ? "star.fill" : "star").padding(5)
+                    Image(systemName: animateFavouriteIcon ? "star.fill" : "star")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .help("Favourite \"\(game.title)\"")
                 .task { animateFavouriteIcon = game.isFavourited }
                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
@@ -180,10 +186,11 @@ import Shimmer
                 Button {
                     isUninstallSheetPresented = true
                 } label: {
-                    Image(systemName: "xmark.bin").padding(5)
+                    Image(systemName: "xmark.bin")
+                        .padding(5)
                         .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .disabled(isDeleteDisabled)
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
@@ -205,9 +212,10 @@ import Shimmer
                 Button {
                     isInstallSheetPresented = true
                 } label: {
-                    Image(systemName: "arrow.down.to.line").padding(5)
+                    Image(systemName: "arrow.down.to.line")
+                        .padding(5)
                 }
-                .clipShape(Circle())
+                .clipShape(.circle)
                 .disabled(!networkMonitor.isEpicAccessible || operation.queue.contains(where: { $0.game == game }))
                 .help("Download \"\(game.title)\"")
                 .sheet(isPresented: $isInstallSheetPresented) {

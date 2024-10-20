@@ -368,7 +368,9 @@ final class Legendary {
         let container = try Wine.getContainerObject(url: containerURL)
         
         Task { @MainActor in
-            GameOperation.shared.launching = game
+            withAnimation {
+                GameOperation.shared.launching = game
+            }
         }
         
         try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
@@ -396,7 +398,9 @@ final class Legendary {
         }
 
         Task { @MainActor in
-            GameOperation.shared.launching = nil
+            withAnimation {
+                GameOperation.shared.launching = nil
+            }
         }
     }
     

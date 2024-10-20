@@ -45,7 +45,9 @@ final class LocalGames {
         }
         
         Task { @MainActor in
-            GameOperation.shared.launching = game
+            withAnimation {
+                GameOperation.shared.launching = game
+            }
         }
         
         try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
