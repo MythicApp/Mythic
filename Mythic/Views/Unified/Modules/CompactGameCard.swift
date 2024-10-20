@@ -79,7 +79,7 @@ struct CompactGameCard: View {
                         Spacer()
                         
                         // ! Changes made here must also be reflected in GameCard's play button
-                        if operation.launching == game {
+                        if game.isLaunching {
                             ProgressView()
                                 .controlSize(.small)
                                 .padding(5)

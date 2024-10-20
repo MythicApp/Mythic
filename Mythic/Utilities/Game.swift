@@ -128,7 +128,8 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     var isInstalling: Bool { GameOperation.shared.current?.game == self }
     var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
-    
+    var isLaunching: Bool { GameOperation.shared.launching == self }
+
     // MARK: Functions
     func move(to newLocation: URL) async throws {
         switch source {

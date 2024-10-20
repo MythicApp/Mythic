@@ -60,7 +60,15 @@ import Shimmer
                 } else if case .epic = game.source, needsVerification(for: game) {
                     verificationButton
                 } else {
-                    playButton
+                    if game.isLaunching {
+                        ProgressView()
+                            .controlSize(.small)
+                            .clipShape(.circle)
+                            .foregroundStyle(.white)
+                            .padding(5)
+                    } else {
+                        playButton
+                    }
                     if game.needsUpdate {
                         updateButton
                     }
