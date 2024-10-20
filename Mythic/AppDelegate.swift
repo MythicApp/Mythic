@@ -140,7 +140,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
         }
 
-        Task {
+        Task(priority: .utility) {
             Legendary.updateMetadata()
 
             Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
