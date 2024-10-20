@@ -5358,6 +5358,7 @@
 
     },
     "Add to favorites" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21953,6 +21954,7 @@
       }
     },
     "Game: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22143,6 +22145,7 @@
       }
     },
     "Game: %@, Type: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -38541,6 +38544,7 @@
       }
     },
     "Remove from favorites" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
