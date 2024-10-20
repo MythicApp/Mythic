@@ -1,37 +1,33 @@
+//
+//  GameListEvoVM.swift
+//  Mythic
+//
+//  Created by Marcus Ziade on ~23/06/24.
+//
+
 import Foundation
 import SwiftUI
 
-// temporarily moved during refactor
-struct GameListFilterOptions {
-    var showInstalled: Bool = false
-    var platform: InclusiveGamePlatform = .all
-    var source: InclusiveGameSource = .all
-}
+@Observable final class GameListVM: ObservableObject {
+    static let shared = GameListVM()
 
-enum ViewStyle: String, CaseIterable { // TODO: replace isGameListLayoutEnabled
-    case grid = "Grid"
-    case list = "List"
-}
+    struct FilterOptions {
+        var showInstalled: Bool = false
+        var platform: Game.InclusivePlatform = .all
+        var source: Game.InclusiveSource = .all
+    }
 
-enum InclusiveGamePlatform: String, CaseIterable {
-    case all = "All"
-    case mac = "macOS"
-    case windows = "Windows®"
-}
+    enum ViewStyle: String, CaseIterable { // TODO: replace isGameListLayoutEnabled
+        case grid = "Grid"
+        case list = "List"
+    }
 
-enum InclusiveGameSource: String, CaseIterable {
-    case all = "All"
-    case epic = "Epic"
-    case local = "Local"
-}
-
-@Observable final class GameListVM {
     var searchString: String = ""
     var refresh: Bool = false
-    var filterOptions: GameListFilterOptions = .init()
+    var filterOptions: FilterOptions = .init()
     var games: [Game] = []
     
-    init() {
+    private init() {
         updateGames()
     }
     

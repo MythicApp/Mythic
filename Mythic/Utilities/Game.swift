@@ -116,7 +116,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             return true
         }
     }
-    
+
+    var needsUpdate: Bool {
+        switch self.source {
+        case .epic:
+            return Legendary.needsUpdate(game: self)
+        case .local:
+            return false
+        }
+    }
+
     var isInstalling: Bool { GameOperation.shared.current?.game == self }
     var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
     
@@ -136,7 +145,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             }
         }
     }
-    
+
+    func launch() async throws {
+        switch source {
+        case .epic:
+            try await Legendary.launch(game: self)
+        case .local:
+            try await LocalGames.launch(game: self)
+        }
+    }
+
     /// Enumeration containing the two different game platforms available.
     enum Platform: String, CaseIterable, Codable, Hashable {
         case macOS = "macOS"
@@ -145,6 +163,18 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     /// Enumeration containing all available game types.
     enum Source: String, CaseIterable, Codable, Hashable {
+        case epic = "Epic"
+        case local = "Local"
+    }
+
+    enum InclusivePlatform: String, CaseIterable {
+        case all = "All"
+        case mac = "macOS"
+        case windows = "Windows®"
+    }
+
+    enum InclusiveSource: String, CaseIterable {
+        case all = "All"
         case epic = "Epic"
         case local = "Local"
     }
