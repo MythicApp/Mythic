@@ -170,7 +170,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     enum InclusivePlatform: String, CaseIterable {
         case all = "All"
-        case mac = "macOS"
+        case macOS = "macOS"
         case windows = "Windows®"
     }
 
