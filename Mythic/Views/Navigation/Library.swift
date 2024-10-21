@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -22,15 +22,16 @@ import SwordRPC
 /// A view displaying the user's library of games.
 struct LibraryView: View {
     @ObservedObject private var operation: GameOperation = .shared
-    
+    @ObservedObject private var variables: VariableManager = .shared
+
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @State private var filterOptions: GameListFilterOptions = .init()
+    @StateObject var gameListViewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
     var body: some View {
-        GameListEvo(filterOptions: $filterOptions)
+        GameListEvo()
             .navigationTitle("Library")
         
         // MARK: - Toolbar
@@ -44,29 +45,44 @@ struct LibraryView: View {
                     }
                     .help("Import a game")
                 }
-                
+
+                ToolbarItem(placement: .status) {
+                    if variables.getVariable("isLegendaryFetchingInstallableGames") == true {
+                        ProgressView()
+                            .controlSize(.small)
+                            .help("Mythic is checking your Epic library for new games.")
+                    }
+                }
+
                 ToolbarItem(placement: .confirmationAction) {
-                    Toggle("Installed", isOn: $filterOptions.showInstalled)
+                    Toggle("Installed", isOn: $gameListViewModel.filterOptions.showInstalled)
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Source", systemImage: "gamecontroller", selection: $filterOptions.source) {
-                        ForEach(InclusiveGameSource.allCases, id: \.self) { source in
+                    Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
+                        ForEach(
+                            Game.InclusiveSource.allCases,
+                            id: \.self
+                        ) { source in
+                            /*
+                            Label(platform.rawValue, systemImage: {
+                                switch platform {
+                                case .all: "display"
+                                case .macOS: "macwindow"
+                                case .windows: "pc"
+                                }
+                            }())
+                             */
+
                             Text(source.rawValue)
                         }
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $filterOptions.platform) {
-                        ForEach(InclusiveGamePlatform.allCases, id: \.self) { platform in
-                            Label(platform.rawValue, systemImage: {
-                                switch platform {
-                                case .all: "display"
-                                case .mac: "macwindow"
-                                case .windows: "pc"
-                                }
-                            }())
+                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
+                        ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
+                            Text(platform.rawValue)
                         }
                     }
                 }
@@ -79,9 +95,6 @@ struct LibraryView: View {
                         Label("Grid", systemImage: "square.grid.2x2")
                             .tag(false)
                     }
-#if !DEBUG
-                    .disabled(true)
-#endif
                 }
             }
         

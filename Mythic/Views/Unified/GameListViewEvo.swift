@@ -2,24 +2,22 @@ import Foundation
 import SwiftUI
 
 struct GameListEvo: View {
-    @Binding var filterOptions: GameListFilterOptions
+    @StateObject var viewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
-    
-    @State private var searchString: String = .init()
     @State private var isGameImportViewPresented: Bool = false
-    
+
     private var games: [Game] {
         let filteredGames = filterGames(unifiedGames)
         return sortGames(filteredGames)
     }
-    
+
     private func filterGames(_ games: [Game]) -> [Game] {
         games.filter { game in
-            let matchesSearch = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
-            let matchesInstalled = !filterOptions.showInstalled || isGameInstalled(game)
-            let matchesPlatform = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
-            let matchesSource = filterOptions.source == .all || game.source.rawValue == filterOptions.source.rawValue
-            
+            let matchesSearch = viewModel.searchString.isEmpty || game.title.localizedCaseInsensitiveContains(viewModel.searchString)
+            let matchesInstalled = !viewModel.filterOptions.showInstalled || isGameInstalled(game)
+            let matchesPlatform = viewModel.filterOptions.platform == .all || game.platform?.rawValue == viewModel.filterOptions.platform.rawValue
+            let matchesSource = viewModel.filterOptions.source == .all || game.source.rawValue == viewModel.filterOptions.source.rawValue
+
             return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
         }
     }
@@ -61,21 +59,24 @@ struct GameListEvo: View {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
             } else if isListLayoutEnabled {
-                List {
-                    ForEach(games) { game in
-                        GameListRow(game: .constant(game))
+                ScrollView(.vertical) {
+                    LazyVStack {
+                        ForEach(games) { game in
+                            GameListCard(game: .constant(game))
+                                .padding([.top, .horizontal])
+                        }
                     }
+                    .searchable(text: $viewModel.searchString, placement: .toolbar)
                 }
-                .searchable(text: $searchString, placement: .toolbar)
             } else {
                 ScrollView(.horizontal) {
-                    LazyHGrid(rows: [.init(.adaptive(minimum: 335))]) {
+                    LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
                         ForEach(games) { game in
                             GameCard(game: .constant(game))
                                 .padding([.leading, .vertical])
                         }
                     }
-                    .searchable(text: $searchString, placement: .toolbar)
+                    .searchable(text: $viewModel.searchString, placement: .toolbar)
                 }
             }
         }
@@ -83,6 +84,6 @@ struct GameListEvo: View {
 }
 
 #Preview {
-    GameListEvo(filterOptions: .constant(.init()))
+    GameListEvo()
         .environmentObject(NetworkMonitor())
 }

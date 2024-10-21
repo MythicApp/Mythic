@@ -8,7 +8,7 @@ struct GameSettingsView: View {
     @Binding var isPresented: Bool
 
     @StateObject var operation: GameOperation = .shared
-    @State private var selectedBottleURL: URL?
+    @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
@@ -23,7 +23,7 @@ struct GameSettingsView: View {
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
         _game = game
         _isPresented = isPresented
-        _selectedBottleURL = State(initialValue: game.wrappedValue.bottleURL)
+        _selectedContainerURL = State(initialValue: game.wrappedValue.containerURL)
         _launchArguments = State(initialValue: game.launchArguments.wrappedValue)
     }
 
@@ -53,7 +53,7 @@ private extension GameSettingsView {
     var gameThumbnail: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.background)
-            .aspectRatio(3 / 4, contentMode: .fit)
+            .aspectRatio(3/4, contentMode: .fit)
             .overlay {
                 CachedAsyncImage(url: game.imageURL) { phase in
                     switch phase {
@@ -85,7 +85,7 @@ private extension GameSettingsView {
         return ZStack {
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .blur(radius: 20.0)
 
             image
@@ -108,13 +108,13 @@ private extension GameSettingsView {
         ZStack {
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .clipShape(.rect(cornerRadius: 20))
                 .blur(radius: 10.0)
 
             image
                 .resizable()
-                .aspectRatio(3 / 4, contentMode: .fill)
+                .aspectRatio(3/4, contentMode: .fill)
                 .clipShape(.rect(cornerRadius: 20))
                 .modifier(FadeInModifier())
         }
@@ -196,6 +196,7 @@ private extension GameSettingsView {
                 )
             )
             .truncationMode(.tail)
+            .textFieldStyle(.roundedBorder)
             .onSubmit {
                 modifyThumbnailURL()
             }
@@ -215,7 +216,7 @@ private extension GameSettingsView {
                     ScrollView(.horizontal) {
                         HStack {
                             ForEach(launchArguments, id: \.self) { argument in
-                                ArgumentItem(launchArguments: $launchArguments, argument: argument)
+                                ArgumentItem(game: $game, launchArguments: $launchArguments, argument: argument)
                             }
                             .onChange(of: launchArguments, { game.launchArguments = $1 })
 
@@ -234,8 +235,7 @@ private extension GameSettingsView {
 
     func submitLaunchArgument() {
         if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty
-        {
+            .isEmpty, !launchArguments.contains(typingArgument) {
             launchArguments.append(typingArgument)
             typingArgument = .init()
         }
@@ -352,12 +352,12 @@ private extension GameSettingsView {
 
     var gameEngineSection: some View {
         Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
-            if selectedBottleURL != nil {
-                BottleSettingsView(selectedBottleURL: $selectedBottleURL, withPicker: true)
+            if selectedContainerURL != nil {
+                ContainerSettingsView(selectedContainerURL: $selectedContainerURL, withPicker: true)
             }
         }
         .disabled(game.platform != .windows)
-        .onChange(of: selectedBottleURL) { game.bottleURL = $1 }
+        .onChange(of: selectedContainerURL) { game.containerURL = $1 }
     }
 
     var bottomBar: some View {
@@ -386,6 +386,7 @@ private extension GameSettingsView {
 }
 
 struct ArgumentItem: View {
+    @Binding var game: Game
     @Binding var launchArguments: [String]
     var argument: String
 
@@ -416,6 +417,9 @@ struct ArgumentItem: View {
         .onTapGesture {
             withAnimation(.easeInOut(duration: 0.3)) {
                 launchArguments.removeAll(where: { $0 == argument })
+                if launchArguments.isEmpty { // fix for `.onChange` not firing when args become empty
+                    game.launchArguments = .init()
+                }
             }
         }
     }

@@ -1,12 +1,12 @@
 //
-//  AddGameView.swift
+//  ImportGameView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 29/9/2023.
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -25,28 +25,40 @@ struct GameImportView: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            Text("Import")
-                .font(.title)
-                .multilineTextAlignment(.leading)
-            
-            Picker(String(), selection: $source) {
-                ForEach(Swift.type(of: source).allCases, id: \.self) {
-                    Text($0.rawValue)
+            if #available(macOS 15.0, *) {
+                TabView {
+                    Tab("Epic", systemImage: "gamecontroller") {
+                        GameImportView.Epic(isPresented: $isPresented)
+                    }
+
+                    Tab("Steam", systemImage: "gamecontroller") {
+                        NotImplementedView()
+                    }
+                    .hidden()
+
+                    Tab("Local", systemImage: "gamecontroller") {
+                        GameImportView.Local(isPresented: $isPresented)
+                    }
                 }
-            }
-            .pickerStyle(.segmented)
-            
-            // MARK: - Import Epic (Legendary) Games
-            switch source {
-            case .epic:
-                GameImportView.Epic(isPresented: $isPresented)
-            case .local:
-                GameImportView.Local(isPresented: $isPresented)
-                    .scaledToFit() // FIXME: dirtyfix for clipping
+                .tabViewStyle(.sidebarAdaptable)
+                .tabViewSidebarHeader(content: { Text("Select a source:") })
+            } else {
+                TabView {
+                    GameImportView.Epic(isPresented: $isPresented)
+                        .tabItem {
+                            Label("Epic", systemImage: "gamecontroller")
+                        }
+
+                    GameImportView.Local(isPresented: $isPresented)
+                        .tabItem {
+                            Label("Local", systemImage: "gamecontroller")
+                        }
+                }
+                .padding()
             }
         }
-        
-        .padding()
+        .navigationTitle("Import")
+        .frame(minWidth: 750, minHeight: 300, idealHeight: 350)
     }
 }
 

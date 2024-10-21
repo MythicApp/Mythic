@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -45,15 +45,19 @@ final class LocalGames {
         }
         
         Task { @MainActor in
-            GameOperation.shared.launching = game
+            withAnimation {
+                GameOperation.shared.launching = game
+            }
         }
+        
+        try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
         
         switch game.platform {
         case .macOS:
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
                 workspace.open(
                     URL(filePath: game.path ?? .init()),
-                    configuration: NSWorkspace.OpenConfiguration(),
+                    configuration: .init(),
                     completionHandler: { (_/*game*/, error) in
                         if let error = error {
                             log.error("Error launching local macOS game \"\(game.title)\": \(error)")
@@ -67,24 +71,26 @@ final class LocalGames {
             }
         case .windows: // FIXME: unneeded unification
             guard Engine.exists else { throw Engine.NotInstalledError() }
-            guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
-            let bottle = try Wine.getBottleObject(url: bottleURL)
-            
-            try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
+            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+            let container = try Wine.getContainerObject(url: containerURL)
             
             try await Wine.command(
                 arguments: [game.path!] + game.launchArguments,
                 identifier: "launch_\(game.title)",
-                bottleURL: bottle.url,
+                containerURL: container.url,
                 environment: [
-                    "MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0",
-                    "WINEMSYNC": bottle.settings.msync ? "1" : "0"
+                    "MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0",
+                    "WINEMSYNC": container.settings.msync ? "1" : "0"
                 ]
             ) { _ in }
             
-        case .none: do { /* TODO: Error */ }
+        case .none:
+            do {  } // this should never happen
         }
-        
+
+        if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            await NSApp.windows.first?.miniaturize(nil)
+        }
         Task { @MainActor in
             GameOperation.shared.launching = nil
         }

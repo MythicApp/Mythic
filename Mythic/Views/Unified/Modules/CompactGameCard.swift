@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -79,7 +79,7 @@ struct CompactGameCard: View {
                         Spacer()
                         
                         // ! Changes made here must also be reflected in GameCard's play button
-                        if operation.launching == game {
+                        if game.isLaunching {
                             ProgressView()
                                 .controlSize(.small)
                                 .padding(5)
@@ -89,14 +89,7 @@ struct CompactGameCard: View {
                             Button {
                                 Task(priority: .userInitiated) {
                                     do {
-                                        switch game.source {
-                                        case .epic:
-                                            try await Legendary.launch(game: game)
-                                        case .local:
-                                            try await LocalGames.launch(game: game)
-                                        }
-                                        
-                                        if minimizeOnGameLaunch { NSApp.windows.first?.miniaturize(nil) }
+                                        try await game.launch()
                                     } catch {
                                         launchError = error
                                         isLaunchErrorAlertPresented = true
@@ -110,7 +103,7 @@ struct CompactGameCard: View {
                             .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                             .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
                             .disabled(operation.runningGames.contains(game))
-                            .disabled(Wine.bottleURLs.isEmpty)
+                            .disabled(Wine.containerURLs.isEmpty)
                             .alert(isPresented: $isLaunchErrorAlertPresented) {
                                 Alert(
                                     title: .init("Error launching \"\(game.title)\"."),

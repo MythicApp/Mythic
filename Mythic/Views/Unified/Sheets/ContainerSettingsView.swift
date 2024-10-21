@@ -1,12 +1,12 @@
 //
-//  BottleSettings.swift
+//  ContainerSettings.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 7/2/2024.
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -16,18 +16,18 @@
 
 import SwiftUI
 
-struct BottleSettingsView: View {
+struct ContainerSettingsView: View {
     // TODO: Add DXVK
     // TODO: FSR 3?
     
-    @Binding var selectedBottleURL: URL?
+    @Binding var selectedContainerURL: URL?
     var withPicker: Bool
     
     @ObservedObject private var variables: VariableManager = .shared
     
-    @State private var bottleScope: Wine.BottleScope = .individual
+    @State private var containerScope: Wine.ContainerScope = .individual
     
-    @State private var retinaMode: Bool = Wine.defaultBottleSettings.retinaMode
+    @State private var retinaMode: Bool = Wine.defaultContainerSettings.retinaMode
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
     
@@ -38,8 +38,8 @@ struct BottleSettingsView: View {
     private func fetchRetinaStatus() async {
         withAnimation { modifyingRetinaMode = true }
         do {
-            guard let selectedBottleURL = selectedBottleURL else { return } // nothrow
-            retinaMode = try await Wine.getRetinaMode(bottleURL: selectedBottleURL)
+            guard let selectedContainerURL = selectedContainerURL else { return } // nothrow
+            retinaMode = try await Wine.getRetinaMode(containerURL: selectedContainerURL)
         } catch {
             retinaModeError = error
         }
@@ -49,8 +49,8 @@ struct BottleSettingsView: View {
     private func fetchWindowsVersion() async {
         withAnimation { modifyingWindowsVersion = true }
         do {
-            guard let selectedBottleURL = selectedBottleURL else { return } // nothrow
-            if let fetchedWindowsVersion = try await Wine.getWindowsVersion(bottleURL: selectedBottleURL) {
+            guard let selectedContainerURL = selectedContainerURL else { return } // nothrow
+            if let fetchedWindowsVersion = try await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
                 windowsVersion = fetchedWindowsVersion
             }
         } catch {
@@ -62,15 +62,15 @@ struct BottleSettingsView: View {
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
-                Picker("Current Bottle", selection: $selectedBottleURL) {
-                    ForEach(Wine.bottleObjects) { bottle in
-                        Text(bottle.name)
-                            .tag(bottle.url)
+                Picker("Current Container", selection: $selectedContainerURL) {
+                    ForEach(Wine.containerObjects) { container in
+                        Text(container.name)
+                            .tag(container.url.appending(path: "") as URL?) // dirtyfix for picker error -- a little primitive but that's swift's fault
                     }
                 }
             } else {
                 HStack {
-                    Text("Current Bottle")
+                    Text("Current Container")
                     Spacer()
                     ProgressView()
                         .controlSize(.small)
@@ -78,11 +78,11 @@ struct BottleSettingsView: View {
             }
         }
         
-        if selectedBottleURL != nil {
-            if let bottle = try? Wine.getBottleObject(url: selectedBottleURL!) {
+        if selectedContainerURL != nil {
+            if let container = try? Wine.getContainerObject(url: selectedContainerURL!) {
                 Toggle("Performance HUD", isOn: Binding(
-                    get: { return bottle.settings.metalHUD },
-                    set: { bottle.settings.metalHUD = $0 }
+                    get: { return container.settings.metalHUD },
+                    set: { container.settings.metalHUD = $0 }
                 ))
                 .disabled(variables.getVariable("booting") == true)
                 
@@ -92,9 +92,9 @@ struct BottleSettingsView: View {
                         set: { value in
                             Task(priority: .userInitiated) {
                                 withAnimation { modifyingRetinaMode = true }
-                                await Wine.toggleRetinaMode(bottleURL: bottle.url, toggle: value)
+                                await Wine.toggleRetinaMode(containerURL: container.url, toggle: value)
                                 retinaMode = value
-                                bottle.settings.retinaMode = value
+                                container.settings.retinaMode = value
                                 withAnimation { modifyingRetinaMode = false }
                             }
                         }
@@ -116,14 +116,14 @@ struct BottleSettingsView: View {
                 }
                 
                 Toggle("Enhanced Sync (MSync)", isOn: Binding(
-                    get: { return bottle.settings.msync },
-                    set: { bottle.settings.msync = $0 }
+                    get: { return container.settings.msync },
+                    set: { container.settings.msync = $0 }
                 ))
                 .disabled(variables.getVariable("booting") == true)
                 
                 .task(priority: .high) { await fetchRetinaStatus() }
                 .task(priority: .high) { await fetchWindowsVersion() }
-                .onChange(of: selectedBottleURL) {
+                .onChange(of: selectedContainerURL) {
                     Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     Task(priority: .userInitiated) { await fetchWindowsVersion() }
                 }
@@ -134,9 +134,9 @@ struct BottleSettingsView: View {
                         set: { value in
                             Task(priority: .userInitiated) {
                                 withAnimation { modifyingWindowsVersion = true }
-                                await Wine.setWindowsVersion(value, bottleURL: bottle.url)
+                                await Wine.setWindowsVersion(value, containerURL: container.url)
                                 windowsVersion = value
-                                bottle.settings.windowsVersion = value
+                                container.settings.windowsVersion = value
                                 withAnimation { modifyingWindowsVersion = false }
                             }
                         }
@@ -159,7 +159,7 @@ struct BottleSettingsView: View {
                         }
                     }
                 }
-            } else if Wine.bottleExists(bottleURL: selectedBottleURL!) {
+            } else if Wine.containerExists(at: selectedContainerURL!) {
                 
             } else {
                 
@@ -170,8 +170,8 @@ struct BottleSettingsView: View {
 
 #Preview {
     Form {
-        BottleSettingsView(
-            selectedBottleURL: .constant(nil),
+        ContainerSettingsView(
+            selectedContainerURL: .constant(nil),
             withPicker: true
         )
     }

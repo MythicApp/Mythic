@@ -64,23 +64,23 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     }
     
     // MARK: Properties
-    var bottleURL: URL? {
+    var containerURL: URL? {
         get {
-            let key: String = id.appending("_bottleURL")
-            if let url = defaults.url(forKey: key), !Wine.bottleExists(bottleURL: url) {
+            let key: String = id.appending("_containerURL")
+            if let url = defaults.url(forKey: key), !Wine.containerExists(at: url) {
                 defaults.removeObject(forKey: key)
             }
             
             if defaults.url(forKey: key) == nil {
-                defaults.set(Wine.bottleURLs.first, forKey: key)
+                defaults.set(Wine.containerURLs.first, forKey: key)
             }
             
             return defaults.url(forKey: key)
         }
         set {
-            let key: String = id.appending("_bottleURL")
+            let key: String = id.appending("_containerURL")
             guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
-            if Wine.bottleURLs.contains(newValue) {
+            if Wine.containerURLs.contains(newValue) {
                 defaults.set(newValue, forKey: key)
             }
         }
@@ -116,7 +116,20 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             return true
         }
     }
-    
+
+    var needsUpdate: Bool {
+        switch self.source {
+        case .epic:
+            return Legendary.needsUpdate(game: self)
+        case .local:
+            return false
+        }
+    }
+
+    var isInstalling: Bool { GameOperation.shared.current?.game == self }
+    var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
+    var isLaunching: Bool { GameOperation.shared.launching == self }
+
     // MARK: Functions
     func move(to newLocation: URL) async throws {
         switch source {
@@ -133,7 +146,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             }
         }
     }
-    
+
+    func launch() async throws {
+        switch source {
+        case .epic:
+            try await Legendary.launch(game: self)
+        case .local:
+            try await LocalGames.launch(game: self)
+        }
+    }
+
     /// Enumeration containing the two different game platforms available.
     enum Platform: String, CaseIterable, Codable, Hashable {
         case macOS = "macOS"
@@ -142,6 +164,18 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     /// Enumeration containing all available game types.
     enum Source: String, CaseIterable, Codable, Hashable {
+        case epic = "Epic"
+        case local = "Local"
+    }
+
+    enum InclusivePlatform: String, CaseIterable {
+        case all = "All"
+        case macOS = "macOS"
+        case windows = "Windows®"
+    }
+
+    enum InclusiveSource: String, CaseIterable {
+        case all = "All"
         case epic = "Epic"
         case local = "Local"
     }
@@ -296,7 +330,7 @@ class GameOperation: ObservableObject {
             let isRunning = {
                 switch gamePlatform {
                 case .macOS:
-                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
                 case .windows:
                     (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
                 }
@@ -309,7 +343,7 @@ class GameOperation: ObservableObject {
                 try? await Task.sleep(for: .seconds(3))
             }
             
-            GameOperation.log.debug("\(game.title) \(isRunning ? "is still running" : "has been quit" )")
+            GameOperation.log.debug("\"\(game.title)\" \(isRunning ? "is still running" : "has been quit" )")
         }
     }
     

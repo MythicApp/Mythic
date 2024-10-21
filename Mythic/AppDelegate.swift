@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -31,19 +31,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
         
-        // MARK: Bottle cleanup in the event of external deletion
-        Wine.bottleURLs = Wine.bottleURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
-        
-        // MARK: Refresh legendary metadata
-        Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["status"], identifier: "refreshMetadata") { _ in }
-        }
-        
-        // MARK: Autosync Epic savedata
-        Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
-        }
-        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
@@ -51,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             Logger.app.log("Older bottle format detected, commencing bottle management system migration")
             
             var iterations = 0
-            var convertedBottles: [Wine.Bottle] = .init()
+            var convertedBottles: [Wine.Container] = .init()
             
             for (name, bottle) in decodedData {
                 guard let urlArray = bottle["url"] as? [String: String], // unable to cast directly to URL
@@ -60,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     return
                 }
                 
-                var settings = Wine.defaultBottleSettings
+                var settings = Wine.defaultContainerSettings
                 guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
                 settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
                 settings.msync = oldSettings["msync"] ?? settings.msync
@@ -68,7 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 
                 Task { @MainActor in
                     convertedBottles.append(.init(name: name, url: url, settings: settings))
-                    Wine.bottleURLs.insert(url)
+                    Wine.containerURLs.insert(url)
                 }
                 
                 iterations += 1
@@ -78,6 +65,92 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             
             Logger.file.notice("Bottle management system migration complete.")
             defaults.removeObject(forKey: "allBottles")
+        }
+        
+        // MARK: >= 0.3.2 Bottle → Container migration
+        let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
+        let newBottles = Bundle.appContainer!.appending(path: "Containers")
+
+        if defaults.integer(forKey: "defaultsVersion") == 0 {
+            Logger.app.log("Commencing bottle renaming (Bottle → Container)")
+
+            do {
+                try files.moveItem(at: oldBottles, to: newBottles)
+                if let contents = try? files.contentsOfDirectory(at: newBottles, includingPropertiesForKeys: nil) {
+                    contents.forEach { containerURL in
+                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: containerURL)))")
+                    }
+                }
+
+                // Migrate bottleURLs to containerURLs
+                if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
+                    let containerURLs = bottleURLs.map { bottleURL -> URL in
+                        let currentPath = bottleURL.path(percentEncoded: false)
+                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                            Logger.app.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(newPath))...")
+                            return URL(fileURLWithPath: newPath)
+                        } else {
+                            return bottleURL
+                        }
+                    }
+
+                    do {
+                        try defaults.encodeAndSet(containerURLs, forKey: "containerURLs")
+                        defaults.removeObject(forKey: "bottleURLs")
+                    } catch {
+                        Logger.app.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
+                    }
+                }
+
+                // Game-specific bottleURL migration
+                defaults.dictionaryRepresentation()
+                    .filter { $0.key.hasSuffix("_bottleURL") }
+                    .forEach { key, value in
+                        guard let currentURL = value as? URL else { return }
+                        let currentPath = currentURL.path(percentEncoded: false)
+                        guard files.fileExists(atPath: currentPath) else { return }
+
+                        let filteredURL: URL
+                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
+                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
+                            filteredURL = URL(fileURLWithPath: newPath)
+                        } else {
+                            filteredURL = currentURL
+                        }
+
+                        let gameKey = key.replacingOccurrences(of: "_bottleURL", with: "")
+                        Logger.app.debug("Migrating game \(gameKey)'s container URL...")
+                        defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
+                        defaults.removeObject(forKey: key)
+                    }
+
+                Logger.app.notice("Container renaming complete.")
+            } catch {
+                Logger.app.error("Unable to rename Bottles to Containers: \(error.localizedDescription) -- Mythic may not function correctly.")
+            }
+        }
+
+        // MARK: Container cleanup in the event of external deletion
+        Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+
+        // MARK: <0.3.2 Config folder rename (Config → Epic)
+        let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
+        if files.fileExists(atPath: legendaryOldConfig.path) {
+            try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
+        }
+
+        Task(priority: .utility) {
+            Legendary.updateMetadata()
+
+            Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+                Legendary.updateMetadata()
+            }
+        }
+
+        // MARK: Autosync Epic savedata
+        Task(priority: .utility) {
+            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
@@ -136,7 +209,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true {
+        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true, Engine.isLatestVersionReadyForDownload() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
                let latestEngineVersion = Engine.fetchLatestVersion() {
@@ -185,6 +258,12 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
+        
+        /*
+         MARK: Defaults version
+         Useful for migration after non-backwards-compatible update
+         */
+        defaults.register(defaults: ["defaultsVersion": 1])
     }
     
     func applicationDidBecomeActive(_: Notification) {

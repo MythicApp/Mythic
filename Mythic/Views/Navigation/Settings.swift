@@ -5,7 +5,7 @@
 //  Created by Esiayo Alegbe on 11/9/2023.
 //
 
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -20,7 +20,7 @@ struct SettingsView: View {
     @State private var isWineSectionExpanded: Bool = true
     @State private var isEpicSectionExpanded: Bool = true
     @State private var isMythicSectionExpanded: Bool = true
-    @State private var isDefaultBottleSectionExpanded: Bool = true
+    @State private var isDefaultContainerSectionExpanded: Bool = true
     @State private var isUpdateSettingsExpanded: Bool = true
     
     @EnvironmentObject var sparkle: SparkleController
@@ -116,7 +116,7 @@ struct SettingsView: View {
                 .alert(isPresented: $isResetAlertPresented) {
                     .init(
                         title: .init("Reset Mythic?"),
-                        message: .init("This will erase every persistent setting and bottle."),
+                        message: .init("This will erase every persistent setting and container."),
                         primaryButton: .destructive(.init("Reset")) {
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
@@ -126,8 +126,8 @@ struct SettingsView: View {
                                 try? files.removeItem(at: appHome)
                             }
                             
-                            if let bottlesDirectory = Wine.bottlesDirectory {
-                                try? files.removeItem(at: bottlesDirectory)
+                            if let containersDirectory = Wine.containersDirectory {
+                                try? files.removeItem(at: containersDirectory)
                             }
                         },
                         secondaryButton: .cancel()
@@ -328,9 +328,9 @@ struct SettingsView: View {
                 Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
             }
             
-            /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultBottleSettings.
-             Section("Default Bottle Settings", isExpanded: $isDefaultBottleSectionExpanded) {
-             // BottleSettingsView something
+            /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.
+             Section("Default Container Settings", isExpanded: $isDefaultContainerSectionExpanded) {
+             // ContainerSettingsView something
              }
              */
         }

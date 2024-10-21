@@ -1,11 +1,11 @@
 //
-//  Bottles.swift
+//  Containers.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 12/9/2023.
 //
 
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -16,18 +16,18 @@
 import SwiftUI
 import SwordRPC
 
-struct BottlesView: View {
-    @State private var isBottleCreationViewPresented = false
+struct ContainersView: View {
+    @State private var isContainerCreationViewPresented = false
     
     var body: some View {
-        BottleListView()
-            .navigationTitle("Bottles")
+        ContainerListView()
+            .navigationTitle("Containers")
         
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
                     presence.details = "Managing their Windows® Instances"
-                    presence.state = "Managing bottles"
+                    presence.state = "Managing containers"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
                     
@@ -39,32 +39,32 @@ struct BottlesView: View {
                 if Engine.exists {
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
-                            isBottleCreationViewPresented = true
+                            isContainerCreationViewPresented = true
                         } label: {
                             Image(systemName: "plus")
                         }
-                        .help("Add a bottle")
+                        .help("Add a container")
                     }
                     
-                    if let bottlesDirectory = Wine.bottlesDirectory {
+                    if let containersDirectory = Wine.containersDirectory {
                         ToolbarItem(placement: .confirmationAction) {
                             Button {
-                                workspace.open(bottlesDirectory)
+                                workspace.open(containersDirectory)
                             } label: {
                                 Image(systemName: "folder")
                             }
-                            .help("Open Bottles directory")
+                            .help("Open Containers directory")
                         }
                     }
                 }
             }
         
-            .sheet(isPresented: $isBottleCreationViewPresented) {
-                BottleCreationView(isPresented: $isBottleCreationViewPresented)
+            .sheet(isPresented: $isContainerCreationViewPresented) {
+                ContainerCreationView(isPresented: $isContainerCreationViewPresented)
             }
     }
 }
 
 #Preview {
-    BottlesView()
+    ContainersView()
 }

@@ -82,7 +82,7 @@ struct UninstallViewEvo: View {
                             switch game.source {
                             case .epic:
                                 Task(priority: .userInitiated) {
-                                    uninstalling = true
+                                    withAnimation { uninstalling = true }
                                     do {
                                         try await Legendary.command(arguments: [
                                             "-y", "uninstall",
@@ -106,15 +106,15 @@ struct UninstallViewEvo: View {
                                         isUninstallationErrorPresented = true
                                     }
                                     
-                                    uninstalling = false
+                                    withAnimation { uninstalling = false }
                                 }
                             case .local:
                                 do {
                                     guard let gamePath = game.path else { throw FileLocations.FileDoesNotExistError(.init(filePath: game.path ?? .init())) }
-                                    uninstalling = true
+                                    withAnimation { uninstalling = true }
                                     if deleteFiles { try files.removeItem(atPath: gamePath) }
                                     LocalGames.library?.remove(game)
-                                    uninstalling = false
+                                    withAnimation { uninstalling = false }
                                     isPresented = false
                                 } catch {
                                     uninstallationErrorReason = error.localizedDescription
@@ -122,6 +122,7 @@ struct UninstallViewEvo: View {
                                 }
                             }
                             
+                            favouriteGames.remove(game.id)
                             isPresented = false
                         },
                         secondaryButton: .cancel(Text("Cancel")) {

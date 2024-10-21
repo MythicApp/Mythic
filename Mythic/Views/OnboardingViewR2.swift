@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -38,7 +38,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         case engineDisclaimer,
              engineDownloader,
              engineInstaller
-        case defaultBottleSetup
+        case defaultContainerSetup
         case finished
         
         mutating func next(forceNext: Bool = false) {
@@ -68,8 +68,10 @@ struct OnboardingR2: View { // TODO: ViewModel
         
     }
     
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var currentPhase: Phase
-    @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultBottleSetup]
+    @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultContainerSetup]
     
     @State private var colorfulAnimationColors: [Color] = [
         .init(hex: "#5412F6"),
@@ -153,13 +155,13 @@ struct OnboardingR2: View { // TODO: ViewModel
         switch type {
         case .epic:
             Task(priority: .userInitiated) {
-                isSigningIn = true
+                withAnimation { isSigningIn = true }
                 do {
                     epicUnsuccessfulSignInAttempt = !(try await Legendary.signIn(authKey: epicSigninAuthKey))
                 } catch {
                     errorString = error.localizedDescription
                 }
-                isSigningIn = false
+                withAnimation { isSigningIn = false }
             }
         case .local:
             do {} // why
@@ -214,8 +216,11 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         Text("Enter the 'authorisationCode' from the JSON response in the field below.")
                                         
                                         HStack {
-                                            TextField("Enter authorisation code...", text: $epicSigninAuthKey)
+                                            SecureField("Enter authorisation code...", text: $epicSigninAuthKey)
                                                 .onSubmit { signIn(type: .epic) }
+                                                .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                                .textFieldStyle(.roundedBorder)
+                                            
                                             // .frame(width: 400, alignment: .center)
                                             
                                             if isSigningIn {
@@ -496,12 +501,12 @@ struct OnboardingR2: View { // TODO: ViewModel
                             .onChange(of: engineInstallationComplete) {
                                 if $1 == true { animateNextPhase() }
                             }
-                        case .defaultBottleSetup: // MARK: Phase: Default Bottle Setup
+                        case .defaultContainerSetup: // MARK: Phase: Default Container Setup
                             ContentView(
                                 isOpacityAnimated: $isOpacityAnimated,
                                 isSecondRowPresented: $isSecondRowPresented,
                                 isThirdRowPresented: $isThirdRowPresented,
-                                label: Text("Setting up default bottle..."),
+                                label: Text("Setting up default container..."),
                                 secondRow: .init(
                                     VStack {
                                         Text(
@@ -521,7 +526,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                     case .success:
                                         animateNextPhase()
                                     case .failure(let failure):
-                                        guard type(of: failure) != Wine.BottleAlreadyExistsError.self else { animateNextPhase(); return }
+                                        guard type(of: failure) != Wine.ContainerAlreadyExistsError.self else { animateNextPhase(); return }
                                         errorString = failure.localizedDescription
                                     }
                                 }

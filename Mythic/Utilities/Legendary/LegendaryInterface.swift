@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied, Jecta
+// Copyright © 2023 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -15,6 +15,7 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import SwiftUI
 import SwiftyJSON
 import OSLog
 import UserNotifications
@@ -30,8 +31,9 @@ final class Legendary {
     
     // MARK: - Properties
     
+    static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
     /// The file location for legendary's configuration files.
-    static let configLocation = Bundle.appHome!.appending(path: "Config").path
+    static let configLocation = configurationFolder.path // TODO: phase out of use
     
     /// Logger instance for legendary.
     static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
@@ -360,12 +362,15 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
         
-        guard game.platform == .windows && Engine.exists else { throw Engine.NotInstalledError() }
-        guard let bottleURL = game.bottleURL else { throw Wine.BottleDoesNotExistError() } // FIXME: Bottle Revamp
-        let bottle = try Wine.getBottleObject(url: bottleURL)
+        if game.platform == .windows && Engine.exists == false { throw Engine.NotInstalledError() }
+        
+        guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+        let container = try Wine.getContainerObject(url: containerURL)
         
         Task { @MainActor in
-            GameOperation.shared.launching = game
+            withAnimation {
+                GameOperation.shared.launching = game
+            }
         }
         
         try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
@@ -376,20 +381,26 @@ final class Legendary {
             needsUpdate(game: game) ? "--skip-version-check" : nil
         ] .compactMap { $0 }
         
-        var environmentVariables = ["MTL_HUD_ENABLED": bottle.settings.metalHUD ? "1" : "0"]
+        var environmentVariables = ["MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0"]
         
         if game.platform == .windows {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
-            environmentVariables["WINEPREFIX"] = bottle.url.path(percentEncoded: false)
-            environmentVariables["WINEMSYNC"] = bottle.settings.msync ? "1" : "0"
+            environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
+            environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
         }
         
         arguments.append(contentsOf: game.launchArguments)
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
-        
+
+        if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            await NSApp.windows.first?.miniaturize(nil)
+        }
+
         Task { @MainActor in
-            GameOperation.shared.launching = nil
+            withAnimation {
+                GameOperation.shared.launching = nil
+            }
         }
     }
     
@@ -566,13 +577,24 @@ final class Legendary {
         
         return nil
     }
-    
+
+    /// Create an asynchronous task to update Legendary's stored metadata.
+    static func updateMetadata() {
+        if VariableManager.shared.getVariable("isLegendaryFetchingInstallableGames") != true {
+            Task(priority: .utility) {
+                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: true)
+                try? await command(arguments: ["list"], identifier: "fetchInstallableGames", waits: true) { _ in }
+                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: false)
+            }
+        }
+    }
+
     /**
      Retrieves game thumbnail image from legendary's downloaded metadata.
      
      - Parameters:
-     - of: The game to fetch the thumbnail of.
-     - type: The aspect ratio of the image to fetch the thumbnail of.
+      - of: The game to fetch the thumbnail of.
+      - type: The aspect ratio of the image to fetch the thumbnail of.
      
      - Returns: The URL of the retrieved image.
      */

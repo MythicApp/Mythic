@@ -49,11 +49,13 @@ struct DownloadCard: View {
                             .shimmering(animation: .easeInOut(duration: 1).repeatForever(autoreverses: false), bandSize: 1)
                     case .success(let image):
                         if case .prominent = style {
-                            image.resizable()
+                            image
+                                .resizable()
                                 .blur(radius: 20.0)
                                 .modifier(FadeInModifier())
                         } else {
-                            image.resizable()
+                            image
+                                .resizable()
                                 .blur(radius: 20.0)
                                 .clipShape(.rect(cornerRadius: 20))
                                 .modifier(FadeInModifier())
