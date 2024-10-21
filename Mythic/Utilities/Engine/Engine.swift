@@ -64,7 +64,7 @@ final class Engine {
     static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
         return try await withCheckedThrowingContinuation { continuation in
             let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!) { tempfile, response, error in
-                guard error == nil else { continuation.resume(throwing: error!); return }
+                if let error = error { continuation.resume(throwing: error); return }
                 guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
                 
                 if let tempfile = tempfile {
