@@ -30,11 +30,6 @@ final class Engine {
         category: "Engine"
     )
     
-    enum Stream: String {
-        case stable = "7.7"
-        case staging = "staging"
-    }
-    
     static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
     
     private static let lock = NSLock() // unused

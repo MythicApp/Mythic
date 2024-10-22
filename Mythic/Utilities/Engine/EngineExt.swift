@@ -17,6 +17,11 @@
 import Foundation
 
 extension Engine {
+    enum Stream: String {
+        case stable = "7.7"
+        case staging = "staging"
+    }
+
     /// An error indicating that the libraries are already installed.
     struct AlreadyInstalledError: LocalizedError { 
         var errorDescription: String? = "Mythic Engine is already installed."
