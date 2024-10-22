@@ -9,8 +9,6 @@
 			<string>ExtendedGamepad</string>
 		</dict>
 	</array>
-	<key>GCSupportsControllerUserInteraction</key>
-	<true/>
 	<key>SUFeedURL</key>
 	<string>https://getmythic.app/appcast.xml</string>
 	<key>SUPublicEDKey</key>

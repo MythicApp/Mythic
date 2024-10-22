@@ -25,13 +25,6 @@ struct GameListCard: View {
                 CachedAsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
                     switch phase {
                     case .empty:
-                        /*
-                         Image(nsImage: workspace.icon(forFile: game.path ?? ""))
-                         .resizable()
-                         .clipShape(.rect(cornerRadius: 20))
-                         .blur(radius: 20)
-                         */
-
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.background)
 
@@ -52,14 +45,14 @@ struct GameListCard: View {
                             }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                             .overlay { Image(systemName: "exclamationmark.triangle.fill") }
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                             .overlay { Image(systemName: "questionmark.circle.fill") }
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
@@ -83,7 +76,7 @@ struct GameListCard: View {
                             GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
                         }
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
                     .padding(.horizontal)
 
                     Spacer()
