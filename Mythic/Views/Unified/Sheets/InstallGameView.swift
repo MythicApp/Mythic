@@ -187,7 +187,10 @@ struct InstallViewEvo: View {
                         }
                 }
 
-                platform = supportedPlatforms!.first!
+                if let supportedPlatforms = supportedPlatforms,
+                   let firstPlatform = supportedPlatforms.first {
+                    platform = firstPlatform
+                }
             } else {
                 Logger.app.info("Unable to fetch supported platforms for \(game.title).")
             }
