@@ -30,12 +30,14 @@ extension GameImportView {
         @State private var platform: Game.Platform = .macOS
         @State private var path: String = .init()
 
+        @State private var isImageEmpty: Bool = true
+
         var body: some View {
             VStack {
                 HStack {
                     if !imageURLString.isEmpty {
                         VStack {
-                            GameCard.ImageCard(game: $game)
+                            GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
 
                             Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info.circle")
                                 .font(.footnote)

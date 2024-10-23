@@ -16,8 +16,10 @@ struct GameCard: View {
     @Binding var game: Game
     @ObservedObject var viewModel: GameCardVM = .init()
 
+    @State private var isImageEmpty: Bool = true
+
     var body: some View {
-        ImageCard(game: $game)
+        ImageCard(game: $game, isImageEmpty: $isImageEmpty)
             .overlay(alignment: .bottom) {
                 gameOverlay
             }
@@ -27,6 +29,7 @@ struct GameCard: View {
     var gameOverlay: some View {
         VStack {
             gameTitleStack
+
             GameCardVM.SharedViews.ButtonsView(game: $game)
         }
         .padding(.bottom)
@@ -45,7 +48,7 @@ struct GameCard: View {
             Spacer()
         }
         .padding(.leading)
-        .foregroundStyle(.white)
+        .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
     }
 }
 
@@ -68,6 +71,9 @@ extension GameCard {
     struct ImageCard: View {
         @Binding var game: Game
 
+        /// Binding that updates when image is empty (default to true)
+        @Binding var isImageEmpty: Bool
+        
         var body: some View {
             RoundedRectangle(cornerRadius: 20)
                 .fill(.background)
@@ -83,12 +89,24 @@ extension GameCard {
                 switch phase {
                 case .empty:
                     FallbackImageCard(game: $game)
+                        .onAppear {
+                            withAnimation { isImageEmpty = true }
+                        }
                 case .success(let image):
                     handleImage(image)
+                        .onAppear {
+                            withAnimation { isImageEmpty = false }
+                        }
                 case .failure:
                     blankImageView
+                        .onAppear {
+                            withAnimation { isImageEmpty = true }
+                        }
                 @unknown default:
                     blankImageView
+                        .onAppear {
+                            withAnimation { isImageEmpty = true }
+                        }
                 }
             }
         }
@@ -147,4 +165,9 @@ extension GameCard {
             }
         }
     }
+}
+
+#Preview {
+    GameCard(game: .constant(.init(source: .epic, title: "MRAAAHH")))
+        .environmentObject(NetworkMonitor())
 }
