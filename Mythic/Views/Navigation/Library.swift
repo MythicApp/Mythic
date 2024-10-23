@@ -27,7 +27,7 @@ struct LibraryView: View {
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @StateObject var gameListViewModel: GameListVM = .shared
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @ObservedObject private var mythicSettings = MythicSettings.shared
     
     // MARK: - Body
     var body: some View {
@@ -88,12 +88,12 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
+                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $mythicSettings.data.libraryDisplayMode) {
                         Label("List", systemImage: "list.triangle")
-                            .tag(true)
+                            .tag(MythicSettings.LibraryDisplayMode.list)
                         
                         Label("Grid", systemImage: "square.grid.2x2")
-                            .tag(false)
+                            .tag(MythicSettings.LibraryDisplayMode.grid)
                     }
                 }
             }

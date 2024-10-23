@@ -29,14 +29,7 @@ final class Engine {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Engine"
     )
-    
-    enum Stream: String {
-        case stable = "7.7"
-        case staging = "staging"
-    }
-    
-    static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
-    
+
     private static let lock = NSLock() // unused
     
     /// The directory where Mythic Engine is installed.
@@ -44,6 +37,7 @@ final class Engine {
     
     /// The file location of Mythic Engine's property list.
     static let properties = try? Data(contentsOf: directory.appending(path: "properties.plist"))
+
     
     static var exists: Bool {
         guard files.fileExists(atPath: directory.path) else { return false }
@@ -61,9 +55,9 @@ final class Engine {
         return version
     }
     
-    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
+    @MainActor static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
         return try await withCheckedThrowingContinuation { continuation in
-            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!) { tempfile, response, error in
+            let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(MythicSettings.shared.data.engineReleaseStream.rawValue)/Engine.zip")!) { tempfile, response, error in
                 if let error = error { continuation.resume(throwing: error); return }
                 guard let response = response as? HTTPURLResponse, 200...299 ~= response.statusCode else { continuation.resume(throwing: URLError(.badServerResponse)); return }
                 
@@ -106,7 +100,7 @@ final class Engine {
      
      - Returns: The semantic version of the latest libraries.
      */
-    static func fetchLatestVersion(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> SemanticVersion? {
+    static func fetchLatestVersion(stream: MythicSettings.EngineReleaseStream) -> SemanticVersion? {
         let group = DispatchGroup()
         var latestVersion: SemanticVersion?
         
@@ -131,7 +125,7 @@ final class Engine {
         return latestVersion
     }
     
-    static func isLatestVersionReadyForDownload(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> Bool? {
+    static func isLatestVersionReadyForDownload(stream: MythicSettings.EngineReleaseStream) -> Bool? {
         let group = DispatchGroup()
         var result: Bool?
         
@@ -170,8 +164,8 @@ final class Engine {
         return result
     }
     
-    static func needsUpdate() -> Bool? {
-        guard let latestVersion = fetchLatestVersion(),
+    @MainActor static func needsUpdate() -> Bool? {
+        guard let latestVersion = fetchLatestVersion(stream: MythicSettings.shared.data.engineReleaseStream),
               let currentVersion = version
         else {
             return nil

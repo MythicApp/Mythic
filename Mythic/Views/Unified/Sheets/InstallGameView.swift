@@ -24,7 +24,7 @@ struct InstallViewEvo: View {
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
     
-    @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
+    @ObservedObject private var mythicSettings = MythicSettings.shared
     @ObservedObject var operation: GameOperation = .shared
     
     var body: some View {
@@ -129,7 +129,7 @@ struct InstallViewEvo: View {
                         Text("""
                         Where do you want the game's base path to be located?
                         \(
-                        Text(baseURL.prettyPath())
+                        Text(mythicSettings.data.gameInstallPath.prettyPath())
                             .foregroundStyle(.placeholder)
                         )
                         """)
@@ -139,7 +139,7 @@ struct InstallViewEvo: View {
                 
                 Spacer()
                 
-                if !FileLocations.isWritableFolder(url: baseURL) {
+                if !FileLocations.isWritableFolder(url: mythicSettings.data.gameInstallPath) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .help("Folder is not writable.")
                 }
@@ -153,7 +153,7 @@ struct InstallViewEvo: View {
                     openPanel.allowsMultipleSelection = false
                     
                     if openPanel.runModal() == .OK {
-                        baseURL = openPanel.urls.first!
+                        mythicSettings.data.gameInstallPath = openPanel.urls.first!
                     }
                 }
             }
@@ -222,7 +222,7 @@ struct InstallViewEvo: View {
                                 platform: platform,
                                 type: .install,
                                 optionalPacks: Array(selectedOptionalPacks),
-                                baseURL: baseURL
+                                baseURL: mythicSettings.data.gameInstallPath
                             )
                         )
                     }
