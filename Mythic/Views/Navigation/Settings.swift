@@ -25,12 +25,7 @@ struct SettingsView: View {
     
     @EnvironmentObject var sparkle: SparkleController
     
-    @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
-    @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
-    @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
-    @AppStorage("discordRPC") private var rpc: Bool = true
-    @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
-    @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
+    @ObservedObject private var mythicSettings = MythicSettings.shared
     
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -48,8 +43,8 @@ struct SettingsView: View {
     var body: some View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
-                Toggle("Display Mythic activity status on Discord", isOn: $rpc)
-                    .onChange(of: rpc) { _, newValue in
+                Toggle("Display Mythic activity status on Discord", isOn: $mythicSettings.data.enableDiscordRPC)
+                    .onChange(of: mythicSettings.data.enableDiscordRPC) { _, newValue in
                         if newValue {
                             _ = discordRPC.connect()
                         } else {
@@ -57,9 +52,9 @@ struct SettingsView: View {
                         }
                     }
                 
-                Toggle("Minimise to menu bar on game launch", isOn: $minimize)
+                Toggle("Minimise to menu bar on game launch", isOn: $mythicSettings.data.hideMythicOnGameLaunch)
                 
-                Toggle("Force quit all games when Mythic closes", isOn: $quitOnClose)
+                Toggle("Force quit all games when Mythic closes", isOn: $mythicSettings.data.closeGamesWithMythic)
                 
                 HStack {
                     VStack {
@@ -68,7 +63,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         HStack {
-                            Text(installBaseURL.prettyPath())
+                            Text(mythicSettings.data.gameInstallPath.prettyPath())
                                 .foregroundStyle(.placeholder)
                             
                             Spacer()
@@ -77,7 +72,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    if !FileLocations.isWritableFolder(url: installBaseURL) {
+                    if !FileLocations.isWritableFolder(url: mythicSettings.data.gameInstallPath) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("Folder is not writable.")
                     }
@@ -93,7 +88,7 @@ struct SettingsView: View {
                                 openPanel.allowsMultipleSelection = false
                                 
                                 if openPanel.runModal() == .OK {
-                                    installBaseURL = openPanel.urls.first!
+                                    mythicSettings.data.gameInstallPath = openPanel.urls.first!
                                 }
                             }
                             .buttonStyle(.borderedProminent)
@@ -102,7 +97,7 @@ struct SettingsView: View {
                         HStack {
                             Spacer()
                             Button("Reset to Default") {
-                                installBaseURL = Bundle.appGames!
+                                mythicSettings.data.gameInstallPath = Bundle.appGames!
                             }
                         }
                     }
@@ -121,6 +116,8 @@ struct SettingsView: View {
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
+                            
+                            mythicSettings.data = .init()
                             
                             if let appHome = Bundle.appHome {
                                 try? files.removeItem(at: appHome)
@@ -147,6 +144,8 @@ struct SettingsView: View {
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
+                            
+                            mythicSettings.data = .init()
                         },
                         secondaryButton: .cancel()
                     )
@@ -156,20 +155,20 @@ struct SettingsView: View {
             
             Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
-                    Picker("Stream", selection: $engineBranch) {
+                    Picker("Stream", selection: $mythicSettings.data.engineReleaseStream) {
                         Text("Stable", comment: "Within the context of Mythic Engine")
-                            .tag(Engine.Stream.stable.rawValue)
+                            .tag(MythicSettings.EngineReleaseStream.stable)
                             .help("The stable stream of Mythic Engine.")
                         
                         Text("Preview", comment: "Within the context of Mythic Engine")
-                            .tag(Engine.Stream.staging.rawValue)
+                            .tag(MythicSettings.EngineReleaseStream.staging)
                             .help("""
                             The experimental (staging) stream of Mythic Engine.
                             New features will be available here before being released onto the stable stream, but more issues may be present.
                             Use at your own risk.
                             """)
                     }
-                    .onChange(of: engineBranch) {
+                    .onChange(of: mythicSettings.data.engineReleaseStream) {
                         isEngineStreamChangeAlertPresented = true
                     }
                     .alert(isPresented: $isEngineStreamChangeAlertPresented) {
@@ -179,9 +178,7 @@ struct SettingsView: View {
                             primaryButton: .destructive(.init("OK")) {
                                 try? Engine.remove()
                                 
-                                let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                app.onboardingPhase = .engineDisclaimer
-                                app.isOnboardingPresented = true
+                                mythicSettings.data.hasCompletedOnboarding = false
                             },
                             secondaryButton: .cancel()
                         )
@@ -325,7 +322,7 @@ struct SettingsView: View {
                     set: { sparkle.updater.automaticallyDownloadsUpdates = $0 }
                 ))
                 
-                Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
+                Toggle("Automatically check for Mythic Engine updates", isOn: $mythicSettings.data.engineUpdatesAutoCheck)
             }
             
             /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.

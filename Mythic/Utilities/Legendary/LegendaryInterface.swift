@@ -182,12 +182,12 @@ final class Legendary {
      
      - Throws: A `NotSignedInError` or an `InstallationError`.
      */
-    static func install(
+    @MainActor static func install(
         game: Mythic.Game,
         platform: Mythic.Game.Platform,
         type: GameModificationType = .install,
         optionalPacks: [String]? = nil,
-        baseURL: URL? = defaults.url(forKey: "installBaseURL"),
+        baseURL: URL?,
         gameFolder: URL? = nil,
         priority: Bool = false
     ) async throws {
@@ -197,7 +197,7 @@ final class Legendary {
                 platform: platform,
                 type: type,
                 optionalPacks: optionalPacks,
-                baseURL: baseURL,
+                baseURL: baseURL ?? MythicSettings.shared.data.gameInstallPath,
                 gameFolder: gameFolder
             ), priority: priority
         )
@@ -356,7 +356,7 @@ final class Legendary {
      - Parameters:
      - game: The game to launch.
      */
-    static func launch(game: Mythic.Game) async throws {
+    @MainActor static func launch(game: Mythic.Game) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing")
             throw GameDoesNotExistError(game)
@@ -393,8 +393,8 @@ final class Legendary {
         
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
 
-        if defaults.bool(forKey: "minimiseOnGameLaunch") {
-            await NSApp.windows.first?.miniaturize(nil)
+        if MythicSettings.shared.data.hideMythicOnGameLaunch {
+            NSApp.windows.first?.miniaturize(nil)
         }
 
         Task { @MainActor in

@@ -3,7 +3,7 @@ import SwiftUI
 
 struct GameListEvo: View {
     @StateObject var viewModel: GameListVM = .shared
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @ObservedObject private var mythicSettings = MythicSettings.shared
     @State private var isGameImportViewPresented: Bool = false
 
     private var games: [Game] {
@@ -58,25 +58,28 @@ struct GameListEvo: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            } else if isListLayoutEnabled {
-                ScrollView(.vertical) {
-                    LazyVStack {
-                        ForEach(games) { game in
-                            GameListCard(game: .constant(game))
-                                .padding([.top, .horizontal])
-                        }
-                    }
-                    .searchable(text: $viewModel.searchString, placement: .toolbar)
-                }
             } else {
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
-                        ForEach(games) { game in
-                            GameCard(game: .constant(game))
-                                .padding([.leading, .vertical])
+                switch mythicSettings.data.libraryDisplayMode {
+                case .list:
+                    ScrollView(.vertical) {
+                        LazyVStack {
+                            ForEach(games) { game in
+                                GameListCard(game: .constant(game))
+                                    .padding([.top, .horizontal])
+                            }
                         }
+                        .searchable(text: $viewModel.searchString, placement: .toolbar)
                     }
-                    .searchable(text: $viewModel.searchString, placement: .toolbar)
+                case .grid:
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
+                            ForEach(games) { game in
+                                GameCard(game: .constant(game))
+                                    .padding([.leading, .vertical])
+                            }
+                        }
+                        .searchable(text: $viewModel.searchString, placement: .toolbar)
+                    }
                 }
             }
         }

@@ -22,7 +22,6 @@ struct CompactGameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?

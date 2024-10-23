@@ -88,10 +88,10 @@ final class LocalGames {
             do {  } // this should never happen
         }
 
-        if defaults.bool(forKey: "minimiseOnGameLaunch") {
-            await NSApp.windows.first?.miniaturize(nil)
-        }
         Task { @MainActor in
+            if MythicSettings.shared.data.hideMythicOnGameLaunch {
+                NSApp.windows.first?.miniaturize(nil)
+            }
             GameOperation.shared.launching = nil
         }
     }

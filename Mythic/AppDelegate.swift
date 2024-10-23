@@ -24,13 +24,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationDidFinishLaunching(_: Notification) {
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
-        // MARK: initialize default UserDefaults Values
-        defaults.register(defaults: [
-            "discordRPC": true,
-            "engineAutomaticallyChecksForUpdates": true,
-            "quitOnAppClose": false
-        ])
-        
         // MARK: 0.1.x bottle migration
         if let data = defaults.data(forKey: "allBottles"),
            let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] {
@@ -155,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: DiscordRPC Connection and Delegation Setting
         discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        if MythicSettings.shared.data.enableDiscordRPC { _ = discordRPC.connect() }
         
         // MARK: Applications folder disclaimer
         // TODO: possibly turn this into an onboarding-style message.
@@ -209,10 +202,10 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true, Engine.isLatestVersionReadyForDownload() == true {
+        if MythicSettings.shared.data.engineUpdatesAutoCheck, Engine.needsUpdate() == true, Engine.isLatestVersionReadyForDownload(stream: MythicSettings.shared.data.engineReleaseStream) == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
-               let latestEngineVersion = Engine.fetchLatestVersion() {
+               let latestEngineVersion = Engine.fetchLatestVersion(stream: MythicSettings.shared.data.engineReleaseStream) {
                 alert.messageText = "Update available. (\(currentEngineVersion) → \(latestEngineVersion))"
             } else {
                 alert.messageText = "Update available."
@@ -237,9 +230,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                    app.onboardingPhase = .engineDisclaimer
-                                    app.isOnboardingPresented = true
+                                    MythicSettings.shared.data.hasCompletedOnboarding = false
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical
@@ -298,7 +289,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
     
     func applicationWillTerminate(_: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
+        if MythicSettings.shared.data.closeGamesWithMythic { try? Wine.killAll() }
         Legendary.stopAllCommands(forced: true)
         
         Task { try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { _ in } }
