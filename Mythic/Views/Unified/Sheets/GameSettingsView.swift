@@ -260,6 +260,7 @@ private extension GameSettingsView {
                     )
                 )
             }
+            .disabled(game.source != .epic)
             .disabled(operation.queue.contains(where: { $0.game == game }))
             .disabled(operation.current?.game == game)
         }
