@@ -26,7 +26,7 @@ struct LibraryView: View {
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @State private var filterOptions: GameListFilterOptions = .init()
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     
     // MARK: - Body
     var body: some View {
@@ -73,8 +73,8 @@ struct LibraryView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $data.data.libraryDisplayMode) {
-                        Label("List", systemImage: "list.triangle").tag(DatabaseData.LibraryDisplayMode.list)
-                        Label("Grid", systemImage: "square.grid.2x2").tag(DatabaseData.LibraryDisplayMode.grid)
+                        Label("List", systemImage: "list.triangle").tag(MythicSettings.LibraryDisplayMode.list)
+                        Label("Grid", systemImage: "square.grid.2x2").tag(MythicSettings.LibraryDisplayMode.grid)
                     }
 #if !DEBUG
                     .disabled(true)

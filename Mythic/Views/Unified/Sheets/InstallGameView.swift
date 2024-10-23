@@ -24,7 +24,7 @@ struct InstallViewEvo: View {
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
     
-    @State private var baseURL = DatabaseData.shared.data.gameInstallPath
+    @State private var baseURL = MythicSettings.shared.data.gameInstallPath
     
     @ObservedObject var operation: GameOperation = .shared
     

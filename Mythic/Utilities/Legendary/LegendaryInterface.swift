@@ -189,7 +189,7 @@ final class Legendary {
         gameFolder: URL? = nil,
         priority: Bool = false
     ) async throws {
-        let baseURL = baseURL ?? DatabaseData.shared.data.gameInstallPath
+        let baseURL = baseURL ?? MythicSettings.shared.data.gameInstallPath
         try await install(
             args: .init(
                 game: game,

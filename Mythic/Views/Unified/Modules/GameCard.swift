@@ -19,7 +19,7 @@ struct GameCard: View {
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     
     @State private var isGameSettingsSheetPresented: Bool = false
     @State private var isUninstallSheetPresented: Bool = false
@@ -113,7 +113,7 @@ struct GameCard: View {
                                     Button {
                                         let app = MythicApp() // FIXME: is this dangerous or just stupid
                                         app.onboardingPhase = .engineDisclaimer
-                                        DatabaseData.shared.data.hasCompletedOnboarding = false
+                                        MythicSettings.shared.data.hasCompletedOnboarding = false
                                     } label: {
                                         Image(systemName: "arrow.down.circle.dotted")
                                             .padding(5)

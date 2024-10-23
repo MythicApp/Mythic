@@ -25,7 +25,7 @@ struct SettingsView: View {
     
     @EnvironmentObject var sparkle: SparkleController
 
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -113,7 +113,7 @@ struct SettingsView: View {
                         title: .init("Reset Mythic?"),
                         message: .init("This will erase every persistent setting and bottle."),
                         primaryButton: .destructive(.init("Reset")) {
-                            data.data = DatabaseData.AppData()
+                            data.data = MythicSettings.AppData()
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
@@ -139,7 +139,7 @@ struct SettingsView: View {
                         title: .init("Reset Mythic Settings?"),
                         message: .init("This will erase every persistent setting."),
                         primaryButton: .destructive(.init("Reset")) {
-                            data.data = DatabaseData.AppData()
+                            data.data = MythicSettings.AppData()
                             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                                 defaults.removePersistentDomain(forName: bundleIdentifier)
                             }
@@ -153,9 +153,9 @@ struct SettingsView: View {
             Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
                 HStack {
                     Picker("Release Stream", selection: $data.data.engineReleaseStream) {
-                        Text("Stable", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.stable)
+                        Text("Stable", comment: "Within the context of Mythic Engine").tag(MythicSettings.EngineReleaseStream.stable)
                             .help("The stable stream of Mythic Engine.")
-                        Text("Experimental", comment: "Within the context of Mythic Engine").tag(DatabaseData.EngineReleaseStream.experimental)
+                        Text("Experimental", comment: "Within the context of Mythic Engine").tag(MythicSettings.EngineReleaseStream.experimental)
                         .help("""
                             The experimental (staging) stream of Mythic Engine.
                             New features will be available here before being released onto the stable stream, but more issues may be present.

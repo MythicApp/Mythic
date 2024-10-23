@@ -31,13 +31,13 @@ final class Engine {
     )
 
     /// The URLs for the different engine types.
-    private static let engineDownloadURLs: [DatabaseData.EngineReleaseStream: URL] = [
+    private static let engineDownloadURLs: [MythicSettings.EngineReleaseStream: URL] = [
         .stable: URL(string: "https://nightly.link/MythicApp/Engine/workflows/build/7.7/Engine.zip")!,
         .experimental: URL(string: "https://nightly.link/MythicApp/Engine/workflows/build/staging/Engine.zip")!
     ]
 
     /// The base URLs for the different engine types's repo's metadata.
-    private static let engineMetadataURLs: [DatabaseData.EngineReleaseStream: URL] = [
+    private static let engineMetadataURLs: [MythicSettings.EngineReleaseStream: URL] = [
         .stable: URL(string: "https://raw.githubusercontent.com/MythicApp/Engine/7.7/properties.plist")!,
         .experimental: URL(string: "https://raw.githubusercontent.com/MythicApp/Engine/staging/properties.plist")!
     ]
@@ -69,7 +69,7 @@ final class Engine {
     @MainActor static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             // Get engine URL
-            let storageValue = DatabaseData.shared.data.engineReleaseStream
+            let storageValue = MythicSettings.shared.data.engineReleaseStream
             let engineUrl = engineDownloadURLs[storageValue]!
 
             let download = URLSession.shared.downloadTask(with: engineUrl) { tempfile, response, error in
@@ -115,7 +115,7 @@ final class Engine {
      
      - Returns: The semantic version of the latest libraries.
      */
-    static func fetchLatestVersion(stream: DatabaseData.EngineReleaseStream = .stable) -> SemanticVersion? {
+    static func fetchLatestVersion(stream: MythicSettings.EngineReleaseStream = .stable) -> SemanticVersion? {
         let group = DispatchGroup()
         var latestVersion: SemanticVersion?
     

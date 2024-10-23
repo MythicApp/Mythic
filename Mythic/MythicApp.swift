@@ -21,7 +21,7 @@ struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     // MARK: - State Properties
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
     @StateObject private var networkMonitor: NetworkMonitor = .init()

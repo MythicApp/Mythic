@@ -1,5 +1,5 @@
 //
-//  DatabaseData.swift
+//  MythicSettings.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 7/31/24.
@@ -9,13 +9,13 @@ import Foundation
 
 /// Stores Mythic's Data
 @MainActor
-public final class DatabaseData: ObservableObject, Sendable {
+public final class MythicSettings: ObservableObject, Sendable {
     /// Singleton
-    public static let shared = DatabaseData()
+    public static let shared = MythicSettings()
 
     /// MythicConfigData.json
     private static let dbFileName = Bundle.appHome?
-        .appendingPathComponent("MythicConfigData.json")
+        .appendingPathComponent("MythicSettingsConfig.json")
     
     /// Engine Release Stream.
     public enum EngineReleaseStream: String, Codable, Hashable {
@@ -29,8 +29,8 @@ public final class DatabaseData: ObservableObject, Sendable {
         case grid
     }
 
-    /// App data.
-    public struct AppData: Codable, Hashable, Equatable {
+    /// App settings.
+    public struct AppSettings: Codable, Hashable, Equatable {
         /// Onboarding
         public var hasCompletedOnboarding: Bool
         /// Engine release stream
@@ -78,7 +78,7 @@ public final class DatabaseData: ObservableObject, Sendable {
 
         /// Decoding (safely)
         public init(from decoder: Decoder) throws {
-            let defaultValues = AppData()
+            let defaultValues = AppSettings()
 
             // For each key, if it's missing, use the default value.
             let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -97,7 +97,7 @@ public final class DatabaseData: ObservableObject, Sendable {
     }
 
     /// Database data
-    @Published public var data: AppData {
+    @Published public var data: AppSettings {
         didSet {
             save(data: data)
         }
@@ -105,29 +105,29 @@ public final class DatabaseData: ObservableObject, Sendable {
 
     /// Initialize the config.
     private init() {
-        data = DatabaseData.load()
+        data = MythicSettings.load()
     }
 
     /// Load the config.
-    private static func load() -> AppData {
-        guard let dbFileName = DatabaseData.dbFileName else {
-            return AppData()
+    private static func load() -> AppSettings {
+        guard let dbFileName = MythicSettings.dbFileName else {
+            return AppSettings()
         }
 
         guard let data = try? Data(contentsOf: dbFileName) else {
-            return AppData()
+            return AppSettings()
         }
 
-        guard let decoded = try? JSONDecoder().decode(AppData.self, from: data) else {
-            return AppData()
+        guard let decoded = try? JSONDecoder().decode(AppSettings.self, from: data) else {
+            return AppSettings()
         }
 
         return decoded
     }
 
     /// Save the config.
-    private func save(data: AppData) {
-        guard let dbFileName = DatabaseData.dbFileName else {
+    private func save(data: AppSettings) {
+        guard let dbFileName = MythicSettings.dbFileName else {
             return
         }
 

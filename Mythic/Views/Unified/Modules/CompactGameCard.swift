@@ -22,7 +22,7 @@ struct CompactGameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?

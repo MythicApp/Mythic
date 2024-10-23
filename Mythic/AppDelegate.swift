@@ -75,7 +75,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         
         // MARK: DiscordRPC Connection and Delegation Setting
         discordRPC.delegate = self
-        if DatabaseData.shared.data.enableDiscordRPC {
+        if MythicSettings.shared.data.enableDiscordRPC {
             _ = discordRPC.connect()
         }
         
@@ -131,10 +131,10 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
         
-        if DatabaseData.shared.data.engineUpdatesAutoCheck && Engine.needsUpdate() == true {
+        if MythicSettings.shared.data.engineUpdatesAutoCheck && Engine.needsUpdate() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
-               let latestEngineVersion = Engine.fetchLatestVersion(stream: DatabaseData.shared.data.engineReleaseStream) {
+               let latestEngineVersion = Engine.fetchLatestVersion(stream: MythicSettings.shared.data.engineReleaseStream) {
                 alert.messageText = "Update available. (\(currentEngineVersion) → \(latestEngineVersion))"
             } else {
                 alert.messageText = "Update available."
@@ -159,7 +159,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    DatabaseData.shared.data.hasCompletedOnboarding = false
+                                    MythicSettings.shared.data.hasCompletedOnboarding = false
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical
@@ -212,7 +212,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
     
     func applicationWillTerminate(_: Notification) {
-        if DatabaseData.shared.data.closeGamesWithMythic { try? Wine.killAll() }
+        if MythicSettings.shared.data.closeGamesWithMythic { try? Wine.killAll() }
         Legendary.stopAllCommands(forced: true)
         
         Task { try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { _ in } }

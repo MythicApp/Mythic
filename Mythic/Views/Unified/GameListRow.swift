@@ -11,7 +11,7 @@ struct GameListRow: View { // TODO: will redo myself
     @State private var isInstallSheetPresented: Bool = false
     @State private var animateFavouriteIcon: Bool = false
 
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
 

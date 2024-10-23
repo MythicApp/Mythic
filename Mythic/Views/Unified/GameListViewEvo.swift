@@ -3,7 +3,7 @@ import SwiftUI
 
 struct GameListEvo: View {
     @Binding var filterOptions: GameListFilterOptions
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     
     @State private var searchString: String = .init()
     @State private var isGameImportViewPresented: Bool = false

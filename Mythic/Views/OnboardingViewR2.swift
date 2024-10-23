@@ -25,7 +25,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         self.currentPhase = fromPhase
     }
     
-    @ObservedObject private var data = DatabaseData.shared
+    @ObservedObject private var data = MythicSettings.shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     enum Phase: CaseIterable {
