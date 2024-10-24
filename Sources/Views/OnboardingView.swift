@@ -43,9 +43,8 @@ struct OnboardingView: View {
             switch self.equivalentStep {
             case .intro: "Welcome"
             case .epicGamesSignIn: "Epic Games Setup"
-            case .rosettaInstallation: "Rosetta Setup"
-            case .engineInstallation: "Engine Setup"
-            case .engineContainer: "Engine Container Setup"
+            case .rosettaTerms: "Rosetta Setup"
+            case .engineConfig: "Engine Setup"
             case .outro: "Finish"
             default: "Unknown"
             }
@@ -56,11 +55,11 @@ struct OnboardingView: View {
             case .intro: .intro
             case .epicGamesSignIn: .epicGamesSignIn
             case .epicGamesSigningIn: .epicGamesSignIn
-            case .rosettaTerms: .rosettaInstallation
-            case .rosettaInstallation: .rosettaInstallation
-            case .engineConfig: .engineInstallation
-            case .engineInstallation: .engineInstallation
-            case .engineContainer: .engineContainer
+            case .rosettaTerms: .rosettaTerms
+            case .rosettaInstallation: .rosettaTerms
+            case .engineConfig: .engineConfig
+            case .engineInstallation: .engineConfig
+            case .engineContainer: .engineConfig
             case .outro: .outro
             }
         }
@@ -80,7 +79,10 @@ struct OnboardingView: View {
         }
     }
     
-    private let stepsDisplayOrder: [Steps] = [.intro, .epicGamesSignIn, .rosettaInstallation, .engineInstallation, .engineContainer, .outro]
+    private let stepsDisplayOrder: [Steps] = [.intro, .epicGamesSignIn, .rosettaTerms, .engineConfig, .outro]
+    private let skipMap: [Steps: [Steps]] = [
+        .rosettaTerms: [.engineConfig]
+    ]
     
     private struct StepView: View {
         var step: Steps
@@ -268,6 +270,133 @@ struct OnboardingView: View {
         }
     }
 
+    private struct RosettaInstallationStepView: View {
+        @Binding var canGoNext: Bool
+        @Binding var canGoSkip: Bool
+        @Binding var currentStep: Steps
+
+        @State private var installationLogs: [String] = []
+        @State private var didFail: Bool = false
+        @State private var didComplete: Bool = false
+        @State private var isInstalling: Bool = false
+
+        private var filteredLogs: [String] {
+            installationLogs.filter { !$0.isEmpty }
+        }
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Rosetta 2 Installation")
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text("Installing Rosetta 2...")
+                        .tint(.secondary)
+                }
+                VStack(spacing: 2) {
+                    if isInstalling {
+                        ProgressView()
+                            .progressViewStyle(.linear)
+                    }
+                    ScrollViewReader { proxy in
+                        ScrollView(showsIndicators: false) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(filteredLogs.indices, id: \.self) { index in
+                                    Text(filteredLogs[index])
+                                        .font(.system(.body, design: .monospaced))
+                                }
+                                VStack {}
+                                    .frame(maxWidth: .infinity, maxHeight: 0)
+                                    .id("term-bottom")
+                            }
+                            .onChange(of: installationLogs) {
+                                withAnimation {
+                                    proxy.scrollTo("term-bottom")
+                                }
+                            }
+                        }
+                    }
+                    .padding(8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(.textBackgroundColor))
+                    .overlay {
+                        if didComplete {
+                            VStack {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 64)
+                                    .transition(.scale(scale: 1.2))
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            .background(.ultraThinMaterial.opacity(0.8))
+                            .transition(.scale(scale: 1.2).combined(with: .opacity))
+                        } else {
+                            EmptyView()
+                        }
+                    }
+                    .cornerRadius(8)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+            }
+            .alert("Rosetta Installation Error", isPresented: $didFail, actions: {
+                    Button("OK", role: .cancel) {}
+                }, message: {
+                    Text("Rosetta failed to install. Skip or try again later.")
+                })
+            .onAppear {
+                withAnimation {
+                    canGoNext = false
+                    canGoSkip = false
+                }
+                
+                installRosetta()
+            }
+            .onChange(of: didFail) {
+                if !didFail {
+                    currentStep = .rosettaTerms
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        }
+        
+        func installRosetta() {
+            let logger = AppLogger(category: Self.self)
+
+            installationLogs = []
+            withAnimation {
+                didFail = false
+                didComplete = false
+                isInstalling = true
+            }
+        
+            Task(priority: .userInitiated) {
+                var fail = false
+                do {
+                    logger.debug("Starting Rosetta installation...")
+                    try await Rosetta.install(agreeToSLA: true) { line in
+                        installationLogs.append(line)
+                        logger.debug("Rosetta installation log: \(line)")
+                    }
+                    logger.debug("Finished Rosetta installation...")
+                } catch {
+                    fail = true
+                }
+                
+                withAnimation {
+                    isInstalling = false
+                    if fail {
+                        didFail = true
+                    } else {
+                        didComplete = true
+                        canGoNext = true
+                    }
+                }
+            }
+        }
+    }
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 16) {
@@ -286,8 +415,8 @@ struct OnboardingView: View {
             .multilineTextAlignment(.leading)
             .background(ColorfulBackgroundView())
             VStack {
-                VStack {
-                    switch currentStep.equivalentStep {
+                VStack(spacing: 16) {
+                    switch currentStep {
                     case .intro:
                         IntroStepView(canGoNext: $canGoNext, canGoSkip: $canGoSkip)
                             .transition(Self.moveAndFadeNext)
@@ -297,9 +426,32 @@ struct OnboardingView: View {
                         })
                             .transition(Self.moveAndFadeNext)
                     case .rosettaTerms:
-                        EmptyView()
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Rosetta 2 Installation")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            Text("Rosetta 2 is required for Windows game compatibility. By installing Rosetta 2, you agree to the terms and conditions of the software found at [https://www.apple.com/legal/sla/](https://www.apple.com/legal/sla/).")
+                                .tint(.secondary)
+                                .multilineTextAlignment(.leading)
+                            VStack {
+                                Image(systemName: "square.and.arrow.down")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 96)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        }
+                        .onAppear {
+                            withAnimation {
+                                canGoNext = true
+                                canGoSkip = true
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .transition(Self.moveAndFadeNext)
                     case .rosettaInstallation:
-                        EmptyView()
+                        RosettaInstallationStepView(canGoNext: $canGoNext, canGoSkip: $canGoSkip, currentStep: $currentStep)
+                            .transition(Self.moveAndFadeNext)
                     case .engineInstallation:
                         EmptyView()
                     case .engineConfig:
@@ -313,22 +465,20 @@ struct OnboardingView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 HStack {
                     Spacer()
-                    if let skipStep = getSkipStep(), canGoSkip {
+                    if getSkipStep() != nil, canGoSkip {
                         Button {
                             withAnimation(.spring(duration: 0.5)) {
-                                skippedSteps.insert(currentStep)
-                                currentStep = skipStep
+                                goSkip()
                             }
                         } label: {
                             Text("Skip")
                                 .padding(4)
                         }
                     }
-                    if let nextStep = getNextStep() {
+                    if getNextStep() != nil {
                         Button {
                             withAnimation(.spring(duration: 0.5)) {
-                                completedSteps.insert(currentStep)
-                                currentStep = nextStep
+                                goNext()
                             }
                         } label: {
                             Text("Next")
@@ -344,7 +494,6 @@ struct OnboardingView: View {
                             Text("Finish")
                                 .padding(4)
                         }
-                        .padding()
                         .buttonStyle(.borderedProminent)
                         .keyboardShortcut(.return)
                     }
@@ -356,10 +505,9 @@ struct OnboardingView: View {
         }
         .onAppear {
             if Rosetta.exists {
-                skippedSteps.insert(.rosettaInstallation)
+//                completedSteps.insert(.rosettaTerms)
             }
         }
-        .ignoresSafeArea()
         .frame(minWidth: 768, minHeight: 512)
     }
 
@@ -382,8 +530,19 @@ struct OnboardingView: View {
     }
     
     private func goNext() {
+        completedSteps.insert(currentStep)
         guard let nextStep = getNextStep() else { return }
         currentStep = nextStep
+    }
+
+    private func goSkip() {
+        skippedSteps.insert(currentStep)
+        if let additionalSkips = skipMap[currentStep.equivalentStep] {
+            skippedSteps.formUnion(additionalSkips)
+        }
+
+        guard let skipStep = getSkipStep() else { return }
+        currentStep = skipStep
     }
 }
 

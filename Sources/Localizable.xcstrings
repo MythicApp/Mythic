@@ -3062,7 +3062,6 @@
       }
     },
     "%@ %@ (%@)" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11668,7 +11667,6 @@
       }
     },
     "Configure Mythic" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12441,7 +12439,6 @@
 
     },
     "Dashboard" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15680,7 +15677,6 @@
       }
     },
     "Downloads" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -16250,9 +16246,6 @@
           }
         }
       }
-    },
-    "Engine Container Setup" : {
-
     },
     "Engine Setup" : {
 
@@ -19122,7 +19115,6 @@
       }
     },
     "Everything in one place" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22372,7 +22364,6 @@
 
     },
     "Get support/Support Mythic" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29420,7 +29411,6 @@
 
     },
     "Manage containers for Windows® applications" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29611,7 +29601,6 @@
       }
     },
     "Management" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31328,6 +31317,16 @@
     "Mythic Engine" : {
 
     },
+    "Mythic Engine %lld.%lld.%lld (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mythic Engine %1$lld.%2$lld.%3$lld (%4$@)"
+          }
+        }
+      }
+    },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
       "localizations" : {
         "af" : {
@@ -31710,7 +31709,6 @@
       }
     },
     "Mythic is checking the connection to Epic." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31904,7 +31902,6 @@
 
     },
     "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32095,7 +32092,6 @@
       }
     },
     "Mythic is not connected to the internet." : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -37053,7 +37049,6 @@
       }
     },
     "Purchase new games from Epic" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -41051,6 +41046,18 @@
           }
         }
       }
+    },
+    "Rosetta 2 Installation" : {
+
+    },
+    "Rosetta 2 is required for Windows game compatibility. By installing Rosetta 2, you agree to the terms and conditions of the software found at [https://www.apple.com/legal/sla/](https://www.apple.com/legal/sla/)." : {
+
+    },
+    "Rosetta failed to install. Skip or try again later." : {
+
+    },
+    "Rosetta Installation Error" : {
+
     },
     "Rosetta Setup" : {
 
@@ -49856,7 +49863,6 @@
       }
     },
     "View all currently signed in accounts" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -50047,7 +50053,6 @@
       }
     },
     "View all downloads" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -50238,7 +50243,6 @@
       }
     },
     "View your games" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

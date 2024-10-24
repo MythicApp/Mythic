@@ -39,4 +39,25 @@ final class Rosetta {
         
         task.waitUntilExit()
     }
+    
+    static func install(agreeToSLA: Bool, onLog: @escaping (String) -> Void) async throws {
+        guard agreeToSLA else { throw AgreementFailure() }
+        
+        let task = Process()
+        task.launchPath = "/usr/sbin/softwareupdate"
+        task.arguments = ["--install-rosetta", "--agree-to-license"]
+        task.qualityOfService = .userInitiated
+        
+        let stdoutPipe = Pipe()
+        task.standardOutput = stdoutPipe
+        
+        try task.run()
+        
+        stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
+            let line = String(decoding: handle.availableData, as: UTF8.self)
+            onLog(line)
+        }
+        
+        task.waitUntilExit()
+    }
 }

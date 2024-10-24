@@ -41,13 +41,13 @@ public struct AppLogger {
         if level.rawValue <= AppLogger.logLevel.rawValue { return }
         switch level {
         case .debug:
-            print("\033[0;1;34m[🐞DEBUG \(self.category)]\033[0;34m \(message)")
+            print("\u{1b}[0;1;34m[🐞DEBUG \(self.category)]\u{1b}[0;34m \(message)\u{1b}[0")
         case .info:
-            print("\033[0;1;32m[ℹ️INFO \(self.category)]\033[0;32m \(message)")
+            print("\u{1b}[0;1;32m[ℹ️INFO \(self.category)]\u{1b}[0;32m \(message)\u{1b}[0")
         case .warning:
-            print("\033[0;1;33m[⚠️WARNING \(self.category)]\033[0;33m \(message)")
+            print("\u{1b}[0;1;33m[⚠️WARNING \(self.category)]\u{1b}[0;33m \(message)\u{1b}[0")
         case .error:
-            print("\033[0;1;31m[🚨ERROR \(self.category)]\033[0;31m \(message)")
+            print("\u{1b}[0;1;31m[🚨ERROR \(self.category)]\u{1b}[0;31m \(message)\u{1b}[0")
         }
     }
     #else
