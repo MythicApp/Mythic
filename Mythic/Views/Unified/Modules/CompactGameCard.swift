@@ -22,6 +22,7 @@ struct CompactGameCard: View {
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject var viewModel: GameCardVM = .init()
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var isLaunchErrorAlertPresented: Bool = false
@@ -35,22 +36,8 @@ struct CompactGameCard: View {
                 CachedAsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
                     switch phase {
                     case .empty:
-                        if case .local = game.source, game.imageURL == nil {
-                            let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
-                            
-                            image
-                                .resizable()
-                                .aspectRatio(1, contentMode: .fill)
-                                .blur(radius: 20.0)
-                        } else {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.windowBackground)
-                                .shimmering(
-                                    animation: .easeInOut(duration: 1)
-                                        .repeatForever(autoreverses: false),
-                                    bandSize: 1
-                                )
-                        }
+                        GameCard.FallbackImageCard(game: $game, withBlur: false)
+                            .blur(radius: 20.0)
                     case .success(let image):
                         image
                             .resizable()
@@ -59,12 +46,11 @@ struct CompactGameCard: View {
                             .blur(radius: 20.0)
                             .modifier(FadeInModifier())
                     case .failure:
-                        // fallthrough
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
                     }
                 }
             }

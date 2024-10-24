@@ -41979,6 +41979,9 @@
         }
       }
     },
+    "Show install status" : {
+
+    },
     "Sign In" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -43888,7 +43891,11 @@
         }
       }
     },
+    "Stop installing" : {
+
+    },
     "Stop installing \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

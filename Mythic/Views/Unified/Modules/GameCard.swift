@@ -70,6 +70,7 @@ struct FadeInModifier: ViewModifier {
 extension GameCard {
     struct ImageCard: View {
         @Binding var game: Game
+        var withBlur: Bool = true
 
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool
@@ -93,7 +94,7 @@ extension GameCard {
                             withAnimation { isImageEmpty = true }
                         }
                 case .success(let image):
-                    handleImage(image)
+                    handleImage(image, withBlur)
                         .onAppear {
                             withAnimation { isImageEmpty = false }
                         }
@@ -111,14 +112,16 @@ extension GameCard {
             }
         }
 
-        /* private FIXME: what */ var handleImage: (Image) -> AnyView = { image in
+        /* private FIXME: what */ var handleImage: (Image, Bool) -> AnyView = { image, withBlur in
             AnyView(
                 ZStack {
-                    image
-                        .resizable()
-                        .aspectRatio(3/4, contentMode: .fill)
-                        .clipShape(.rect(cornerRadius: 20))
-                        .blur(radius: 20.0)
+                    if withBlur {
+                        image
+                            .resizable()
+                            .aspectRatio(3/4, contentMode: .fill)
+                            .clipShape(.rect(cornerRadius: 20))
+                            .blur(radius: 20.0)
+                    }
 
                     image
                         .resizable()
@@ -138,16 +141,19 @@ extension GameCard {
 
     struct FallbackImageCard: View {
         @Binding var game: Game
+        var withBlur: Bool = true
 
         var body: some View {
             if case .local = game.source, game.imageURL == nil {
                 let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
 
                 ZStack {
-                    image
-                        .resizable()
-                        .clipShape(.rect(cornerRadius: 20))
-                        .blur(radius: 20)
+                    if withBlur {
+                        image
+                            .resizable()
+                            .clipShape(.rect(cornerRadius: 20))
+                            .blur(radius: 20)
+                    }
 
                     image
                         .resizable()
