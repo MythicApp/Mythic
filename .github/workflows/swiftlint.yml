@@ -10,6 +10,8 @@ on:
       - '.github/workflows/swiftlint.yml'
       - '.swiftlint.yml'
       - '**/*.swift'
+    paths-ignore:
+      - '/Localizable.xcstrings'
   pull_request:
     paths:
       - '.github/workflows/swiftlint.yml'
