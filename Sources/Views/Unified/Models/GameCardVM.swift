@@ -80,9 +80,9 @@ import Shimmer
 
             var engineInstallButton: some View {
                 Button { // TODO: convert onboarding engine installer into standalone sheet
-                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                    app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
-                    app.isOnboardingPresented = true
+//                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+//                    app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
+//                    app.isOnboardingPresented = true
                 } label: {
                     Image(systemName: "arrow.down.circle.dotted")
                         .padding(5)

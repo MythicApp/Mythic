@@ -179,9 +179,9 @@ struct SettingsView: View {
                             primaryButton: .destructive(.init("OK")) {
                                 try? Engine.remove()
                                 
-                                let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                app.onboardingPhase = .engineDisclaimer
-                                app.isOnboardingPresented = true
+//                                let app = MythicApp() // FIXME: is this dangerous or just stupid
+//                                app.onboardingPhase = .engineDisclaimer
+//                                app.isOnboardingPresented = true
                             },
                             secondaryButton: .cancel()
                         )

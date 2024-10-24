@@ -3062,6 +3062,7 @@
       }
     },
     "%@ %@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -7841,6 +7842,9 @@
         }
       }
     },
+    "Authorization Code" : {
+
+    },
     "Automatically check for app updates" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -9757,6 +9761,7 @@
       }
     },
     "Check for Updates..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11663,6 +11668,7 @@
       }
     },
     "Configure Mythic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12435,6 +12441,7 @@
 
     },
     "Dashboard" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15673,6 +15680,7 @@
       }
     },
     "Downloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -16242,6 +16250,12 @@
           }
         }
       }
+    },
+    "Engine Container Setup" : {
+
+    },
+    "Engine Setup" : {
+
     },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
@@ -17193,6 +17207,9 @@
         }
       }
     },
+    "Enter the authorization code into the text field below." : {
+
+    },
     "Enter Thumbnail URL here... (optional)" : {
       "localizations" : {
         "af" : {
@@ -17572,6 +17589,12 @@
           }
         }
       }
+    },
+    "Epic Games Login Error" : {
+
+    },
+    "Epic Games Setup" : {
+
     },
     "Error" : {
       "extractionState" : "stale",
@@ -19099,6 +19122,7 @@
       }
     },
     "Everything in one place" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -21003,6 +21027,9 @@
         }
       }
     },
+    "Finish" : {
+
+    },
     "Folder is not writable." : {
       "localizations" : {
         "af" : {
@@ -22341,7 +22368,11 @@
         }
       }
     },
+    "Get Code" : {
+
+    },
     "Get support/Support Mythic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -28811,6 +28842,9 @@
         }
       }
     },
+    "Legendary error: %@" : {
+
+    },
     "Let's get started by signing in to Epic Games.\nIf you do not want to use Epic Games, just click next." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -29386,6 +29420,7 @@
 
     },
     "Manage containers for Windows® applications" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29576,6 +29611,7 @@
       }
     },
     "Management" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31292,16 +31328,6 @@
     "Mythic Engine" : {
 
     },
-    "Mythic Engine %lld.%lld.%lld (%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic Engine %1$lld.%2$lld.%3$lld (%4$@)"
-          }
-        }
-      }
-    },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
       "localizations" : {
         "af" : {
@@ -31684,6 +31710,7 @@
       }
     },
     "Mythic is checking the connection to Epic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31877,6 +31904,7 @@
 
     },
     "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32067,6 +32095,7 @@
       }
     },
     "Mythic is not connected to the internet." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -33017,6 +33046,9 @@
           }
         }
       }
+    },
+    "Mythic Setup Assistant" : {
+
     },
     "Mythic setup is now complete." : {
       "extractionState" : "stale",
@@ -37021,6 +37053,7 @@
       }
     },
     "Purchase new games from Epic" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -40068,6 +40101,7 @@
       }
     },
     "Restart Onboarding..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -41017,6 +41051,9 @@
           }
         }
       }
+    },
+    "Rosetta Setup" : {
+
     },
     "Run specialised uninstaller (If applicable)" : {
 
@@ -45222,6 +45259,9 @@
         }
       }
     },
+    "The Epic Games authorization code was invalid." : {
+
+    },
     "The experimental (staging) stream of Mythic Engine.\nNew features will be available here before being released onto the stable stream, but more issues may be present.\nUse at your own risk." : {
 
     },
@@ -48478,6 +48518,9 @@
         }
       }
     },
+    "Unknown" : {
+
+    },
     "Update" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -49813,6 +49856,7 @@
       }
     },
     "View all currently signed in accounts" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -50003,6 +50047,7 @@
       }
     },
     "View all downloads" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -50193,6 +50238,7 @@
       }
     },
     "View your games" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -50381,6 +50427,9 @@
           }
         }
       }
+    },
+    "Welcome" : {
+
     },
     "Welcome to %@" : {
       "extractionState" : "stale",
@@ -50572,6 +50621,9 @@
           }
         }
       }
+    },
+    "Welcome to Mythic!" : {
+
     },
     "Welcome to Mythic." : {
       "localizations" : {

@@ -20,7 +20,7 @@ import SwordRPC
 import UserNotifications
 import OSLog
 
-class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
+class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
@@ -237,9 +237,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                    app.onboardingPhase = .engineDisclaimer
-                                    app.isOnboardingPresented = true
+//                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+//                                    app.onboardingPhase = .engineDisclaimer
+//                                    app.isOnboardingPresented = true
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical
@@ -305,15 +305,15 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     }
 }
 
-extension AppDelegate: UNUserNotificationCenterDelegate {
+extension AppDelegate1: UNUserNotificationCenterDelegate {
     
 }
 
-extension AppDelegate: SPUUpdaterDelegate {
+extension AppDelegate1: SPUUpdaterDelegate {
     
 }
 
-extension AppDelegate: SwordRPCDelegate {
+extension AppDelegate1: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {
         rpc.setPresence({
             var presence: RichPresence = .init()

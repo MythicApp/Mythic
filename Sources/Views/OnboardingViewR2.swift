@@ -20,7 +20,6 @@ import SwordRPC
 import UserNotifications
 
 struct OnboardingR2: View { // TODO: ViewModel
-    
     init(fromPhase: Phase = .logo) {
         self.currentPhase = fromPhase
     }
@@ -73,11 +72,6 @@ struct OnboardingR2: View { // TODO: ViewModel
     @State private var currentPhase: Phase
     @State private var staticPhases: [Phase] = [.logo, .greetings, .rosettaInstaller, .engineDownloader, .engineInstaller, .defaultContainerSetup]
     
-    @State private var colorfulAnimationColors: [Color] = [
-        .init(hex: "#5412F6"),
-        .init(hex: "#7E1ED8"),
-        .init(hex: "#2C2C2C")
-    ]
     @State private var colorfulAnimationSpeed: Double = 1
     @State private var colorfulAnimationNoise: Double = 0
     
@@ -170,9 +164,8 @@ struct OnboardingR2: View { // TODO: ViewModel
     
     var body: some View {
         ZStack {
-            ColorfulView(color: $colorfulAnimationColors, speed: $colorfulAnimationSpeed, noise: $colorfulAnimationNoise)
+            ColorfulBackgroundView()
                 .ignoresSafeArea()
-            
             VStack {
                 VStack {
                     if errorString == nil {
@@ -560,11 +553,6 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 }
                             ), thirdRow: []
                         )
-                        .task {
-                            colorfulAnimationColors = [
-                                .init(hex: "#000000")
-                            ]
-                        }
                     }
                 }
                 .opacity(isOpacityAnimated ? 1.0 : 0.0)
@@ -707,11 +695,11 @@ extension OnboardingR2 {
         }
     }
     
-    struct InstallerView: View {
-        var body: some View {
-            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/ // TODO: TODO
-        }
-    }
+//    struct InstallerView: View {
+//        var body: some View {
+//             // TODO: TODO
+//        }
+//    }
 }
 
 #Preview {
