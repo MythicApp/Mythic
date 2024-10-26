@@ -58,7 +58,8 @@ struct ContainersView: View {
                     }
                 }
             }
-        
+            .id(isContainerCreationViewPresented)
+
             .sheet(isPresented: $isContainerCreationViewPresented) {
                 ContainerCreationView(isPresented: $isContainerCreationViewPresented)
             }
