@@ -42,7 +42,8 @@ import Foundation
  ```
  */
 @Observable class VariableManager: ObservableObject {
-    static let shared = VariableManager()
+    static let shared: VariableManager = .init()
+    private init() { }
 
     private var variables = [String: Any]()
 
