@@ -580,11 +580,11 @@ final class Legendary {
 
     /// Create an asynchronous task to update Legendary's stored metadata.
     static func updateMetadata() {
-        if VariableManager.shared.getVariable("isLegendaryFetchingInstallableGames") != true {
+        if VariableManager.shared.getVariable("isUpdatingLibrary") != true {
             Task(priority: .utility) {
-                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: true)
+                VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
                 try? await command(arguments: ["list"], identifier: "fetchInstallableGames", waits: true) { _ in }
-                VariableManager.shared.setVariable("isLegendaryFetchingInstallableGames", value: false)
+                VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
             }
         }
     }

@@ -60,7 +60,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }()
     
-    static var containerURLs: Set<URL> { // FIXME: migrate from allContainers using plist decoder
+    static var containerURLs: Set<URL> {
         get { return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? []) }
         set {
             do {
@@ -199,7 +199,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     // TODO: Implement tasklist
     // Not implemented yet -- unnecessary at this time
-    /*
+    @available(*, message: "Not Implemented")
     static func tasklist(containerURL url: URL) throws -> [String: Int] {
         let list: [String: Int] = .init()
         Task {
@@ -209,7 +209,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
         return list
     }
-     */
     
     // MARK: - Boot Method
     /**
@@ -259,22 +258,15 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
             
             if hasExisted {
-                containerURLs.insert(url)
-            } else if !containerURLs.contains(url) {
-                completion(.failure(UnableToBootError()))
-                return
-            }
-            
-            if !hasExisted {
-                await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
-                await setWindowsVersion(settings.windowsVersion, containerURL: url)
-            } else {
                 log.notice("Container already exists at \(url.prettyPath())")
                 if let container: Container = .init(knownURL: url) {
                     completion(.success(container))
                 } else {
                     completion(.failure(ContainerAlreadyExistsError()))
                 }
+            } else {
+                await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
+                await setWindowsVersion(settings.windowsVersion, containerURL: url)
             }
             
             log.notice("Successfully booted container \"\(name)\"")

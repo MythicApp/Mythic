@@ -19,7 +19,8 @@ import OSLog
 
 struct GameImportView: View {
     @Binding var isPresented: Bool
-    
+    @StateObject var gameListViewModel: GameListVM = .shared
+
     @State private var source: Game.Source = .epic
     
     // MARK: - Body
@@ -59,6 +60,9 @@ struct GameImportView: View {
         }
         .navigationTitle("Import")
         .frame(minWidth: 750, minHeight: 300, idealHeight: 350)
+        .onChange(of: isPresented) {
+            if !$1 { gameListViewModel.refresh() }
+        }
     }
 }
 

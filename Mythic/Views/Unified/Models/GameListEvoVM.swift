@@ -23,7 +23,7 @@ import SwiftUI
     }
 
     var searchString: String = ""
-    var refresh: Bool = false
+    var refreshFlag: Bool = false
     var filterOptions: FilterOptions = .init()
     var games: [Game] = []
     
@@ -42,6 +42,14 @@ import SwiftUI
     }
     
     private var debounceTask: Task<Void, Never>?
+
+    func refresh() {
+        VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
+        withAnimation {
+            self.refreshFlag.toggle()
+        }
+        VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
+    }
 }
 
 private extension GameListVM {

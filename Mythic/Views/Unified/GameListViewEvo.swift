@@ -5,6 +5,7 @@ struct GameListEvo: View {
     @StateObject var viewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     @State private var isGameImportViewPresented: Bool = false
+    @ObservedObject private var variables: VariableManager = .shared
 
     private var games: [Game] {
         let filteredGames = filterGames(unifiedGames)
@@ -80,6 +81,7 @@ struct GameListEvo: View {
                 }
             }
         }
+        .id(viewModel.refreshFlag)
     }
 }
 

@@ -47,10 +47,10 @@ struct LibraryView: View {
                 }
 
                 ToolbarItem(placement: .status) {
-                    if variables.getVariable("isLegendaryFetchingInstallableGames") == true {
+                    if variables.getVariable("isUpdatingLibrary") == true {
                         ProgressView()
                             .controlSize(.small)
-                            .help("Mythic is checking your Epic library for new games.")
+                            .help("Mythic is updating your library.")
                     }
                 }
 
