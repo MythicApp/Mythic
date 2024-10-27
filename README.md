@@ -8,7 +8,7 @@
   Mythic
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
-  [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.com/invite/58NZ7fFqPy)
+  [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.gg/kQKdvjTVqh)
   [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
 </h1>
 
