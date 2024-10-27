@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 @Observable final class GameListVM: ObservableObject {
-    static let shared = GameListVM()
+    static let shared: GameListVM = .init()
 
     struct FilterOptions {
         var showInstalled: Bool = false
