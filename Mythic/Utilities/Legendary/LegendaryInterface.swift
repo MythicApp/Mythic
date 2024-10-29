@@ -167,45 +167,14 @@ final class Legendary {
         }
     }
     
-    // MARK: Install Method
+    // MARK: - Install Method
     /**
      Installs, updates, or repairs games using legendary.
-     
+
      - Parameters:
-     - game: The game's `app_name`. (referred to as id)
-     - platform: The game's platform.
-     - type: The nature of the game modification.
-     - optionalPacks: Optional packs to install along with the base game.
-     - baseURL: A custom ``URL`` for the game to install to.
-     - gameFolder: The folder where the game should be installed.
-     - priority: Whether the game should interrupt the currently queued game installation.
-     
-     - Throws: A `NotSignedInError` or an `InstallationError`.
+       - args: Specific installation arguments
+       - priority: Whether the game should interrupt currently queued game installations.
      */
-    static func install(
-        game: Mythic.Game,
-        platform: Mythic.Game.Platform,
-        type: GameModificationType = .install,
-        optionalPacks: [String]? = nil,
-        baseURL: URL? = defaults.url(forKey: "installBaseURL"),
-        gameFolder: URL? = nil,
-        priority: Bool = false
-    ) async throws {
-        try await install(
-            args: .init(
-                game: game,
-                platform: platform,
-                type: type,
-                optionalPacks: optionalPacks,
-                baseURL: baseURL,
-                gameFolder: gameFolder
-            ), priority: priority
-        )
-    }
-    
-    // MARK: - Overloaded Install Method
-    /// - Parameters:
-    ///    - args: Installation arguments
     static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn() else { throw NotSignedInError() }
         guard args.game.source == .epic else { throw IsNotLegendaryError() }

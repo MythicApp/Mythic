@@ -221,10 +221,6 @@ class GameOperation: ObservableObject {
         category: "GameOperation"
     )
     
-    func install() throws {
-        // TODO: implement
-    }
-    
     // swiftlint:disable:next redundant_optional_initialization
     @Published var current: InstallArguments? = nil {
         didSet {
@@ -309,7 +305,7 @@ class GameOperation: ObservableObject {
             }())
         }
 
-        GameOperation.log.debug("now monitoring \(gamePlatform.rawValue) game \(game.title)")
+        GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
 
         Task { @MainActor in
             GameOperation.shared.runningGames.insert(game)
@@ -354,16 +350,26 @@ class GameOperation: ObservableObject {
             Task(priority: .background) { await checkIfGameOpen(oldValue) }
         }
     }
-    
+
     struct InstallArguments: Equatable, Hashable {
-        var game: Mythic.Game,
-            platform: Mythic.Game.Platform,
-            type: GameModificationType,
-            // swiftlint:disable redundant_optional_initialization
-            optionalPacks: [String]? = nil,
-            baseURL: URL? = nil,
-            gameFolder: URL? = nil
-            // swiftlint:enable redundant_optional_initialization
+        var game: Mythic.Game
+
+        /// The target installation's platform.
+        var platform: Mythic.Game.Platform
+
+        /// The nature of the game modification.
+        var type: GameModificationType
+
+        // swiftlint:disable redundant_optional_initialization
+        /// (Legendary) packs to install along with the base game.
+        var optionalPacks: [String]? = nil
+
+        /// Custom ``URL`` for the game to install to.
+        var baseURL: URL? = nil
+
+        /// The absolute folder where the game should be installed to.
+        var gameFolder: URL? = nil
+        // swiftlint:enable redundant_optional_initialization
     }
     
     struct InstallStatus {
