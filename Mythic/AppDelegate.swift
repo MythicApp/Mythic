@@ -19,9 +19,13 @@ import Sparkle
 import SwordRPC
 import UserNotifications
 import OSLog
+import Firebase
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
+        // Use the Firebase library to configure APIs.
+        FirebaseApp.configure()
+
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
         // MARK: initialize default UserDefaults Values
