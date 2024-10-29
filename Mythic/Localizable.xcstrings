@@ -571,6 +571,9 @@
         }
       }
     },
+    "(%@)" : {
+
+    },
     "(%lld/%lld Objects)" : {
       "localizations" : {
         "af" : {
@@ -2670,6 +2673,7 @@
       }
     },
     "%@\n%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11853,9 +11857,6 @@
       }
     },
     "Containers" : {
-
-    },
-    "Crash" : {
 
     },
     "Create a bottle" : {
