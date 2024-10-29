@@ -80,6 +80,8 @@
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
 		6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
+		6ACCEC182CD0817D00611BEF /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */; };
+		6ACCEC1B2CD08DEE00611BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */; };
 		6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
@@ -169,6 +171,7 @@
 		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormView.swift; sourceTree = "<group>"; };
+		6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBlurView.swift; sourceTree = "<group>"; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -185,6 +188,7 @@
 				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
 				6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
+				6ACCEC182CD0817D00611BEF /* FirebaseCrashlytics in Frameworks */,
 				6A0C66852ABC4092004B0755 /* CachedAsyncImage in Frameworks */,
 				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
 			);
@@ -344,11 +348,12 @@
 				6A2934EF2BFCFAFD0035CE4B /* Views */,
 				6A2934CA2BFCFAFD0035CE4B /* Utilities */,
 				6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */,
-				6AACEF742C18846700258A7E /* exeIcon.icns */,
 				6A2934F22BFCFAFD0035CE4B /* Credits.rtf */,
+				6AACEF742C18846700258A7E /* exeIcon.icns */,
+				6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */,
 				6A2934F32BFCFAFD0035CE4B /* Info.plist */,
-				6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */,
 				6A71D3D82BFD01AB00A2C74D /* legendary */,
+				6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */,
 				6A2934F52BFCFAFD0035CE4B /* Mythic.entitlements */,
 				6A2934AF2BFCFAFD0035CE4B /* Preview Content */,
 			);
@@ -418,6 +423,7 @@
 				6AB474932AACBBE900AB9C63 /* Resources */,
 				6E47429A2B0A85C4004FA8A8 /* SwiftLint */,
 				6A71D3D32BFD00B600A2C74D /* Embed Libraries */,
+				6ACCEC192CD088A400611BEF /* Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -434,6 +440,7 @@
 				6A7A81152B77093600D19E32 /* ColorfulX */,
 				6A34366D2B8D7F1200D35BCA /* Shimmer */,
 				6AC742DC2B9314AB000EA1B2 /* SwordRPC */,
+				6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -473,6 +480,7 @@
 				6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */,
 				6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */,
+				6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -494,12 +502,36 @@
 				6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */,
 				6AACEF752C18846700258A7E /* exeIcon.icns in Resources */,
 				6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */,
+				6ACCEC1B2CD08DEE00611BEF /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6ACCEC192CD088A400611BEF /* Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			name = Crashlytics;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
 		6E47429A2B0A85C4004FA8A8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -727,8 +759,9 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2957;
+				CURRENT_PROJECT_VERSION = 2959;
 				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
@@ -773,8 +806,9 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2957;
+				CURRENT_PROJECT_VERSION = 2959;
 				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = NO;
@@ -888,6 +922,14 @@
 				kind = branch;
 			};
 		};
+		6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.4.0;
+			};
+		};
 		6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
@@ -941,6 +983,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */;
 			productName = SwordRPC;
+		};
+		6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */ = {
 			isa = XCSwiftPackageProductDependency;
