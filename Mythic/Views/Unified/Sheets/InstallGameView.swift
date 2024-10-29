@@ -44,9 +44,9 @@ struct InstallViewEvo: View {
                     }
                     
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
-                        print("optipacks found")
+                        Logger.app.debug("Found optional packs")
                         output.stdout.enumerateLines { line, _ in
-                            print("optipack enum \(line)")
+                            Logger.app.debug("Adding optional pack \"\(line)\"")
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
                                 _ = withAnimation {
                                     optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
@@ -95,14 +95,10 @@ struct InstallViewEvo: View {
             Form {
                 ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { tag, name in
                     HStack {
-                        Text("""
-                        \(name)
-                        \(
+                        Text(name)
                         Text(tag)
                             .font(.footnote)
                             .foregroundStyle(.placeholder)
-                        )
-                        """)
                         Spacer()
                         
                         Toggle(
