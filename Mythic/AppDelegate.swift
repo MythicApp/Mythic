@@ -33,7 +33,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "discordRPC": true,
             "engineAutomaticallyChecksForUpdates": true,
             "quitOnAppClose": false,
-            "NSApplicationCrashOnExceptions" : true // Crashlytics Requirement
+            "NSApplicationCrashOnExceptions": true // Crashlytics Requirement
         ])
         
         // MARK: 0.1.x bottle migration
