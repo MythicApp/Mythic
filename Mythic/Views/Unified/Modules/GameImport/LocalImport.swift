@@ -82,7 +82,7 @@ extension GameImportView {
 
         private func gameTitleTextField() -> some View {
             TextField("What should we call this game?", text: $title)
-                .onChange(of: title) { game.title = $0 }
+                .onChange(of: title) { game.title = $1 }
         }
 
         private func platformPicker() -> some View {
@@ -92,7 +92,7 @@ extension GameImportView {
                 }
             }
             .onChange(of: platform) {
-                game.platform = $0
+                game.platform = $1
                 resetFormFields()
             }
             .task { game.platform = platform }
@@ -124,7 +124,7 @@ extension GameImportView {
             }
             .onChange(of: path) {
                 updateGameTitle()
-                game.path = $0
+                game.path = $1
             }
         }
 

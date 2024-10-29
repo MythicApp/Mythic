@@ -48,7 +48,7 @@ extension GameImportView {
             .onAppear(perform: loadInstallableGames)
             .alert(isPresented: $isErrorAlertPresented, content: errorAlert)
             .onChange(of: isErrorAlertPresented) {
-                if !$0 { errorDescription = .init() }
+                if !$1 { errorDescription = .init() }
             }
             .task(priority: .background) {
                 discordRPC.setPresence({
