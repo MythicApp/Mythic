@@ -114,7 +114,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((Legendary.CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
         
@@ -144,30 +144,36 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         let output: Legendary.CommandOutput = .init()
         
-        stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
+        stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
             guard !availableOutput.isEmpty else { return }
-            guard let stdin = stdin, let output = output else { return }
-            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                log.debug("input detected, but current implementation is not tested.")
+            guard let output = output else { return }
+
+            output.stderr += availableOutput
+
+            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                log.debug("Input detected, writing to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
-            output.stderr = availableOutput
+
             completion(output)
         }
-        
-        stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
+
+        stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
             guard !availableOutput.isEmpty else { return }
-            guard let stdin = stdin, let output = output else { return }
-            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                log.debug("input detected, but current implementation is not tested.")
+            guard let output = output else { return }
+
+            output.stdout += availableOutput
+
+            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                log.debug("Input detected, writing to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
-            output.stdout = availableOutput
+
             completion(output)
         }
-        
+
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
