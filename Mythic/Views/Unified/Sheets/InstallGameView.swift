@@ -48,7 +48,7 @@ struct InstallViewEvo: View {
                         output.stdout.enumerateLines { line, _ in
                             print("optipack enum \(line)")
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
-                                withAnimation {
+                                _ = withAnimation {
                                     optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
                                 }
                             }
