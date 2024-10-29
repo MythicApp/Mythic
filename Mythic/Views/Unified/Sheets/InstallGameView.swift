@@ -34,7 +34,6 @@ struct InstallViewEvo: View {
                 withAnimation { fetchingOptionalPacks = true }
 
                 try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output in
-                    
                     if output.stdout.contains("Installation requirements check returned the following results:") {
                         if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
                             Legendary.stopCommand(identifier: "parseOptionalPacks")
@@ -44,24 +43,26 @@ struct InstallViewEvo: View {
                         }
                     }
                     
-                    if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
-                        Legendary.runningCommands["parseOptionalPacks"]?.terminate(); return
-                    }
-                    
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
                         print("optipacks found")
                         output.stdout.enumerateLines { line, _ in
                             print("optipack enum \(line)")
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
-                                optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
+                                withAnimation {
+                                    optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
+                                }
                             }
                         }
                     }
-                    
+
                     if output.stderr.contains("Install size:") {
                         if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: output.stderr) {
                             installSize = Double(match[1].substring ?? "") ?? 0.0
                         }
+                    }
+
+                    if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
+                        Legendary.runningCommands["parseOptionalPacks"]?.terminate(); return
                     }
                 }
                 
@@ -239,5 +240,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(.init(source: .local, title: .init())), isPresented: .constant(true))
+    InstallViewEvo(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite")), isPresented: .constant(true))
 }
