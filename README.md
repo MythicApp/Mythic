@@ -50,7 +50,7 @@ Mythic uses the following Swift dependencies:
 - [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
 
 ## License
-Copyright © 2024 blackxfiied, Jecta
+Copyright © 2024 blackxfiied
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
