@@ -27,7 +27,9 @@ struct CompactGameCard: View {
     
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
-    
+
+    @State private var isImageEmpty: Bool = true
+
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.background)
@@ -38,6 +40,9 @@ struct CompactGameCard: View {
                     case .empty:
                         GameCard.FallbackImageCard(game: $game, withBlur: false)
                             .blur(radius: 20.0)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     case .success(let image):
                         image
                             .resizable()
@@ -45,12 +50,21 @@ struct CompactGameCard: View {
                             .clipShape(.rect(cornerRadius: 20))
                             .blur(radius: 20.0)
                             .modifier(FadeInModifier())
+                            .onAppear {
+                                withAnimation { isImageEmpty = false }
+                            }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.background)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.background)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     }
                 }
             }
@@ -60,8 +74,8 @@ struct CompactGameCard: View {
                     HStack {
                         Text(game.title)
                             .font(.bold(.title3)())
-                            .foregroundStyle(.white)
-                        
+                            .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+
                         Spacer()
                         
                         // ! Changes made here must also be reflected in GameCard's play button
@@ -106,7 +120,7 @@ struct CompactGameCard: View {
             .overlay(alignment: .topLeading) {
                 if game.isFavourited {
                     Image(systemName: "star.fill")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
                         .padding()
                 }
             }

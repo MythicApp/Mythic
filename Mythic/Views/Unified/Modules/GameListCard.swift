@@ -27,7 +27,6 @@ struct GameListCard: View {
                     case .empty:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.background)
-
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
