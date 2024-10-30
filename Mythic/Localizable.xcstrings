@@ -51159,7 +51159,6 @@
 
     },
     "Where do you want the game's base path to be located?" : {
-      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -51350,6 +51349,7 @@
       }
     },
     "Where do you want the game's base path to be located?\n%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
