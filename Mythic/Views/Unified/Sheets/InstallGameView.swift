@@ -36,13 +36,17 @@ struct InstallViewEvo: View {
                 try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output in
                     if output.stdout.contains("Installation requirements check returned the following results:") {
                         if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
+                            let errorDescription = match.last?.substring ?? "Unknown Error"
                             Legendary.stopCommand(identifier: "parseOptionalPacks")
-                            installationError = Legendary.InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
-                            isInstallationErrorPresented = true
-                            return
+
+                            if !errorDescription.contains("Not enough available disk space!") { // hate hardcoding
+                                installationError = Legendary.InstallationError(errorDescription: .init(errorDescription))
+                                isInstallationErrorPresented = true
+                                return
+                            }
                         }
                     }
-                    
+
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
                         Logger.app.debug("Found optional packs")
                         output.stdout.enumerateLines { line, _ in
