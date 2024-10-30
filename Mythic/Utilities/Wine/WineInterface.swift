@@ -152,11 +152,12 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             output.stderr += availableOutput
 
             if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("Input detected, writing to stdin.")
+                log.debug("[Wine.command] output \(availableOutput) found in stderr, writing \"\(data)\" to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
 
             completion(output)
+            log.debug("[Wine.command] stdout update: \(availableOutput)")
         }
 
         stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
@@ -167,18 +168,19 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             output.stdout += availableOutput
 
             if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("Input detected, writing to stdin.")
+                log.debug("[Wine.command] output \(availableOutput) found in stdout, writing \"\(data)\" to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
 
             completion(output)
+            log.debug("[Wine.command] stdout update: \(availableOutput)")
         }
 
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
         
-        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        log.debug("[Wine.command] executing command [\(identifier)]: `\(terminalFormat)`")
         
         try task.run()
         

@@ -112,11 +112,12 @@ final class Legendary {
             output.stderr += availableOutput
 
             if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("Input detected, writing to stdin.")
+                log.debug("[Legendary.command] output \(availableOutput) found in stderr, writing \"\(data)\" to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
 
             completion(output)
+            log.debug("[Legendary.command] stderr update: \(availableOutput)")
         }
 
         stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
@@ -127,18 +128,19 @@ final class Legendary {
             output.stdout += availableOutput
 
             if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("Input detected, writing to stdin.")
+                log.debug("[Legendary.command] output \(availableOutput) found in stdout, writing \"\(data)\" to stdin.")
                 stdin.fileHandleForWriting.write(data)
             }
 
             completion(output)
+            log.debug("[Legendary.command] stdout update: \(availableOutput)")
         }
 
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
 
-        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
+        log.debug("[Legendary.command] executing command [\(identifier)]: `\(terminalFormat)`")
 
         try task.run()
 
