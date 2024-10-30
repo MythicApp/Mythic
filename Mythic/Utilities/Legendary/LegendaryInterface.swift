@@ -568,11 +568,13 @@ final class Legendary {
     }
 
     /// Create an asynchronous task to update Legendary's stored metadata.
-    static func updateMetadata() {
+    static func updateMetadata(forced: Bool = false) {
         if VariableManager.shared.getVariable("isUpdatingLibrary") != true {
+            var arguments: [String] = ["list"]
+            if forced { arguments.append("--force-refresh") }
             Task(priority: .utility) {
                 VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
-                try? await command(arguments: ["list"], identifier: "fetchInstallableGames", waits: true) { _ in }
+                try? await command(arguments: arguments, identifier: "updateMetadata", waits: true) { _ in }
                 VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
             }
         }

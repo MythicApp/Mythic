@@ -148,7 +148,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         Task(priority: .utility) {
             Legendary.updateMetadata()
 
-            Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+            Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { _ in
                 Legendary.updateMetadata()
             }
         }
