@@ -90,8 +90,6 @@ final class Engine {
                     if download.progress.isFinished { if !debounce { debounce = true } else { break } }
                 }
             }
-            
-            continuation.resume()
         }
     }
     
