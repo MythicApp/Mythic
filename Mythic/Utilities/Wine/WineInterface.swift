@@ -142,7 +142,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         task.qualityOfService = .userInitiated
         
-        let output: Legendary.CommandOutput = .init()
+        let output: Legendary.CommandOutput = .init() // FIXME: data race
         
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)

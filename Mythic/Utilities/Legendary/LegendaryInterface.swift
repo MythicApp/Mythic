@@ -102,7 +102,7 @@ final class Legendary {
 
         task.qualityOfService = .userInitiated
 
-        let output: CommandOutput = .init() // weakly captured output tends to deallocate prematurely
+        let output: CommandOutput = .init() // weakly captured output tends to deallocate prematurely // FIXME: data race
 
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
@@ -231,11 +231,9 @@ final class Legendary {
         try await command(
             arguments: argBuilder,
             identifier: "install",
-            input: { output in
+            input: { output in // TODO: merge input closure with completion -- should be pretty easy.
                 if output.stdout.contains("Additional packs") {
-                    return (
-                        args.optionalPacks?.joined(separator: ", ") ?? ""
-                    ) + "\n"
+                    return (args.optionalPacks?.joined(separator: ", ") ?? .init()) + "\n"
                 }
 
                 return nil // continue cycle
@@ -245,15 +243,20 @@ final class Legendary {
                     operation.current = nil; return
                 }
 
-                if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                    stopCommand(identifier: "install")
-                    error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
-                    return
+                // FIXME: repeating code
+                if output.stdout.contains("Installation requirements check returned the following results:") {
+                    if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
+                        let errorDescription = match.last?.substring ?? "Unknown Error"
+                        stopCommand(identifier: "install")
+                        error = InstallationError(errorDescription: .init(errorDescription))
+                        return
+                    }
                 }
 
                 if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
+                    let errorDescription = match.last?.substring ?? "Unknown Error"
                     stopCommand(identifier: "install")
-                    error = InstallationError(errorDescription: .init(match.last?.substring ?? "Unknown Error"))
+                    error = InstallationError(errorDescription: .init(errorDescription))
                     return
                 }
 

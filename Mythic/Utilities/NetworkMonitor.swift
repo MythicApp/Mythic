@@ -27,7 +27,7 @@ final class NetworkMonitor: ObservableObject {
     private let queue = DispatchQueue(label: "NetworkMonitor")
     
     var isConnected = true
-    var isCheckingEpicAccessibility = false
+    var isCheckingEpicAccessibility = false // FIXME: data race
     var isEpicAccessible = true
 
     init() {

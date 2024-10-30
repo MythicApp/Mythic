@@ -34,19 +34,6 @@ struct InstallViewEvo: View {
                 withAnimation { fetchingOptionalPacks = true }
 
                 try? await Legendary.command(arguments: ["install", game.id], identifier: "parseOptionalPacks") { output in
-                    if output.stdout.contains("Installation requirements check returned the following results:") {
-                        if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                            let errorDescription = match.last?.substring ?? "Unknown Error"
-                            Legendary.stopCommand(identifier: "parseOptionalPacks")
-
-                            if !errorDescription.contains("Not enough available disk space!") { // hate hardcoding
-                                installationError = Legendary.InstallationError(errorDescription: .init(errorDescription))
-                                isInstallationErrorPresented = true
-                                return
-                            }
-                        }
-                    }
-
                     if output.stdout.contains("The following optional packs are available") { // hate hardcoding
                         Logger.app.debug("Found optional packs")
                         output.stdout.enumerateLines { line, _ in
@@ -103,6 +90,7 @@ struct InstallViewEvo: View {
                         Text(tag)
                             .font(.footnote)
                             .foregroundStyle(.placeholder)
+
                         Spacer()
                         
                         Toggle(
@@ -125,21 +113,15 @@ struct InstallViewEvo: View {
         
         Form {
             HStack {
-                VStack {
-                    HStack {
-                        Text("""
-                        Where do you want the game's base path to be located?
-                        \(
-                        Text(baseURL.prettyPath())
-                            .foregroundStyle(.placeholder)
-                        )
-                        """)
-                        Spacer()
-                    }
+                VStack(alignment: .leading) {
+                    Text("Where do you want the game's base path to be located?")
+
+                    Text(baseURL.prettyPath())
+                        .foregroundStyle(.placeholder)
                 }
-                
+
                 Spacer()
-                
+
                 if !FileLocations.isWritableFolder(url: baseURL) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .help("Folder is not writable.")
@@ -193,7 +175,7 @@ struct InstallViewEvo: View {
                     platform = firstPlatform
                 }
             } else {
-                Logger.app.info("Unable to fetch supported platforms for \(game.title).")
+                Logger.app.info("Unable to fetch supported platforms for \"\(game.title)\".")
             }
         }
         
