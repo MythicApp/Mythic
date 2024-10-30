@@ -167,7 +167,7 @@ extension GameImportView {
             TextField("Enter Thumbnail URL here... (optional)", text: $imageURLString)
                 .truncationMode(.tail)
                 .onChange(of: imageURLString) {
-                    game.imageURL = URL(string: $0)
+                    game.imageURL = URL(string: $1)
                 }
         }
 
