@@ -53,7 +53,8 @@ struct InstallViewEvo: View {
                     }
 
                     if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
-                        Legendary.runningCommands["parseOptionalPacks"]?.terminate(); return
+                        Legendary.stopCommand(identifier: "parseOptionalPacks", forced: true)
+                        return
                     }
                 }
                 
