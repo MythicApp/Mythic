@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 struct GameListEvo: View {
-    @StateObject var viewModel: GameListVM = .shared
+    @ObservedObject var viewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     @State private var isGameImportViewPresented: Bool = false
     @ObservedObject private var variables: VariableManager = .shared

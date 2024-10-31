@@ -11,7 +11,7 @@ import OSLog
 struct UninstallViewEvo: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
-    @StateObject var gameListViewModel: GameListVM = .shared
+    @ObservedObject var gameListViewModel: GameListVM = .shared
 
     @State private var deleteFiles: Bool = true
     @State private var runUninstaller: Bool

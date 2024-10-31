@@ -19,7 +19,7 @@ import OSLog
 
 struct GameImportView: View {
     @Binding var isPresented: Bool
-    @StateObject var gameListViewModel: GameListVM = .shared
+    @ObservedObject var gameListViewModel: GameListVM = .shared
 
     @State private var source: Game.Source = .epic
     

@@ -7,7 +7,7 @@ struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
 
-    @StateObject var operation: GameOperation = .shared
+    @ObservedObject var operation: GameOperation = .shared
     @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false
     @State private var movingError: Error?
