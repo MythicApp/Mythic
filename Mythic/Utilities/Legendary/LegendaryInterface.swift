@@ -103,44 +103,47 @@ final class Legendary {
         task.qualityOfService = .userInitiated
 
         let output: CommandOutput = .init() // weakly captured output tends to deallocate prematurely // FIXME: data race
+        let outputQueue: DispatchQueue = .init(label: "legendaryOutputQueue")
 
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let output = output else { return }
+            guard !availableOutput.isEmpty, let output = output else { return }
 
-            output.stderr += availableOutput
+            outputQueue.async {
+                output.stderr += availableOutput
 
-            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("[Legendary.command] output \(availableOutput) found in stderr, writing \"\(data)\" to stdin.")
-                stdin.fileHandleForWriting.write(data)
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stderr] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stderr] \(availableOutput)")
             }
-
-            completion(output)
-            log.debug("[Legendary.command] stderr update: \(availableOutput)")
         }
 
         stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let output = output else { return }
+            guard !availableOutput.isEmpty, let output = output else { return }
 
-            output.stdout += availableOutput
+            outputQueue.async {
+                output.stdout += availableOutput
 
-            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("[Legendary.command] output \(availableOutput) found in stdout, writing \"\(data)\" to stdin.")
-                stdin.fileHandleForWriting.write(data)
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stdout] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stdout] \(availableOutput)")
             }
-
-            completion(output)
-            log.debug("[Legendary.command] stdout update: \(availableOutput)")
         }
 
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
 
-        log.debug("[Legendary.command] executing command [\(identifier)]: `\(terminalFormat)`")
+        log.debug("[command] [exec] [id: \(identifier)]: `\(terminalFormat)`")
 
         try task.run()
 

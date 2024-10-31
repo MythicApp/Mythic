@@ -25,8 +25,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     internal static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
     
     private static var _runningCommands: [String: Process] = .init()
-    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
-    
+    private static let _runningCommandsQueue = DispatchQueue(label: "wineRunningCommands", attributes: .concurrent)
+
     /// Dictionary to monitor running commands and their identifiers.
     static var runningCommands: [String: Process] {
         get {
@@ -114,7 +114,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((Legendary.CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws { // TODO: Combine Framework
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
         
@@ -142,46 +142,49 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         task.qualityOfService = .userInitiated
         
-        let output: Legendary.CommandOutput = .init() // FIXME: data race
-        
+        let output: CommandOutput = .init() // FIXME: data race
+        let outputQueue: DispatchQueue = .init(label: "wineOutputQueue")
+
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let output = output else { return }
+            guard !availableOutput.isEmpty, let output = output else { return }
 
-            output.stderr += availableOutput
+            outputQueue.async {
+                output.stderr += availableOutput
 
-            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("[Wine.command] output \(availableOutput) found in stderr, writing \"\(data)\" to stdin.")
-                stdin.fileHandleForWriting.write(data)
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stderr] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stderr] \(availableOutput)")
             }
-
-            completion(output)
-            log.debug("[Wine.command] stdout update: \(availableOutput)")
         }
 
         stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let output = output else { return }
+            guard !availableOutput.isEmpty, let output = output else { return }
 
-            output.stdout += availableOutput
+            outputQueue.async {
+                output.stdout += availableOutput
 
-            if let trigger = input?(output), let data = trigger.data(using: .utf8) {
-                log.debug("[Wine.command] output \(availableOutput) found in stdout, writing \"\(data)\" to stdin.")
-                stdin.fileHandleForWriting.write(data)
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stdout] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stdout] \(availableOutput)")
             }
-
-            completion(output)
-            log.debug("[Wine.command] stdout update: \(availableOutput)")
         }
 
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
         
-        log.debug("[Wine.command] executing command [\(identifier)]: `\(terminalFormat)`")
-        
+        log.debug("[command] [exec] [id: \(identifier)]: `\(terminalFormat)`")
+
         try task.run()
         
         runningCommands[identifier] = task // What if two commands with the same identifier execute close to each other?

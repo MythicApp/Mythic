@@ -25,7 +25,7 @@ extension Process {
         return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
-    static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
+    static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (CommandOutput) -> Void) async throws {
         let process = Process()
         process.launchPath = executablePath
         process.arguments = arguments
@@ -38,16 +38,29 @@ extension Process {
         
         try? process.run()
         
-        let output: Legendary.CommandOutput = .init()
-        
+        let output: CommandOutput = .init()
+        let outputQueue: DispatchQueue = .init(label: "genericProcessOutputQueue")
+
         stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stderr = String(decoding: handle.availableData, as: UTF8.self)
-            completion(output) // ⚠️ FIXME: critical performance issues
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
+
+            outputQueue.async {
+                output.stderr += availableOutput
+                completion(output)
+                // log.debug("[command] [stderr] \(availableOutput)")
+            }
         }
         
-        stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stdout = String(decoding: handle.availableData, as: UTF8.self)
-            completion(output) // ⚠️ FIXME: critical performance issues
+        stdout.fileHandleForReading.readabilityHandler = { handle in
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
+
+            outputQueue.async {
+                output.stdout += availableOutput
+                completion(output)
+                // log.debug("[command] [stdout] \(availableOutput)")
+            }
         }
     }
 }

@@ -210,7 +210,7 @@ extension GameImportView {
             }
         }
 
-        private func handleCommandOutput(_ output: Legendary.CommandOutput) {
+        private func handleCommandOutput(_ output: CommandOutput) {
             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                 isPresented = false
             } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
