@@ -28,7 +28,7 @@ struct GameInstallProgressView: View {
     var body: some View {
         if operation.current?.game != nil {
             HStack {
-                progressIndicator()
+                OperationProgressView(withPercentage: withPercentage)
 
                 infoButton()
 
@@ -38,25 +38,6 @@ struct GameInstallProgressView: View {
     }
 
     // MARK: - Helper Functions
-
-    @ViewBuilder
-    private func progressIndicator() -> some View {
-        if let percentage = operation.status.progress?.percentage {
-            ProgressView(value: percentage, total: 100)
-                .progressViewStyle(.linear)
-                .help("\(Int(percentage))% complete")
-                .buttonStyle(.plain)
-        } else {
-            ProgressView()
-                .progressViewStyle(.linear)
-                .help("Initializing...")
-                .buttonStyle(.plain)
-        }
-
-        if withPercentage, let percentage = operation.status.progress?.percentage {
-            Text("\(Int(percentage))%")
-        }
-    }
 
     @ViewBuilder
     private func infoButton() -> some View {
@@ -70,7 +51,6 @@ struct GameInstallProgressView: View {
         .help("Show install status")
         .sheet(isPresented: $isInstallStatusViewPresented) {
             InstallStatusView(isPresented: $isInstallStatusViewPresented)
-                .padding()
         }
     }
 
@@ -92,6 +72,32 @@ struct GameInstallProgressView: View {
         }
         .alert(isPresented: $isStopGameModificationAlertPresented) {
             stopGameOperationAlert(isPresented: $isStopGameModificationAlertPresented, game: operation.current!.game)
+        }
+    }
+}
+
+extension GameInstallProgressView {
+    struct OperationProgressView: View {
+        @ObservedObject private var operation: GameOperation = .shared
+        var withPercentage: Bool = false
+        var showInitializer: Bool = true
+
+        var body: some View {
+            if let percentage = operation.status.progress?.percentage {
+                ProgressView(value: percentage, total: 100)
+                    .progressViewStyle(.linear)
+                    .help("\(Int(percentage))% complete")
+                    .buttonStyle(.plain)
+            } else if showInitializer {
+                ProgressView()
+                    .progressViewStyle(.linear)
+                    .help("Initializing...")
+                    .buttonStyle(.plain)
+            }
+
+            if withPercentage, let percentage = operation.status.progress?.percentage {
+                Text("\(Int(percentage))%")
+            }
         }
     }
 }

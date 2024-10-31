@@ -29,13 +29,16 @@ struct InstallStatusView: View {
     // MARK: - Body
     var body: some View {
         if let current = operation.current {
-            Text("Installing \"\(current.game.title)\"...")
-                .font(.title)
-            
-            Text("\(Int(operation.status.progress?.percentage ?? 0))% Complete")
-                .font(.title3)
-                .foregroundStyle(.placeholder)
-            
+            VStack {
+                Text("Installing \"\(current.game.title)\"...")
+                    .font(.title)
+
+                Text("\(Int(operation.status.progress?.percentage ?? 0))% Complete")
+                    .font(.title3)
+                    .foregroundStyle(.placeholder)
+            }
+            .padding([.horizontal, .top])
+
             Form {
                 HStack {
                     Text("Progress:")
@@ -47,7 +50,7 @@ struct InstallStatusView: View {
                 }
                 
                 HStack {
-                    Text("Time Remaining:") // TODO: convert to timeinterval HERE, to save on performance
+                    Text("Time Remaining:")
                     Spacer()
                     Text("\(operation.status.progress?.eta ?? "Unknown")")
                     Text("(\(operation.status.progress?.runtime ?? "00:00:00") Elapsed)")
@@ -98,24 +101,21 @@ struct InstallStatusView: View {
         } else {
             Text("No installation is currently running.")
                 .font(.bold(.title)())
+                .padding([.horizontal, .top])
         }
         
         HStack {
-            if let percentage = operation.status.progress?.percentage {
-                ProgressView(value: percentage, total: 100)
-                    .progressViewStyle(.linear)
-                    .help("\(Int(percentage))% complete")
-                
-                Spacer()
-            }
+            GameInstallProgressView
+                .OperationProgressView(showInitializer: false)
+
             Button("Close") { isPresented = false }
                 .buttonStyle(.borderedProminent)
         }
+        .padding([.horizontal, .bottom])
     }
 }
 
 // MARK: - Preview
 #Preview {
     InstallStatusView(isPresented: .constant(true))
-        .padding()
 }

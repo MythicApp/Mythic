@@ -99,7 +99,6 @@ struct MainView: View {
                 
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
-                        .padding()
                 }
                 .listStyle(SidebarListStyle())
                 .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)

@@ -34,7 +34,8 @@ struct ContainerCreationView: View {
         VStack {
             Text("Create a container")
                 .font(.title)
-            
+                .padding([.horizontal, .top])
+
             Form {
                 TextField("Choose a name for your container:", text: $containerName)
                 
@@ -120,8 +121,8 @@ struct ContainerCreationView: View {
                 .disabled(!FileLocations.isWritableFolder(url: containerURL))
                 .disabled((Wine.containerURLs.first(where: { $0.lastPathComponent == containerName}) != nil))
             }
+            .padding()
         }
-        .padding()
         
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(
