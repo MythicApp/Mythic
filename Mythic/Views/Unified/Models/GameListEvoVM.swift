@@ -22,11 +22,11 @@ import SwiftUI
         case list = "List"
     }
 
-    var searchString: String = ""
+    var searchString: String = .init()
     var refreshFlag: Bool = false
     var filterOptions: FilterOptions = .init()
-    var games: [Game] = []
-    
+    var games: [Game] = .init()
+
     private init() {
         updateGames()
     }
