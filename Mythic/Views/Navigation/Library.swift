@@ -119,7 +119,7 @@ struct LibraryView: View {
 }
 
 #Preview {
-    MainView()
+    LibraryView()
         .environmentObject(NetworkMonitor())
-        .environmentObject(SparkleController())
+        .frame(minHeight: 300)
 }

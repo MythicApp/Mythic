@@ -7276,6 +7276,7 @@
       }
     },
     "Are you sure you want to stop installing Mythic Engine?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -44090,6 +44091,7 @@
       }
     },
     "Stop installing Mythic Engine (Not implemented)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
