@@ -46,7 +46,7 @@ extension Process {
             guard !availableOutput.isEmpty else { return }
 
             outputQueue.async {
-                output.stderr += availableOutput
+                output.stderr = availableOutput
                 completion(output)
                 // log.debug("[command] [stderr] \(availableOutput)")
             }
@@ -57,7 +57,7 @@ extension Process {
             guard !availableOutput.isEmpty else { return }
 
             outputQueue.async {
-                output.stdout += availableOutput
+                output.stdout = availableOutput
                 completion(output)
                 // log.debug("[command] [stdout] \(availableOutput)")
             }

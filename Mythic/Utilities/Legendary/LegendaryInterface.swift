@@ -110,7 +110,7 @@ final class Legendary {
             guard !availableOutput.isEmpty, let output = output else { return }
 
             outputQueue.async {
-                output.stderr += availableOutput
+                output.stderr = availableOutput
 
                 if let trigger = input?(output), let data = trigger.data(using: .utf8) {
                     log.debug("[command] [output] [stderr] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
@@ -127,7 +127,7 @@ final class Legendary {
             guard !availableOutput.isEmpty, let output = output else { return }
 
             outputQueue.async {
-                output.stdout += availableOutput
+                output.stdout = availableOutput
 
                 if let trigger = input?(output), let data = trigger.data(using: .utf8) {
                     log.debug("[command] [output] [stdout] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
