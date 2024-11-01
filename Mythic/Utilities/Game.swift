@@ -74,18 +74,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             if defaults.url(forKey: key) == nil {
                 defaults.set(Wine.containerURLs.first, forKey: key)
             }
-            
+
             return defaults.url(forKey: key)
         }
         set {
             let key: String = id.appending("_containerURL")
             guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
-            if Wine.containerURLs.contains(newValue) {
-                defaults.set(newValue, forKey: key)
-            }
+            defaults.set(newValue, forKey: key)
         }
     }
-    
+
     var launchArguments: [String] {
         get {
             let key: String = id.appending("_launchArguments")
