@@ -155,7 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         // MARK: Autosync Epic savedata
         Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
+            try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { _ in }
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
