@@ -112,6 +112,7 @@ struct InstallStatusView: View {
                 .buttonStyle(.borderedProminent)
         }
         .padding([.horizontal, .bottom])
+        .frame(maxWidth: 750)
     }
 }
 
