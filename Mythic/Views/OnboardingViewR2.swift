@@ -443,7 +443,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         }
                                         
                                         Text("\(Int(installationProgress * 100))%")
-                                            
+                                        /*
                                         Button {
                                             isStopInstallAlertPresented = true
                                         } label: {
@@ -467,6 +467,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                             )
                                         }
                                         .disabled(true)
+                                         */
                                     }
                                 )
                             )
