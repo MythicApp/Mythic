@@ -263,6 +263,20 @@ final class Legendary {
                     return
                 }
 
+                if output.stderr.contains("Verification finished successfully.") {
+                    Task { @MainActor in
+                        let alert = NSAlert()
+                        alert.messageText = "Successfully verified \"\(args.game.title)\"."
+                        alert.informativeText = "\"\(args.game.title)\" is now ready to be played."
+                        alert.alertStyle = .informational
+                        alert.addButton(withTitle: "OK")
+
+                        if let window = NSApp.windows.first {
+                            alert.beginSheetModal(for: window)
+                        }
+                    }
+                }
+
                 if let match = try? progressRegex.firstMatch(in: output.stderr) {
                     Task { @MainActor in
                         operation.status.progress = GameOperation.InstallStatus.Progress(
