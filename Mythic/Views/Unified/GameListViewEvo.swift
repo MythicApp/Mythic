@@ -47,9 +47,6 @@ struct GameListEvo: View {
                         }
                     }
                     .searchable(text: $viewModel.searchString, placement: .toolbar)
-                    .onChange(of: viewModel.searchString) { _, _ in
-                        viewModel.debouncedUpdateGames()
-                    }
                 }
             } else {
                 ScrollView(.horizontal) {
@@ -60,9 +57,6 @@ struct GameListEvo: View {
                         }
                     }
                     .searchable(text: $viewModel.searchString, placement: .toolbar)
-                    .onChange(of: viewModel.searchString) { _, _ in
-                        viewModel.debouncedUpdateGames()
-                    }
                 }
             }
         }

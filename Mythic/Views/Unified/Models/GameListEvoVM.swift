@@ -17,7 +17,7 @@
 import Foundation
 import SwiftUI
 
-@Observable final class GameListVM: ObservableObject {
+final class GameListVM: ObservableObject {
     static let shared: GameListVM = .init()
 
     struct FilterOptions {
@@ -26,31 +26,42 @@ import SwiftUI
         var source: Game.InclusiveSource = .all
     }
 
-    enum ViewStyle: String, CaseIterable { // TODO: replace isGameListLayoutEnabled
+    enum ViewStyle: String, CaseIterable {
         case grid = "Grid"
         case list = "List"
     }
 
-    var searchString: String = .init()
+    var searchString: String = "" {
+        didSet {
+            debouncedUpdateGames()
+        }
+    }
+
     var refreshFlag: Bool = false
-    var filterOptions: FilterOptions = .init()
-    var games: [Game] = .init()
+    @Published var filterOptions: FilterOptions = .init() {
+        didSet {
+            updateGames()
+        }
+    }
+
+    @Published var games: [Game] = []
+    private var debounceTask: Task<Void, Never>?
+    private var installedGamesCache: Set<Game> = []
+    private var isSorted = false
 
     private init() {
         updateGames()
     }
-    
-    func debouncedUpdateGames() {
+
+    private func debouncedUpdateGames() {
         debounceTask?.cancel()
         debounceTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(0.3))
+            try? await Task.sleep(for: .milliseconds(300))
             if !Task.isCancelled {
                 updateGames()
             }
         }
     }
-    
-    private var debounceTask: Task<Void, Never>?
 
     func refresh() {
         VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
@@ -64,38 +75,53 @@ import SwiftUI
 private extension GameListVM {
     func updateGames() {
         let filteredGames = filterGames(unifiedGames)
-        games = sortGames(filteredGames)
+
+        withAnimation {
+            if isSorted || games != filteredGames {
+                games = sortGames(filteredGames)
+                isSorted = true
+            } else {
+                games = filteredGames
+            }
+        }
     }
-    
+
     func filterGames(_ games: [Game]) -> [Game] {
         games.filter { game in
             let matchesSearch = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
             let matchesInstalled = !filterOptions.showInstalled || isGameInstalled(game)
             let matchesPlatform = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
             let matchesSource = filterOptions.source == .all || game.source.rawValue == filterOptions.source.rawValue
-            
+
             return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
         }
     }
-    
+
     func isGameInstalled(_ game: Game) -> Bool {
-        (try? Legendary.getInstalledGames().contains(game)) ?? false || (LocalGames.library?.contains(game) ?? false)
+        if installedGamesCache.isEmpty {
+            if let installedGames = try? Legendary.getInstalledGames() {
+                installedGamesCache = Set(installedGames)
+            }
+        }
+        return installedGamesCache.contains(game) || (LocalGames.library?.contains(game) ?? false)
     }
-    
+
     func sortGames(_ games: [Game]) -> [Game] {
-        games.sorted { game1, game2 in
-            if game1.isFavourited != game2.isFavourited {
-                return game1.isFavourited && !game2.isFavourited
+        games.sorted {
+            // compare favourites
+            if $0.isFavourited != $1.isFavourited {
+                return $0.isFavourited // favorited games come first
             }
-            if let installedGames = try? Legendary.getInstalledGames(),
-               installedGames.contains(game1) != installedGames.contains(game2) {
-                return installedGames.contains(game1)
+
+            // compare installation status
+            let isInstalled0 = isGameInstalled($0)
+            let isInstalled1 = isGameInstalled($1)
+            if isInstalled0 != isInstalled1 {
+                return isInstalled0 // installed games come first
             }
-            if let localGames = LocalGames.library,
-               localGames.contains(game1) != localGames.contains(game2) {
-                return localGames.contains(game1)
-            }
-            return game1.title < game2.title
+
+            // compare titles
+            return $0.title < $1.title // sort by title alphabetically
         }
     }
 }
