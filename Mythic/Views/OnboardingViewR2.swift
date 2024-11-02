@@ -594,6 +594,7 @@ struct OnboardingR2: View { // TODO: ViewModel
             
             VStack {
                 Spacer()
+
                 Text("(alpha)")
                     .font(.footnote)
                     .foregroundStyle(.placeholder)

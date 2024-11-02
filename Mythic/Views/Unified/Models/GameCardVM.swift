@@ -209,7 +209,6 @@ import Shimmer
                 }
                 .sheet(isPresented: $isUninstallSheetPresented) {
                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
-                        .padding()
                 }
             }
 
