@@ -25,8 +25,7 @@ struct GameListCard: View {
                 CachedAsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
                     switch phase {
                     case .empty:
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
@@ -43,16 +42,12 @@ struct GameListCard: View {
                                 withAnimation { isImageEmpty = false }
                             }
                     case .failure:
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
-                            .overlay { Image(systemName: "exclamationmark.triangle.fill") }
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
                     @unknown default:
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
-                            .overlay { Image(systemName: "questionmark.circle.fill") }
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }

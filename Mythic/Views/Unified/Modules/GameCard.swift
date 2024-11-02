@@ -79,14 +79,14 @@ struct FadeInModifier: ViewModifier {
 extension GameCard {
     struct ImageCard: View {
         @Binding var game: Game
-        var withBlur: Bool = true
 
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool
-        
+
+        var withBlur: Bool = true
+
         var body: some View {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.background)
+            blankImageView
                 .aspectRatio(3/4, contentMode: .fit)
                 .overlay {
                     gameImage
@@ -108,12 +108,12 @@ extension GameCard {
                             withAnimation { isImageEmpty = false }
                         }
                 case .failure:
-                    blankImageView
+                    EmptyView()
                         .onAppear {
                             withAnimation { isImageEmpty = true }
                         }
                 @unknown default:
-                    blankImageView
+                    EmptyView()
                         .onAppear {
                             withAnimation { isImageEmpty = true }
                         }
