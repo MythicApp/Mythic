@@ -597,23 +597,30 @@ final class Legendary {
      */
     static func getImage(of game: Mythic.Game, type: ImageType) -> String {
         let metadata = try? getGameMetadata(game: game)
-        var imageURL: String = .init()
+        let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
 
-        if let keyImages = metadata?["metadata"]["keyImages"].array {
-            for image in keyImages {
-                if type == .normal {
-                    if image["type"] == "DieselGameBox" {
-                        imageURL = image["url"].stringValue
-                    }
-                } else if type == .tall {
-                    if image["type"] == "DieselGameBoxTall" {
-                        imageURL = image["url"].stringValue
-                    }
-                }
+        let prioritisedTypes: [String] = {
+            switch type {
+            case .normal: return ["DieselGameBoxWide", "DieselGameBox"]
+            case .tall: return ["DieselGameBoxTall"]
             }
+        }()
+
+        if let imageURL = keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })?["url"].stringValue {
+            return imageURL
         }
 
-        return imageURL
+        // fallback #1
+        if let fallbackURL = keyImages.first(where: {
+            guard let width = $0["width"].int, let height = $0["height"].int else { return false }
+
+            return (type == .normal && width >= height) || (type == .tall && height > width) // check aspect ratios
+        })?["url"].stringValue {
+            return fallbackURL
+        }
+
+        // fallback #2
+        return keyImages.first?["url"].stringValue ?? .init()
     }
 
     // MARK: - Is Alias Method
