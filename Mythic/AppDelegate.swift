@@ -76,7 +76,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
         let newBottles = Bundle.appContainer!.appending(path: "Containers")
 
-        if defaults.integer(forKey: "defaultsVersion") == 0 {
+        if defaults.dictionary(forKey: "launchCount") == nil {
             Logger.app.log("Commencing bottle renaming (Bottle → Container)")
 
             do {
@@ -265,10 +265,15 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
         
         /*
-         MARK: Defaults version
+         MARK: Defaults versions
          Useful for migration after non-backwards-compatible update
+         use by checking for the version in the array for
          */
-        defaults.register(defaults: ["defaultsVersion": 1])
+        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            var versionsDictionary: [String: Int] = defaults.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
+            versionsDictionary[shortVersion] = (versionsDictionary[shortVersion] ?? 0) + 1
+            defaults.set(versionsDictionary, forKey: "launchCount")
+        }
     }
     
     func applicationDidBecomeActive(_: Notification) {
