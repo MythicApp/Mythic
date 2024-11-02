@@ -76,6 +76,7 @@
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* Auth.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
+		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
 		6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */; };
@@ -185,6 +186,7 @@
 				6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */,
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
+				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
 				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
 				6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
@@ -441,6 +443,7 @@
 				6A34366D2B8D7F1200D35BCA /* Shimmer */,
 				6AC742DC2B9314AB000EA1B2 /* SwordRPC */,
 				6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */,
+				6AA1744E2CD5CC290035B081 /* WhatsNewKit */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -481,6 +484,7 @@
 				6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */,
 				6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -760,7 +764,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3011;
+				CURRENT_PROJECT_VERSION = 3015;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -807,7 +811,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3011;
+				CURRENT_PROJECT_VERSION = 3015;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -907,6 +911,14 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SvenTiigi/WhatsNewKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.1;
+			};
+		};
 		6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SwiftPackageIndex/SemanticVersion";
@@ -974,6 +986,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */;
 			productName = ColorfulX;
+		};
+		6AA1744E2CD5CC290035B081 /* WhatsNewKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */;
+			productName = WhatsNewKit;
 		};
 		6AAD31142B08693D0035FA69 /* SemanticVersion */ = {
 			isa = XCSwiftPackageProductDependency;

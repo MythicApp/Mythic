@@ -47,6 +47,7 @@ Mythic uses the following Swift dependencies:
 - [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) - Semantic version structuring & parsing
 - [ColorfulX](https://github.com/Lakr233/ColorfulX) - An implementation using Metal for crafting multi-colored gradients.
 - [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
+- [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) - A Swift Package to easily showcase your new app features.
 
 ## License
 Copyright © 2024 blackxfiied, Jecta
