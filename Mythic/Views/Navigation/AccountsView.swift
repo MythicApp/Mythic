@@ -24,7 +24,8 @@ struct AccountsView: View {
     @State private var signedIn: Bool = false
     
     @State private var isHoveringOverDestructiveSteamButton: Bool = false
-    
+
+    // Spacer()s here are necessary
     var body: some View {
         VStack {
             HStack {

@@ -40,19 +40,13 @@ struct ContainerCreationView: View {
                 TextField("Choose a name for your container:", text: $containerName)
                 
                 HStack {
-                    VStack {
-                        HStack {
-                            Text("Where do you want the container's base path to be located?")
-                            Spacer()
-                        }
-                        HStack {
-                            Text(containerURL.prettyPath())
-                                .foregroundStyle(.placeholder)
-                            
-                            Spacer()
-                        }
+                    VStack(alignment: .leading) {
+                        Text("Where do you want the container's base path to be located?")
+
+                        Text(containerURL.prettyPath())
+                            .foregroundStyle(.placeholder)
                     }
-                    
+
                     Spacer()
                     
                     if !FileLocations.isWritableFolder(url: containerURL) {

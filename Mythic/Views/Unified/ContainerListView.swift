@@ -42,12 +42,13 @@ struct ContainerListView: View {
                     .buttonStyle(.accessoryBar)
                     
                     Spacer()
-                    Button(action: {
+
+                    Button {
                         selectedContainerURL = container.url
                         isContainerConfigurationViewPresented = true
-                    }, label: {
+                    } label: {
                         Image(systemName: "gear")
-                    })
+                    }
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
                     

@@ -32,25 +32,20 @@ struct UninstallViewEvo: View {
         VStack {
             Text("Uninstall \"\(game.title)\"")
                 .font(.title)
-            
+                .padding([.horizontal, .top])
+
             Form {
-                HStack {
-                    Toggle(isOn: $deleteFiles) {
-                        Text("Remove game files")
-                    }
-                    Spacer()
+                Toggle(isOn: $deleteFiles) {
+                    Text("Remove game files")
                 }
-                
-                HStack {
-                    Toggle(isOn: $runUninstaller) {
-                        Text("Run specialised uninstaller (If applicable)")
-                    }
-                    .disabled(game.source == .local)
-                    Spacer()
+
+                Toggle(isOn: $runUninstaller) {
+                    Text("Run specialised uninstaller (If applicable)")
                 }
+                .disabled(game.source == .local)
             }
             .formStyle(.grouped)
-            
+
             HStack {
                 Button("Cancel", role: .cancel) {
                     isPresented = false
@@ -133,8 +128,8 @@ struct UninstallViewEvo: View {
                     )
                 }
             }
+            .padding([.horizontal, .bottom])
         }
-        .interactiveDismissDisabled()
     }
 }
 
