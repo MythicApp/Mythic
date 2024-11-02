@@ -88,7 +88,14 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
+                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: Binding(
+                        get: { isListLayoutEnabled },
+                        set: { newValue in
+                            withAnimation(.easeInOut(duration: 0.8)) {
+                                isListLayoutEnabled = newValue
+                            }
+                        }
+                    )) {
                         Label("List", systemImage: "list.triangle")
                             .tag(true)
                         

@@ -125,6 +125,14 @@ extension MythicApp: WhatsNewCollectionProvider {
                     ),
                     title: "Optional Pack support",
                     subtitle: "Epic Games that support selective downloads are now supported for download (e.g. Fortnite)."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "cursorarrow.motionlines",
+                        foregroundColor: .accent
+                    ),
+                    title: "More animations",
+                    subtitle: "Added smooth animations and transitions."
                 )
             ],
             primaryAction: .init(),
