@@ -14,6 +14,7 @@
 
 import SwiftUI
 import Sparkle
+import WhatsNewKit
 
 // MARK: - Where it all begins!
 @main
@@ -60,9 +61,24 @@ struct MythicApp: App {
                     .environmentObject(sparkleController)
                     .frame(minWidth: 750, minHeight: 390)
                     .onAppear { toggleTitleBar(true) }
+                    .whatsNewSheet()
             }
         }
-        
+
+        .environment(
+            \.whatsNew,
+             WhatsNewEnvironment(
+                versionStore:
+                    {
+#if DEBUG
+                        InMemoryWhatsNewVersionStore()
+#else
+                        UserDefaultsWhatsNewVersionStore()
+#endif
+                    }(),
+                whatsNewCollection: self)
+        )
+
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
@@ -85,6 +101,39 @@ struct MythicApp: App {
         }
          */
     }
+}
+
+extension MythicApp: WhatsNewCollectionProvider {
+    var whatsNewCollection: WhatsNewCollection {
+        WhatsNew(
+            version: "0.4.1",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug",
+                        foregroundColor: .red
+                    ),
+                    title: "Bug Fixes & Performance Improvements",
+                    subtitle: "Y'know, the usual."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "checklist",
+                        foregroundColor: .blue
+                    ),
+                    title: "Optional Pack support",
+                    subtitle: "Epic Games that support selective downloads are now supported for download (e.g. Fortnite)."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.1"))
+            )
+        )
+    }
+
 }
 
 #Preview {

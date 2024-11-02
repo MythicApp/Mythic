@@ -50966,6 +50966,9 @@
         }
       }
     },
+    "What's new in Mythic" : {
+
+    },
     "Where do you want the bottle's base path to be located?" : {
       "extractionState" : "stale",
       "localizations" : {
