@@ -228,8 +228,25 @@ private extension GameSettingsView {
             }
 
             Spacer()
-            TextField("", text: $typingArgument)
+
+            TextField("", text: Binding(
+                get: { typingArgument },
+                set: { newValue in
+                    withAnimation{
+                        typingArgument = newValue
+                    }
+                }
+            ))
                 .onSubmit(submitLaunchArgument)
+
+            if !typingArgument.isEmpty {
+                Button {
+                    submitLaunchArgument()
+                } label: {
+                    Image(systemName: "return")
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 
