@@ -21,6 +21,7 @@ import SwiftUI
 import Foundation
 import OSLog
 import Combine
+import WhatsNewKit
 
 // MARK: - ContentView Struct
 struct ContentView: View {
@@ -152,6 +153,7 @@ struct ContentView: View {
                 HomeView()
             }
         )
+        .whatsNewSheet()
     }
 }
 
