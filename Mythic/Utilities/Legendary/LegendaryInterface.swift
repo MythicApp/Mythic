@@ -36,7 +36,7 @@ final class Legendary {
     static let configLocation = configurationFolder.path // TODO: phase out of use
 
     /// Logger instance for legendary.
-    static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "legendaryInterface")
+    static let log = Logger(subsystem: Logger.subsystem, category: "legendaryInterface")
 
     /// Cache for storing command outputs.
     private static var commandCache: [String: (stderr: Data, stdout: Data)] = .init()
