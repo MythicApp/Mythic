@@ -19,7 +19,7 @@ import SwiftUI
 import OSLog
 
 final class LocalGames {
-    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
+    public static let log = Logger(subsystem: Logger.subsystem, category: "localGames")
     
     // TODO: DocC
     static var library: Set<Mythic.Game>? {

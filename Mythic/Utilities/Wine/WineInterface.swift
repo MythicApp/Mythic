@@ -22,7 +22,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
-    internal static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
+    internal static let log = Logger(subsystem: Logger.subsystem, category: "wineInterface")
     
     private static var _runningCommands: [String: Process] = .init()
     private static let _runningCommandsQueue = DispatchQueue(label: "wineRunningCommands", attributes: .concurrent)
