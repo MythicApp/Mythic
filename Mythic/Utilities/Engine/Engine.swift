@@ -69,7 +69,7 @@ final class Engine {
                         try files.unzipItem(at: tempfile, to: Bundle.appHome!, progress: unzipProgress)
                         if unzipProgress.isFinished {
                             let archive = Bundle.appHome!.appending(path: "Engine.txz")
-                            _ = try Process.execute("/usr/bin/tar", arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
+                            _ = try Process.execute(executableURL: .init(fileURLWithPath: "/usr/bin/tar"), arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
                             try? files.removeItem(at: archive)
                         }
                         installHandler(true)

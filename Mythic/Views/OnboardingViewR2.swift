@@ -364,7 +364,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                 message: .init("This will limit your ability to play Windows® games."),
                                                 primaryButton: .destructive(.init("Stop")) { 
                                                     // swiftlint:disable:next force_try
-                                                    _ = try! Process.execute("/bin/bash", arguments: ["-c", "kill $(pgrep -fa 'softwareupdate --install-rosetta')"])
+                                                    _ = try! Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "kill $(pgrep -fa 'softwareupdate --install-rosetta')"])
                                                     animateNextPhase()
                                                 },
                                                 secondaryButton: .cancel()

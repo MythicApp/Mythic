@@ -15,11 +15,12 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import Foundation
+import OSLog
 
 extension Process {
-    static func execute(_ executablePath: String, arguments: [String]) throws -> String {
+    static func execute(executableURL: URL, arguments: [String]) throws -> String {
         let process = Process()
-        process.launchPath = executablePath
+        process.executableURL = executableURL
         process.arguments = arguments
         
         let pipe = Pipe()
@@ -34,9 +35,9 @@ extension Process {
         return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
-    static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (CommandOutput) -> Void) async throws {
+    static func executeAsync(executableURL: URL, arguments: [String], completion: @escaping (CommandOutput) -> Void) async throws {
         let process = Process()
-        process.launchPath = executablePath
+        process.executableURL = executableURL
         process.arguments = arguments
         
         let stderr = Pipe()
@@ -49,6 +50,7 @@ extension Process {
         
         let output: CommandOutput = .init()
         let outputQueue: DispatchQueue = .init(label: "genericProcessOutputQueue")
+        let log = Logger(subsystem: Logger.subsystem, category: "genericProcess\(executableURL.lastPathComponent)")
 
         stderr.fileHandleForReading.readabilityHandler = { handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
@@ -57,7 +59,7 @@ extension Process {
             outputQueue.async {
                 output.stderr = availableOutput
                 completion(output)
-                // log.debug("[command] [stderr] \(availableOutput)")
+                log.debug("[command] [stderr] \(availableOutput)")
             }
         }
         
@@ -68,7 +70,7 @@ extension Process {
             outputQueue.async {
                 output.stdout = availableOutput
                 completion(output)
-                // log.debug("[command] [stdout] \(availableOutput)")
+                log.debug("[command] [stdout] \(availableOutput)")
             }
         }
     }

@@ -160,7 +160,7 @@ struct ContainerConfigurationView: View {
                     Button("Launch Configurator") {
                         Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
+                            configuratorActive = (try? Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
                             if !configuratorActive { timer.invalidate() }
                         }
                     }
@@ -169,7 +169,7 @@ struct ContainerConfigurationView: View {
                     Button("Launch Registry Editor") {
                         Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
+                            registryEditorActive = (try? Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
                             if !registryEditorActive { timer.invalidate() }
                         }
                     }
