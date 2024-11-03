@@ -64,9 +64,7 @@ import Shimmer
 
             @ViewBuilder
             var installedGameButtons: some View {
-                if case .windows = game.platform, !Engine.exists {
-                    engineInstallButton
-                } else if case .epic = game.source, needsVerification(for: game) {
+                if case .epic = game.source, needsVerification(for: game) {
                     verificationButton
                 } else {
                     if game.isLaunching {
@@ -76,7 +74,11 @@ import Shimmer
                             .foregroundStyle(.white)
                             .padding(5)
                     } else {
-                        playButton
+                        if case .windows = game.platform, !Engine.exists {
+                            engineInstallButton
+                        } else {
+                            playButton
+                        }
                     }
                     if game.needsUpdate {
                         updateButton
@@ -254,4 +256,9 @@ import Shimmer
 
         // swiftlint:enable nesting
     }
+}
+
+#Preview {
+    LibraryView()
+        .environmentObject(NetworkMonitor())
 }
