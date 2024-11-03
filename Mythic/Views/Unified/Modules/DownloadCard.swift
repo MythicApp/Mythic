@@ -15,7 +15,6 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
-import CachedAsyncImage
 
 struct DownloadCard: View {
     @ObservedObject private var operation: GameOperation = .shared
@@ -50,7 +49,7 @@ struct DownloadCard: View {
             .frame(maxHeight: 120)
             .opacity(style == .prominent ? 0 : 1)
             .overlay {
-                CachedAsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
+                AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
                     switch phase {
                     case .empty:
                         RoundedRectangle(cornerRadius: 20)

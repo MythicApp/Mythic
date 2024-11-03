@@ -15,7 +15,6 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
-import CachedAsyncImage
 import SwordRPC
 import Shimmer
 import UniformTypeIdentifiers

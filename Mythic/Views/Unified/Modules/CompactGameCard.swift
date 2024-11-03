@@ -15,7 +15,6 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
-import CachedAsyncImage
 
 struct CompactGameCard: View {
     @Binding var game: Game
@@ -35,7 +34,7 @@ struct CompactGameCard: View {
             .fill(.background)
             .aspectRatio(1, contentMode: .fit)
             .overlay { // MARK: Image
-                CachedAsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
+                AsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
                     switch phase {
                     case .empty:
                         GameCard.FallbackImageCard(game: $game, withBlur: false)

@@ -1,4 +1,5 @@
-import CachedAsyncImage
+// where the hell is the comment
+
 import Shimmer
 import SwiftUI
 import SwordRPC
@@ -55,7 +56,7 @@ private extension GameSettingsView {
             .fill(.background)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay {
-                CachedAsyncImage(url: game.imageURL) { phase in
+                AsyncImage(url: game.imageURL) { phase in
                     switch phase {
                     case .empty:
                         emptyThumbnailPlaceholder

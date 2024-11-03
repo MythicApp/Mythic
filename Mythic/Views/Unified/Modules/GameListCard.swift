@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 struct GameListCard: View {
     @ObservedObject var viewModel: GameCardVM = .init()
@@ -22,7 +21,7 @@ struct GameListCard: View {
             .fill(.background)
             .frame(idealHeight: 120)
             .overlay {
-                CachedAsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
+                AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
                     switch phase {
                     case .empty:
                         EmptyView()

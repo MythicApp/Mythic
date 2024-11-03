@@ -16,7 +16,6 @@
 
 import SwiftUI
 import Cocoa
-import CachedAsyncImage
 import Glur
 import Shimmer
 import SwordRPC

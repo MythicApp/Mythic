@@ -17,7 +17,6 @@
 import SwiftUI
 import Shimmer
 import SwiftyJSON
-import CachedAsyncImage
 import Glur
 import OSLog
 
@@ -95,7 +94,7 @@ extension GameCard {
 
         @ViewBuilder
         private var gameImage: some View {
-            CachedAsyncImage(url: game.imageURL) { phase in
+            AsyncImage(url: game.imageURL) { phase in
                 switch phase {
                 case .empty:
                     FallbackImageCard(game: $game)
