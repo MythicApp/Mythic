@@ -233,7 +233,11 @@ private extension GameSettingsView {
             TextField("", text: Binding(
                 get: { typingArgument },
                 set: { newValue in
-                    withAnimation{
+                    if (0...1).contains(typingArgument.count) {
+                        withAnimation {
+                            typingArgument = newValue
+                        }
+                    } else {
                         typingArgument = newValue
                     }
                 }
@@ -254,7 +258,14 @@ private extension GameSettingsView {
     func submitLaunchArgument() {
         if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines)
             .isEmpty, !launchArguments.contains(typingArgument) {
-            launchArguments.append(typingArgument)
+            if launchArguments.isEmpty {
+                game.launchArguments = [typingArgument]
+                launchArguments = [typingArgument]
+
+            } else {
+                launchArguments.append(typingArgument)
+            }
+            
             typingArgument = .init()
         }
     }
