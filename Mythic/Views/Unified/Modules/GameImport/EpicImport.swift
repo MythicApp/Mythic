@@ -200,7 +200,12 @@ extension GameImportView {
                         "import",
                         checkIntegrity ? nil : "--disable-check",
                         withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                        "--platform", platform.rawValue,
+                        "--platform", {
+                            switch platform {
+                            case .macOS: "Mac"
+                            case .windows: "Windows"
+                            }
+                        }(),
                         game.id, path
                     ].compactMap { $0 },
                     identifier: "epicImport"
