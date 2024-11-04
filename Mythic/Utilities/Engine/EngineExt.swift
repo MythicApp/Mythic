@@ -31,4 +31,8 @@ extension Engine {
     struct NotInstalledError: LocalizedError {
         var errorDescription: String? = "Mythic Engine is not installed."
     }
+
+    struct VersionMismatchError: LocalizedError {
+        var errorDescription: String? = "Mythic Engine needs to be updated in order to use this feature."
+    }
 }
