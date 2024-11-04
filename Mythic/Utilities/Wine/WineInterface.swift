@@ -82,7 +82,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     static var defaultContainerSettings: ContainerSettings { // Registered by AppDelegate
         get {
-            let defaultValues: ContainerSettings = .init(metalHUD: false, msync: true, retinaMode: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 0.0)
+            let defaultValues: ContainerSettings = .init(metalHUD: false, msync: true, retinaMode: true, discordRPC: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 0.0)
             do {
                 try defaults.encodeAndRegister(defaults: ["defaultContainerSettings": defaultValues])
             } catch {
@@ -278,6 +278,9 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             } else {
                 await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
                 await setWindowsVersion(settings.windowsVersion, containerURL: url)
+                if settings.discordRPC {
+                    try await Engine.RPCBridge.modifyWindowsService(.install, containerURL: url)
+                }
             }
             
             log.notice("Successfully booted container \"\(name)\"")
