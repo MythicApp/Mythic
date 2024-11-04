@@ -58,7 +58,7 @@ final class FileLocations {
                 )
                 return gamesURL
             } catch {
-                Logger.file.error("Unable to get games directory: \(error.localizedDescription)")
+                Logger.file.error("Unable to get user's games directory: \(error.localizedDescription)")
             }
         } // no else block, error is handled already
         
@@ -81,7 +81,7 @@ final class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error(" Unable to get Application Support directory: \(error.localizedDescription)")
+            Logger.file.error(" Unable to get user's Application Support directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -99,7 +99,22 @@ final class FileLocations {
             return false
         }
     }
-    
+
+    static let userLibrary: URL? = {
+        do {
+            return try files.url(
+                for: .libraryDirectory,
+                in: .userDomainMask,
+                appropriateFor: nil,
+                create: false
+            )
+        } catch {
+            Logger.file.error("Unable to get user's Library directory: \(error.localizedDescription)")
+        }
+
+        return nil
+    }()
+
     // MARK: - User Containers Directory
     /** The current user's Containers directory.
      
@@ -117,7 +132,7 @@ final class FileLocations {
             )
             .appendingPathComponent("Containers")
         } catch {
-            Logger.file.error("Unable to get Containers directory: \(error.localizedDescription)")
+            Logger.file.error("Unable to get user's Containers directory: \(error.localizedDescription)")
         }
         
         return nil
