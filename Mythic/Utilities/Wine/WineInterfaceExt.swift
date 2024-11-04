@@ -127,7 +127,7 @@ extension Wine {
                 Logger.app.error("Error encoding & writing to properties file for container \"\(self.name)\" (\(self.url.prettyPath()))")
             }
         }
-        
+
         var name: String
         var url: URL
         var id: UUID
@@ -135,17 +135,56 @@ extension Wine {
 
         private(set) var propertiesFile: URL
     }
-    
+
     struct ContainerSettings: Codable, Hashable {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool
+        var discordRPC: Bool
         var DXVK: Bool
         var DXVKAsync: Bool
         var windowsVersion: WindowsVersion
         var scaling: Double
+
+        // 😮‍💨
+        init(
+            metalHUD: Bool,
+            msync: Bool,
+            retinaMode: Bool,
+            discordRPC: Bool,
+            DXVK: Bool,
+            DXVKAsync: Bool,
+            windowsVersion: WindowsVersion,
+            scaling: Double
+        ) {
+            self.metalHUD = metalHUD
+            self.msync = msync
+            self.retinaMode = retinaMode
+            self.discordRPC = discordRPC
+            self.DXVK = DXVK
+            self.DXVKAsync = DXVKAsync
+            self.windowsVersion = windowsVersion
+            self.scaling = scaling
+        }
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.metalHUD = try container.decode(Bool.self, forKey: .metalHUD)
+            self.msync = try container.decode(Bool.self, forKey: .msync)
+            self.retinaMode = try container.decode(Bool.self, forKey: .retinaMode)
+            self.discordRPC = try container.decodeIfPresent(Bool.self, forKey: .discordRPC) ?? false
+            self.DXVK = try container.decode(Bool.self, forKey: .DXVK)
+            self.DXVKAsync = try container.decode(Bool.self, forKey: .DXVKAsync)
+            self.windowsVersion = try container.decode(WindowsVersion.self, forKey: .windowsVersion)
+            self.scaling = try container.decode(Double.self, forKey: .scaling)
+        }
+
+        // swiftlint:disable:next nesting
+        enum CodingKeys: String, CodingKey {
+            case metalHUD, msync, retinaMode, discordRPC, DXVK, DXVKAsync, windowsVersion, scaling
+        }
     }
-    
+
     enum WindowsVersion: String, Codable, CaseIterable {
         case win11 = "11"
         case win10 = "10"
