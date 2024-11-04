@@ -38,7 +38,8 @@ struct SettingsView: View {
     @State private var isEngineRemovalSuccessful: Bool?
     @State private var isCleanupSuccessful: Bool?
     @State private var isEpicCloudSyncSuccessful: Bool?
-    
+    @State private var isRPCBridgeModificationSuccessful: Bool?
+
     @State private var isEpicCloudSynchronising: Bool = false
     
     @State private var isEngineStreamChangeAlertPresented: Bool = false
@@ -195,7 +196,44 @@ struct SettingsView: View {
                             Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
                         }
                     }
-                    
+
+                    HStack {
+                        Button {
+                            Task(priority: .userInitiated) {
+                                withAnimation {
+                                    isRPCBridgeModificationSuccessful = nil
+                                }
+
+                                do {
+                                    if Engine.RPCBridge.launchAgentInstalled {
+                                        try await Engine.RPCBridge.modifyLaunchAgent(.uninstall)
+                                    } else {
+                                        try await Engine.RPCBridge.modifyLaunchAgent(.install)
+                                    }
+                                    withAnimation {
+                                        isRPCBridgeModificationSuccessful = true
+                                    }
+                                } catch {
+                                    withAnimation {
+                                        isRPCBridgeModificationSuccessful = false
+                                    }
+                                }
+                            }
+                        } label: {
+                            // terenary operators here will just be confusing
+                            if Engine.RPCBridge.launchAgentInstalled {
+                                Label("Uninstall Mythic Engine Discord RPC Bridge", systemImage: "trash")
+                            } else {
+                                Label("Install Mythic Engine Discord RPC Bridge", systemImage: "arrow.down.to.line")
+                            }
+                        }
+
+                        // MARK: havent changed yet lol
+                        if isRPCBridgeModificationSuccessful != nil {
+                            Image(systemName: isRPCBridgeModificationSuccessful! ? "checkmark" : "xmark")
+                        }
+                    }
+
                     HStack {
                         Button {
                             withAnimation {
