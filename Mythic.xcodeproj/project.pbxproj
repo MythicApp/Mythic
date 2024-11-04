@@ -82,6 +82,7 @@
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6ACCEC182CD0817D00611BEF /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */; };
 		6ACCEC1B2CD08DEE00611BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */; };
+		6AE129E12CD7BD66007ACB5B /* RPCBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AE129E02CD7BD5F007ACB5B /* RPCBridge.swift */; };
 		6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
@@ -172,6 +173,7 @@
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormView.swift; sourceTree = "<group>"; };
 		6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6AE129E02CD7BD5F007ACB5B /* RPCBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RPCBridge.swift; sourceTree = "<group>"; };
 		6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBlurView.swift; sourceTree = "<group>"; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -209,6 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2934B02BFCFAFD0035CE4B /* Engine.swift */,
+				6AE129E02CD7BD5F007ACB5B /* RPCBridge.swift */,
 				6A2934B12BFCFAFD0035CE4B /* EngineExt.swift */,
 			);
 			path = Engine;
@@ -612,6 +615,7 @@
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */,
 				6A29354D2BFCFAFD0035CE4B /* AccountsView.swift in Sources */,
+				6AE129E12CD7BD66007ACB5B /* RPCBridge.swift in Sources */,
 				6A2935352BFCFAFD0035CE4B /* Bundle.swift in Sources */,
 				6A2935522BFCFAFD0035CE4B /* SettingsView.swift in Sources */,
 				6A29353C2BFCFAFD0035CE4B /* Workspace.swift in Sources */,
@@ -760,7 +764,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3038;
+				CURRENT_PROJECT_VERSION = 3075;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -807,7 +811,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3038;
+				CURRENT_PROJECT_VERSION = 3075;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
