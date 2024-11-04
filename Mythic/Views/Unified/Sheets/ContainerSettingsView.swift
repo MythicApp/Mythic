@@ -34,7 +34,11 @@ struct ContainerSettingsView: View {
     @State private var windowsVersion: Wine.WindowsVersion = .win10
     @State private var modifyingWindowsVersion: Bool = true
     @State private var windowsVersionError: Error?
-    
+
+    @State private var rpcBridgeServiceInstalled: Bool = false
+    @State private var modifyingRPCBridgeService: Bool = false
+    @State private var rpcBridgeServiceError: Error?
+
     private func fetchRetinaStatus() async {
         withAnimation { modifyingRetinaMode = true }
         do {
@@ -58,7 +62,18 @@ struct ContainerSettingsView: View {
         }
         withAnimation { modifyingWindowsVersion = false }
     }
-    
+
+    private func fetchRPCBridgeWindowsService() async {
+        withAnimation { modifyingRPCBridgeService = true }
+        do {
+            guard let selectedContainerURL = selectedContainerURL else { return } // nothrow
+            rpcBridgeServiceInstalled = try Engine.RPCBridge.windowsServiceInstalled(containerURL: selectedContainerURL)
+        } catch {
+            rpcBridgeServiceError = error
+        }
+        withAnimation { modifyingRPCBridgeService = false }
+    }
+
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
@@ -123,11 +138,49 @@ struct ContainerSettingsView: View {
                 
                 .task(priority: .high) { await fetchRetinaStatus() }
                 .task(priority: .high) { await fetchWindowsVersion() }
+                .task(priority: .high) { await fetchRPCBridgeWindowsService() }
                 .onChange(of: selectedContainerURL) {
                     Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     Task(priority: .userInitiated) { await fetchWindowsVersion() }
+                    Task(priority: .userInitiated) { await fetchRPCBridgeWindowsService() }
                 }
-                
+
+                if Engine.RPCBridge.launchAgentInstalled {
+                    if !modifyingRPCBridgeService, rpcBridgeServiceError == nil {
+                        Toggle("Show activity on Discord", isOn: Binding(
+                            get: { rpcBridgeServiceInstalled },
+                            set: { value in
+                                Task(priority: .userInitiated) {
+                                    withAnimation { modifyingRPCBridgeService = true }
+                                    
+                                    do {
+                                        try await Engine.RPCBridge.modifyWindowsService(value ? .install : .uninstall, containerURL: container.url)
+                                        rpcBridgeServiceInstalled = value
+                                        container.settings.discordRPC = value
+                                    } catch {
+                                        rpcBridgeServiceError = error
+                                    }
+                                    
+                                    withAnimation { modifyingRPCBridgeService = false }
+                                }
+                            }
+                        ))
+                    } else {
+                        HStack {
+                            Text("Show activity on Discord")
+                            Spacer()
+                            if rpcBridgeServiceError == nil {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .controlSize(.small)
+                                    .help("Discord activity cannot be modified: \(rpcBridgeServiceError?.localizedDescription ?? "Unknown Error.")")
+                            }
+                        }
+                    }
+                }
+
                 if !modifyingWindowsVersion, windowsVersionError == nil {
                     Picker("Windows Version", selection: Binding(
                         get: { windowsVersion },
