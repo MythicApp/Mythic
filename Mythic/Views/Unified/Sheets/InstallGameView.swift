@@ -14,7 +14,7 @@ struct InstallViewEvo: View {
 
     @State var optionalPacks: [String: String] = .init()
     @State var selectedOptionalPacks: Set<String> = .init()
-    @State var fetchingOptionalPacks: Bool = true
+    @State var fetchingOptionalPacks: Bool = false
 
     @State var installSize: Double?
 
@@ -28,6 +28,7 @@ struct InstallViewEvo: View {
     @ObservedObject var operation: GameOperation = .shared
 
     private func fetchOptionalPacks() async {
+        guard !fetchingOptionalPacks else { return }
         withAnimation { fetchingOptionalPacks = true }
 
         try? await Legendary.command(
@@ -189,7 +190,7 @@ struct InstallViewEvo: View {
                 }
 
                 if let platforms = supportedPlatforms {
-                    platform = platforms.contains(.macOS) ? .macOS : .windows
+                    platform = platforms.contains(.macOS) ? .macOS : (supportedPlatforms?.first ?? .windows)
                 }
 
                 if let supportedPlatforms = supportedPlatforms,
