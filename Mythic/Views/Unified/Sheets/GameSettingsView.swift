@@ -256,16 +256,19 @@ private extension GameSettingsView {
     }
 
     func submitLaunchArgument() {
-        if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty, !launchArguments.contains(typingArgument) {
-            if launchArguments.isEmpty {
-                game.launchArguments = [typingArgument]
-                launchArguments = [typingArgument]
+        let cleanedArgument = typingArgument
+            .trimmingCharacters(in: .illegalCharacters)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
 
-            } else {
-                launchArguments.append(typingArgument)
-            }
-            
+        let splitArguments = cleanedArgument
+            .split(separator: .whitespace)
+            .map({ String($0) })
+
+        if !cleanedArgument.isEmpty,
+           !launchArguments.contains(typingArgument) {
+            game.launchArguments += splitArguments
+            launchArguments = game.launchArguments
+
             typingArgument = .init()
         }
     }
