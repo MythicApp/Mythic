@@ -67,6 +67,8 @@
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
 		6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */; };
 		6A29356B2BFCFAFD0035CE4B /* MythicApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */; };
+		6A302EE22CDE652D00E11458 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6A302EE12CDE652D00E11458 /* FirebaseAnalytics */; };
+		6A302EE42CDE652D00E11458 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A302EE32CDE652D00E11458 /* FirebaseCore */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* GameListCard.swift */; };
@@ -187,9 +189,11 @@
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
 				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
 				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
+				6A302EE22CDE652D00E11458 /* FirebaseAnalytics in Frameworks */,
 				6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
 				6ACCEC182CD0817D00611BEF /* FirebaseCrashlytics in Frameworks */,
+				6A302EE42CDE652D00E11458 /* FirebaseCore in Frameworks */,
 				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +445,8 @@
 				6AC742DC2B9314AB000EA1B2 /* SwordRPC */,
 				6ACCEC172CD0817D00611BEF /* FirebaseCrashlytics */,
 				6AA1744E2CD5CC290035B081 /* WhatsNewKit */,
+				6A302EE12CDE652D00E11458 /* FirebaseAnalytics */,
+				6A302EE32CDE652D00E11458 /* FirebaseCore */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -686,6 +692,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -744,6 +751,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
@@ -760,7 +768,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3046;
+				CURRENT_PROJECT_VERSION = 3048;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -807,7 +815,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3046;
+				CURRENT_PROJECT_VERSION = 3048;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -954,6 +962,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */;
 			productName = Glur;
+		};
+		6A302EE12CDE652D00E11458 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		6A302EE32CDE652D00E11458 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6ACCEC162CD0817D00611BEF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
 		};
 		6A34366D2B8D7F1200D35BCA /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;
