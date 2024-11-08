@@ -398,7 +398,7 @@ final class Legendary {
             environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
         }
 
-        arguments.append(contentsOf: game.launchArguments)
+        arguments.append(contentsOf: ["--"] + game.launchArguments)
 
         try await command(arguments: arguments, identifier: "launch_\(game.id)", environment: environmentVariables) { _  in }
 
@@ -582,7 +582,7 @@ final class Legendary {
 
     /**
         Retrieve a game's launch arguments from Legendary's `installed.json` file.
-        This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
+        ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
 
         - Parameter game: A ``Mythic.Game`` object.
      */
