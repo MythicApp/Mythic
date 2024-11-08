@@ -21,6 +21,10 @@ import UserNotifications
 import OSLog
 import Firebase
 
+import FirebaseCore
+import FirebaseCrashlytics
+
+
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
@@ -32,8 +36,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         defaults.register(defaults: [
             "discordRPC": true,
             "engineAutomaticallyChecksForUpdates": true,
-            "quitOnAppClose": false,
-            "NSApplicationCrashOnExceptions": true // Crashlytics Requirement
+            "quitOnAppClose": false
         ])
         
         // MARK: 0.1.x bottle migration
