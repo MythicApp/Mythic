@@ -238,9 +238,10 @@ struct InstallViewEvo: View {
                         )
                     }
                 }
+                .disabled(supportedPlatforms == nil)
                 .disabled(fetchingOptionalPacks)
-                .buttonStyle(.borderedProminent)
                 .disabled(installationError != nil)
+                .buttonStyle(.borderedProminent)
             }
         }
     }
