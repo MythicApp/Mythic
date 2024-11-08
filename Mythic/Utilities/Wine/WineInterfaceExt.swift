@@ -18,12 +18,6 @@ import Foundation
 import OSLog
 
 extension Wine {
-    /// Enumeration containing the two terminal stream types.
-    enum Stream {
-        case stdout
-        case stderr
-    }
-    
     /// A struct to hold closures for handling stdout and stderr output.
     struct OutputHandler {
         /// A closure to handle stdout output.
@@ -31,15 +25,6 @@ extension Wine {
 
         /// A closure to handle stderr output.
         let stderr: (String) -> Void
-    }
-    
-    /// Represents a condition to be checked for in the output streams before input is appended.
-    struct InputIfCondition {
-        /// The stream to be checked (stdout or stderr).
-        let stream: Stream
-
-        /// The string pattern to be matched in the selected stream's output.
-        let string: String
     }
     
     /// Signifies that a container is unable to boot.

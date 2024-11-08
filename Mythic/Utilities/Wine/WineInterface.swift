@@ -114,7 +114,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws { // TODO: Combine Framework
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((Process.CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Process.CommandOutput) -> Void) async throws { // TODO: Combine Framework
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
         
@@ -142,7 +142,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         task.qualityOfService = .userInitiated
         
-        let output: CommandOutput = .init() // FIXME: data race
+        let output: Process.CommandOutput = .init() // FIXME: data race
         let outputQueue: DispatchQueue = .init(label: "wineOutputQueue")
 
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in

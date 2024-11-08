@@ -12,6 +12,7 @@
 import SwiftUI
 import SwordRPC
 import OSLog
+import UniformTypeIdentifiers
 
 extension GameImportView {
     struct Epic: View {
@@ -106,7 +107,9 @@ extension GameImportView {
                         .help("File/Folder is not readable by Mythic.")
                 }
 
-                Button("Browse...") { browseForGameLocation() }
+                Button("Browse...") {
+                    openFileBrowser()
+                }
             }
         }
 
@@ -153,15 +156,23 @@ extension GameImportView {
             }
         }
 
-        private func browseForGameLocation() {
+        private func openFileBrowser() {
             let openPanel = NSOpenPanel()
-            openPanel.allowedContentTypes = []
-            openPanel.canChooseDirectories = true
-            openPanel.allowedContentTypes = platform == .macOS ? [.application] : [.exe]
+            openPanel.canChooseDirectories = false
+            openPanel.allowedContentTypes = allowedContentTypes(for: platform)
             openPanel.allowsMultipleSelection = false
 
-            if openPanel.runModal() == .OK {
-                path = openPanel.urls.first?.path ?? ""
+            if case .OK = openPanel.runModal() {
+                path = openPanel.urls.first?.path ?? .init()
+            }
+        }
+
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+            switch platform {
+            case .macOS:
+                return [.application]
+            case .windows:
+                return [.exe]
             }
         }
 
@@ -215,7 +226,7 @@ extension GameImportView {
             }
         }
 
-        private func handleCommandOutput(_ output: CommandOutput) {
+        private func handleCommandOutput(_ output: Process.CommandOutput) {
             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                 isPresented = false
             } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
