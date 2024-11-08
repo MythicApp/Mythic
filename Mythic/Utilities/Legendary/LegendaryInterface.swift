@@ -76,7 +76,7 @@ final class Legendary {
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (CommandOutput) -> Void) async throws {
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, input: ((Process.CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Process.CommandOutput) -> Void) async throws {
         let task = Process()
         task.executableURL = URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
 
@@ -102,7 +102,7 @@ final class Legendary {
 
         task.qualityOfService = .userInitiated
 
-        let output: CommandOutput = .init() // weakly captured output tends to deallocate prematurely // FIXME: data race
+        let output: Process.CommandOutput = .init()
         let outputQueue: DispatchQueue = .init(label: "legendaryOutputQueue")
 
         stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
@@ -188,7 +188,7 @@ final class Legendary {
      */
     static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn() else { throw NotSignedInError() }
-        guard args.game.source == .epic else { throw IsNotLegendaryError() }
+        guard case .epic = args.game.source else { throw IsNotLegendaryError() }
         // guard args.type != .uninstall else { do {/* Add uninstallation support via dialog */}; return }
 
         // TODO: data lock handling
@@ -196,14 +196,21 @@ final class Legendary {
         let operation: GameOperation = .shared
 
         var argBuilder = [
-            "-y",
-            "install",
+            "-y", "install",
             args.game.id,
-            args.type == .repair ? "--repair" : nil,
-            args.type == .update ? "--update-only": nil
+            {
+                switch args.type {
+                case .install:
+                    return nil
+                case .update:
+                    return "--update-only"
+                case .repair:
+                    return "--repair"
+                }
+            }()
         ] .compactMap { $0 }
 
-        if args.type == .install { // Install-only arguments
+        if case .install = args.type { // Install-only arguments
             switch args.platform {
             case .macOS:
                 argBuilder += ["--platform", "Mac"]
@@ -392,7 +399,7 @@ final class Legendary {
 
         var environmentVariables = ["MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0"]
 
-        if game.platform == .windows {
+        if case .windows = game.platform {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
@@ -422,7 +429,7 @@ final class Legendary {
      - Returns: The platform of the game as a `Platform` enum.
      */
     static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform {
-        guard game.source == .epic else {
+        guard case .epic = game.source else {
             throw IsNotLegendaryError()
         }
 
@@ -527,7 +534,7 @@ final class Legendary {
 
     static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
         guard signedIn() else { throw NotSignedInError() }
-        guard game.source == .epic else { throw IsNotLegendaryError() }
+        guard case .epic = game.source else { throw IsNotLegendaryError() }
 
         let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
 
@@ -562,7 +569,7 @@ final class Legendary {
      - Returns: An optional `JSON` with either the metadata or `nil`.
      */
     static func getGameMetadata(game: Mythic.Game) throws -> JSON? {
-        guard game.source == .epic else { throw IsNotLegendaryError() }
+        guard case .epic = game.source else { throw IsNotLegendaryError() }
         let metadataDirectoryString = "\(configLocation)/metadata"
 
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {

@@ -54,6 +54,7 @@ final class NetworkMonitor: ObservableObject {
                 self.updateAccessibility(isAccessible && isSuccess)
             }.resume()
         }
+
         networkMonitor.start(queue: queue)
     }
 

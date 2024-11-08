@@ -41,11 +41,6 @@ struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
 }
 
-final class CommandOutput {
-    var stdout: String = .init()
-    var stderr: String = .init()
-}
-
 // MARK: - Functions
 // MARK: App Install Checker
 /**

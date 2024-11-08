@@ -75,3 +75,16 @@ extension Process {
         }
     }
 }
+
+extension Process {
+    /// Enumeration containing terminal stream types.
+    enum Stream {
+        case stdout
+        case stderr
+    }
+
+    final class CommandOutput {
+        var stdout: String = .init()
+        var stderr: String = .init()
+    }
+}

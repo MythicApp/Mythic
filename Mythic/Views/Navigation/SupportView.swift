@@ -20,11 +20,15 @@ import SwordRPC
 
 struct SupportView: View {
     @Environment(\.colorScheme) var colorScheme
-    
+
     private var colorSchemeValue: String {
-        colorScheme == .dark ? "dark" : "light"
+        switch colorScheme {
+        case .light: return "light"
+        case .dark: return "dark"
+        @unknown default: return "dark"
+        }
     }
-    
+
     var body: some View {
         HStack {
             VStack {
@@ -37,7 +41,7 @@ struct SupportView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
-            
+
             VStack {
                 if let patreonURL: URL = .init(string: /* temp comment "https://patreon.com/mythicapp" */ "https://ko-fi.com/blackxfiied") {
                     WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
@@ -58,7 +62,7 @@ struct SupportView: View {
             .clipShape(.rect(cornerRadius: 10))
         }
         .padding()
-        
+
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -66,11 +70,11 @@ struct SupportView: View {
                 presence.state = "Viewing Support"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
-                
+
                 return presence
             }())
         }
-        
+
         .navigationTitle("Support")
     }
 }

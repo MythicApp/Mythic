@@ -61,7 +61,7 @@ struct ContainerCreationView: View {
                         openPanel.canCreateDirectories = true
                         openPanel.allowsMultipleSelection = false
                         
-                        if openPanel.runModal() == .OK {
+                        if case .OK = openPanel.runModal() {
                             containerURL = openPanel.urls.first!
                         }
                     }

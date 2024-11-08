@@ -50,25 +50,61 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     
     private var _platform: Platform?
     var platform: Platform? {
-        get { return _platform ?? (self.source == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
+        get {
+            return _platform ?? {
+                switch self.source {
+                case .epic:
+                    return try? Legendary.getGamePlatform(game: self)
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _platform = newValue }
     }
     
     private var _imageURL: URL?
     var imageURL: URL? {
-        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        get {
+            return _imageURL ?? {
+                switch self.source {
+                case .epic:
+                    return .init(string: Legendary.getImage(of: self, type: .tall)) // TODO: make getimage return URL
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _imageURL = newValue }
     }
     
     private var _wideImageURL: URL?
     var wideImageURL: URL? {
-        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .normal)) : nil) }
-        set { _imageURL = newValue }
+        get {
+            return _wideImageURL ?? {
+                switch self.source {
+                case .epic:
+                    return .init(string: Legendary.getImage(of: self, type: .normal)) // TODO: make getimage return URL
+                case .local:
+                    return nil
+                }
+            }()
+        }
+        set { _wideImageURL = newValue }
     }
 
     private var _path: String?
     var path: String? {
-        get { _path ?? (self.source == .epic ? try? Legendary.getGamePath(game: self) : nil) }
+        get {
+            return _path ?? {
+                switch self.source {
+                case .epic:
+                    return try? Legendary.getGamePath(game: self)
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _path = newValue }
     }
     
@@ -198,7 +234,7 @@ enum GameModificationType: String {
     case install = "installing"
     case update = "updating"
     case repair = "repairing"
-    // case uninstall = "uninstalling"
+    // TODO: case uninstall = "uninstalling"
 }
 
 @available(*, deprecated, renamed: "GameOperation", message: "womp")

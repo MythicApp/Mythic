@@ -17,43 +17,18 @@
 import Foundation
 
 extension Legendary {
-    /// Enumeration containing the two terminal stream types.
-    enum Stream {
-        case stdout
-        case stderr
-    }
-    
     /// Enumeration to specify image types.
     enum ImageType {
         case normal
         case tall
     }
     
-    // MARK: - ImageError Enumeration
-    /// Error for image errors.
-    enum ImageError: Error {
-        /// Failure to get an image from the source.
-        case get
-        
-        /// Failure to load an image to Mythic or storage.
-        case load
-    }
-    
     struct UnableToGetPlatformError: LocalizedError { 
         var errorDescription: String? = "Mythic is unable to get the platform of this game."
     }
-    
-    struct IsNotLegendaryError: LocalizedError { 
+
+    struct IsNotLegendaryError: LocalizedError {
         var errorDescription: String? = "This is not an epic game."
-    }
-    
-    // GameDoesNotExistError unified!
-    
-    /// Struct to store games.
-    @available(*, deprecated, message: "Replaced by Mythic.Game")
-    struct Game: Hashable, Codable {
-        var id: String
-        var title: String
     }
     
     /// A struct to hold closures for handling stdout and stderr output.
@@ -63,15 +38,6 @@ extension Legendary {
         
         /// A closure to handle stderr output.
         let stderr: (String) -> Void
-    }
-    
-    /// Represents a condition to be checked for in the output streams before input is appended.
-    struct InputIfCondition {
-        /// The stream to be checked (stdout or stderr).
-        let stream: Stream
-        
-        /// The string pattern to be matched in the selected stream's output.
-        let string: String
     }
     
     /// Error when legendary is signed out on a command that enforces signin.

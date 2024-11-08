@@ -148,7 +148,7 @@ extension GameImportView {
             openPanel.allowedContentTypes = allowedContentTypes(for: platform)
             openPanel.allowsMultipleSelection = false
 
-            if openPanel.runModal() == .OK {
+            if case .OK = openPanel.runModal() {
                 path = openPanel.urls.first?.path ?? .init()
             }
         }
