@@ -13,11 +13,17 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "*ci*"
+      - "*fix*"
     paths-ignore:
       - '**/Localizable.xcstrings'
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "*ci*"
+      - "*fix*"
   schedule:
     - cron: '19 17 * * 3'
 
