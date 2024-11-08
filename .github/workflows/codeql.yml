@@ -15,15 +15,15 @@ on:
   push:
     branches:
       - "main"
-      - "*ci*"
-      - "*fix*"
+      - "**ci**"
+      - "**fix**"
     paths-ignore:
       - '**/Localizable.xcstrings'
   pull_request:
     branches:
       - "main"
-      - "*ci*"
-      - "*fix*"
+      - "**ci**"
+      - "**fix**"
   schedule:
     - cron: '19 17 * * 3'
 
