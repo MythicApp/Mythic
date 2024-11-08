@@ -64,12 +64,12 @@ final class Legendary {
      Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
 
      - Parameters:
-     - args: The arguments to pass to the command-line process.
-     - waits: Indicates whether the function should wait for the command-line process to complete before returning.
-     - identifier: A unique identifier for the command-line process.
-     - input: A closure that processes the output of the command-line process and provides input back to it.
-     - environment: Additional environment variables to set for the command-line process.
-     - completion: A closure to call with the output of the command-line process.
+        - args: The arguments to pass to the command-line process.
+        - waits: Indicates whether the function should wait for the command-line process to complete before returning.
+        - identifier: A unique identifier for the command-line process.
+        - input: A closure that processes the output of the command-line process and provides input back to it.
+        - environment: Additional environment variables to set for the command-line process.
+        - completion: A closure to call with the output of the command-line process.
 
      - Throws: An error if the command-line process encounters an issue.
 
@@ -422,17 +422,20 @@ final class Legendary {
      - Returns: The platform of the game as a `Platform` enum.
      */
     static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform {
-        guard game.source == .epic else { throw IsNotLegendaryError() }
+        guard game.source == .epic else {
+            throw IsNotLegendaryError()
+        }
 
-        let platform = try? JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))[game.id]["platform"].string
-        if platform == "Mac" {
-            return .macOS
-        } else if platform == "Windows" {
-            return .windows
-        } else {
+        let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        guard let platformString = installedData[game.id]["platform"].string else {
             throw UnableToGetPlatformError()
         }
 
+        switch platformString {
+        case "Mac": return .macOS
+        case "Windows": return .windows
+        default: throw UnableToGetPlatformError()
+        }
     }
 
     // MARK: Needs Update Method
@@ -443,26 +446,24 @@ final class Legendary {
      - Returns: A boolean indicating whether the game needs an update.
      */
     static func needsUpdate(game: Mythic.Game) -> Bool {
-        var needsUpdate: Bool = false
-
         do {
             let metadata = try getGameMetadata(game: game)
-            let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+            let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
 
-            if let installedVersion = installed[game.id]["version"].string,
-               let platform = installed[game.id]["platform"].string,
-               let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string {
-                if upstreamVersion != installedVersion {
-                    needsUpdate = true
-                }
-            } else {
-                log.error("Unable to compare upstream and installed version of game \"\(game.title)\".")
+            guard
+                let installedVersion = installedJSON[game.id]["version"].string,
+                let platform = installedJSON[game.id]["platform"].string,
+                let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string
+            else {
+                log.error("Unable to compare versions for game \"\(game.title)\".")
+                return false
             }
-        } catch {
-            log.error("Unable to fetch if \(game.title) needs an update: \(error.localizedDescription)")
-        }
 
-        return needsUpdate
+            return upstreamVersion != installedVersion
+        } catch {
+            log.error("Error checking if \(game.title) needs an update: \(error.localizedDescription)")
+            return false
+        }
     }
 
     // MARK: - Clear Command Cache Method
@@ -511,25 +512,17 @@ final class Legendary {
     static func getInstalledGames() throws -> [Mythic.Game] {
         guard signedIn() else { throw NotSignedInError() }
 
-        let installedJSONFileURL: URL = URL(filePath: "\(configLocation)/installed.json")
+        let installedData = URL(filePath: "\(configLocation)/installed.json")
+        let data = try Data(contentsOf: installedData)
 
-        guard let installedData = try? Data(contentsOf: installedJSONFileURL) else {
-            throw FileLocations.FileDoesNotExistError(installedJSONFileURL)
+        guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
+            throw FileLocations.FileDoesNotExistError(installedData)
         }
 
-        guard let installedGames = try JSONSerialization.jsonObject(with: installedData) as? [String: [String: Any]] else { // stupid json dependency is stupid
-            return .init()
+        return installedGames.compactMap { (id, gameInfo) in
+            guard let title = gameInfo["title"] as? String else { return nil }
+            return .init(source: .epic, title: title, id: id)
         }
-
-        var apps: [Mythic.Game] = .init()
-
-        for (id, gameInfo) in installedGames {
-            if let title = gameInfo["title"] as? String {
-                apps.append(Mythic.Game(source: .epic, title: title, id: id))
-            }
-        }
-
-        return apps
     }
 
     static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
@@ -585,6 +578,25 @@ final class Legendary {
         }
 
         return nil
+    }
+
+    /**
+        Retrieve a game's launch arguments from Legendary's `installed.json` file.
+        This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
+
+        - Parameter game: A ``Mythic.Game`` object.
+     */
+    static func getGameLaunchArguments(game: Mythic.Game) throws -> [String] {
+        let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        guard let platformString = installedData[game.id]["platform"].string else {
+            throw UnableToGetPlatformError()
+        }
+
+        guard let arguments = installedData[game.id]["launch_parameters"].string else {
+            throw UnableToGetPlatformError()
+        }
+
+        return arguments.components(separatedBy: .whitespaces)
     }
 
     /// Create an asynchronous task to update Legendary's stored metadata.
