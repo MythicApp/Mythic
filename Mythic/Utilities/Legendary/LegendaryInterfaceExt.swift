@@ -22,9 +22,14 @@ extension Legendary {
         case normal
         case tall
     }
-    
-    struct UnableToGetPlatformError: LocalizedError { 
-        var errorDescription: String? = "Mythic is unable to get the platform of this game."
+
+    enum RetrievalType {
+        case platform
+        case launchArguments
+    }
+
+    struct UnableToRetrieveError: LocalizedError {
+        var errorDescription: String? = "Mythic is unable to retrive the requested metadata for this game."
     }
 
     struct IsNotLegendaryError: LocalizedError {

@@ -59,6 +59,7 @@ final class Legendary {
     }
 
     // MARK: - Methods
+    // TODO: FIXME: better error handling using ``UnableToRetrieveError``
 
     /**
      Executes Legendary's command-line process with the specified arguments and handles its output and input interactions.
@@ -435,13 +436,13 @@ final class Legendary {
 
         let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
         guard let platformString = installedData[game.id]["platform"].string else {
-            throw UnableToGetPlatformError()
+            throw UnableToRetrieveError()
         }
 
         switch platformString {
         case "Mac": return .macOS
         case "Windows": return .windows
-        default: throw UnableToGetPlatformError()
+        default: throw UnableToRetrieveError()
         }
     }
 
@@ -595,12 +596,8 @@ final class Legendary {
      */
     static func getGameLaunchArguments(game: Mythic.Game) throws -> [String] {
         let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
-        guard let platformString = installedData[game.id]["platform"].string else {
-            throw UnableToGetPlatformError()
-        }
-
         guard let arguments = installedData[game.id]["launch_parameters"].string else {
-            throw UnableToGetPlatformError()
+            throw UnableToRetrieveError()
         }
 
         return arguments.components(separatedBy: .whitespaces)
