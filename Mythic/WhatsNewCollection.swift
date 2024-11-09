@@ -81,6 +81,34 @@ extension MythicApp: WhatsNewCollectionProvider {
                 action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.2"))
             )
         )
+
+        WhatsNew(
+            version: "0.4.3",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug.slash",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Bugfixes",
+                    subtitle: "Y'know, the usual."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "macbook.gen1",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Intel Mac Epic support",
+                    subtitle: "Epic functionality is now fully supported on Intel macs."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.3"))
+            )
+        )
     }
 }
 
