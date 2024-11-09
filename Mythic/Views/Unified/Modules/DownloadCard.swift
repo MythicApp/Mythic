@@ -102,7 +102,9 @@ struct DownloadCard: View {
                             }
                         }
 
-                        if operation.current?.game == game, let optionalPacks = operation.current?.optionalPacks {
+                        if operation.current?.game == game,
+                           let optionalPacks = operation.current?.optionalPacks,
+                           !optionalPacks.isEmpty {
                             Text("(\(optionalPacks.joined(separator: ", ")))")
                                 .font(.footnote)
                                 .foregroundStyle(.placeholder)
