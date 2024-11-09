@@ -30,7 +30,7 @@ struct InstallStatusView: View {
     var body: some View {
         if let current = operation.current {
             VStack {
-                Text("\(current.type.rawValue.uppercased()) \"\(current.game.title)\"...")
+                Text("\(current.type.rawValue.capitalized) \"\(current.game.title)\"...")
                     .font(.title)
 
                 Text("\(Int(operation.status.progress?.percentage ?? 0))% Complete")
