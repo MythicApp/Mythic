@@ -406,7 +406,11 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return try await withCheckedThrowingContinuation { continuation in
             Task {
                 do {
-                    try await command(arguments: ["winecfg", "-v"], identifier: "getWindowsVersion", containerURL: containerURL) { output in
+                    try await command(
+                        arguments: ["winecfg", "-v"],
+                        identifier: "getWindowsVersion",
+                        containerURL: containerURL
+                    ) { output in
                         if let version: WindowsVersion = .allCases.first(where: { String(describing: $0) == output.stdout.trimmingCharacters(in: .whitespacesAndNewlines) }) {
                             continuation.resume(returning: version)
                         }
@@ -417,10 +421,17 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
         }
     }
-    
+
     static func setWindowsVersion(_ version: WindowsVersion, containerURL: URL) async {
         do {
-            try await command(arguments: ["winecfg", "-v", String(describing: version)], identifier: "getWindowsVersion", containerURL: containerURL) { _ in }
+            try await command(
+                arguments: [
+                    "winecfg", "-v",
+                    String(describing: version)
+                ],
+                identifier: "setWindowsVersion",
+                containerURL: containerURL
+            ) { _ in }
         } catch {
             log.error("Unable to set windows version in \(containerURL.prettyPath()) to \(version.rawValue): \(error.localizedDescription)")
         }
