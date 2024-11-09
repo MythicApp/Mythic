@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -29,11 +29,6 @@ final class Engine {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "Engine"
     )
-    
-    enum Stream: String {
-        case stable = "7.7"
-        case staging = "staging"
-    }
     
     static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
     
@@ -74,7 +69,7 @@ final class Engine {
                         try files.unzipItem(at: tempfile, to: Bundle.appHome!, progress: unzipProgress)
                         if unzipProgress.isFinished {
                             let archive = Bundle.appHome!.appending(path: "Engine.txz")
-                            _ = try Process.execute("/usr/bin/tar", arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
+                            _ = try Process.execute(executableURL: .init(fileURLWithPath: "/usr/bin/tar"), arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
                             try? files.removeItem(at: archive)
                         }
                         installHandler(true)
@@ -95,8 +90,6 @@ final class Engine {
                     if download.progress.isFinished { if !debounce { debounce = true } else { break } }
                 }
             }
-            
-            continuation.resume()
         }
     }
     

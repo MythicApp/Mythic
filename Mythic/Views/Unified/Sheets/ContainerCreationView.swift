@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -19,7 +19,8 @@ import SwordRPC
 
 struct ContainerCreationView: View {
     @Binding var isPresented: Bool
-    
+    @ObservedObject private var variables: VariableManager = .shared
+
     @State private var containerName: String = "My Container"
     @State private var containerURL: URL = Wine.containersDirectory!
     
@@ -33,24 +34,19 @@ struct ContainerCreationView: View {
         VStack {
             Text("Create a container")
                 .font(.title)
-            
+                .padding([.horizontal, .top])
+
             Form {
                 TextField("Choose a name for your container:", text: $containerName)
                 
                 HStack {
-                    VStack {
-                        HStack {
-                            Text("Where do you want the container's base path to be located?")
-                            Spacer()
-                        }
-                        HStack {
-                            Text(containerURL.prettyPath())
-                                .foregroundStyle(.placeholder)
-                            
-                            Spacer()
-                        }
+                    VStack(alignment: .leading) {
+                        Text("Where do you want the container's base path to be located?")
+
+                        Text(containerURL.prettyPath())
+                            .foregroundStyle(.placeholder)
                     }
-                    
+
                     Spacer()
                     
                     if !FileLocations.isWritableFolder(url: containerURL) {
@@ -65,7 +61,7 @@ struct ContainerCreationView: View {
                         openPanel.canCreateDirectories = true
                         openPanel.allowsMultipleSelection = false
                         
-                        if openPanel.runModal() == .OK {
+                        if case .OK = openPanel.runModal() {
                             containerURL = openPanel.urls.first!
                         }
                     }
@@ -119,8 +115,8 @@ struct ContainerCreationView: View {
                 .disabled(!FileLocations.isWritableFolder(url: containerURL))
                 .disabled((Wine.containerURLs.first(where: { $0.lastPathComponent == containerName}) != nil))
             }
+            .padding()
         }
-        .padding()
         
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(

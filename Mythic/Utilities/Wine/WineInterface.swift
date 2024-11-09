@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -22,11 +22,11 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
-    internal static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "wineInterface")
+    internal static let log = Logger(subsystem: Logger.subsystem, category: "wineInterface")
     
     private static var _runningCommands: [String: Process] = .init()
-    private static let _runningCommandsQueue = DispatchQueue(label: "legendaryRunningCommands", attributes: .concurrent)
-    
+    private static let _runningCommandsQueue = DispatchQueue(label: "wineRunningCommands", attributes: .concurrent)
+
     /// Dictionary to monitor running commands and their identifiers.
     static var runningCommands: [String: Process] {
         get {
@@ -60,7 +60,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }()
     
-    static var containerURLs: Set<URL> { // FIXME: migrate from allContainers using plist decoder
+    static var containerURLs: Set<URL> {
         get { return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? []) }
         set {
             do {
@@ -114,7 +114,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      This function executes a command-line process with the specified arguments and waits for it to complete if `waits` is `true`.
      It handles the process's standard input, standard output, and standard error, as well as any interactions based on the output provided by the `input` closure.
      */
-    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((String) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Legendary.CommandOutput) -> Void) async throws { // TODO: Combine Framework
+    static func command(arguments args: [String], identifier: String, waits: Bool = true, containerURL: URL?, input: ((Process.CommandOutput) -> String?)? = nil, environment: [String: String]? = nil, completion: @escaping (Process.CommandOutput) -> Void) async throws { // TODO: Combine Framework
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
         
@@ -142,38 +142,49 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         task.qualityOfService = .userInitiated
         
-        let output: Legendary.CommandOutput = .init()
-        
-        stderr.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
+        let output: Process.CommandOutput = .init() // FIXME: data race
+        let outputQueue: DispatchQueue = .init(label: "wineOutputQueue")
+
+        stderr.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let stdin = stdin, let output = output else { return }
-            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                log.debug("input detected, but current implementation is not tested.")
-                stdin.fileHandleForWriting.write(data)
+            guard !availableOutput.isEmpty, let output = output else { return }
+
+            outputQueue.async {
+                output.stderr = availableOutput
+
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stderr] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stderr] \(availableOutput)")
             }
-            output.stderr = availableOutput
-            completion(output)
         }
-        
-        stdout.fileHandleForReading.readabilityHandler = { [weak stdin, weak output] handle in
+
+        stdout.fileHandleForReading.readabilityHandler = { [stdin, weak output] handle in
             let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
-            guard !availableOutput.isEmpty else { return }
-            guard let stdin = stdin, let output = output else { return }
-            if let trigger = input?(availableOutput), let data = trigger.data(using: .utf8) {
-                log.debug("input detected, but current implementation is not tested.")
-                stdin.fileHandleForWriting.write(data)
+            guard !availableOutput.isEmpty, let output = output else { return }
+
+            outputQueue.async {
+                output.stdout = availableOutput
+
+                if let trigger = input?(output), let data = trigger.data(using: .utf8) {
+                    log.debug("[command] [output] [stdout] \"\(availableOutput)\" found, writing \"\(String(decoding: data, as: UTF8.self))\" to stdin.")
+                    stdin.fileHandleForWriting.write(data)
+                }
+
+                completion(output)
+                log.debug("[command] [stdout] \(availableOutput)")
             }
-            output.stdout = availableOutput
-            completion(output)
         }
-        
+
         task.terminationHandler = { _ in
             runningCommands.removeValue(forKey: identifier)
         }
         
-        log.debug("[command] executing command [\(identifier)]: `\(terminalFormat)`")
-        
+        log.debug("[command] [exec] [id: \(identifier)]: `\(terminalFormat)`")
+
         try task.run()
         
         runningCommands[identifier] = task // What if two commands with the same identifier execute close to each other?
@@ -199,7 +210,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     // TODO: Implement tasklist
     // Not implemented yet -- unnecessary at this time
-    /*
+    @available(*, message: "Not Implemented")
     static func tasklist(containerURL url: URL) throws -> [String: Int] {
         let list: [String: Int] = .init()
         Task {
@@ -209,7 +220,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
         return list
     }
-     */
     
     // MARK: - Boot Method
     /**
@@ -259,22 +269,15 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
             
             if hasExisted {
-                containerURLs.insert(url)
-            } else if !containerURLs.contains(url) {
-                completion(.failure(UnableToBootError()))
-                return
-            }
-            
-            if !hasExisted {
-                await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
-                await setWindowsVersion(settings.windowsVersion, containerURL: url)
-            } else {
                 log.notice("Container already exists at \(url.prettyPath())")
                 if let container: Container = .init(knownURL: url) {
                     completion(.success(container))
                 } else {
                     completion(.failure(ContainerAlreadyExistsError()))
                 }
+            } else {
+                await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
+                await setWindowsVersion(settings.windowsVersion, containerURL: url)
             }
             
             log.notice("Successfully booted container \"\(name)\"")

@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -15,7 +15,6 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
-import CachedAsyncImage
 import SwordRPC
 import Shimmer
 import UniformTypeIdentifiers
@@ -30,12 +29,14 @@ extension GameImportView {
         @State private var platform: Game.Platform = .macOS
         @State private var path: String = .init()
 
+        @State private var isImageEmpty: Bool = true
+
         var body: some View {
             VStack {
                 HStack {
                     if !imageURLString.isEmpty {
                         VStack {
-                            GameCard.ImageCard(game: $game)
+                            GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
 
                             Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info.circle")
                                 .font(.footnote)
@@ -80,7 +81,7 @@ extension GameImportView {
 
         private func gameTitleTextField() -> some View {
             TextField("What should we call this game?", text: $title)
-                .onChange(of: title) { game.title = $0 }
+                .onChange(of: title) { game.title = $1 }
         }
 
         private func platformPicker() -> some View {
@@ -90,7 +91,7 @@ extension GameImportView {
                 }
             }
             .onChange(of: platform) {
-                game.platform = $0
+                game.platform = $1
                 resetFormFields()
             }
             .task { game.platform = platform }
@@ -122,7 +123,7 @@ extension GameImportView {
             }
             .onChange(of: path) {
                 updateGameTitle()
-                game.path = $0
+                game.path = $1
             }
         }
 
@@ -147,7 +148,7 @@ extension GameImportView {
             openPanel.allowedContentTypes = allowedContentTypes(for: platform)
             openPanel.allowsMultipleSelection = false
 
-            if openPanel.runModal() == .OK {
+            if case .OK = openPanel.runModal() {
                 path = openPanel.urls.first?.path ?? .init()
             }
         }
@@ -165,7 +166,7 @@ extension GameImportView {
             TextField("Enter Thumbnail URL here... (optional)", text: $imageURLString)
                 .truncationMode(.tail)
                 .onChange(of: imageURLString) {
-                    game.imageURL = URL(string: $0)
+                    game.imageURL = URL(string: $1)
                 }
         }
 

@@ -11,7 +11,8 @@ import OSLog
 struct UninstallViewEvo: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
-    
+    @ObservedObject var gameListViewModel: GameListVM = .shared
+
     @State private var deleteFiles: Bool = true
     @State private var runUninstaller: Bool
     @State private var isConfirmationPresented: Bool = false
@@ -31,25 +32,20 @@ struct UninstallViewEvo: View {
         VStack {
             Text("Uninstall \"\(game.title)\"")
                 .font(.title)
-            
+                .padding([.horizontal, .top])
+
             Form {
-                HStack {
-                    Toggle(isOn: $deleteFiles) {
-                        Text("Remove game files")
-                    }
-                    Spacer()
+                Toggle(isOn: $deleteFiles) {
+                    Text("Remove game files")
                 }
-                
-                HStack {
-                    Toggle(isOn: $runUninstaller) {
-                        Text("Run specialised uninstaller (If applicable)")
-                    }
-                    .disabled(game.source == .local)
-                    Spacer()
+
+                Toggle(isOn: $runUninstaller) {
+                    Text("Run specialised uninstaller (If applicable)")
                 }
+                .disabled(game.source == .local)
             }
             .formStyle(.grouped)
-            
+
             HStack {
                 Button("Cancel", role: .cancel) {
                     isPresented = false
@@ -123,6 +119,7 @@ struct UninstallViewEvo: View {
                             }
                             
                             favouriteGames.remove(game.id)
+                            gameListViewModel.refresh()
                             isPresented = false
                         },
                         secondaryButton: .cancel(Text("Cancel")) {
@@ -131,8 +128,8 @@ struct UninstallViewEvo: View {
                     )
                 }
             }
+            .padding([.horizontal, .bottom])
         }
-        .interactiveDismissDisabled()
     }
 }
 

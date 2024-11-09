@@ -1,11 +1,12 @@
 //
-//  Support.swift
+//  SupportView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 12/9/2023.
 //
 
-// Copyright © 2023 blackxfiied
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -19,11 +20,15 @@ import SwordRPC
 
 struct SupportView: View {
     @Environment(\.colorScheme) var colorScheme
-    
+
     private var colorSchemeValue: String {
-        colorScheme == .dark ? "dark" : "light"
+        switch colorScheme {
+        case .light: return "light"
+        case .dark: return "dark"
+        @unknown default: return "dark"
+        }
     }
-    
+
     var body: some View {
         HStack {
             VStack {
@@ -36,7 +41,7 @@ struct SupportView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(.background)
             .clipShape(.rect(cornerRadius: 10))
-            
+
             VStack {
                 if let patreonURL: URL = .init(string: /* temp comment "https://patreon.com/mythicapp" */ "https://ko-fi.com/blackxfiied") {
                     WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
@@ -57,7 +62,7 @@ struct SupportView: View {
             .clipShape(.rect(cornerRadius: 10))
         }
         .padding()
-        
+
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -65,11 +70,11 @@ struct SupportView: View {
                 presence.state = "Viewing Support"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
-                
+
                 return presence
             }())
         }
-        
+
         .navigationTitle("Support")
     }
 }

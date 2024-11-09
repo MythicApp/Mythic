@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -19,7 +19,7 @@ import SwiftUI
 import OSLog
 
 final class LocalGames {
-    public static let log = Logger(subsystem: Bundle.main.bundleIdentifier!, category: "localGames")
+    public static let log = Logger(subsystem: Logger.subsystem, category: "localGames")
     
     // TODO: DocC
     static var library: Set<Mythic.Game>? {
@@ -57,7 +57,11 @@ final class LocalGames {
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
                 workspace.open(
                     URL(filePath: game.path ?? .init()),
-                    configuration: .init(),
+                    configuration: {
+                        let configuration = NSWorkspace.OpenConfiguration()
+                        configuration.arguments = game.launchArguments
+                        return configuration
+                    }(),
                     completionHandler: { (_/*game*/, error) in
                         if let error = error {
                             log.error("Error launching local macOS game \"\(game.title)\": \(error)")

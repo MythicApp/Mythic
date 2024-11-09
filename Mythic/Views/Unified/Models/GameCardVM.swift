@@ -5,6 +5,15 @@
 //  Created by Esiayo Alegbe on 10/20/24.
 //
 
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
+
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import Foundation
 import SwiftUI
 import SwiftyJSON
@@ -55,9 +64,7 @@ import Shimmer
 
             @ViewBuilder
             var installedGameButtons: some View {
-                if case .windows = game.platform, !Engine.exists {
-                    engineInstallButton
-                } else if case .epic = game.source, needsVerification(for: game) {
+                if case .epic = game.source, needsVerification(for: game) {
                     verificationButton
                 } else {
                     if game.isLaunching {
@@ -67,7 +74,11 @@ import Shimmer
                             .foregroundStyle(.white)
                             .padding(5)
                     } else {
-                        playButton
+                        if case .windows = game.platform, !Engine.exists {
+                            engineInstallButton
+                        } else {
+                            playButton
+                        }
                     }
                     if game.needsUpdate {
                         updateButton
@@ -200,7 +211,6 @@ import Shimmer
                 }
                 .sheet(isPresented: $isUninstallSheetPresented) {
                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
-                        .padding()
                 }
             }
 
@@ -246,4 +256,9 @@ import Shimmer
 
         // swiftlint:enable nesting
     }
+}
+
+#Preview {
+    LibraryView()
+        .environmentObject(NetworkMonitor())
 }

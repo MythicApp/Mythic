@@ -5,12 +5,22 @@
 //  Created by Esiayo Alegbe on 25/3/2024.
 //
 
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
+
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import Foundation
+import OSLog
 
 extension Process {
-    static func execute(_ executablePath: String, arguments: [String]) throws -> String {
+    static func execute(executableURL: URL, arguments: [String]) throws -> String {
         let process = Process()
-        process.launchPath = executablePath
+        process.executableURL = executableURL
         process.arguments = arguments
         
         let pipe = Pipe()
@@ -25,9 +35,9 @@ extension Process {
         return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
-    static func executeAsync(_ executablePath: String, arguments: [String], completion: @escaping (Legendary.CommandOutput) -> Void) async throws {
+    static func executeAsync(executableURL: URL, arguments: [String], completion: @escaping (CommandOutput) -> Void) async throws {
         let process = Process()
-        process.launchPath = executablePath
+        process.executableURL = executableURL
         process.arguments = arguments
         
         let stderr = Pipe()
@@ -38,16 +48,43 @@ extension Process {
         
         try? process.run()
         
-        let output: Legendary.CommandOutput = .init()
-        
+        let output: CommandOutput = .init()
+        let outputQueue: DispatchQueue = .init(label: "genericProcessOutputQueue")
+        let log = Logger(subsystem: Logger.subsystem, category: "genericProcess\(executableURL.lastPathComponent)")
+
         stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stderr = String(decoding: handle.availableData, as: UTF8.self)
-            completion(output) // ⚠️ FIXME: critical performance issues
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
+
+            outputQueue.async {
+                output.stderr = availableOutput
+                completion(output)
+                log.debug("[command] [stderr] \(availableOutput)")
+            }
         }
         
-        stderr.fileHandleForReading.readabilityHandler = { handle in
-            output.stdout = String(decoding: handle.availableData, as: UTF8.self)
-            completion(output) // ⚠️ FIXME: critical performance issues
+        stdout.fileHandleForReading.readabilityHandler = { handle in
+            let availableOutput = String(decoding: handle.availableData, as: UTF8.self)
+            guard !availableOutput.isEmpty else { return }
+
+            outputQueue.async {
+                output.stdout = availableOutput
+                completion(output)
+                log.debug("[command] [stdout] \(availableOutput)")
+            }
         }
+    }
+}
+
+extension Process {
+    /// Enumeration containing terminal stream types.
+    enum Stream {
+        case stdout
+        case stderr
+    }
+
+    final class CommandOutput {
+        var stdout: String = .init()
+        var stderr: String = .init()
     }
 }

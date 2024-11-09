@@ -1,12 +1,12 @@
 //
-//  Library.swift
+//  LibraryView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 12/9/2023.
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -26,7 +26,7 @@ struct LibraryView: View {
 
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @StateObject var gameListViewModel: GameListVM = .shared
+    @ObservedObject var gameListViewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
@@ -47,10 +47,10 @@ struct LibraryView: View {
                 }
 
                 ToolbarItem(placement: .status) {
-                    if variables.getVariable("isLegendaryFetchingInstallableGames") == true {
+                    if variables.getVariable("isUpdatingLibrary") == true {
                         ProgressView()
                             .controlSize(.small)
-                            .help("Mythic is checking your Epic library for new games.")
+                            .help("Mythic is updating your library.")
                     }
                 }
 
@@ -88,7 +88,14 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: $isListLayoutEnabled) {
+                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: Binding(
+                        get: { isListLayoutEnabled },
+                        set: { newValue in
+                            withAnimation(.easeInOut(duration: 0.8)) {
+                                isListLayoutEnabled = newValue
+                            }
+                        }
+                    )) {
                         Label("List", systemImage: "list.triangle")
                             .tag(true)
                         
@@ -119,7 +126,7 @@ struct LibraryView: View {
 }
 
 #Preview {
-    MainView()
+    LibraryView()
         .environmentObject(NetworkMonitor())
-        .environmentObject(SparkleController())
+        .frame(minHeight: 300)
 }

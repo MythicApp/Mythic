@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -18,66 +18,87 @@ import SwiftUI
 
 struct GameInstallProgressView: View {
     var withPercentage: Bool = true
-    
+
     @ObservedObject private var operation: GameOperation = .shared
     @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
     @State private var isHoveringOverDestructiveButton: Bool = false
-    
-    @State private var paused: Bool = false // https://github.com/derrod/legendary/issues/40
-    
+    @State private var paused: Bool = false // For issue: https://github.com/derrod/legendary/issues/40
+
     var body: some View {
-        if let game = operation.current?.game {
+        if operation.current?.game != nil {
             HStack {
-                if let percentage = operation.status.progress?.percentage {
-                    ProgressView(value: percentage, total: 100)
-                        .progressViewStyle(.linear)
-                        .help("\(Int(percentage))% complete")
-                        .buttonStyle(.plain)
-                } else {
-                    ProgressView()
-                        .progressViewStyle(.linear)
-                        .help("Initializing...")
-                        .buttonStyle(.plain)
+                OperationProgressView(withPercentage: withPercentage)
+
+                if operation.current?.type != .repair {
+                    infoButton()
                 }
-                
-                if withPercentage, let percentage = operation.status.progress?.percentage {
-                    Text("\(Int(percentage))%")
-                }
-                
-                Button {
-                    isInstallStatusViewPresented = true
-                } label: {
-                    Image(systemName: "info")
-                        .padding([.vertical, .trailing], 5)
-                }
-                .clipShape(.circle)
-                .help("Stop installing \"\(game.title)\"")
-                    
-                Button {
-                    isStopGameModificationAlertPresented = true
-                } label: {
-                    Image(systemName: "xmark")
-                        .padding([.vertical, .trailing], 5)
-                        .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
-                }
-                .clipShape(.circle)
-                .help("Stop installing \"\(game.title)\"")
-                .onHover { hovering in
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        isHoveringOverDestructiveButton = hovering
-                    }
-                }
-                .alert(isPresented: $isStopGameModificationAlertPresented) {
-                    stopGameOperationAlert(
-                        isPresented: $isStopGameModificationAlertPresented,
-                        game: game
-                    )
-                }
-                .sheet(isPresented: $isInstallStatusViewPresented) {
-                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
-                        .padding()
-                }
+
+                stopButton()
+            }
+        }
+    }
+
+    // MARK: - Helper Functions
+
+    @ViewBuilder
+    private func infoButton() -> some View {
+        Button {
+            isInstallStatusViewPresented = true
+        } label: {
+            Image(systemName: "info")
+                .padding([.vertical, .trailing], 5)
+        }
+        .clipShape(.circle)
+        .help("Show install status")
+        .sheet(isPresented: $isInstallStatusViewPresented) {
+            InstallStatusView(isPresented: $isInstallStatusViewPresented)
+        }
+    }
+
+    @ViewBuilder
+    private func stopButton() -> some View {
+        Button {
+            isStopGameModificationAlertPresented = true
+        } label: {
+            Image(systemName: "xmark")
+                .padding([.vertical, .trailing], 5)
+                .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
+        }
+        .clipShape(.circle)
+        .help("Stop installing")
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.1)) {
+                isHoveringOverDestructiveButton = hovering
+            }
+        }
+        .alert(isPresented: $isStopGameModificationAlertPresented) {
+            stopGameOperationAlert(isPresented: $isStopGameModificationAlertPresented, game: operation.current!.game)
+        }
+    }
+}
+
+extension GameInstallProgressView {
+    struct OperationProgressView: View {
+        @ObservedObject private var operation: GameOperation = .shared
+        var withPercentage: Bool = false
+        var showInitializer: Bool = true
+
+        var body: some View {
+            if let percentage = operation.status.progress?.percentage {
+                ProgressView(value: percentage, total: 100)
+                    .progressViewStyle(.linear)
+                    .help("\(Int(percentage))% complete")
+                    .buttonStyle(.plain)
+            } else if showInitializer {
+                ProgressView()
+                    .progressViewStyle(.linear)
+                    .help("Initializing...")
+                    .buttonStyle(.plain)
+            }
+
+            if withPercentage, let percentage = operation.status.progress?.percentage {
+                Text("\(Int(percentage))%")
             }
         }
     }

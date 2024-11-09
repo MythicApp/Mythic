@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -364,7 +364,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                 message: .init("This will limit your ability to play Windows® games."),
                                                 primaryButton: .destructive(.init("Stop")) { 
                                                     // swiftlint:disable:next force_try
-                                                    _ = try! Process.execute("/bin/bash", arguments: ["-c", "kill $(pgrep -fa 'softwareupdate --install-rosetta')"])
+                                                    _ = try! Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "kill $(pgrep -fa 'softwareupdate --install-rosetta')"])
                                                     animateNextPhase()
                                                 },
                                                 secondaryButton: .cancel()
@@ -443,7 +443,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         }
                                         
                                         Text("\(Int(installationProgress * 100))%")
-                                            
+                                        /*
                                         Button {
                                             isStopInstallAlertPresented = true
                                         } label: {
@@ -467,6 +467,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                             )
                                         }
                                         .disabled(true)
+                                         */
                                     }
                                 )
                             )
@@ -593,6 +594,7 @@ struct OnboardingR2: View { // TODO: ViewModel
             
             VStack {
                 Spacer()
+
                 Text("(alpha)")
                     .font(.footnote)
                     .foregroundStyle(.placeholder)

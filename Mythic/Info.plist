@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSApplicationCrashOnExceptions</key>
+	<true/>
 	<key>GCSupportedGameControllers</key>
 	<array>
 		<dict>
@@ -9,8 +11,6 @@
 			<string>ExtendedGamepad</string>
 		</dict>
 	</array>
-	<key>GCSupportsControllerUserInteraction</key>
-	<true/>
 	<key>SUFeedURL</key>
 	<string>https://getmythic.app/appcast.xml</string>
 	<key>SUPublicEDKey</key>

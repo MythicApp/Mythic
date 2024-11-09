@@ -5,6 +5,15 @@
 //  Created by Esiayo Alegbe on 19/2/2024.
 //
 
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
+
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import SwiftUI
 import OSLog
 import SwordRPC
@@ -33,12 +42,13 @@ struct ContainerListView: View {
                     .buttonStyle(.accessoryBar)
                     
                     Spacer()
-                    Button(action: {
+
+                    Button {
                         selectedContainerURL = container.url
                         isContainerConfigurationViewPresented = true
-                    }, label: {
+                    } label: {
                         Image(systemName: "gear")
-                    })
+                    }
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
                     
@@ -150,7 +160,7 @@ struct ContainerConfigurationView: View {
                     Button("Launch Configurator") {
                         Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            configuratorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
+                            configuratorActive = (try? Process.execute(executableURL: .init(filePath: "/bin/bash"), arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
                             if !configuratorActive { timer.invalidate() }
                         }
                     }
@@ -159,7 +169,7 @@ struct ContainerConfigurationView: View {
                     Button("Launch Registry Editor") {
                         Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            registryEditorActive = (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
+                            registryEditorActive = (try? Process.execute(executableURL: .init(filePath: "/bin/bash"), arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
                             if !registryEditorActive { timer.invalidate() }
                         }
                     }

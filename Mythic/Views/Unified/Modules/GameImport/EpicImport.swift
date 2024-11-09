@@ -6,12 +6,13 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 // Licensed under GNU GPL v3 or later.
 
 import SwiftUI
 import SwordRPC
 import OSLog
+import UniformTypeIdentifiers
 
 extension GameImportView {
     struct Epic: View {
@@ -48,7 +49,7 @@ extension GameImportView {
             .onAppear(perform: loadInstallableGames)
             .alert(isPresented: $isErrorAlertPresented, content: errorAlert)
             .onChange(of: isErrorAlertPresented) {
-                if !$0 { errorDescription = .init() }
+                if !$1 { errorDescription = .init() }
             }
             .task(priority: .background) {
                 discordRPC.setPresence({
@@ -106,7 +107,9 @@ extension GameImportView {
                         .help("File/Folder is not readable by Mythic.")
                 }
 
-                Button("Browse...") { browseForGameLocation() }
+                Button("Browse...") {
+                    openFileBrowser()
+                }
             }
         }
 
@@ -153,15 +156,23 @@ extension GameImportView {
             }
         }
 
-        private func browseForGameLocation() {
+        private func openFileBrowser() {
             let openPanel = NSOpenPanel()
-            openPanel.allowedContentTypes = []
-            openPanel.canChooseDirectories = true
-            openPanel.allowedContentTypes = platform == .macOS ? [.application] : [.exe]
+            openPanel.canChooseDirectories = false
+            openPanel.allowedContentTypes = allowedContentTypes(for: platform)
             openPanel.allowsMultipleSelection = false
 
-            if openPanel.runModal() == .OK {
-                path = openPanel.urls.first?.path ?? ""
+            if case .OK = openPanel.runModal() {
+                path = openPanel.urls.first?.path ?? .init()
+            }
+        }
+
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+            switch platform {
+            case .macOS:
+                return [.application]
+            case .windows:
+                return [.exe]
             }
         }
 
@@ -200,7 +211,12 @@ extension GameImportView {
                         "import",
                         checkIntegrity ? nil : "--disable-check",
                         withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                        "--platform", platform.rawValue,
+                        "--platform", {
+                            switch platform {
+                            case .macOS: "Mac"
+                            case .windows: "Windows"
+                            }
+                        }(),
                         game.id, path
                     ].compactMap { $0 },
                     identifier: "epicImport"
@@ -210,7 +226,7 @@ extension GameImportView {
             }
         }
 
-        private func handleCommandOutput(_ output: Legendary.CommandOutput) {
+        private func handleCommandOutput(_ output: Process.CommandOutput) {
             if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
                 isPresented = false
             } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {

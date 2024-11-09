@@ -1,4 +1,5 @@
-import CachedAsyncImage
+// where the hell is the comment
+
 import Shimmer
 import SwiftUI
 import SwordRPC
@@ -7,7 +8,7 @@ struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
 
-    @StateObject var operation: GameOperation = .shared
+    @ObservedObject var operation: GameOperation = .shared
     @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false
     @State private var movingError: Error?
@@ -55,7 +56,7 @@ private extension GameSettingsView {
             .fill(.background)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay {
-                CachedAsyncImage(url: game.imageURL) { phase in
+                AsyncImage(url: game.imageURL) { phase in
                     switch phase {
                     case .empty:
                         emptyThumbnailPlaceholder
@@ -228,15 +229,46 @@ private extension GameSettingsView {
             }
 
             Spacer()
-            TextField("", text: $typingArgument)
+
+            TextField("", text: Binding(
+                get: { typingArgument },
+                set: { newValue in
+                    if (0...1).contains(typingArgument.count) {
+                        withAnimation {
+                            typingArgument = newValue
+                        }
+                    } else {
+                        typingArgument = newValue
+                    }
+                }
+            ))
                 .onSubmit(submitLaunchArgument)
+
+            if !typingArgument.isEmpty {
+                Button {
+                    submitLaunchArgument()
+                } label: {
+                    Image(systemName: "return")
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 
     func submitLaunchArgument() {
-        if !typingArgument.trimmingCharacters(in: .illegalCharacters).trimmingCharacters(in: .whitespacesAndNewlines)
-            .isEmpty, !launchArguments.contains(typingArgument) {
-            launchArguments.append(typingArgument)
+        let cleanedArgument = typingArgument
+            .trimmingCharacters(in: .illegalCharacters)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let splitArguments = cleanedArgument
+            .split(separator: .whitespace)
+            .map({ String($0) })
+
+        if !cleanedArgument.isEmpty,
+           !launchArguments.contains(typingArgument) {
+            game.launchArguments += splitArguments
+            launchArguments = game.launchArguments
+
             typingArgument = .init()
         }
     }
@@ -260,6 +292,7 @@ private extension GameSettingsView {
                     )
                 )
             }
+            .disabled(game.source != .epic)
             .disabled(operation.queue.contains(where: { $0.game == game }))
             .disabled(operation.current?.game == game)
         }

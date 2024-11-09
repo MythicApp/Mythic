@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -15,42 +15,33 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
-import CachedAsyncImage
 
 struct CompactGameCard: View {
     @Binding var game: Game
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject var viewModel: GameCardVM = .init()
     @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
     
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
-    
+
+    @State private var isImageEmpty: Bool = true
+
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(.background)
             .aspectRatio(1, contentMode: .fit)
             .overlay { // MARK: Image
-                CachedAsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
+                AsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
                     switch phase {
                     case .empty:
-                        if case .local = game.source, game.imageURL == nil {
-                            let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
-                            
-                            image
-                                .resizable()
-                                .aspectRatio(1, contentMode: .fill)
-                                .blur(radius: 20.0)
-                        } else {
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(.windowBackground)
-                                .shimmering(
-                                    animation: .easeInOut(duration: 1)
-                                        .repeatForever(autoreverses: false),
-                                    bandSize: 1
-                                )
-                        }
+                        GameCard.FallbackImageCard(game: $game, withBlur: false)
+                            .blur(radius: 20.0)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     case .success(let image):
                         image
                             .resizable()
@@ -58,13 +49,21 @@ struct CompactGameCard: View {
                             .clipShape(.rect(cornerRadius: 20))
                             .blur(radius: 20.0)
                             .modifier(FadeInModifier())
+                            .onAppear {
+                                withAnimation { isImageEmpty = false }
+                            }
                     case .failure:
-                        // fallthrough
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
+                            .fill(.background)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     }
                 }
             }
@@ -74,8 +73,8 @@ struct CompactGameCard: View {
                     HStack {
                         Text(game.title)
                             .font(.bold(.title3)())
-                            .foregroundStyle(.white)
-                        
+                            .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+
                         Spacer()
                         
                         // ! Changes made here must also be reflected in GameCard's play button
@@ -120,7 +119,7 @@ struct CompactGameCard: View {
             .overlay(alignment: .topLeading) {
                 if game.isFavourited {
                     Image(systemName: "star.fill")
-                        .foregroundStyle(.white)
+                        .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
                         .padding()
                 }
             }

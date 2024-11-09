@@ -6,14 +6,17 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import SwiftUI
 import Sparkle
+import WhatsNewKit
 
 // MARK: - Where it all begins!
 @main
@@ -54,7 +57,7 @@ struct MythicApp: App {
                         }
                     }
             } else {
-                MainView()
+                ContentView()
                     .transition(.opacity)
                     .environmentObject(networkMonitor)
                     .environmentObject(sparkleController)
@@ -62,7 +65,21 @@ struct MythicApp: App {
                     .onAppear { toggleTitleBar(true) }
             }
         }
-        
+
+        .environment(
+            \.whatsNew,
+             WhatsNewEnvironment(
+                versionStore:
+                    {
+#if DEBUG
+                        InMemoryWhatsNewVersionStore()
+#else
+                        UserDefaultsWhatsNewVersionStore()
+#endif
+                    }(),
+                whatsNewCollection: self)
+        )
+
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
@@ -87,8 +104,49 @@ struct MythicApp: App {
     }
 }
 
+extension MythicApp: WhatsNewCollectionProvider {
+    var whatsNewCollection: WhatsNewCollection {
+        WhatsNew(
+            version: "0.4.1",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug",
+                        foregroundColor: .red
+                    ),
+                    title: "Bug Fixes & Performance Improvements",
+                    subtitle: "Y'know, the usual."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "checklist",
+                        foregroundColor: .blue
+                    ),
+                    title: "Optional Pack support",
+                    subtitle: "Epic Games that support selective downloads are now supported for download (e.g. Fortnite)."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "cursorarrow.motionlines",
+                        foregroundColor: .accent
+                    ),
+                    title: "More animations",
+                    subtitle: "Added smooth animations and transitions."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.1"))
+            )
+        )
+    }
+
+}
+
 #Preview {
-    MainView()
+    ContentView()
         .environmentObject(NetworkMonitor())
         .environmentObject(SparkleController())
 }

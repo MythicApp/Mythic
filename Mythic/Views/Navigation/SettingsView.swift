@@ -1,11 +1,12 @@
 //
-//  Settings.swift
+//  SettingsView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 11/9/2023.
 //
 
-// Copyright © 2023 blackxfiied
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -62,48 +63,35 @@ struct SettingsView: View {
                 Toggle("Force quit all games when Mythic closes", isOn: $quitOnClose)
                 
                 HStack {
-                    VStack {
-                        HStack {
-                            Text("Choose the default base path for games:")
-                            Spacer()
-                        }
-                        HStack {
-                            Text(installBaseURL.prettyPath())
-                                .foregroundStyle(.placeholder)
-                            
-                            Spacer()
-                        }
+                    VStack(alignment: .leading) {
+                        Text("Choose the default base path for games:")
+                        Text(installBaseURL.prettyPath())
+                            .foregroundStyle(.placeholder)
                     }
-                    
+
                     Spacer()
                     
                     if !FileLocations.isWritableFolder(url: installBaseURL) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .help("Folder is not writable.")
                     }
-                    
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Button("Browse...") { // TODO: replace with .fileImporter
-                                let openPanel = NSOpenPanel()
-                                openPanel.canChooseDirectories = true
-                                openPanel.canChooseFiles = false
-                                openPanel.canCreateDirectories = true
-                                openPanel.allowsMultipleSelection = false
-                                
-                                if openPanel.runModal() == .OK {
-                                    installBaseURL = openPanel.urls.first!
-                                }
+
+                    VStack(alignment: .trailing) {
+                        Button("Browse...") { // TODO: replace with .fileImporter
+                            let openPanel = NSOpenPanel()
+                            openPanel.canChooseDirectories = true
+                            openPanel.canChooseFiles = false
+                            openPanel.canCreateDirectories = true
+                            openPanel.allowsMultipleSelection = false
+
+                            if case .OK = openPanel.runModal() {
+                                installBaseURL = openPanel.urls.first!
                             }
-                            .buttonStyle(.borderedProminent)
                         }
-                        
-                        HStack {
-                            Spacer()
-                            Button("Reset to Default") {
-                                installBaseURL = Bundle.appGames!
-                            }
+                        .buttonStyle(.borderedProminent)
+
+                        Button("Reset to Default") {
+                            installBaseURL = Bundle.appGames!
                         }
                     }
                 }

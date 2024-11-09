@@ -5,6 +5,8 @@ on:
       - '.github/workflows/build.yml'
       - 'Mythic.xcodeproj/**'
       - 'Mythic/**'
+    paths-ignore:
+      - '**/Localizable.xcstrings'
   pull_request:
     paths:
       - '.github/workflows/build.yml'

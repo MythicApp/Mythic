@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -19,9 +19,17 @@ import Sparkle
 import SwordRPC
 import UserNotifications
 import OSLog
+import Firebase
+
+import FirebaseCore
+import FirebaseCrashlytics
+
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
+        // Use the Firebase library to configure APIs.
+        FirebaseApp.configure()
+
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
         
         // MARK: initialize default UserDefaults Values
@@ -71,7 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
         let newBottles = Bundle.appContainer!.appending(path: "Containers")
 
-        if defaults.integer(forKey: "defaultsVersion") == 0 {
+        if defaults.dictionary(forKey: "launchCount") == nil {
             Logger.app.log("Commencing bottle renaming (Bottle → Container)")
 
             do {
@@ -143,14 +151,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         Task(priority: .utility) {
             Legendary.updateMetadata()
 
-            Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { _ in
+            Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { _ in
                 Legendary.updateMetadata()
             }
         }
 
         // MARK: Autosync Epic savedata
         Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { _ in }
+            try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { _ in }
         }
         
         // MARK: DiscordRPC Connection and Delegation Setting
@@ -260,10 +268,15 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
         
         /*
-         MARK: Defaults version
+         MARK: Defaults versions
          Useful for migration after non-backwards-compatible update
+         use by checking for the version in the array for
          */
-        defaults.register(defaults: ["defaultsVersion": 1])
+        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            var versionsDictionary: [String: Int] = defaults.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
+            versionsDictionary[shortVersion] = (versionsDictionary[shortVersion] ?? 0) + 1
+            defaults.set(versionsDictionary, forKey: "launchCount")
+        }
     }
     
     func applicationDidBecomeActive(_: Notification) {
@@ -285,7 +298,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             
             if let window = sender.windows.first {
                 alert.beginSheetModal(for: window) { response in
-                    if response == .alertFirstButtonReturn {
+                    if case .alertFirstButtonReturn = response {
                         sender.reply(toApplicationShouldTerminate: true)
                     } else {
                         sender.reply(toApplicationShouldTerminate: false)

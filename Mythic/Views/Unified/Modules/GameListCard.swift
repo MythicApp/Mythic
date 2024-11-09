@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import CachedAsyncImage
 
 struct GameListCard: View {
     @ObservedObject var viewModel: GameCardVM = .init()
@@ -22,19 +21,10 @@ struct GameListCard: View {
             .fill(.background)
             .frame(idealHeight: 120)
             .overlay {
-                CachedAsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
+                AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
                     switch phase {
                     case .empty:
-                        /*
-                         Image(nsImage: workspace.icon(forFile: game.path ?? ""))
-                         .resizable()
-                         .clipShape(.rect(cornerRadius: 20))
-                         .blur(radius: 20)
-                         */
-
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
-
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
@@ -51,16 +41,12 @@ struct GameListCard: View {
                                 withAnimation { isImageEmpty = false }
                             }
                     case .failure:
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
-                            .overlay { Image(systemName: "exclamationmark.triangle.fill") }
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
                     @unknown default:
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(.windowBackground)
-                            .overlay { Image(systemName: "questionmark.circle.fill") }
+                        EmptyView()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
@@ -83,7 +69,7 @@ struct GameListCard: View {
                             GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
                         }
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
                     .padding(.horizontal)
 
                     Spacer()

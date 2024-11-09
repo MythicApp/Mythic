@@ -5,6 +5,15 @@
 //  Created by Esiayo Alegbe on 13/6/2024.
 //
 
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
+
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import Foundation
 import Combine
 import OSLog
@@ -41,25 +50,61 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     
     private var _platform: Platform?
     var platform: Platform? {
-        get { return _platform ?? (self.source == .epic ? try? Legendary.getGamePlatform(game: self) : nil) }
+        get {
+            return _platform ?? {
+                switch self.source {
+                case .epic:
+                    return try? Legendary.getGamePlatform(game: self)
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _platform = newValue }
     }
     
     private var _imageURL: URL?
     var imageURL: URL? {
-        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .tall)) : nil) }
+        get {
+            return _imageURL ?? {
+                switch self.source {
+                case .epic:
+                    return .init(string: Legendary.getImage(of: self, type: .tall)) // TODO: make getimage return URL
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _imageURL = newValue }
     }
     
     private var _wideImageURL: URL?
     var wideImageURL: URL? {
-        get { _imageURL ?? (self.source == .epic ? .init(string: Legendary.getImage(of: self, type: .normal)) : nil) }
-        set { _imageURL = newValue }
+        get {
+            return _wideImageURL ?? {
+                switch self.source {
+                case .epic:
+                    return .init(string: Legendary.getImage(of: self, type: .normal)) // TODO: make getimage return URL
+                case .local:
+                    return nil
+                }
+            }()
+        }
+        set { _wideImageURL = newValue }
     }
 
     private var _path: String?
     var path: String? {
-        get { _path ?? (self.source == .epic ? try? Legendary.getGamePath(game: self) : nil) }
+        get {
+            return _path ?? {
+                switch self.source {
+                case .epic:
+                    return try? Legendary.getGamePath(game: self)
+                case .local:
+                    return nil
+                }
+            }()
+        }
         set { _path = newValue }
     }
     
@@ -74,18 +119,16 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
             if defaults.url(forKey: key) == nil {
                 defaults.set(Wine.containerURLs.first, forKey: key)
             }
-            
+
             return defaults.url(forKey: key)
         }
         set {
             let key: String = id.appending("_containerURL")
             guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
-            if Wine.containerURLs.contains(newValue) {
-                defaults.set(newValue, forKey: key)
-            }
+            defaults.set(newValue, forKey: key)
         }
     }
-    
+
     var launchArguments: [String] {
         get {
             let key: String = id.appending("_launchArguments")
@@ -191,7 +234,7 @@ enum GameModificationType: String {
     case install = "installing"
     case update = "updating"
     case repair = "repairing"
-    // case uninstall = "uninstalling"
+    // TODO: case uninstall = "uninstalling"
 }
 
 @available(*, deprecated, renamed: "GameOperation", message: "womp")
@@ -220,10 +263,6 @@ class GameOperation: ObservableObject {
         subsystem: Bundle.main.bundleIdentifier!,
         category: "GameOperation"
     )
-    
-    func install() throws {
-        // TODO: implement
-    }
     
     // swiftlint:disable:next redundant_optional_initialization
     @Published var current: InstallArguments? = nil {
@@ -309,7 +348,7 @@ class GameOperation: ObservableObject {
             }())
         }
 
-        GameOperation.log.debug("now monitoring \(gamePlatform.rawValue) game \(game.title)")
+        GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
 
         Task { @MainActor in
             GameOperation.shared.runningGames.insert(game)
@@ -332,7 +371,7 @@ class GameOperation: ObservableObject {
                 case .macOS:
                     workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
                 case .windows:
-                    (try? Process.execute("/bin/bash", arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
+                    (try? Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.isEmpty == false
                 }
             }()
             
@@ -354,16 +393,26 @@ class GameOperation: ObservableObject {
             Task(priority: .background) { await checkIfGameOpen(oldValue) }
         }
     }
-    
+
     struct InstallArguments: Equatable, Hashable {
-        var game: Mythic.Game,
-            platform: Mythic.Game.Platform,
-            type: GameModificationType,
-            // swiftlint:disable redundant_optional_initialization
-            optionalPacks: [String]? = nil,
-            baseURL: URL? = nil,
-            gameFolder: URL? = nil
-            // swiftlint:enable redundant_optional_initialization
+        var game: Mythic.Game
+
+        /// The target installation's platform.
+        var platform: Mythic.Game.Platform
+
+        /// The nature of the game modification.
+        var type: GameModificationType
+
+        // swiftlint:disable redundant_optional_initialization
+        /// (Legendary) packs to install along with the base game.
+        var optionalPacks: [String]? = nil
+
+        /// Custom ``URL`` for the game to install to.
+        var baseURL: URL? = nil
+
+        /// The absolute folder where the game should be installed to.
+        var gameFolder: URL? = nil
+        // swiftlint:enable redundant_optional_initialization
     }
     
     struct InstallStatus {

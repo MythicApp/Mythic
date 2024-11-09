@@ -1,47 +1,27 @@
+//
+//  GameListEvo.swift
+//  Mythic
+//
+//  Created by Esiayo Alegbe on 6/3/2024.
+//
+
+// MARK: - Copyright
+// Copyright © 2024 blackxfiied
+
+// This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+// This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+// You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
+
+// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
+
 import Foundation
 import SwiftUI
 
 struct GameListEvo: View {
-    @StateObject var viewModel: GameListVM = .shared
+    @ObservedObject var viewModel: GameListVM = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     @State private var isGameImportViewPresented: Bool = false
-
-    private var games: [Game] {
-        let filteredGames = filterGames(unifiedGames)
-        return sortGames(filteredGames)
-    }
-
-    private func filterGames(_ games: [Game]) -> [Game] {
-        games.filter { game in
-            let matchesSearch = viewModel.searchString.isEmpty || game.title.localizedCaseInsensitiveContains(viewModel.searchString)
-            let matchesInstalled = !viewModel.filterOptions.showInstalled || isGameInstalled(game)
-            let matchesPlatform = viewModel.filterOptions.platform == .all || game.platform?.rawValue == viewModel.filterOptions.platform.rawValue
-            let matchesSource = viewModel.filterOptions.source == .all || game.source.rawValue == viewModel.filterOptions.source.rawValue
-
-            return matchesSearch && matchesInstalled && matchesPlatform && matchesSource
-        }
-    }
-    
-    private func isGameInstalled(_ game: Game) -> Bool {
-        (try? Legendary.getInstalledGames().contains(game)) ?? false || (LocalGames.library?.contains(game) ?? false)
-    }
-    
-    private func sortGames(_ games: [Game]) -> [Game] {
-        games.sorted { game1, game2 in
-            if game1.isFavourited != game2.isFavourited {
-                return game1.isFavourited && !game2.isFavourited
-            }
-            if let installedGames = try? Legendary.getInstalledGames(),
-               installedGames.contains(game1) != installedGames.contains(game2) {
-                return installedGames.contains(game1)
-            }
-            if let localGames = LocalGames.library,
-               localGames.contains(game1) != localGames.contains(game2) {
-                return localGames.contains(game1)
-            }
-            return game1.title < game2.title
-        }
-    }
+    @ObservedObject private var variables: VariableManager = .shared
     
     var body: some View {
         VStack {
@@ -61,7 +41,7 @@ struct GameListEvo: View {
             } else if isListLayoutEnabled {
                 ScrollView(.vertical) {
                     LazyVStack {
-                        ForEach(games) { game in
+                        ForEach(viewModel.games) { game in
                             GameListCard(game: .constant(game))
                                 .padding([.top, .horizontal])
                         }
@@ -71,7 +51,7 @@ struct GameListEvo: View {
             } else {
                 ScrollView(.horizontal) {
                     LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
-                        ForEach(games) { game in
+                        ForEach(viewModel.games) { game in
                             GameCard(game: .constant(game))
                                 .padding([.leading, .vertical])
                         }
@@ -80,6 +60,7 @@ struct GameListEvo: View {
                 }
             }
         }
+        .id(viewModel.refreshFlag)
     }
 }
 

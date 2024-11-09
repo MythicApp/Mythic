@@ -9,6 +9,7 @@
 
   ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
   [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.com/invite/58NZ7fFqPy)
+  [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
   [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
 </h1>
 
@@ -47,9 +48,10 @@ Mythic uses the following Swift dependencies:
 - [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) - Semantic version structuring & parsing
 - [ColorfulX](https://github.com/Lakr233/ColorfulX) - An implementation using Metal for crafting multi-colored gradients.
 - [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
+- [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) - A Swift Package to easily showcase your new app features.
 
 ## License
-Copyright © 2024 blackxfiied, Jecta
+Copyright © 2024 blackxfiied
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

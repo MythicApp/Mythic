@@ -6,7 +6,7 @@
 //
 
 // MARK: - Copyright
-// Copyright © 2023 blackxfiied
+// Copyright © 2024 blackxfiied
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -18,12 +18,6 @@ import Foundation
 import OSLog
 
 extension Wine {
-    /// Enumeration containing the two terminal stream types.
-    enum Stream {
-        case stdout
-        case stderr
-    }
-    
     /// A struct to hold closures for handling stdout and stderr output.
     struct OutputHandler {
         /// A closure to handle stdout output.
@@ -31,15 +25,6 @@ extension Wine {
 
         /// A closure to handle stderr output.
         let stderr: (String) -> Void
-    }
-    
-    /// Represents a condition to be checked for in the output streams before input is appended.
-    struct InputIfCondition {
-        /// The stream to be checked (stdout or stderr).
-        let stream: Stream
-
-        /// The string pattern to be matched in the selected stream's output.
-        let string: String
     }
     
     /// Signifies that a container is unable to boot.
