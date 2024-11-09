@@ -42,7 +42,7 @@ extension MythicApp: WhatsNewCollectionProvider {
             primaryAction: .init(),
             secondaryAction: .init(
                 title: "Learn more",
-                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.1"))
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.1"))
             )
         )
 
@@ -78,7 +78,7 @@ extension MythicApp: WhatsNewCollectionProvider {
             primaryAction: .init(),
             secondaryAction: .init(
                 title: "Learn more",
-                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.2"))
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.2"))
             )
         )
     }
