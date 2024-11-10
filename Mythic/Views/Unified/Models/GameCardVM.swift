@@ -47,6 +47,7 @@ import Shimmer
             @State private var launchError: Error?
 
             @State private var hoveringOverDestructiveButton = false
+            @State private var hoveringOverFavouriteButton = false
             @State private var animateFavouriteIcon = false
 
             var body: some View {
@@ -183,14 +184,16 @@ import Shimmer
                     game.isFavourited.toggle()
                     withAnimation { animateFavouriteIcon = game.isFavourited }
                 } label: {
-                    Image(systemName: animateFavouriteIcon ? "star.fill" : "star")
+                    Image(systemName: "star")
+                        .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
+                        .contentTransition(.symbolEffect(.replace))
                         .padding(5)
                 }
                 .clipShape(.circle)
+                .onHover { hoveringOverFavouriteButton = $0 }
                 .help("Favourite \"\(game.title)\"")
                 .task { animateFavouriteIcon = game.isFavourited }
                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
-                .symbolEffect(.bounce, value: animateFavouriteIcon)
             }
 
             var deleteButton: some View {
