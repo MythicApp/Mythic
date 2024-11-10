@@ -25,10 +25,6 @@ import UserNotifications
 import FirebaseCore
 import FirebaseCrashlytics
 
-import FirebaseCore
-import FirebaseCrashlytics
-
-
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
