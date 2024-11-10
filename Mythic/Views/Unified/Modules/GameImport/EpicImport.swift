@@ -103,7 +103,8 @@ extension GameImportView {
                 Spacer()
 
                 if !files.isReadableFile(atPath: path) {
-                    Image(systemName: "exclamationmark.triangle.fill")
+                    Image(systemName: "exclamationmark.triangle")
+                        .symbolVariant(.fill)
                         .help("File/Folder is not readable by Mythic.")
                 }
 

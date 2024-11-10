@@ -63,7 +63,9 @@ struct HomeView: View {
                         }
                     } else {
                         HStack {
-                            Image(systemName: "star.fill")
+                            Image(systemName: "star")
+                                .symbolVariant(.fill)
+                            
                             Text("No games are favourited.")
                         }
                     }

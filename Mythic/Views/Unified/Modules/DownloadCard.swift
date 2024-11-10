@@ -71,11 +71,17 @@ struct DownloadCard: View {
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
-                            .overlay { Image(systemName: "exclamationmark.triangle.fill") }
+                            .overlay {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                            }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
-                            .overlay { Image(systemName: "questionmark.circle.fill") }
+                            .overlay {
+                                Image(systemName: "questionmark.circle")
+                                    .symbolVariant(.fill)
+                            }
                     }
                 }
                 .ignoresSafeArea()

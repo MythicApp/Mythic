@@ -48,19 +48,16 @@ struct ContentView: View {
                     Section {
                         NavigationLink(destination: HomeView()) {
                             Label("Home", systemImage: "house")
-                            // .foregroundStyle(.primary)
                                 .help("Everything in one place")
                         }
                         
                         NavigationLink(destination: LibraryView()) {
                             Label("Library", systemImage: "books.vertical")
-                            // .foregroundStyle(.primary)
                                 .help("View your games")
                         }
                         
                         NavigationLink(destination: StoreView()) {
                             Label("Store", systemImage: "basket")
-                            // .foregroundStyle(.primary)
                                 .help("Purchase new games from Epic")
                         }
                     } header: {
@@ -72,25 +69,21 @@ struct ContentView: View {
                     Section {
                         NavigationLink(destination: ContainersView()) {
                             Label("Containers", systemImage: "cube")
-                            // .foregroundStyle(.primary)
                                 .help("Manage containers for Windows® applications")
                         }
                         
                         NavigationLink(destination: SettingsView()) {
                             Label("Settings", systemImage: "gear")
-                            // .foregroundStyle(.primary)
                                 .help("Configure Mythic")
                         }
                         
                         NavigationLink(destination: SupportView()) {
                             Label("Support", systemImage: "questionmark.bubble")
-                            // .foregroundStyle(.primary)
                                 .help("Get support/Support Mythic")
                         }
                         
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
-                            // .foregroundStyle(.primary)
                                 .help("View all currently signed in accounts")
                         }
                     } header: {
@@ -107,7 +100,8 @@ struct ContentView: View {
                     if !networkMonitor.isEpicAccessible {
                         ToolbarItem(placement: .navigation) {
                             if networkMonitor.isCheckingEpicAccessibility {
-                                Image(systemName: "network.slash")
+                                Image(systemName: "network")
+                                    .symbolVariant(.slash)
                                     .symbolEffect(.pulse)
                                     .help("Mythic is checking the connection to Epic.")
                             } else if networkMonitor.isConnected {
@@ -115,7 +109,8 @@ struct ContentView: View {
                                     .symbolEffect(.pulse)
                                     .help("Mythic is connected to the internet, but cannot establish a connection to Epic.")
                             } else {
-                                Image(systemName: "network.slash")
+                                Image(systemName: "network")
+                                    .symbolVariant(.slash)
                                     .help("Mythic is not connected to the internet.")
                             }
                         }

@@ -125,7 +125,8 @@ private extension GameSettingsView {
         RoundedRectangle(cornerRadius: 20)
             .fill(.windowBackground)
             .overlay {
-                Image(systemName: "exclamationmark.triangle.fill")
+                Image(systemName: "exclamationmark.triangle")
+                    .symbolVariant(.fill)
             }
     }
 
@@ -133,7 +134,8 @@ private extension GameSettingsView {
         RoundedRectangle(cornerRadius: 20)
             .fill(.windowBackground)
             .overlay {
-                Image(systemName: "questionmark.circle.fill")
+                Image(systemName: "questionmark.circle")
+                    .symbolVariant(.fill)
             }
     }
 

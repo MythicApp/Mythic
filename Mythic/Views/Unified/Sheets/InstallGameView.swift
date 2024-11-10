@@ -137,7 +137,8 @@ struct InstallViewEvo: View {
                 Spacer()
 
                 if !FileLocations.isWritableFolder(url: baseURL) {
-                    Image(systemName: "exclamationmark.triangle.fill")
+                    Image(systemName: "exclamationmark.triangle")
+                        .symbolVariant(.fill)
                         .help("Folder is not writable.")
                 }
 

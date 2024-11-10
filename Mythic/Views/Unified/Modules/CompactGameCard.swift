@@ -118,7 +118,8 @@ struct CompactGameCard: View {
             }
             .overlay(alignment: .topLeading) {
                 if game.isFavourited {
-                    Image(systemName: "star.fill")
+                    Image(systemName: "star")
+                        .symbolVariant(.fill)
                         .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
                         .padding()
                 }
