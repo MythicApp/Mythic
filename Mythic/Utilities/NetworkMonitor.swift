@@ -22,6 +22,8 @@ import SwiftUI
 
 @Observable
 final class NetworkMonitor: ObservableObject {
+    public static let shared: NetworkMonitor = .init()
+
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "NetworkMonitor")
 
@@ -33,7 +35,7 @@ final class NetworkMonitor: ObservableObject {
         _isCheckingEpicAccessibility
     }
 
-    init() {
+    private init() {
         networkMonitor.pathUpdateHandler = { [weak self] path in
             guard let self = self, !self.isCheckingEpicAccessibility else { return }
             self.isConnected = (path.status == .satisfied)
@@ -68,6 +70,6 @@ final class NetworkMonitor: ObservableObject {
 
 #Preview {
     ContentView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .environmentObject(SparkleController())
 }

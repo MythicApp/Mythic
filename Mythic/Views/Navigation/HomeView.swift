@@ -100,5 +100,5 @@ struct HomeView: View {
 // MARK: - Preview
 #Preview {
     HomeView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

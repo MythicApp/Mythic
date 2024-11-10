@@ -127,6 +127,6 @@ struct LibraryView: View {
 
 #Preview {
     LibraryView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .frame(minHeight: 300)
 }

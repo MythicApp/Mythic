@@ -260,5 +260,5 @@ import Shimmer
 
 #Preview {
     LibraryView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

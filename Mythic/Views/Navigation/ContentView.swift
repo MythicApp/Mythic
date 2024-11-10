@@ -160,6 +160,6 @@ struct ContentView: View {
 // MARK: - Preview
 #Preview {
     ContentView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .environmentObject(SparkleController())
 }

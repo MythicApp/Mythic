@@ -718,5 +718,5 @@ extension OnboardingR2 {
 
 #Preview {
     OnboardingR2(fromPhase: .logo)
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

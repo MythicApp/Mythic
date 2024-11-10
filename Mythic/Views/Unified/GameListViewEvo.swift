@@ -66,5 +66,5 @@ struct GameListEvo: View {
 
 #Preview {
     GameListEvo()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

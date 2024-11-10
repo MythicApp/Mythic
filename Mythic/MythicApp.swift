@@ -27,7 +27,7 @@ struct MythicApp: App {
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
-    @StateObject private var networkMonitor: NetworkMonitor = .init()
+    @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
     
     @State private var bootError: Error?
@@ -107,6 +107,6 @@ struct MythicApp: App {
 
 #Preview {
     ContentView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .environmentObject(SparkleController())
 }
