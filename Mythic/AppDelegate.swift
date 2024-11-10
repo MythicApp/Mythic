@@ -151,6 +151,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
 
+        // MARK: Update container scaling
+
+        for container in Wine.containerObjects where container.settings.scaling == 0 {
+            let defaultScale = Wine.defaultContainerSettings.scaling
+
+            Task(priority: .background) {
+                await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
+                container.settings.scaling = defaultScale
+            }
+        }
+
         // MARK: <0.3.2 Config folder rename (Config → Epic)
 
         let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
