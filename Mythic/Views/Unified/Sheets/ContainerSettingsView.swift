@@ -134,7 +134,7 @@ struct ContainerSettingsView: View {
                         set: { value in
                             Task(priority: .userInitiated) {
                                 withAnimation { modifyingWindowsVersion = true }
-                                await Wine.setWindowsVersion(value, containerURL: container.url)
+                                await Wine.setWindowsVersion(containerURL: container.url, version: value)
                                 windowsVersion = value
                                 container.settings.windowsVersion = value
                                 withAnimation { modifyingWindowsVersion = false }

@@ -82,7 +82,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     static var defaultContainerSettings: ContainerSettings { // Registered by AppDelegate
         get {
-            let defaultValues: ContainerSettings = .init(metalHUD: false, msync: true, retinaMode: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 0.0)
+            let defaultValues: ContainerSettings = .init(metalHUD: false, msync: true, retinaMode: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 192)
             do {
                 try defaults.encodeAndRegister(defaults: ["defaultContainerSettings": defaultValues])
             } catch {
@@ -277,7 +277,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 }
             } else {
                 await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
-                await setWindowsVersion(settings.windowsVersion, containerURL: url)
+                await setWindowsVersion(containerURL: url, version: settings.windowsVersion)
+                await setDisplayScaling(containerURL: url, dpi: settings.scaling)
             }
             
             log.notice("Successfully booted container \"\(name)\"")
@@ -389,7 +390,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return try await withCheckedThrowingContinuation { continuation in
             Task {
                 await queryRegistryKey(
-                    containerURL: containerURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", type: .string
+                    containerURL: containerURL,
+                    key: RegistryKey.macDriver.rawValue,
+                    name: "RetinaMode",
+                    type: .string
                 ) { result in
                     switch result {
                     case .success(let value):
@@ -402,7 +406,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
     
-    static func getWindowsVersion(containerURL: URL) async throws -> WindowsVersion? { // conv to combine
+    static func getWindowsVersion(containerURL: URL) async throws -> WindowsVersion? {
         return try await withCheckedThrowingContinuation { continuation in
             Task {
                 do {
@@ -422,7 +426,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
-    static func setWindowsVersion(_ version: WindowsVersion, containerURL: URL) async {
+    static func setWindowsVersion(containerURL: URL, version: WindowsVersion) async {
         do {
             try await command(
                 arguments: [
@@ -436,7 +440,47 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             log.error("Unable to set windows version in \(containerURL.prettyPath()) to \(version.rawValue): \(error.localizedDescription)")
         }
     }
-    
+
+    static func getDisplayScaling(containerURL: URL) async throws -> Int {
+        return try await withCheckedThrowingContinuation { continuation in
+            Task {
+                await queryRegistryKey(
+                    containerURL: containerURL,
+                    key: RegistryKey.desktop.rawValue,
+                    name: "LogPixels",
+                    type: .dword
+                ) { result in
+                    switch result {
+                    case .success(let value):
+                        guard let scale = Int(value.trimmingPrefix("0x"), radix: 16) else {
+                            continuation.resume(returning: -1)
+                            return
+                        }
+                        continuation.resume(returning: scale)
+                    case .failure(let error):
+                        log.error("Unable to fetch display scaling value in container at \(containerURL): \(error)")
+                        continuation.resume(throwing: error)
+                    }
+                }
+            }
+        }
+    }
+
+    static func setDisplayScaling(containerURL: URL, dpi: Int) async {
+        guard (96...480).contains(dpi) else { return }
+        do {
+            try await addRegistryKey(
+                containerURL: containerURL,
+                key: RegistryKey.desktop.rawValue,
+                name: "LogPixels",
+                data: String(dpi),
+                type: .dword
+            )
+        } catch {
+            log.error("Unable to set display scaling value to \(dpi) DPI in container at \(containerURL): \(error)")
+        }
+    }
+
     // MARK: - Container Exists Method
     /**
      Check for a wine prefix/container's existence at a URL.

@@ -22,9 +22,6 @@ struct ContainerListView: View {
     @State private var isContainerConfigurationViewPresented = false
     @State private var isDeletionAlertPresented = false
     
-    @State private var selectedContainerURL: URL = .init(filePath: .init())
-    @State private var containerURLToDelete: URL = .init(filePath: .init())
-    
     var body: some View {
         Form {
             ForEach(Wine.containerObjects) { container in
@@ -44,16 +41,18 @@ struct ContainerListView: View {
                     Spacer()
 
                     Button {
-                        selectedContainerURL = container.url
                         isContainerConfigurationViewPresented = true
                     } label: {
                         Image(systemName: "gear")
                     }
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
-                    
+                    .sheet(isPresented: $isContainerConfigurationViewPresented) {
+                        ContainerConfigurationView(containerURL: container.url, isPresented: $isContainerConfigurationViewPresented)
+                            .frame(minWidth: 600)
+                    }
+
                     Button {
-                        containerURLToDelete = container.url
                         isDeletionAlertPresented = true
                     } label: {
                         Image(systemName: "xmark.bin")
@@ -61,22 +60,18 @@ struct ContainerListView: View {
                     .buttonStyle(.borderless)
                     .foregroundStyle(.secondary)
                     .alert(isPresented: $isDeletionAlertPresented) {
-                        let container = try? Wine.getContainerObject(url: containerURLToDelete)
                         return Alert(
-                            title: .init("Are you sure you want to delete \"\(container?.name ?? "Unknown")\"?"),
+                            title: .init("Are you sure you want to delete \"\(container.name)\"?"),
                             message: .init("This process cannot be undone."),
                             primaryButton: .destructive(.init("Delete")) {
                                 do {
-                                    guard let containerURL = container?.url else { throw Wine.ContainerDoesNotExistError() }
-                                    try Wine.deleteContainer(containerURL: containerURL)
+                                    try Wine.deleteContainer(containerURL: container.url)
                                 } catch {
-                                    Logger.file.error("Unable to delete container \(container?.name ?? ""): \(error.localizedDescription)")
-                                    containerURLToDelete = .init(filePath: .init())
+                                    Logger.file.error("Unable to delete container \(container.name): \(error.localizedDescription)")
                                     isDeletionAlertPresented = false
                                 }
                             },
                             secondaryButton: .cancel(.init("Cancel")) {
-                                containerURLToDelete = .init(filePath: .init())
                                 isDeletionAlertPresented = false
                             }
                         )
@@ -85,17 +80,11 @@ struct ContainerListView: View {
             }
         }
         .formStyle(.grouped)
-        
-        .sheet(isPresented: $isContainerConfigurationViewPresented) {
-            ContainerConfigurationView(containerURL: $selectedContainerURL, isPresented: $isContainerConfigurationViewPresented)
-                .frame(minWidth: 600)
-        }
-        
     }
 }
 
 struct ContainerConfigurationView: View {
-    @Binding var containerURL: URL
+    var containerURL: URL
     @Binding var isPresented: Bool
     
     @State private var configuratorActive: Bool = false
@@ -104,11 +93,6 @@ struct ContainerConfigurationView: View {
     @State private var isOpenAlertPresented = false
     @State private var openError: Error?
     
-    init(containerURL: Binding<URL>, isPresented: Binding<Bool>) {
-        self._containerURL = containerURL
-        self._isPresented = isPresented
-    }
-    
     var body: some View {
         if let container = try? Wine.getContainerObject(url: self.containerURL) {
             VStack {
@@ -116,9 +100,14 @@ struct ContainerConfigurationView: View {
                     .font(.title)
                 
                 Form {
-                    ContainerSettingsView(selectedContainerURL: Binding($containerURL), withPicker: false)
+                    ContainerSettingsView(
+                        selectedContainerURL: .init(
+                            get: { containerURL },
+                            set: { _ in  }
+                        ),
+                        withPicker: false
+                    )
                     // TODO: Add slider for scaling
-                    // TODO: Add slider for winver
                 }
                 .formStyle(.grouped)
                 
