@@ -15,19 +15,15 @@
 
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
-import Firebase
 import OSLog
 import Sparkle
 import SwiftUI
 import SwordRPC
 import UserNotifications
 
+import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
-
-import FirebaseCore
-import FirebaseCrashlytics
-
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
