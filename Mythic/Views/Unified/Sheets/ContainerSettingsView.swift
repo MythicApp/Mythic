@@ -108,7 +108,8 @@ struct ContainerSettingsView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
                                 .controlSize(.small)
                                 .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                         }
@@ -153,7 +154,8 @@ struct ContainerSettingsView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
                                 .controlSize(.small)
                                 .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                         }

@@ -38,7 +38,8 @@ extension GameImportView {
                         VStack {
                             GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
 
-                            Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info.circle")
+                            Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info")
+                                .symbolVariant(.circle)
                                 .font(.footnote)
                                 .foregroundStyle(.placeholder)
                         }
@@ -111,7 +112,8 @@ extension GameImportView {
                 }
 
                 if !files.isReadableFile(atPath: path), !path.isEmpty {
-                    Image(systemName: "exclamationmark.triangle.fill")
+                    Image(systemName: "exclamationmark.triangle")
+                        .symbolVariant(.fill)
                         .help("File/Folder is not readable by Mythic.")
                 }
 

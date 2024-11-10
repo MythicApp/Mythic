@@ -665,8 +665,9 @@ extension OnboardingR2 {
                             switch thirdRow[index] {
                             case .help(let content):
                                 Button { isHelpPopoverPresented = true } label: {
-                                    Image(systemName: "questionmark.circle")
+                                    Image(systemName: "questionmark")
                                         .resizable()
+                                        .symbolVariant(.circle)
                                         .scaledToFit()
                                         .frame(width: 20)
                                 }

@@ -63,7 +63,8 @@ struct AccountsView: View {
                                     isAuthViewPresented = true
                                 }
                             } label: {
-                                Image(systemName: signedIn ? "person.slash" : "person")
+                                Image(systemName: "person")
+                                    .symbolVariant(signedIn ? .slash : .none)
                                     .foregroundStyle(isHoveringOverDestructiveEpicButton ? .red : .primary)
                                     .padding(5)
                                 

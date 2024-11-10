@@ -65,7 +65,8 @@ struct StoreView: View {
                         url = .init(string: "javascript:history.back();")!
                     }
                 } label: {
-                    Image(systemName: "arrow.left.circle")
+                    Image(systemName: "arrow.left")
+                        .symbolVariant(.circle)
                 }
                 .disabled(!canGoBack)
             }
@@ -76,7 +77,8 @@ struct StoreView: View {
                         url = .init(string: "javascript:history.forward();")!
                     }
                 } label: {
-                    Image(systemName: "arrow.right.circle")
+                    Image(systemName: "arrow.right")
+                        .symbolVariant(.circle)
                 }
                 .disabled(!canGoForward)
             }
@@ -90,7 +92,8 @@ struct StoreView: View {
                         refreshAnimation = .degrees(0)
                     }
                 } label: {
-                    Image(systemName: "arrow.clockwise.circle")
+                    Image(systemName: "arrow.clockwise")
+                        .symbolVariant(.circle)
                         .rotationEffect(refreshAnimation) // thx whisky
                 }
             }

@@ -50,7 +50,8 @@ struct ContainerCreationView: View {
                     Spacer()
                     
                     if !FileLocations.isWritableFolder(url: containerURL) {
-                        Image(systemName: "exclamationmark.triangle.fill")
+                        Image(systemName: "exclamationmark.triangle")
+                            .symbolVariant(.fill)
                             .help("Folder is not writable.")
                     }
                     
