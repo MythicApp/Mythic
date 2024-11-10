@@ -202,7 +202,7 @@ import Shimmer
                 } label: {
                     Image(systemName: "xmark.bin")
                         .padding(5)
-                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
+                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
                 }
                 .clipShape(.circle)
                 .disabled(isDeleteDisabled)
