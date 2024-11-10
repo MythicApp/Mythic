@@ -46,7 +46,7 @@ extension Wine {
     }
 
     // TODO: refactor
-    class Container: Codable, Hashable, Identifiable, Equatable {
+    class Container: Codable, Hashable, Identifiable, Equatable, ObservableObject {
         static func == (lhs: Container, rhs: Container) -> Bool {
             return (lhs.url == rhs.url && lhs.id == rhs.id)
         }
