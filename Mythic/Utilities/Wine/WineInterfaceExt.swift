@@ -45,6 +45,7 @@ extension Wine {
         case desktop = #"HKCU\Control Panel\Desktop"#
     }
 
+    // TODO: refactor
     class Container: Codable, Hashable, Identifiable, Equatable {
         static func == (lhs: Container, rhs: Container) -> Bool {
             return (lhs.url == rhs.url && lhs.id == rhs.id)
@@ -100,7 +101,7 @@ extension Wine {
             self.init(name: url.lastPathComponent, url: url, settings: defaultContainerSettings)
         }
 
-        deinit { saveProperties() }
+        // deinit { saveProperties() } // FIXME: causes conflict with didSet
 
         /// Saves the container properties to disk.
         func saveProperties() {
@@ -113,7 +114,7 @@ extension Wine {
             }
         }
 
-        var name: String
+        var name: String { didSet { saveProperties() } } // MARK: futureproofing
         var url: URL
         var id: UUID
         var settings: ContainerSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
