@@ -31,7 +31,7 @@ extension NSWorkspace {
         guard let machineString = machine else {
             return false
         }
-        
-        return machineString.starts(with: "arm64")
+
+        return machineString.contains("arm64")
     }
 }
