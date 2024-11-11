@@ -76,7 +76,7 @@ struct InstallViewEvo: View {
             .alert(isPresented: $isInstallationErrorPresented) {
                 Alert(
                     title: .init("Unable to proceed with installation."),
-                    message: .init(installationError?.localizedDescription ?? "Unknown error."),
+                    message: .init(installationError?.localizedDescription ?? "Unknown Error."),
                     dismissButton: .default(.init("OK")) {
                         isPresented = false
                     }
