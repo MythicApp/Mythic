@@ -91,7 +91,7 @@ final class Legendary {
 
         var mutableArgs = args
 
-        if !NetworkMonitor.shared.isEpicAccessible {
+        if await NetworkMonitor.shared.epicAccessibilityState != .accessible {
             mutableArgs.append("--offline")
         }
 

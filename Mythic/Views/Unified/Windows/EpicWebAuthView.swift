@@ -103,7 +103,7 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: EpicInterceptorWebView
-        @State private var isLoading: Bool = false
+        @State private var isLoading: Bool = false // FIXME: pointless
 
         init(parent: EpicInterceptorWebView) {
             self.parent = parent

@@ -208,9 +208,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         try task.run()
     }
     
-    // TODO: Implement tasklist
-    // Not implemented yet -- unnecessary at this time
-    @available(*, message: "Not Implemented")
+    // FIXME: tasklist impossible with current command() implementation, TODO: large refactor
     static func tasklist(containerURL url: URL) throws -> [String: Int] {
         let list: [String: Int] = .init()
         Task {

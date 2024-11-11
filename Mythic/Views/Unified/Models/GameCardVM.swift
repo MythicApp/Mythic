@@ -119,7 +119,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible)
+                .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 .help("Game verification is required for \"\(game.title)\".")
             }
 
@@ -159,7 +159,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible || operation.runningGames.contains(game))
+                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
                 .help("Update \"\(game.title)\"")
             }
 
@@ -229,7 +229,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible || operation.queue.contains(where: { $0.game == game }))
+                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
                 .help("Download \"\(game.title)\"")
                 .sheet(isPresented: $isInstallSheetPresented) {
                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)

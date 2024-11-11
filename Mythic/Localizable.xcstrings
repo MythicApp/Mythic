@@ -24178,6 +24178,7 @@
       }
     },
     "Mythic is checking the connection to Epic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -24367,7 +24368,11 @@
         }
       }
     },
+    "Mythic is connected to the internet,\nbut is unable to verify the connection to Epic Games." : {
+
+    },
     "Mythic is connected to the internet, but cannot establish a connection to Epic." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25316,6 +25321,9 @@
           }
         }
       }
+    },
+    "Mythic is verifying the connection to Epic Games." : {
+
     },
     "Mythic was unable to sign you in. Please try again." : {
       "localizations" : {

@@ -18,21 +18,16 @@ import SwiftUI
 import Sparkle
 import WhatsNewKit
 
-// MARK: - Where it all begins!
 @main
 struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    // MARK: - State Properties
+
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
     @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
-    
-    @State private var bootError: Error?
-    
-    // MARK: - App Body
+
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
@@ -87,13 +82,6 @@ struct MythicApp: App {
                 .disabled(isOnboardingPresented)
             }
         }
-        
-        // MARK: - Settings View
-        /*
-        Settings {
-            SettingsView()
-        }
-         */
     }
 }
 
