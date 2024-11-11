@@ -49,10 +49,10 @@ struct OnboardingR2: View { // TODO: ViewModel
                 return
             }
             if !forceNext {
-                if case .signin = allCases[nextIndex], Legendary.signedIn() {
+                if case .signin = allCases[nextIndex], Legendary.signedIn {
                     nextIndex += 1
                 }
-                if case .greetings = allCases[nextIndex], !Legendary.signedIn() {
+                if case .greetings = allCases[nextIndex], !Legendary.signedIn {
                     nextIndex += 1
                 }
                 if case .rosettaDisclaimer = allCases[nextIndex], (Rosetta.exists || !workspace.isARM()) {
@@ -157,8 +157,10 @@ struct OnboardingR2: View { // TODO: ViewModel
             Task(priority: .userInitiated) {
                 withAnimation { isSigningIn = true }
                 do {
-                    epicUnsuccessfulSignInAttempt = !(try await Legendary.signIn(authKey: epicSigninAuthKey))
+                    epicUnsuccessfulSignInAttempt = false
+                    try await Legendary.signIn(authKey: epicSigninAuthKey)
                 } catch {
+                    epicUnsuccessfulSignInAttempt = true
                     errorString = error.localizedDescription
                 }
                 withAnimation { isSigningIn = false }
@@ -260,13 +262,13 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 isNextButtonDisabled = true
                             }
                             .onChange(of: isSigningIn) {
-                                if !$1, Legendary.signedIn() { // dumb logic, only checks signin status after pressing arrow
+                                if !$1, Legendary.signedIn { // dumb logic, only checks signin status after pressing arrow
                                     animateNextPhase()
                                     notifications.add(
                                         .init(identifier: UUID().uuidString,
                                               content: {
                                                   let content = UNMutableNotificationContent()
-                                                  content.title = "Signed in as \"\(Legendary.whoAmI())\"."
+                                                  content.title = "Signed in as \"\(Legendary.user ?? "Unknown")\"."
                                                   return content
                                               }(),
                                               trigger: nil)
@@ -280,7 +282,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 isThirdRowPresented: $isThirdRowPresented,
                                 otherFirstRow: .init(
                                     HStack {
-                                        Text("Hey, \(Legendary.whoAmI())!")
+                                        Text("Hey, \(Legendary.user ?? "user")!")
                                             .font(.bold(.title)())
                                             .scaledToFit()
                                             .truncationMode(.tail)
