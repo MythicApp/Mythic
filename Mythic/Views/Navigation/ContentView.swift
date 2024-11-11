@@ -25,20 +25,13 @@ import WhatsNewKit
 
 // MARK: - ContentView Struct
 struct ContentView: View {
-    
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @EnvironmentObject var sparkle: SparkleController
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
-    @State private var isInstallStatusViewPresented: Bool = false
-    
-    @State var account: String = Legendary.whoAmI()
-    
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
-    
-    func updateEpicSignin() { account = Legendary.whoAmI() }
     
     // MARK: - Body
     var body: some View {
@@ -89,10 +82,6 @@ struct ContentView: View {
                     } header: {
                         Text("Management")
                     }
-                }
-                
-                .sheet(isPresented: $isInstallStatusViewPresented) {
-                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
                 }
                 .listStyle(SidebarListStyle())
                 .frame(minWidth: 150, idealWidth: 250, maxWidth: 300)
