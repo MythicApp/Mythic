@@ -188,7 +188,7 @@ final class Legendary {
      - priority: Whether the game should interrupt currently queued game installations.
      */
     static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
-        guard signedIn() else { throw NotSignedInError() }
+        guard signedIn else { throw NotSignedInError() }
         guard case .epic = args.game.source else { throw IsNotLegendaryError() }
         // guard args.type != .uninstall else { do {/* Add uninstallation support via dialog */}; return }
 
@@ -257,7 +257,7 @@ final class Legendary {
                 // FIXME: repeating code
                 if output.stdout.contains("Installation requirements check returned the following results:") {
                     if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                        let errorDescription = match.last?.substring ?? "Unknown Error"
+                        let errorDescription = match.last?.substring ?? "Unknown Error."
                         stopCommand(identifier: "install")
                         error = InstallationError(errorDescription: .init(errorDescription))
                         return
@@ -265,7 +265,7 @@ final class Legendary {
                 }
 
                 if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
-                    let errorDescription = match.last?.substring ?? "Unknown Error"
+                    let errorDescription = match.last?.substring ?? "Unknown Error."
                     stopCommand(identifier: "install")
                     error = InstallationError(errorDescription: .init(errorDescription))
                     return
@@ -357,14 +357,24 @@ final class Legendary {
         }
     }
 
-    static func signIn(authKey: String) async throws -> Bool {
-        var isLoggedIn = false
-
-        try await command(arguments: ["auth", "--code", authKey], identifier: "signin", waits: true ) { output in
-            isLoggedIn = (isLoggedIn == true ? true : output.stderr.contains("Successfully logged in as"))
+    @discardableResult
+    static func signIn(authKey: String) async throws -> String {
+        var user: String = .init()
+        try await command(arguments: ["auth", "--code", authKey], identifier: "signin", waits: true) { output in
+            if let match = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#).firstMatch(in: output.stderr),
+               let username = match["username"]?.substring {
+                user = .init(username)
+            }
         }
 
-        return isLoggedIn
+        guard !user.isEmpty else { throw SignInError() }
+        return user
+    }
+
+    static func signOut() async throws {
+        try await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _ in }
+
+        //guard !signedIn() else {  }
     }
 
     /**
@@ -483,32 +493,18 @@ final class Legendary {
         log.notice("Cleared legendary command cache.")
     }
 
-    // MARK: - Who Am I Method
-    /**
-     Queries the user that is currently signed into epic games.
-     This command has no delay.
-
-     - Returns: The user's account information as a `String`.
-     */
-    static func whoAmI() -> String {
-        let userJSONFileURL = URL(filePath: "\(configLocation)/user.json")
-
-        guard
-            files.fileExists(atPath: userJSONFileURL.path),
-            let json = try? JSON(data: Data(contentsOf: userJSONFileURL))
-        else { return "Nobody" }
+    /// Queries for the user that is currently signed into epic games.
+    static var user: String? {
+        let json: URL = .init(filePath: "\(configLocation)/user.json")
+        guard let json = try? JSON(data: .init(contentsOf: json)) else {
+            return nil
+        }
 
         return String(describing: json["displayName"])
     }
 
-    // MARK: - Signed In Method
-    /**
-     Boolean verifier for the user's epic games signin state.
-     This command has no delay.
-
-     - Returns: `true` if the user is signed in, otherwise `false`.
-     */
-    static func signedIn() -> Bool { return whoAmI() != "Nobody" }
+    /// Checks account signin state.
+    static var signedIn: Bool { return user != nil }
 
     // MARK: - Get Installed Games Method
     /**
@@ -518,7 +514,7 @@ final class Legendary {
      - Throws: A ``NotSignedInError``.
      */
     static func getInstalledGames() throws -> [Mythic.Game] {
-        guard signedIn() else { throw NotSignedInError() }
+        guard signedIn else { throw NotSignedInError() }
 
         let installedData = URL(filePath: "\(configLocation)/installed.json")
         let data = try Data(contentsOf: installedData)
@@ -534,7 +530,7 @@ final class Legendary {
     }
 
     static func getGamePath(game: Mythic.Game) throws -> String? { // no need to throw if it returns nil
-        guard signedIn() else { throw NotSignedInError() }
+        guard signedIn else { throw NotSignedInError() }
         guard case .epic = game.source else { throw IsNotLegendaryError() }
 
         let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
@@ -549,7 +545,7 @@ final class Legendary {
      - Returns: An `Array` of ``Game`` objects.
      */
     static func getInstallable() throws -> [Mythic.Game] {
-        guard signedIn() else { throw NotSignedInError() }
+        guard signedIn else { throw NotSignedInError() }
 
         let metadata = "\(configLocation)/metadata"
 
@@ -661,7 +657,7 @@ final class Legendary {
      - Returns: A tuple containing the outcome of the check, and which game it's an alias of (is an app\_name).
      */
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
-        guard signedIn() else { throw NotSignedInError() }
+        guard signedIn else { throw NotSignedInError() }
 
         let aliasesJSONFileURL: URL = URL(filePath: "\(configLocation)/aliases.json")
 
