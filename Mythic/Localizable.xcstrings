@@ -38625,6 +38625,9 @@
         }
       }
     },
+    "Unable to sign in to Epic." : {
+
+    },
     "Unable to uninstall \"%@\"." : {
       "localizations" : {
         "af" : {
