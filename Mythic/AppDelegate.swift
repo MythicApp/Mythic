@@ -349,7 +349,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
 extension AppDelegate: UNUserNotificationCenterDelegate {}
 
-extension AppDelegate: SPUUpdaterDelegate {}
+extension AppDelegate: SPUUpdaterDelegate {} // FIXME: nonfunctional
 
 extension AppDelegate: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {
