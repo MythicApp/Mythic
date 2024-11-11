@@ -103,7 +103,7 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: EpicInterceptorWebView
-        @State private var isLoading: Bool = false  // Local state for loading
+        @State private var isLoading: Bool = false
 
         init(parent: EpicInterceptorWebView) {
             self.parent = parent
@@ -142,7 +142,10 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        let config = WKWebViewConfiguration()
+        config.websiteDataStore = .nonPersistent()  // don't persist user data
+
+        let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         return webView
     }
