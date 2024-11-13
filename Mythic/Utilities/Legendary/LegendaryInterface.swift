@@ -371,8 +371,6 @@ final class Legendary {
 
     static func signOut() async throws {
         try await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _ in }
-
-        //guard !signedIn() else {  }
     }
 
     /**

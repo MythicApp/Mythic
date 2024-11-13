@@ -27,7 +27,8 @@ struct OnboardingR2: View { // TODO: ViewModel
     
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    
+    @ObservedObject var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
+
     enum Phase: CaseIterable {
         case logo
         case welcome
@@ -95,17 +96,15 @@ struct OnboardingR2: View { // TODO: ViewModel
     @State private var errorString: String?
     
     @State private var isHoveringOverDestructiveButton: Bool = false
-    
-    @State private var isSigningIn: Bool = false
-    @State private var epicSigninAuthKey: String = .init()
-    @State private var epicUnsuccessfulSignInAttempt: Bool = false
-    
+
+    @State private var epicDisclaimerReadingDelay: Bool = true
+
     @State private var agreedToRosettaSLA: Bool = false
     
     @State private var installationProgress: Double = 0.0
     @State private var isStopInstallAlertPresented: Bool = false
     @State private var engineInstallationComplete: Bool = false
-    
+
     func nextAnimation() {
         withAnimation(.easeOut(duration: 2)) {
             isOpacityAnimated = true
@@ -151,25 +150,6 @@ struct OnboardingR2: View { // TODO: ViewModel
         }
     }
     
-    func signIn(type: Game.Source) {
-        switch type {
-        case .epic:
-            Task(priority: .userInitiated) {
-                withAnimation { isSigningIn = true }
-                do {
-                    epicUnsuccessfulSignInAttempt = false
-                    try await Legendary.signIn(authKey: epicSigninAuthKey)
-                } catch {
-                    epicUnsuccessfulSignInAttempt = true
-                    errorString = error.localizedDescription
-                }
-                withAnimation { isSigningIn = false }
-            }
-        case .local:
-            do {} // why
-        }
-    }
-    
     var body: some View {
         ZStack {
             ColorfulView(color: $colorfulAnimationColors, speed: $colorfulAnimationSpeed, noise: $colorfulAnimationNoise)
@@ -208,72 +188,44 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         .opacity(isSecondRowPresented ? 1.0 : 0.0)
                                 ), secondRow: .init(
                                     VStack {
-                                        HStack {
-                                            Text("A link should've opened in your browser. If not, click")
-                                            Link("here.", destination: URL(string: "https://legendary.gl/epiclogin")!)
-                                                .foregroundStyle(.link)
-                                            // .offset(x: -3, y: 0.5)
-                                        }
-                                        
-                                        Text("Enter the 'authorisationCode' from the JSON response in the field below.")
-                                        
-                                        HStack {
-                                            SecureField("Enter authorisation code...", text: $epicSigninAuthKey)
-                                                .onSubmit { signIn(type: .epic) }
-                                                .foregroundStyle(colorScheme == .dark ? .white : .black)
-                                                .textFieldStyle(.roundedBorder)
-                                            
-                                            // .frame(width: 400, alignment: .center)
-                                            
-                                            if isSigningIn {
-                                                ProgressView()
-                                                    .controlSize(.small)
-                                                    .padding(.leading, 5)
-                                                    .ignoresSafeArea()
-                                            } else if epicUnsuccessfulSignInAttempt {
-                                                Image(systemName: "xmark")
-                                                    .help("Mythic was unable to sign you in. Please try again.")
-                                                    .padding(.leading, 5)
-                                                    .ignoresSafeArea()
+                                        Text("A new window will open, prompting you to sign in to Epic Games.")
+
+                                        if epicWebAuthViewModel.webAuthViewPresented {
+                                            ProgressView()
+                                                .progressViewStyle(.linear)
+                                                .transition(.opacity)
+                                        } else if !epicDisclaimerReadingDelay, !epicWebAuthViewModel.signInSuccess {
+                                            Group {
+                                                Text("Seems like the Epic Games signin window's been closed.")
+
+                                                Button("Reopen") {
+                                                    epicWebAuthViewModel.showSignInWindow()
+                                                }
+                                                .buttonStyle(.borderedProminent)
                                             }
+                                            .padding(.top)
+                                            .transition(.opacity)
                                         }
                                     }
-                                        .onAppear {
-#if !DEBUG
-                                            workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
-#endif
+                                        .task {
+                                            try? await Task.sleep(for: .seconds(2.5))
+                                            epicDisclaimerReadingDelay = false
+                                            epicWebAuthViewModel.showSignInWindow()
+                                        }
+                                        .onChange(of: epicWebAuthViewModel.signInSuccess) { _, newValue in
+                                            if newValue {
+                                                animateNextPhase()
+                                            }
                                         }
                                 ), thirdRow: [
-                                    .help(content: .init(
-                                        Text("""
-                                            Where it reads:
-                                            "authorizationCode": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                                            Paste the 32 character long text into the text field.
-                                            """)
-                                        .padding()
-                                    )),
-                                    .nextArrow(function: {
-                                        signIn(type: .epic)
-                                    }, isButtonDisabled: epicSigninAuthKey.isEmpty || isSigningIn),
-                                    .skipArrow(function: { isSkipAlertPresented = true }, isButtonDisabled: isSigningIn)
+                                    .skipArrow(
+                                        function: { isSkipAlertPresented = true },
+                                        isButtonDisabled: epicWebAuthViewModel.webAuthViewPresented
+                                    )
                                 ]
                             )
                             .onAppear {
                                 isNextButtonDisabled = true
-                            }
-                            .onChange(of: isSigningIn) {
-                                if !$1, Legendary.signedIn { // dumb logic, only checks signin status after pressing arrow
-                                    animateNextPhase()
-                                    notifications.add(
-                                        .init(identifier: UUID().uuidString,
-                                              content: {
-                                                  let content = UNMutableNotificationContent()
-                                                  content.title = "Signed in as \"\(Legendary.user ?? "Unknown")\"."
-                                                  return content
-                                              }(),
-                                              trigger: nil)
-                                    )
-                                }
                             }
                         case .greetings: // MARK: Phase: Greetings
                             ContentView(
@@ -296,7 +248,6 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 )
                             )
                         case .rosettaDisclaimer: // MARK: Phase: Rosetta Disclaimer
-                            // TODO: Skip if already installed (check for /Library/Apple/usr/share/rosetta/rosetta)
                             ContentView(
                                 isOpacityAnimated: $isOpacityAnimated,
                                 isSecondRowPresented: $isSecondRowPresented,

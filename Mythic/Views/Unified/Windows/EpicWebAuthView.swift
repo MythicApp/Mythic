@@ -11,43 +11,29 @@ import SwiftyJSON
 import OSLog
 
 struct EpicWebAuthView: View {
-    @ObservedObject var viewModel = EpicWebAuthViewModel.shared
-
+    @ObservedObject var viewModel: EpicWebAuthViewModel
     @State private var attemptingSignIn: Bool = false
     @State private var isSigninErrorPresented: Bool = false
     @State private var signInError: Error?
-
     @State private var authKey: String = .init()
 
     var body: some View {
-        EpicInterceptorWebView(completion: { authKey = $0 })
+        EpicInterceptorWebView { authKey = $0 }
             .blur(radius: attemptingSignIn ? 30 : 0)
-            .onChange(of: authKey) {
-                guard !$1.isEmpty else { return }
-
-                Task {
-                    do {
-                        attemptingSignIn = true
-                        try await Legendary.signIn(authKey: authKey)
-                        viewModel.closeEpicSignInWindow()
-                    } catch {
-                        self.signInError = error
-                        isSigninErrorPresented = true
-                    }
-
-                    withAnimation {
-                        attemptingSignIn = false
-                    }
-                }
+            .onChange(of: authKey, { handleAuthKeyChange($1) })
+            .onAppear {
+                viewModel.webAuthViewPresented = true
+                viewModel.signInSuccess = false
             }
             .onDisappear {
                 authKey = .init()
+                viewModel.webAuthViewPresented = false
             }
             .alert(isPresented: $isSigninErrorPresented) {
                 .init(
-                    title: .init("Unable to sign in to Epic."),
-                    message: .init(signInError?.localizedDescription ?? "Unknown Error."),
-                    primaryButton: .default(.init("OK")),
+                    title: Text("Unable to sign in to Epic Games."),
+                    message: Text(signInError?.localizedDescription ?? "An unknown error occurred."),
+                    primaryButton: .default(Text("OK")),
                     secondaryButton: .cancel()
                 )
             }
@@ -60,20 +46,44 @@ struct EpicWebAuthView: View {
                 }
             }
     }
+
+    private func handleAuthKeyChange(_ newAuthKey: String) {
+        guard !newAuthKey.isEmpty else { return }
+        attemptingSignIn = true // no animation
+
+        Task {
+            do {
+                try await Legendary.signIn(authKey: newAuthKey)
+                viewModel.signInSuccess = true
+                viewModel.closeSignInWindow()
+            } catch {
+                signInError = error
+                isSigninErrorPresented = true
+            }
+
+            withAnimation { attemptingSignIn = false }
+        }
+    }
 }
 
 final class EpicWebAuthViewModel: ObservableObject {
-    public static let shared: EpicWebAuthViewModel = .init()
+    public static let shared = EpicWebAuthViewModel()
     private init() {}
 
+    @Published var webAuthViewPresented = false
+    @Published var signInSuccess = false
+
     @MainActor
-    func showEpicSignInWindow() {
+    func showSignInWindow() {
         guard sharedApp.window(withID: "epic-signin") == nil else {
             Logger.app.warning("Epic sign-in window already open")
             return
         }
 
-        let hostingView: NSHostingView = .init(rootView: EpicWebAuthView())
+        guard !Legendary.signedIn else {
+            Logger.app.warning("User is already signed in, skipping sign-in window")
+            return
+        }
 
         let window = NSWindow(
             contentRect: .init(x: 0, y: 0, width: 750, height: 500),
@@ -82,75 +92,58 @@ final class EpicWebAuthViewModel: ObservableObject {
             defer: false
         )
         window.identifier = .init("epic-signin")
-        window.contentView = hostingView
-
+        window.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
         window.titlebarAndTextHidden = true
         window.center()
         window.makeKeyAndOrderFront(nil)
-
         sharedApp.activate(ignoringOtherApps: true)
+        webAuthViewPresented = true
     }
 
     @MainActor
-    func closeEpicSignInWindow() {
-        // FIXME: .close() causes stupid crash for unknown reason
+    func closeSignInWindow() {
         sharedApp.window(withID: "epic-signin")?.orderOut(nil)
+        webAuthViewPresented = false
     }
 }
 
 fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
-    var completion: (String) -> Void
+    let completion: (String) -> Void
 
     class Coordinator: NSObject, WKNavigationDelegate {
-        var parent: EpicInterceptorWebView
-        @State private var isLoading: Bool = false // FIXME: pointless
+        let parent: EpicInterceptorWebView
 
         init(parent: EpicInterceptorWebView) {
             self.parent = parent
         }
 
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            isLoading = true
-        }
-
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            isLoading = false
-
             webView.evaluateJavaScript("document.body.innerText") { result, error in
                 guard
                     error == nil,
                     let content = result as? String,
                     let data = content.data(using: .utf8),
-                    let json: JSON = try? .init(data: data)
-                else {
-                    return
-                }
+                    let json = try? JSON(data: data),
+                    let code = json["authorizationCode"].string
+                else { return }
 
-                if let code = json["authorizationCode"].string {
-                    self.parent.completion(code)
-                }
+                self.parent.completion(code)
             }
-        }
-
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            isLoading = false
         }
     }
 
     func makeCoordinator() -> Coordinator {
-        return Coordinator(parent: self)
+        Coordinator(parent: self)
     }
 
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
-        config.websiteDataStore = .nonPersistent()  // don't persist user data
-
+        config.websiteDataStore = .nonPersistent()
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
+        webView.load(URLRequest(url: URL(string: "https://legendary.gl/epiclogin")!))
         return webView
     }
 
-    func updateNSView(_ nsView: WKWebView, context: Context) {
-        nsView.load(URLRequest(url: .init(string: "https://legendary.gl/epiclogin")!))
-    }
+    func updateNSView(_ nsView: WKWebView, context: Context) {}
 }

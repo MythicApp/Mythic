@@ -20,6 +20,7 @@ import SwordRPC
 struct AccountsView: View {
     @ObservedObject private var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
     @State private var isSignOutConfirmationPresented: Bool = false
+    @State private var epicSignOutStatusDidChange: Bool = false
     @State private var isHoveringOverDestructiveEpicButton: Bool = false
     
     @State private var isHoveringOverDestructiveSteamButton: Bool = false
@@ -29,6 +30,7 @@ struct AccountsView: View {
         VStack {
             HStack {
                 // MARK: Epic Card
+                // TODO: create AccountCard
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)
                     .aspectRatio(4/3, contentMode: .fit)
@@ -59,7 +61,7 @@ struct AccountsView: View {
                                 if Legendary.signedIn {
                                     isSignOutConfirmationPresented = true
                                 } else {
-                                    epicWebAuthViewModel.showEpicSignInWindow()
+                                    epicWebAuthViewModel.showSignInWindow()
                                 }
                             } label: {
                                 Image(systemName: "person")
@@ -76,11 +78,12 @@ struct AccountsView: View {
                             }
                             .alert(isPresented: $isSignOutConfirmationPresented) {
                                 Alert(
-                                    title: .init("Are you sure you want to sign out from Epic?"),
+                                    title: .init("Are you sure you want to sign out of Epic Games?"),
                                     message: .init("This will sign you out of the account \"\(Legendary.user ?? "Unknown")\"."),
                                     primaryButton: .destructive(.init("Sign Out")) {
-                                        Task.sync(priority: .high) {
-                                            try? await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _  in }
+                                        Task(priority: .high) {
+                                            try? await Legendary.signOut()
+                                            epicSignOutStatusDidChange.toggle()
                                         }
                                     },
                                     secondaryButton: .cancel(.init("Cancel"))
@@ -89,7 +92,9 @@ struct AccountsView: View {
                         }
                         .padding()
                     }
-                
+                    .id(epicWebAuthViewModel.signInSuccess)
+                    .id(epicSignOutStatusDidChange)
+
                 // MARK: Steam Card
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)

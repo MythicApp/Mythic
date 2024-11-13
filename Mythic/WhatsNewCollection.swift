@@ -91,7 +91,7 @@ extension MythicApp: WhatsNewCollectionProvider {
                         systemName: "ladybug.slash",
                         foregroundColor: .accentColor
                     ),
-                    title: "Bugfixes",
+                    title: "Bugfixes & Performance Improvements",
                     subtitle: "Y'know, the usual."
                 ),
                 .init(
@@ -101,6 +101,14 @@ extension MythicApp: WhatsNewCollectionProvider {
                     ),
                     title: "Intel Mac Epic support",
                     subtitle: "Epic functionality is now fully supported on Intel macs."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "person.badge.shield.checkmark",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Sign in to Epic Games in Mythic",
+                    subtitle: "You no longer need to sign in to Epic separately from Mythic."
                 )
             ],
             primaryAction: .init(),

@@ -4595,6 +4595,9 @@
         }
       }
     },
+    "A new window will open, prompting you to sign in to Epic Games." : {
+
+    },
     "Accounts" : {
       "localizations" : {
         "af" : {
@@ -5546,6 +5549,7 @@
       }
     },
     "Are you sure you want to sign out from Epic?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5734,6 +5738,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to sign out of Epic Games?" : {
+
     },
     "Are you sure you want to skip this section?" : {
       "localizations" : {
@@ -12392,6 +12399,7 @@
       }
     },
     "Enter authorisation code..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12962,6 +12970,7 @@
       }
     },
     "Enter the 'authorisationCode' from the JSON response in the field below." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25326,6 +25335,7 @@
 
     },
     "Mythic was unable to sign you in. Please try again." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29886,6 +29896,9 @@
         }
       }
     },
+    "Reopen" : {
+
+    },
     "Reset" : {
       "localizations" : {
         "af" : {
@@ -31975,6 +31988,9 @@
           }
         }
       }
+    },
+    "Seems like the Epic Games signin window's been closed." : {
+
     },
     "Select a game:" : {
       "localizations" : {
@@ -38633,7 +38649,7 @@
         }
       }
     },
-    "Unable to sign in to Epic." : {
+    "Unable to sign in to Epic Games." : {
 
     },
     "Unable to uninstall \"%@\"." : {
@@ -42057,6 +42073,7 @@
       }
     },
     "Where it reads:\n\"authorizationCode\": \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\nPaste the 32 character long text into the text field." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
