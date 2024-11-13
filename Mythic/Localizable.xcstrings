@@ -2684,6 +2684,7 @@
       }
     },
     "%@ %@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23610,6 +23611,9 @@
         }
       }
     },
+    "Mythic %@" : {
+
+    },
     "Mythic Engine" : {
       "localizations" : {
         "af" : {
@@ -23800,7 +23804,11 @@
         }
       }
     },
+    "Mythic Engine %@" : {
+
+    },
     "Mythic Engine %lld.%lld.%lld (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

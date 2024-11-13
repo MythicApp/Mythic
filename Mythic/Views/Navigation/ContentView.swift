@@ -22,6 +22,7 @@ import Foundation
 import OSLog
 import Combine
 import WhatsNewKit
+import SemanticVersion
 
 // MARK: - ContentView Struct
 struct ContentView: View {
@@ -96,14 +97,14 @@ struct ContentView: View {
 
 #if DEBUG
                 VStack {
-                    if let displayName = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
-                       let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-                       let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String {
-                        Text("\(displayName) \(shortVersion) (\(bundleVersion))")
+                    if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+                       let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
+                       let mythicVersion: SemanticVersion = .init("\(shortVersion)+\(bundleVersion)") {
+                        Text("Mythic \(mythicVersion.prettyString)")
                     }
 
                     if let engineVersion = Engine.version {
-                        Text("Mythic Engine \(engineVersion.major).\(engineVersion.minor).\(engineVersion.patch) (\(engineVersion.build))")
+                        Text("Mythic Engine \(engineVersion.prettyString)")
                     }
                 }
                 .font(.footnote)
