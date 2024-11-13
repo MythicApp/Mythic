@@ -107,7 +107,7 @@ extension MythicApp: WhatsNewCollectionProvider {
                         systemName: "person.badge.shield.checkmark",
                         foregroundColor: .accentColor
                     ),
-                    title: "Sign in to Epic Games in Mythic",
+                    title: "Sign in to Epic Games within Mythic",
                     subtitle: "You no longer need to sign in to Epic separately from Mythic."
                 )
             ],
