@@ -255,19 +255,17 @@ final class Legendary {
                 }
 
                 // FIXME: repeating code
-                if output.stdout.contains("Installation requirements check returned the following results:") {
-                    if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
-                        let errorDescription = match.last?.substring ?? "Unknown Error."
-                        stopCommand(identifier: "install")
-                        error = InstallationError(errorDescription: .init(errorDescription))
-                        return
-                    }
-                }
-
                 if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
                     let errorDescription = match.last?.substring ?? "Unknown Error."
-                    stopCommand(identifier: "install")
                     error = InstallationError(errorDescription: .init(errorDescription))
+                }
+
+                if output.stdout.contains("Installation requirements check returned the following results") {
+                    if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
+                        let errorDescription = match.last?.substring ?? "Unknown Error."
+                        error = InstallationError(errorDescription: .init(errorDescription))
+                    }
+
                     return
                 }
 
