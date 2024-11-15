@@ -18,54 +18,43 @@ import SwiftUI
 import Sparkle
 import WhatsNewKit
 
-// MARK: - Where it all begins!
 @main
 struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    // MARK: - State Properties
+
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
-    @StateObject private var networkMonitor: NetworkMonitor = .init()
+    @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
-    
-    @State private var bootError: Error?
-    
-    func toggleTitleBar(_ value: Bool) {
-        if let window = NSApp.windows.first {
-            window.titlebarAppearsTransparent = !value
-            window.isMovableByWindowBackground = !value
-            window.titleVisibility = value ? .visible : .hidden
-            window.standardWindowButton(.miniaturizeButton)?.isHidden = !value
-            window.standardWindowButton(.zoomButton)?.isHidden = !value
-        }
-    }
-    
-    // MARK: - App Body
+
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
                 OnboardingR2(fromPhase: onboardingPhase)
+                    .contentTransition(.opacity)
                     .onAppear {
-                        toggleTitleBar(false)
-                        
-                        // Bring to front
                         if let window = NSApp.mainWindow {
+                            window.isImmersive = true
+
                             window.makeKeyAndOrderFront(nil)
                             NSApp.activate(ignoringOtherApps: true)
                         }
                     }
             } else {
                 ContentView()
-                    .transition(.opacity)
+                    .contentTransition(.opacity)
                     .environmentObject(networkMonitor)
                     .environmentObject(sparkleController)
                     .frame(minWidth: 750, minHeight: 390)
-                    .onAppear { toggleTitleBar(true) }
+                    .onAppear {
+                        if let window = NSApp.mainWindow {
+                            window.isImmersive = false
+                        }
+                    }
             }
         }
-
+        .handlesExternalEvents(matching: ["open"])
         .environment(
             \.whatsNew,
              WhatsNewEnvironment(
@@ -80,7 +69,6 @@ struct MythicApp: App {
                 whatsNewCollection: self
              )
         )
-
         .commands {
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
@@ -92,21 +80,13 @@ struct MythicApp: App {
                     }
                 }
                 .disabled(isOnboardingPresented)
-                // .keyboardShortcut("O", modifiers: [.command])
             }
         }
-        
-        // MARK: - Settings View
-        /*
-        Settings {
-            SettingsView()
-        }
-         */
     }
 }
 
 #Preview {
     ContentView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .environmentObject(SparkleController())
 }

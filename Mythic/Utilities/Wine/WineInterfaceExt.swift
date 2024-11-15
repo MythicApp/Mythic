@@ -26,30 +26,31 @@ extension Wine {
         /// A closure to handle stderr output.
         let stderr: (String) -> Void
     }
-    
+
     /// Signifies that a container is unable to boot.
     struct UnableToBootError: LocalizedError {
         var errorDescription: String? = "Container unable to boot." // TODO: add reason if possible
     }
-    
+
     internal enum RegistryType: String {
         case binary = "REG_BINARY"
         case dword = "REG_DWORD"
         case qword = "REG_QWORD"
         case string = "REG_SZ"
     }
-    
+
     internal enum RegistryKey: String {
         case currentVersion = #"HKLM\Software\Microsoft\Windows NT\CurrentVersion"#
         case macDriver = #"HKCU\Software\Wine\Mac Driver"#
         case desktop = #"HKCU\Control Panel\Desktop"#
     }
-    
-    class Container: Codable, Hashable, Identifiable, Equatable {
+
+    // TODO: refactor
+    class Container: Codable, Hashable, Identifiable, Equatable, ObservableObject {
         static func == (lhs: Container, rhs: Container) -> Bool {
             return (lhs.url == rhs.url && lhs.id == rhs.id)
         }
-        
+
         func hash(into hasher: inout Hasher) {
             hasher.combine(url)
             hasher.combine(id)
@@ -66,29 +67,29 @@ extension Wine {
             } else if containerExists(at: url) {
                 log.warning("Container Initializer: Container already exists at \(url.prettyPath()), but unable to fetch known properties; overwriting")
             }
-            
+
             self.name = existingContainer?.name ?? name
             self.url = url
             self.id = existingContainer?.id ?? id
             self.settings = existingContainer?.settings ?? settings
             self.propertiesFile = url.appendingPathComponent("properties.plist")
-            
+
             saveProperties()
         }
-        
+
         init?(knownURL: URL) {
             guard containerExists(at: knownURL) else { log.warning("Container Initializer: Unable to intialize nonexistent container."); return nil }
             guard let object = try? getContainerObject(url: knownURL) else {
                 log.error("Container Initializer: Unable to fetch object for existing container.")
                 return nil
             }
-            
+
             self.name = object.name
             self.url = knownURL
             self.id = object.id
             self.settings = object.settings
             self.propertiesFile = knownURL.appendingPathComponent("properties.plist")
-            
+
             if object.url != knownURL {
                 log.warning("Container Initializer: Fetched URL doesn't match known URL; updating.")
                 saveProperties()
@@ -100,7 +101,7 @@ extension Wine {
             self.init(name: url.lastPathComponent, url: url, settings: defaultContainerSettings)
         }
 
-        deinit { saveProperties() }
+        // deinit { saveProperties() } // FIXME: causes conflict with didSet
 
         /// Saves the container properties to disk.
         func saveProperties() {
@@ -112,15 +113,15 @@ extension Wine {
                 Logger.app.error("Error encoding & writing to properties file for container \"\(self.name)\" (\(self.url.prettyPath()))")
             }
         }
-        
-        var name: String
+
+        var name: String { didSet { saveProperties() } } // MARK: futureproofing
         var url: URL
         var id: UUID
         var settings: ContainerSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
 
         private(set) var propertiesFile: URL
     }
-    
+
     struct ContainerSettings: Codable, Hashable {
         var metalHUD: Bool
         var msync: Bool
@@ -128,9 +129,9 @@ extension Wine {
         var DXVK: Bool
         var DXVKAsync: Bool
         var windowsVersion: WindowsVersion
-        var scaling: Double
+        var scaling: Int
     }
-    
+
     enum WindowsVersion: String, Codable, CaseIterable {
         case win11 = "11"
         case win10 = "10"
@@ -141,20 +142,20 @@ extension Wine {
         case winxp = "XP"
         case win98 = "98"
     }
-    
+
     enum ContainerScope: String, CaseIterable {
         case individual
         case global
     }
-    
+
     struct ContainerDoesNotExistError: LocalizedError {
         var errorDescription: String? = "Attempted to modify a container which doesn't exist."
     }
-    
+
     struct ContainerAlreadyExistsError: LocalizedError {
         var errorDescription: String? = "Attempted to modify a container which already exists."
     }
-    
+
     struct UnableToQueryRegistryError: LocalizedError {
         var errorDescription: String? = "Unable to query registry of container."
     }

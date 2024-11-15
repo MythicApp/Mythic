@@ -42,7 +42,7 @@ extension MythicApp: WhatsNewCollectionProvider {
             primaryAction: .init(),
             secondaryAction: .init(
                 title: "Learn more",
-                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.1"))
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.1"))
             )
         )
 
@@ -78,7 +78,43 @@ extension MythicApp: WhatsNewCollectionProvider {
             primaryAction: .init(),
             secondaryAction: .init(
                 title: "Learn more",
-                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/0.4.2"))
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.2"))
+            )
+        )
+
+        WhatsNew(
+            version: "0.4.3",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug.slash",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Bugfixes & Performance Improvements",
+                    subtitle: "Y'know, the usual."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "macbook.gen1",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Intel Mac Epic support",
+                    subtitle: "Epic functionality is now fully supported on Intel macs."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "person.badge.shield.checkmark",
+                        foregroundColor: .accentColor
+                    ),
+                    title: "Sign in to Epic Games within Mythic",
+                    subtitle: "You no longer need to sign in to Epic separately from Mythic."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.3"))
             )
         )
     }

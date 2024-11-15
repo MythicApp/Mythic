@@ -305,9 +305,7 @@ class GameOperation: ObservableObject {
                     GameOperation.advance()
                 }
             case .local: // this should literally never happen how do you install a local game
-                DispatchQueue.main.asyncAndWait {
-                    GameOperation.shared.current = nil
-                }
+                GameOperation.advance()
             }
         }
     }

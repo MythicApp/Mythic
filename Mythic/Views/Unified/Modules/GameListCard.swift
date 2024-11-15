@@ -83,5 +83,5 @@ struct GameListCard: View {
 
 #Preview {
     GameListCard(game: .constant(.init(source: .local, title: "MRAAAH")))
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

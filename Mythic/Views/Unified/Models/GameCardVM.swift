@@ -47,6 +47,7 @@ import Shimmer
             @State private var launchError: Error?
 
             @State private var hoveringOverDestructiveButton = false
+            @State private var hoveringOverFavouriteButton = false
             @State private var animateFavouriteIcon = false
 
             var body: some View {
@@ -118,7 +119,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible)
+                .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 .help("Game verification is required for \"\(game.title)\".")
             }
 
@@ -158,7 +159,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible || operation.runningGames.contains(game))
+                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
                 .help("Update \"\(game.title)\"")
             }
 
@@ -183,14 +184,16 @@ import Shimmer
                     game.isFavourited.toggle()
                     withAnimation { animateFavouriteIcon = game.isFavourited }
                 } label: {
-                    Image(systemName: animateFavouriteIcon ? "star.fill" : "star")
+                    Image(systemName: "star")
+                        .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
+                        .contentTransition(.symbolEffect(.replace))
                         .padding(5)
                 }
                 .clipShape(.circle)
+                .onHover { hoveringOverFavouriteButton = $0 }
                 .help("Favourite \"\(game.title)\"")
                 .task { animateFavouriteIcon = game.isFavourited }
                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
-                .symbolEffect(.bounce, value: animateFavouriteIcon)
             }
 
             var deleteButton: some View {
@@ -199,7 +202,7 @@ import Shimmer
                 } label: {
                     Image(systemName: "xmark.bin")
                         .padding(5)
-                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .secondary)
+                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
                 }
                 .clipShape(.circle)
                 .disabled(isDeleteDisabled)
@@ -226,7 +229,7 @@ import Shimmer
                         .padding(5)
                 }
                 .clipShape(.circle)
-                .disabled(!networkMonitor.isEpicAccessible || operation.queue.contains(where: { $0.game == game }))
+                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
                 .help("Download \"\(game.title)\"")
                 .sheet(isPresented: $isInstallSheetPresented) {
                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
@@ -260,5 +263,5 @@ import Shimmer
 
 #Preview {
     LibraryView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

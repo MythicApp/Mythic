@@ -72,7 +72,8 @@ struct SettingsView: View {
                     Spacer()
                     
                     if !FileLocations.isWritableFolder(url: installBaseURL) {
-                        Image(systemName: "exclamationmark.triangle.fill")
+                        Image(systemName: "exclamationmark.triangle")
+                            .symbolVariant(.fill)
                             .help("Folder is not writable.")
                     }
 
@@ -202,7 +203,8 @@ struct SettingsView: View {
                                 isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
                             }
                         } label: {
-                            Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
+                            Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash")
+                                .symbolVariant(.slash.fill)
                         }
                         
                         if isShaderCachePurgeSuccessful != nil {

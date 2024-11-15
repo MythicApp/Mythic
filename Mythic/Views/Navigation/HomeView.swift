@@ -63,7 +63,9 @@ struct HomeView: View {
                         }
                     } else {
                         HStack {
-                            Image(systemName: "star.fill")
+                            Image(systemName: "star")
+                                .symbolVariant(.fill)
+                            
                             Text("No games are favourited.")
                         }
                     }
@@ -100,5 +102,5 @@ struct HomeView: View {
 // MARK: - Preview
 #Preview {
     HomeView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

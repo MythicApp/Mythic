@@ -29,7 +29,7 @@ struct DownloadCard: View {
     
     private var statusText: Text {
         if operation.current?.game == game {
-            return .init("\(operation.current?.type.rawValue.capitalized ?? "MODIFYING") \(Image(systemName: "arrow.down.circle"))")
+            return .init("\(operation.current?.type.rawValue.uppercased() ?? "MODIFYING") \(Image(systemName: "arrow.down.circle"))")
         } else if operation.queue.contains(where: { $0.game == game }) {
             return .init("QUEUED \(Image(systemName: "stopwatch"))")
         }
@@ -71,11 +71,17 @@ struct DownloadCard: View {
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
-                            .overlay { Image(systemName: "exclamationmark.triangle.fill") }
+                            .overlay {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                            }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
-                            .overlay { Image(systemName: "questionmark.circle.fill") }
+                            .overlay {
+                                Image(systemName: "questionmark.circle")
+                                    .symbolVariant(.fill)
+                            }
                     }
                 }
                 .ignoresSafeArea()
@@ -102,7 +108,9 @@ struct DownloadCard: View {
                             }
                         }
 
-                        if operation.current?.game == game, let optionalPacks = operation.current?.optionalPacks {
+                        if operation.current?.game == game,
+                           let optionalPacks = operation.current?.optionalPacks,
+                           !optionalPacks.isEmpty {
                             Text("(\(optionalPacks.joined(separator: ", ")))")
                                 .font(.footnote)
                                 .foregroundStyle(.placeholder)

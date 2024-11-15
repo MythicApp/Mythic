@@ -26,8 +26,11 @@ let files: FileManager = .default
 /// A simpler alias of `UserDefaults.standard`.
 let defaults: UserDefaults = .standard
 
-/// A simpler alias of `workspace`.
+/// A simpler alias of `NSWorkspace.shared`.
 let workspace: NSWorkspace = .shared
+
+/// A simpler alias of `NSApp[lication].shared`.
+let sharedApp: NSApplication = .shared
 
 let notifications: UNUserNotificationCenter = .current()
 

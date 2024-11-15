@@ -43,47 +43,31 @@ struct WebView: NSViewRepresentable {
         let request = URLRequest(url: self.url)
         nsView.load(request)
     }
-    
-    // MARK: Coordinator Creation
-    /// Creates and returns the Coordinator instance for the WebView.
+
     func makeCoordinator() -> Coordinator {
-        Coordinator(self)
+        return Coordinator(self)
     }
-    
-    // MARK: Coordinator Class
-    /// Coordinator class for handling WebView navigation events.
+
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: WebView
         
         init(_ parent: WebView) {
             self.parent = parent
         }
-        
-        // MARK: Provisional Navigation Failure
-        /// Called when a navigation fails.
+
         func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation, withError error: Error) {
-            Task { @MainActor [self] in
-                parent.log.error("\(error.localizedDescription)")
-                parent.error = error
-            }
+            parent.log.error("\(error.localizedDescription)")
+            parent.error = error
         }
-        
-        // MARK: - Provisional Navigation Completion
-        /// Called when navigation finishes successfully.
+
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-            Task { @MainActor [self] in
-                parent.isLoading = false
-                parent.canGoBack = webView.canGoBack
-                parent.canGoForward = webView.canGoForward
-            }
+            parent.isLoading = false
+            parent.canGoBack = webView.canGoBack
+            parent.canGoForward = webView.canGoForward
         }
-        
-        // MARK: - Provisional Navigation Commencing
-        /// Called when the WebView starts provisional navigation.
+
         func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation) {
-            Task { @MainActor [self] in
-                parent.isLoading = true
-            }
+            parent.isLoading = true
         }
     }
 }

@@ -183,5 +183,5 @@ extension GameCard {
 
 #Preview {
     GameCard(game: .constant(.init(source: .epic, title: "MRAAAHH")))
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
 }

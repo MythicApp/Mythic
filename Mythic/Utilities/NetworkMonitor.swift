@@ -20,54 +20,67 @@ import Foundation
 import Network
 import SwiftUI
 
-@Observable
 final class NetworkMonitor: ObservableObject {
-    private let networkMonitor = NWPathMonitor()
-    private let queue = DispatchQueue(label: "NetworkMonitor")
 
-    var isConnected = true
-    private var _isCheckingEpicAccessibility = false
-    var isEpicAccessible = true
+    public static let shared: NetworkMonitor = .init()
 
-    var isCheckingEpicAccessibility: Bool {
-        _isCheckingEpicAccessibility
+    private let networkPathMonitor: NWPathMonitor = .init()
+    private let queue = DispatchQueue(label: "network-monitor-queue")
+
+    @MainActor @Published var isConnected: Bool = false
+    @MainActor @Published var epicAccessibilityState: NetworkAccessibility?
+
+    enum NetworkAccessibility {
+        case accessible
+        case checking
+        case inaccessible
     }
 
-    init() {
-        networkMonitor.pathUpdateHandler = { [weak self] path in
-            guard let self = self, !self.isCheckingEpicAccessibility else { return }
-            self.isConnected = (path.status == .satisfied)
-            guard self.isConnected else { self.updateAccessibility(false); return }
+    private init() {
+        networkPathMonitor.pathUpdateHandler = { [weak self] path in
+            guard let self = self else { return }
 
-            self._isCheckingEpicAccessibility = true
+            Task { @MainActor in
+                self.isConnected = (path.status == .satisfied)
 
-            let request = URLRequest(
-                url: URL(string: "https://epicgames.com")!,
-                cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
-                timeoutInterval: 5
-            )
-
-            URLSession.shared.dataTask(with: request) { _, response, error in
-                let isAccessible = error == nil,
-                    isHTTPResponse = response as? HTTPURLResponse,
-                    isSuccess = isHTTPResponse.map { (200...299).contains($0.statusCode) } ?? false
-                self.updateAccessibility(isAccessible && isSuccess)
-            }.resume()
+                if self.isConnected {
+                    self.checkEpicAccessibility()
+                }
+            }
         }
 
-        networkMonitor.start(queue: queue)
+        networkPathMonitor.start(queue: queue)
     }
 
-    private func updateAccessibility(_ isAccessible: Bool) {
+    private func checkEpicAccessibility() {
         Task { @MainActor in
-            isEpicAccessible = isAccessible
-            _isCheckingEpicAccessibility = false
+            self.epicAccessibilityState = .checking
         }
+
+        let request = URLRequest(
+            url: .init(string: "https://epicgames.com")!,
+            cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
+            timeoutInterval: .init(5)
+        )
+
+        let session = URLSession.shared.dataTask(with: request) { [weak self] _, response, error in
+            guard let self = self else { return }
+
+            guard error == nil else { return }
+            guard let response = response as? HTTPURLResponse else { return }
+
+            let responseOK: Bool = (200...299).contains(response.statusCode)
+            Task { @MainActor in
+                self.epicAccessibilityState = responseOK ? .accessible : .inaccessible
+            }
+        }
+
+        session.resume()
     }
 }
 
 #Preview {
     ContentView()
-        .environmentObject(NetworkMonitor())
+        .environmentObject(NetworkMonitor.shared)
         .environmentObject(SparkleController())
 }

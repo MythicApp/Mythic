@@ -49,7 +49,11 @@ extension Legendary {
     struct NotSignedInError: LocalizedError {
         var errorDescription: String? = "You aren't signed in to epic games."
     }
-    
+
+    struct SignInError: LocalizedError {
+        var errorDescription: String? = "Unable to sign into Epic Games."
+    }
+
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: LocalizedError {
         var errorDescription: String? = "Unable to install game."

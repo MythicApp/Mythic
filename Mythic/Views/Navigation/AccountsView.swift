@@ -18,10 +18,10 @@ import SwiftUI
 import SwordRPC
 
 struct AccountsView: View {
+    @ObservedObject private var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
     @State private var isSignOutConfirmationPresented: Bool = false
-    @State private var isAuthViewPresented: Bool = false
+    @State private var epicSignOutStatusDidChange: Bool = false
     @State private var isHoveringOverDestructiveEpicButton: Bool = false
-    @State private var signedIn: Bool = false
     
     @State private var isHoveringOverDestructiveSteamButton: Bool = false
 
@@ -30,6 +30,7 @@ struct AccountsView: View {
         VStack {
             HStack {
                 // MARK: Epic Card
+                // TODO: create AccountCard
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)
                     .aspectRatio(4/3, contentMode: .fit)
@@ -50,20 +51,21 @@ struct AccountsView: View {
                                 }
                                 
                                 HStack {
-                                    Text(signedIn ? "Signed in as \"\(Legendary.whoAmI())\"." : "Not signed in")
+                                    Text(Legendary.signedIn ? "Signed in as \"\(Legendary.user ?? "Unknown")\"." : "Not signed in")
                                         .font(.bold(.title3)())
                                     Spacer()
                                 }
                             }
                             
                             Button {
-                                if signedIn {
+                                if Legendary.signedIn {
                                     isSignOutConfirmationPresented = true
                                 } else {
-                                    isAuthViewPresented = true
+                                    epicWebAuthViewModel.showSignInWindow()
                                 }
                             } label: {
-                                Image(systemName: signedIn ? "person.slash" : "person")
+                                Image(systemName: "person")
+                                    .symbolVariant(Legendary.signedIn ? .slash : .none)
                                     .foregroundStyle(isHoveringOverDestructiveEpicButton ? .red : .primary)
                                     .padding(5)
                                 
@@ -71,31 +73,28 @@ struct AccountsView: View {
                             .clipShape(.circle)
                             .onHover { hovering in
                                 withAnimation(.easeInOut(duration: 0.1)) {
-                                    isHoveringOverDestructiveEpicButton = (hovering && signedIn)
+                                    isHoveringOverDestructiveEpicButton = (hovering && Legendary.signedIn)
                                 }
                             }
-                            .sheet(isPresented: $isAuthViewPresented, onDismiss: { signedIn = Legendary.signedIn() }, content: {
-                                AuthView(isPresented: $isAuthViewPresented)
-                            })
                             .alert(isPresented: $isSignOutConfirmationPresented) {
                                 Alert(
-                                    title: .init("Are you sure you want to sign out from Epic?"),
-                                    message: .init("This will sign you out of the account \"\(Legendary.whoAmI())\"."),
+                                    title: .init("Are you sure you want to sign out of Epic Games?"),
+                                    message: .init("This will sign you out of the account \"\(Legendary.user ?? "Unknown")\"."),
                                     primaryButton: .destructive(.init("Sign Out")) {
-                                        Task.sync(priority: .high) {
-                                            try? await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _  in }
+                                        Task(priority: .high) {
+                                            try? await Legendary.signOut()
+                                            epicSignOutStatusDidChange.toggle()
                                         }
-                                        
-                                        signedIn = Legendary.signedIn()
                                     },
                                     secondaryButton: .cancel(.init("Cancel"))
                                 )
                             }
                         }
-                        .task { signedIn = Legendary.signedIn() }
                         .padding()
                     }
-                
+                    .id(epicWebAuthViewModel.signInSuccess)
+                    .id(epicSignOutStatusDidChange)
+
                 // MARK: Steam Card
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)
@@ -134,7 +133,7 @@ struct AccountsView: View {
                             .clipShape(.circle)
                             .onHover { hovering in
                                 withAnimation(.easeInOut(duration: 0.1)) {
-                                    isHoveringOverDestructiveSteamButton = (hovering && signedIn)
+                                    isHoveringOverDestructiveSteamButton = (hovering && Legendary.signedIn)
                                 }
                             }
                         }

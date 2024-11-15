@@ -108,7 +108,8 @@ struct ContainerSettingsView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
                                 .controlSize(.small)
                                 .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                         }
@@ -134,7 +135,7 @@ struct ContainerSettingsView: View {
                         set: { value in
                             Task(priority: .userInitiated) {
                                 withAnimation { modifyingWindowsVersion = true }
-                                await Wine.setWindowsVersion(value, containerURL: container.url)
+                                await Wine.setWindowsVersion(containerURL: container.url, version: value)
                                 windowsVersion = value
                                 container.settings.windowsVersion = value
                                 withAnimation { modifyingWindowsVersion = false }
@@ -153,7 +154,8 @@ struct ContainerSettingsView: View {
                             ProgressView()
                                 .controlSize(.small)
                         } else {
-                            Image(systemName: "exclamationmark.triangle.fill")
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
                                 .controlSize(.small)
                                 .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                         }

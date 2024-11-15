@@ -15,19 +15,15 @@
 
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
-import Firebase
 import OSLog
 import Sparkle
 import SwiftUI
 import SwordRPC
 import UserNotifications
 
+import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
-
-import FirebaseCore
-import FirebaseCrashlytics
-
 
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
@@ -150,6 +146,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: Container cleanup in the event of external deletion
 
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
+
+        // MARK: Update container scaling
+
+        for container in Wine.containerObjects where container.settings.scaling == 0 {
+            let defaultScale = Wine.defaultContainerSettings.scaling
+
+            Task(priority: .background) {
+                await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
+                container.settings.scaling = defaultScale
+            }
+        }
 
         // MARK: <0.3.2 Config folder rename (Config → Epic)
 
@@ -342,7 +349,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
 extension AppDelegate: UNUserNotificationCenterDelegate {}
 
-extension AppDelegate: SPUUpdaterDelegate {}
+extension AppDelegate: SPUUpdaterDelegate {} // FIXME: nonfunctional
 
 extension AppDelegate: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {
