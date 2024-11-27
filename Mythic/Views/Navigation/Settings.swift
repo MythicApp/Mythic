@@ -32,11 +32,11 @@ struct SettingsView: View {
     @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     
-    @State private var isForceQuitSuccessful: Bool?
-    @State private var isShaderCachePurgeSuccessful: Bool?
-    @State private var isEngineRemovalSuccessful: Bool?
-    @State private var isCleanupSuccessful: Bool?
-    @State private var isEpicCloudSyncSuccessful: Bool?
+    @State private var isForceQuitSuccessful: Bool = false
+    @State private var isShaderCachePurgeSuccessful: Bool = false
+    @State private var isEngineRemovalSuccessful: Bool = false
+    @State private var isCleanupSuccessful: Bool = false
+    @State private var isEpicCloudSyncSuccessful: Bool = false
     
     @State private var isEpicCloudSynchronising: Bool = false
     
@@ -203,8 +203,10 @@ struct SettingsView: View {
                             Label("Force Quit All Windows® Applications", systemImage: "xmark.app")
                         }
                         
-                        if isForceQuitSuccessful != nil {
-                            Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
+                        if isForceQuitSuccessful {
+                            Image(systemName: "checkmark")
+                        } else {
+                            Image(systemName: "xmark")
                         }
                     }
                     
@@ -217,8 +219,10 @@ struct SettingsView: View {
                             Label("Purge Shader Cache", systemImage: "square.stack.3d.up.slash.fill")
                         }
                         
-                        if isShaderCachePurgeSuccessful != nil {
-                            Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
+                        if isShaderCachePurgeSuccessful {
+                            Image(systemName: "checkmark")
+                        } else {
+                            Image(systemName: "xmark")
                         }
                     }
                     
@@ -246,8 +250,10 @@ struct SettingsView: View {
                             )
                         }
                         
-                        if isEngineRemovalSuccessful != nil {
-                            Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
+                        if isEngineRemovalSuccessful {
+                            Image(systemName: "checkmark")
+                        } else {
+                            Image(systemName: "xmark")
                         }
                     }
                     
@@ -274,8 +280,10 @@ struct SettingsView: View {
                         Label("Clean Up Miscallaneous Caches", systemImage: "bubbles.and.sparkles")
                     }
                     
-                    if isCleanupSuccessful != nil {
-                        Image(systemName: isCleanupSuccessful! ? "checkmark" : "xmark")
+                    if isCleanupSuccessful {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Image(systemName: "xmark")
                     }
                 }
                 
@@ -295,7 +303,7 @@ struct SettingsView: View {
                             }
                             
                             withAnimation {
-                                isEpicCloudSyncSuccessful = (isEpicCloudSyncSuccessful == true)
+                                isEpicCloudSyncSuccessful = true
                                 isEpicCloudSynchronising = false
                             }
                         }
@@ -306,8 +314,10 @@ struct SettingsView: View {
                     if isEpicCloudSynchronising {
                         ProgressView()
                             .controlSize(.small)
-                    } else if isEpicCloudSyncSuccessful != nil {
-                        Image(systemName: isEpicCloudSyncSuccessful! ? "checkmark" : "xmark")
+                    } else if isEpicCloudSyncSuccessful {
+                        Image(systemName: "checkmark")
+                    } else {
+                        Image(systemName: "xmark")
                     }
                 }
                 
