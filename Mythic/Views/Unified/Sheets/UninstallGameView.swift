@@ -2,7 +2,7 @@
 //  UninstallGame.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 6/3/2024.
+//  Created by vapidinfinity (esi) on 6/3/2024.
 //
 
 import SwiftUI

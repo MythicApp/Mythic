@@ -2,7 +2,7 @@
 //  InstallGame.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 7/3/2024.
+//  Created by vapidinfinity (esi) on 7/3/2024.
 //
 
 import SwiftUI

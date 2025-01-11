@@ -2,7 +2,7 @@
 //  GameListCard.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 10/20/24.
+//  Created by vapidinfinity (esi) on 10/20/24.
 //
 
 import SwiftUI

@@ -2,7 +2,7 @@
 //  NSWindow.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 11/10/24.
+//  Created by vapidinfinity (esi) on 11/10/24.
 //
 
 import AppKit
