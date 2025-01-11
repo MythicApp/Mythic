@@ -2,13 +2,13 @@
 //  NetworkMonitor.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 8/2/2024.
+//  Created by vapidinfinity (esi) on 8/2/2024.
 //
 
 // Reference: https://arc.net/l/quote/ivjknjyv
 
 // MARK: - Copyright
-// Copyright © 2024 blackxfiied
+// Copyright © 2024 vapidinfinity
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.

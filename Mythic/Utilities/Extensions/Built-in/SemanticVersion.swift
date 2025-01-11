@@ -2,7 +2,7 @@
 //  SemanticVersion.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 11/12/24.
+//  Created by vapidinfinity (esi) on 11/12/24.
 //
 
 import SemanticVersion

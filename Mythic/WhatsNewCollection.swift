@@ -2,7 +2,7 @@
 //  WhatsNewCollection.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 11/9/24.
+//  Created by vapidinfinity (esi) on 11/9/24.
 //
 
 import WhatsNewKit

@@ -811,7 +811,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 blackxfiied";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 vapidinfinity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -858,7 +858,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 blackxfiied";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 vapidinfinity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

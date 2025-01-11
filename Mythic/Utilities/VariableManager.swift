@@ -2,11 +2,11 @@
 //  VariableManager.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 24/12/2023.
+//  Created by vapidinfinity (esi) on 24/12/2023.
 //
 
 // MARK: - Copyright
-// Copyright © 2024 blackxfiied
+// Copyright © 2024 vapidinfinity
 
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -32,13 +32,6 @@ import Foundation
  ```
  let variableManager: VariableManager = .shared
  variableManager.setVariable("hello", value: "hi")
- ```
- 
- Both
- ```
- if let hello: String = variableManager.getVariable("hello") {
-    print(hello) // returns hi
- }
  ```
  */
 @Observable class VariableManager: ObservableObject {
