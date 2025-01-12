@@ -9,6 +9,9 @@ struct GameSettingsView: View {
     @Binding var isPresented: Bool
 
     @ObservedObject var operation: GameOperation = .shared
+
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+
     @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false
     @State private var movingError: Error?
@@ -87,7 +90,7 @@ private extension GameSettingsView {
             image
                 .resizable()
                 .aspectRatio(3/4, contentMode: .fill)
-                .blur(radius: 20.0)
+                .blur(radius: gameCardBlur)
 
             image
                 .resizable()
@@ -111,7 +114,7 @@ private extension GameSettingsView {
                 .resizable()
                 .aspectRatio(3/4, contentMode: .fill)
                 .clipShape(.rect(cornerRadius: 20))
-                .blur(radius: 10.0)
+                .blur(radius: gameCardBlur)
 
             image
                 .resizable()

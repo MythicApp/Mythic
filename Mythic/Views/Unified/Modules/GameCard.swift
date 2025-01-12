@@ -82,6 +82,8 @@ extension GameCard {
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool
 
+        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+
         var withBlur: Bool = true
 
         var body: some View {
@@ -101,10 +103,14 @@ extension GameCard {
                         .onAppear {
                             withAnimation { isImageEmpty = true }
                         }
+
                 case .success(let image):
-                    handleImage(image, withBlur)
+                    handleImage(image, withBlur, gameCardBlur)
                         .onAppear {
                             withAnimation { isImageEmpty = false }
+                        }
+                        .onDisappear {
+                            withAnimation { isImageEmpty = true }
                         }
                 case .failure:
                     EmptyView()
@@ -120,15 +126,15 @@ extension GameCard {
             }
         }
 
-        /* private FIXME: what */ var handleImage: (Image, Bool) -> AnyView = { image, withBlur in
-            AnyView(
+        /* private FIXME: what */ var handleImage: (Image, Bool, Double) -> AnyView = { image, withBlur, gameCardBlur in
+            return AnyView(
                 ZStack {
-                    if withBlur {
+                    if withBlur && gameCardBlur > 0 /* dirtyfix */ {
                         image
                             .resizable()
                             .aspectRatio(3/4, contentMode: .fill)
                             .clipShape(.rect(cornerRadius: 20))
-                            .blur(radius: 20.0)
+                            .blur(radius: gameCardBlur)
                     }
 
                     image
@@ -149,6 +155,7 @@ extension GameCard {
 
     struct FallbackImageCard: View {
         @Binding var game: Game
+        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
         var withBlur: Bool = true
 
         var body: some View {
@@ -160,7 +167,7 @@ extension GameCard {
                         image
                             .resizable()
                             .clipShape(.rect(cornerRadius: 20))
-                            .blur(radius: 20)
+                            .blur(radius: gameCardBlur)
                     }
 
                     image

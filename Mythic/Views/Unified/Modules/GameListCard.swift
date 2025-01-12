@@ -12,6 +12,7 @@ struct GameListCard: View {
 
     @Binding var game: Game
     @ObservedObject private var operation: GameOperation = .shared
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
     @State private var isHoveringOverDestructiveButton: Bool = false
 
     @State private var isImageEmpty: Bool = true
@@ -29,17 +30,26 @@ struct GameListCard: View {
                                 withAnimation { isImageEmpty = true }
                             }
                     case .success(let image):
-                        image
-                            .resizable()
-                            .blur(radius: 20.0)
-                        image
-                            .resizable()
-                            .blur(radius: 20.0)
-                            .clipShape(.rect(cornerRadius: 20))
-                            .modifier(FadeInModifier())
-                            .onAppear {
-                                withAnimation { isImageEmpty = false }
+                        ZStack {
+                            if gameCardBlur > 0 { // dirtyfix
+                                image
+                                    .resizable()
+                                    .clipShape(.rect(cornerRadius: 20))
+                                    .blur(radius: gameCardBlur)
                             }
+
+                            image
+                                .resizable()
+                                .blur(radius: 20.0)
+                                .clipShape(.rect(cornerRadius: 20))
+                                .modifier(FadeInModifier())
+                                .onAppear {
+                                    withAnimation { isImageEmpty = false }
+                                }
+                                .onDisappear {
+                                    withAnimation { isImageEmpty = true }
+                                }
+                        }
                     case .failure:
                         EmptyView()
                             .onAppear {
