@@ -98,7 +98,8 @@ struct ContainerConfigurationView: View {
             VStack {
                 Text("Configure \"\(container.name)\"")
                     .font(.title)
-                
+                    .padding([.horizontal, .top])
+
                 Form {
                     ContainerSettingsView(
                         selectedContainerURL: .init(
@@ -169,8 +170,8 @@ struct ContainerConfigurationView: View {
                     }
                     .buttonStyle(.borderedProminent)
                 }
+                .padding([.horizontal, .bottom])
             }
-            .padding()
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
