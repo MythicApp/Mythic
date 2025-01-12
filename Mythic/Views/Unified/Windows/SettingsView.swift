@@ -315,201 +315,202 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        if #available(macOS 15.0, *) {
-            TabView {
-                Tab("Views", systemImage: "document.viewfinder") {
-                    Form {
-                        libraryViewSettingsSection
-                    }
-                    .formStyle(.grouped)
-                }
-
-                Tab("Launching", systemImage: "play") {
-                    Form {
-                        launchingSettings
-                    }
-                    .formStyle(.grouped)
-                }
-
-                Tab("Downloads", systemImage: "arrow.down.to.line") {
-                    Form {
-                        defaultInstallLocationPicker
-                    }
-                    .formStyle(.grouped)
-                }
-
-                Tab("Services", systemImage: "app.connected.to.app.below.fill") {
-                    Form {
-                        Section("Discord", isExpanded: .constant(true)) {
-                            discordActivityStatusToggle
-                        }
-                        .disabled(!discordRPC.isDiscordInstalled)
-                        .help(discordRPC.isDiscordInstalled ? .init() : "Discord is not installed.")
-
-                        Section("Epic Games", isExpanded: .constant(true)) {
-                            epicCleanupButton
-
-                            epicCloudSyncButton
-
-                            // TODO: potenially add manual cloud save deletion
-                        }
-
-                        Section("Steam", isExpanded: .constant(false)) { }
-                            .help("Coming Soon")
-                    }
-                    .formStyle(.grouped)
-                }
-
-                Tab("Engine", systemImage: "gamecontroller.circle") {
-                    if Engine.exists {
+        Group {
+            if #available(macOS 15.0, *) {
+                TabView {
+                    Tab("Views", systemImage: "document.viewfinder") {
                         Form {
-                            engineKillRunningButton
+                            libraryViewSettingsSection
+                        }
+                        .formStyle(.grouped)
+                    }
 
-                            engineRemovalButton
+                    Tab("Launching", systemImage: "play") {
+                        Form {
+                            launchingSettings
+                        }
+                        .formStyle(.grouped)
+                    }
 
-                            Section("Advanced", isExpanded: .constant(true)) {
-                                enginePurgeShaderCacheButton
+                    Tab("Downloads", systemImage: "arrow.down.to.line") {
+                        Form {
+                            defaultInstallLocationPicker
+                        }
+                        .formStyle(.grouped)
+                    }
+
+                    Tab("Services", systemImage: "app.connected.to.app.below.fill") {
+                        Form {
+                            Section("Discord", isExpanded: .constant(true)) {
+                                discordActivityStatusToggle
+                            }
+                            .disabled(!discordRPC.isDiscordInstalled)
+                            .help(discordRPC.isDiscordInstalled ? .init() : "Discord is not installed.")
+
+                            Section("Epic Games", isExpanded: .constant(true)) {
+                                epicCleanupButton
+
+                                epicCloudSyncButton
+
+                                // TODO: potenially add manual cloud save deletion
+                            }
+
+                            Section("Steam", isExpanded: .constant(false)) { }
+                                .help("Coming Soon")
+                        }
+                        .formStyle(.grouped)
+                    }
+
+                    Tab("Engine", systemImage: "gamecontroller.circle") {
+                        if Engine.exists {
+                            Form {
+                                engineKillRunningButton
+
+                                engineRemovalButton
+
+                                Section("Advanced", isExpanded: .constant(true)) {
+                                    enginePurgeShaderCacheButton
+                                }
+                            }
+                            .formStyle(.grouped)
+
+                            if Engine.exists {
+                                Text("\(Engine.version?.prettyString ?? "(Unknown Version)")")
+                                    .foregroundStyle(.placeholder)
+                                    .font(.footnote)
+                                    .padding()
+                            }
+                        } else {
+                            // TODO: engine not exists
+                        }
+                    }
+
+                    Tab("Updates", systemImage: "arrow.down.app") {
+                        Form {
+                            Section("Mythic", isExpanded: .constant(true)) {
+                                mythicUpdateSettings
+                            }
+
+                            Section("Mythic Engine", isExpanded: .constant(true)) {
+                                engineUpdateStreamPicker
+
+                                engineUpdateCheckerToggle
                             }
                         }
                         .formStyle(.grouped)
-
-                        if Engine.exists {
-                            Text("\(Engine.version?.prettyString ?? "(Unknown Version)")")
-                                .foregroundStyle(.placeholder)
-                                .font(.footnote)
-                                .padding()
-                        }
-                    } else {
-                        // TODO: engine not exists
                     }
                 }
+                .tabViewStyle(.sidebarAdaptable)
+            } else { //
+                Form {
+                    Section("Mythic", isExpanded: $isMythicSectionExpanded) {
+                        discordActivityStatusToggle
 
-                Tab("Updates", systemImage: "arrow.down.app") {
-                    Form {
-                        Section("Mythic", isExpanded: .constant(true)) {
-                            mythicUpdateSettings
+                        launchingSettings
+
+                        defaultInstallLocationPicker
+
+                        Button {
+                            isResetAlertPresented = true
+                        } label: {
+                            Label("Reset Mythic", systemImage: "power.dotted")
+                        }
+                        .alert(isPresented: $isResetAlertPresented) {
+                            .init(
+                                title: .init("Reset Mythic?"),
+                                message: .init("This will erase every persistent setting and container."),
+                                primaryButton: .destructive(.init("Reset")) {
+                                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                                        defaults.removePersistentDomain(forName: bundleIdentifier)
+                                    }
+
+                                    if let appHome = Bundle.appHome {
+                                        try? files.removeItem(at: appHome)
+                                    }
+
+                                    if let containersDirectory = Wine.containersDirectory {
+                                        try? files.removeItem(at: containersDirectory)
+                                    }
+                                },
+                                secondaryButton: .cancel()
+                            )
                         }
 
-                        Section("Mythic Engine", isExpanded: .constant(true)) {
-                            engineUpdateStreamPicker
-
-                            engineUpdateCheckerToggle
+                        Button {
+                            isResetSettingsAlertPresented = true
+                        } label: {
+                            Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
                         }
+                        .alert(isPresented: $isResetSettingsAlertPresented) {
+                            .init(
+                                title: .init("Reset Mythic Settings?"),
+                                message: .init("This will erase every persistent setting."),
+                                primaryButton: .destructive(.init("Reset")) {
+                                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                                        defaults.removePersistentDomain(forName: bundleIdentifier)
+                                    }
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
+
                     }
-                    .formStyle(.grouped)
+
+                    Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
+                        engineUpdateStreamPicker
+
+                        Group {
+                            engineKillRunningButton
+
+                            enginePurgeShaderCacheButton
+
+                            engineRemovalButton
+
+                            if Engine.exists {
+                                Text("Version \(Engine.version?.prettyString ?? "Unknown")")
+                                    .foregroundStyle(.placeholder)
+                            }
+                        }
+                        .disabled(!Engine.exists)
+                        .help(Engine.exists ? "Mythic Engine is not installed." : .init())
+                    }
+
+                    Section("Epic", isExpanded: $isEpicSectionExpanded) {
+                        epicCleanupButton
+
+                        epicCloudSyncButton
+
+                        // TODO: potenially add manual cloud save deletion
+                    }
+
+                    libraryViewSettingsSection
+
+                    Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
+                        mythicUpdateSettings
+
+                        Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
+                    }
+
+                    /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.
+                     Section("Default Container Settings", isExpanded: $isDefaultContainerSectionExpanded) {
+                     // ContainerSettingsView something
+                     }
+                     */
                 }
+                .formStyle(.grouped)
             }
-            .tabViewStyle(.sidebarAdaptable)
-        } else { //
-            Form {
-                Section("Mythic", isExpanded: $isMythicSectionExpanded) {
-                    discordActivityStatusToggle
+        }
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Tweaking some settings"
+                presence.state = "Configuring Mythic"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
 
-                    launchingSettings
-
-                    defaultInstallLocationPicker
-
-                    Button {
-                        isResetAlertPresented = true
-                    } label: {
-                        Label("Reset Mythic", systemImage: "power.dotted")
-                    }
-                    .alert(isPresented: $isResetAlertPresented) {
-                        .init(
-                            title: .init("Reset Mythic?"),
-                            message: .init("This will erase every persistent setting and container."),
-                            primaryButton: .destructive(.init("Reset")) {
-                                if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                                    defaults.removePersistentDomain(forName: bundleIdentifier)
-                                }
-
-                                if let appHome = Bundle.appHome {
-                                    try? files.removeItem(at: appHome)
-                                }
-
-                                if let containersDirectory = Wine.containersDirectory {
-                                    try? files.removeItem(at: containersDirectory)
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-
-                    Button {
-                        isResetSettingsAlertPresented = true
-                    } label: {
-                        Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
-                    }
-                    .alert(isPresented: $isResetSettingsAlertPresented) {
-                        .init(
-                            title: .init("Reset Mythic Settings?"),
-                            message: .init("This will erase every persistent setting."),
-                            primaryButton: .destructive(.init("Reset")) {
-                                if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                                    defaults.removePersistentDomain(forName: bundleIdentifier)
-                                }
-                            },
-                            secondaryButton: .cancel()
-                        )
-                    }
-
-                }
-
-                Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
-                    engineUpdateStreamPicker
-
-                    Group {
-                        engineKillRunningButton
-
-                        enginePurgeShaderCacheButton
-
-                        engineRemovalButton
-
-                        if Engine.exists {
-                            Text("Version \(Engine.version?.prettyString ?? "Unknown")")
-                                .foregroundStyle(.placeholder)
-                        }
-                    }
-                    .disabled(!Engine.exists)
-                    .help(Engine.exists ? "Mythic Engine is not installed." : .init())
-                }
-
-                Section("Epic", isExpanded: $isEpicSectionExpanded) {
-                    epicCleanupButton
-
-                    epicCloudSyncButton
-
-                    // TODO: potenially add manual cloud save deletion
-                }
-
-                libraryViewSettingsSection
-
-                Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
-                    mythicUpdateSettings
-
-                    Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
-                }
-
-                /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.
-                 Section("Default Container Settings", isExpanded: $isDefaultContainerSectionExpanded) {
-                 // ContainerSettingsView something
-                 }
-                 */
-            }
-            .task(priority: .background) {
-                discordRPC.setPresence({
-                    var presence: RichPresence = .init()
-                    presence.details = "Tweaking some settings"
-                    presence.state = "Configuring Mythic"
-                    presence.timestamps.start = .now
-                    presence.assets.largeImage = "macos_512x512_2x"
-
-                    return presence
-                }())
-            }
-            .formStyle(.grouped)
-            .navigationTitle("Settings")
-        } //
+                return presence
+            }())
+        }
     }
 }
 
