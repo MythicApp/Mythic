@@ -233,7 +233,6 @@ import Shimmer
                 .help("Download \"\(game.title)\"")
                 .sheet(isPresented: $isInstallSheetPresented) {
                     InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
-                        .padding()
                 }
             }
         }

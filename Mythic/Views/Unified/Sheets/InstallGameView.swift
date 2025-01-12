@@ -85,6 +85,7 @@ struct InstallViewEvo: View {
             .onDisappear {
                 Legendary.stopCommand(identifier: "parseOptionalPacks")
             }
+            .padding([.horizontal, .top])
 
         if operation.current != nil {
             Text("Cannot fetch selected downloads while other items are downloading.")
@@ -245,6 +246,7 @@ struct InstallViewEvo: View {
                 .buttonStyle(.borderedProminent)
             }
         }
+        .padding([.horizontal, .bottom])
     }
 }
 
