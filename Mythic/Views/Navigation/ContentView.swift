@@ -27,7 +27,8 @@ import SemanticVersion
 // MARK: - ContentView Struct
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    @EnvironmentObject var sparkle: SparkleController
+    @EnvironmentObject var sparkleController: SparkleController
+
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
@@ -64,11 +65,6 @@ struct ContentView: View {
                         NavigationLink(destination: ContainersView()) {
                             Label("Containers", systemImage: "cube")
                                 .help("Manage containers for Windows® applications")
-                        }
-
-                        NavigationLink(destination: SettingsView()) {
-                            Label("Settings", systemImage: "gear")
-                                .help("Configure Mythic")
                         }
 
                         NavigationLink(destination: SupportView()) {
