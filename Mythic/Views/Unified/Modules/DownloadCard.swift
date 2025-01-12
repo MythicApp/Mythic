@@ -19,7 +19,7 @@ import SwiftUI
 struct DownloadCard: View {
     @ObservedObject private var operation: GameOperation = .shared
     @State private var isHoveringOverDestructiveButton: Bool = false
-    
+
     var game: Game
     var style: DownloadCardStyle
     

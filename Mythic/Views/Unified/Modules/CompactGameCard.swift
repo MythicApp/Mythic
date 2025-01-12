@@ -20,10 +20,10 @@ struct CompactGameCard: View {
     @Binding var game: Game
     
     @EnvironmentObject var networkMonitor: NetworkMonitor
+
     @ObservedObject private var operation: GameOperation = .shared
     @ObservedObject var viewModel: GameCardVM = .init()
-    @AppStorage("minimiseOnGameLaunch") private var minimizeOnGameLaunch: Bool = false
-    
+
     @State private var isLaunchErrorAlertPresented: Bool = false
     @State private var launchError: Error?
 
@@ -51,6 +51,9 @@ struct CompactGameCard: View {
                             .modifier(FadeInModifier())
                             .onAppear {
                                 withAnimation { isImageEmpty = false }
+                            }
+                            .onDisappear {
+                                withAnimation { isImageEmpty = true }
                             }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)

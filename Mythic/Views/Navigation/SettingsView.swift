@@ -35,6 +35,7 @@ struct SettingsView: View {
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
     @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
 
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -312,6 +313,10 @@ struct SettingsView: View {
                     Label("Gamecard Size", systemImage: "square.resize")
                     Text("Default is 3 ticks.")
                         .foregroundStyle(.secondary)
+                }
+
+                Slider(value: $gameCardBlur, in: 0...20, step: 5) {
+                    Label("Gamecard Blur", systemImage: gameCardBlur >= 10 ? "sun.min" : "sun.max")
                 }
 
                 Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
