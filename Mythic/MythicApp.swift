@@ -82,6 +82,11 @@ struct MythicApp: App {
                 .disabled(isOnboardingPresented)
             }
         }
+
+        Settings {
+            SettingsView()
+                .environmentObject(sparkleController)
+        }
     }
 }
 
