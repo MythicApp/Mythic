@@ -181,7 +181,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: DiscordRPC Connection and Delegation Setting
 
         discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC") { _ = discordRPC.connect() }
+        if defaults.bool(forKey: "discordRPC"), discordRPC.isDiscordInstalled {
+            _ = discordRPC.connect()
+        }
 
         // MARK: Applications folder disclaimer
 
