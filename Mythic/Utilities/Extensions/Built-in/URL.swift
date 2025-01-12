@@ -17,7 +17,7 @@
 import Foundation
 
 extension URL {
-    public func prettyPath() -> String { // thx whisky
+    public func prettyPath() -> String {
         return path(percentEncoded: false)
             .replacingOccurrences(of: Bundle.main.bundleIdentifier!, with: "Mythic")
             .replacingOccurrences(of: "/Users/\(NSUserName())", with: "~")
