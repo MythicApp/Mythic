@@ -246,7 +246,7 @@ struct SettingsView: View {
                     }
                     
                     if Engine.exists {
-                        Text("Version \(Engine.version?.description ?? "Unknown")")
+                        Text("Version \(Engine.version?.prettyString ?? "Unknown")")
                             .foregroundStyle(.placeholder)
                     }
                 }
