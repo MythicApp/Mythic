@@ -34,7 +34,7 @@ struct AccountsView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)
                     .aspectRatio(4/3, contentMode: .fit)
-                    .frame(width: 240)
+                    .frame(maxWidth: 240)
                     .overlay(alignment: .top) {
                         VStack {
                             Image("EGFaceless")
@@ -99,7 +99,7 @@ struct AccountsView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.background)
                     .aspectRatio(4/3, contentMode: .fit)
-                    .frame(width: 240)
+                    .frame(maxWidth: 240)
                     .overlay(alignment: .top) {
                         VStack {
                             Image("Steam")
