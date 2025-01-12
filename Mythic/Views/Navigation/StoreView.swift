@@ -23,8 +23,8 @@ struct StoreView: View {
     @State private var canGoBack = false
     @State private var canGoForward = false
     @State private var url: URL = .init(string: "https://store.epicgames.com/")!
-    @State private var refreshAnimation: Angle = .degrees(0)
-    
+    @State private var refreshIconRotation: Angle = .degrees(0)
+
     var body: some View {
         WebView(url: url, error: .constant(nil), isLoading: .constant(nil), canGoBack: canGoBack, canGoForward: canGoForward)
         
@@ -87,14 +87,14 @@ struct StoreView: View {
                 Button {
                     url = .init(string: "javascript:location.reload();")!
                     withAnimation(.default) {
-                        refreshAnimation = .degrees(360)
+                        refreshIconRotation = .degrees(360)
                     } completion: {
-                        refreshAnimation = .degrees(0)
+                        refreshIconRotation = .degrees(0)
                     }
                 } label: {
                     Image(systemName: "arrow.clockwise")
                         .symbolVariant(.circle)
-                        .rotationEffect(refreshAnimation) // thx whisky
+                        .rotationEffect(refreshIconRotation)
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
