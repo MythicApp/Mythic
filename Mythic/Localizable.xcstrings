@@ -10309,6 +10309,9 @@
         }
       }
     },
+    "Default is 3 ticks." : {
+
+    },
     "Delete" : {
       "localizations" : {
         "af" : {
@@ -16011,6 +16014,9 @@
         }
       }
     },
+    "Gamecard Size" : {
+
+    },
     "Get support/Support Mythic" : {
       "localizations" : {
         "af" : {
@@ -17340,6 +17346,9 @@
           }
         }
       }
+    },
+    "Horizontal" : {
+
     },
     "I have read and agreed to the terms of the software license agreement." : {
       "localizations" : {
@@ -31997,6 +32006,9 @@
         }
       }
     },
+    "Scrolling Direction" : {
+
+    },
     "Seems like the Epic Games signin window's been closed." : {
 
     },
@@ -40369,6 +40381,9 @@
           }
         }
       }
+    },
+    "Vertical" : {
+
     },
     "View" : {
       "localizations" : {

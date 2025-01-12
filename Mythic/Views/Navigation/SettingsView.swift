@@ -22,6 +22,7 @@ struct SettingsView: View {
     @State private var isEpicSectionExpanded: Bool = true
     @State private var isMythicSectionExpanded: Bool = true
     @State private var isDefaultContainerSectionExpanded: Bool = true
+    @State private var isLibrarySettingsExpanded: Bool = true
     @State private var isUpdateSettingsExpanded: Bool = true
     
     @EnvironmentObject var sparkle: SparkleController
@@ -32,7 +33,9 @@ struct SettingsView: View {
     @AppStorage("discordRPC") private var rpc: Bool = true
     @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
-    
+    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
     @State private var isEngineRemovalSuccessful: Bool?
@@ -45,7 +48,7 @@ struct SettingsView: View {
     @State private var isEngineRemovalAlertPresented: Bool = false
     @State private var isResetAlertPresented: Bool = false
     @State private var isResetSettingsAlertPresented: Bool = false
-    
+
     var body: some View {
         Form {
             Section("Mythic", isExpanded: $isMythicSectionExpanded) {
@@ -303,7 +306,22 @@ struct SettingsView: View {
                 
                 // TODO: potenially add manual cloud save deletion
             }
-            
+
+            Section("Library", isExpanded: $isLibrarySettingsExpanded) {
+                Slider(value: $gameCardSize, in: 200...400, step: 25) {
+                    Label("Gamecard Size", systemImage: "square.resize")
+                    Text("Default is 3 ticks.")
+                        .foregroundStyle(.secondary)
+                }
+
+                Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
+                    Text("Vertical")
+                        .tag(true)
+                    Text("Horizontal")
+                        .tag(false)
+                }
+            }
+
             Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
                 Toggle("Automatically check for Mythic updates", isOn: Binding(
                     get: { sparkle.updater.automaticallyChecksForUpdates },
