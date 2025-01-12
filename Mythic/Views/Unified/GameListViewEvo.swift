@@ -19,9 +19,13 @@ import SwiftUI
 
 struct GameListEvo: View {
     @ObservedObject var viewModel: GameListVM = .shared
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
-    @State private var isGameImportViewPresented: Bool = false
     @ObservedObject private var variables: VariableManager = .shared
+
+    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+
+    @State private var isGameImportViewPresented: Bool = false
     
     var body: some View {
         VStack {
@@ -43,20 +47,32 @@ struct GameListEvo: View {
                     LazyVStack {
                         ForEach(viewModel.games) { game in
                             GameListCard(game: .constant(game))
-                                .padding([.top, .horizontal])
                         }
                     }
+                    .padding()
                     .searchable(text: $viewModel.searchString, placement: .toolbar)
                 }
             } else {
-                ScrollView(.horizontal) {
-                    LazyHGrid(rows: [.init(.adaptive(minimum: 250))]) {
-                        ForEach(viewModel.games) { game in
-                            GameCard(game: .constant(game))
-                                .padding([.leading, .vertical])
+                if isLibraryGridScrollingVertical {
+                    ScrollView(.vertical) {
+                        LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                            ForEach(viewModel.games) { game in
+                                GameCard(game: .constant(game))
+                            }
                         }
+                        .padding()
+                        .searchable(text: $viewModel.searchString, placement: .toolbar)
                     }
-                    .searchable(text: $viewModel.searchString, placement: .toolbar)
+                } else {
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
+                            ForEach(viewModel.games) { game in
+                                GameCard(game: .constant(game))
+                            }
+                        }
+                        .padding()
+                        .searchable(text: $viewModel.searchString, placement: .toolbar)
+                    }
                 }
             }
         }
