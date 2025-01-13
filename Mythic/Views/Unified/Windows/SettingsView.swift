@@ -381,7 +381,19 @@ struct SettingsView: View {
                                     .padding()
                             }
                         } else {
-                            // TODO: engine not exists
+                            VStack {
+                                Text("Mythic Engine isn't installed.")
+                                    .font(.bold(.title)())
+                                Button {
+                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                    app.onboardingPhase = .engineDisclaimer
+                                    app.isOnboardingPresented = true
+                                } label: {
+                                    Label("Return to Onboarding & Install", systemImage: "arrow.down.to.line")
+                                        .padding(5)
+                                }
+                                .buttonStyle(.borderedProminent)
+                            }
                         }
                     }
 
