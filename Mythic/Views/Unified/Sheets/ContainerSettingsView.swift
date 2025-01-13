@@ -80,86 +80,92 @@ struct ContainerSettingsView: View {
         
         if selectedContainerURL != nil {
             if let container = try? Wine.getContainerObject(url: selectedContainerURL!) {
-                Toggle("Performance HUD", isOn: Binding(
-                    get: { return container.settings.metalHUD },
-                    set: { container.settings.metalHUD = $0 }
-                ))
-                .disabled(variables.getVariable("booting") == true)
-                
-                if !modifyingRetinaMode, retinaModeError == nil {
-                    Toggle("Retina Mode", isOn: Binding(
-                        get: { retinaMode },
-                        set: { value in
-                            Task(priority: .userInitiated) {
-                                withAnimation { modifyingRetinaMode = true }
-                                await Wine.toggleRetinaMode(containerURL: container.url, toggle: value)
-                                retinaMode = value
-                                container.settings.retinaMode = value
-                                withAnimation { modifyingRetinaMode = false }
-                            }
-                        }
+                Group {
+                    Toggle("Performance HUD", isOn: Binding(
+                        get: { return container.settings.metalHUD },
+                        set: { container.settings.metalHUD = $0 }
                     ))
                     .disabled(variables.getVariable("booting") == true)
-                } else {
-                    HStack {
-                        Text("Retina Mode")
-                        Spacer()
-                        if retinaModeError == nil {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Image(systemName: "exclamationmark.triangle")
-                                .symbolVariant(.fill)
-                                .controlSize(.small)
-                                .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+
+                    if !modifyingRetinaMode, retinaModeError == nil {
+                        Toggle("Retina Mode", isOn: Binding(
+                            get: { retinaMode },
+                            set: { value in
+                                Task(priority: .userInitiated) {
+                                    withAnimation { modifyingRetinaMode = true }
+                                    await Wine.toggleRetinaMode(containerURL: container.url, toggle: value)
+                                    retinaMode = value
+                                    container.settings.retinaMode = value
+                                    withAnimation { modifyingRetinaMode = false }
+                                }
+                            }
+                        ))
+                        .disabled(variables.getVariable("booting") == true)
+                    } else {
+                        HStack {
+                            Text("Retina Mode")
+                            Spacer()
+                            if retinaModeError == nil {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                                    .controlSize(.small)
+                                    .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                            }
+                        }
+                    }
+
+                    Toggle("Enhanced Sync (MSync)", isOn: Binding(
+                        get: { return container.settings.msync },
+                        set: { container.settings.msync = $0 }
+                    ))
+                    .disabled(variables.getVariable("booting") == true)
+
+                    Toggle("Advanced Vector Extensions (AVX2)", isOn: Binding(
+                        get: { container.settings.avx2 },
+                        set: { container.settings.avx2 = $0 }
+                    ))
+
+                    if !modifyingWindowsVersion, windowsVersionError == nil {
+                        Picker("Windows Version", selection: Binding(
+                            get: { windowsVersion },
+                            set: { value in
+                                Task(priority: .userInitiated) {
+                                    withAnimation { modifyingWindowsVersion = true }
+                                    await Wine.setWindowsVersion(containerURL: container.url, version: value)
+                                    windowsVersion = value
+                                    container.settings.windowsVersion = value
+                                    withAnimation { modifyingWindowsVersion = false }
+                                }
+                            }
+                        )) {
+                            ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in
+                                Text("Windows® \(version.rawValue)").tag(version)
+                            }
+                        }
+                    } else {
+                        HStack {
+                            Text("Windows Version")
+                            Spacer()
+                            if windowsVersionError == nil {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                                    .controlSize(.small)
+                                    .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                            }
                         }
                     }
                 }
-                
-                Toggle("Enhanced Sync (MSync)", isOn: Binding(
-                    get: { return container.settings.msync },
-                    set: { container.settings.msync = $0 }
-                ))
-                .disabled(variables.getVariable("booting") == true)
-                
                 .task(priority: .high) { await fetchRetinaStatus() }
                 .task(priority: .high) { await fetchWindowsVersion() }
                 .onChange(of: selectedContainerURL) {
                     Task(priority: .userInitiated) { await fetchRetinaStatus() }
                     Task(priority: .userInitiated) { await fetchWindowsVersion() }
-                }
-                
-                if !modifyingWindowsVersion, windowsVersionError == nil {
-                    Picker("Windows Version", selection: Binding(
-                        get: { windowsVersion },
-                        set: { value in
-                            Task(priority: .userInitiated) {
-                                withAnimation { modifyingWindowsVersion = true }
-                                await Wine.setWindowsVersion(containerURL: container.url, version: value)
-                                windowsVersion = value
-                                container.settings.windowsVersion = value
-                                withAnimation { modifyingWindowsVersion = false }
-                            }
-                        }
-                    )) {
-                        ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in
-                            Text("Windows® \(version.rawValue)").tag(version)
-                        }
-                    }
-                } else {
-                    HStack {
-                        Text("Windows Version")
-                        Spacer()
-                        if windowsVersionError == nil {
-                            ProgressView()
-                                .controlSize(.small)
-                        } else {
-                            Image(systemName: "exclamationmark.triangle")
-                                .symbolVariant(.fill)
-                                .controlSize(.small)
-                                .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
-                        }
-                    }
                 }
             } else if Wine.containerExists(at: selectedContainerURL!) {
                 
@@ -173,7 +179,10 @@ struct ContainerSettingsView: View {
 #Preview {
     Form {
         ContainerSettingsView(
-            selectedContainerURL: .constant(nil),
+            selectedContainerURL: Binding(
+                get: { Wine.containerURLs.first },
+                set: { _ in }
+            ),
             withPicker: true
         )
     }
