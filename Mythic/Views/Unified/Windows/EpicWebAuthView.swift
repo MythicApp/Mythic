@@ -68,14 +68,17 @@ struct EpicWebAuthView: View {
 
 final class EpicWebAuthViewModel: ObservableObject {
     public static let shared = EpicWebAuthViewModel()
-    private init() {}
-
     @Published var webAuthViewPresented = false
     @Published var signInSuccess = false
+    
+    // Keep a strong reference to the sign-in window
+    private var epicSignInWindow: NSWindow?
+
+    private init() {}
 
     @MainActor
     func showSignInWindow() {
-        guard sharedApp.window(withID: "epic-signin") == nil else {
+        guard epicSignInWindow == nil else {
             Logger.app.warning("Epic sign-in window already open")
             return
         }
@@ -97,12 +100,15 @@ final class EpicWebAuthViewModel: ObservableObject {
         window.center()
         window.makeKeyAndOrderFront(nil)
         sharedApp.activate(ignoringOtherApps: true)
+
+        epicSignInWindow = window
         webAuthViewPresented = true
     }
 
     @MainActor
     func closeSignInWindow() {
-        sharedApp.window(withID: "epic-signin")?.orderOut(nil)
+        epicSignInWindow?.orderOut(nil)
+        epicSignInWindow = nil
         webAuthViewPresented = false
     }
 }
@@ -146,4 +152,10 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: WKWebView, context: Context) {}
+
+    static func dismantleNSView(_ nsView: WKWebView, coordinator: ()) {
+        nsView.stopLoading()
+        nsView.navigationDelegate = nil
+        nsView.uiDelegate = nil
+    }
 }
