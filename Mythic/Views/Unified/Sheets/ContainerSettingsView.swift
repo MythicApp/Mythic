@@ -127,6 +127,20 @@ struct ContainerSettingsView: View {
                         get: { container.settings.avx2 },
                         set: { container.settings.avx2 = $0 }
                     ))
+                    .disabled({
+                        if #available(macOS 15.0, *) {
+                            return false
+                        }
+
+                        return true
+                    }())
+                    .help({
+                        if #available(macOS 15.0, *) {
+                            return ""
+                        }
+
+                        return "AVX2 is only supported on macOS Sequoia (15) or later."
+                    }())
 
                     if !modifyingWindowsVersion, windowsVersionError == nil {
                         Picker("Windows Version", selection: Binding(
