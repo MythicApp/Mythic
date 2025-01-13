@@ -188,7 +188,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         .opacity(isSecondRowPresented ? 1.0 : 0.0)
                                 ), secondRow: .init(
                                     VStack {
-                                        Text("A new window \(epicWebAuthViewModel.webAuthViewPresented ? "has opened" : "will open"), prompting you to sign in to Epic Games.")
+                                        Text("A new window will open, prompting you to sign in to Epic Games.")
 
                                         if epicWebAuthViewModel.webAuthViewPresented {
                                             ProgressView()
