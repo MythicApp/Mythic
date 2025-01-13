@@ -88,7 +88,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         DXVKAsync: false,
         windowsVersion: .win11,
         scaling: 192,
-        avx2: true
+        avx2: {
+            if #available(macOS 15.0, *) {
+                return true
+            } else {
+                return false
+            }
+        }()
     )
 
     // MARK: - Command Method
