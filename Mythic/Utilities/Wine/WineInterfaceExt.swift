@@ -98,7 +98,7 @@ extension Wine {
 
         /// Convenience initializer to create a container from a URL.
         convenience init(createFrom url: URL) {
-            self.init(name: url.lastPathComponent, url: url, settings: defaultContainerSettings)
+            self.init(name: url.lastPathComponent, url: url, settings: .init())
         }
 
         // deinit { saveProperties() } // FIXME: causes conflict with didSet
@@ -123,14 +123,20 @@ extension Wine {
     }
 
     struct ContainerSettings: Codable, Hashable {
-        var metalHUD: Bool
-        var msync: Bool
-        var retinaMode: Bool
-        var DXVK: Bool
-        var DXVKAsync: Bool
-        var windowsVersion: WindowsVersion
-        var scaling: Int
-        var avx2: Bool
+        var metalHUD: Bool = false
+        var msync: Bool = true
+        var retinaMode: Bool = true
+        var DXVK: Bool = false
+        var DXVKAsync: Bool = false
+        var windowsVersion: WindowsVersion = .win11
+        var scaling: Int = 192
+        var avx2: Bool = {
+            if #available(macOS 15.0, *) {
+                return true
+            } else {
+                return false
+            }
+        }()
     }
 
     enum WindowsVersion: String, Codable, CaseIterable {
