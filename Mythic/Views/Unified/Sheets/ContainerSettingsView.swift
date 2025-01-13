@@ -27,11 +27,11 @@ struct ContainerSettingsView: View {
     
     @State private var containerScope: Wine.ContainerScope = .individual
     
-    @State private var retinaMode: Bool = Wine.defaultContainerSettings.retinaMode
+    @State private var retinaMode: Bool = Wine.ContainerSettings().retinaMode
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
     
-    @State private var windowsVersion: Wine.WindowsVersion = .win10
+    @State private var windowsVersion: Wine.WindowsVersion = Wine.ContainerSettings().windowsVersion
     @State private var modifyingWindowsVersion: Bool = true
     @State private var windowsVersionError: Error?
     

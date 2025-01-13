@@ -57,7 +57,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     return
                 }
 
-                var settings = Wine.defaultContainerSettings
+                var settings: Wine.ContainerSettings = .init()
                 guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
                 settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
                 settings.msync = oldSettings["msync"] ?? settings.msync
@@ -149,7 +149,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: Update container scaling
 
         for container in Wine.containerObjects where container.settings.scaling == 0 {
-            let defaultScale = Wine.defaultContainerSettings.scaling
+            let defaultScale = Wine.ContainerSettings().scaling
 
             Task(priority: .background) {
                 await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)

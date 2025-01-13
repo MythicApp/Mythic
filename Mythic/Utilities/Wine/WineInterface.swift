@@ -79,23 +79,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static var containerObjects: [Container] {
         return containerURLs.compactMap { try? getContainerObject(url: $0) }
     }
-    
-    static var defaultContainerSettings: ContainerSettings = .init(
-        metalHUD: false,
-        msync: true,
-        retinaMode: true,
-        DXVK: false,
-        DXVKAsync: false,
-        windowsVersion: .win11,
-        scaling: 192,
-        avx2: {
-            if #available(macOS 15.0, *) {
-                return true
-            } else {
-                return false
-            }
-        }()
-    )
 
     // MARK: - Command Method
     /**
@@ -230,7 +213,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func boot( // TODO: promises & combine framework
         baseURL: URL? = containersDirectory,
         name: String,
-        settings: ContainerSettings = defaultContainerSettings,
+        settings: ContainerSettings = .init(),
         completion: @escaping (Result<Container, Error>) -> Void
     ) async {
         guard let baseURL = baseURL else { return }
