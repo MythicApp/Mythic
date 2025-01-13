@@ -4971,6 +4971,9 @@
     "Advanced" : {
 
     },
+    "Advanced Vector Extensions (AVX2)" : {
+
+    },
     "Are you sure you want to cancel container creation?" : {
       "localizations" : {
         "af" : {
@@ -6879,6 +6882,9 @@
           }
         }
       }
+    },
+    "AVX2 is only supported on macOS Sequoia (15) or later." : {
+
     },
     "Browse..." : {
       "localizations" : {
@@ -22695,6 +22701,9 @@
         }
       }
     },
+    "Mythic Engine isn't installed." : {
+
+    },
     "Mythic is connected to the internet,\nbut is unable to verify the connection to Epic Games." : {
 
     },
@@ -27645,9 +27654,6 @@
         }
       }
     },
-    "Reopen" : {
-
-    },
     "Reset" : {
       "localizations" : {
         "af" : {
@@ -29358,6 +29364,9 @@
         }
       }
     },
+    "Return to Onboarding & Install" : {
+
+    },
     "Rosetta 2 enables a Mac with Apple silicon to use apps\nbuilt for a Mac with an Intel processor.\n\nIt's a key component for Windows® game functionality.\n\nTo install Rosetta, you must confirm you have read and agreed\nto the terms of the software license agreement." : {
       "localizations" : {
         "af" : {
@@ -29741,7 +29750,7 @@
     "Scrolling Direction" : {
 
     },
-    "Seems like the Epic Games signin window's been closed." : {
+    "Seems like the Epic Games signin window's been closed.\nIf this behaviour wasn't intended, please relaunch Mythic." : {
 
     },
     "Select a game:" : {
