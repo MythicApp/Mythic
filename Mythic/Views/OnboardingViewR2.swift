@@ -188,7 +188,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         .opacity(isSecondRowPresented ? 1.0 : 0.0)
                                 ), secondRow: .init(
                                     VStack {
-                                        Text("A new window will open, prompting you to sign in to Epic Games.")
+                                        Text("A new window \(epicWebAuthViewModel.webAuthViewPresented ? "has opened" : "will open"), prompting you to sign in to Epic Games.")
 
                                         if epicWebAuthViewModel.webAuthViewPresented {
                                             ProgressView()
@@ -196,12 +196,10 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                 .transition(.opacity)
                                         } else if !epicDisclaimerReadingDelay, !epicWebAuthViewModel.signInSuccess {
                                             Group {
-                                                Text("Seems like the Epic Games signin window's been closed.")
-
-                                                Button("Reopen") {
-                                                    epicWebAuthViewModel.showSignInWindow()
-                                                }
-                                                .buttonStyle(.borderedProminent)
+                                                Text("""
+                                                Seems like the Epic Games signin window's been closed.
+                                                If this behaviour wasn't intended, please relaunch Mythic.
+                                                """)
                                             }
                                             .padding(.top)
                                             .transition(.opacity)
@@ -221,8 +219,24 @@ struct OnboardingR2: View { // TODO: ViewModel
                                     .skipArrow(
                                         function: { isSkipAlertPresented = true },
                                         isButtonDisabled: epicWebAuthViewModel.webAuthViewPresented
-                                    )
-                                ]
+                                    ) /*,
+                                    epicDisclaimerReadingDelay ? nil : .custom(
+                                            content: AnyView(
+                                                Button {
+                                                    epicWebAuthViewModel.showSignInWindow()
+                                                } label: {
+                                                    Image(systemName: "arrow.triangle.2.circlepath")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(width: 20)
+                                                }
+                                                .help("Skip")
+                                                .buttonStyle(.plain)
+                                                .disabled(epicWebAuthViewModel.webAuthViewPresented)
+                                            )
+                                        )
+                                     */
+                                ] // .compactMap { $0 }
                             )
                             .onAppear {
                                 isNextButtonDisabled = true
@@ -671,6 +685,6 @@ extension OnboardingR2 {
 }
 
 #Preview {
-    OnboardingR2(fromPhase: .logo)
+    OnboardingR2(fromPhase: .signin)
         .environmentObject(NetworkMonitor.shared)
 }
