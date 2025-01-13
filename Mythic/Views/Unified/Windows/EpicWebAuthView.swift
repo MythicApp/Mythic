@@ -94,6 +94,7 @@ final class EpicWebAuthViewModel: ObservableObject {
             backing: .buffered,
             defer: false
         )
+
         window.identifier = .init("epic-signin")
         window.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
         window.titlebarAndTextHidden = true
@@ -107,7 +108,7 @@ final class EpicWebAuthViewModel: ObservableObject {
 
     @MainActor
     func closeSignInWindow() {
-        epicSignInWindow?.orderOut(nil)
+        epicSignInWindow?.close()
         epicSignInWindow = nil
         webAuthViewPresented = false
     }
@@ -153,7 +154,7 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
     func updateNSView(_ nsView: WKWebView, context: Context) {}
 
-    static func dismantleNSView(_ nsView: WKWebView, coordinator: ()) {
+    static func dismantleNSView(_ nsView: WKWebView, coordinator: Coordinator) {
         nsView.stopLoading()
         nsView.navigationDelegate = nil
         nsView.uiDelegate = nil
