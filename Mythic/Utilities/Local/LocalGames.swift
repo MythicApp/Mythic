@@ -84,7 +84,8 @@ final class LocalGames {
                 containerURL: container.url,
                 environment: [
                     "MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0",
-                    "WINEMSYNC": container.settings.msync ? "1" : "0"
+                    "WINEMSYNC": container.settings.msync ? "1" : "0",
+                    "ROSETTA_ADVERTISE_AVX": container.settings.avx2 ? "1" : "0",
                 ]
             ) { _ in }
             

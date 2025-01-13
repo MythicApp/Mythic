@@ -410,6 +410,7 @@ final class Legendary {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
             environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
+            environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2 ? "1" : "0"
         }
 
         arguments.append(contentsOf: ["--"] + game.launchArguments)

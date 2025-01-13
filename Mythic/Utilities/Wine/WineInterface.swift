@@ -80,25 +80,17 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return containerURLs.compactMap { try? getContainerObject(url: $0) }
     }
     
-    static var defaultContainerSettings: ContainerSettings { // Registered by AppDelegate
-        get {
-            let defaultValues: ContainerSettings = .init(metalHUD: false, msync: true, retinaMode: true, DXVK: false, DXVKAsync: false, windowsVersion: .win11, scaling: 192)
-            do {
-                try defaults.encodeAndRegister(defaults: ["defaultContainerSettings": defaultValues])
-            } catch {
-                log.error("Unable to decode and/or get default container settings to UserDefaults: \(error.localizedDescription)")
-            }
-            return (try? defaults.decodeAndGet(ContainerSettings.self, forKey: "defaultContainerSettings")) ?? defaultValues
-        }
-        set {
-            do {
-                try defaults.encodeAndSet(newValue, forKey: "defaultContainerSettings")
-            } catch {
-                log.error("Unable to encode and/or get default container settings to UserDefaults: \(error.localizedDescription)")
-            }
-        }
-    }
-    
+    static var defaultContainerSettings: ContainerSettings = .init(
+        metalHUD: false,
+        msync: true,
+        retinaMode: true,
+        DXVK: false,
+        DXVKAsync: false,
+        windowsVersion: .win11,
+        scaling: 192,
+        avx2: true
+    )
+
     // MARK: - Command Method
     /**
      Executes a wine command using Mythic Engine's integrated wine with the specified arguments, handling input & output interactions.

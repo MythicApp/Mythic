@@ -130,6 +130,7 @@ extension Wine {
         var DXVKAsync: Bool
         var windowsVersion: WindowsVersion
         var scaling: Int
+        var avx2: Bool
     }
 
     enum WindowsVersion: String, Codable, CaseIterable {
