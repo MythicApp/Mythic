@@ -206,6 +206,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         }
                                     }
                                         .task {
+                                            guard case .signin = currentPhase else { return } // dirtyfix double-open bug
                                             try? await Task.sleep(for: .seconds(2.5))
                                             epicDisclaimerReadingDelay = false
                                             epicWebAuthViewModel.showSignInWindow()
