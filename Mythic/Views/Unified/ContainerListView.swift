@@ -150,8 +150,10 @@ struct ContainerConfigurationView: View {
                     Button("Launch Configurator") {
                         Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            configuratorActive = (try? Process.execute(executableURL: .init(filePath: "/bin/bash"), arguments: ["-c", "ps aux | grep winecfg.exe | grep -v grep"]))?.isEmpty == false
-                            if !configuratorActive { timer.invalidate() }
+                            Task(priority: .background) { @MainActor in
+                                configuratorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "winecfg.exe" })) ?? false
+                                if !configuratorActive { timer.invalidate() }
+                            }
                         }
                     }
                     .disabled(configuratorActive)
@@ -159,8 +161,10 @@ struct ContainerConfigurationView: View {
                     Button("Launch Registry Editor") {
                         Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            registryEditorActive = (try? Process.execute(executableURL: .init(filePath: "/bin/bash"), arguments: ["-c", "ps aux | grep regedit.exe | grep -v grep"]))?.isEmpty == false // TODO: tasklist
-                            if !registryEditorActive { timer.invalidate() }
+                            Task(priority: .background) { @MainActor in
+                                registryEditorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "regedit.exe" })) ?? false
+                                if !registryEditorActive { timer.invalidate() }
+                            }
                         }
                     }
                     .disabled(registryEditorActive)
