@@ -32,43 +32,65 @@ struct OnboardingR2: View { // TODO: ViewModel
     enum Phase: CaseIterable {
         case logo
         case welcome
-        case signin,
-             greetings
-        case rosettaDisclaimer,
-             rosettaInstaller
-        case engineDisclaimer,
-             engineDownloader,
-             engineInstaller
+        case signin
+        case greetings
+        case rosettaDisclaimer
+        case rosettaInstaller
+        case engineDisclaimer
+        case engineDownloader
+        case engineInstaller
         case defaultContainerSetup
         case finished
-        
+
         mutating func next(forceNext: Bool = false) {
             let allCases = Self.allCases
             guard let currentIndex = allCases.firstIndex(of: self) else { return }
-            var nextIndex = allCases.index(after: currentIndex)
-            if nextIndex >= allCases.count {
-                return
+            var nextIndex = currentIndex + 1
+
+            while nextIndex < allCases.count {
+                let nextPhase = allCases[nextIndex]
+
+                if !forceNext {
+                    switch nextPhase {
+                    case .signin:
+                        if Legendary.signedIn {
+                            nextIndex += 1
+                            continue
+                        }
+                    case .greetings:
+                        if !Legendary.signedIn {
+                            nextIndex += 1
+                            continue
+                        }
+                    case .rosettaDisclaimer:
+                        if Rosetta.exists || !workspace.isARM() {
+                            nextIndex += 2
+                            continue
+                        }
+                    case .engineDisclaimer:
+                        if Engine.exists {
+                            nextIndex += 3
+                            continue
+                        }
+                    case .defaultContainerSetup:
+                        if !Wine.containerURLs.isEmpty {
+                            nextIndex += 1
+                            continue
+                        }
+                    default:
+                        break
+                    }
+                }
+
+                break
             }
-            if !forceNext {
-                if case .signin = allCases[nextIndex], Legendary.signedIn {
-                    nextIndex += 1
-                }
-                if case .greetings = allCases[nextIndex], !Legendary.signedIn {
-                    nextIndex += 1
-                }
-                if case .rosettaDisclaimer = allCases[nextIndex], (Rosetta.exists || !workspace.isARM()) {
-                    // swiftlint:disable:previous control_statement
-                    nextIndex += 2 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
-                }
-                if case .engineDisclaimer = allCases[nextIndex], Engine.exists {
-                    nextIndex += 3 // FIXME: dynamic approach using names (String(describing: <#Phase#>))
-                }
+
+            if nextIndex < allCases.count {
+                self = allCases[nextIndex]
             }
-            self = allCases[nextIndex]
         }
-        
     }
-    
+
     @Environment(\.colorScheme) var colorScheme
     
     @State private var currentPhase: Phase
@@ -688,6 +710,6 @@ extension OnboardingR2 {
 }
 
 #Preview {
-    OnboardingR2(fromPhase: .signin)
+    OnboardingR2(fromPhase: .logo)
         .environmentObject(NetworkMonitor.shared)
 }
