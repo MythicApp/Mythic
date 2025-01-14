@@ -44,7 +44,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     /// The directory where all wine prefixes/containers related to Mythic are stored.
-    static let containersDirectory: URL? = {
+    static var containersDirectory: URL? {
         let directory = Bundle.appContainer!.appending(path: "Containers")
         if files.fileExists(atPath: directory.path) {
             return directory
@@ -58,8 +58,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 return nil
             }
         }
-    }()
-    
+    }
+
     static var containerURLs: Set<URL> {
         get {
             return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? [])

@@ -77,17 +77,28 @@ final class LocalGames {
             guard Engine.exists else { throw Engine.NotInstalledError() }
             guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
             let container = try Wine.getContainerObject(url: containerURL)
-            
+
+            var environmentVariables = [
+                "MTL_HUD_ENABLED": "\(container.settings.metalHUD.numericalValue)",
+                "WINEMSYNC": "\(container.settings.msync.numericalValue)",
+                "ROSETTA_ADVERTISE_AVX": "\(container.settings.avx2.numericalValue)"
+            ]
+
+            if container.settings.dxvk {
+                environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
+
+                if container.settings.dxvkAsync {
+                    environmentVariables["DXVK_ASYNC"] = "1"
+                }
+            }
+
             try await Wine.command(
                 arguments: [game.path!] + game.launchArguments,
                 identifier: "launch_\(game.title)",
                 containerURL: container.url,
-                environment: [
-                    "MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0",
-                    "WINEMSYNC": container.settings.msync ? "1" : "0",
-                    "ROSETTA_ADVERTISE_AVX": container.settings.avx2 ? "1" : "0",
-                ]
-            ) { _ in }
+                environment: environmentVariables,
+                completion: { _ in }
+            )
             
         case .none:
             do {  } // this should never happen

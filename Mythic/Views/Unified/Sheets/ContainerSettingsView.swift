@@ -16,10 +16,8 @@
 
 import SwiftUI
 
+// TODO: refactor
 struct ContainerSettingsView: View {
-    // TODO: Add DXVK
-    // TODO: FSR 3?
-    
     @Binding var selectedContainerURL: URL?
     var withPicker: Bool
     
@@ -30,7 +28,11 @@ struct ContainerSettingsView: View {
     @State private var retinaMode: Bool = Wine.ContainerSettings().retinaMode
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
-    
+
+    @State private var isDXVKDisclaimerPresented: Bool = false
+    @State private var modifyingDXVK: Bool = false
+    @State private var dxvkError: Error?
+
     @State private var windowsVersion: Wine.WindowsVersion = Wine.ContainerSettings().windowsVersion
     @State private var modifyingWindowsVersion: Bool = true
     @State private var windowsVersionError: Error?
@@ -141,6 +143,96 @@ struct ContainerSettingsView: View {
 
                         return "AVX2 is only supported on macOS Sequoia (15) or later."
                     }())
+
+                    if !modifyingDXVK, dxvkError == nil {
+                        Toggle("DXVK", isOn: Binding(
+                            get: { container.settings.dxvk },
+                            set: { newValue in
+                                isDXVKDisclaimerPresented = true
+                            }
+                        ))
+                        .alert(isPresented: $isDXVKDisclaimerPresented) {
+                            .init(
+                                title: .init("Quit games running in this container?"),
+                                message: .init("""
+                                To toggle DXVK, Mythic must quit all games currently running in this container.
+                                Additionally, D3DMetal will be disabled.
+                                
+                                Toggling DXVK may impact compatibility positively or negatively.
+                                """),
+                                primaryButton: .default(.init("OK")) {
+                                    Task(priority: .userInitiated) {
+                                        do {
+                                            withAnimation { modifyingDXVK = true }
+
+                                            // x64
+                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d10core.dll"))
+                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d11.dll"))
+
+                                            // x32
+                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
+                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
+
+                                            if container.settings.dxvk {
+                                                try await Wine.command(
+                                                    arguments: ["wineboot", "-u"],
+                                                    identifier: "dxvkRestore",
+                                                    containerURL: container.url,
+                                                    completion: { _ in }
+                                                )
+                                            } else {
+                                                // x64
+                                                try files.copyItem(
+                                                    at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
+                                                    to: container.url.appending(path: "drive_c/windows/system32")
+                                                )
+                                                try files.copyItem(
+                                                    at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
+                                                    to: container.url.appending(path: "drive_c/windows/system32")
+                                                )
+
+                                                // x32
+                                                try files.copyItem(
+                                                    at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
+                                                    to: container.url.appending(path: "drive_c/windows/syswow64")
+                                                )
+                                                try files.copyItem(
+                                                    at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
+                                                    to: container.url.appending(path: "drive_c/windows/syswow64")
+                                                )
+                                            }
+
+                                            container.settings.dxvk.toggle()
+                                            withAnimation { modifyingDXVK = false }
+                                        } catch {
+                                            dxvkError = error
+                                        }
+                                    }
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
+                    } else {
+                        HStack {
+                            Text("DXVK")
+                            Spacer()
+                            if dxvkError == nil {
+                                ProgressView()
+                                    .controlSize(.small)
+                            } else {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                                    .controlSize(.small)
+                                    .help("DXVK cannot be modified: \(dxvkError?.localizedDescription ?? "Unknown Error.")")
+                            }
+                        }
+                    }
+
+                    Toggle("Asynchronous DXVK", isOn: Binding(
+                        get: { container.settings.dxvkAsync },
+                        set: { container.settings.dxvkAsync = $0 }
+                    ))
+                    .disabled(!container.settings.dxvk)
 
                     if !modifyingWindowsVersion, windowsVersionError == nil {
                         Picker("Windows Version", selection: Binding(
