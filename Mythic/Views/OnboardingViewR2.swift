@@ -190,7 +190,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                     VStack {
                                         Text("A new window will open, prompting you to sign in to Epic Games.")
 
-                                        if epicWebAuthViewModel.webAuthViewPresented {
+                                        if epicWebAuthViewModel.isEpicSignInWindowVisible {
                                             ProgressView()
                                                 .progressViewStyle(.linear)
                                                 .transition(.opacity)
@@ -217,10 +217,6 @@ struct OnboardingR2: View { // TODO: ViewModel
                                             }
                                         }
                                 ), thirdRow: [
-                                    .skipArrow(
-                                        function: { isSkipAlertPresented = true },
-                                        isButtonDisabled: epicWebAuthViewModel.webAuthViewPresented
-                                    ) /*,
                                     epicDisclaimerReadingDelay ? nil : .custom(
                                             content: AnyView(
                                                 Button {
@@ -233,11 +229,17 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                 }
                                                 .help("Skip")
                                                 .buttonStyle(.plain)
-                                                .disabled(epicWebAuthViewModel.webAuthViewPresented)
+                                                // .disabled(epicWebAuthViewModel.isEpicSignInWindowVisible)
                                             )
-                                        )
-                                     */
-                                ] // .compactMap { $0 }
+                                        ),
+                                    .skipArrow(
+                                        function: {
+                                            isSkipAlertPresented = true
+                                            epicWebAuthViewModel.closeSignInWindow()
+                                        }/*,
+                                        isButtonDisabled: epicWebAuthViewModel.isEpicSignInWindowVisible
+                                    */)
+                                ] .compactMap { $0 }
                             )
                             .onAppear {
                                 isNextButtonDisabled = true
