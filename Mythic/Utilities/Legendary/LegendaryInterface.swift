@@ -409,8 +409,16 @@ final class Legendary {
         if case .windows = game.platform {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
-            environmentVariables["WINEMSYNC"] = container.settings.msync ? "1" : "0"
-            environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2 ? "1" : "0"
+            environmentVariables["WINEMSYNC"] = "\(container.settings.msync.numericalValue)"
+            environmentVariables["ROSETTA_ADVERTISE_AVX"] = "\(container.settings.avx2.numericalValue)"
+
+            if container.settings.dxvk {
+                environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
+
+                if container.settings.dxvkAsync {
+                    environmentVariables["DXVK_ASYNC"] = "1"
+                }
+            }
         }
 
         arguments.append(contentsOf: ["--"] + game.launchArguments)

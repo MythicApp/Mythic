@@ -6127,6 +6127,9 @@
         }
       }
     },
+    "Asynchronous DXVK" : {
+
+    },
     "Automatically check for Mythic Engine updates" : {
       "localizations" : {
         "af" : {
@@ -11268,6 +11271,12 @@
           }
         }
       }
+    },
+    "DXVK" : {
+
+    },
+    "DXVK cannot be modified: %@" : {
+
     },
     "Engine" : {
 
@@ -26708,6 +26717,9 @@
         }
       }
     },
+    "Quit games running in this container?" : {
+
+    },
     "Remove" : {
       "localizations" : {
         "af" : {
@@ -35080,6 +35092,9 @@
           }
         }
       }
+    },
+    "To toggle DXVK, Mythic must quit all games currently running in this container.\nAdditionally, D3DMetal will be disabled.\n\nToggling DXVK may impact compatibility positively or negatively." : {
+
     },
     "Unable to locate %@ at its specified path (%@)" : {
       "localizations" : {
