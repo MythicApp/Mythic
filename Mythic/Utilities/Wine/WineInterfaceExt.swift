@@ -118,14 +118,19 @@ extension Wine {
         var settings: ContainerSettings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
 
         private(set) var propertiesFile: URL
+
+        struct Process {
+            var name: String = .init()
+            var pid: Int = .init()
+        }
     }
 
     struct ContainerSettings: Codable, Hashable, Equatable {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool
-        var DXVK: Bool
-        var DXVKAsync: Bool
+        var dxvk: Bool
+        var dxvkAsync: Bool
         var windowsVersion: WindowsVersion
         var scaling: Int
         var avx2: Bool
@@ -134,8 +139,8 @@ extension Wine {
             case metalHUD
             case msync
             case retinaMode
-            case DXVK
-            case DXVKAsync
+            case dxvk
+            case dxvkAsync
             case windowsVersion
             case scaling
             case avx2
@@ -145,8 +150,8 @@ extension Wine {
             metalHUD: Bool = false,
             msync: Bool = true,
             retinaMode: Bool = true,
-            DXVK: Bool = false,
-            DXVKAsync: Bool = false,
+            dxvk: Bool = false,
+            dxvkAsync: Bool = false,
             windowsVersion: WindowsVersion = .win11,
             scaling: Int = 192,
             avx2: Bool = {
@@ -160,8 +165,8 @@ extension Wine {
             self.metalHUD = metalHUD
             self.msync = msync
             self.retinaMode = retinaMode
-            self.DXVK = DXVK
-            self.DXVKAsync = DXVKAsync
+            self.dxvk = dxvk
+            self.dxvkAsync = dxvkAsync
             self.windowsVersion = windowsVersion
             self.scaling = scaling
             self.avx2 = avx2
@@ -174,8 +179,8 @@ extension Wine {
             self.metalHUD = try container.decodeIfPresent(Bool.self, forKey: .metalHUD) ?? self.metalHUD
             self.msync = try container.decodeIfPresent(Bool.self, forKey: .msync) ?? self.msync
             self.retinaMode = try container.decodeIfPresent(Bool.self, forKey: .retinaMode) ?? self.retinaMode
-            self.DXVK = try container.decodeIfPresent(Bool.self, forKey: .DXVK) ?? self.DXVK
-            self.DXVKAsync = try container.decodeIfPresent(Bool.self, forKey: .DXVKAsync) ?? self.DXVKAsync
+            self.dxvk = try container.decodeIfPresent(Bool.self, forKey: .dxvk) ?? self.dxvk
+            self.dxvkAsync = try container.decodeIfPresent(Bool.self, forKey: .dxvkAsync) ?? self.dxvkAsync
             self.windowsVersion = try container.decodeIfPresent(WindowsVersion.self, forKey: .windowsVersion) ?? self.windowsVersion
             self.scaling = try container.decodeIfPresent(Int.self, forKey: .scaling) ?? self.scaling
             self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2

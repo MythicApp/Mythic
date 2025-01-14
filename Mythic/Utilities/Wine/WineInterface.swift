@@ -192,16 +192,24 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // FIXME: tasklist impossible with current command() implementation, TODO: large refactor
-    static func tasklist(containerURL url: URL) throws -> [String: Int] {
-        let list: [String: Int] = .init()
-        Task {
-            try await command(arguments: ["tasklist"], identifier: "tasklist", containerURL: url) { output in
-                
+    static func tasklist(containerURL url: URL) async throws -> [Container.Process] {
+        var list: [Container.Process] = .init()
+
+        try await command(arguments: ["tasklist"], identifier: "tasklist", containerURL: url) { output in
+            output.stdout.enumerateLines { line, _ in
+                if let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: line) {
+                    var process: Container.Process = .init()
+                    process.name = String(match["name"]?.substring ?? "Unknown")
+                    process.pid = Int(match["pid"]?.substring ?? "0") ?? 0
+
+                    list.append(process)
+                }
             }
         }
+
         return list
     }
-    
+
     // MARK: - Boot Method
     /**
      Boot a wine prefix/container.
