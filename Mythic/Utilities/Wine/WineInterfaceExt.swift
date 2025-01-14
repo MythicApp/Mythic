@@ -101,8 +101,6 @@ extension Wine {
             self.init(name: url.lastPathComponent, url: url, settings: .init())
         }
 
-        // deinit { saveProperties() } // FIXME: causes conflict with didSet
-
         /// Saves the container properties to disk.
         func saveProperties() {
             let encoder = PropertyListEncoder()
@@ -122,21 +120,66 @@ extension Wine {
         private(set) var propertiesFile: URL
     }
 
-    struct ContainerSettings: Codable, Hashable {
-        var metalHUD: Bool = false
-        var msync: Bool = true
-        var retinaMode: Bool = true
-        var DXVK: Bool = false
-        var DXVKAsync: Bool = false
-        var windowsVersion: WindowsVersion = .win11
-        var scaling: Int = 192
-        var avx2: Bool = {
-            if #available(macOS 15.0, *) {
-                return true
-            } else {
-                return false
-            }
-        }()
+    struct ContainerSettings: Codable, Hashable, Equatable {
+        var metalHUD: Bool
+        var msync: Bool
+        var retinaMode: Bool
+        var DXVK: Bool
+        var DXVKAsync: Bool
+        var windowsVersion: WindowsVersion
+        var scaling: Int
+        var avx2: Bool
+
+        enum CodingKeys: String, CodingKey {
+            case metalHUD
+            case msync
+            case retinaMode
+            case DXVK
+            case DXVKAsync
+            case windowsVersion
+            case scaling
+            case avx2
+        }
+
+        init(
+            metalHUD: Bool = false,
+            msync: Bool = true,
+            retinaMode: Bool = true,
+            DXVK: Bool = false,
+            DXVKAsync: Bool = false,
+            windowsVersion: WindowsVersion = .win11,
+            scaling: Int = 192,
+            avx2: Bool = {
+                if #available(macOS 15.0, *) {
+                    return true
+                } else {
+                    return false
+                }
+            }()
+        ) {
+            self.metalHUD = metalHUD
+            self.msync = msync
+            self.retinaMode = retinaMode
+            self.DXVK = DXVK
+            self.DXVKAsync = DXVKAsync
+            self.windowsVersion = windowsVersion
+            self.scaling = scaling
+            self.avx2 = avx2
+        }
+
+        init(from decoder: Decoder) throws {
+            self.init()
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+
+            self.metalHUD = try container.decodeIfPresent(Bool.self, forKey: .metalHUD) ?? self.metalHUD
+            self.msync = try container.decodeIfPresent(Bool.self, forKey: .msync) ?? self.msync
+            self.retinaMode = try container.decodeIfPresent(Bool.self, forKey: .retinaMode) ?? self.retinaMode
+            self.DXVK = try container.decodeIfPresent(Bool.self, forKey: .DXVK) ?? self.DXVK
+            self.DXVKAsync = try container.decodeIfPresent(Bool.self, forKey: .DXVKAsync) ?? self.DXVKAsync
+            self.windowsVersion = try container.decodeIfPresent(WindowsVersion.self, forKey: .windowsVersion) ?? self.windowsVersion
+            self.scaling = try container.decodeIfPresent(Int.self, forKey: .scaling) ?? self.scaling
+            self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2
+        }
     }
 
     enum WindowsVersion: String, Codable, CaseIterable {

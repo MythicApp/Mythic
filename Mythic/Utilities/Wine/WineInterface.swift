@@ -61,7 +61,9 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }()
     
     static var containerURLs: Set<URL> {
-        get { return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? []) }
+        get {
+            return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? [])
+        }
         set {
             do {
                 try defaults.encodeAndSet(Array(newValue), forKey: "containerURLs")
