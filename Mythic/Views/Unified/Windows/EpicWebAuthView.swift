@@ -18,16 +18,14 @@ struct EpicWebAuthView: View {
     @State private var authKey: String = .init()
 
     var body: some View {
-        EpicInterceptorWebView { authKey = $0 }
+        EpicInterceptorWebView(completion: { authKey = $0 })
             .blur(radius: attemptingSignIn ? 30 : 0)
             .onChange(of: authKey, { handleAuthKeyChange($1) })
             .onAppear {
-                viewModel.webAuthViewPresented = true
                 viewModel.signInSuccess = false
             }
             .onDisappear {
                 authKey = .init()
-                viewModel.webAuthViewPresented = false
             }
             .alert(isPresented: $isSigninErrorPresented) {
                 .init(
@@ -66,20 +64,29 @@ struct EpicWebAuthView: View {
     }
 }
 
-final class EpicWebAuthViewModel: ObservableObject {
+final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
     public static let shared = EpicWebAuthViewModel()
-    @Published var webAuthViewPresented = false
     @Published var signInSuccess = false
-    
+
+    // FIXME: nonfunctional
+    @Published var isEpicSignInWindowVisible: Bool = false
+
     // Keep a strong reference to the sign-in window
     private var epicSignInWindow: NSWindow?
 
-    private init() {}
+    private override init() {
+        super.init()
+    }
 
     @MainActor
-    func showSignInWindow() {
-        guard epicSignInWindow == nil else {
-            Logger.app.warning("Epic sign-in window already open")
+    func showSignInWindow(reloadHostingView: Bool = true) {
+        if let window = epicSignInWindow {
+            if reloadHostingView {
+                window.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
+            }
+            window.makeKeyAndOrderFront(nil)
+            // Update visibility status
+            isEpicSignInWindowVisible = window.isVisible
             return
         }
 
@@ -88,33 +95,64 @@ final class EpicWebAuthViewModel: ObservableObject {
             return
         }
 
-        let window = NSWindow(
+        epicSignInWindow = NSWindow(
             contentRect: .init(x: 0, y: 0, width: 750, height: 500),
             styleMask: [.titled, .closable, .resizable],
             backing: .buffered,
             defer: false
         )
 
-        window.identifier = .init("epic-signin")
-        window.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
-        window.titlebarAndTextHidden = true
-        window.center()
-        window.makeKeyAndOrderFront(nil)
-        sharedApp.activate(ignoringOtherApps: true)
+        epicSignInWindow?.identifier = .init("epic-signin")
+        epicSignInWindow?.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
+        epicSignInWindow?.titlebarAndTextHidden = true
+        epicSignInWindow?.center()
+        epicSignInWindow?.makeKeyAndOrderFront(nil)
+        epicSignInWindow?.isReleasedWhenClosed = false
 
-        epicSignInWindow = window
-        webAuthViewPresented = true
+        // Update visibility status
+        isEpicSignInWindowVisible = epicSignInWindow?.isVisible ?? false
+
+        sharedApp.activate(ignoringOtherApps: true)
+    }
+
+    @MainActor
+    func invokeSignInError(errorDescription: String) {
+        guard let window = epicSignInWindow, window.isVisible else {
+            Logger.app.warning("Sign-in window isn't visible, skipping error alert")
+            return
+        }
+
+        let error = NSAlert()
+        error.messageText = Legendary.SignInError().localizedDescription
+        error.informativeText = errorDescription
+        error.addButton(withTitle: "Close")
+
+        error.beginSheetModal(for: window) { [self] response in
+            switch response {
+            case .alertFirstButtonReturn:
+                fallthrough
+            default:
+                closeSignInWindow()
+                break
+            }
+        }
     }
 
     @MainActor
     func closeSignInWindow() {
-        epicSignInWindow?.close()
+        epicSignInWindow?.orderOut(nil)
+        // Set visibility to false when the window is closed
+        isEpicSignInWindowVisible = false
         epicSignInWindow = nil
-        webAuthViewPresented = false
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        closeSignInWindow()
     }
 }
 
 fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
+    // @ObservedObject var viewModel: EpicWebAuthViewModel
     let completion: (String) -> Void
 
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -132,7 +170,10 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
                     let data = content.data(using: .utf8),
                     let json = try? JSON(data: data),
                     let code = json["authorizationCode"].string
-                else { return }
+                else {
+                    // self.parent.viewModel.invokeSignInError(errorDescription: error?.localizedDescription ?? "Error parsing authorization code.")
+                    return
+                }
 
                 self.parent.completion(code)
             }
