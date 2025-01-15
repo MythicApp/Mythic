@@ -19,6 +19,12 @@ import SwordRPC
 
 struct SettingsView: View {
     // Tab-style (macOS >14)
+    @State private var isServicesDiscordSectionExpanded: Bool = true
+    @State private var isServicesEpicSectionExpanded: Bool = true
+    @State private var isSettingsAdvancedSectionExpanded: Bool = false
+    @State private var isUpdatesMythicSectionExpanded: Bool = true
+    @State private var isUpdatesEngineSectionExpanded: Bool = true
+
 
 
     // Legacy (macOS <14)
@@ -314,10 +320,67 @@ struct SettingsView: View {
         Toggle("Automatically check for Mythic Engine updates", systemImage: "arrow.down.app.dashed", isOn: $engineAutomaticallyChecksForUpdates)
     }
 
+    private var fullAppResetButton: some View {
+        Button {
+            isResetAlertPresented = true
+        } label: {
+            Label("Reset Mythic", systemImage: "power.dotted")
+        }
+        .alert(isPresented: $isResetAlertPresented) {
+            .init(
+                title: .init("Reset Mythic?"),
+                message: .init("This will erase every persistent setting and container."),
+                primaryButton: .destructive(.init("Reset")) {
+                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                        defaults.removePersistentDomain(forName: bundleIdentifier)
+                    }
+
+                    if let appHome = Bundle.appHome {
+                        try? files.removeItem(at: appHome)
+                    }
+
+                    if let containersDirectory = Wine.containersDirectory {
+                        try? files.removeItem(at: containersDirectory)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
+        }
+    }
+
+    private var appResetButton: some View {
+        Button {
+            isResetSettingsAlertPresented = true
+        } label: {
+            Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
+        }
+        .alert(isPresented: $isResetSettingsAlertPresented) {
+            .init(
+                title: .init("Reset Mythic Settings?"),
+                message: .init("This will erase every persistent setting."),
+                primaryButton: .destructive(.init("Reset")) {
+                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
+                        defaults.removePersistentDomain(forName: bundleIdentifier)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
+        }
+    }
+
     var body: some View {
         Group {
             if #available(macOS 15.0, *) {
                 TabView {
+                    Tab("General", systemImage: "gear") {
+                        Form {
+                            fullAppResetButton
+
+                            appResetButton
+                        }
+                        .formStyle(.grouped)
+                    }
+
                     Tab("Views", systemImage: "document.viewfinder") {
                         Form {
                             libraryViewSettingsSection
@@ -341,13 +404,13 @@ struct SettingsView: View {
 
                     Tab("Services", systemImage: "app.connected.to.app.below.fill") {
                         Form {
-                            Section("Discord", isExpanded: .constant(true)) {
+                            Section("Discord", isExpanded: $isServicesDiscordSectionExpanded) {
                                 discordActivityStatusToggle
                             }
                             .disabled(!discordRPC.isDiscordInstalled)
                             .help(discordRPC.isDiscordInstalled ? .init() : "Discord is not installed.")
 
-                            Section("Epic Games", isExpanded: .constant(true)) {
+                            Section("Epic Games", isExpanded: $isServicesEpicSectionExpanded) {
                                 epicCleanupButton
 
                                 epicCloudSyncButton
@@ -368,7 +431,7 @@ struct SettingsView: View {
 
                                 engineRemovalButton
 
-                                Section("Advanced", isExpanded: .constant(true)) {
+                                Section("Advanced", isExpanded: $isSettingsAdvancedSectionExpanded) {
                                     enginePurgeShaderCacheButton
                                 }
                             }
@@ -399,11 +462,11 @@ struct SettingsView: View {
 
                     Tab("Updates", systemImage: "arrow.down.app") {
                         Form {
-                            Section("Mythic", isExpanded: .constant(true)) {
+                            Section("Mythic", isExpanded: $isUpdatesMythicSectionExpanded) {
                                 mythicUpdateSettings
                             }
 
-                            Section("Mythic Engine", isExpanded: .constant(true)) {
+                            Section("Mythic Engine", isExpanded: $isUpdatesEngineSectionExpanded) {
                                 engineUpdateStreamPicker
 
                                 engineUpdateCheckerToggle
@@ -422,50 +485,9 @@ struct SettingsView: View {
 
                         defaultInstallLocationPicker
 
-                        Button {
-                            isResetAlertPresented = true
-                        } label: {
-                            Label("Reset Mythic", systemImage: "power.dotted")
-                        }
-                        .alert(isPresented: $isResetAlertPresented) {
-                            .init(
-                                title: .init("Reset Mythic?"),
-                                message: .init("This will erase every persistent setting and container."),
-                                primaryButton: .destructive(.init("Reset")) {
-                                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                                        defaults.removePersistentDomain(forName: bundleIdentifier)
-                                    }
+                        fullAppResetButton
 
-                                    if let appHome = Bundle.appHome {
-                                        try? files.removeItem(at: appHome)
-                                    }
-
-                                    if let containersDirectory = Wine.containersDirectory {
-                                        try? files.removeItem(at: containersDirectory)
-                                    }
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-
-                        Button {
-                            isResetSettingsAlertPresented = true
-                        } label: {
-                            Label("Reset settings to default", systemImage: "clock.arrow.circlepath")
-                        }
-                        .alert(isPresented: $isResetSettingsAlertPresented) {
-                            .init(
-                                title: .init("Reset Mythic Settings?"),
-                                message: .init("This will erase every persistent setting."),
-                                primaryButton: .destructive(.init("Reset")) {
-                                    if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                                        defaults.removePersistentDomain(forName: bundleIdentifier)
-                                    }
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-
+                        appResetButton
                     }
 
                     Section("Mythic Engine", isExpanded: $isWineSectionExpanded) {
