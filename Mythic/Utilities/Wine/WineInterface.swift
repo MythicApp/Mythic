@@ -288,20 +288,20 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     // MARK: - Kill All Method
-    static func killAll(containerURL: URL? = nil) throws {
+    static func killAll(containerURLs urls: [URL] = .init()) throws {
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
         task.arguments = ["-k"]
         
-        let urls: [URL] = containerURL.map { [$0] } ?? .init(containerURLs)
-        
+        let urls: [URL] = urls.isEmpty ? .init(containerURLs) : urls
+
         for url in urls {
             task.environment = ["WINEPREFIX": url.path(percentEncoded: false)]
             task.qualityOfService = .utility
             try task.run()
         }
     }
-    
+
     // MARK: - Clear Shader Cache Method
     static func purgeShaderCache(game: Game? = nil) -> Bool {
         let task = Process()

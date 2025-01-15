@@ -18,21 +18,27 @@ import Foundation
 import OSLog
 
 extension Process {
-    static func execute(executableURL: URL, arguments: [String]) throws -> String {
+    static func execute(executableURL: URL, arguments: [String]) throws -> (stderr: String, stdout: String) {
         let process = Process()
         process.executableURL = executableURL
         process.arguments = arguments
-        
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        
+
+        let stderr = Pipe()
+        let stdout = Pipe()
+
+        process.standardError = stderr
+        process.standardOutput = stdout
+
         try? process.run()
         process.waitUntilExit()
         
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(decoding: data, as: UTF8.self)
-        
-        return output.trimmingCharacters(in: .whitespacesAndNewlines)
+        let stdoutData = stdout.fileHandleForReading.readDataToEndOfFile()
+        let stderrData = stderr.fileHandleForReading.readDataToEndOfFile()
+
+        let stderrOutput = String(decoding: stderrData, as: UTF8.self)
+        let stdoutOutput = String(decoding: stdoutData, as: UTF8.self)
+
+        return (stderr: stderrOutput, stdout: stdoutOutput)
     }
     
     static func executeAsync(executableURL: URL, arguments: [String], completion: @escaping (CommandOutput) -> Void) async throws {
