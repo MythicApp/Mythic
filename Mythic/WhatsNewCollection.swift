@@ -117,6 +117,50 @@ extension MythicApp: WhatsNewCollectionProvider {
                 action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.3"))
             )
         )
+
+        WhatsNew(
+            version: "0.4.4",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug",
+                        foregroundColor: .red
+                    ),
+                    title: "Bug Fixes & Performance Improvements",
+                    subtitle: "A critical crash to do with the Epic Games signin window has been fixed, among other miscallaneous fixes."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "gear.badge.checkmark",
+                        foregroundColor: .orange
+                    ),
+                    title: "Overhauled settings view",
+                    subtitle: "Implemented intuitive navigation on users with macOS 15 (Sequoia) or above."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "square.grid.2x2",
+                        foregroundColor: .green
+                    ),
+                    title: "Revamped library view",
+                    subtitle: "Scroll, resize, and adjust game cards to your liking."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "gamecontroller.circle",
+                        foregroundColor: .teal
+                    ),
+                    title: "Improved game compatibility",
+                    subtitle: "DXVK and AVX2 are now integrated into Mythic."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.4"))
+            )
+        )
     }
 }
 
