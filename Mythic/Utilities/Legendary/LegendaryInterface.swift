@@ -404,19 +404,26 @@ final class Legendary {
             needsUpdate(game: game) ? "--skip-version-check" : nil
         ] .compactMap { $0 }
 
-        var environmentVariables = ["MTL_HUD_ENABLED": container.settings.metalHUD ? "1" : "0"]
+        var environmentVariables: [String: String] = .init()
 
         if case .windows = game.platform {
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
+            // required for launching w/ legendary
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
-            environmentVariables["WINEMSYNC"] = "\(container.settings.msync.numericalValue)"
-            environmentVariables["ROSETTA_ADVERTISE_AVX"] = "\(container.settings.avx2.numericalValue)"
+
+            environmentVariables["WINEMSYNC"] = container.settings.msync.numericalValue.description
+            environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2.numericalValue.description
 
             if container.settings.dxvk {
                 environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
+                environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
+            }
 
-                if container.settings.dxvkAsync {
-                    environmentVariables["DXVK_ASYNC"] = "1"
+            if container.settings.metalHUD {
+                if container.settings.dxvk {
+                    environmentVariables["DXVK_HUD"] = "full"
+                } else {
+                    environmentVariables["MTL_HUD_ENABLED"] = "1"
                 }
             }
         }
