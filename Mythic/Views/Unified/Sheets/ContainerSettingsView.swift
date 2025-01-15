@@ -165,6 +165,8 @@ struct ContainerSettingsView: View {
                                         do {
                                             withAnimation { modifyingDXVK = true }
 
+                                            try Wine.killAll(containerURLs: [container.url])
+
                                             // x64
                                             try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d10core.dll"))
                                             try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d11.dll"))
@@ -182,21 +184,21 @@ struct ContainerSettingsView: View {
                                                 )
                                             } else {
                                                 // x64
-                                                try files.copyItem(
+                                                try files.forceCopyItem(
                                                     at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
                                                     to: container.url.appending(path: "drive_c/windows/system32")
                                                 )
-                                                try files.copyItem(
+                                                try files.forceCopyItem(
                                                     at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
                                                     to: container.url.appending(path: "drive_c/windows/system32")
                                                 )
 
                                                 // x32
-                                                try files.copyItem(
+                                                try files.forceCopyItem(
                                                     at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
                                                     to: container.url.appending(path: "drive_c/windows/syswow64")
                                                 )
-                                                try files.copyItem(
+                                                try files.forceCopyItem(
                                                     at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
                                                     to: container.url.appending(path: "drive_c/windows/syswow64")
                                                 )
@@ -232,7 +234,7 @@ struct ContainerSettingsView: View {
                         get: { container.settings.dxvkAsync },
                         set: { container.settings.dxvkAsync = $0 }
                     ))
-                    .disabled(!container.settings.dxvk)
+                    .disabled(!container.settings.dxvk || modifyingDXVK)
 
                     if !modifyingWindowsVersion, windowsVersionError == nil {
                         Picker("Windows Version", selection: Binding(
