@@ -109,8 +109,6 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
         epicSignInWindow?.center()
         epicSignInWindow?.makeKeyAndOrderFront(nil)
         epicSignInWindow?.isReleasedWhenClosed = false
-
-        // Update visibility status
         isEpicSignInWindowVisible = epicSignInWindow?.isVisible ?? false
 
         sharedApp.activate(ignoringOtherApps: true)
@@ -145,7 +143,6 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
     @MainActor
     func closeSignInWindow() {
         epicSignInWindow?.orderOut(nil)
-        // Set visibility to false when the window is closed
         isEpicSignInWindowVisible = false
         epicSignInWindow = nil
     }
