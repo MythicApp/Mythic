@@ -12,6 +12,8 @@ import OSLog
 
 struct EpicWebAuthView: View {
     @ObservedObject var viewModel: EpicWebAuthViewModel
+    @ObservedObject var gameListViewModel: GameListVM = .shared
+
     @State private var isBlurred: Bool = false
     @State private var isWorking: Bool = false
     @State private var isSigninErrorPresented: Bool = false
@@ -55,6 +57,8 @@ struct EpicWebAuthView: View {
                 try await Legendary.signIn(authKey: newAuthKey)
                 viewModel.signInSuccess = true
                 viewModel.closeSignInWindow()
+
+                gameListViewModel.refresh()
             } catch {
                 signInError = error
                 isSigninErrorPresented = true
