@@ -12,14 +12,15 @@ import OSLog
 
 struct EpicWebAuthView: View {
     @ObservedObject var viewModel: EpicWebAuthViewModel
-    @State private var attemptingSignIn: Bool = false
+    @State private var isBlurred: Bool = false
+    @State private var isWorking: Bool = false
     @State private var isSigninErrorPresented: Bool = false
     @State private var signInError: Error?
     @State private var authKey: String = .init()
 
     var body: some View {
-        EpicInterceptorWebView(completion: { authKey = $0 })
-            .blur(radius: attemptingSignIn ? 30 : 0)
+        EpicInterceptorWebView(viewModel: viewModel, isWebAuthViewBlurred: $isBlurred, completion: { authKey = $0 })
+            .blur(radius: (isWorking || isBlurred) ? 30 : 0)
             .onChange(of: authKey, { handleAuthKeyChange($1) })
             .onAppear {
                 viewModel.signInSuccess = false
@@ -37,7 +38,7 @@ struct EpicWebAuthView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
-                    if attemptingSignIn {
+                    if isWorking {
                         ProgressView()
                             .controlSize(.small)
                     }
@@ -47,7 +48,7 @@ struct EpicWebAuthView: View {
 
     private func handleAuthKeyChange(_ newAuthKey: String) {
         guard !newAuthKey.isEmpty else { return }
-        attemptingSignIn = true // no animation
+        isWorking = true // no animation
 
         Task {
             do {
@@ -59,7 +60,7 @@ struct EpicWebAuthView: View {
                 isSigninErrorPresented = true
             }
 
-            withAnimation { attemptingSignIn = false }
+            withAnimation { isWorking = false }
         }
     }
 }
@@ -116,14 +117,17 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
     }
 
     @MainActor
-    func invokeSignInError(errorDescription: String) {
+    func invokeSignInError(
+        errorMessage: String = Legendary.SignInError().localizedDescription,
+        errorDescription: String
+    ) {
         guard let window = epicSignInWindow, window.isVisible else {
             Logger.app.warning("Sign-in window isn't visible, skipping error alert")
             return
         }
 
         let error = NSAlert()
-        error.messageText = Legendary.SignInError().localizedDescription
+        error.messageText = errorMessage
         error.informativeText = errorDescription
         error.addButton(withTitle: "Close")
 
@@ -152,7 +156,8 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
 }
 
 fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
-    // @ObservedObject var viewModel: EpicWebAuthViewModel
+    @ObservedObject var viewModel: EpicWebAuthViewModel
+    @Binding var isWebAuthViewBlurred: Bool
     let completion: (String) -> Void
 
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -164,18 +169,39 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             webView.evaluateJavaScript("document.body.innerText") { result, error in
-                guard
-                    error == nil,
-                    let content = result as? String,
-                    let data = content.data(using: .utf8),
-                    let json = try? JSON(data: data),
-                    let code = json["authorizationCode"].string
-                else {
-                    // self.parent.viewModel.invokeSignInError(errorDescription: error?.localizedDescription ?? "Error parsing authorization code.")
+                guard error == nil else {
+                    self.parent.isWebAuthViewBlurred = true // no animation
+
+                    self.parent.viewModel.invokeSignInError(
+                        errorMessage: "Error reading webpage.",
+                        errorDescription: error?.localizedDescription ?? "Unknown Error."
+                    )
+
+                    withAnimation { self.parent.isWebAuthViewBlurred = false }
                     return
                 }
 
-                self.parent.completion(code)
+                guard
+                    let content = result as? String,
+                    let data = content.data(using: .utf8),
+                    let json = try? JSON(data: data)
+                else {
+                    return
+                }
+
+                if let code = json["authorizationCode"].string {
+                    self.parent.completion(code)
+                } else if json["errorCode"].string != nil,
+                          let error = json["message"].string {
+                    self.parent.isWebAuthViewBlurred = true // no animation
+
+                    self.parent.viewModel.invokeSignInError(
+                        errorMessage: "Error reading webpage.",
+                        errorDescription: error
+                    )
+
+                    withAnimation { self.parent.isWebAuthViewBlurred = false }
+                }
             }
         }
     }
