@@ -2587,13 +2587,13 @@
             "value" : "%1$@ \"%2$@\"..."
           }
         },
-        "nl" : {
+        "nb" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ \"%2$@\"..."
           }
         },
-        "no" : {
+        "nl" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@ \"%2$@\"..."
@@ -5353,6 +5353,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to proceed without rating?" : {
+
     },
     "Are you sure you want to remove Mythic Engine?" : {
       "localizations" : {
@@ -15288,6 +15291,9 @@
         }
       }
     },
+    "Harmony ratings help every Mythic user understand how well a game runs." : {
+
+    },
     "Hello, world!" : {
       "localizations" : {
         "af" : {
@@ -16239,6 +16245,9 @@
       }
     },
     "Horizontal" : {
+
+    },
+    "How well did \"%@\" run?" : {
 
     },
     "I have read and agreed to the terms of the software license agreement." : {
@@ -26142,6 +26151,9 @@
         }
       }
     },
+    "Please choose a rating." : {
+
+    },
     "Preview" : {
       "comment" : "Within the context of Mythic Engine",
       "localizations" : {
@@ -33761,6 +33773,9 @@
           }
         }
       }
+    },
+    "This will be uploaded to Harmony, Mythic's game compatibility database." : {
+
     },
     "This will cancel \"%@\"'s creation." : {
       "localizations" : {
