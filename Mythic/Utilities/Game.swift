@@ -222,6 +222,14 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         case epic = "Epic"
         case local = "Local"
     }
+
+    enum Compatibility: String, CaseIterable {
+        case unplayable = "The game doesn't launch."
+        case launchable = "The game launches, but you are unable to play."
+        case runable = "The game launches and you are able to play, but some game features are nonfunctional."
+        case playable = "The game runs well, and is mostly feature-complete."
+        case excellent = "The game runs well, and is feature-complete."
+    }
 }
 
 /// Returns the app names of all favourited games.
