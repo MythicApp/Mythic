@@ -18,30 +18,32 @@ import OSLog
 // MARK: - WebView Struct
 /// SwiftUI view representing a WebView.
 struct WebView: NSViewRepresentable {
-    
     var url: URL
-    
+    var datastore: WKWebsiteDataStore = .default()
+
     @Binding var error: Error?
-    @Binding var isLoading: Bool?
     var canGoBack: Bool?
     var canGoForward: Bool?
     
-    // MARK: - Logger
-    /// Logger for the WebView.
     let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
         category: "WebView"
     )
     
     func makeNSView(context: Context) -> WKWebView {
-        let webView = WKWebView()
+        let config = WKWebViewConfiguration()
+        config.websiteDataStore = datastore
+
+        let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         return webView
     }
     
     func updateNSView(_ nsView: WKWebView, context: Context) {
-        let request = URLRequest(url: self.url)
-        nsView.load(request)
+        if nsView.url != self.url {
+            let request = URLRequest(url: self.url)
+            nsView.load(request)
+        }
     }
 
     func makeCoordinator() -> Coordinator {
@@ -61,18 +63,13 @@ struct WebView: NSViewRepresentable {
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation) {
-            parent.isLoading = false
             parent.canGoBack = webView.canGoBack
             parent.canGoForward = webView.canGoForward
-        }
-
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation) {
-            parent.isLoading = true
         }
     }
 }
 
 // MARK: - Preview
 #Preview {
-    WebView(url: .init(string: "https://example.com")!, error: .constant(nil), isLoading: .constant(nil))
+    WebView(url: .init(string: "https://example.com")!, error: .constant(nil))
 }
