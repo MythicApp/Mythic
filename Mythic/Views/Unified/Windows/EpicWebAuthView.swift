@@ -13,6 +13,7 @@ import OSLog
 struct EpicWebAuthView: View {
     @ObservedObject var viewModel: EpicWebAuthViewModel
     @ObservedObject var gameListViewModel: GameListVM = .shared
+    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
 
     @State private var isBlurred: Bool = false
     @State private var isWorking: Bool = false
@@ -22,13 +23,16 @@ struct EpicWebAuthView: View {
 
     var body: some View {
         EpicInterceptorWebView(viewModel: viewModel, isWebAuthViewBlurred: $isBlurred, completion: { authKey = $0 })
-            .blur(radius: (isWorking || isBlurred) ? 30 : 0)
+            .blur(radius: (isBlurred || isWorking) ? 30 : 0)
             .onChange(of: authKey, { handleAuthKeyChange($1) })
             .onAppear {
+                webDataStoreIdentifierString = UUID().uuidString
                 viewModel.signInSuccess = false
+                gameListViewModel.refresh()
             }
             .onDisappear {
                 authKey = .init()
+                gameListViewModel.refresh()
             }
             .alert(isPresented: $isSigninErrorPresented) {
                 .init(
@@ -159,6 +163,8 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
 fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
     @ObservedObject var viewModel: EpicWebAuthViewModel
     @Binding var isWebAuthViewBlurred: Bool
+    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
+
     let completion: (String) -> Void
 
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -192,12 +198,16 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
                 if let code = json["authorizationCode"].string {
                     self.parent.completion(code)
-                } else if json["errorCode"].string != nil,
-                          let error = json["message"].string {
+                } else if let errorCode = json["errorCode"].string,
+                          var error = json["message"].string {
                     self.parent.isWebAuthViewBlurred = true // no animation
 
+                    if errorCode == "errors.com.epicgames.oauth.corrective_action_required" {
+                        error = "Please visit https://www.epicgames.com/id/login/correction on a normal web browser, and then try signing in through Mythic again."
+                    }
+
                     self.parent.viewModel.invokeSignInError(
-                        errorMessage: "Error reading webpage.",
+                        errorMessage: Legendary.SignInError().localizedDescription,
                         errorDescription: error
                     )
 
@@ -213,7 +223,11 @@ fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
 
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
-        config.websiteDataStore = .nonPersistent()
+
+        if let datastoreUUID: UUID = .init(uuidString: webDataStoreIdentifierString) {
+            config.websiteDataStore = .init(forIdentifier: datastoreUUID)
+        }
+
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
         webView.load(URLRequest(url: URL(string: "https://legendary.gl/epiclogin")!))

@@ -34,8 +34,7 @@ struct SupportView: View {
             VStack {
                 WebView(
                     url: .init(string: "https://discord.com/widget?id=1154998702650425397&theme=\(colorSchemeValue)")!,
-                    error: .constant(nil),
-                    isLoading: .constant(nil)
+                    error: .constant(nil)
                 )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -44,7 +43,7 @@ struct SupportView: View {
 
             VStack {
                 if let patreonURL: URL = .init(string: /* temp comment "https://patreon.com/mythicapp" */ "https://ko-fi.com/vapidinfinity") {
-                    WebView(url: patreonURL, error: .constant(nil), isLoading: .constant(nil))
+                    WebView(url: patreonURL, error: .constant(nil))
                         .overlay(alignment: .bottomTrailing) {
                             Button {
                                 workspace.open(patreonURL)

@@ -371,6 +371,7 @@ final class Legendary {
 
     static func signOut() async throws {
         try await Legendary.command(arguments: ["auth", "--delete"], identifier: "signout") { _ in }
+        defaults.removeObject(forKey: "epicGamesWebDataStoreIdentifierString") // sign out of store and future signin webviews
     }
 
     /**

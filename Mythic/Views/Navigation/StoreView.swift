@@ -16,20 +16,33 @@
 
 import SwiftUI
 import SwordRPC
+import WebKit
 
 struct StoreView: View {
-    @State private var loadingError: Error?
-    @State private var isLoading: Bool? = false
-    @State private var canGoBack = false
-    @State private var canGoForward = false
+    private var canGoBack = false
+    private var canGoForward = false
     @State private var url: URL = .init(string: "https://store.epicgames.com/")!
+
     @State private var refreshIconRotation: Angle = .degrees(0)
 
+    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
+
     var body: some View {
-        WebView(url: url, error: .constant(nil), isLoading: .constant(nil), canGoBack: canGoBack, canGoForward: canGoForward)
-        
+        WebView(
+            url: url,
+            datastore: .init(
+                forIdentifier: (
+                    .init(uuidString: webDataStoreIdentifierString)
+                    ?? WKWebsiteDataStore.default().identifier
+                )!
+            ),
+            error: .constant(nil),
+            canGoBack: canGoBack,
+            canGoForward: canGoForward
+        )
+
         .navigationTitle("Store")
-        
+
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -43,22 +56,6 @@ struct StoreView: View {
         }
         
         .toolbar {
-            // FIXME: Loading view update creates view update race condition with webview
-            /*
-             if isLoading {
-                ToolbarItem(placement: .confirmationAction) {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .controlSize(.small)
-                }
-             } else if loadingError {
-                ToolbarItem(placement: .confirmationAction) {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .symbolEffect(.pulse)
-                }
-             }
-             */
-            
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     if canGoBack {
