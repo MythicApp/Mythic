@@ -120,6 +120,8 @@ struct OnboardingR2: View { // TODO: ViewModel
     @State private var isHoveringOverDestructiveButton: Bool = false
 
     @State private var epicDisclaimerReadingDelay: Bool = true
+    @State private var isAlternativeEpicSigninPresented: Bool = false
+    @State private var isAlternativeEpicSigninSuccessful: Bool = false
 
     @State private var agreedToRosettaSLA: Bool = false
     
@@ -211,17 +213,37 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 ), secondRow: .init(
                                     VStack {
                                         Text("A new window will open, prompting you to sign in to Epic Games.")
+                                        // workaround for if statment deallocating handlers
+                                            .sheet(isPresented: $isAlternativeEpicSigninPresented) {
+                                                AuthView(
+                                                    isPresented: $isAlternativeEpicSigninPresented,
+                                                    isSigninSuccessful: $isAlternativeEpicSigninSuccessful
+                                                )
+                                                .foregroundColor(.primary)
+                                                .padding()
+                                            }
+                                            .onChange(of: isAlternativeEpicSigninSuccessful) { _, newValue in
+                                                if newValue {
+                                                    animateNextPhase()
+                                                }
+                                            }
 
-                                        if epicWebAuthViewModel.isEpicSignInWindowVisible {
+
+                                        if epicWebAuthViewModel.isEpicSignInWindowVisible || isAlternativeEpicSigninPresented {
                                             ProgressView()
                                                 .progressViewStyle(.linear)
                                                 .transition(.opacity)
-                                        } else if !epicDisclaimerReadingDelay, !epicWebAuthViewModel.signInSuccess {
+                                        } else if !epicDisclaimerReadingDelay, !epicWebAuthViewModel.signInSuccess, !isAlternativeEpicSigninSuccessful {
                                             Group {
                                                 Text("""
                                                 Seems like the Epic Games signin window's been closed.
-                                                If this behaviour wasn't intended, please relaunch Mythic.
                                                 """)
+                                                HStack {
+                                                    Text("Alternatively, please use the alternative sign in method by clicking the 'Alternative Signin' button.")
+                                                    Button("Alternative Signin") {
+                                                        isAlternativeEpicSigninPresented = true
+                                                    }
+                                                }
                                             }
                                             .padding(.top)
                                             .transition(.opacity)
@@ -249,9 +271,9 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                         .scaledToFit()
                                                         .frame(width: 20)
                                                 }
-                                                .help("Skip")
+                                                .help("Re-display epic signin window")
                                                 .buttonStyle(.plain)
-                                                // .disabled(epicWebAuthViewModel.isEpicSignInWindowVisible)
+                                                .disabled(epicWebAuthViewModel.isEpicSignInWindowVisible)
                                             )
                                         ),
                                     .skipArrow(
@@ -710,6 +732,6 @@ extension OnboardingR2 {
 }
 
 #Preview {
-    OnboardingR2(fromPhase: .logo)
+    OnboardingR2(fromPhase: .signin)
         .environmentObject(NetworkMonitor.shared)
 }
