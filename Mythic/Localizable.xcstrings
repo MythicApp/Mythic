@@ -191,196 +191,6 @@
         }
       }
     },
-    "\nEnter the 'authorisationCode' from the JSON response in the field below." : {
-      "localizations" : {
-        "af" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "ar" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nIntroduïu el \"authorisationCode\" de la resposta JSON al camp següent."
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nDo níže uvedeného pole zadejte \"authorisationCode\" z odpovědi JSON."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nIndtast 'autorisationskoden' fra JSON svar i feltet nedenfor."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nGeben Sie den \"authorisationCode\" aus der JSON-Antwort in das unten stehende Feld ein."
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nIngrese el 'código de autorización' de la respuesta JSON en el campo a continuación."
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nEntrez la valeur 'authorisationCode' depuis les données JSON ci-dessous."
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nÍrd be a JSON-válaszban szereplő \"authorisationCode\"-ot az alábbi mezőbe."
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nMasukkan 'authorisationCode' dari respons JSON pada bidang di bawah ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nInserisci l'«authorisationCode» dalla risposta JSON nel campo sottostante."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nJSONレスポンスの「authorisationCode」を下のフィールドに入力します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nJSON 응답의 'authorisationCode' 항목을 입력하세요"
-          }
-        },
-        "mt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nDaħħal l-'authorisationCode' mir-risposta JSON fil-qasam hawn taħt."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nSkriv inn \"authorisationCode\" fra JSON-svaret i feltet nedenfor."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nVoer de 'authorisationCode' uit het JSON-antwoord in het onderstaande veld in."
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nWprowadź 'AuthorationCode' z odpowiedzi JSON w polu poniżej."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nDigite o \"authorisationCode\" da resposta JSON no campo abaixo."
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nВведите 'authorisationCode' из ответа JSON в поле ниже."
-          }
-        },
-        "sr" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nJSON yanıtındaki 'authorisationCode' değerini aşağıdaki alana girin."
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\nВведіть \"authorisationCode\" з відповіді JSON у полі нижче."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "\nEnter the 'authorisationCode' from the JSON response in the field below."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在下面输入 JSON 结果中的 'authorisationCode'"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\n在下面的框里输入JSON回應的授權碼 。"
-          }
-        }
-      }
-    },
     "(%@ Elapsed)" : {
       "localizations" : {
         "af" : {
@@ -2286,6 +2096,9 @@
           }
         }
       }
+    },
+    "{\n    \"redirectUrl\": \"https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\n    %@,\n    \"exchangeCode\": null,\n    \"sid\": null,\n    \"ssoV2Enabled\": true\n}" : {
+
     },
     "%@" : {
       "localizations" : {
@@ -4205,195 +4018,8 @@
         }
       }
     },
-    "A link should've opened in your browser. If not, click" : {
-      "localizations" : {
-        "af" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "ar" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "ca" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un enllaç hauria d'haver obert al vostre navegador, si no, feu clic"
-          }
-        },
-        "cs" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ve vašem prohlížeči se otevře odkaz. Pokud ne, klikněte"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Der skulle være åbnet et link i din browser. Hvis ikke, klik"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein Link sollte in Ihrem Browser geöffnet werden. Wenn nicht, klicken Sie"
-          }
-        },
-        "el" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Debería haberse abierto un enlace en su navegador. Si no, haga clic"
-          }
-        },
-        "fi" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un lien devrait s'être ouvert dans votre navigateur. Si ce n'est pas le cas, cliquez"
-          }
-        },
-        "he" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "hu" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Egy linknek meg kellett volna nyílnia a böngésződben. Ha nem, kattints"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seharusnya ada tautan yang terbuka di browser Anda. Jika tidak, klik"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un link si dovrebbe essere aperto nel tuo browser. In caso contrario, clicca"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "링크가 브라우저에서 열립니다. 열리지 않으면 링크를 클릭하세요."
-          }
-        },
-        "mt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link waħda suppost tkun miftuħa fil-browser tiegħek. Jekk le, ikklikkja"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En lenke bør ha åpnet i nettleseren din. Hvis ikke, klikk"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Er zou een link moeten worden geopend in je browser. Zo niet, klik dan op"
-          }
-        },
-        "pl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Link powinien otworzyć się w przeglądarce. Jeśli nie, kliknij"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um link deve ter sido aberto no seu navegador. Se não, clique"
-          }
-        },
-        "pt-PT" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ссылка должна открыться в браузере. Если этого не произошло, нажмите"
-          }
-        },
-        "sr" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tarayıcınızda bir bağlantı açılmış olmalı. Açılmadıysa, tıklayın"
-          }
-        },
-        "uk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Посилання повинно було відкритися у вашому браузері. Якщо ні, натисніть"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "A link should've opened in your browser. If not, click"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已经尝试在您的浏览器中打开链接。如果没有出现，请点击"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "連結應該在您的瀏覽器打開。如果沒有，請點擊"
-          }
-        }
-      }
+    "A link should open in your browser." : {
+
     },
     "A list of Apple SLAs may be found" : {
       "localizations" : {
@@ -4972,6 +4598,12 @@
 
     },
     "Advanced Vector Extensions (AVX2)" : {
+
+    },
+    "Alternative Signin" : {
+
+    },
+    "Alternatively, please use the alternative sign in method by clicking the 'Alternative Signin' button." : {
 
     },
     "Are you sure you want to cancel container creation?" : {
@@ -6317,6 +5949,9 @@
       }
     },
     "Asynchronous DXVK" : {
+
+    },
+    "authorizationCode\": → \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" ←" : {
 
     },
     "Automatically check for Mythic Engine updates" : {
@@ -12230,6 +11865,9 @@
         }
       }
     },
+    "Enter the 'authorisationCode' from the JSON response in the field below." : {
+
+    },
     "Enter Thumbnail URL here... (optional)" : {
       "localizations" : {
         "af" : {
@@ -16439,6 +16077,9 @@
           }
         }
       }
+    },
+    "If the link didn't open, click on the button below to open it manually." : {
+
     },
     "Images with a 3:4 aspect ratio fit the best." : {
       "localizations" : {
@@ -25201,6 +24842,9 @@
         }
       }
     },
+    "Open Signin Link" : {
+
+    },
     "Open..." : {
       "localizations" : {
         "af" : {
@@ -26919,6 +26563,9 @@
       }
     },
     "Quit games running in this container?" : {
+
+    },
+    "Re-display epic signin window" : {
 
     },
     "Remove" : {
@@ -29777,7 +29424,7 @@
     "Scrolling Direction" : {
 
     },
-    "Seems like the Epic Games signin window's been closed.\nIf this behaviour wasn't intended, please relaunch Mythic." : {
+    "Seems like the Epic Games signin window's been closed." : {
 
     },
     "Select a game:" : {
