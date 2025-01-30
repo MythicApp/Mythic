@@ -13,120 +13,102 @@
 
 import SwiftUI
 
-// MARK: - AuthView Struct
-/// SwiftUI view for authentication with Epic Games.
 struct AuthView: View {
-    // FIXME: oh god refactor
-    
-    // MARK: - Binding Properties
     @Binding var isPresented: Bool
-    @Binding var authSuccessful: Bool?
-    
-    // MARK: - State Properties
-    @State private var code: String = .init()
-    @State private var isLoggingIn: Bool = false
-    @State private var progressViewPresented: Bool = false
-    @State private var isProgressViewSheetPresented: Bool = false
+    @Binding var isSigninSuccessful: Bool
+
+    @State private var authKey: String = .init()
+    @State private var isSigninInitiated: Bool = false
+    @State private var hasSigninLinkOpened: Bool = false
     @State private var isHelpPopoverPresented: Bool = false
-    @State private var isError: Bool = false
-    
-    // MARK: - Submit to Legendary
-    /// Submits the authorization code to Legendary for authentication.
-    func submitToLegendary() async {
-        if !code.isEmpty {
-            isLoggingIn = true
-            progressViewPresented = true
-            
-            func displayError() {
-                authSuccessful = false
-                isError = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    code = .init()
-                    progressViewPresented = false
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 /* Just to be safe */) {
-                        isError = false
-                    }
-                }
+    @State private var signinError: Error?
+
+    func attemptSignIn() {
+        guard !authKey.isEmpty else { return }
+        withAnimation {
+            isSigninInitiated = true
+        }
+        defer {
+            withAnimation {
+                isSigninInitiated = false
             }
-            
+        }
+        Task {
             do {
-                try await Legendary.command(arguments: ["auth", "--code", code], identifier: "signin") { output in
-                    if output.stderr.contains("ERROR: Login attempt failed") {
-                        displayError(); return
-                    }
-                }
-                
-                authSuccessful = true
-                $isPresented.wrappedValue = false
-                progressViewPresented = false
+                try await Legendary.signIn(authKey: authKey)
+                isSigninSuccessful = true
+                isPresented = false
             } catch {
-                displayError()
+                signinError = error
             }
         }
     }
-    
-    init(isPresented: Binding<Bool>, authSuccessful: Binding<Bool?> = .constant(false)) {
-        _isPresented = isPresented
-        _authSuccessful = authSuccessful
-    }
-    
+
     // MARK: - Body
     var body: some View {
-        VStack {
-            Text("Sign in to Epic Games")
-                .font(.title)
-            
-            Divider()
-            
-            HStack {
-                Text("A link should've opened in your browser. If not, click")
-                Link("here.", destination: URL(string: "https://legendary.gl/epiclogin")!)
+        Text("Sign in to Epic Games")
+            .font(.title)
+            .task(priority: .userInitiated) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // reading delay
+                    hasSigninLinkOpened = true
+                    workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
+                }
             }
-            
-            Text("\nEnter the 'authorisationCode' from the JSON response in the field below.")
-            
-            HStack {
-                SecureField("Enter authorisation key...", text: $code)
-                    .onSubmit {
-                        Task(priority: .userInitiated) { await submitToLegendary() }
-                    }
-                    .frame(width: 350, alignment: .center)
-                
-                Button {
-                    Task(priority: .userInitiated) { await submitToLegendary() }
-                } label: {
-                    Text("Submit")
+
+        Divider()
+
+        Text("A link should open in your browser.")
+        if hasSigninLinkOpened {
+            Text("If the link didn't open, click on the button below to open it manually.")
+            Button("Open Signin Link") {
+                workspace.open(URL(string: "http://legendary.gl/epiclogin")!)
+            }
+            .disabled(isSigninInitiated)
+        }
+
+        Text("Enter the 'authorisationCode' from the JSON response in the field below.")
+
+        HStack {
+            SecureField("Enter authorisation key...", text: $authKey)
+                .onSubmit {
+                    attemptSignIn()
+                }
+                .frame(width: 350, alignment: .center)
+
+            if isSigninInitiated {
+                ProgressView()
+                    .controlSize(.small)
+            } else {
+                Button("Submit") {
+                    attemptSignIn()
                 }
                 .buttonStyle(.borderedProminent)
             }
-            .fixedSize()
-            
-            HStack {
-                Button(action: { // TODO: implement question mark popover
-                    isHelpPopoverPresented.toggle()
-                }, label: {
-                    Image(systemName: "questionmark")
-                        .controlSize(.small)
-                })
-                .clipShape(.circle)
-                .popover(isPresented: $isHelpPopoverPresented) {
-                    VStack {
-                        NotImplementedView()
-                    }
-                    .padding()
-                }
-                
-                Spacer()
-            }
-            /*
-            .sheet(isPresented: $progressViewPresented) {
-                ProgressViewSheetWithError(isError: $isError, isPresented: $isProgressViewSheetPresented)
-            }
-             */
         }
-        .padding()
-        .fixedSize()
-        .task(priority: .userInitiated) { workspace.open(URL(string: "http://legendary.gl/epiclogin")!) }
+
+        HStack {
+            Button {
+                isHelpPopoverPresented.toggle()
+            } label: {
+                Image(systemName: "questionmark")
+                    .controlSize(.small)
+            }
+            .clipShape(.circle)
+            .popover(isPresented: $isHelpPopoverPresented) {
+                Text("""
+                    {
+                        "redirectUrl": "https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                        \(Text(#"authorizationCode": → "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ←"#).foregroundStyle(.blue)),
+                        "exchangeCode": null,
+                        "sid": null,
+                        "ssoV2Enabled": true
+                    }
+                    """)
+                .padding()
+            }
+
+            Spacer()
+        }
     }
 }
 
@@ -134,6 +116,6 @@ struct AuthView: View {
 #Preview {
     AuthView(
         isPresented: .constant(true),
-        authSuccessful: .constant(nil)
+        isSigninSuccessful: .constant(false)
     )
 }
