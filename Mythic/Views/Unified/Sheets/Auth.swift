@@ -98,7 +98,7 @@ struct AuthView: View {
                 Text("""
                     {
                         "redirectUrl": "https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                        \(Text(#"authorizationCode": → "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ←"#).foregroundStyle(.blue)),
+                        "authorizationCode": \(Text(#" → "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ←"#).foregroundStyle(.green)),
                         "exchangeCode": null,
                         "sid": null,
                         "ssoV2Enabled": true
