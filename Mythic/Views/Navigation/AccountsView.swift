@@ -22,7 +22,11 @@ struct AccountsView: View {
     @State private var isSignOutConfirmationPresented: Bool = false
     @State private var epicSignOutStatusDidChange: Bool = false
     @State private var isHoveringOverDestructiveEpicButton: Bool = false
-    
+    // @State private var isEpicSigninFallbackAlertPresented: Bool = false
+    @State private var isEpicSigninFallbackViewPresented: Bool = false
+    @State private var isEpicSigninFallbackSuccessful: Bool = false
+    @State private var epicSigninAttemptCount: Int = 0
+
     @State private var isHoveringOverDestructiveSteamButton: Bool = false
 
     // Spacer()s here are necessary
@@ -61,7 +65,13 @@ struct AccountsView: View {
                                 if Legendary.signedIn {
                                     isSignOutConfirmationPresented = true
                                 } else {
-                                    epicWebAuthViewModel.showSignInWindow()
+                                    epicSigninAttemptCount += 1
+
+                                    if epicSigninAttemptCount < 2 {
+                                        epicWebAuthViewModel.showSignInWindow()
+                                    } else {
+                                        isEpicSigninFallbackViewPresented = true
+                                    }
                                 }
                             } label: {
                                 Image(systemName: "person")
@@ -76,24 +86,53 @@ struct AccountsView: View {
                                     isHoveringOverDestructiveEpicButton = (hovering && Legendary.signedIn)
                                 }
                             }
-                            .alert(isPresented: $isSignOutConfirmationPresented) {
-                                Alert(
-                                    title: .init("Are you sure you want to sign out of Epic Games?"),
-                                    message: .init("This will sign you out of the account \"\(Legendary.user ?? "Unknown")\"."),
-                                    primaryButton: .destructive(.init("Sign Out")) {
-                                        Task(priority: .high) {
-                                            try? await Legendary.signOut()
-                                            epicSignOutStatusDidChange.toggle()
-                                        }
-                                    },
-                                    secondaryButton: .cancel(.init("Cancel"))
+                            /*
+                            .onChange(of: epicWebAuthViewModel.isEpicSignInWindowVisible) { _, visible in
+                                if !visible, !epicWebAuthViewModel.signInSuccess {
+                                    isEpicSigninFallbackAlertPresented = true
+                                }
+                            }
+                             // FIXME: SwiftUI doesn't like this alert, beats me.
+                             .alert(isPresented: $isEpicSigninFallbackAlertPresented) {
+                                 Alert(
+                                     title: .init("Having trouble signing in?"),
+                                     message: .init("""
+                                     Try signing into your Epic Games account manually through a web browser and try again.
+                                     If that doesn't work, you can try using the fallback method below.
+                                     """),
+                                     primaryButton: .default(.init("Try Fallback Method")) {
+                                         isEpicSigninFallbackViewPresented = true
+                                     },
+                                     secondaryButton: .cancel()
+                                 )
+                             }
+                             */
+                            .sheet(isPresented: $isEpicSigninFallbackViewPresented) {
+                                AuthView(
+                                    isPresented: $isEpicSigninFallbackViewPresented,
+                                    isSigninSuccessful: $isEpicSigninFallbackSuccessful
                                 )
+                                .padding()
                             }
                         }
                         .padding()
                     }
                     .id(epicWebAuthViewModel.signInSuccess)
+                    .id(isEpicSigninFallbackSuccessful)
                     .id(epicSignOutStatusDidChange)
+                    .alert(isPresented: $isSignOutConfirmationPresented) {
+                        Alert(
+                            title: .init("Are you sure you want to sign out of Epic Games?"),
+                            message: .init("This will sign you out of the account \"\(Legendary.user ?? "Unknown")\"."),
+                            primaryButton: .destructive(.init("Sign Out")) {
+                                Task(priority: .high) {
+                                    try? await Legendary.signOut()
+                                    epicSignOutStatusDidChange.toggle()
+                                }
+                            },
+                            secondaryButton: .cancel(.init("Cancel"))
+                        )
+                    }
 
                 // MARK: Steam Card
                 RoundedRectangle(cornerRadius: 20)
