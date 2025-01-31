@@ -191,6 +191,9 @@
         }
       }
     },
+    " → \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" ←" : {
+
+    },
     "(%@ Elapsed)" : {
       "localizations" : {
         "af" : {
@@ -2097,7 +2100,7 @@
         }
       }
     },
-    "{\n    \"redirectUrl\": \"https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\n    %@,\n    \"exchangeCode\": null,\n    \"sid\": null,\n    \"ssoV2Enabled\": true\n}" : {
+    "{\n    \"redirectUrl\": \"https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\n    \"authorizationCode\": %@,\n    \"exchangeCode\": null,\n    \"sid\": null,\n    \"ssoV2Enabled\": true\n}" : {
 
     },
     "%@" : {
@@ -5949,9 +5952,6 @@
       }
     },
     "Asynchronous DXVK" : {
-
-    },
-    "authorizationCode\": → \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" ←" : {
 
     },
     "Automatically check for Mythic Engine updates" : {
