@@ -235,9 +235,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                                 .transition(.opacity)
                                         } else if !epicDisclaimerReadingDelay, !epicWebAuthViewModel.signInSuccess, !isAlternativeEpicSigninSuccessful {
                                             Group {
-                                                Text("""
-                                                Seems like the Epic Games signin window's been closed.
-                                                """)
+                                                Text("Seems like the Epic Games signin window's been closed.")
                                                 HStack {
                                                     Text("Alternatively, please use the alternative sign in method by clicking the 'Alternative Signin' button.")
                                                     Button("Alternative Signin") {
