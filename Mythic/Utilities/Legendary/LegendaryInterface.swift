@@ -366,6 +366,7 @@ final class Legendary {
         }
 
         guard !user.isEmpty else { throw SignInError() }
+        GameListVM.shared.refresh() // update mythic game library 🙏🏾🙏🏾
         return user
     }
 
