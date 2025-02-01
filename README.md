@@ -51,7 +51,7 @@ Mythic uses the following Swift dependencies:
 - [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) - A Swift Package to easily showcase your new app features.
 
 ## License
-Copyright © 2024 blackxfiied
+Copyright © 2025 vapidinfinity
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
