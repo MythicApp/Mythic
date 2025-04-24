@@ -79,39 +79,14 @@ struct CompactGameCard: View {
                             .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
 
                         Spacer()
-                        
-                        // ! Changes made here must also be reflected in GameCard's play button
                         if game.isLaunching {
                             ProgressView()
                                 .controlSize(.small)
-                                .padding(5)
                                 .clipShape(.circle)
-                            
+                                .foregroundStyle(.white)
+                                .padding(5)
                         } else {
-                            Button {
-                                Task(priority: .userInitiated) {
-                                    do {
-                                        try await game.launch()
-                                    } catch {
-                                        launchError = error
-                                        isLaunchErrorAlertPresented = true
-                                    }
-                                }
-                            } label: {
-                                Image(systemName: "play")
-                                    .padding(5)
-                            }
-                            .clipShape(.circle)
-                            .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
-                            .disabled(game.path != nil ? !files.fileExists(atPath: game.path!) : false)
-                            .disabled(operation.runningGames.contains(game))
-                            .disabled(Wine.containerURLs.isEmpty)
-                            .alert(isPresented: $isLaunchErrorAlertPresented) {
-                                Alert(
-                                    title: .init("Error launching \"\(game.title)\"."),
-                                    message: .init(launchError?.localizedDescription ?? "Unknown Error.")
-                                )
-                            }
+                            GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
                         }
                     }
                     .padding(.horizontal)

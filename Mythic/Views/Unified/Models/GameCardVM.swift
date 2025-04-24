@@ -34,21 +34,215 @@ import Shimmer
             }
         }
 
+        struct Buttons {
+            struct PlayButton: View {
+                @Binding var game: Game
+                @ObservedObject private var operation: GameOperation = .shared
+
+                @State private var isLaunchErrorAlertPresented = false
+                @State private var launchError: Error?
+
+                var isPlayDisabled: Bool {
+                    game.path?.isEmpty ?? true
+                    || !files.fileExists(atPath: game.path ?? "")
+                    || operation.runningGames.contains(game)
+                    || Wine.containerURLs.isEmpty
+                }
+
+                var body: some View {
+                    Button {
+                        Task(priority: .userInitiated) {
+                            do {
+                                try await game.launch()
+                            } catch {
+                                launchError = error
+                                isLaunchErrorAlertPresented = true
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "play")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
+                    .disabled(isPlayDisabled)
+                    .alert(isPresented: $isLaunchErrorAlertPresented) {
+                        Alert(
+                            title: Text("Error launching \"\(game.title)\"."),
+                            message: Text(launchError?.localizedDescription ?? "Unknown Error.")
+                        )
+                    }
+                }
+            }
+
+            struct EngineInstallButton: View {
+                @Binding var game: Game
+                @EnvironmentObject var networkMonitor: NetworkMonitor
+
+                var body: some View {
+                    Button { // TODO: convert onboarding engine installer into standalone sheet
+                        let app = MythicApp() // FIXME: is this dangerous or just stupid
+                        app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
+                        app.isOnboardingPresented = true
+                    } label: {
+                        Image(systemName: "arrow.down.circle.dotted")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .disabled(!networkMonitor.isConnected)
+                    .help("Install Mythic Engine")
+                }
+            }
+
+            struct VerificationButton: View {
+                @Binding var game: Game
+                @EnvironmentObject var networkMonitor: NetworkMonitor
+                @ObservedObject private var operation: GameOperation = .shared
+
+                var body: some View {
+                    Button {
+                        operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
+                    } label: {
+                        Image(systemName: "checkmark.circle.badge.questionmark")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                    .help("Game verification is required for \"\(game.title)\".")
+                }
+            }
+            struct UpdateButton: View {
+                @Binding var game: Game
+                @EnvironmentObject var networkMonitor: NetworkMonitor
+                @ObservedObject private var operation: GameOperation = .shared
+
+                var body: some View {
+                    Button {
+                        operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
+                    } label: {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
+                    .help("Update \"\(game.title)\"")
+                }
+            }
+
+            struct SettingsButton: View {
+                @Binding var game: Game
+
+                @State private var isGameSettingsSheetPresented = false
+
+                var body: some View {
+                    Button {
+                        isGameSettingsSheetPresented = true
+                    } label: {
+                        Image(systemName: "gear")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .sheet(isPresented: $isGameSettingsSheetPresented) {
+                        GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                            .padding()
+                            .frame(minWidth: 750)
+                    }
+                    .help("Modify settings for \"\(game.title)\"")
+                }
+            }
+
+            struct FavouriteButton: View {
+                @Binding var game: Game
+
+                @State private var hoveringOverFavouriteButton = false
+                @State private var animateFavouriteIcon = false
+
+                var body: some View {
+                    Button {
+                        game.isFavourited.toggle()
+                        withAnimation { animateFavouriteIcon = game.isFavourited }
+                    } label: {
+                        Image(systemName: "star")
+                            .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
+                            .contentTransition(.symbolEffect(.replace))
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .onHover { hoveringOverFavouriteButton = $0 }
+                    .help("Favourite \"\(game.title)\"")
+                    .task { animateFavouriteIcon = game.isFavourited }
+                    .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
+                }
+            }
+
+            struct DeleteButton: View {
+                @Binding var game: Game
+                @ObservedObject private var operation: GameOperation = .shared
+
+                @State private var isUninstallSheetPresented = false
+                @State private var hoveringOverDestructiveButton = false
+
+                var isDeleteDisabled: Bool {
+                    operation.current?.game != nil || operation.runningGames.contains(game)
+                }
+
+                var body: some View {
+                    Button {
+                        isUninstallSheetPresented = true
+                    } label: {
+                        Image(systemName: "xmark.bin")
+                            .padding(5)
+                            .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
+                    }
+                    .clipShape(.circle)
+                    .disabled(isDeleteDisabled)
+                    .help("Delete \"\(game.title)\"")
+                    .onHover { hovering in
+                        withAnimation(.easeInOut(duration: 0.1)) {
+                            hoveringOverDestructiveButton = hovering
+                        }
+                    }
+                    .sheet(isPresented: $isUninstallSheetPresented) {
+                        UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
+                    }
+                }
+            }
+
+            struct InstallButton: View {
+                @Binding var game: Game
+                @EnvironmentObject var networkMonitor: NetworkMonitor
+                @ObservedObject private var operation: GameOperation = .shared
+
+                @State private var isInstallSheetPresented = false
+
+                var body: some View {
+                    Button {
+                        isInstallSheetPresented = true
+                    } label: {
+                        Image(systemName: "arrow.down.to.line")
+                            .padding(5)
+                    }
+                    .clipShape(.circle)
+                    .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
+                    .help("Download \"\(game.title)\"")
+                    .sheet(isPresented: $isInstallSheetPresented) {
+                        InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
+                    }
+                }
+            }
+        }
+
         struct ButtonsView: View {
             @Binding var game: Game
-            @EnvironmentObject var networkMonitor: NetworkMonitor
             @ObservedObject private var operation: GameOperation = .shared
+            @EnvironmentObject var networkMonitor: NetworkMonitor
 
-            @State private var isGameSettingsSheetPresented = false
-            @State private var isUninstallSheetPresented = false
-            @State private var isInstallSheetPresented = false
-            @State private var isStopGameModificationAlertPresented = false
-            @State private var isLaunchErrorAlertPresented = false
-            @State private var launchError: Error?
-
-            @State private var hoveringOverDestructiveButton = false
-            @State private var hoveringOverFavouriteButton = false
-            @State private var animateFavouriteIcon = false
+            private func needsVerification(for game: Game) -> Bool {
+                if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
+                    return json[game.id]["needs_verification"].boolValue
+                }
+                return false
+            }
 
             var body: some View {
                 HStack {
@@ -58,7 +252,7 @@ import Shimmer
                     } else if game.isInstalled {
                         installedGameButtons
                     } else {
-                        installButton
+                        Buttons.InstallButton(game: $game)
                     }
                 }
             }
@@ -66,7 +260,7 @@ import Shimmer
             @ViewBuilder
             var installedGameButtons: some View {
                 if case .epic = game.source, needsVerification(for: game) {
-                    verificationButton
+                    Buttons.VerificationButton(game: $game)
                 } else {
                     if game.isLaunching {
                         ProgressView()
@@ -76,163 +270,19 @@ import Shimmer
                             .padding(5)
                     } else {
                         if case .windows = game.platform, !Engine.exists {
-                            engineInstallButton
+                            Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
                         } else {
-                            playButton
+                            Buttons.PlayButton(game: $game)
                         }
                     }
+
                     if game.needsUpdate {
-                        updateButton
+                        Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
                     }
-                    settingsButton
-                    favouriteButton
-                    deleteButton
-                }
-            }
 
-            var engineInstallButton: some View {
-                Button { // TODO: convert onboarding engine installer into standalone sheet
-                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                    app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
-                    app.isOnboardingPresented = true
-                } label: {
-                    Image(systemName: "arrow.down.circle.dotted")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .disabled(!networkMonitor.isConnected)
-                .help("Install Mythic Engine")
-            }
-
-            private func needsVerification(for game: Game) -> Bool {
-                if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
-                    return json[game.id]["needs_verification"].boolValue
-                }
-                return false
-            }
-
-            var verificationButton: some View {
-                Button {
-                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
-                } label: {
-                    Image(systemName: "checkmark.circle.badge.questionmark")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .help("Game verification is required for \"\(game.title)\".")
-            }
-
-            var playButton: some View {
-                Button {
-                    Task(priority: .userInitiated) {
-                        do {
-                            try await game.launch()
-                        } catch {
-                            launchError = error
-                            isLaunchErrorAlertPresented = true
-                        }
-                    }
-                } label: {
-                    Image(systemName: "play")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .disabled(isPlayDisabled)
-                .alert(isPresented: $isLaunchErrorAlertPresented) {
-                    Alert(
-                        title: Text("Error launching \"\(game.title)\"."),
-                        message: Text(launchError?.localizedDescription ?? "Unknown Error.")
-                    )
-                }
-            }
-
-            var isPlayDisabled: Bool {
-                game.path?.isEmpty ?? true || !files.fileExists(atPath: game.path ?? "") || operation.runningGames.contains(game) || Wine.containerURLs.isEmpty
-            }
-
-            var updateButton: some View {
-                Button {
-                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
-                } label: {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
-                .help("Update \"\(game.title)\"")
-            }
-
-            var settingsButton: some View {
-                Button {
-                    isGameSettingsSheetPresented = true
-                } label: {
-                    Image(systemName: "gear")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .sheet(isPresented: $isGameSettingsSheetPresented) {
-                    GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                        .padding()
-                        .frame(minWidth: 750)
-                }
-                .help("Modify settings for \"\(game.title)\"")
-            }
-
-            var favouriteButton: some View {
-                Button {
-                    game.isFavourited.toggle()
-                    withAnimation { animateFavouriteIcon = game.isFavourited }
-                } label: {
-                    Image(systemName: "star")
-                        .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
-                        .contentTransition(.symbolEffect(.replace))
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .onHover { hoveringOverFavouriteButton = $0 }
-                .help("Favourite \"\(game.title)\"")
-                .task { animateFavouriteIcon = game.isFavourited }
-                .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
-            }
-
-            var deleteButton: some View {
-                Button {
-                    isUninstallSheetPresented = true
-                } label: {
-                    Image(systemName: "xmark.bin")
-                        .padding(5)
-                        .foregroundStyle(hoveringOverDestructiveButton ? .red : .primary)
-                }
-                .clipShape(.circle)
-                .disabled(isDeleteDisabled)
-                .help("Delete \"\(game.title)\"")
-                .onHover { hovering in
-                    withAnimation(.easeInOut(duration: 0.1)) {
-                        hoveringOverDestructiveButton = hovering
-                    }
-                }
-                .sheet(isPresented: $isUninstallSheetPresented) {
-                    UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
-                }
-            }
-
-            var isDeleteDisabled: Bool {
-                operation.current?.game != nil || operation.runningGames.contains(game)
-            }
-
-            var installButton: some View {
-                Button {
-                    isInstallSheetPresented = true
-                } label: {
-                    Image(systemName: "arrow.down.to.line")
-                        .padding(5)
-                }
-                .clipShape(.circle)
-                .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
-                .help("Download \"\(game.title)\"")
-                .sheet(isPresented: $isInstallSheetPresented) {
-                    InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
+                    Buttons.SettingsButton(game: $game)
+                    Buttons.FavouriteButton(game: $game)
+                    Buttons.DeleteButton(game: $game)
                 }
             }
         }
