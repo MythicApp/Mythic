@@ -20,11 +20,11 @@ import SwiftUI
 struct ContainerSettingsView: View {
     @Binding var selectedContainerURL: URL?
     var withPicker: Bool
-    
+
     @ObservedObject private var variables: VariableManager = .shared
-    
+
     @State private var containerScope: Wine.ContainerScope = .individual
-    
+
     @State private var retinaMode: Bool = Wine.ContainerSettings().retinaMode
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
@@ -36,7 +36,7 @@ struct ContainerSettingsView: View {
     @State private var windowsVersion: Wine.WindowsVersion = Wine.ContainerSettings().windowsVersion
     @State private var modifyingWindowsVersion: Bool = true
     @State private var windowsVersionError: Error?
-    
+
     private func fetchRetinaStatus() async {
         withAnimation { modifyingRetinaMode = true }
         do {
@@ -47,7 +47,7 @@ struct ContainerSettingsView: View {
         }
         withAnimation { modifyingRetinaMode = false }
     }
-    
+
     private func fetchWindowsVersion() async {
         withAnimation { modifyingWindowsVersion = true }
         do {
@@ -60,7 +60,7 @@ struct ContainerSettingsView: View {
         }
         withAnimation { modifyingWindowsVersion = false }
     }
-    
+
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
@@ -79,207 +79,209 @@ struct ContainerSettingsView: View {
                 }
             }
         }
-        
-        if selectedContainerURL != nil {
-            if let container = try? Wine.getContainerObject(url: selectedContainerURL!) {
-                Group {
-                    Toggle("Performance HUD", isOn: Binding(
-                        get: { return container.settings.metalHUD },
-                        set: { container.settings.metalHUD = $0 }
+
+        if let selectedContainerURL = selectedContainerURL,
+           let container = try? Wine.getContainerObject(url: selectedContainerURL),
+           !GameOperation.shared.runningGames.contains(where: { $0.containerURL == selectedContainerURL }) {
+            Group {
+                Toggle("Performance HUD", isOn: Binding(
+                    get: { return container.settings.metalHUD },
+                    set: { container.settings.metalHUD = $0 }
+                ))
+                .disabled(variables.getVariable("booting") == true)
+
+                if !modifyingRetinaMode, retinaModeError == nil {
+                    Toggle("Retina Mode", isOn: Binding(
+                        get: { retinaMode },
+                        set: { value in
+                            Task(priority: .userInitiated) {
+                                withAnimation { modifyingRetinaMode = true }
+                                await Wine.toggleRetinaMode(containerURL: container.url, toggle: value)
+                                retinaMode = value
+                                container.settings.retinaMode = value
+                                withAnimation { modifyingRetinaMode = false }
+                            }
+                        }
                     ))
                     .disabled(variables.getVariable("booting") == true)
-
-                    if !modifyingRetinaMode, retinaModeError == nil {
-                        Toggle("Retina Mode", isOn: Binding(
-                            get: { retinaMode },
-                            set: { value in
-                                Task(priority: .userInitiated) {
-                                    withAnimation { modifyingRetinaMode = true }
-                                    await Wine.toggleRetinaMode(containerURL: container.url, toggle: value)
-                                    retinaMode = value
-                                    container.settings.retinaMode = value
-                                    withAnimation { modifyingRetinaMode = false }
-                                }
-                            }
-                        ))
-                        .disabled(variables.getVariable("booting") == true)
-                    } else {
-                        HStack {
-                            Text("Retina Mode")
-                            Spacer()
-                            if retinaModeError == nil {
-                                ProgressView()
-                                    .controlSize(.small)
-                            } else {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolVariant(.fill)
-                                    .controlSize(.small)
-                                    .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
-                            }
+                } else {
+                    HStack {
+                        Text("Retina Mode")
+                        Spacer()
+                        if retinaModeError == nil {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
+                                .controlSize(.small)
+                                .help("Retina Mode cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
                         }
                     }
+                }
 
-                    Toggle("Enhanced Sync (MSync)", isOn: Binding(
-                        get: { return container.settings.msync },
-                        set: { container.settings.msync = $0 }
-                    ))
-                    .disabled(variables.getVariable("booting") == true)
+                Toggle("Enhanced Sync (MSync)", isOn: Binding(
+                    get: { return container.settings.msync },
+                    set: { container.settings.msync = $0 }
+                ))
+                .disabled(variables.getVariable("booting") == true)
 
-                    Toggle("Advanced Vector Extensions (AVX2)", isOn: Binding(
-                        get: { container.settings.avx2 },
-                        set: { container.settings.avx2 = $0 }
-                    ))
-                    .disabled({
-                        if #available(macOS 15.0, *) {
-                            return false
+                Toggle("Advanced Vector Extensions (AVX2)", isOn: Binding(
+                    get: { container.settings.avx2 },
+                    set: { container.settings.avx2 = $0 }
+                ))
+                .disabled({
+                    if #available(macOS 15.0, *) {
+                        return false
+                    }
+
+                    return true
+                }())
+                .help({
+                    if #available(macOS 15.0, *) {
+                        return ""
+                    }
+
+                    return "AVX2 is only supported on macOS Sequoia (15) or later."
+                }())
+
+                if !modifyingDXVK, dxvkError == nil {
+                    Toggle("DXVK", isOn: Binding(
+                        get: { container.settings.dxvk },
+                        set: { newValue in
+                            isDXVKDisclaimerPresented = true
                         }
-
-                        return true
-                    }())
-                    .help({
-                        if #available(macOS 15.0, *) {
-                            return ""
-                        }
-
-                        return "AVX2 is only supported on macOS Sequoia (15) or later."
-                    }())
-
-                    if !modifyingDXVK, dxvkError == nil {
-                        Toggle("DXVK", isOn: Binding(
-                            get: { container.settings.dxvk },
-                            set: { newValue in
-                                isDXVKDisclaimerPresented = true
-                            }
-                        ))
-                        .alert(isPresented: $isDXVKDisclaimerPresented) {
-                            .init(
-                                title: .init("Quit games running in this container?"),
-                                message: .init("""
+                    ))
+                    .alert(isPresented: $isDXVKDisclaimerPresented) {
+                        .init(
+                            title: .init("Quit games running in this container?"),
+                            message: .init("""
                                 To toggle DXVK, Mythic must quit all games currently running in this container.
                                 Additionally, D3DMetal will be disabled.
                                 
                                 Toggling DXVK may impact compatibility positively or negatively.
                                 """),
-                                primaryButton: .default(.init("OK")) {
-                                    Task(priority: .userInitiated) {
-                                        do {
-                                            withAnimation { modifyingDXVK = true }
+                            primaryButton: .default(.init("OK")) {
+                                Task(priority: .userInitiated) {
+                                    do {
+                                        withAnimation { modifyingDXVK = true }
 
-                                            try Wine.killAll(containerURLs: [container.url])
+                                        try Wine.killAll(containerURLs: [container.url])
 
+                                        // x64
+                                        try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d10core.dll"))
+                                        try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d11.dll"))
+
+                                        // x32
+                                        try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
+                                        try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
+
+                                        if container.settings.dxvk {
+                                            try await Wine.command(
+                                                arguments: ["wineboot", "-u"],
+                                                identifier: "dxvkRestore",
+                                                containerURL: container.url,
+                                                completion: { _ in }
+                                            )
+                                        } else {
                                             // x64
-                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d10core.dll"))
-                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d11.dll"))
+                                            try files.forceCopyItem(
+                                                at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
+                                                to: container.url.appending(path: "drive_c/windows/system32")
+                                            )
+                                            try files.forceCopyItem(
+                                                at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
+                                                to: container.url.appending(path: "drive_c/windows/system32")
+                                            )
 
                                             // x32
-                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
-                                            try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
-
-                                            if container.settings.dxvk {
-                                                try await Wine.command(
-                                                    arguments: ["wineboot", "-u"],
-                                                    identifier: "dxvkRestore",
-                                                    containerURL: container.url,
-                                                    completion: { _ in }
-                                                )
-                                            } else {
-                                                // x64
-                                                try files.forceCopyItem(
-                                                    at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
-                                                    to: container.url.appending(path: "drive_c/windows/system32")
-                                                )
-                                                try files.forceCopyItem(
-                                                    at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
-                                                    to: container.url.appending(path: "drive_c/windows/system32")
-                                                )
-
-                                                // x32
-                                                try files.forceCopyItem(
-                                                    at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
-                                                    to: container.url.appending(path: "drive_c/windows/syswow64")
-                                                )
-                                                try files.forceCopyItem(
-                                                    at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
-                                                    to: container.url.appending(path: "drive_c/windows/syswow64")
-                                                )
-                                            }
-
-                                            container.settings.dxvk.toggle()
-                                            withAnimation { modifyingDXVK = false }
-                                        } catch {
-                                            dxvkError = error
+                                            try files.forceCopyItem(
+                                                at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
+                                                to: container.url.appending(path: "drive_c/windows/syswow64")
+                                            )
+                                            try files.forceCopyItem(
+                                                at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
+                                                to: container.url.appending(path: "drive_c/windows/syswow64")
+                                            )
                                         }
+
+                                        container.settings.dxvk.toggle()
+                                        withAnimation { modifyingDXVK = false }
+                                    } catch {
+                                        dxvkError = error
                                     }
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
-                    } else {
-                        HStack {
-                            Text("DXVK")
-                            Spacer()
-                            if dxvkError == nil {
-                                ProgressView()
-                                    .controlSize(.small)
-                            } else {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolVariant(.fill)
-                                    .controlSize(.small)
-                                    .help("DXVK cannot be modified: \(dxvkError?.localizedDescription ?? "Unknown Error.")")
-                            }
-                        }
-                    }
-
-                    Toggle("Asynchronous DXVK", isOn: Binding(
-                        get: { container.settings.dxvkAsync },
-                        set: { container.settings.dxvkAsync = $0 }
-                    ))
-                    .disabled(!container.settings.dxvk || modifyingDXVK)
-
-                    if !modifyingWindowsVersion, windowsVersionError == nil {
-                        Picker("Windows Version", selection: Binding(
-                            get: { windowsVersion },
-                            set: { value in
-                                Task(priority: .userInitiated) {
-                                    withAnimation { modifyingWindowsVersion = true }
-                                    await Wine.setWindowsVersion(containerURL: container.url, version: value)
-                                    windowsVersion = value
-                                    container.settings.windowsVersion = value
-                                    withAnimation { modifyingWindowsVersion = false }
                                 }
-                            }
-                        )) {
-                            ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in
-                                Text("Windows® \(version.rawValue)").tag(version)
-                            }
-                        }
-                    } else {
-                        HStack {
-                            Text("Windows Version")
-                            Spacer()
-                            if windowsVersionError == nil {
-                                ProgressView()
-                                    .controlSize(.small)
-                            } else {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolVariant(.fill)
-                                    .controlSize(.small)
-                                    .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
-                            }
+                            },
+                            secondaryButton: .cancel()
+                        )
+                    }
+                } else {
+                    HStack {
+                        Text("DXVK")
+                        Spacer()
+                        if dxvkError == nil {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
+                                .controlSize(.small)
+                                .help("DXVK cannot be modified: \(dxvkError?.localizedDescription ?? "Unknown Error.")")
                         }
                     }
                 }
-                .task(priority: .high) { await fetchRetinaStatus() }
-                .task(priority: .high) { await fetchWindowsVersion() }
-                .onChange(of: selectedContainerURL) {
-                    Task(priority: .userInitiated) { await fetchRetinaStatus() }
-                    Task(priority: .userInitiated) { await fetchWindowsVersion() }
+
+                Toggle("Asynchronous DXVK", isOn: Binding(
+                    get: { container.settings.dxvkAsync },
+                    set: { container.settings.dxvkAsync = $0 }
+                ))
+                .disabled(!container.settings.dxvk || modifyingDXVK)
+
+                if !modifyingWindowsVersion, windowsVersionError == nil {
+                    Picker("Windows Version", selection: Binding(
+                        get: { windowsVersion },
+                        set: { value in
+                            Task(priority: .userInitiated) {
+                                withAnimation { modifyingWindowsVersion = true }
+                                await Wine.setWindowsVersion(containerURL: container.url, version: value)
+                                windowsVersion = value
+                                container.settings.windowsVersion = value
+                                withAnimation { modifyingWindowsVersion = false }
+                            }
+                        }
+                    )) {
+                        ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in
+                            Text("Windows® \(version.rawValue)").tag(version)
+                        }
+                    }
+                } else {
+                    HStack {
+                        Text("Windows Version")
+                        Spacer()
+                        if windowsVersionError == nil {
+                            ProgressView()
+                                .controlSize(.small)
+                        } else {
+                            Image(systemName: "exclamationmark.triangle")
+                                .symbolVariant(.fill)
+                                .controlSize(.small)
+                                .help("Windows version cannot be modified: \(retinaModeError?.localizedDescription ?? "Unknown Error.")")
+                        }
+                    }
                 }
-            } else if Wine.containerExists(at: selectedContainerURL!) {
-                
-            } else {
-                
             }
+            .task(priority: .high) { await fetchRetinaStatus() }
+            .task(priority: .high) { await fetchWindowsVersion() }
+            .onChange(of: selectedContainerURL) {
+                Task(priority: .userInitiated) { await fetchRetinaStatus() }
+                Task(priority: .userInitiated) { await fetchWindowsVersion() }
+            }
+        } else if GameOperation.shared.runningGames.contains(where: { $0.containerURL == selectedContainerURL }) {
+            Text("A game is currently running in this container. Please terminate it to view container settings.")
+        } else if Wine.containerExists(at: selectedContainerURL!) {
+
+        } else {
+
         }
     }
 }
