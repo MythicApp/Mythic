@@ -375,14 +375,25 @@ class GameOperation: ObservableObject {
             let isRunning = {
                 switch gamePlatform {
                 case .macOS:
-                    workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
-                case .windows:
-                    (try? Process.execute(executableURL: .init(fileURLWithPath: "/bin/bash"), arguments: ["-c", "ps aux | grep -i '\(gamePath)' | grep -v grep"]))?.stdout.isEmpty == false
+                    return workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
+                case .windows: // hacky but functional
+                    let command = try? Process.execute(
+                        executableURL: .init(fileURLWithPath: "/bin/bash"),
+                        arguments: [
+                            "-c",
+                            "ps aux | grep -i '\(gamePath)' | grep -v grep"
+                        ]
+                    )
+
+                    return (command?.stdout.isEmpty == false)
                 }
             }()
             
             if !isRunning {
-                Task { @MainActor in GameOperation.shared.runningGames.remove(game) }
+                Task { @MainActor in
+                    GameOperation.shared.runningGames.remove(game)
+                }
+
                 isOpen = false
             } else {
                 try? await Task.sleep(for: .seconds(3))

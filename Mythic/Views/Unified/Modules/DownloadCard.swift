@@ -33,12 +33,13 @@ struct DownloadCard: View {
         } else if operation.queue.contains(where: { $0.game == game }) {
             return .init("QUEUED \(Image(systemName: "stopwatch"))")
         }
-        return .init("MODIFYING")
+
+        return .init("STATUS UNKNOWN")
     }
     
     private var progressText: Text {
         let progress = Int(operation.status.progress?.percentage ?? 0)
-        let speed = Int(operation.status.downloadSpeed?.raw ?? 0.0 * (1000000 / 1048576))
+        let speed = Int(operation.status.downloadSpeed?.raw ?? 0.0 * (1000000 / 1048576) /* MiB/s to MB/s conversion */)
         let eta = operation.status.progress?.eta ?? "00:00:00"
         return .init("\(progress)% • ↓ \(speed) MB/s • ⏲︎ \(eta)")
     }

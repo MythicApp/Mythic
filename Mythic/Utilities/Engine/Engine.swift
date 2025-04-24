@@ -147,8 +147,8 @@ final class Engine {
                     return branch == stream.rawValue && status == "completed" && conclusion == "success"
                 }
                 
-                let recent = runs.first(where: isSuccessfulRun)
-                result = (recent != nil)
+                let isFirstRunSuccessful = runs.first(where: isSuccessfulRun)
+                result = (isFirstRunSuccessful != nil)
             } catch {
                 log.error("Unable to verify if Engine has finished cloud-compilation: \(error.localizedDescription)")
             }
