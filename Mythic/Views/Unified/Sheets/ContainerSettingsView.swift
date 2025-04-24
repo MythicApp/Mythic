@@ -81,8 +81,7 @@ struct ContainerSettingsView: View {
         }
 
         if let selectedContainerURL = selectedContainerURL,
-           let container = try? Wine.getContainerObject(url: selectedContainerURL),
-           !GameOperation.shared.runningGames.contains(where: { $0.containerURL == selectedContainerURL }) {
+           let container = try? Wine.getContainerObject(url: selectedContainerURL) {
             Group {
                 Toggle("Performance HUD", isOn: Binding(
                     get: { return container.settings.metalHUD },
@@ -276,8 +275,6 @@ struct ContainerSettingsView: View {
                 Task(priority: .userInitiated) { await fetchRetinaStatus() }
                 Task(priority: .userInitiated) { await fetchWindowsVersion() }
             }
-        } else if GameOperation.shared.runningGames.contains(where: { $0.containerURL == selectedContainerURL }) {
-            Text("A game is currently running in this container. Please terminate it to view container settings.")
         } else if Wine.containerExists(at: selectedContainerURL!) {
 
         } else {
