@@ -39,130 +39,20 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
 
-        // MARK: 0.1.x bottle migration
 
-        if let data = defaults.data(forKey: "allBottles"),
-           let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]]
-        {
-            Logger.app.log("Older bottle format detected, commencing bottle management system migration")
+        Migrator.migrateFromOldBottleFormatIfNecessary()
+        Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
 
-            var iterations = 0
-            var convertedBottles: [Wine.Container] = .init()
-
-            for (name, bottle) in decodedData {
-                guard let urlArray = bottle["url"] as? [String: String], // unable to cast directly to URL
-                      let relativeURL = urlArray["relative"],
-                      let url: URL = .init(string: relativeURL.removingPercentEncoding ?? relativeURL)
-                else {
-                    return
-                }
-
-                var settings: Wine.ContainerSettings = .init()
-                guard let oldSettings = bottle["settings"] as? [String: Bool] else { Logger.file.warning("Unable to read old bottle settings; using default"); continue }
-                settings.metalHUD = oldSettings["metalHUD"] ?? settings.metalHUD
-                settings.msync = oldSettings["msync"] ?? settings.msync
-                settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
-
-                Task { @MainActor in
-                    convertedBottles.append(.init(name: name, url: url, settings: settings))
-                    Wine.containerURLs.insert(url)
-                }
-
-                iterations += 1
-
-                Logger.app.log("converted \(url.prettyPath()) (\(iterations)/\(decodedData.count))")
-            }
-
-            Logger.file.notice("Bottle management system migration complete.")
-            defaults.removeObject(forKey: "allBottles")
-        }
-
-        // MARK: >= 0.3.2 Bottle → Container migration
-
-        let oldBottles = Bundle.appContainer!.appending(path: "Bottles")
-        let newBottles = Bundle.appContainer!.appending(path: "Containers")
-
-        if defaults.dictionary(forKey: "launchCount") == nil {
-            Logger.app.log("Commencing bottle renaming (Bottle → Container)")
-
-            do {
-                try files.moveItem(at: oldBottles, to: newBottles)
-                if let contents = try? files.contentsOfDirectory(at: newBottles, includingPropertiesForKeys: nil) {
-                    for containerURL in contents {
-                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: containerURL)))")
-                    }
-                }
-
-                // Migrate bottleURLs to containerURLs
-                if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
-                    let containerURLs = bottleURLs.map { bottleURL -> URL in
-                        let currentPath = bottleURL.path(percentEncoded: false)
-                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
-                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
-                            Logger.app.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(newPath))...")
-                            return URL(fileURLWithPath: newPath)
-                        } else {
-                            return bottleURL
-                        }
-                    }
-
-                    do {
-                        try defaults.encodeAndSet(containerURLs, forKey: "containerURLs")
-                        defaults.removeObject(forKey: "bottleURLs")
-                    } catch {
-                        Logger.app.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
-                    }
-                }
-
-                // Game-specific bottleURL migration
-                defaults.dictionaryRepresentation()
-                    .filter { $0.key.hasSuffix("_bottleURL") }
-                    .forEach { key, value in
-                        guard let currentURL = value as? URL else { return }
-                        let currentPath = currentURL.path(percentEncoded: false)
-                        guard files.fileExists(atPath: currentPath) else { return }
-
-                        let filteredURL: URL
-                        if currentPath.contains(oldBottles.path(percentEncoded: false)) {
-                            let newPath = currentPath.replacingOccurrences(of: oldBottles.path(percentEncoded: false), with: newBottles.path(percentEncoded: false))
-                            filteredURL = URL(fileURLWithPath: newPath)
-                        } else {
-                            filteredURL = currentURL
-                        }
-
-                        let gameKey = key.replacingOccurrences(of: "_bottleURL", with: "")
-                        Logger.app.debug("Migrating game \(gameKey)'s container URL...")
-                        defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
-                        defaults.removeObject(forKey: key)
-                    }
-
-                Logger.app.notice("Container renaming complete.")
-            } catch {
-                Logger.app.error("Unable to rename Bottles to Containers: \(error.localizedDescription) -- Mythic may not function correctly.")
-            }
-        }
 
         // MARK: Container cleanup in the event of external deletion
 
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
 
-        // MARK: Update container scaling
 
-        for container in Wine.containerObjects where container.settings.scaling == 0 {
-            let defaultScale = Wine.ContainerSettings().scaling
+        Migrator.updateContainerScalingIfNecessary()
+        Migrator.migrateEpicFolderNaming()
 
-            Task(priority: .background) {
-                await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
-                container.settings.scaling = defaultScale
-            }
-        }
-
-        // MARK: <0.3.2 Config folder rename (Config → Epic)
-
-        let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
-        if files.fileExists(atPath: legendaryOldConfig.path) {
-            try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
-        }
+        // MARK: Start metadata update cycle for Epic games.
 
         Task(priority: .utility) {
             Legendary.updateMetadata()
@@ -172,13 +62,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        // MARK: Autosync Epic savedata
+        // MARK: Autosync Epic savegames
 
         Task(priority: .utility) {
             try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { _ in }
         }
 
-        // MARK: DiscordRPC Connection and Delegation Setting
+        // MARK: DiscordRPC Delegate Ininitialisation & Connection
 
         discordRPC.delegate = self
         if defaults.bool(forKey: "discordRPC"), discordRPC.isDiscordInstalled {
@@ -292,20 +182,12 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        /*
-         MARK: Defaults versions
-         Useful for migration after non-backwards-compatible update
-         use by checking for the version in the array for
-         */
+        // Version-specific app launch counter
         if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-#if DEBUG
-            let key = "debugLaunchCount"
-#else
             let key = "launchCount"
-#endif
-            var count: [String: Int] = defaults.dictionary(forKey: key) as? [String: Int] ?? [:]
-            count[shortVersion, default: 0] += 1
-            defaults.set(count, forKey: key)
+            var launchCountDictionary: [String: Int] = defaults.dictionary(forKey: key) as? [String: Int] ?? [:]
+            launchCountDictionary[shortVersion, default: 0] += 1
+            defaults.set(launchCountDictionary, forKey: key)
         }
     }
 

@@ -81,6 +81,7 @@
 		6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* GameListCard.swift */; };
 		6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
+		6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6EE1862DBA650F00870AC4 /* Migrator.swift */; };
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* Auth.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
@@ -183,6 +184,7 @@
 		6A448E0D2CC4A531001E9F47 /* GameListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListCard.swift; sourceTree = "<group>"; };
 		6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCardVM.swift; sourceTree = "<group>"; };
 		6A496A722C1AF75600FD637B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		6A6EE1862DBA650F00870AC4 /* Migrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrator.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 				6A2934C52BFCFAFD0035CE4B /* FileLocations.swift */,
 				6A496A722C1AF75600FD637B /* Game.swift */,
 				6A2934C62BFCFAFD0035CE4B /* Global.swift */,
+				6A6EE1862DBA650F00870AC4 /* Migrator.swift */,
 				6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */,
 				5A9573A92C29BBEC009C8F85 /* SparkleController.swift */,
 				6A2934C82BFCFAFD0035CE4B /* Rosetta.swift */,
@@ -638,6 +641,7 @@
 				6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */,
 				5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */,
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
+				6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */,
 				6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */,
 				6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */,
 				6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */,
