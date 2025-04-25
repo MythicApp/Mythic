@@ -1,5 +1,5 @@
 //
-//  Auth.swift
+//  EpicAuth.swift
 //  Mythic
 //
 // MARK: - Copyright
@@ -13,7 +13,7 @@
 
 import SwiftUI
 
-struct AuthView: View {
+struct EpicAuthView: View {
     @Binding var isPresented: Bool
     @Binding var isSigninSuccessful: Bool
 
@@ -114,7 +114,7 @@ struct AuthView: View {
 
 // MARK: - Preview
 #Preview {
-    AuthView(
+    EpicAuthView(
         isPresented: .constant(true),
         isSigninSuccessful: .constant(false)
     )

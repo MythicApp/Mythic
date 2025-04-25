@@ -215,7 +215,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         Text("A new window will open, prompting you to sign in to Epic Games.")
                                         // workaround for if statment deallocating handlers
                                             .sheet(isPresented: $isAlternativeEpicSigninPresented) {
-                                                AuthView(
+                                                EpicAuthView(
                                                     isPresented: $isAlternativeEpicSigninPresented,
                                                     isSigninSuccessful: $isAlternativeEpicSigninSuccessful
                                                 )

@@ -108,7 +108,7 @@ struct AccountsView: View {
                              }
                              */
                             .sheet(isPresented: $isEpicSigninFallbackViewPresented) {
-                                AuthView(
+                                EpicAuthView(
                                     isPresented: $isEpicSigninFallbackViewPresented,
                                     isSigninSuccessful: $isEpicSigninFallbackSuccessful
                                 )
