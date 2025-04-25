@@ -28,6 +28,8 @@ struct MythicApp: App {
     @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
 
+    @Environment(\.openWindow) private var openWindow
+
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
@@ -81,7 +83,25 @@ struct MythicApp: App {
                 }
                 .disabled(isOnboardingPresented)
             }
+
+            CommandGroup(replacing: CommandGroupPlacement.appInfo) {
+                Button {
+                    openWindow(id: "about")
+                } label: {
+                    Text("About Mythic")
+                }
+            }
         }
+
+        Window("About Mythic", id: "about") {
+            AboutView()
+                .onAppear {
+                    if let window = NSApp.window(withID: "about") {
+                        window.isImmersive = true
+                    }
+                }
+        }
+
 
         Settings {
             SettingsView()

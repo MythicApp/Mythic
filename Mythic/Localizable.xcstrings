@@ -194,6 +194,9 @@
     " → \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" ←" : {
 
     },
+    "\"An open-source macOS game launcher with the ability to play Windows games through a custom implementation of Apple's Game Porting Toolkit — supporting multiple platforms.\"" : {
+
+    },
     "(%@ Elapsed)" : {
       "localizations" : {
         "af" : {
@@ -4407,6 +4410,9 @@
         }
       }
     },
+    "Acknowledgements" : {
+
+    },
     "Add a container" : {
       "localizations" : {
         "af" : {
@@ -6716,6 +6722,9 @@
           }
         }
       }
+    },
+    "by vapidinfinity ✦" : {
+
     },
     "Cancel" : {
       "localizations" : {
@@ -29247,6 +29256,9 @@
           }
         }
       }
+    },
+    "scroll... or just jump down!" : {
+
     },
     "Scrolling Direction" : {
 
