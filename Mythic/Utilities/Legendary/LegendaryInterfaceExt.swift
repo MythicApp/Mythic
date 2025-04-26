@@ -56,10 +56,11 @@ extension Legendary {
 
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: LocalizedError {
-        var errorDescription: String? = "Unable to install game."
-
-        init(errorDescription: String) {
-            self.errorDescription = errorDescription
+        init(errorDescription: String, reason: String = .init()) {
+            self.reason = reason
         }
+
+        var errorDescription: String? { "Unable to install game\(reason.isEmpty ? "" : ": \(reason)")." }
+        var reason: String
     }
 }

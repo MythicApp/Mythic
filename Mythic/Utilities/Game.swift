@@ -473,7 +473,10 @@ class GameOperation: ObservableObject {
 
 /// Your father.
 struct GameDoesNotExistError: LocalizedError {
-    init(_ game: Mythic.Game) { self.game = game }
+    init(_ game: Mythic.Game) {
+        self.game = game
+    }
+
     let game: Mythic.Game
-    var errorDescription: String? = "This game doesn't exist."
+    var errorDescription: String? { "The game \"\(game.title)\" doesn't exist." }
 }
