@@ -66,9 +66,12 @@ struct InstallStatusView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                     
-                    VStack {
+                    VStack(alignment: .trailing) {
                         Text("\(Int((operation.status.download?.downloaded ?? 0) * 1.048576)) MB Downloaded")
+                            .lineLimit(1)
+                        
                         Text("\(Int((operation.status.download?.written ?? 0) * 1.048576)) MB Written")
+                            .lineLimit(1)
                     }
                     .font(.bold(.footnote)())
                     .foregroundStyle(.secondary)
