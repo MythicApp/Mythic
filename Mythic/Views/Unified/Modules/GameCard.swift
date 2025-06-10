@@ -149,7 +149,7 @@ extension GameCard {
 
         private var blankImageView: some View {
             RoundedRectangle(cornerRadius: 20)
-                .fill(.background)
+                .fill(.quinary)
         }
     }
 

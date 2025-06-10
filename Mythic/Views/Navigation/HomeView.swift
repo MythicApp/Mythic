@@ -71,7 +71,7 @@ struct HomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
+                .background(.quinary)
                 .clipShape(.rect(cornerRadius: 20))
                 
                 // MARK: View 2 (Bottom)
@@ -79,7 +79,7 @@ struct HomeView: View {
                     ContainerListView()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
+                .background(.quinary)
                 .clipShape(.rect(cornerRadius: 20))
             }
         }

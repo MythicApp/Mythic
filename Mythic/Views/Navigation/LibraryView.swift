@@ -36,6 +36,15 @@ struct LibraryView: View {
         
         // MARK: - Toolbar
             .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    if variables.getVariable("isUpdatingLibrary") == true {
+                        ProgressView()
+                            .controlSize(.small)
+                            .help("Mythic is updating your library.")
+                            .padding(10)
+                    }
+                }
+
                 // MARK: Add Game Button
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -44,14 +53,6 @@ struct LibraryView: View {
                         Label("Import", systemImage: "plus.app")
                     }
                     .help("Import a game")
-                }
-
-                ToolbarItem(placement: .status) {
-                    if variables.getVariable("isUpdatingLibrary") == true {
-                        ProgressView()
-                            .controlSize(.small)
-                            .help("Mythic is updating your library.")
-                    }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {

@@ -46,7 +46,7 @@ struct DownloadCard: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.quinary)
             .frame(maxHeight: 120)
             .opacity(style == .prominent ? 0 : 1)
             .overlay {

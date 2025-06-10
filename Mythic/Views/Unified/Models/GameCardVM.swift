@@ -26,7 +26,7 @@ import Shimmer
         struct ShimmerView: View {
             var body: some View {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.background)
+                    .fill(.quinary)
                     .shimmering(
                         animation: .easeInOut(duration: 1).repeatForever(autoreverses: false),
                         bandSize: 1
@@ -251,6 +251,7 @@ import Shimmer
                             .padding(.horizontal)
                     } else if game.isInstalled {
                         installedGameButtons
+                            .foregroundStyle(.white)
                     } else {
                         Buttons.InstallButton(game: $game)
                     }
@@ -266,7 +267,6 @@ import Shimmer
                         ProgressView()
                             .controlSize(.small)
                             .clipShape(.circle)
-                            .foregroundStyle(.white)
                             .padding(5)
                     } else {
                         if case .windows = game.platform, !Engine.exists {

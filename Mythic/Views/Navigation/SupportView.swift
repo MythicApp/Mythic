@@ -38,7 +38,7 @@ struct SupportView: View {
                 )
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.background)
+            .background(.quinary)
             .clipShape(.rect(cornerRadius: 10))
 
             VStack {

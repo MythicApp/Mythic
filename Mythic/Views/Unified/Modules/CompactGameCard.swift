@@ -31,7 +31,7 @@ struct CompactGameCard: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.quinary)
             .aspectRatio(1, contentMode: .fit)
             .overlay { // MARK: Image
                 AsyncImage(url: game.wideImageURL ?? game.imageURL) { phase in
@@ -57,13 +57,13 @@ struct CompactGameCard: View {
                             }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
+                            .fill(.quinary)
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
-                            .fill(.background)
+                            .fill(.quinary)
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }

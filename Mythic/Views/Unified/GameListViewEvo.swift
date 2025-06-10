@@ -32,6 +32,7 @@ struct GameListEvo: View {
             if unifiedGames.isEmpty {
                 Text("No games can be shown.")
                     .font(.bold(.title)())
+
                 Button {
                     isGameImportViewPresented = true
                 } label: {

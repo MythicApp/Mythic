@@ -19,7 +19,7 @@ struct GameListCard: View {
 
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.quinary)
             .frame(idealHeight: 120)
             .overlay {
                 AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in

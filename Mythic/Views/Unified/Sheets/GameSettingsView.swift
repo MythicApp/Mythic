@@ -56,7 +56,7 @@ private extension GameSettingsView {
 
     var gameThumbnail: some View {
         RoundedRectangle(cornerRadius: 20)
-            .fill(.background)
+            .fill(.quinary)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay {
                 AsyncImage(url: game.imageURL) { phase in

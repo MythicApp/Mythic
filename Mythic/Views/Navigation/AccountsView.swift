@@ -36,7 +36,7 @@ struct AccountsView: View {
                 // MARK: Epic Card
                 // TODO: create AccountCard
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.background)
+                    .fill(.quinary)
                     .aspectRatio(4/3, contentMode: .fit)
                     .frame(maxWidth: 240)
                     .overlay(alignment: .top) {
@@ -136,7 +136,7 @@ struct AccountsView: View {
 
                 // MARK: Steam Card
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.background)
+                    .fill(.quinary)
                     .aspectRatio(4/3, contentMode: .fit)
                     .frame(maxWidth: 240)
                     .overlay(alignment: .top) {
