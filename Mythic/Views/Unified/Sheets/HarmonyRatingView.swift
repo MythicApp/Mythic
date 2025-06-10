@@ -55,6 +55,9 @@ struct HarmonyRatingView: View {
                 }
             }
             .formStyle(.grouped)
+            .lineLimit(2, reservesSpace: true)
+            .scrollDisabled(true)
+            .scrollIndicators(.hidden)
 
             HStack {
                 Button("Cancel", role: .cancel) {
