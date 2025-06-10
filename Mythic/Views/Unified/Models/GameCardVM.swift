@@ -12,8 +12,6 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
-// You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
-
 import Foundation
 import SwiftUI
 import SwiftyJSON
@@ -26,7 +24,7 @@ import Shimmer
         struct ShimmerView: View {
             var body: some View {
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(.quinary)
+                    .fill(.background)
                     .shimmering(
                         animation: .easeInOut(duration: 1).repeatForever(autoreverses: false),
                         bandSize: 1
@@ -251,39 +249,42 @@ import Shimmer
                             .padding(.horizontal)
                     } else if game.isInstalled {
                         installedGameButtons
-                            .foregroundStyle(.white)
                     } else {
                         Buttons.InstallButton(game: $game)
                     }
                 }
+                .foregroundStyle(.white)
             }
 
             @ViewBuilder
             var installedGameButtons: some View {
-                if case .epic = game.source, needsVerification(for: game) {
-                    Buttons.VerificationButton(game: $game)
-                } else {
-                    if game.isLaunching {
-                        ProgressView()
-                            .controlSize(.small)
-                            .clipShape(.circle)
-                            .padding(5)
+                Group {
+                    if case .epic = game.source, needsVerification(for: game) {
+                        Buttons.VerificationButton(game: $game)
                     } else {
-                        if case .windows = game.platform, !Engine.exists {
-                            Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
+                        if game.isLaunching {
+                            ProgressView()
+                                .controlSize(.small)
+                                .clipShape(.circle)
+                                .padding(5)
                         } else {
-                            Buttons.PlayButton(game: $game)
+                            if case .windows = game.platform, !Engine.exists {
+                                Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
+                            } else {
+                                Buttons.PlayButton(game: $game)
+                            }
                         }
-                    }
 
-                    if game.needsUpdate {
-                        Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
-                    }
+                        if game.needsUpdate {
+                            Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
+                        }
 
-                    Buttons.SettingsButton(game: $game)
-                    Buttons.FavouriteButton(game: $game)
-                    Buttons.DeleteButton(game: $game)
+                        Buttons.SettingsButton(game: $game)
+                        Buttons.FavouriteButton(game: $game)
+                        Buttons.DeleteButton(game: $game)
+                    }
                 }
+                .foregroundStyle(.white)
             }
         }
 
