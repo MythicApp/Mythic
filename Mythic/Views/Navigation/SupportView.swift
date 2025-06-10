@@ -50,8 +50,10 @@ struct SupportView: View {
                             } label: {
                                 Image(systemName: "arrow.up.forward")
                                     .padding(5)
+                                    .foregroundStyle(.foreground)
                             }
                             .clipShape(.circle)
+                            .foregroundStyle(.thinMaterial)
                             .padding()
                         }
                 }
