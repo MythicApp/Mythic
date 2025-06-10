@@ -82,13 +82,15 @@ struct ContentView: View {
                 }
 
                 if operation.current != nil || !operation.queue.isEmpty {
-                    List {
+                    List { // must wrap in a list to have the same styling as the other links
                         NavigationLink(destination: DownloadsEvo()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")
                                 .help("View all downloads")
                         }
                     }
                     .frame(maxHeight: 40)
+                    .scrollDisabled(true)
+                    .scrollIndicators(.hidden)
                 }
 
 #if DEBUG
