@@ -120,6 +120,11 @@ struct AccountsView: View {
                     .id(epicWebAuthViewModel.signInSuccess)
                     .id(isEpicSigninFallbackSuccessful)
                     .id(epicSignOutStatusDidChange)
+
+                    // FIXME: may be moved to respective handlers
+                    .onChange(of: epicWebAuthViewModel.signInSuccess, { epicSigninAttemptCount = 0 })
+                    .onChange(of: isEpicSigninFallbackSuccessful, { epicSigninAttemptCount = 0 })
+
                     .alert(isPresented: $isSignOutConfirmationPresented) {
                         Alert(
                             title: .init("Are you sure you want to sign out of Epic Games?"),
