@@ -85,6 +85,7 @@
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* Auth.swift */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
+		6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A955DEA2DF808D000BFA541 /* Mythic.icon */; };
 		6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */; };
 		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
@@ -187,6 +188,7 @@
 		6A6EE1862DBA650F00870AC4 /* Migrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrator.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* Auth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Auth.swift; sourceTree = "<group>"; };
+		6A955DEA2DF808D000BFA541 /* Mythic.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Mythic.icon; sourceTree = "<group>"; };
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
 		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -383,6 +385,7 @@
 				6A71D3D82BFD01AB00A2C74D /* legendary */,
 				6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */,
 				6A2934F52BFCFAFD0035CE4B /* Mythic.entitlements */,
+				6A955DEA2DF808D000BFA541 /* Mythic.icon */,
 				6A2934AF2BFCFAFD0035CE4B /* Preview Content */,
 			);
 			path = Mythic;
@@ -498,7 +501,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					6AB474942AACBBE900AB9C63 = {
 						CreatedOnToolsVersion = 15.0;
@@ -540,6 +543,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */,
 				6A2935322BFCFAFD0035CE4B /* Preview Assets.xcassets in Resources */,
 				6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */,
 				6A71D3D92BFD01AB00A2C74D /* legendary in Resources */,
@@ -743,6 +747,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -802,6 +807,7 @@
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -809,7 +815,7 @@
 		6AB474A52AACBBEA00AB9C63 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AlphaAppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Mythic;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Mythic/Mythic.entitlements;
@@ -817,7 +823,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3338;
+				CURRENT_PROJECT_VERSION = 3341;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -856,7 +862,7 @@
 		6AB474A62AACBBEA00AB9C63 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AlphaAppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Mythic;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Mythic/Mythic.entitlements;
@@ -864,7 +870,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3338;
+				CURRENT_PROJECT_VERSION = 3341;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
