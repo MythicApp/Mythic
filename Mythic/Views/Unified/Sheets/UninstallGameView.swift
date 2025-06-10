@@ -119,6 +119,12 @@ struct UninstallViewEvo: View {
                             }
                             
                             favouriteGames.remove(game.id)
+                            if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,
+                               let recentlyPlayedGame: Game = try? PropertyListDecoder().decode(Game.self, from: recentlyPlayedObject),
+                               recentlyPlayedGame == game {
+                                defaults.removeObject(forKey: "recentlyPlayed")
+                            }
+
                             gameListViewModel.refresh()
                             isPresented = false
                         },
