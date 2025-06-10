@@ -87,6 +87,8 @@ struct AuthView: View {
         }
 
         HStack {
+            Spacer()
+
             Button {
                 isHelpPopoverPresented.toggle()
             } label: {
@@ -106,8 +108,6 @@ struct AuthView: View {
                     """)
                 .padding()
             }
-
-            Spacer()
         }
     }
 }
