@@ -56,6 +56,15 @@ struct LibraryView: View {
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        gameListViewModel.refresh()
+                    } label: {
+                        Label("Force-refresh game list", systemImage: "arrow.clockwise")
+                    }
+                    .help("Import a game")
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
                     Toggle("Installed", isOn: $gameListViewModel.filterOptions.showInstalled)
                 }
                 
