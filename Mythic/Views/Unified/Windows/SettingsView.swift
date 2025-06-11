@@ -475,7 +475,7 @@ struct SettingsView: View {
                         .formStyle(.grouped)
                     }
                 }
-                .tabViewStyle(.sidebarAdaptable)
+                // .tabViewStyle(.sidebarAdaptable) // FIXME: SwiftUI opens settings as a different type of window leading to this having displaced UI elements
             } else { //
                 Form {
                     Section("Mythic", isExpanded: $isMythicSectionExpanded) {
