@@ -79,15 +79,32 @@ struct CompactGameCard: View {
                             .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
 
                         Spacer()
-                        if game.isLaunching {
-                            ProgressView()
+                        Group {
+                            if game.isLaunching {
+                                Group {
+                                    // not using terenary operator to implicitly leave foregroundstyle unmodified
+                                    if isImageEmpty {
+                                        ProgressView()
+                                            .foregroundStyle(.white)
+                                    } else {
+                                        ProgressView()
+                                    }
+                                }
                                 .controlSize(.small)
                                 .clipShape(.circle)
-                                .foregroundStyle(.white)
                                 .padding(5)
-                        } else {
-                            GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
+
+                            } else {
+                                // not using terenary operator to implicitly leave foregroundstyle unmodified
+                                if isImageEmpty {
+                                    GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
+                                } else {
+                                    GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
+                                        .foregroundStyle(.white)
+                                }
+                            }
                         }
+
                     }
                     .padding(.horizontal)
                 }

@@ -36,9 +36,14 @@ struct GameCard: View {
     @ViewBuilder
     var gameOverlay: some View {
         VStack {
-            gameTitleStack
-
-            GameCardVM.SharedViews.ButtonsView(game: $game)
+            // not using terenary operator to implicitly leave foregroundstyle unmodified
+            Group {
+                gameTitleStack
+                GameCardVM.SharedViews.ButtonsView(game: $game)
+            }
+            .conditionalTransform(if: !isImageEmpty) { view in
+                view.foregroundStyle(.white)
+            }
         }
         .padding(.bottom)
         .frame(maxWidth: .infinity)
@@ -56,7 +61,6 @@ struct GameCard: View {
             Spacer()
         }
         .padding(.leading)
-        .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
     }
 }
 

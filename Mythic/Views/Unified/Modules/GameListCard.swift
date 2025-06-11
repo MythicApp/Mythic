@@ -84,8 +84,16 @@ struct GameListCard: View {
 
                     Spacer()
 
-                    GameCardVM.SharedViews.ButtonsView(game: $game)
-                        .padding(.trailing)
+                    Group {
+                        // not using terenary operator to implicitly leave foregroundstyle unmodified
+                        if isImageEmpty {
+                            GameCardVM.SharedViews.ButtonsView(game: $game)
+                        } else {
+                            GameCardVM.SharedViews.ButtonsView(game: $game)
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .padding(.trailing)
                 }
             }
     }

@@ -19,6 +19,7 @@ import SwiftUI
 struct DownloadCard: View {
     @ObservedObject private var operation: GameOperation = .shared
     @State private var isHoveringOverDestructiveButton: Bool = false
+    @State private var isImageEmpty: Bool = true
 
     var game: Game
     var style: DownloadCardStyle
@@ -56,18 +57,34 @@ struct DownloadCard: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
                             .shimmering(animation: .easeInOut(duration: 1).repeatForever(autoreverses: false), bandSize: 1)
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     case .success(let image):
                         if case .prominent = style {
+                            // not using terenary operator to implicitly leave foregroundstyle unmodified
                             image
                                 .resizable()
                                 .blur(radius: 20.0)
                                 .modifier(FadeInModifier())
+                                .onAppear {
+                                    withAnimation { isImageEmpty = false }
+                                }
+                                .onDisappear {
+                                    withAnimation { isImageEmpty = true }
+                                }
                         } else {
                             image
                                 .resizable()
                                 .blur(radius: 20.0)
-                                .clipShape(.rect(cornerRadius: 20))
+                                .clipShape(.rect(cornerRadius: 20)) // !!
                                 .modifier(FadeInModifier())
+                                .onAppear {
+                                    withAnimation { isImageEmpty = false }
+                                }
+                                .onDisappear {
+                                    withAnimation { isImageEmpty = true }
+                                }
                         }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
@@ -76,6 +93,9 @@ struct DownloadCard: View {
                                 Image(systemName: "exclamationmark.triangle")
                                     .symbolVariant(.fill)
                             }
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     @unknown default:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
@@ -83,11 +103,15 @@ struct DownloadCard: View {
                                 Image(systemName: "questionmark.circle")
                                     .symbolVariant(.fill)
                             }
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     }
                 }
                 .ignoresSafeArea()
                 
                 HStack {
+                    // not using terenary operator to implicitly leave foregroundstyle unmodified
                     VStack(alignment: .leading) {
                         statusText
                             .foregroundStyle(.secondary)
@@ -117,7 +141,9 @@ struct DownloadCard: View {
                                 .foregroundStyle(.placeholder)
                         }
                     }
-                    .foregroundStyle(.white)
+                    .conditionalTransform(if: !isImageEmpty) { view in
+                        view.foregroundStyle(.white)
+                    }
                     .padding(.horizontal)
                     
                     Group {

@@ -188,9 +188,15 @@ import Shimmer
                     Button {
                         isUninstallSheetPresented = true
                     } label: {
-                        Image(systemName: "xmark.bin")
-                            .padding(5)
-                            .foregroundStyle(hoveringOverDestructiveButton ? .red : .white)
+                        // not using terenary operator to implicitly leave foregroundstyle unmodified
+                        if hoveringOverDestructiveButton {
+                            Image(systemName: "xmark.bin")
+                                .padding(5)
+                                .foregroundStyle(.red)
+                        } else {
+                            Image(systemName: "xmark.bin")
+                                .padding(5)
+                        }
                     }
                     .clipShape(.circle)
                     .disabled(isDeleteDisabled)
@@ -253,12 +259,10 @@ import Shimmer
                         Buttons.InstallButton(game: $game)
                     }
                 }
-                .foregroundStyle(.white)
             }
 
             @ViewBuilder
             var installedGameButtons: some View {
-                Group {
                     if case .epic = game.source, needsVerification(for: game) {
                         Buttons.VerificationButton(game: $game)
                     } else {
@@ -283,8 +287,6 @@ import Shimmer
                         Buttons.FavouriteButton(game: $game)
                         Buttons.DeleteButton(game: $game)
                     }
-                }
-                .foregroundStyle(.white)
             }
         }
 
