@@ -455,6 +455,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         }
                                         
                                         Text("\(Int(installationProgress * 100))%")
+                                        
                                         /*
                                         Button {
                                             isStopInstallAlertPresented = true

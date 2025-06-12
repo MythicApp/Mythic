@@ -170,9 +170,11 @@ struct AccountsView: View {
                                 //
                             } label: {
                                 Image(systemName: /* signedIn ? "person.slash" : */ "person")
-                                    .foregroundStyle(isHoveringOverDestructiveSteamButton ? .red : .primary)
+                                    .conditionalTransform(if: isHoveringOverDestructiveSteamButton) { view in
+                                        view.foregroundStyle(.red)
+                                    }
                                     .padding(5)
-                                
+
                             }
                             .clipShape(.circle)
                             .onHover { hovering in

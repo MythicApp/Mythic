@@ -188,15 +188,11 @@ import Shimmer
                     Button {
                         isUninstallSheetPresented = true
                     } label: {
-                        // not using terenary operator to implicitly leave foregroundstyle unmodified
-                        if hoveringOverDestructiveButton {
-                            Image(systemName: "xmark.bin")
-                                .padding(5)
-                                .foregroundStyle(.red)
-                        } else {
-                            Image(systemName: "xmark.bin")
-                                .padding(5)
-                        }
+                        Image(systemName: "xmark.bin")
+                            .padding(5)
+                            .conditionalTransform(if: hoveringOverDestructiveButton) { view in
+                                view.foregroundStyle(.red)
+                            }
                     }
                     .clipShape(.circle)
                     .disabled(isDeleteDisabled)

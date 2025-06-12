@@ -61,31 +61,19 @@ struct DownloadCard: View {
                                 withAnimation { isImageEmpty = true }
                             }
                     case .success(let image):
-                        if case .prominent = style {
-                            // not using terenary operator to implicitly leave foregroundstyle unmodified
-                            image
-                                .resizable()
-                                .blur(radius: 20.0)
-                                .modifier(FadeInModifier())
-                                .onAppear {
-                                    withAnimation { isImageEmpty = false }
-                                }
-                                .onDisappear {
-                                    withAnimation { isImageEmpty = true }
-                                }
-                        } else {
-                            image
-                                .resizable()
-                                .blur(radius: 20.0)
-                                .clipShape(.rect(cornerRadius: 20)) // !!
-                                .modifier(FadeInModifier())
-                                .onAppear {
-                                    withAnimation { isImageEmpty = false }
-                                }
-                                .onDisappear {
-                                    withAnimation { isImageEmpty = true }
-                                }
-                        }
+                        image
+                            .resizable()
+                            .blur(radius: 20.0)
+                            .modifier(FadeInModifier())
+                            .onAppear {
+                                withAnimation { isImageEmpty = false }
+                            }
+                            .onDisappear {
+                                withAnimation { isImageEmpty = true }
+                            }
+                            .conditionalTransform(if: style != .prominent) { view in
+                                view.clipShape(.rect(cornerRadius: 20))
+                            }
                     case .failure:
                         RoundedRectangle(cornerRadius: 20)
                             .fill(.windowBackground)
@@ -111,7 +99,6 @@ struct DownloadCard: View {
                 .ignoresSafeArea()
                 
                 HStack {
-                    // not using terenary operator to implicitly leave foregroundstyle unmodified
                     VStack(alignment: .leading) {
                         statusText
                             .foregroundStyle(.secondary)
@@ -119,7 +106,7 @@ struct DownloadCard: View {
                         
                         HStack {
                             Text(game.title)
-                                .font(.system(style == .normal ? .title : .largeTitle, weight: .bold))
+                                .font(.system((style == .normal ? .title : .largeTitle), weight: .bold))
                             SubscriptedTextView(game.source.rawValue)
                             Spacer()
                         }
