@@ -133,7 +133,7 @@ extension GameCard {
         /* private FIXME: what */ var handleImage: (Image, Bool, Double) -> AnyView = { image, withBlur, gameCardBlur in
             return AnyView(
                 ZStack {
-                    if withBlur && gameCardBlur > 0 /* dirtyfix */ {
+                    if withBlur && (gameCardBlur > 0) /* dirtyfix */ {
                         image
                             .resizable()
                             .aspectRatio(3/4, contentMode: .fill)
@@ -167,7 +167,7 @@ extension GameCard {
                 let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
 
                 ZStack {
-                    if withBlur {
+                    if withBlur && (gameCardBlur > 0) /* dirtyfix */ {
                         image
                             .resizable()
                             .clipShape(.rect(cornerRadius: 20))
