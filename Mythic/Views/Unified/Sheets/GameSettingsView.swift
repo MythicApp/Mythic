@@ -18,7 +18,9 @@ struct GameSettingsView: View {
     @State private var isMovingErrorPresented: Bool = false
     @State private var typingArgument: String = .init()
     @State private var launchArguments: [String] = .init()
-    
+
+    @State private var isImageEmpty: Bool = true
+
     @State private var isFileSectionExpanded: Bool = true
     @State private var isWineSectionExpanded: Bool = true
     @State private var isGameSectionExpanded: Bool = true
@@ -33,9 +35,22 @@ struct GameSettingsView: View {
 
     var body: some View {
         HStack {
-            gameThumbnailSection
+            VStack {
+                Text(game.title)
+                    .font(.title)
+
+                GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+            }
+            .padding(.trailing)
+
             Divider()
-            gameSettingsForm
+
+            Form {
+                gameOptionsSection
+                gameFileSection
+                gameEngineSection
+            }
+            .formStyle(.grouped)
         }
         
         bottomBar
@@ -43,114 +58,6 @@ struct GameSettingsView: View {
 }
 
 private extension GameSettingsView {
-
-    var gameThumbnailSection: some View {
-        VStack {
-            Text(game.title)
-                .font(.title)
-
-            gameThumbnail
-        }
-        .padding(.trailing)
-    }
-
-    var gameThumbnail: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(.quinary)
-            .aspectRatio(3/4, contentMode: .fit)
-            .overlay {
-                AsyncImage(url: game.imageURL) { phase in
-                    switch phase {
-                    case .empty:
-                        emptyThumbnailPlaceholder
-                    case .success(let image):
-                        loadedThumbnail(image)
-                    case .failure:
-                        failureThumbnailPlaceholder
-                    @unknown default:
-                        unknownThumbnailPlaceholder
-                    }
-                }
-            }
-    }
-
-    var emptyThumbnailPlaceholder: some View {
-        Group {
-            if case .local = game.source, game.imageURL == nil {
-                localGameIcon
-            } else {
-                shimmeringPlaceholder
-            }
-        }
-    }
-
-    var localGameIcon: some View {
-        let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
-        return ZStack {
-            image
-                .resizable()
-                .aspectRatio(3/4, contentMode: .fill)
-                .blur(radius: gameCardBlur)
-
-            image
-                .resizable()
-                .scaledToFit()
-        }
-    }
-
-    var shimmeringPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(.windowBackground)
-            .shimmering(
-                animation: .easeInOut(duration: 1)
-                    .repeatForever(autoreverses: false),
-                bandSize: 1
-            )
-    }
-
-    func loadedThumbnail(_ image: Image) -> some View {
-        ZStack {
-            image
-                .resizable()
-                .aspectRatio(3/4, contentMode: .fill)
-                .clipShape(.rect(cornerRadius: 20))
-                .blur(radius: gameCardBlur)
-
-            image
-                .resizable()
-                .aspectRatio(3/4, contentMode: .fill)
-                .clipShape(.rect(cornerRadius: 20))
-                .modifier(FadeInModifier())
-        }
-    }
-
-    var failureThumbnailPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(.windowBackground)
-            .overlay {
-                Image(systemName: "exclamationmark.triangle")
-                    .symbolVariant(.fill)
-            }
-    }
-
-    var unknownThumbnailPlaceholder: some View {
-        RoundedRectangle(cornerRadius: 20)
-            .fill(.windowBackground)
-            .overlay {
-                Image(systemName: "questionmark.circle")
-                    .symbolVariant(.fill)
-            }
-    }
-
-    var gameSettingsForm: some View {
-        Form {
-            gameOptionsSection
-            gameFileSection
-            gameEngineSection
-        }
-        .formStyle(.grouped)
-    }
-
     var gameOptionsSection: some View {
         Section("Options", isExpanded: $isGameSectionExpanded) {
             thumbnailURLRow
