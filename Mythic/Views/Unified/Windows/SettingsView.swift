@@ -47,13 +47,21 @@ struct SettingsView: View {
 
     @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
 
+    // Updated state variables for ActionButton
+    @State private var isForceQuitting: Bool = false
     @State private var isForceQuitSuccessful: Bool?
+
+    @State private var isShaderCachePurging: Bool = false
     @State private var isShaderCachePurgeSuccessful: Bool?
+
+    @State private var isEngineRemoving: Bool = false
     @State private var isEngineRemovalSuccessful: Bool?
+
+    @State private var isCleaning: Bool = false
     @State private var isCleanupSuccessful: Bool?
-    @State private var isEpicCloudSyncSuccessful: Bool?
 
     @State private var isEpicCloudSynchronising: Bool = false
+    @State private var isEpicCloudSyncSuccessful: Bool?
 
     @State private var isEngineStreamChangeAlertPresented: Bool = false
     @State private var isEngineRemovalAlertPresented: Bool = false
@@ -138,126 +146,101 @@ struct SettingsView: View {
     }
 
     private var epicCleanupButton: some View {
-        HStack {
-            Button {
-                Task {
-                    try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output in
-                        withAnimation {
-                            isCleanupSuccessful = output.stderr.contains("Cleanup complete") // [cli] INFO: Cleanup complete! Removed 0.00 MiB.
-                        }
+        ActionButton(
+            operating: $isCleaning,
+            successful: $isCleanupSuccessful,
+            action: {
+                try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output in
+                    withAnimation {
+                        isCleanupSuccessful = output.stderr.contains("Cleanup complete")
                     }
                 }
-            } label: {
-                Label("Clean Up Miscallaneous Caches", systemImage: "bubbles.and.sparkles")
+            },
+            label: {
+                Label("Clean Up Miscellaneous Caches", systemImage: "bubbles.and.sparkles")
             }
-
-            if isCleanupSuccessful != nil {
-                Image(systemName: isCleanupSuccessful! ? "checkmark" : "xmark")
-            }
-        }
+        )
     }
 
     private var epicCloudSyncButton: some View {
-        HStack {
-            Button {
-                Task {
-                    withAnimation {
-                        isEpicCloudSynchronising = true
-                    }
-
-                    try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { output in // TODO: turn into Legendary function
-                        if (try? Regex(#"Got [0-9]+ remote save game"#).firstMatch(in: output.stderr)) != nil {
-                            withAnimation {
-                                isEpicCloudSyncSuccessful = true
-                            }
-                        }
-                    }
-
-                    withAnimation {
-                        isEpicCloudSyncSuccessful = (isEpicCloudSyncSuccessful == true)
-                        isEpicCloudSynchronising = false
+        ActionButton(
+            operating: $isEpicCloudSynchronising,
+            successful: $isEpicCloudSyncSuccessful,
+            action: {
+                var syncSuccessful = false
+                try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { output in
+                    if (try? Regex(#"Got [0-9]+ remote save game"#).firstMatch(in: output.stderr)) != nil {
+                        syncSuccessful = true
                     }
                 }
-            } label: {
+
+                withAnimation {
+                    isEpicCloudSyncSuccessful = syncSuccessful
+                }
+            },
+            label: {
                 Label("Manually Synchronise Cloud Saves", systemImage: "arrow.triangle.2.circlepath")
             }
-
-            if isEpicCloudSynchronising {
-                ProgressView()
-                    .controlSize(.small)
-            } else if isEpicCloudSyncSuccessful != nil {
-                Image(systemName: isEpicCloudSyncSuccessful! ? "checkmark" : "xmark")
-            }
-        }
+        )
     }
 
     private var engineKillRunningButton: some View {
-        HStack {
-            Button {
-                withAnimation {
-                    do {
-                        try Wine.killAll()
-                        isForceQuitSuccessful = true
-                    } catch {
-                        isForceQuitSuccessful = false
-                    }
+        ActionButton(
+            operating: $isForceQuitting,
+            successful: $isForceQuitSuccessful,
+            action: {
+                do {
+                    try Wine.killAll()
+                    isForceQuitSuccessful = true
+                } catch {
+                    isForceQuitSuccessful = false
                 }
-            } label: {
+            },
+            label: {
                 Label("Force Quit Running Windows® Applications", systemImage: "xmark.app")
             }
-
-            if isForceQuitSuccessful != nil {
-                Image(systemName: isForceQuitSuccessful! ? "checkmark" : "xmark")
-            }
-        }
+        )
     }
 
     private var engineRemovalButton: some View {
-        HStack {
-            Button {
+        ActionButton(
+            operating: $isEngineRemoving,
+            successful: $isEngineRemovalSuccessful,
+            action: {
                 isEngineRemovalAlertPresented = true
-            } label: {
+            },
+            label: {
                 Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
             }
-            .alert(isPresented: $isEngineRemovalAlertPresented) {
-                Alert(
-                    title: .init("Are you sure you want to remove Mythic Engine?"),
-                    message: .init("It'll have to be reinstalled in order to play Windows® games."),
-                    primaryButton: .destructive(.init("Remove")) {
-                        withAnimation {
-                            do {
-                                try Engine.remove()
-                                isEngineRemovalSuccessful = true
-                            } catch {
-                                isEngineRemovalSuccessful = false
-                            }
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-
-            if isEngineRemovalSuccessful != nil {
-                Image(systemName: isEngineRemovalSuccessful! ? "checkmark" : "xmark")
-            }
+        )
+        .alert(isPresented: $isEngineRemovalAlertPresented) {
+            Alert(
+                title: .init("Are you sure you want to remove Mythic Engine?"),
+                message: .init("It'll have to be reinstalled in order to play Windows® games."),
+                primaryButton: .destructive(.init("Remove")) {
+                    do {
+                        try Engine.remove()
+                        isEngineRemovalSuccessful = true
+                    } catch {
+                        isEngineRemovalSuccessful = false
+                    }
+                },
+                secondaryButton: .cancel()
+            )
         }
     }
 
     private var enginePurgeShaderCacheButton: some View {
-        HStack {
-            Button {
-                withAnimation {
-                    isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
-                }
-            } label: {
+        ActionButton(
+            operating: $isShaderCachePurging,
+            successful: $isShaderCachePurgeSuccessful,
+            action: {
+                isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+            },
+            label: {
                 Label("Purge D3DMetal Shader Cache", systemImage: "square.stack.3d.up.slash")
-                    .symbolVariant(.slash.fill)
             }
-
-            if isShaderCachePurgeSuccessful != nil {
-                Image(systemName: isShaderCachePurgeSuccessful! ? "checkmark" : "xmark")
-            }
-        }
+        )
     }
 
     private var mythicUpdateSettings: some View {
@@ -545,6 +528,54 @@ struct SettingsView: View {
 
                 return presence
             }())
+        }
+    }
+}
+
+extension SettingsView {
+    struct ActionButton: View {
+        @Binding var operating: Bool
+        @Binding var successful: Bool?
+        let action: () async -> Void
+        let label: () -> Label<Text, Image>
+        let autoReset: Bool = true
+
+        var body: some View {
+            HStack {
+                Button {
+                    Task {
+                        withAnimation {
+                            operating = true
+                            successful = nil
+                        }
+
+                        await action()
+
+                        withAnimation {
+                            operating = false
+                        }
+                    }
+                } label: {
+                    label()
+                }
+                .disabled(operating)
+
+                if operating {
+                    ProgressView()
+                        .controlSize(.small)
+                } else if let isSuccessful = successful {
+                    Image(systemName: isSuccessful ? "checkmark" : "xmark")
+                        .task {
+                            if autoReset {
+                                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 3) {
+                                    withAnimation {
+                                        successful = nil
+                                    }
+                                }
+                            }
+                        }
+                }
+            }
         }
     }
 }
