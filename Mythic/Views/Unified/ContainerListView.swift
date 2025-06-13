@@ -49,7 +49,6 @@ struct ContainerListView: View {
                     .help("Modify default settings for \"\(container.name)\"")
                     .sheet(isPresented: $isContainerConfigurationViewPresented) {
                         ContainerConfigurationView(containerURL: container.url, isPresented: $isContainerConfigurationViewPresented)
-                            .frame(minWidth: 600)
                     }
 
                     Button {
@@ -86,7 +85,8 @@ struct ContainerListView: View {
 struct ContainerConfigurationView: View {
     var containerURL: URL
     @Binding var isPresented: Bool
-    
+
+    @State private var uninstallerActive: Bool = false
     @State private var configuratorActive: Bool = false
     @State private var registryEditorActive: Bool = false
 
@@ -160,7 +160,12 @@ struct ContainerConfigurationView: View {
                     }
                     .disabled(true)
                     .help("Winetricks GUI support is currently broken.")
-                    
+
+                    Button("Launch Uninstaller") {
+                        Task { try await Wine.command(arguments: ["uninstaller"], identifier: "uninstaller", containerURL: container.url) { _ in } }
+                    }
+                    .disabled(uninstallerActive)
+
                     Button("Launch Configurator") {
                         Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
@@ -189,6 +194,7 @@ struct ContainerConfigurationView: View {
                     .buttonStyle(.borderedProminent)
                 }
                 .padding([.horizontal, .bottom])
+                .fixedSize()
             }
             .task(priority: .background) {
                 discordRPC.setPresence({
