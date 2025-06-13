@@ -31,7 +31,7 @@ struct GameListCard: View {
                             }
                     case .success(let image):
                         ZStack {
-                            if gameCardBlur > 0 { // dirtyfix
+                            if gameCardBlur > 0 {
                                 image
                                     .resizable()
                                     .clipShape(.rect(cornerRadius: 20))
@@ -40,7 +40,7 @@ struct GameListCard: View {
 
                             image
                                 .resizable()
-                                .blur(radius: 20.0)
+                                .blur(radius: 30.0)
                                 .clipShape(.rect(cornerRadius: 20))
                                 .modifier(FadeInModifier())
                                 .onAppear {
