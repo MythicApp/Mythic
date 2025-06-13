@@ -165,7 +165,7 @@ struct SettingsView: View {
                         isEpicCloudSynchronising = true
                     }
 
-                    try? await Legendary.command(arguments: ["sync-saves"], identifier: "sync-saves") { output in // TODO: turn into Legendary function
+                    try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { output in // TODO: turn into Legendary function
                         if (try? Regex(#"Got [0-9]+ remote save game"#).firstMatch(in: output.stderr)) != nil {
                             withAnimation {
                                 isEpicCloudSyncSuccessful = true
