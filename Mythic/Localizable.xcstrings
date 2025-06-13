@@ -7861,6 +7861,7 @@
       }
     },
     "Clean Up Miscallaneous Caches" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8049,6 +8050,9 @@
           }
         }
       }
+    },
+    "Clean Up Miscellaneous Caches" : {
+
     },
     "Close" : {
       "localizations" : {

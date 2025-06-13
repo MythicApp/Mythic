@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 
 extension View {
+    // FIXME: stateful, only conditional
     @ViewBuilder
     func conditionalTransform<Content: View>(if condition: Bool, transform: (Self) -> Content) -> some View {
         if condition {
@@ -16,5 +17,11 @@ extension View {
         } else {
             self
         }
+    }
+
+    // FIXME: not stateful, versatile
+    @ViewBuilder
+    func customTransform<Content: View>(@ViewBuilder transform: (Self) -> Content) -> some View {
+        transform(self)
     }
 }
