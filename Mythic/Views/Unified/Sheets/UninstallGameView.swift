@@ -108,7 +108,12 @@ struct UninstallViewEvo: View {
                                 do {
                                     guard let gamePath = game.path else { throw FileLocations.FileDoesNotExistError(.init(filePath: game.path ?? .init())) }
                                     withAnimation { uninstalling = true }
-                                    if deleteFiles { try files.removeItem(atPath: gamePath) }
+
+                                    if files.fileExists(atPath: gamePath),
+                                       deleteFiles {
+                                        try files.removeItem(atPath: gamePath)
+                                    }
+
                                     LocalGames.library?.remove(game)
                                     withAnimation { uninstalling = false }
                                     isPresented = false
