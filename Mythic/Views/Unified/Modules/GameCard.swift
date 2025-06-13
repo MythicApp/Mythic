@@ -41,10 +41,8 @@ struct GameCard: View {
                 gameTitleStack
                 GameCardVM.SharedViews.ButtonsView(game: $game)
             }
-            .customTransform { view in
-                if !isImageEmpty {
-                    view.foregroundStyle(.white)
-                }
+            .conditionalTransform(if: !isImageEmpty) { view in
+                view.foregroundStyle(.white)
             }
         }
         .padding(.bottom)
