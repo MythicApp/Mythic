@@ -49,6 +49,13 @@ struct GameInstallProgressView: View {
             Image(systemName: "info")
                 .padding([.vertical, .trailing], 5)
         }
+        .customTransform { view in
+            if #available(macOS 26.0, *) {
+                view.glassEffect()
+            } else {
+                view
+            }
+        }
         .clipShape(.circle)
         .help("Show install status")
         .sheet(isPresented: $isInstallStatusViewPresented) {
@@ -63,7 +70,16 @@ struct GameInstallProgressView: View {
         } label: {
             Image(systemName: "xmark")
                 .padding([.vertical, .trailing], 5)
-                .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
+                .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
+                    view.foregroundStyle(.red)
+                }
+        }
+        .customTransform { view in
+            if #available(macOS 26.0, *) {
+                view.glassEffect()
+            } else {
+                view
+            }
         }
         .clipShape(.circle)
         .help("Stop installing")
