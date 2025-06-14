@@ -18,6 +18,7 @@ import SwiftUI
 import SwordRPC
 import Shimmer
 import UniformTypeIdentifiers
+import OSLog
 
 extension GameImportView {
     struct Local: View {
@@ -30,6 +31,12 @@ extension GameImportView {
         @State private var path: String = .init()
 
         @State private var isImageEmpty: Bool = true
+
+        @State private var isGameLocationFileImporterPresented: Bool = false
+
+        @State private var isThumbnailFileImporterPresented: Bool = false
+        @State private var isThumbnailImportErrorPresented: Bool = false
+        @State private var thumbnailImportError: Error?
 
         var body: some View {
             VStack {
@@ -106,7 +113,7 @@ extension GameImportView {
         private func gamePathInput() -> some View {
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Where is the game located?")
+                    Text("Choose the game's install location:")
                     Text(URL(filePath: path).prettyPath())
                         .foregroundStyle(.placeholder)
                 }
@@ -120,12 +127,29 @@ extension GameImportView {
                 Spacer()
 
                 Button("Browse...") {
-                    openFileBrowser()
+                    isGameLocationFileImporterPresented = true
+                }
+                .fileImporter(
+                    isPresented: $isGameLocationFileImporterPresented,
+                    allowedContentTypes: allowedContentTypes(for: platform)
+                ) { result in
+                    if case .success(let success) = result {
+                        path = success.path(percentEncoded: false)
+                    }
                 }
             }
             .onChange(of: path) {
                 updateGameTitle()
                 game.path = $1
+            }
+        }
+
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+            switch platform {
+            case .macOS:
+                return [.application]
+            case .windows:
+                return [.exe]
             }
         }
 
@@ -144,32 +168,63 @@ extension GameImportView {
             }
         }
 
-        private func openFileBrowser() {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseDirectories = false
-            openPanel.allowedContentTypes = allowedContentTypes(for: platform)
-            openPanel.allowsMultipleSelection = false
-
-            if case .OK = openPanel.runModal() {
-                path = openPanel.urls.first?.path ?? .init()
-            }
-        }
-
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
-            switch platform {
-            case .macOS:
-                return [.application]
-            case .windows:
-                return [.exe]
-            }
-        }
-
         private func imageURLTextField() -> some View {
-            TextField("Enter Thumbnail URL here... (optional)", text: $imageURLString)
+            VStack(alignment: .leading) {
+                TextField(text: $imageURLString, label: {
+                    Text("Enter a thumbnail URL: (optional)")
+
+                    HStack {
+                        Text("Otherwise, browse for a thumbnail file: ")
+
+                        Button("Browse...") {
+                            isThumbnailFileImporterPresented = true
+                        }
+                        .fileImporter(
+                            isPresented: $isThumbnailFileImporterPresented,
+                            allowedContentTypes: [
+                                .png, .jpeg, .gif, .bmp, .ico, .tiff, .heic, .webP
+                            ]) { result in
+                                switch result {
+                                case .success(let url):
+                                    guard url.startAccessingSecurityScopedResource() else { return }
+                                    defer { url.stopAccessingSecurityScopedResource() }
+
+                                    let thumbnailDirectoryURL: URL = Bundle.appHome!.appending(path: "Thumbnails/Custom")
+
+                                    do {
+                                        if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
+                                            try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
+                                        }
+
+                                        let newThumbnailURL = thumbnailDirectoryURL.appendingPathComponent(UUID().uuidString)
+
+                                        try files.copyItem(at: url, to: newThumbnailURL)
+                                        imageURLString = newThumbnailURL.absoluteString // game.path is not stateful, so i'll have to update it as a string
+                                    } catch {
+                                        Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
+                                        thumbnailImportError = error
+                                        isThumbnailImportErrorPresented = true
+                                    }
+                                case .failure(let failure):
+                                    thumbnailImportError = failure
+                                    isThumbnailImportErrorPresented = true
+                                }
+                            }
+                            .alert(isPresented: $isThumbnailImportErrorPresented) {
+                                Alert(
+                                    title: .init("Unable to import thumbnail."),
+                                    message: .init(thumbnailImportError?.localizedDescription ?? "Unknown Error."),
+                                    dismissButton: .default(Text("OK"))
+                                )
+                            }
+
+                    }
+                })
                 .truncationMode(.tail)
                 .onChange(of: imageURLString) {
                     game.imageURL = URL(string: $1)
                 }
+            }
         }
 
         private func actionButtons() -> some View {
