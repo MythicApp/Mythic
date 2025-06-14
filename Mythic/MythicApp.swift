@@ -54,6 +54,7 @@ struct MythicApp: App {
                     }
             }
         }
+        
         .handlesExternalEvents(matching: ["open"])
         .environment(
             \.whatsNew,
@@ -77,9 +78,80 @@ struct MythicApp: App {
                 Button("Restart Onboarding...") {
                     withAnimation(.easeInOut(duration: 2)) {
                         isOnboardingPresented = true
+                        }
+                    }
+                    .disabled(isOnboardingPresented)
+                }
+            
+            CommandGroup(replacing: .help){
+                Button("Mythic Documentation") {
+                    if let docUrl = URL(string: "https://docs.getmythic.app/") {
+                        NSWorkspace.shared.open(docUrl)
+                        }
+                    }
+                Button("Discord Server") {
+                    if let discordInviteUrl = URL(string: "https://discord.com/invite/58NZ7fFqPy") {
+                        NSWorkspace.shared.open(discordInviteUrl)
+                        }
+                    }
+                Button("GitHub Repository") {
+                    if let githubUrl = URL(string: "https://github.com/MythicApp/Mythic") {
+                        NSWorkspace.shared.open(githubUrl)
                     }
                 }
-                .disabled(isOnboardingPresented)
+                Divider()
+                Button("What's new in Mythic") {
+                    if let whatsNewUrl = URL(string: "https://github.com/MythicApp/Mythic/releases") {
+                        NSWorkspace.shared.open(whatsNewUrl)
+                    }
+                }
+                Divider()
+                Button("Please consider donating!") {
+                    if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
+                        NSWorkspace.shared.open(donationUrl)
+                    }
+                }
+            }
+                
+            CommandGroup(replacing: .help){
+                Button("Mythic Website") {
+                    if let websiteURL = URL(string: "https://getmythic.app/") {
+                        NSWorkspace.shared.open(websiteURL)
+                        }
+                    }
+
+                Button("Mythic Documentation") {
+                    if let docUrl = URL(string: "https://docs.getmythic.app/") {
+                        NSWorkspace.shared.open(docUrl)
+                        }
+                    }
+                Button("Discord Server") {
+                    if let discordInviteUrl = URL(string: "https://discord.gg/kQKdvjTVqh") {
+                        NSWorkspace.shared.open(discordInviteUrl)
+                        }
+                    }
+                Button("GitHub Repository") {
+                    if let githubUrl = URL(string: "https://github.com/MythicApp/Mythic") {
+                        NSWorkspace.shared.open(githubUrl)
+                    }
+                }
+                Button("Game Compatibility List") {
+                    if let gameListURL = URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/") {
+                        NSWorkspace.shared.open(gameListURL)
+                    }
+                }
+                Divider()
+                Button("What's new in Mythic") {
+                    if let whatsNewUrl = URL(string: "https://github.com/MythicApp/Mythic/releases") {
+                        NSWorkspace.shared.open(whatsNewUrl)
+                    }
+                }
+                Divider()
+                Button("Please consider donating!") {
+                    if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
+                        NSWorkspace.shared.open(donationUrl)
+                    }
+                }
             }
         }
 

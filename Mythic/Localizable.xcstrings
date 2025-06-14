@@ -2685,6 +2685,9 @@
         }
       }
     },
+    "%@ Please go through the documentation, FAQs, and the compatibility list before reporting an issue." : {
+
+    },
     "%lld MB Downloaded" : {
       "localizations" : {
         "af" : {
@@ -8427,6 +8430,9 @@
         }
       }
     },
+    "Compatibility List" : {
+
+    },
     "Configure \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -8996,6 +9002,9 @@
           }
         }
       }
+    },
+    "Create a support ticket" : {
+
     },
     "Current Container" : {
       "localizations" : {
@@ -9766,6 +9775,9 @@
     "Discord" : {
 
     },
+    "Discord Server" : {
+
+    },
     "Disk Speed:" : {
       "localizations" : {
         "af" : {
@@ -10145,6 +10157,9 @@
           }
         }
       }
+    },
+    "Documentation" : {
+
     },
     "Done" : {
       "localizations" : {
@@ -13207,6 +13222,9 @@
         }
       }
     },
+    "FAQ" : {
+
+    },
     "Favourite \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -14160,6 +14178,9 @@
     "Force Quit Running Windows® Applications" : {
 
     },
+    "Game Compatibility List" : {
+
+    },
     "Game Location:" : {
       "localizations" : {
         "af" : {
@@ -14738,6 +14759,9 @@
           }
         }
       }
+    },
+    "GitHub Repository" : {
+
     },
     "Grid" : {
       "localizations" : {
@@ -21980,6 +22004,9 @@
     "Mythic %@" : {
 
     },
+    "Mythic Documentation" : {
+
+    },
     "Mythic Engine" : {
       "localizations" : {
         "af" : {
@@ -23130,6 +23157,12 @@
       }
     },
     "Mythic is verifying the connection to Epic Games." : {
+
+    },
+    "Mythic Support" : {
+
+    },
+    "Mythic Website" : {
 
     },
     "Next" : {
@@ -25798,6 +25831,9 @@
     "Please choose a rating." : {
 
     },
+    "Please consider donating!" : {
+
+    },
     "Preview" : {
       "comment" : "Within the context of Mythic Engine",
       "localizations" : {
@@ -26568,6 +26604,9 @@
     "Re-display epic signin window" : {
 
     },
+    "Recieve Help:" : {
+
+    },
     "Remove" : {
       "localizations" : {
         "af" : {
@@ -27327,6 +27366,9 @@
           }
         }
       }
+    },
+    "Report an issue" : {
+
     },
     "Reset" : {
       "localizations" : {
@@ -28467,6 +28509,9 @@
           }
         }
       }
+    },
+    "Resources:" : {
+
     },
     "Restart Onboarding..." : {
       "localizations" : {
@@ -32850,6 +32895,9 @@
           }
         }
       }
+    },
+    "Stuck in a tight spot? No problem! We're here to help." : {
+
     },
     "Submit" : {
       "localizations" : {
@@ -38381,6 +38429,9 @@
           }
         }
       }
+    },
+    "What's new in Mythic" : {
+
     },
     "Where do you want the container's base path to be located?" : {
       "localizations" : {
