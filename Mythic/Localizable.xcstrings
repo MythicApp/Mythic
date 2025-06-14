@@ -4024,6 +4024,9 @@
         }
       }
     },
+    "© by vapidinfinity ✦" : {
+
+    },
     "A link should open in your browser." : {
 
     },
@@ -4218,6 +4221,9 @@
       }
     },
     "A new window will open, prompting you to sign in to Epic Games." : {
+
+    },
+    "About Mythic" : {
 
     },
     "Accounts" : {
@@ -6722,9 +6728,6 @@
           }
         }
       }
-    },
-    "by vapidinfinity ✦" : {
-
     },
     "Cancel" : {
       "localizations" : {
@@ -11310,6 +11313,9 @@
           }
         }
       }
+    },
+    "Engine %@" : {
+
     },
     "Enhanced Sync (MSync)" : {
       "localizations" : {
@@ -19523,6 +19529,9 @@
           }
         }
       }
+    },
+    "Launch Uninstaller" : {
+
     },
     "Launch Winetricks" : {
       "localizations" : {

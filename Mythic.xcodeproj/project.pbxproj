@@ -80,11 +80,9 @@
 		6A3436342DF9C0B2006429F6 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3436332DF9C0B0006429F6 /* View.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
-		6A3988C42C554197002A0A71 /* SteamInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3988C32C554190002A0A71 /* SteamInterface.swift */; };
 		6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* GameListCard.swift */; };
 		6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
-		6A4B8A442DBDBBEB007BC902 /* SteamAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4B8A432DBDBBE8007BC902 /* SteamAuth.swift */; };
 		6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6EE1862DBA650F00870AC4 /* Migrator.swift */; };
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A71D3DD2BFD024D00A2C74D /* EpicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A71D3DC2BFD024D00A2C74D /* EpicAuth.swift */; };
@@ -100,7 +98,6 @@
 		6ACCEC1B2CD08DEE00611BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */; };
 		6ACFAD8B2D356915009B1554 /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACFAD8A2D356910009B1554 /* Bool.swift */; };
 		6AD9931D2D34283A008DF690 /* SwordRPC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD9931C2D342838008DF690 /* SwordRPC.swift */; };
-		6ADE85272DBAB627007BC790 /* SteamInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE85262DBAB621007BC790 /* SteamInterfaceExt.swift */; };
 		6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */; };
 		6AF630D92C077A17001F4E10 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AF630D82C077A17001F4E10 /* UserDefaults.swift */; };
 		6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */; };
@@ -190,11 +187,9 @@
 		6A2960FF2CE1033000917E90 /* NSWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWindow.swift; sourceTree = "<group>"; };
 		6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		6A3436332DF9C0B0006429F6 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
-		6A3988C32C554190002A0A71 /* SteamInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamInterface.swift; sourceTree = "<group>"; };
 		6A448E0D2CC4A531001E9F47 /* GameListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListCard.swift; sourceTree = "<group>"; };
 		6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCardVM.swift; sourceTree = "<group>"; };
 		6A496A722C1AF75600FD637B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
-		6A4B8A432DBDBBE8007BC902 /* SteamAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamAuth.swift; sourceTree = "<group>"; };
 		6A6EE1862DBA650F00870AC4 /* Migrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrator.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A71D3DC2BFD024D00A2C74D /* EpicAuth.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EpicAuth.swift; sourceTree = "<group>"; };
@@ -207,7 +202,6 @@
 		6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ACFAD8A2D356910009B1554 /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
 		6AD9931C2D342838008DF690 /* SwordRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwordRPC.swift; sourceTree = "<group>"; };
-		6ADE85262DBAB621007BC790 /* SteamInterfaceExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamInterfaceExt.swift; sourceTree = "<group>"; };
 		6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowBlurView.swift; sourceTree = "<group>"; };
 		6AF630D82C077A17001F4E10 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -293,7 +287,6 @@
 			children = (
 				6A2934B22BFCFAFD0035CE4B /* Engine */,
 				6A2934BB2BFCFAFD0035CE4B /* Extensions */,
-				6A3988C22C554175002A0A71 /* Steam */,
 				6A2934BE2BFCFAFD0035CE4B /* Legendary */,
 				6A2934C12BFCFAFD0035CE4B /* Local */,
 				6A2934C42BFCFAFD0035CE4B /* Wine */,
@@ -354,7 +347,6 @@
 				6A2934E52BFCFAFD0035CE4B /* StopDownloadAlert.swift */,
 				6A2934E62BFCFAFD0035CE4B /* UninstallGameView.swift */,
 				6A71D3DC2BFD024D00A2C74D /* EpicAuth.swift */,
-				6A4B8A432DBDBBE8007BC902 /* SteamAuth.swift */,
 			);
 			path = Sheets;
 			sourceTree = "<group>";
@@ -413,15 +405,6 @@
 				6A2934D72BFCFAFD0035CE4B /* SettingsView.swift */,
 			);
 			path = Windows;
-			sourceTree = "<group>";
-		};
-		6A3988C22C554175002A0A71 /* Steam */ = {
-			isa = PBXGroup;
-			children = (
-				6A3988C32C554190002A0A71 /* SteamInterface.swift */,
-				6ADE85262DBAB621007BC790 /* SteamInterfaceExt.swift */,
-			);
-			path = Steam;
 			sourceTree = "<group>";
 		};
 		6A91FEC02C2BFB8100D9F153 /* Models */ = {
@@ -534,7 +517,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6AB474902AACBBE900AB9C63 /* Build configuration list for PBXProject "MythicPlus" */;
+			buildConfigurationList = 6AB474902AACBBE900AB9C63 /* Build configuration list for PBXProject "Mythic" */;
 			compatibilityVersion = "Xcode 15.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -659,7 +642,6 @@
 				6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */,
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */,
-				6ADE85272DBAB627007BC790 /* SteamInterfaceExt.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
 				6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */,
@@ -675,7 +657,6 @@
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
 				6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */,
 				6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */,
-				6A3988C42C554197002A0A71 /* SteamInterface.swift in Sources */,
 				6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */,
 				6A3436342DF9C0B2006429F6 /* View.swift in Sources */,
 				6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */,
@@ -688,7 +669,6 @@
 				6A71D3DD2BFD024D00A2C74D /* EpicAuth.swift in Sources */,
 				6A29354B2BFCFAFD0035CE4B /* LocalImport.swift in Sources */,
 				6A2960FC2CE0ED0D00917E90 /* EpicWebAuthView.swift in Sources */,
-				6A4B8A442DBDBBEB007BC902 /* SteamAuth.swift in Sources */,
 				6A29355C2BFCFAFD0035CE4B /* InstallGameView.swift in Sources */,
 				6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */,
 				6A2961002CE1033200917E90 /* NSWindow.swift in Sources */,
@@ -855,7 +835,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3465;
+				CURRENT_PROJECT_VERSION = 3466;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -902,7 +882,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3465;
+				CURRENT_PROJECT_VERSION = 3466;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -941,7 +921,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6AB474902AACBBE900AB9C63 /* Build configuration list for PBXProject "MythicPlus" */ = {
+		6AB474902AACBBE900AB9C63 /* Build configuration list for PBXProject "Mythic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6AB474A22AACBBEA00AB9C63 /* Debug */,
