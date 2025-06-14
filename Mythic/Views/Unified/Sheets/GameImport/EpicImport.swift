@@ -37,6 +37,8 @@ extension GameImportView {
 
         @State private var isOperating: Bool = false
 
+        @State private var isGameLocationFileImporterPresented: Bool = false
+
         var body: some View {
             VStack {
                 Form {
@@ -114,8 +116,25 @@ extension GameImportView {
                 }
 
                 Button("Browse...") {
-                    openFileBrowser()
+                    isGameLocationFileImporterPresented = true
                 }
+                .fileImporter(
+                    isPresented: $isGameLocationFileImporterPresented,
+                    allowedContentTypes: allowedContentTypes(for: platform)
+                ) { result in
+                    if case .success(let success) = result {
+                        path = success.path(percentEncoded: false)
+                    }
+                }
+            }
+        }
+
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+            switch platform {
+            case .macOS:
+                return [.application]
+            case .windows:
+                return [.exe]
             }
         }
 
@@ -159,26 +178,6 @@ extension GameImportView {
                 Text(text)
                 Spacer()
                 ProgressView().controlSize(.small)
-            }
-        }
-
-        private func openFileBrowser() {
-            let openPanel = NSOpenPanel()
-            openPanel.canChooseDirectories = false
-            openPanel.allowedContentTypes = allowedContentTypes(for: platform)
-            openPanel.allowsMultipleSelection = false
-
-            if case .OK = openPanel.runModal() {
-                path = openPanel.urls.first?.path ?? .init()
-            }
-        }
-
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
-            switch platform {
-            case .macOS:
-                return [.application]
-            case .windows:
-                return [.exe]
             }
         }
 

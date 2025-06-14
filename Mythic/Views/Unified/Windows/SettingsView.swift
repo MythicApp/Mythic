@@ -25,8 +25,6 @@ struct SettingsView: View {
     @State private var isUpdatesMythicSectionExpanded: Bool = true
     @State private var isUpdatesEngineSectionExpanded: Bool = true
 
-
-
     // Legacy (macOS <14)
     @State private var isWineSectionExpanded: Bool = true
     @State private var isEpicSectionExpanded: Bool = true
@@ -46,6 +44,8 @@ struct SettingsView: View {
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
     @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
     @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+
+    @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
 
     @State private var isForceQuitSuccessful: Bool?
     @State private var isShaderCachePurgeSuccessful: Bool?
@@ -105,18 +105,19 @@ struct SettingsView: View {
             }
 
             VStack(alignment: .trailing) {
-                Button("Browse...") { // TODO: replace with .fileImporter
-                    let openPanel = NSOpenPanel()
-                    openPanel.canChooseDirectories = true
-                    openPanel.canChooseFiles = false
-                    openPanel.canCreateDirectories = true
-                    openPanel.allowsMultipleSelection = false
-
-                    if case .OK = openPanel.runModal() {
-                        installBaseURL = openPanel.urls.first!
+                Button("Browse...") {
+                    isDefaultInstallLocationFileImporterPresented = true
+                }
+                .fileImporter(
+                    isPresented: $isDefaultInstallLocationFileImporterPresented,
+                    allowedContentTypes: [.folder]
+                ) { result in
+                    if case .success(let url) = result {
+                        installBaseURL = url
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                
 
                 Button("Reset to Default") {
                     installBaseURL = Bundle.appGames!

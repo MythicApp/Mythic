@@ -16,6 +16,8 @@ struct InstallViewEvo: View {
     @State var selectedOptionalPacks: Set<String> = .init()
     @State var fetchingOptionalPacks: Bool = false
 
+    @State private var isInstallLocationFileImporterPresented: Bool = false
+
     @State var installSize: Double?
 
     @State private var supportedPlatforms: [Game.Platform]?
@@ -145,14 +147,14 @@ struct InstallViewEvo: View {
 
                 // TODO: unify
                 Button("Browse...") {
-                    let openPanel = NSOpenPanel()
-                    openPanel.canChooseDirectories = true
-                    openPanel.canChooseFiles = false
-                    openPanel.canCreateDirectories = true
-                    openPanel.allowsMultipleSelection = false
-
-                    if case .OK = openPanel.runModal() {
-                        baseURL = openPanel.urls.first!
+                    isInstallLocationFileImporterPresented = true
+                }
+                .fileImporter(
+                    isPresented: $isInstallLocationFileImporterPresented,
+                    allowedContentTypes: [.folder]
+                ) { result in
+                    if case .success(let url) = result {
+                        baseURL = url // FIXME: this overrides the default base URL, which is not ideal
                     }
                 }
             }

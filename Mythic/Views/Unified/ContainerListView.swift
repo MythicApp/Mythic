@@ -89,7 +89,9 @@ struct ContainerConfigurationView: View {
     
     @State private var configuratorActive: Bool = false
     @State private var registryEditorActive: Bool = false
-    
+
+    @State private var isOpenFileImporterPresented: Bool = false
+
     @State private var isOpenAlertPresented = false
     @State private var openError: Error?
     
@@ -114,20 +116,32 @@ struct ContainerConfigurationView: View {
                 
                 HStack {
                     Button("Open...") {
-                        let openPanel = NSOpenPanel()
-                        openPanel.canChooseFiles = true
-                        openPanel.allowsMultipleSelection = false
-                        openPanel.allowedContentTypes = [.exe]
-                        
-                        if case .OK = openPanel.runModal(), let url = openPanel.urls.first {
-                            Task {
+                        isOpenFileImporterPresented = true
+                    }
+                    .fileImporter(
+                        isPresented: $isOpenFileImporterPresented,
+                        allowedContentTypes: [.exe]
+                    ) { result in
+                        switch result {
+                        case .success(let url):
+                            Task(priority: .userInitiated) {
                                 do {
-                                    try await Wine.command(arguments: [url.path(percentEncoded: false)], identifier: "custom_launch_\(url)", waits: true, containerURL: container.url) { _ in }
+                                    try await Wine.command(
+                                        arguments: [
+                                            url.path(percentEncoded: false)
+                                        ],
+                                        identifier: "custom_launch_\(url)_\(UUID().uuidString)",
+                                        waits: true,
+                                        containerURL: container.url
+                                    ) { _ in }
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true
                                 }
                             }
+                        case .failure(let failure):
+                            openError = failure
+                            isOpenAlertPresented = true
                         }
                     }
                     .alert(isPresented: $isOpenAlertPresented) {

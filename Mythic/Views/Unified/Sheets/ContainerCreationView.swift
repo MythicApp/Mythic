@@ -23,7 +23,9 @@ struct ContainerCreationView: View {
 
     @State private var containerName: String = "My Container"
     @State private var containerURL: URL = Wine.containersDirectory!
-    
+
+    @State private var isContainerURLFileImporterPresented: Bool = false
+
     @State private var isBooting: Bool = false
     @State private var isCancellationAlertPresented: Bool = false
     
@@ -56,14 +58,14 @@ struct ContainerCreationView: View {
                     }
                     
                     Button("Browse...") {
-                        let openPanel = NSOpenPanel()
-                        openPanel.canChooseDirectories = true
-                        openPanel.canChooseFiles = false
-                        openPanel.canCreateDirectories = true
-                        openPanel.allowsMultipleSelection = false
-                        
-                        if case .OK = openPanel.runModal() {
-                            containerURL = openPanel.urls.first!
+                        isContainerURLFileImporterPresented = true
+                    }
+                    .fileImporter(
+                        isPresented: $isContainerURLFileImporterPresented,
+                        allowedContentTypes: [.folder]
+                    ) { result in
+                        if case .success(let url) = result {
+                            containerURL = url
                         }
                     }
                 }
