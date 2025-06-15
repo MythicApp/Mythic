@@ -77,7 +77,7 @@ struct SettingsView: View {
             }
 
             Slider(value: $gameCardBlur, in: 0...20, step: 5) {
-                Label("Gamecard Blur", systemImage: gameCardBlur <= 10 ? "sun.min" : "sun.max")
+                Label("Gamecard Glow", systemImage: gameCardBlur <= 10 ? "sun.min" : "sun.max")
             }
 
             Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
