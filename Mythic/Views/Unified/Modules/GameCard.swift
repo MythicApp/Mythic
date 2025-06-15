@@ -36,7 +36,7 @@ struct GameCard: View {
 
     @ViewBuilder
     var gameOverlay: some View {
-        VStack {
+        HStack {
             Group {
                 gameTitleStack
 
@@ -59,25 +59,25 @@ struct GameCard: View {
                     .padding(.vertical)
                     .glassEffect(in: .rect(cornerRadius: 20.0))
                     .padding(4)
+                    .aspectRatio(contentMode: .fit)
 
             } else {
                 view
                     .padding(.bottom)
             }
         }
-        .frame(maxWidth: .infinity)
     }
 
     var gameTitleStack: some View {
-        HStack {
+        VStack(alignment: .leading) {
             Text(game.title)
                 .font(.bold(.title3)())
                 .truncationMode(.tail)
                 .lineLimit(1)
 
-            GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
-
-            Spacer()
+            HStack {
+                GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
+            }
         }
         .padding(.leading)
     }
