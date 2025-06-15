@@ -4615,6 +4615,9 @@
     "Advanced Vector Extensions (AVX2)" : {
 
     },
+    "All downloads that may have been pending are complete.\nYou may access the downloaded games in your library." : {
+
+    },
     "Alternative Signin" : {
 
     },
@@ -23740,6 +23743,9 @@
           }
         }
       }
+    },
+    "No new downloads! 😁" : {
+
     },
     "No other downloads are pending." : {
       "localizations" : {
