@@ -43,8 +43,14 @@ struct DownloadsEvo: View {
             }
             .padding()
         } else {
-            Text("No other downloads are pending.")
-                .font(.bold(.title)())
+            ContentUnavailableView(
+                "No new downloads! 😁",
+                systemImage: "externaldrive.badge.checkmark",
+                description: Text("""
+                    All downloads that may have been pending are complete.
+                    You may access the downloaded games in your library.
+                    """)
+            )
         }
     }
 }
