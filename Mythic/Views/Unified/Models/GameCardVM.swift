@@ -61,13 +61,6 @@ import Shimmer
                         Image(systemName: "play")
                             .padding(5)
                     }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
-                    }
                     .clipShape(.circle)
                     .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
                     .disabled(isPlayDisabled)
@@ -93,13 +86,6 @@ import Shimmer
                         Image(systemName: "arrow.down.circle.dotted")
                             .padding(5)
                     }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
-                    }
                     .clipShape(.circle)
                     .disabled(!networkMonitor.isConnected)
                     .help("Install Mythic Engine")
@@ -118,13 +104,6 @@ import Shimmer
                         Image(systemName: "checkmark.circle.badge.questionmark")
                             .padding(5)
                     }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
-                    }
                     .clipShape(.circle)
                     .disabled(networkMonitor.epicAccessibilityState != .accessible)
                     .help("Game verification is required for \"\(game.title)\".")
@@ -141,13 +120,6 @@ import Shimmer
                     } label: {
                         Image(systemName: "arrow.triangle.2.circlepath")
                             .padding(5)
-                    }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
                     }
                     .clipShape(.circle)
                     .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
@@ -166,13 +138,6 @@ import Shimmer
                     } label: {
                         Image(systemName: "gear")
                             .padding(5)
-                    }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
                     }
                     .clipShape(.circle)
                     .sheet(isPresented: $isGameSettingsSheetPresented) {
@@ -200,13 +165,6 @@ import Shimmer
                             .contentTransition(.symbolEffect(.replace))
                             .padding(5)
                     }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
-                    }
                     .clipShape(.circle)
                     .onHover { hoveringOverFavouriteButton = $0 }
                     .help("Favourite \"\(game.title)\"")
@@ -232,13 +190,6 @@ import Shimmer
                     } label: {
                         Image(systemName: "xmark.bin")
                             .padding(5)
-                    }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
                     }
                     .clipShape(.circle)
                     .disabled(isDeleteDisabled)
@@ -268,13 +219,6 @@ import Shimmer
                         Image(systemName: "arrow.down.to.line")
                             .padding(5)
                     }
-                    .customTransform { view in
-                        if #available(macOS 26.0, *) {
-                            view.glassEffect()
-                        } else {
-                            view
-                        }
-                    }
                     .clipShape(.circle)
                     .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
                     .help("Download \"\(game.title)\"")
@@ -296,20 +240,20 @@ import Shimmer
                 }
                 return false
             }
-
+            
             var body: some View {
-                HStack {
-                    if let currentGame = operation.current?.game, currentGame.id == game.id {
-                        GameInstallProgressView()
-                            .padding(.horizontal)
-                    } else if game.isInstalled {
+                if let currentGame = operation.current?.game, currentGame.id == game.id {
+                    GameInstallProgressView()
+                        .padding(.horizontal)
+                } else if game.isInstalled {
+                    HStack {
                         installedGameButtons
-                    } else {
-                        Buttons.InstallButton(game: $game)
                     }
+                } else {
+                    Buttons.InstallButton(game: $game)
                 }
             }
-
+            
             @ViewBuilder
             var installedGameButtons: some View {
                     if case .epic = game.source, needsVerification(for: game) {

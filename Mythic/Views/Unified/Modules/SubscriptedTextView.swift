@@ -26,7 +26,6 @@ struct SubscriptedTextView: View {
     var body: some View {
         Text(text)
             .font(.caption)
-            // .foregroundStyle(.white)
             .padding(.horizontal, 5)
             .overlay( // based off .buttonStyle(.accessoryBarAction)
                 RoundedRectangle(cornerRadius: 4)

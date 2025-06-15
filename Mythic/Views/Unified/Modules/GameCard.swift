@@ -25,6 +25,7 @@ struct GameCard: View {
     @ObservedObject var viewModel: GameCardVM = .init()
 
     @State private var isImageEmpty: Bool = true
+    @State private var isImageEmptyPreMacOSTahoe: Bool = false
 
     var body: some View {
         ImageCard(game: $game, isImageEmpty: $isImageEmpty)
@@ -36,16 +37,34 @@ struct GameCard: View {
     @ViewBuilder
     var gameOverlay: some View {
         VStack {
-            // not using terenary operator to implicitly leave foregroundstyle unmodified
             Group {
                 gameTitleStack
+
                 GameCardVM.SharedViews.ButtonsView(game: $game)
             }
-            .conditionalTransform(if: !isImageEmpty) { view in
+            // conditionally change view foreground style for macOS <26
+            .onChange(of: isImageEmpty) {
+                if #unavailable(macOS 26.0) {
+                    isImageEmptyPreMacOSTahoe = $1
+                }
+            }
+            .conditionalTransform(if: !isImageEmptyPreMacOSTahoe) { view in
                 view.foregroundStyle(.white)
             }
         }
-        .padding(.bottom)
+        // use liquid glass on macOS 26+
+        .customTransform { view in
+            if #available(macOS 26.0, *) {
+                view
+                    .padding(.vertical)
+                    .glassEffect(in: .rect(cornerRadius: 20.0))
+                    .padding(4)
+
+            } else {
+                view
+                    .padding(.bottom)
+            }
+        }
         .frame(maxWidth: .infinity)
     }
 
@@ -153,7 +172,13 @@ extension GameCard {
                     image
                         .resizable()
                         .aspectRatio(3/4, contentMode: .fill)
-                        .glur(radius: 20, offset: 0.5, interpolation: 0.7)
+                        .customTransform { view in
+                            if #unavailable(macOS 26.0) {
+                                view.glur(radius: 20, offset: 0.5, interpolation: 0.7)
+                            } else {
+                                view
+                            }
+                        }
                         .clipShape(.rect(cornerRadius: 20))
                         .modifier(FadeInModifier())
                 }
