@@ -10,7 +10,7 @@ struct GameSettingsView: View {
 
     @ObservedObject var operation: GameOperation = .shared
 
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
 
     @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false

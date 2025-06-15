@@ -43,7 +43,7 @@ struct SettingsView: View {
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
     @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
 
     @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
 

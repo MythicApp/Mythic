@@ -12,7 +12,7 @@ struct GameListCard: View {
 
     @Binding var game: Game
     @ObservedObject private var operation: GameOperation = .shared
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 10.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
     @State private var isHoveringOverDestructiveButton: Bool = false
 
     @State private var isImageEmpty: Bool = true
