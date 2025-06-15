@@ -31,6 +31,7 @@ extension GameImportView {
         @State private var path: String = .init()
 
         @State private var isImageEmpty: Bool = true
+        @State private var imageRefreshFlag: Bool = false
 
         @State private var isGameLocationFileImporterPresented: Bool = false
 
@@ -44,6 +45,7 @@ extension GameImportView {
                     if !imageURLString.isEmpty {
                         VStack {
                             GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                                .id(imageRefreshFlag)
 
                             Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info")
                                 .symbolVariant(.circle)
@@ -223,6 +225,7 @@ extension GameImportView {
                 .truncationMode(.tail)
                 .onChange(of: imageURLString) {
                     game.imageURL = URL(string: $1)
+                    imageRefreshFlag.toggle()
                 }
             }
         }
