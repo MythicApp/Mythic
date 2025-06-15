@@ -128,6 +128,15 @@ extension GameCard {
                         }
                 }
             }
+            .grayscale({
+                if let path = game.path,
+                   !files.fileExists(atPath: path),
+                   game.isInstalled {
+                    return 1.0
+                }
+
+                return 0.0
+            }())
         }
 
         /* private FIXME: what */ var handleImage: (Image, Bool, Double) -> AnyView = { image, withBlur, gameCardBlur in
