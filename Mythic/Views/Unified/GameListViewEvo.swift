@@ -30,8 +30,14 @@ struct GameListEvo: View {
     var body: some View {
         VStack {
             if unifiedGames.isEmpty {
-                Text("No games can be shown.")
-                    .font(.bold(.title)())
+                ContentUnavailableView(
+                    "No games found. 😢",
+                    systemImage: "folder.badge.questionmark",
+                    description: Text("""
+                        Games in your library will appear here.
+                        If there are games in your library and they're not appearing, try restarting Mythic.
+                        """)
+                )
 
                 Button {
                     isGameImportViewPresented = true

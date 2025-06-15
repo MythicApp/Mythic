@@ -14575,6 +14575,9 @@
     "Gamecard Size" : {
 
     },
+    "Games in your library will appear here.\nIf there are games in your library and they're not appearing, try restarting Mythic." : {
+
+    },
     "General" : {
 
     },
@@ -23355,6 +23358,7 @@
       }
     },
     "No games can be shown." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23543,6 +23547,9 @@
           }
         }
       }
+    },
+    "No games found. 😢" : {
+
     },
     "No installation is currently running." : {
       "localizations" : {
