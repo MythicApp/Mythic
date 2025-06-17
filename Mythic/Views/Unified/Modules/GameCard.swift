@@ -207,7 +207,7 @@ extension GameCard {
                         image
                             .resizable()
                             .clipShape(.rect(cornerRadius: 20))
-                            .blur(radius: gameCardBlur)
+                            .blur(radius: 20.0 /* gameCardBlur */)
                     }
 
                     image
