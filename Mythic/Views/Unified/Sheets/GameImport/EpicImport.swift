@@ -35,21 +35,28 @@ extension GameImportView {
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
 
+        @State private var isImageEmpty: Bool = true
+
         @State private var isOperating: Bool = false
 
         @State private var isGameLocationFileImporterPresented: Bool = false
 
         var body: some View {
             VStack {
-                Form {
-                    gameSelectionSection()
-                    platformSelectionSection()
-                    pathSelectionSection()
-                    dlcToggleSection()
-                    integrityToggleSection()
+                HStack {
+                    GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                        .padding([.top, .leading])
+
+                    Form {
+                        gameSelectionSection()
+                        platformSelectionSection()
+                        pathSelectionSection()
+                        dlcToggleSection()
+                        integrityToggleSection()
+                    }
+                    .formStyle(.grouped)
+                    .onChange(of: game) { fetchSupportedPlatforms(for: $1) }
                 }
-                .formStyle(.grouped)
-                .onChange(of: game) { fetchSupportedPlatforms(for: $1) }
 
                 actionButtons()
             }

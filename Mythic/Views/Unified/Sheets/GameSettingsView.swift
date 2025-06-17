@@ -3,6 +3,7 @@
 import Shimmer
 import SwiftUI
 import SwordRPC
+import OSLog
 
 struct GameSettingsView: View {
     @Binding var game: Game
@@ -47,26 +48,33 @@ struct GameSettingsView: View {
             Divider()
 
             Form {
-                gameOptionsSection
-                gameFileSection
-                gameEngineSection
+                Section("Options", isExpanded: $isGameSectionExpanded) {
+                    thumbnailURLRow
+                    launchArgumentsRow
+                    verifyFileIntegrityRow
+                }
+
+                Section("File", isExpanded: $isFileSectionExpanded) {
+                    moveGameRow
+                    gameLocationRow
+                }
+
+                Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
+                    if selectedContainerURL != nil {
+                        ContainerSettingsView(selectedContainerURL: $selectedContainerURL, withPicker: true)
+                    }
+                }
+                .disabled(game.platform != .windows)
+                .onChange(of: selectedContainerURL) { game.containerURL = $1 }
             }
             .formStyle(.grouped)
         }
-        
+
         bottomBar
     }
 }
 
 private extension GameSettingsView {
-    var gameOptionsSection: some View {
-        Section("Options", isExpanded: $isGameSectionExpanded) {
-            thumbnailURLRow
-            launchArgumentsRow
-            verifyFileIntegrityRow
-        }
-    }
-
     var thumbnailURLRow: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -83,42 +91,12 @@ private extension GameSettingsView {
                 isThumbnailURLChangeSheetPresented = true
             }
             .sheet(isPresented: $isThumbnailURLChangeSheetPresented) {
-                thumbnailURLChangeSheet
+                ThumbnailURLChangeView(game: $game, isPresented: $isThumbnailURLChangeSheetPresented)
+                    .padding()
+                    .frame(minWidth: 750, idealHeight: 350)
             }
             .disabled(game.source != .local)
         }
-    }
-    
-    func modifyThumbnailURL() {
-        if case .local = game.source {
-            LocalGames.library?.remove(game)
-            LocalGames.library?.insert(game)
-            isThumbnailURLChangeSheetPresented = false
-        }
-    }
-
-    var thumbnailURLChangeSheet: some View {
-        HStack {
-            TextField(
-                "Enter New Thumbnail URL here...",
-                text: Binding(
-                    get: { game.imageURL?.absoluteString.removingPercentEncoding ?? .init()
-                    },
-                    set: {
-                        game.imageURL = .init(string: $0)
-                    }
-                )
-            )
-            .truncationMode(.tail)
-            .textFieldStyle(.roundedBorder)
-            .onSubmit {
-                modifyThumbnailURL()
-            }
-            
-            Button("Done", action: { modifyThumbnailURL() })
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 
     var launchArgumentsRow: some View {
@@ -155,7 +133,7 @@ private extension GameSettingsView {
                     }
                 }
             ))
-                .onSubmit(submitLaunchArgument)
+            .onSubmit(submitLaunchArgument)
 
             if !typingArgument.isEmpty {
                 Button {
@@ -225,14 +203,9 @@ private extension GameSettingsView {
             Spacer()
         }
     }
+}
 
-    var gameFileSection: some View {
-        Section("File", isExpanded: $isFileSectionExpanded) {
-            moveGameRow
-            gameLocationRow
-        }
-    }
-
+private extension GameSettingsView {
     var moveGameRow: some View {
         HStack {
             Text("Move \"\(game.title)\"")
@@ -295,17 +268,9 @@ private extension GameSettingsView {
             .disabled(game.path == nil)
         }
     }
+}
 
-    var gameEngineSection: some View {
-        Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
-            if selectedContainerURL != nil {
-                ContainerSettingsView(selectedContainerURL: $selectedContainerURL, withPicker: true)
-            }
-        }
-        .disabled(game.platform != .windows)
-        .onChange(of: selectedContainerURL) { game.containerURL = $1 }
-    }
-
+private extension GameSettingsView {
     var bottomBar: some View {
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
@@ -331,40 +296,87 @@ private extension GameSettingsView {
     }
 }
 
-struct ArgumentItem: View {
-    @Binding var game: Game
-    @Binding var launchArguments: [String]
-    var argument: String
+extension GameSettingsView {
+    struct ArgumentItem: View {
+        @Binding var game: Game
+        @Binding var launchArguments: [String]
+        var argument: String
 
-    @State var isHoveringOverArgument: Bool = false
+        @State var isHoveringOverArgument: Bool = false
 
-    var body: some View {
-        HStack {
-            if isHoveringOverArgument {
-                Image(systemName: "xmark.bin")
-                    .imageScale(.small)
+        var body: some View {
+            HStack {
+                if isHoveringOverArgument {
+                    Image(systemName: "xmark.bin")
+                        .imageScale(.small)
+                }
+
+                Text(argument)
+                    .monospaced()
+                    .foregroundStyle(isHoveringOverArgument ? .red : .secondary)
             }
-
-            Text(argument)
-                .monospaced()
-                .foregroundStyle(isHoveringOverArgument ? .red : .secondary)
-        }
-        .padding(3)
-        .overlay(content: {
-            RoundedRectangle(cornerRadius: 7)
-                .foregroundStyle(.tertiary)
-                .shadow(radius: 5)
-        })
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.3)) {
-                isHoveringOverArgument = hovering
+            .padding(3)
+            .overlay(content: {
+                RoundedRectangle(cornerRadius: 7)
+                    .foregroundStyle(.tertiary)
+                    .shadow(radius: 5)
+            })
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    isHoveringOverArgument = hovering
+                }
+            }
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    launchArguments.removeAll(where: { $0 == argument })
+                    if launchArguments.isEmpty { // fix for `.onChange` not firing when args become empty
+                        game.launchArguments = .init()
+                    }
+                }
             }
         }
-        .onTapGesture {
-            withAnimation(.easeInOut(duration: 0.3)) {
-                launchArguments.removeAll(where: { $0 == argument })
-                if launchArguments.isEmpty { // fix for `.onChange` not firing when args become empty
-                    game.launchArguments = .init()
+    }
+
+    struct ThumbnailURLChangeView: View {
+        @Binding var game: Game
+        @Binding var isPresented: Bool
+
+        @State private var newImageURLString: String = .init()
+        @State private var isImageEmpty: Bool = true
+        @State private var imageRefreshFlag: Bool = false
+
+        func modifyThumbnailURL() {
+            game.imageURL = URL(string: newImageURLString) ?? nil
+            Task { @MainActor in
+                isPresented = false
+            }
+        }
+
+        var body: some View {
+            HStack {
+                GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                    .id(imageRefreshFlag)
+
+                VStack {
+                    Form {
+                        VStack(alignment: .leading) {
+                            GameCard.ImageURLModifierView(game: $game, imageURLString: $newImageURLString)
+                                .onChange(of: newImageURLString, { imageRefreshFlag.toggle() })
+
+                            Label("To use the default image, leave the field empty.", systemImage: "info.circle")
+                                .font(.footnote)
+                        }
+                    }
+                    .formStyle(.grouped)
+
+                    HStack {
+                        Button("Close", action: { isPresented = false })
+
+                        Spacer()
+
+                        Button("Done", action: { modifyThumbnailURL() })
+                            .buttonStyle(.borderedProminent)
+                    }
                 }
             }
         }

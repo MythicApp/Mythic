@@ -35,10 +35,6 @@ extension GameImportView {
 
         @State private var isGameLocationFileImporterPresented: Bool = false
 
-        @State private var isThumbnailFileImporterPresented: Bool = false
-        @State private var isThumbnailImportErrorPresented: Bool = false
-        @State private var thumbnailImportError: Error?
-
         var body: some View {
             VStack {
                 HStack {
@@ -59,7 +55,9 @@ extension GameImportView {
                         gameTitleTextField()
                         platformPicker()
                         gamePathInput()
-                        imageURLTextField()
+
+                        GameCard.ImageURLModifierView(game: $game, imageURLString: $imageURLString)
+                            .onChange(of: imageURLString, { imageRefreshFlag.toggle() })
                     }
                     .formStyle(.grouped)
                 }
@@ -166,66 +164,6 @@ extension GameImportView {
                 case .windows:
                     title = URL(filePath: path).lastPathComponent
                         .replacingOccurrences(of: ".exe", with: "")
-                }
-            }
-        }
-
-        private func imageURLTextField() -> some View {
-            VStack(alignment: .leading) {
-                TextField(text: $imageURLString, label: {
-                    Text("Enter a thumbnail URL: (optional)")
-
-                    HStack {
-                        Text("Otherwise, browse for a thumbnail file: ")
-
-                        Button("Browse...") {
-                            isThumbnailFileImporterPresented = true
-                        }
-                        .fileImporter(
-                            isPresented: $isThumbnailFileImporterPresented,
-                            allowedContentTypes: [
-                                .png, .jpeg, .gif, .bmp, .ico, .tiff, .heic, .webP
-                            ]) { result in
-                                switch result {
-                                case .success(let url):
-                                    guard url.startAccessingSecurityScopedResource() else { return }
-                                    defer { url.stopAccessingSecurityScopedResource() }
-
-                                    let thumbnailDirectoryURL: URL = Bundle.appHome!.appending(path: "Thumbnails/Custom")
-
-                                    do {
-                                        if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
-                                            try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
-                                        }
-
-                                        let newThumbnailURL = thumbnailDirectoryURL.appendingPathComponent(UUID().uuidString)
-
-                                        try files.copyItem(at: url, to: newThumbnailURL)
-                                        imageURLString = newThumbnailURL.absoluteString // game.path is not stateful, so i'll have to update it as a string
-                                    } catch {
-                                        Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
-                                        thumbnailImportError = error
-                                        isThumbnailImportErrorPresented = true
-                                    }
-                                case .failure(let failure):
-                                    thumbnailImportError = failure
-                                    isThumbnailImportErrorPresented = true
-                                }
-                            }
-                            .alert(isPresented: $isThumbnailImportErrorPresented) {
-                                Alert(
-                                    title: .init("Unable to import thumbnail."),
-                                    message: .init(thumbnailImportError?.localizedDescription ?? "Unknown Error."),
-                                    dismissButton: .default(Text("OK"))
-                                )
-                            }
-
-                    }
-                })
-                .truncationMode(.tail)
-                .onChange(of: imageURLString) {
-                    game.imageURL = URL(string: $1)
-                    imageRefreshFlag.toggle()
                 }
             }
         }
