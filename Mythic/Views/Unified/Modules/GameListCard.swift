@@ -12,7 +12,8 @@ struct GameListCard: View {
 
     @Binding var game: Game
     @ObservedObject private var operation: GameOperation = .shared
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
+//    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
+    @State private var gameCardBlur: Double = 5.0
     @State private var isHoveringOverDestructiveButton: Bool = false
 
     @State private var isImageEmpty: Bool = true
@@ -103,3 +104,4 @@ struct GameListCard: View {
     GameListCard(game: .constant(.init(source: .local, title: "MRAAAH")))
         .environmentObject(NetworkMonitor.shared)
 }
+

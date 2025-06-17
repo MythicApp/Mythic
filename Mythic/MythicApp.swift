@@ -22,7 +22,7 @@ import WhatsNewKit
 struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
+    @ObservedObject var appSettings = AppSettingsV1PersistentStateModel.shared
     @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
     
     @StateObject private var networkMonitor: NetworkMonitor = .shared
@@ -32,7 +32,7 @@ struct MythicApp: App {
 
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isOnboardingPresented {
+            if appSettings.store.inOnboarding {
                 OnboardingR2(fromPhase: onboardingPhase)
                     .contentTransition(.opacity)
                     .onAppear {
@@ -78,10 +78,10 @@ struct MythicApp: App {
                 
                 Button("Restart Onboarding...") {
                     withAnimation(.easeInOut(duration: 2)) {
-                        isOnboardingPresented = true
+                        appSettings.store.inOnboarding = true
                     }
                 }
-                .disabled(isOnboardingPresented)
+                .disabled(appSettings.store.inOnboarding)
             }
 
             CommandGroup(replacing: CommandGroupPlacement.appInfo) {
