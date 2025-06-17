@@ -21,9 +21,12 @@ struct GameListEvo: View {
     @ObservedObject var viewModel: GameListVM = .shared
     @ObservedObject private var variables: VariableManager = .shared
 
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
-    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
-    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+//    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @State private var isListLayoutEnabled: Bool = false // FIXME: we will update this when we update this for liquid glass.
+//    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
+    @State private var isLibraryGridScrollingVertical: Bool = false // FIXME: we will update this when we update this for liquid glass.
+//    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+    private var gameCardSize: Double = 250.0
 
     @State private var isGameImportViewPresented: Bool = false
     
