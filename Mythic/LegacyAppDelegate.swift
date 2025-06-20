@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  LegacyAppDelegate.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 25/2/2024.
@@ -24,7 +24,7 @@ import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
 
-class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
+class LegacyAppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
         FirebaseApp.configure()
@@ -230,11 +230,11 @@ class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote
     }
 }
 
-extension AppDelegate1: UNUserNotificationCenterDelegate {}
+extension LegacyAppDelegate: UNUserNotificationCenterDelegate {}
 
-extension AppDelegate1: SPUUpdaterDelegate {} // FIXME: nonfunctional
+extension LegacyAppDelegate: SPUUpdaterDelegate {} // FIXME: nonfunctional
 
-extension AppDelegate1: SwordRPCDelegate {
+extension LegacyAppDelegate: SwordRPCDelegate {
     public func swordRPCDidConnect(_ rpc: SwordRPC) {
         rpc.setPresence({
             var presence: RichPresence = .init()

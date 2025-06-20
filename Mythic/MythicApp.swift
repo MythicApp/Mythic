@@ -18,7 +18,6 @@ import SwiftUI
 import Sparkle
 import WhatsNewKit
 
-@main
 struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 

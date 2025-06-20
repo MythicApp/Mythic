@@ -48,7 +48,7 @@ public enum ProcessUtility {
     {
         let encoder = JSONEncoder()
         let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         encoder.dateEncodingStrategy = .formatted(formatter)
 
         do {
@@ -69,7 +69,7 @@ public enum ProcessUtility {
     {
         let encoder = JSONEncoder()
         let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
         encoder.dateEncodingStrategy = .formatted(formatter)
 
         do {

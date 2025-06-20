@@ -19,7 +19,7 @@ import Foundation
      <key>propertiesFile</key>
      <dict>
          <key>relative</key>
-         <string>file:///Users/jiecheng/Library/Containers/xyz.blackxfiied.Mythic/Containers/Default/properties.plist</string>
+         <string>file:///Users/USER/Library/Containers/xyz.blackxfiied.Mythic/Containers/Default/properties.plist</string>
      </dict>
      <key>settings</key>
      <dict>
@@ -43,7 +43,7 @@ import Foundation
      <key>url</key>
      <dict>
          <key>relative</key>
-         <string>file:///Users/jiecheng/Library/Containers/xyz.blackxfiied.Mythic/Containers/Default</string>
+         <string>file:///Users/USER/Library/Containers/xyz.blackxfiied.Mythic/Containers/Default</string>
      </dict>
  </dict>
  </plist>
@@ -150,7 +150,7 @@ public struct PersistentStateMigrator {
         }
     }
     
-    @MainActor private static func updateContainters(data: [URL]) {
+    @MainActor private static func updateContainers(data: [URL]) {
         guard let oldWineContainersBasePath = wineContainersBasePath else {
             // If this fails, we should crash.
             fatalError("PersistentStateMigrator: wineContainerBaseDirectoryURL nil.")
@@ -160,7 +160,7 @@ public struct PersistentStateMigrator {
             fatalError("PersistentStateMigrator: wineContainersBasePath nil.")
         }
     
-        for i in 0...data.count {
+        for i in 0..<data.count {
             let url = data[i]
             let propertiesURL = url.appending(path: "properties.plist")
 
@@ -173,14 +173,14 @@ public struct PersistentStateMigrator {
             do {
                 data = try Data(contentsOf: propertiesURL)
             } catch {
-                logger.error("updateContainters: failed to read data from \"\(propertiesURL)\": \(error).")
+                logger.error("updateContainers: failed to read data from \"\(propertiesURL)\": \(error).")
                 break
             }
             var properties: WineContainerProperties
             do {
                 properties = try PropertyListDecoder().decode(WineContainerProperties.self, from: data)
             } catch {
-                logger.error("updateContainters: failed to parse data from \"\(propertiesURL)\": \(error).")
+                logger.error("updateContainers: failed to parse data from \"\(propertiesURL)\": \(error).")
                 break
             }
             
@@ -224,11 +224,12 @@ public struct PersistentStateMigrator {
                 dxvkHUD: .none,
                 discordRPCPassthrough: true
             )
+            WineContainersV1PersistentStateModel.shared.store.containers[id] = container
             
         }
     }
     
-    @MainActor public static func preformMigration() {
+    @MainActor public static func performMigration() {
         let shared = AppSettingsV1PersistentStateModel.shared
 
         // Sparkle
@@ -319,7 +320,7 @@ public struct PersistentStateMigrator {
         if let containerURLs {
             do {
                 let decodedContainerURLs = try PropertyListDecoder().decode(ContainersURLsValue.self, from: containerURLs)
-                updateContainters(data: decodedContainerURLs)
+                updateContainers(data: decodedContainerURLs)
             } catch {
                 logger.error("containerURLs: [URL] decoding failed: \(error)")
             }

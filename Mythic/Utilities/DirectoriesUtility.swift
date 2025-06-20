@@ -20,6 +20,14 @@ public enum DirectoriesUtility {
 
     /// Mythic's temporary directory
     public static var temporaryDirectory: URL? {
-        FileManager.default.temporaryDirectory.appendingPathComponent(AppDelegate.bundleIdentifier)
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(AppDelegate.bundleIdentifier)
+        if !FileManager.default.fileExists(atPath: tempDir.path) {
+            do {
+                try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                return nil
+            }
+        }
+        return tempDir
     }
 }
