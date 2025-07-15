@@ -88,7 +88,7 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: Binding(
+                    Picker(selection: Binding(
                         get: { isListLayoutEnabled },
                         set: { newValue in
                             withAnimation(.easeInOut(duration: 0.8)) {
@@ -101,6 +101,8 @@ struct LibraryView: View {
                         
                         Label("Grid", systemImage: "square.grid.2x2")
                             .tag(false)
+                    } label: {
+                        Label("View", systemImage: "desktopcomputer.and.arrow.down")
                     }
                 }
             }
