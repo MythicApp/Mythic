@@ -289,7 +289,7 @@ public enum EngineVersionsDownloadModel {
         // Decode the JSON
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        formatter.dateFormat = "YYYY-MM-DD'T'HH:mm:ss.SSS'Z'"
         decoder.dateDecodingStrategy = .formatted(formatter)
         decoder.semanticVersionDecodingStrategy = .semverString
 

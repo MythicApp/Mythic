@@ -31,15 +31,6 @@
 		1256C4A52DFE6FC400BD40CD /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1256C4A42DFE6FC400BD40CD /* MarkdownUI */; };
 		1256C4A82DFE6FCF00BD40CD /* BLAKE3 in Frameworks */ = {isa = PBXBuildFile; productRef = 1256C4A72DFE6FCF00BD40CD /* BLAKE3 */; };
 		1256C4AB2DFE701400BD40CD /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1256C4A92DFE701400BD40CD /* Preview Assets.xcassets */; };
-		12B7E0672E0143D5005A51F7 /* LocalGamesV1PersistentStateModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0662E0143D5005A51F7 /* LocalGamesV1PersistentStateModel.swift */; };
-		12B7E0692E015646005A51F7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0682E015643005A51F7 /* main.swift */; };
-		12B7E06C2E0156FC005A51F7 /* HubWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E06B2E0156F6005A51F7 /* HubWindow.swift */; };
-		12B7E06F2E01589E005A51F7 /* HubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E06E2E01589B005A51F7 /* HubView.swift */; };
-		12B7E0712E01600E005A51F7 /* AppMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0702E016008005A51F7 /* AppMenuController.swift */; };
-		12B7E0732E052DEA005A51F7 /* OnboardingWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0722E052DEA005A51F7 /* OnboardingWindow.swift */; };
-		12B7E0762E0535CD005A51F7 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0752E0535CD005A51F7 /* OnboardingView.swift */; };
-		12B7E0782E053803005A51F7 /* AboutWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0772E053803005A51F7 /* AboutWindow.swift */; };
-		12B7E07B2E053826005A51F7 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B7E0792E053826005A51F7 /* AboutView.swift */; };
 		5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */; };
 		5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9573A92C29BBEC009C8F85 /* SparkleController.swift */; };
 		6A0210162D390022009C85F8 /* HarmonyRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0210152D390016009C85F8 /* HarmonyRatingView.swift */; };
@@ -97,7 +88,7 @@
 		6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */; };
 		6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EB2BFCFAFD0035CE4B /* WebView.swift */; };
 		6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */; };
-		6A2935662BFCFAFD0035CE4B /* LegacyAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F02BFCFAFD0035CE4B /* LegacyAppDelegate.swift */; };
+		6A2935662BFCFAFD0035CE4B /* AppDelegate1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F02BFCFAFD0035CE4B /* AppDelegate1.swift */; };
 		6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */; };
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
 		6A29356A2BFCFAFD0035CE4B /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F42BFCFAFD0035CE4B /* Localizable.xcstrings */; };
@@ -108,7 +99,7 @@
 		6A2961032CE1DD6200917E90 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6A2961022CE1DD6200917E90 /* FirebaseAnalytics */; };
 		6A2961052CE1DD6200917E90 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6A2961042CE1DD6200917E90 /* FirebaseCore */; };
 		6A2961072CE1DD6200917E90 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6A2961062CE1DD6200917E90 /* FirebaseCrashlytics */; };
-		6A2C28622DBBA3F7005CD5A4 /* AboutWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C28612DBBA3F3005CD5A4 /* AboutWindowView.swift */; };
+		6A2C28622DBBA3F7005CD5A4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */; };
 		6A3436342DF9C0B2006429F6 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3436332DF9C0B0006429F6 /* View.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
 		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
@@ -172,15 +163,6 @@
 		1256C4012DFE6F5700BD40CD /* RichAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichAlertView.swift; sourceTree = "<group>"; };
 		1256C4022DFE6F5700BD40CD /* WebView2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView2.swift; sourceTree = "<group>"; };
 		1256C4A92DFE701400BD40CD /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		12B7E0662E0143D5005A51F7 /* LocalGamesV1PersistentStateModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGamesV1PersistentStateModel.swift; sourceTree = "<group>"; };
-		12B7E0682E015643005A51F7 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		12B7E06B2E0156F6005A51F7 /* HubWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubWindow.swift; sourceTree = "<group>"; };
-		12B7E06E2E01589B005A51F7 /* HubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HubView.swift; sourceTree = "<group>"; };
-		12B7E0702E016008005A51F7 /* AppMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMenuController.swift; sourceTree = "<group>"; };
-		12B7E0722E052DEA005A51F7 /* OnboardingWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWindow.swift; sourceTree = "<group>"; };
-		12B7E0752E0535CD005A51F7 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		12B7E0772E053803005A51F7 /* AboutWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutWindow.swift; sourceTree = "<group>"; };
-		12B7E0792E053826005A51F7 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvoVM.swift; sourceTree = "<group>"; };
 		5A9573A92C29BBEC009C8F85 /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
 		6A0210152D390016009C85F8 /* HarmonyRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyRatingView.swift; sourceTree = "<group>"; };
@@ -237,7 +219,7 @@
 		6A2934EA2BFCFAFD0035CE4B /* NotImplementedView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotImplementedView.swift; sourceTree = "<group>"; };
 		6A2934EB2BFCFAFD0035CE4B /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewR2.swift; sourceTree = "<group>"; };
-		6A2934F02BFCFAFD0035CE4B /* LegacyAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegacyAppDelegate.swift; sourceTree = "<group>"; };
+		6A2934F02BFCFAFD0035CE4B /* AppDelegate1.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate1.swift; sourceTree = "<group>"; };
 		6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A2934F22BFCFAFD0035CE4B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
 		6A2934F32BFCFAFD0035CE4B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -247,7 +229,7 @@
 		6A2960FB2CE0ED0700917E90 /* EpicWebAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicWebAuthView.swift; sourceTree = "<group>"; };
 		6A2960FD2CE1017700917E90 /* NSApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSApplication.swift; sourceTree = "<group>"; };
 		6A2960FF2CE1033000917E90 /* NSWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWindow.swift; sourceTree = "<group>"; };
-		6A2C28612DBBA3F3005CD5A4 /* AboutWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutWindowView.swift; sourceTree = "<group>"; };
+		6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		6A3436332DF9C0B0006429F6 /* View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		6A448E0D2CC4A531001E9F47 /* GameListCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListCard.swift; sourceTree = "<group>"; };
 		6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCardVM.swift; sourceTree = "<group>"; };
@@ -296,8 +278,6 @@
 		1256C3C12DFE6F5700BD40CD /* App */ = {
 			isa = PBXGroup;
 			children = (
-				12B7E0682E015643005A51F7 /* main.swift */,
-				12B7E0702E016008005A51F7 /* AppMenuController.swift */,
 				1256C3C02DFE6F5700BD40CD /* AppDelegate.swift */,
 			);
 			path = App;
@@ -306,10 +286,9 @@
 		1256C3C62DFE6F5700BD40CD /* PersistentState */ = {
 			isa = PBXGroup;
 			children = (
-				1256C3C42DFE6F5700BD40CD /* StorablePersistentStateModel.swift */,
 				1256C3C22DFE6F5700BD40CD /* AppSettingsV1PersistentStateModel.swift */,
+				1256C3C42DFE6F5700BD40CD /* StorablePersistentStateModel.swift */,
 				1256C3C52DFE6F5700BD40CD /* WineContainersV1PersistentStateModel.swift */,
-				12B7E0662E0143D5005A51F7 /* LocalGamesV1PersistentStateModel.swift */,
 			);
 			path = PersistentState;
 			sourceTree = "<group>";
@@ -348,40 +327,6 @@
 			children = (
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		12B7E06A2E0156E7005A51F7 /* Windows */ = {
-			isa = PBXGroup;
-			children = (
-				12B7E0772E053803005A51F7 /* AboutWindow.swift */,
-				12B7E06B2E0156F6005A51F7 /* HubWindow.swift */,
-				12B7E0722E052DEA005A51F7 /* OnboardingWindow.swift */,
-			);
-			path = Windows;
-			sourceTree = "<group>";
-		};
-		12B7E06D2E015894005A51F7 /* Hub */ = {
-			isa = PBXGroup;
-			children = (
-				12B7E06E2E01589B005A51F7 /* HubView.swift */,
-			);
-			path = Hub;
-			sourceTree = "<group>";
-		};
-		12B7E0742E0535BE005A51F7 /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				12B7E0752E0535CD005A51F7 /* OnboardingView.swift */,
-			);
-			path = Onboarding;
-			sourceTree = "<group>";
-		};
-		12B7E07A2E053826005A51F7 /* About */ = {
-			isa = PBXGroup;
-			children = (
-				12B7E0792E053826005A51F7 /* AboutView.swift */,
-			);
-			path = About;
 			sourceTree = "<group>";
 		};
 		6A2934B22BFCFAFD0035CE4B /* Engine */ = {
@@ -518,9 +463,6 @@
 		6A2934EF2BFCFAFD0035CE4B /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				12B7E07A2E053826005A51F7 /* About */,
-				12B7E0742E0535BE005A51F7 /* Onboarding */,
-				12B7E06D2E015894005A51F7 /* Hub */,
 				1256C4032DFE6F5700BD40CD /* Components */,
 				6A2934DA2BFCFAFD0035CE4B /* Navigation */,
 				6A2934EC2BFCFAFD0035CE4B /* Unified */,
@@ -532,10 +474,9 @@
 		6A2934F72BFCFAFD0035CE4B /* Mythic */ = {
 			isa = PBXGroup;
 			children = (
-				12B7E06A2E0156E7005A51F7 /* Windows */,
 				1256C3C12DFE6F5700BD40CD /* App */,
 				1256C3D02DFE6F5700BD40CD /* Models */,
-				6A2934F02BFCFAFD0035CE4B /* LegacyAppDelegate.swift */,
+				6A2934F02BFCFAFD0035CE4B /* AppDelegate1.swift */,
 				6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */,
 				6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */,
 				6A2934EF2BFCFAFD0035CE4B /* Views */,
@@ -558,7 +499,7 @@
 		6A2960F92CE0ECEE00917E90 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				6A2C28612DBBA3F3005CD5A4 /* AboutWindowView.swift */,
+				6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */,
 				6A2960FB2CE0ED0700917E90 /* EpicWebAuthView.swift */,
 				6A2934D72BFCFAFD0035CE4B /* SettingsView.swift */,
 			);
@@ -782,23 +723,19 @@
 				6A2935592BFCFAFD0035CE4B /* ContainerCreationView.swift in Sources */,
 				6A2960FE2CE1017900917E90 /* NSApplication.swift in Sources */,
 				1256C43F2DFE6F5700BD40CD /* WebView2.swift in Sources */,
-				12B7E0762E0535CD005A51F7 /* OnboardingView.swift in Sources */,
 				1256C4472DFE6F5700BD40CD /* EngineVersionsDownloadModel.swift in Sources */,
 				1256C4492DFE6F5700BD40CD /* AppSettingsV1PersistentStateModel.swift in Sources */,
 				1256C44B2DFE6F5700BD40CD /* BundleIconView.swift in Sources */,
 				1256C4572DFE6F5700BD40CD /* WineContainerModel.swift in Sources */,
-				12B7E0692E015646005A51F7 /* main.swift in Sources */,
 				1256C4582DFE6F5700BD40CD /* AppLoggerModel.swift in Sources */,
 				1256C45C2DFE6F5700BD40CD /* AppDelegate.swift in Sources */,
 				1256C45E2DFE6F5700BD40CD /* DirectoriesUtility.swift in Sources */,
 				1256C4602DFE6F5700BD40CD /* PersistentStateMigrator.swift in Sources */,
 				1256C4642DFE6F5700BD40CD /* WineCommandModel.swift in Sources */,
 				1256C46B2DFE6F5700BD40CD /* RichAlertView.swift in Sources */,
-				12B7E0732E052DEA005A51F7 /* OnboardingWindow.swift in Sources */,
 				1256C4752DFE6F5700BD40CD /* WineContainerManagerModel.swift in Sources */,
 				1256C47C2DFE6F5700BD40CD /* ColorfulBackgroundView.swift in Sources */,
 				1256C4892DFE6F5700BD40CD /* SparkleUpdateControllerModel.swift in Sources */,
-				12B7E06F2E01589E005A51F7 /* HubView.swift in Sources */,
 				1256C48A2DFE6F5700BD40CD /* EngineInstanceModel.swift in Sources */,
 				1256C48B2DFE6F5700BD40CD /* BackgroundEventServiceModel.swift in Sources */,
 				1256C48C2DFE6F5700BD40CD /* HexParserUtility.swift in Sources */,
@@ -807,30 +744,26 @@
 				1256C49F2DFE6F5700BD40CD /* WineContainersV1PersistentStateModel.swift in Sources */,
 				1256C4A02DFE6F5700BD40CD /* ProcessUtility.swift in Sources */,
 				6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */,
-				12B7E0782E053803005A51F7 /* AboutWindow.swift in Sources */,
 				6A2935562BFCFAFD0035CE4B /* GameCard.swift in Sources */,
 				6A2935622BFCFAFD0035CE4B /* NotImplementedView.swift in Sources */,
 				6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */,
 				6A29354F2BFCFAFD0035CE4B /* DownloadsViewEvo.swift in Sources */,
-				12B7E0712E01600E005A51F7 /* AppMenuController.swift in Sources */,
 				6A496A732C1AF75B00FD637B /* Game.swift in Sources */,
 				6A08A29B2D36E0B800E6AEFB /* FileManager.swift in Sources */,
 				6A2935602BFCFAFD0035CE4B /* ContainerListView.swift in Sources */,
 				6A29355E2BFCFAFD0035CE4B /* StopDownloadAlert.swift in Sources */,
-				6A2935662BFCFAFD0035CE4B /* LegacyAppDelegate.swift in Sources */,
+				6A2935662BFCFAFD0035CE4B /* AppDelegate1.swift in Sources */,
 				6A29355D2BFCFAFD0035CE4B /* InstallStatusView.swift in Sources */,
 				5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */,
 				6A29354C2BFCFAFD0035CE4B /* LibraryView.swift in Sources */,
 				6AD9931D2D34283A008DF690 /* SwordRPC.swift in Sources */,
 				6A2935472BFCFAFD0035CE4B /* VariableManager.swift in Sources */,
 				6A2935332BFCFAFD0035CE4B /* Engine.swift in Sources */,
-				6A2C28622DBBA3F7005CD5A4 /* AboutWindowView.swift in Sources */,
+				6A2C28622DBBA3F7005CD5A4 /* AboutView.swift in Sources */,
 				6A0688442C2BCE8B004DF10F /* DownloadCard.swift in Sources */,
-				12B7E07B2E053826005A51F7 /* AboutView.swift in Sources */,
 				6A2935462BFCFAFD0035CE4B /* Rosetta.swift in Sources */,
 				6A2935532BFCFAFD0035CE4B /* StoreView.swift in Sources */,
 				6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */,
-				12B7E0672E0143D5005A51F7 /* LocalGamesV1PersistentStateModel.swift in Sources */,
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* GameListCard.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
@@ -868,7 +801,6 @@
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6A1357B32CE4B0CD00B19213 /* SemanticVersion.swift in Sources */,
 				6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */,
-				12B7E06C2E0156FC005A51F7 /* HubWindow.swift in Sources */,
 				6A0210162D390022009C85F8 /* HarmonyRatingView.swift in Sources */,
 				6A02101B2D390377009C85F8 /* StarRatingView.swift in Sources */,
 				6A93CC872DFBB7510079A0B0 /* String.swift in Sources */,
@@ -1027,7 +959,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3529;
+				CURRENT_PROJECT_VERSION = 3528;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -1074,7 +1006,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3529;
+				CURRENT_PROJECT_VERSION = 3528;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";

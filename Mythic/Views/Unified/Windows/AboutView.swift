@@ -10,7 +10,7 @@ import SwiftUI
 import SemanticVersion
 import ColorfulX
 
-struct AboutWindowView: View {
+struct AboutView: View {
     @State private var colorfulAnimationColors: [Color] = [
         .init(hex: "#5412F6"),
         .init(hex: "#7E1ED8"),
@@ -147,7 +147,7 @@ struct AboutWindowView: View {
     }
 }
 
-extension AboutWindowView {
+extension AboutView {
     struct AcknowledgementCard: View {
         var URL: URL
         var image: Image

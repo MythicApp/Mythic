@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SemanticVersion
 
 public struct WineContainersV1PersistentStateModel: StorablePersistentStateModel.State {
     /// Shared instance.
