@@ -27,7 +27,7 @@ struct LibraryView: View {
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @ObservedObject var gameListViewModel: GameListVM = .shared
-    @State var isListLayout = false // FIXME: we will update this when we update this for liquid glass.
+    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
     var body: some View {
@@ -99,10 +99,10 @@ struct LibraryView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: Binding(
-                        get: { isListLayout },
+                        get: { isListLayoutEnabled },
                         set: { newValue in
                             withAnimation(.easeInOut(duration: 0.8)) {
-                                isListLayout = newValue
+                                isListLayoutEnabled = newValue
                             }
                         }
                     )) {

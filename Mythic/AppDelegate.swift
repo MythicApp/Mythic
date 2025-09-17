@@ -24,7 +24,7 @@ import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
 
-class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
+class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
         FirebaseApp.configure()
@@ -160,9 +160,9 @@ class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    DispatchQueue.main.async {
-                                        AppSettingsV1PersistentStateModel.shared.store.inOnboarding = true
-                                    }
+                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                    app.onboardingPhase = .engineDisclaimer
+                                    app.isOnboardingPresented = true
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical
@@ -230,12 +230,12 @@ class AppDelegate1: NSObject, NSApplicationDelegate { // https://arc.net/l/quote
     }
 }
 
-extension AppDelegate1: UNUserNotificationCenterDelegate {}
+extension AppDelegate: UNUserNotificationCenterDelegate {}
 
-extension AppDelegate1: SPUUpdaterDelegate {} // FIXME: nonfunctional
+extension AppDelegate: SPUUpdaterDelegate {} // FIXME: nonfunctional
 
-extension AppDelegate1: SwordRPCDelegate {
-    public func swordRPCDidConnect(_ rpc: SwordRPC) {
+extension AppDelegate: SwordRPCDelegate {
+    func swordRPCDidConnect(_ rpc: SwordRPC) {
         rpc.setPresence({
             var presence: RichPresence = .init()
             presence.details = "Idling in Mythic"

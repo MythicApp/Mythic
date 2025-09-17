@@ -25,9 +25,7 @@ struct OnboardingR2: View { // TODO: ViewModel
         self.currentPhase = fromPhase
     }
     
-//    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
-    @ObservedObject var appSettings = AppSettingsV1PersistentStateModel.shared
-    
+    @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
     @EnvironmentObject var networkMonitor: NetworkMonitor
     @ObservedObject var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
 
@@ -557,7 +555,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                 secondRow: .init(
                                     Text("Mythic is now ready to use.")
                                 ), thirdRow: [
-                                    .nextArrow(function: { appSettings.store.inOnboarding = false })
+                                    .nextArrow(function: { isOnboardingPresented = false })
                                 ]
                             )
                         }

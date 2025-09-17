@@ -1,6 +1,0 @@
-//
-//  PersistentStateMigrator.swift
-//  Mythic
-//
-
-struct 

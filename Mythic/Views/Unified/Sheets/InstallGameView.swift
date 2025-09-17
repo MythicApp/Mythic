@@ -25,10 +25,8 @@ struct InstallViewEvo: View {
 
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
-    
-    @State private var baseURL: URL = URL(fileURLWithPath: "/")
 
-    @ObservedObject var appSettings = AppSettingsV1PersistentStateModel.shared
+    @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
     @ObservedObject var operation: GameOperation = .shared
 
     private func fetchOptionalPacks() async {
@@ -251,9 +249,6 @@ struct InstallViewEvo: View {
             }
         }
         .padding([.horizontal, .bottom])
-        .onAppear {
-            baseURL = appSettings.store.gameStorageDirectory
-        }
     }
 }
 

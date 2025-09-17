@@ -33,11 +33,17 @@ struct SettingsView: View {
     @State private var isLibrarySettingsExpanded: Bool = true
     @State private var isUpdateSettingsExpanded: Bool = true
 
-//    @EnvironmentObject var sparkleController: SparkleController
+    @EnvironmentObject var sparkleController: SparkleController
 
-//    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
-//    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
-    @ObservedObject var appSettings = AppSettingsV1PersistentStateModel.shared
+    @AppStorage("minimiseOnGameLaunch") private var minimize: Bool = false
+    @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
+    @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
+    @AppStorage("discordRPC") private var rpc: Bool = true
+    @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
+    @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
+    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
 
     @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
 
@@ -62,31 +68,31 @@ struct SettingsView: View {
     @State private var isResetAlertPresented: Bool = false
     @State private var isResetSettingsAlertPresented: Bool = false
 
-//    private var libraryViewSettingsSection: some View {
-//        Section("Library", isExpanded: $isLibrarySettingsExpanded) {
-//            Slider(value: $gameCardSize, in: 200...400, step: 25) {
-//                Label("Gamecard Size", systemImage: "square.resize")
-//                Text("Default is 3 ticks.")
-//                    .foregroundStyle(.placeholder)
-//            }
-//
-//            Slider(value: $gameCardBlur, in: 0...20, step: 5) {
-//                Label("Gamecard Glow", systemImage: gameCardBlur <= 10 ? "sun.min" : "sun.max")
-//            }
-//
-//            Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
-//                Text("Vertical")
-//                    .tag(true)
-//                Text("Horizontal")
-//                    .tag(false)
-//            }
-//        }
-//    }
+    private var libraryViewSettingsSection: some View {
+        Section("Library", isExpanded: $isLibrarySettingsExpanded) {
+            Slider(value: $gameCardSize, in: 200...400, step: 25) {
+                Label("Gamecard Size", systemImage: "square.resize")
+                Text("Default is 3 ticks.")
+                    .foregroundStyle(.placeholder)
+            }
+
+            Slider(value: $gameCardBlur, in: 0...20, step: 5) {
+                Label("Gamecard Glow", systemImage: gameCardBlur <= 10 ? "sun.min" : "sun.max")
+            }
+
+            Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
+                Text("Vertical")
+                    .tag(true)
+                Text("Horizontal")
+                    .tag(false)
+            }
+        }
+    }
 
     private var launchingSettings: some View {
         Group {
-            Toggle("Minimise to dock on game launch", systemImage: "dock.arrow.down.rectangle", isOn: $appSettings.store.hideOnGameLaunch)
-            Toggle("Force quit all games when Mythic closes", systemImage: "xmark.app", isOn: $appSettings.store.closeGamesOnQuit)
+            Toggle("Minimise to dock on game launch", systemImage: "dock.arrow.down.rectangle", isOn: $minimize)
+            Toggle("Force quit all games when Mythic closes", systemImage: "xmark.app", isOn: $quitOnClose)
         }
     }
 
@@ -94,13 +100,13 @@ struct SettingsView: View {
         HStack {
             VStack(alignment: .leading) {
                 Label("Default Install Location", systemImage: "externaldrive.fill.badge.checkmark")
-                Text(appSettings.store.gameStorageDirectory.prettyPath())
+                Text(installBaseURL.prettyPath())
                     .foregroundStyle(.placeholder)
             }
 
             Spacer()
 
-            if !FileLocations.isWritableFolder(url: appSettings.store.gameStorageDirectory) {
+            if !FileLocations.isWritableFolder(url: installBaseURL) {
                 Image(systemName: "exclamationmark.triangle")
                     .symbolVariant(.fill)
                     .help("Folder is not writable.")
@@ -115,22 +121,22 @@ struct SettingsView: View {
                     allowedContentTypes: [.folder]
                 ) { result in
                     if case .success(let url) = result {
-                        appSettings.store.gameStorageDirectory = url
+                        installBaseURL = url
                     }
                 }
                 .buttonStyle(.borderedProminent)
                 
 
                 Button("Reset to Default") {
-                    appSettings.store.gameStorageDirectory = Bundle.appGames!
+                    installBaseURL = Bundle.appGames!
                 }
             }
         }
     }
 
     private var discordActivityStatusToggle: some View {
-        Toggle("Display Mythic activity status on Discord", isOn: $appSettings.store.enableDiscordRichPresence)
-            .onChange(of: appSettings.store.enableDiscordRichPresence) { _, newValue in
+        Toggle("Display Mythic activity status on Discord", isOn: $rpc)
+            .onChange(of: rpc) { _, newValue in
                 if newValue {
                     _ = discordRPC.connect()
                 } else {
@@ -239,19 +245,28 @@ struct SettingsView: View {
 
     private var mythicUpdateSettings: some View {
         Group {
-            Picker("Mythic update mode", systemImage: "arrow.down.app", selection: $appSettings.store.sparkleUpdateAction) {
-                Text("Off")
-                    .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.off)
-                Text("Check")
-                    .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.check)
-                Text("Auto Install")
-                    .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.install)
-            }
+            Toggle(
+                "Automatically check for Mythic updates",
+                systemImage: "arrow.down.app.dashed",
+                isOn: Binding(
+                    get: { sparkleController.updater.automaticallyChecksForUpdates },
+                    set: { sparkleController.updater.automaticallyChecksForUpdates = $0 }
+                )
+            )
+
+            Toggle(
+                "Automatically download Mythic updates",
+                systemImage: "arrow.down.app",
+                isOn: Binding(
+                    get: { sparkleController.updater.automaticallyDownloadsUpdates },
+                    set: { sparkleController.updater.automaticallyDownloadsUpdates = $0 }
+                )
+            )
         }
     }
 
     private var engineUpdateStreamPicker: some View {
-        Picker("Stream", systemImage: "app.badge.clock", selection: $appSettings.store.engineReleaseBranch) {
+        Picker("Stream", systemImage: "app.badge.clock", selection: $engineBranch) {
             Text("Stable", comment: "Within the context of Mythic Engine")
                 .tag(Engine.Stream.stable.rawValue)
                 .help("""
@@ -266,7 +281,7 @@ struct SettingsView: View {
                 Use at your own risk.
                 """)
         }
-        .onChange(of: appSettings.store.engineReleaseBranch) {
+        .onChange(of: engineBranch) {
             isEngineStreamChangeAlertPresented = true
         }
         .alert(isPresented: $isEngineStreamChangeAlertPresented) {
@@ -276,25 +291,17 @@ struct SettingsView: View {
                 primaryButton: .destructive(.init("OK")) {
                     try? Engine.remove()
 
-                    appSettings.store.inOnboarding = true
-//                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-//                    app.onboardingPhase = .engineDisclaimer
-//                    app.isOnboardingPresented = true
+                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                    app.onboardingPhase = .engineDisclaimer
+                    app.isOnboardingPresented = true
                 },
                 secondaryButton: .cancel()
             )
         }
     }
 
-    private var engineUpdateCheckerPicker: some View {
-        Picker("Engine update mode", systemImage: "arrow.down.app.dashed", selection: $appSettings.store.engineUpdateAction) {
-            Text("Off")
-                .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.off)
-            Text("Check")
-                .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.check)
-            Text("Auto Install")
-                .tag(AppSettingsV1PersistentStateModel.AutoUpdateAction.install)
-        }
+    private var engineUpdateCheckerToggle: some View {
+        Toggle("Automatically check for Mythic Engine updates", systemImage: "arrow.down.app.dashed", isOn: $engineAutomaticallyChecksForUpdates)
     }
 
     private var fullAppResetButton: some View {
@@ -308,7 +315,6 @@ struct SettingsView: View {
                 title: .init("Reset Mythic?"),
                 message: .init("This will erase every persistent setting and container."),
                 primaryButton: .destructive(.init("Reset")) {
-                    appSettings.store = AppSettingsV1PersistentStateModel.defaultValue()
                     if let bundleIdentifier = Bundle.main.bundleIdentifier {
                         defaults.removePersistentDomain(forName: bundleIdentifier)
                     }
@@ -337,7 +343,6 @@ struct SettingsView: View {
                 title: .init("Reset Mythic Settings?"),
                 message: .init("This will erase every persistent setting."),
                 primaryButton: .destructive(.init("Reset")) {
-                    appSettings.store = AppSettingsV1PersistentStateModel.defaultValue()
                     if let bundleIdentifier = Bundle.main.bundleIdentifier {
                         defaults.removePersistentDomain(forName: bundleIdentifier)
                     }
@@ -360,12 +365,12 @@ struct SettingsView: View {
                         .formStyle(.grouped)
                     }
 
-//                    Tab("Views", systemImage: "document.viewfinder") {
-//                        Form {
-//                            libraryViewSettingsSection
-//                        }
-//                        .formStyle(.grouped)
-//                    }
+                    Tab("Views", systemImage: "document.viewfinder") {
+                        Form {
+                            libraryViewSettingsSection
+                        }
+                        .formStyle(.grouped)
+                    }
 
                     Tab("Launching", systemImage: "play") {
                         Form {
@@ -427,7 +432,9 @@ struct SettingsView: View {
                                 Text("Mythic Engine isn't installed.")
                                     .font(.bold(.title)())
                                 Button {
-                                    appSettings.store.inOnboarding = true
+                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                    app.onboardingPhase = .engineDisclaimer
+                                    app.isOnboardingPresented = true
                                 } label: {
                                     Label("Return to Onboarding & Install", systemImage: "arrow.down.to.line")
                                         .padding(5)
@@ -446,7 +453,7 @@ struct SettingsView: View {
                             Section("Mythic Engine", isExpanded: $isUpdatesEngineSectionExpanded) {
                                 engineUpdateStreamPicker
 
-                                engineUpdateCheckerPicker
+                                engineUpdateCheckerToggle
                             }
                         }
                         .formStyle(.grouped)
@@ -494,12 +501,12 @@ struct SettingsView: View {
                         // TODO: potenially add manual cloud save deletion
                     }
 
-//                    libraryViewSettingsSection
+                    libraryViewSettingsSection
 
                     Section("Updates", isExpanded: $isUpdateSettingsExpanded) {
                         mythicUpdateSettings
 
-                        engineUpdateCheckerPicker
+                        Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
                     }
 
                     /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.

@@ -74,13 +74,14 @@ import Shimmer
             }
 
             struct EngineInstallButton: View {
-                @ObservedObject var appSettings = AppSettingsV1PersistentStateModel.shared
                 @Binding var game: Game
                 @EnvironmentObject var networkMonitor: NetworkMonitor
 
                 var body: some View {
                     Button { // TODO: convert onboarding engine installer into standalone sheet
-                        appSettings.store.inOnboarding = true
+                        let app = MythicApp() // FIXME: is this dangerous or just stupid
+                        app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
+                        app.isOnboardingPresented = true
                     } label: {
                         Image(systemName: "arrow.down.circle.dotted")
                             .padding(5)
