@@ -88,45 +88,15 @@ struct MythicApp: App {
                     }
                     .disabled(isOnboardingPresented)
                 }
-            
-            CommandGroup(replacing: .help){
-                Button("Mythic Documentation") {
-                    if let docUrl = URL(string: "https://docs.getmythic.app/") {
-                        NSWorkspace.shared.open(docUrl)
-                        }
-                    }
-                Button("Discord Server") {
-                    if let discordInviteUrl = URL(string: "https://discord.com/invite/58NZ7fFqPy") {
-                        NSWorkspace.shared.open(discordInviteUrl)
-                        }
-                    }
-                Button("GitHub Repository") {
-                    if let githubUrl = URL(string: "https://github.com/MythicApp/Mythic") {
-                        NSWorkspace.shared.open(githubUrl)
-                    }
-                }
-                Divider()
-                Button("What's new in Mythic") {
-                    if let whatsNewUrl = URL(string: "https://github.com/MythicApp/Mythic/releases") {
-                        NSWorkspace.shared.open(whatsNewUrl)
-                    }
-                }
-                Divider()
-                Button("Please consider donating!") {
-                    if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
-                        NSWorkspace.shared.open(donationUrl)
-                    }
-                }
-            }
                 
             CommandGroup(replacing: .help){
-                Button("Mythic Website") {
+                Button("Website") {
                     if let websiteURL = URL(string: "https://getmythic.app/") {
                         NSWorkspace.shared.open(websiteURL)
                         }
                     }
 
-                Button("Mythic Documentation") {
+                Button("Mythic Help") {
                     if let docUrl = URL(string: "https://docs.getmythic.app/") {
                         NSWorkspace.shared.open(docUrl)
                         }
