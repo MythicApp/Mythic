@@ -90,7 +90,7 @@ struct MythicApp: App {
                         }
                     }
 
-                Button("Mythic Help") {
+                Button("Documentation") {
                     if let docUrl = URL(string: "https://docs.getmythic.app/") {
                         NSWorkspace.shared.open(docUrl)
                         }
@@ -105,7 +105,7 @@ struct MythicApp: App {
                         NSWorkspace.shared.open(githubUrl)
                     }
                 }
-                Button("Game Compatibility List") {
+                Button("Compatibility List") {
                     if let gameListURL = URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/") {
                         NSWorkspace.shared.open(gameListURL)
                     }
@@ -117,7 +117,7 @@ struct MythicApp: App {
                     }
                 }
                 Divider()
-                Button("Please consider donating!") {
+                Button("Support the project") {
                     if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
                         NSWorkspace.shared.open(donationUrl)
                     }
