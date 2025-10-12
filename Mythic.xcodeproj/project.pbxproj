@@ -926,6 +926,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 3732;
 =======
 				CURRENT_PROJECT_VERSION = 3344;
@@ -933,10 +934,13 @@
 =======
 				CURRENT_PROJECT_VERSION = 3372;
 >>>>>>> 868881c (Left aligned text & removed redundant code)
+=======
+				CURRENT_PROJECT_VERSION = 3392;
+>>>>>>> de283a7 (Language simplification)
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 6T54DL776S;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
@@ -982,6 +986,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 				CURRENT_PROJECT_VERSION = 3732;
 =======
 				CURRENT_PROJECT_VERSION = 3344;
@@ -989,10 +994,13 @@
 =======
 				CURRENT_PROJECT_VERSION = 3372;
 >>>>>>> 868881c (Left aligned text & removed redundant code)
+=======
+				CURRENT_PROJECT_VERSION = 3392;
+>>>>>>> de283a7 (Language simplification)
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 6T54DL776S;
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
