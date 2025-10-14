@@ -39,6 +39,7 @@ struct GameCard: View {
         HStack {
             Group {
                 gameTitleStack
+                    .layoutPriority(1)
 
                 GameCardVM.SharedViews.ButtonsView(game: $game)
             }
@@ -59,8 +60,6 @@ struct GameCard: View {
                     .padding(.vertical)
                     .glassEffect(in: .rect(cornerRadius: 20.0))
                     .padding(4)
-                    .aspectRatio(contentMode: .fit)
-
             } else {
                 view
                     .padding(.bottom)
