@@ -25,7 +25,7 @@ struct GameCard: View {
     @ObservedObject var viewModel: GameCardVM = .init()
 
     @State private var isImageEmpty: Bool = true
-    @State private var isImageEmptyPreMacOSTahoe: Bool = false
+    @State private var isImageEmptyPreMacOSTahoe: Bool = true
 
     var body: some View {
         ImageCard(game: $game, isImageEmpty: $isImageEmpty)
