@@ -108,7 +108,7 @@ struct ContentView: View {
                 .font(.footnote)
                 .foregroundStyle(.placeholder)
                 .padding(.bottom)
-#endif
+#endif // DEBUG
             }, detail: {
                 HomeView()
             }

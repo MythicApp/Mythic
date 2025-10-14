@@ -114,7 +114,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                 }
             }
         }
-#endif
+#endif // !DEBUG
 
         // MARK: Notification Authorisation Request and Delegation Setting
 
