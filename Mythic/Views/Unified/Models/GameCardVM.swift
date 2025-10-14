@@ -240,7 +240,7 @@ import Shimmer
                 }
                 return false
             }
-            
+
             var body: some View {
                 if let currentGame = operation.current?.game, currentGame.id == game.id {
                     GameInstallProgressView()
@@ -253,33 +253,33 @@ import Shimmer
                     Buttons.InstallButton(game: $game)
                 }
             }
-            
+
             @ViewBuilder
             var installedGameButtons: some View {
-                    if case .epic = game.source, needsVerification(for: game) {
-                        Buttons.VerificationButton(game: $game)
+                if case .epic = game.source, needsVerification(for: game) {
+                    Buttons.VerificationButton(game: $game)
+                } else {
+                    if game.isLaunching {
+                        ProgressView()
+                            .controlSize(.small)
+                            .clipShape(.circle)
+                            .padding(5)
                     } else {
-                        if game.isLaunching {
-                            ProgressView()
-                                .controlSize(.small)
-                                .clipShape(.circle)
-                                .padding(5)
+                        if case .windows = game.platform, !Engine.exists {
+                            Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
                         } else {
-                            if case .windows = game.platform, !Engine.exists {
-                                Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
-                            } else {
-                                Buttons.PlayButton(game: $game)
-                            }
+                            Buttons.PlayButton(game: $game)
                         }
-
-                        if game.needsUpdate {
-                            Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
-                        }
-
-                        Buttons.SettingsButton(game: $game)
-                        Buttons.FavouriteButton(game: $game)
-                        Buttons.DeleteButton(game: $game)
                     }
+
+                    if game.needsUpdate {
+                        Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
+                    }
+
+                    Buttons.SettingsButton(game: $game)
+                    Buttons.FavouriteButton(game: $game)
+                    Buttons.DeleteButton(game: $game)
+                }
             }
         }
 
