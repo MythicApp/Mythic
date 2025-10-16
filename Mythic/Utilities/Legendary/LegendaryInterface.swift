@@ -626,16 +626,7 @@ final class Legendary {
         }
     }
 
-    /**
-     Retrieves game thumbnail image from legendary's downloaded metadata.
-
-     - Parameters:
-     - of: The game to fetch the thumbnail of.
-     - type: The aspect ratio of the image to fetch the thumbnail of.
-
-     - Returns: The URL of the retrieved image.
-     */
-    static func getImage(of game: Mythic.Game, type: ImageType) -> String {
+    static func getImageMetadata(for game: Mythic.Game, type: ImageType) -> JSON? {
         let metadata = try? getGameMetadata(game: game)
         let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
 
@@ -646,9 +637,27 @@ final class Legendary {
             }
         }()
 
-        if let imageURL = keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })?["url"].stringValue {
+        return keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })
+    }
+
+    /**
+     Retrieves game thumbnail image from legendary's downloaded metadata.
+
+     - Parameters:
+     - of: The game to fetch the thumbnail of.
+     - type: The aspect ratio of the image to fetch the thumbnail of.
+
+     - Returns: The URL of the retrieved image.
+     */
+    static func getImage(of game: Mythic.Game, type: ImageType) -> String {
+        let imageMetadata = getImageMetadata(for: game, type: type)
+
+        if let imageURL = imageMetadata?["url"].stringValue {
             return imageURL
         }
+
+        let metadata = try? getGameMetadata(game: game)
+        let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
 
         // fallback #1
         if let fallbackURL = keyImages.first(where: {
