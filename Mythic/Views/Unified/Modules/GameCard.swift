@@ -134,16 +134,26 @@ extension GameCard {
                         .onDisappear {
                             withAnimation { isImageEmpty = true }
                         }
-                case .failure:
-                    EmptyView()
-                        .onAppear {
-                            withAnimation { isImageEmpty = true }
-                        }
+                case .failure(let error):
+                    ContentUnavailableView(
+                        "Unable to load the image.",
+                        systemImage: "photo.badge.exclamationmark",
+                        description: .init(error.localizedDescription)
+                    )
+                    .onAppear {
+                        withAnimation { isImageEmpty = true }
+                    }
                 @unknown default:
-                    EmptyView()
-                        .onAppear {
-                            withAnimation { isImageEmpty = true }
-                        }
+                    ContentUnavailableView(
+                        "Unable to load the image.",
+                        systemImage: "photo.badge.exclamationmark",
+                        description: .init("""
+                        Please check your connection, and try again.
+                        """)
+                    )
+                    .onAppear {
+                        withAnimation { isImageEmpty = true }
+                    }
                 }
             }
             .grayscale({
