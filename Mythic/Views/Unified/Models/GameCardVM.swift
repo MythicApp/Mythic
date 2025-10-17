@@ -299,25 +299,25 @@ import Shimmer
         @State private var isUninstallSheetPresented: Bool = false
 
         var body: some View {
-            Menu {
-                GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
-                    .sheet(isPresented: $isGameSettingsSheetPresented) {
-                        GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                            .padding()
-                            .frame(minWidth: 750)
-                    }
-                GameCardVM.Buttons.UpdateButton(game: $game, withLabel: true)
-                GameCardVM.Buttons.FavouriteButton(game: $game, withLabel: true)
-                GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
-                    .sheet(isPresented: $isUninstallSheetPresented) {
-                        UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
-                    }
-            } label: {
-                Button {
-
+            Group { // annoying, but the only way two sheets'll fit in here
+                Menu {
+                    GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
+                    GameCardVM.Buttons.UpdateButton(game: $game, withLabel: true)
+                    GameCardVM.Buttons.FavouriteButton(game: $game, withLabel: true)
+                    GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
                 } label: {
-                    Image(systemName: "ellipsis")
+                    Button { } label: {
+                        Image(systemName: "ellipsis")
+                    }
                 }
+                .sheet(isPresented: $isGameSettingsSheetPresented) {
+                    GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                        .padding()
+                        .frame(minWidth: 750)
+                }
+            }
+            .sheet(isPresented: $isUninstallSheetPresented) {
+                UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
             }
         }
     }
