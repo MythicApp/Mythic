@@ -153,3 +153,7 @@ struct DownloadCard: View {
             }
     }
 }
+
+#Preview {
+    DownloadCard(game: .init(source: .local, title: "test"), style: .prominent)
+}

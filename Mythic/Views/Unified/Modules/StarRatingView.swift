@@ -48,3 +48,7 @@ struct StarRatingView: View {
         .imageScale(.large)
     }
 }
+
+#Preview {
+    StarRatingView(rating: .constant(0), hoveringOverIndex: .constant(0), isInteractive: true)
+}
