@@ -20,32 +20,16 @@ import Shimmer
 @Observable final class GameCardVM: ObservableObject {
 
     // swiftlint:disable nesting
-    struct SharedViews {
-        struct ShimmerView: View {
-            var body: some View {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.background)
-                    .shimmering(
-                        animation: .easeInOut(duration: 1).repeatForever(autoreverses: false),
-                        bandSize: 1
-                    )
-            }
-        }
-
-        struct Buttons {
+    struct Buttons {
+        struct Prominent {
             struct PlayButton: View {
                 @Binding var game: Game
+                var withLabel: Bool = false
+
                 @ObservedObject private var operation: GameOperation = .shared
 
                 @State private var isLaunchErrorAlertPresented = false
                 @State private var launchError: Error?
-
-                var isPlayDisabled: Bool {
-                    game.path?.isEmpty ?? true
-                    || !files.fileExists(atPath: game.path ?? "")
-                    || operation.runningGames.contains(game)
-                    || Wine.containerURLs.isEmpty
-                }
 
                 var body: some View {
                     Button {
@@ -58,12 +42,33 @@ import Shimmer
                             }
                         }
                     } label: {
-                        Image(systemName: "play")
-                            .padding(5)
+                        if game.isLaunching {
+                             ProgressView()
+                                .controlSize(.small)
+                                .tint(.black)
+
+                            if withLabel {
+                                Text("Launching")
+                            }
+                        } else {
+                            if withLabel {
+                                Label("Play", systemImage: "play")
+                                    .symbolVariant(.fill)
+                            } else {
+                                Image(systemName: "play")
+                                    .symbolVariant(.fill)
+                                    .padding(2)
+                            }
+                        }
                     }
-                    .clipShape(.circle)
-                    .help(game.path != nil ? "Play \"\(game.title)\"" : "Unable to locate \(game.title) at its specified path (\(game.path ?? "Unknown"))")
-                    .disabled(isPlayDisabled)
+                    .disabled(game.isLaunching)
+                    .disabled(operation.runningGames.contains(game))
+                    .disabled(operation.current?.game == game)
+                    .help("Play \"\(game.title)\"")
+
+                    .background(.white)
+                    .foregroundStyle(.black)
+
                     .alert(isPresented: $isLaunchErrorAlertPresented) {
                         Alert(
                             title: Text("Error launching \"\(game.title)\"."),
@@ -73,240 +78,285 @@ import Shimmer
                 }
             }
 
-            struct EngineInstallButton: View {
-                @Binding var game: Game
-                @EnvironmentObject var networkMonitor: NetworkMonitor
-
-                var body: some View {
-                    Button { // TODO: convert onboarding engine installer into standalone sheet
-                        let app = MythicApp() // FIXME: is this dangerous or just stupid
-                        app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
-                        app.isOnboardingPresented = true
-                    } label: {
-                        Image(systemName: "arrow.down.circle.dotted")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .disabled(!networkMonitor.isConnected)
-                    .help("Install Mythic Engine")
-                }
-            }
-
-            struct VerificationButton: View {
-                @Binding var game: Game
-                @EnvironmentObject var networkMonitor: NetworkMonitor
-                @ObservedObject private var operation: GameOperation = .shared
-
-                var body: some View {
-                    Button {
-                        operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
-                    } label: {
-                        Image(systemName: "checkmark.circle.badge.questionmark")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                    .help("Game verification is required for \"\(game.title)\".")
-                }
-            }
-            struct UpdateButton: View {
-                @Binding var game: Game
-                @EnvironmentObject var networkMonitor: NetworkMonitor
-                @ObservedObject private var operation: GameOperation = .shared
-
-                var body: some View {
-                    Button {
-                        operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
-                    } label: {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.runningGames.contains(game))
-                    .help("Update \"\(game.title)\"")
-                }
-            }
-
-            struct SettingsButton: View {
-                @Binding var game: Game
-
-                @State private var isGameSettingsSheetPresented = false
-
-                var body: some View {
-                    Button {
-                        isGameSettingsSheetPresented = true
-                    } label: {
-                        Image(systemName: "gear")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .sheet(isPresented: $isGameSettingsSheetPresented) {
-                        GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                            .padding()
-                            .frame(minWidth: 750)
-                    }
-                    .help("Modify settings for \"\(game.title)\"")
-                }
-            }
-
-            struct FavouriteButton: View {
-                @Binding var game: Game
-
-                @State private var hoveringOverFavouriteButton = false
-                @State private var animateFavouriteIcon = false
-
-                var body: some View {
-                    Button {
-                        game.isFavourited.toggle()
-                        withAnimation { animateFavouriteIcon = game.isFavourited }
-                    } label: {
-                        Image(systemName: "star")
-                            .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
-                            .contentTransition(.symbolEffect(.replace))
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .onHover { hoveringOverFavouriteButton = $0 }
-                    .help("Favourite \"\(game.title)\"")
-                    .task { animateFavouriteIcon = game.isFavourited }
-                    .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
-                }
-            }
-
-            struct DeleteButton: View {
-                @Binding var game: Game
-                @ObservedObject private var operation: GameOperation = .shared
-
-                @State private var isUninstallSheetPresented = false
-                @State private var hoveringOverDestructiveButton = false
-
-                var isDeleteDisabled: Bool {
-                    operation.current?.game != nil || operation.runningGames.contains(game)
-                }
-
-                var body: some View {
-                    Button {
-                        isUninstallSheetPresented = true
-                    } label: {
-                        Image(systemName: "xmark.bin")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .disabled(isDeleteDisabled)
-                    .help("Delete \"\(game.title)\"")
-                    .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            hoveringOverDestructiveButton = hovering
-                        }
-                    }
-                    .sheet(isPresented: $isUninstallSheetPresented) {
-                        UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
-                    }
-                }
-            }
-
             struct InstallButton: View {
                 @Binding var game: Game
+                var withLabel: Bool = false
+
                 @EnvironmentObject var networkMonitor: NetworkMonitor
                 @ObservedObject private var operation: GameOperation = .shared
 
                 @State private var isInstallSheetPresented = false
 
                 var body: some View {
-                    Button {
-                        isInstallSheetPresented = true
-                    } label: {
-                        Image(systemName: "arrow.down.to.line")
-                            .padding(5)
-                    }
-                    .clipShape(.circle)
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
-                    .help("Download \"\(game.title)\"")
-                    .sheet(isPresented: $isInstallSheetPresented) {
-                        InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
-                    }
-                }
-            }
-        }
-
-        struct ButtonsView: View {
-            @Binding var game: Game
-            @ObservedObject private var operation: GameOperation = .shared
-            @EnvironmentObject var networkMonitor: NetworkMonitor
-
-            private func needsVerification(for game: Game) -> Bool {
-                if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
-                    return json[game.id]["needs_verification"].boolValue
-                }
-                return false
-            }
-
-            var body: some View {
-                if let currentGame = operation.current?.game, currentGame.id == game.id {
-                    GameInstallProgressView()
-                        .padding(.horizontal)
-                } else if game.isInstalled {
-                    HStack {
-                        installedGameButtons
-                    }
-                } else {
-                    Buttons.InstallButton(game: $game)
-                }
-            }
-
-            @ViewBuilder
-            var installedGameButtons: some View {
-                if case .epic = game.source, needsVerification(for: game) {
-                    Buttons.VerificationButton(game: $game)
-                } else {
-                    if game.isLaunching {
-                        ProgressView()
-                            .controlSize(.small)
-                            .clipShape(.circle)
-                            .padding(5)
+                    if operation.current?.game == game {
+                        GameInstallProgressView()
                     } else {
-                        if case .windows = game.platform, !Engine.exists {
-                            Buttons.EngineInstallButton(game: $game, networkMonitor: _networkMonitor)
-                        } else {
-                            Buttons.PlayButton(game: $game)
+                        Button {
+                            isInstallSheetPresented = true
+                        } label: {
+                            if withLabel {
+                                Label("Install", systemImage: "arrow.down.to.line")
+                            } else {
+                                Image(systemName: "arrow.down.to.line")
+                                    .padding(2)
+                            }
+                        }
+                        .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
+                        .help("Install \"\(game.title)\"")
+
+                        .sheet(isPresented: $isInstallSheetPresented) {
+                            InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
                         }
                     }
-
-                    if game.needsUpdate {
-                        Buttons.UpdateButton(game: $game, networkMonitor: _networkMonitor)
-                    }
-
-                    Buttons.SettingsButton(game: $game)
-                    Buttons.FavouriteButton(game: $game)
-                    Buttons.DeleteButton(game: $game)
                 }
             }
         }
 
-        struct SubscriptedInfoView: View {
+        // TODO: turn into modal & make this reudundant
+        struct EngineInstallButton: View {
             @Binding var game: Game
+            var withLabel: Bool = false
+
+            @EnvironmentObject var networkMonitor: NetworkMonitor
 
             var body: some View {
-                SubscriptedTextView(game.source.rawValue)
+                Button { // TODO: convert onboarding engine installer into standalone sheet
+                    let app = MythicApp() // FIXME: is this dangerous or just stupid
+                    app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
+                    app.isOnboardingPresented = true
+                } label: {
+                    if withLabel {
+                        Label("Install Mythic Engine", systemImage: "arrow.down.circle.dotted")
+                    } else {
+                        Image(systemName: "arrow.down.circle.dotted")
+                            .padding(2)
+                    }
+                }
+                .disabled(!networkMonitor.isConnected)
+                .help("Install Mythic Engine")
+            }
+        }
 
-                if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
-                   recent == game {
-                    SubscriptedTextView("Recent")
+        struct VerificationButton: View {
+            @Binding var game: Game
+            var withLabel: Bool = false
+
+            @EnvironmentObject var networkMonitor: NetworkMonitor
+            @ObservedObject private var operation: GameOperation = .shared
+
+            var body: some View {
+                Button {
+                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
+                } label: {
+                    if withLabel {
+                        Label("Verify", systemImage: "checkmark.circle.badge.questionmark")
+                    } else {
+                        Image(systemName: "checkmark.circle.badge.questionmark")
+                            .padding(2)
+                    }
+                }
+                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                .help("Game verification is required for \"\(game.title)\".")
+            }
+        }
+        struct UpdateButton: View {
+            @Binding var game: Game
+            var withLabel: Bool = false
+
+            @EnvironmentObject var networkMonitor: NetworkMonitor
+            @ObservedObject private var operation: GameOperation = .shared
+
+            var body: some View {
+                Button {
+                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
+                } label: {
+                    if withLabel {
+                        if game.needsUpdate {
+                            Label("Update", systemImage: "arrow.triangle.2.circlepath")
+                        } else if game.source != .local {
+                            Label("Up to date", systemImage: "checkmark")
+                        } else {
+                            Label("Update checking unsupported", systemImage: "checkmark.circle.dotted")
+                        }
+                    } else {
+                        Image(systemName: "arrow.triangle.2.circlepath")
+                            .padding(2)
+                    }
+                }
+                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                .disabled(operation.runningGames.contains(game))
+                .disabled(!game.needsUpdate)
+                .help("Update \"\(game.title)\"")
+            }
+        }
+
+        struct SettingsButton: View {
+            @Binding var game: Game
+            var withLabel: Bool = false
+
+            @Binding var isGameSettingsSheetPresented: Bool
+
+            var body: some View {
+                Button {
+                    isGameSettingsSheetPresented = true
+                } label: {
+                    if withLabel {
+                        Label("Settings", systemImage: "gear")
+                    } else {
+                        Image(systemName: "gear")
+                            .padding(2)
+                    }
+                }
+                .help("Modify settings for \"\(game.title)\"")
+                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu` smh so much for modularity.
+                    // FIXME: you must add the sheet below to whatever view you call this button in!!
+                /*
+                 .sheet(isPresented: $isGameSettingsSheetPresented) {
+                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                         .padding()
+                         .frame(minWidth: 750)
+                 }
+                 */
+            }
+        }
+
+        struct FavouriteButton: View {
+            @Binding var game: Game
+            var withLabel: Bool = false
+
+            @State private var hoveringOverFavouriteButton = false
+            @State private var animateFavouriteIcon = false
+
+            var body: some View {
+                Button {
+                    game.isFavourited.toggle()
+                    withAnimation { animateFavouriteIcon = game.isFavourited }
+                } label: {
+                    if withLabel {
+                        Label(game.isFavourited ? "Unfavourite" : "Favourite", systemImage: "star")
+                            .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
+                            .contentTransition(.symbolEffect(.replace))
+                    } else {
+                        Image(systemName: "star")
+                            .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
+                            .contentTransition(.symbolEffect(.replace))
+                            .padding(2)
+                    }
+                }
+                .onHover { hoveringOverFavouriteButton = $0 }
+                .help("Favourite \"\(game.title)\"")
+                .task { animateFavouriteIcon = game.isFavourited }
+                .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
+            }
+        }
+
+        struct DeleteButton: View {
+            @Binding var game: Game
+            var withLabel: Bool = false
+
+            @ObservedObject private var operation: GameOperation = .shared
+
+            @State private var isUninstallSheetPresented = false
+            @State private var hoveringOverDestructiveButton = false
+
+            var isDeleteDisabled: Bool {
+                operation.current?.game != nil || operation.runningGames.contains(game)
+            }
+
+            var body: some View {
+                Button {
+                    isUninstallSheetPresented = true
+                } label: {
+                    if withLabel {
+                        Label("Delete", systemImage: "xmark.bin")
+                    } else {
+                        Image(systemName: "xmark.bin")
+                            .padding(2)
+                    }
+                }
+                .disabled(isDeleteDisabled)
+                .help("Delete \"\(game.title)\"")
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        hoveringOverDestructiveButton = hovering
+                    }
+                }
+                .sheet(isPresented: $isUninstallSheetPresented) {
+                    UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
                 }
             }
         }
+    }
 
-        struct Template: View {
-            var body: some View {
-                do {}
+    struct MenuView : View {
+        @Binding var game: Game
+        @State private var isGameSettingsSheetPresented: Bool = false
+
+        var body: some View {
+            Menu {
+                GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
+                GameCardVM.Buttons.UpdateButton(game: $game, withLabel: true)
+                GameCardVM.Buttons.FavouriteButton(game: $game, withLabel: true)
+                GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true)
+            } label: {
+                Button {
+
+                } label: {
+                    Image(systemName: "ellipsis")
+                }
+            }
+            .sheet(isPresented: $isGameSettingsSheetPresented) {
+                GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                    .padding()
+                    .frame(minWidth: 750)
             }
         }
-
-        // swiftlint:enable nesting
     }
+
+    struct ButtonsView: View {
+        @Binding var game: Game
+        @ObservedObject private var operation: GameOperation = .shared
+        @EnvironmentObject var networkMonitor: NetworkMonitor
+
+        private func needsVerification(for game: Game) -> Bool {
+            if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
+                return json[game.id]["needs_verification"].boolValue
+            }
+            return false
+        }
+
+        var body: some View {
+            if game.isInstalled {
+                Buttons.Prominent.PlayButton(game: $game)
+                MenuView(game: $game)
+            } else {
+                Buttons.Prominent.InstallButton(game: $game)
+            }
+        }
+    }
+
+    struct SubscriptedInfoView: View {
+        @Binding var game: Game
+
+        var body: some View {
+            SubscriptedTextView(game.source.rawValue)
+
+            if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
+               recent == game {
+                SubscriptedTextView("Recent")
+            }
+        }
+    }
+
+    // swiftlint:enable nesting
 }
 
 #Preview {
-    LibraryView()
-        .environmentObject(NetworkMonitor.shared)
+    //LibraryView()
+    //.environmentObject(NetworkMonitor.shared)
+    HStack {
+        GameCardVM.ButtonsView(game: .constant(.init(source: .local, title: "t")))
+            .environmentObject(NetworkMonitor.shared)
+            .padding()
+    }
 }

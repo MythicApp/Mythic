@@ -97,9 +97,9 @@ struct CompactGameCard: View {
                             } else {
                                 // not using terenary operator to implicitly leave foregroundstyle unmodified
                                 if isImageEmpty {
-                                    GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
+                                    GameCardVM.Buttons.Prominent.PlayButton(game: $game)
                                 } else {
-                                    GameCardVM.SharedViews.Buttons.PlayButton(game: $game)
+                                    GameCardVM.Buttons.Prominent.PlayButton(game: $game)
                                         .foregroundStyle(.white)
                                 }
                             }

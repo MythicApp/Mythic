@@ -273,10 +273,8 @@ private extension GameSettingsView {
     var bottomBar: some View {
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
-            SubscriptedTextView(game.source.rawValue)
-            if (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) == game {
-                SubscriptedTextView("Recent")
-            }
+            GameCardVM.SubscriptedInfoView(game: $game)
+
             Spacer()
             Button("Close") { isPresented = false }
                 .buttonStyle(.borderedProminent)

@@ -76,7 +76,7 @@ struct GameListCard: View {
                             .font(.system(.title, weight: .bold))
 
                         HStack {
-                            GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
+                            GameCardVM.SubscriptedInfoView(game: $game)
                         }
                     }
                     .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
@@ -87,9 +87,9 @@ struct GameListCard: View {
                     Group {
                         // not using terenary operator to implicitly leave foregroundstyle unmodified
                         if isImageEmpty {
-                            GameCardVM.SharedViews.ButtonsView(game: $game)
+                            GameCardVM.ButtonsView(game: $game)
                         } else {
-                            GameCardVM.SharedViews.ButtonsView(game: $game)
+                            GameCardVM.ButtonsView(game: $game)
                                 .foregroundStyle(.white)
                         }
                     }

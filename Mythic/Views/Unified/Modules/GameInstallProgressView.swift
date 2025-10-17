@@ -46,10 +46,9 @@ struct GameInstallProgressView: View {
         Button {
             isInstallStatusViewPresented = true
         } label: {
-            Image(systemName: "info")
-                .padding([.vertical, .trailing], 5)
+            Image(systemName: "info.circle")
         }
-        .clipShape(.circle)
+        .clipShape(.capsule)
         .help("Show install status")
         .sheet(isPresented: $isInstallStatusViewPresented) {
             InstallStatusView(isPresented: $isInstallStatusViewPresented)
@@ -62,12 +61,11 @@ struct GameInstallProgressView: View {
             isStopGameModificationAlertPresented = true
         } label: {
             Image(systemName: "xmark")
-                .padding([.vertical, .trailing], 5)
                 .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
                     view.foregroundStyle(.red)
                 }
         }
-        .clipShape(.circle)
+        .clipShape(.capsule)
         .help("Stop installing")
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.1)) {

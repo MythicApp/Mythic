@@ -36,13 +36,24 @@ struct GameCard: View {
 
     @ViewBuilder
     var gameOverlay: some View {
-        HStack {
-            Group {
+        Group {
+            HStack {
                 gameTitleStack
                     .layoutPriority(1)
 
-                GameCardVM.SharedViews.ButtonsView(game: $game)
+                Group {
+                    if game.isInstalled {
+                        GameCardVM.Buttons.Prominent.PlayButton(game: $game)
+                            .clipShape(.capsule)
+                        GameCardVM.MenuView(game: $game)
+                            .clipShape(.capsule)
+                    } else {
+                        GameCardVM.Buttons.Prominent.InstallButton(game: $game)
+                            .clipShape(.capsule)
+                    }
+                }
             }
+            .padding(.horizontal)
             // conditionally change view foreground style for macOS <26
             .onChange(of: isImageEmpty) {
                 if #unavailable(macOS 26.0) {
@@ -69,16 +80,21 @@ struct GameCard: View {
 
     var gameTitleStack: some View {
         VStack(alignment: .leading) {
-            Text(game.title)
-                .font(.bold(.title3)())
-                .truncationMode(.tail)
-                .lineLimit(1)
+            HStack {
+                Text(game.title)
+                    .font(.bold(.title3)())
+                    .truncationMode(.tail)
+                    .lineLimit(1)
+
+                if game.isFavourited {
+                    Image(systemName: "star.fill")
+                }
+            }
 
             HStack {
-                GameCardVM.SharedViews.SubscriptedInfoView(game: $game)
+                GameCardVM.SubscriptedInfoView(game: $game)
             }
         }
-        .padding(.leading)
     }
 }
 

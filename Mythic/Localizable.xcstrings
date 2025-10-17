@@ -8829,6 +8829,9 @@
         }
       }
     },
+    "CONTINUE PLAYING" : {
+
+    },
     "Create a container" : {
       "localizations" : {
         "af" : {
@@ -10359,6 +10362,7 @@
       }
     },
     "Download \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13237,6 +13241,9 @@
         }
       }
     },
+    "Favourite" : {
+
+    },
     "Favourite \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -13426,6 +13433,9 @@
           }
         }
       }
+    },
+    "Favourites" : {
+
     },
     "File" : {
       "localizations" : {
@@ -23172,6 +23182,7 @@
       }
     },
     "No games are favourited." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25464,6 +25475,9 @@
         }
       }
     },
+    "Play" : {
+
+    },
     "Play \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -25653,6 +25667,9 @@
           }
         }
       }
+    },
+    "Please check your connection, and try again." : {
+
     },
     "Please choose a rating." : {
 
@@ -29862,6 +29879,9 @@
         }
       }
     },
+    "Settings" : {
+
+    },
     "Show in Finder" : {
       "localizations" : {
         "af" : {
@@ -33096,6 +33116,9 @@
         }
       }
     },
+    "This area is where your most recently played game will appear — try launching one now!" : {
+
+    },
     "This process cannot be undone." : {
       "localizations" : {
         "af" : {
@@ -34818,7 +34841,11 @@
     "Unable to import thumbnail." : {
 
     },
+    "Unable to load the image." : {
+
+    },
     "Unable to locate %@ at its specified path (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -35587,6 +35614,9 @@
         }
       }
     },
+    "Unfavourite" : {
+
+    },
     "Uninstall" : {
       "localizations" : {
         "af" : {
@@ -35967,6 +35997,12 @@
         }
       }
     },
+    "Up to date" : {
+
+    },
+    "Update" : {
+
+    },
     "Update \"%@\"" : {
       "localizations" : {
         "af" : {
@@ -36157,6 +36193,9 @@
         }
       }
     },
+    "Update checking unsupported" : {
+
+    },
     "Updates" : {
       "localizations" : {
         "af" : {
@@ -36346,6 +36385,9 @@
           }
         }
       }
+    },
+    "Verify" : {
+
     },
     "Verify File Integrity" : {
       "localizations" : {
@@ -37871,6 +37913,9 @@
       }
     },
     "Views" : {
+
+    },
+    "Welcome to Mythic!" : {
 
     },
     "Welcome to Mythic." : {

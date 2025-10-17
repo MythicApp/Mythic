@@ -27,64 +27,126 @@ import SwordRPC
 struct HomeView: View {
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    
-    @State private var loadingError = false
-    @State private var isLoading = false
-    @State private var canGoBack = false
-    @State private var canGoForward = false
-    @State private var urlString = "https://store.epicgames.com/"
-    
-    @State private var isAlertPresented: Bool = false
-    
-    @Environment(\.colorScheme) var colorScheme
-    
+
+    @State private var isImageEmpty = false
+
     // MARK: - Body
     var body: some View {
-        HStack {
-            // MARK: - Recent Game Display
-            if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,
-               var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(Game.self, from: recentlyPlayedObject),
-               recentlyPlayedGame.isInstalled {
-                GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
-            }
-            
-            // MARK: - Side Views
-            VStack {
-                // MARK: View 1 (Top)
-                VStack {
-                    if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
-                        ScrollView(.horizontal) {
-                            LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
-                                ForEach(unifiedGames.filter({ $0.isFavourited == true })) { game in
-                                    CompactGameCard(game: .constant(game))
-                                        .padding(5)
+        GeometryReader { geometry in
+            ScrollView {
+                if var recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
+                    VStack {
+                        if recentGame.wideImageURL != nil {
+                            AsyncImage(url: recentGame.wideImageURL) { phase in
+                                switch phase {
+                                case .empty:
+                                    Rectangle()
+                                        .fill(.quinary)
+                                        .shimmering(
+                                            animation: .easeInOut(duration: 1)
+                                                .repeatForever(autoreverses: false),
+                                            bandSize: 1
+                                        )
+                                        .onAppear {
+                                            withAnimation { isImageEmpty = true }
+                                        }
+                                case .success(let image):
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .glur(radius: 20, offset: 0.65, interpolation: 0.7)
+                                        .modifier(FadeInModifier())
+                                        .onAppear {
+                                            withAnimation { isImageEmpty = false }
+                                        }
+                                case .failure(let error):
+                                    ContentUnavailableView(
+                                        "Unable to load the image.",
+                                        systemImage: "photo.badge.exclamationmark",
+                                        description: .init(error.localizedDescription)
+                                    )
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+                                    .background(.quinary)
+                                @unknown default:
+                                    ContentUnavailableView(
+                                        "Unable to load the image.",
+                                        systemImage: "photo.badge.exclamationmark",
+                                        description: .init("""
+                                Please check your connection, and try again.
+                                """)
+                                    )
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+                                    .background(.quinary)
                                 }
                             }
                         }
-                    } else {
-                        HStack {
-                            Image(systemName: "star")
-                                .symbolVariant(.fill)
-                            
-                            Text("No games are favourited.")
-                        }
                     }
+                    .frame(height: geometry.size.height * 0.75)
+                    .overlay(alignment: .bottomLeading) {
+                        VStack(alignment: .leading) {
+                            Text("CONTINUE PLAYING")
+                                .foregroundStyle(.placeholder)
+                                .font(.caption)
+
+                            HStack {
+                                Text(recentGame.title)
+                                    .font(.title.bold())
+
+                                if recentGame.isFavourited {
+                                    Image(systemName: "star.fill")
+                                }
+
+                                SubscriptedTextView(recentGame.source.rawValue)
+                            }
+                            HStack {
+                                GameCardVM.Buttons.Prominent.PlayButton(game: .init(get: { recentGame }, set: { recentGame = $0 }), withLabel: true)
+                                    .background(.white)
+                                    .foregroundStyle(.black)
+                                    .clipShape(.capsule)
+
+                                GameCardVM.MenuView(game: .init(get: { recentGame }, set: { recentGame = $0 }))
+                                    .clipShape(.capsule)
+                            }
+                        }
+                        .padding([.leading, .bottom])
+                        .foregroundStyle(.white)
+                    }
+                } else {
+                    // TODO: move to relevant location
+                    ContentUnavailableView(
+                        "Welcome to Mythic!",
+                        systemImage: "hand.wave",
+                        description: .init("""
+                        This area is where your most recently played game will appear — try launching one now!
+                        """)
+                    )
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height * 0.75)
+                    .background(.quinary)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.quinary)
-                .clipShape(.rect(cornerRadius: 20))
-                
-                // MARK: View 2 (Bottom)
-                VStack {
-                    ContainerListView()
+
+                // TODO: your games section (use game label)
+                // TODO: turn recently played into an array that is listed in homeview
+                // TODO: 'your containers' section (use containers label)
+                Form {
+                    Section("Favourites", isExpanded: .constant(true)) {
+
+                    }
+                    
+                    Divider()
+
+
+                    Section("Containers", isExpanded: .constant(true)) {
+                        ContainerListView()
+                    }
+
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.quinary)
-                .clipShape(.rect(cornerRadius: 20))
+                .formStyle(.grouped)
             }
         }
+        .ignoresSafeArea(edges: .top)
+
         .navigationTitle("Home")
-        .padding()
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -92,7 +154,7 @@ struct HomeView: View {
                 presence.state = "Idle"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
-                
+
                 return presence
             }())
         }
