@@ -29,6 +29,7 @@ struct GameInstallProgressView: View {
         if operation.current?.game != nil {
             HStack {
                 OperationProgressView(withPercentage: withPercentage)
+                    .layoutPriority(1)
 
                 if operation.current?.type != .repair {
                     infoButton()
