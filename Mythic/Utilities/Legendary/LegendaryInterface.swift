@@ -522,6 +522,17 @@ final class Legendary {
         }
     }
 
+    static func needsVerification(game: Mythic.Game) -> Bool {
+        do {
+            let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+
+            return installedJSON[game.id]["needs_verification"].boolValue
+        } catch {
+            log.error("Error checking if \(game.title) needs verification: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     // MARK: - Clear Command Cache Method
     /**
      Wipes legendary's command cache. This will slow some legendary commands until the cache is rebuilt.

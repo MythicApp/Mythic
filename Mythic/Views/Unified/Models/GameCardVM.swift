@@ -318,13 +318,6 @@ import Shimmer
         @ObservedObject private var operation: GameOperation = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
-        private func needsVerification(for game: Game) -> Bool {
-            if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
-                return json[game.id]["needs_verification"].boolValue
-            }
-            return false
-        }
-
         var body: some View {
             if game.isInstalled {
                 Buttons.Prominent.PlayButton(game: $game)

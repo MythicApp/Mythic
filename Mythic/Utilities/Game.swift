@@ -169,6 +169,15 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         }
     }
 
+    var needsVerification: Bool {
+        switch self.source {
+        case .epic:
+            return Legendary.needsVerification(game: self)
+        case .local:
+            return false
+        }
+    }
+
     var isInstalling: Bool { GameOperation.shared.current?.game == self }
     var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
     var isLaunching: Bool { GameOperation.shared.launching == self }
