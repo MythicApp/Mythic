@@ -23,62 +23,59 @@ struct ContainerListView: View {
     @State private var isDeletionAlertPresented = false
     
     var body: some View {
-        Form {
-            ForEach(Wine.containerObjects) { container in
-                HStack {
-                    Text(container.name)
-                    
-                    Button {
-                        workspace.open(container.url)
-                    } label: {
-                        Text("\(container.url.prettyPath()) \(Image(systemName: "link"))")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .scaledToFit()
-                    }
-                    .buttonStyle(.accessoryBar)
-                    
-                    Spacer()
+        ForEach(Wine.containerObjects) { container in
+            HStack {
+                Text(container.name)
 
-                    Button {
-                        isContainerConfigurationViewPresented = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Modify default settings for \"\(container.name)\"")
-                    .sheet(isPresented: $isContainerConfigurationViewPresented) {
-                        ContainerConfigurationView(containerURL: container.url, isPresented: $isContainerConfigurationViewPresented)
-                    }
+                Button {
+                    workspace.open(container.url)
+                } label: {
+                    Text("\(container.url.prettyPath()) \(Image(systemName: "link"))")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .scaledToFit()
+                }
+                .buttonStyle(.accessoryBar)
 
-                    Button {
-                        isDeletionAlertPresented = true
-                    } label: {
-                        Image(systemName: "xmark.bin")
-                    }
-                    .buttonStyle(.borderless)
-                    .foregroundStyle(.secondary)
-                    .alert(isPresented: $isDeletionAlertPresented) {
-                        return Alert(
-                            title: .init("Are you sure you want to delete \"\(container.name)\"?"),
-                            message: .init("This process cannot be undone."),
-                            primaryButton: .destructive(.init("Delete")) {
-                                do {
-                                    try Wine.deleteContainer(containerURL: container.url)
-                                } catch {
-                                    Logger.file.error("Unable to delete container \(container.name): \(error.localizedDescription)")
-                                    isDeletionAlertPresented = false
-                                }
-                            },
-                            secondaryButton: .cancel(.init("Cancel")) {
+                Spacer()
+
+                Button {
+                    isContainerConfigurationViewPresented = true
+                } label: {
+                    Image(systemName: "gear")
+                }
+                .buttonStyle(.borderless)
+                .help("Modify default settings for \"\(container.name)\"")
+                .sheet(isPresented: $isContainerConfigurationViewPresented) {
+                    ContainerConfigurationView(containerURL: container.url, isPresented: $isContainerConfigurationViewPresented)
+                }
+
+                Button {
+                    isDeletionAlertPresented = true
+                } label: {
+                    Image(systemName: "xmark.bin")
+                }
+                .buttonStyle(.borderless)
+                .foregroundStyle(.secondary)
+                .alert(isPresented: $isDeletionAlertPresented) {
+                    return Alert(
+                        title: .init("Are you sure you want to delete \"\(container.name)\"?"),
+                        message: .init("This process cannot be undone."),
+                        primaryButton: .destructive(.init("Delete")) {
+                            do {
+                                try Wine.deleteContainer(containerURL: container.url)
+                            } catch {
+                                Logger.file.error("Unable to delete container \(container.name): \(error.localizedDescription)")
                                 isDeletionAlertPresented = false
                             }
-                        )
-                    }
+                        },
+                        secondaryButton: .cancel(.init("Cancel")) {
+                            isDeletionAlertPresented = false
+                        }
+                    )
                 }
             }
         }
-        .formStyle(.grouped)
     }
 }
 
@@ -214,5 +211,8 @@ struct ContainerConfigurationView: View {
 }
 
 #Preview {
-    ContainerListView()
+    Form {
+        ContainerListView()
+    }
+    .formStyle(.grouped)
 }

@@ -19,51 +19,54 @@ import SwordRPC
 
 struct ContainersView: View {
     @State private var isContainerCreationViewPresented = false
-    
+
     var body: some View {
-        ContainerListView()
-            .navigationTitle("Containers")
-        
-            .task(priority: .background) {
-                discordRPC.setPresence({
-                    var presence: RichPresence = .init()
-                    presence.details = "Managing their Windows® Instances"
-                    presence.state = "Managing containers"
-                    presence.timestamps.start = .now
-                    presence.assets.largeImage = "macos_512x512_2x"
-                    
-                    return presence
-                }())
-            }
-        
-            .toolbar {
-                if Engine.exists {
+        Form {
+            ContainerListView()
+        }
+        .formStyle(.grouped)
+        .navigationTitle("Containers")
+
+        .task(priority: .background) {
+            discordRPC.setPresence({
+                var presence: RichPresence = .init()
+                presence.details = "Managing their Windows® Instances"
+                presence.state = "Managing containers"
+                presence.timestamps.start = .now
+                presence.assets.largeImage = "macos_512x512_2x"
+
+                return presence
+            }())
+        }
+
+        .toolbar {
+            if Engine.exists {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isContainerCreationViewPresented = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .help("Add a container")
+                }
+
+                if let containersDirectory = Wine.containersDirectory {
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
-                            isContainerCreationViewPresented = true
+                            workspace.open(containersDirectory)
                         } label: {
-                            Image(systemName: "plus")
+                            Image(systemName: "folder")
                         }
-                        .help("Add a container")
-                    }
-                    
-                    if let containersDirectory = Wine.containersDirectory {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button {
-                                workspace.open(containersDirectory)
-                            } label: {
-                                Image(systemName: "folder")
-                            }
-                            .help("Open Containers directory")
-                        }
+                        .help("Open Containers directory")
                     }
                 }
             }
-            .id(isContainerCreationViewPresented)
+        }
+        .id(isContainerCreationViewPresented)
 
-            .sheet(isPresented: $isContainerCreationViewPresented) {
-                ContainerCreationView(isPresented: $isContainerCreationViewPresented)
-            }
+        .sheet(isPresented: $isContainerCreationViewPresented) {
+            ContainerCreationView(isPresented: $isContainerCreationViewPresented)
+        }
     }
 }
 
