@@ -48,7 +48,7 @@ struct MythicApp: App {
                     .contentTransition(.opacity)
                     .environmentObject(networkMonitor)
                     .environmentObject(sparkleController)
-                    .frame(minWidth: 750, minHeight: 390)
+                    .frame(minWidth: 850, minHeight: 400)
                     .onAppear {
                         if let window = NSApp.mainWindow {
                             window.isImmersive = false
