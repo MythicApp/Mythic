@@ -119,7 +119,7 @@ struct ContentView: View {
                 if !networkMonitor.isConnected {
                     switch networkMonitor.epicAccessibilityState {
                     case .accessible:
-                        Image(systemName: "exclamationmark.icloud")
+                        Image(systemName: "bolt.horizontal.fill")
                             .help("""
                             Mythic is connected to the internet,
                             but is unable to verify the connection to Epic Games.
