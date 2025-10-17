@@ -88,8 +88,10 @@ struct GameListCard: View {
                         // not using terenary operator to implicitly leave foregroundstyle unmodified
                         if isImageEmpty {
                             GameCardVM.ButtonsView(game: $game)
+                                .clipShape(.capsule)
                         } else {
                             GameCardVM.ButtonsView(game: $game)
+                                .clipShape(.capsule)
                                 .foregroundStyle(.white)
                         }
                     }
