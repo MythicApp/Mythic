@@ -28,7 +28,14 @@ struct HomeView: View {
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
 
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
+
     @State private var isImageEmpty = false
+
+    @State private var isFavouritesSectionExpanded: Bool = true
+    @State private var isContainersSectionExpanded: Bool = true
+
+    @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) })
 
     // MARK: - Body
     var body: some View {
@@ -72,8 +79,8 @@ struct HomeView: View {
                                         "Unable to load the image.",
                                         systemImage: "photo.badge.exclamationmark",
                                         description: .init("""
-                                Please check your connection, and try again.
-                                """)
+                                        Please check your connection, and try again.
+                                        """)
                                     )
                                     .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
                                     .background(.quinary)
@@ -123,7 +130,6 @@ struct HomeView: View {
                     }
                     .frame(height: geometry.size.height * 0.75)
                 } else {
-                    // TODO: move to relevant location
                     ContentUnavailableView(
                         "Welcome to Mythic!",
                         systemImage: "hand.wave",
@@ -138,18 +144,31 @@ struct HomeView: View {
                     .background(.quinary)
                 }
 
-                // TODO: your games section (use game label)
-                // TODO: turn recently played into an array that is listed in homeview
-                // TODO: 'your containers' section (use containers label)
                 Form {
-                    Section("Favourites", isExpanded: .constant(true)) {
-
+                    Section("Your Favourites", isExpanded: $isFavouritesSectionExpanded) {
+                        if favouritesExcludingRecent.isEmpty {
+                            HStack(alignment: .center) {
+                                Spacer()
+                                ContentUnavailableView(
+                                    "No Favourites",
+                                    systemImage: "star.slash.fill",
+                                    description: .init("""
+                                    Games you favourite will appear here.
+                                    You can favourite a game by pressing [􀍠] → [􀋂].
+                                    """)
+                                )
+                                Spacer()
+                            }
+                        } else {
+                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                                ForEach(favouritesExcludingRecent) { game in
+                                    GameCard(game: .constant(game))
+                                }
+                            }
+                        }
                     }
-                    
-                    Divider()
 
-
-                    Section("Containers", isExpanded: .constant(true)) {
+                    Section("Your Containers", isExpanded: $isContainersSectionExpanded) {
                         ContainerListView()
                     }
 
