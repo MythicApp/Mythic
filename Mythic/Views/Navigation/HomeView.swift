@@ -35,8 +35,8 @@ struct HomeView: View {
         GeometryReader { geometry in
             ScrollView {
                 if var recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
-                    VStack {
-                        if recentGame.wideImageURL != nil {
+                    ZStack(alignment: .bottomLeading) {
+                        if recentGame.wideImageURL == nil {
                             AsyncImage(url: recentGame.wideImageURL) { phase in
                                 switch phase {
                                 case .empty:
@@ -79,10 +79,20 @@ struct HomeView: View {
                                     .background(.quinary)
                                 }
                             }
+                        } else {
+                            ContentUnavailableView(
+                                "Image Unavailable",
+                                systemImage: "photo.badge.exclamationmark",
+                                description: .init("""
+                                This game doesn't have a widescreen image that Mythic can display.
+                                """)
+                            )
+                            .frame(
+                                width: geometry.size.width,
+                                height: geometry.size.height * 0.75
+                            )
                         }
-                    }
-                    .frame(height: geometry.size.height * 0.75)
-                    .overlay(alignment: .bottomLeading) {
+
                         VStack(alignment: .leading) {
                             Text("CONTINUE PLAYING")
                                 .foregroundStyle(.placeholder)
@@ -111,6 +121,7 @@ struct HomeView: View {
                         .padding([.leading, .bottom])
                         .foregroundStyle(.white)
                     }
+                    .frame(height: geometry.size.height * 0.75)
                 } else {
                     // TODO: move to relevant location
                     ContentUnavailableView(
@@ -120,8 +131,10 @@ struct HomeView: View {
                         This area is where your most recently played game will appear — try launching one now!
                         """)
                     )
-                    .frame(width: geometry.size.width,
-                           height: geometry.size.height * 0.75)
+                    .frame(
+                        width: geometry.size.width,
+                        height: geometry.size.height * 0.75
+                    )
                     .background(.quinary)
                 }
 
