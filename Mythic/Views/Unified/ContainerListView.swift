@@ -44,6 +44,7 @@ struct ContainerListView: View {
                 } label: {
                     Image(systemName: "gear")
                 }
+                .disabled(!Engine.exists)
                 .buttonStyle(.borderless)
                 .help("Modify default settings for \"\(container.name)\"")
                 .sheet(isPresented: $isContainerConfigurationViewPresented) {
