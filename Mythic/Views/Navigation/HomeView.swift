@@ -86,6 +86,7 @@ struct HomeView: View {
                                     .background(.quinary)
                                 }
                             }
+                            .frame(height: geometry.size.height * 0.75)
                         } else {
                             ContentUnavailableView(
                                 "Image Unavailable",
