@@ -43,7 +43,7 @@ struct HomeView: View {
             ScrollView {
                 if var recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
-                        if recentGame.wideImageURL == nil {
+                        if recentGame.wideImageURL != nil {
                             AsyncImage(url: recentGame.wideImageURL) { phase in
                                 switch phase {
                                 case .empty:
