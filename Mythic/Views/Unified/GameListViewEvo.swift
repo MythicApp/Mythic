@@ -23,7 +23,7 @@ struct GameListEvo: View {
 
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
-    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
 
     @State private var isGameImportViewPresented: Bool = false
     

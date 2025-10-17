@@ -120,7 +120,7 @@ extension GameCard {
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool
 
-        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
+        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
 
         var withBlur: Bool = true
 
@@ -218,7 +218,7 @@ extension GameCard {
 
     struct FallbackImageCard: View {
         @Binding var game: Game
-        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
+        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
         var withBlur: Bool = true
 
         var body: some View {

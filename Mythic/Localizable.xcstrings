@@ -9405,7 +9405,7 @@
     "Default Install Location" : {
 
     },
-    "Default is 3 ticks." : {
+    "Default is 1 tick." : {
 
     },
     "Delete" : {
@@ -13434,9 +13434,6 @@
         }
       }
     },
-    "Favourites" : {
-
-    },
     "File" : {
       "localizations" : {
         "af" : {
@@ -14590,6 +14587,9 @@
 
     },
     "Games in your library will appear here.\nIf there are games in your library and they're not appearing, try restarting Mythic." : {
+
+    },
+    "Games you favourite will appear here.\nYou can favourite a game by pressing [􀍠] → [􀋂]." : {
 
     },
     "General" : {
@@ -23183,6 +23183,9 @@
           }
         }
       }
+    },
+    "No Favourites" : {
+
     },
     "No games are favourited." : {
       "extractionState" : "stale",
@@ -40013,6 +40016,12 @@
           }
         }
       }
+    },
+    "Your Containers" : {
+
+    },
+    "Your Favourites" : {
+
     }
   },
   "version" : "1.0"

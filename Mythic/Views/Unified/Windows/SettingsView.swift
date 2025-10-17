@@ -42,8 +42,8 @@ struct SettingsView: View {
     @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
-    @AppStorage("gameCardSize") private var gameCardSize: Double = 250.0
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 5.0
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
+    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
 
     @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
 
@@ -72,7 +72,7 @@ struct SettingsView: View {
         Section("Library", isExpanded: $isLibrarySettingsExpanded) {
             Slider(value: $gameCardSize, in: 200...400, step: 25) {
                 Label("Gamecard Size", systemImage: "square.resize")
-                Text("Default is 3 ticks.")
+                Text("Default is 1 tick.")
                     .foregroundStyle(.placeholder)
             }
 
