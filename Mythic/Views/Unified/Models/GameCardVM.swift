@@ -254,9 +254,10 @@ import Shimmer
             @Binding var game: Game
             var withLabel: Bool = false
 
+            @Binding var isUninstallSheetPresented: Bool
+
             @ObservedObject private var operation: GameOperation = .shared
 
-            @State private var isUninstallSheetPresented = false
             @State private var hoveringOverDestructiveButton = false
 
             var isDeleteDisabled: Bool {
@@ -281,9 +282,13 @@ import Shimmer
                         hoveringOverDestructiveButton = hovering
                     }
                 }
+                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu` smh so much for modularity.
+                    // FIXME: you must add the sheet below to whatever view you call this button in!!
+                /*
                 .sheet(isPresented: $isUninstallSheetPresented) {
                     UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
                 }
+                 */
             }
         }
     }
@@ -291,24 +296,28 @@ import Shimmer
     struct MenuView : View {
         @Binding var game: Game
         @State private var isGameSettingsSheetPresented: Bool = false
+        @State private var isUninstallSheetPresented: Bool = false
 
         var body: some View {
             Menu {
                 GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
+                    .sheet(isPresented: $isGameSettingsSheetPresented) {
+                        GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                            .padding()
+                            .frame(minWidth: 750)
+                    }
                 GameCardVM.Buttons.UpdateButton(game: $game, withLabel: true)
                 GameCardVM.Buttons.FavouriteButton(game: $game, withLabel: true)
-                GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true)
+                GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
+                    .sheet(isPresented: $isUninstallSheetPresented) {
+                        UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
+                    }
             } label: {
                 Button {
 
                 } label: {
                     Image(systemName: "ellipsis")
                 }
-            }
-            .sheet(isPresented: $isGameSettingsSheetPresented) {
-                GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                    .padding()
-                    .frame(minWidth: 750)
             }
         }
     }
