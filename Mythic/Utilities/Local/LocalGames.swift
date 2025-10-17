@@ -74,7 +74,31 @@ final class LocalGames {
                 log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
             }
         case .windows: // FIXME: unneeded unification
-            guard Engine.exists else { throw Engine.NotInstalledError() }
+            guard Engine.exists else {
+                Task { @MainActor in // FIXME: duplicated code
+                    let alert = NSAlert()
+                    alert.messageText = "Install Mythic Engine?"
+                    alert.informativeText = """
+                    This game cannot be launched, as the Mythic Engine is not installed.
+                    Would you like install it now?
+                    """
+                    alert.alertStyle = .informational
+                    alert.addButton(withTitle: "OK")
+                    alert.addButton(withTitle: "Cancel")
+
+                    if let window = NSApp.windows.first {
+                        alert.beginSheetModal(for: window) { response in
+                            if response == .alertFirstButtonReturn {
+                                let app = MythicApp() // FIXME: is this dangerous or just stupid
+                                app.onboardingPhase = .engineDisclaimer
+                                app.isOnboardingPresented = true
+                            }
+                        }
+                    }
+                }
+
+                throw Engine.NotInstalledError()
+            }
             guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
             let container = try Wine.getContainerObject(url: containerURL)
 

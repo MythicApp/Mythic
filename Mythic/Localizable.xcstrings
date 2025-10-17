@@ -16127,6 +16127,9 @@
     "If the link didn't open, click on the button below to open it manually." : {
 
     },
+    "Image Unavailable" : {
+
+    },
     "Images with a 3:4 aspect ratio fit the best." : {
       "localizations" : {
         "af" : {
@@ -33117,6 +33120,9 @@
       }
     },
     "This area is where your most recently played game will appear — try launching one now!" : {
+
+    },
+    "This game doesn't have a widescreen image that Mythic can display." : {
 
     },
     "This process cannot be undone." : {
