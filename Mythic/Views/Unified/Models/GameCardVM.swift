@@ -18,75 +18,79 @@ import SwiftyJSON
 import Shimmer
 
 @Observable final class GameCardVM: ObservableObject {
-
+    
     // swiftlint:disable nesting
     struct Buttons {
         struct Prominent {
             struct PlayButton: View {
                 @Binding var game: Game
                 var withLabel: Bool = false
-
+                
                 @ObservedObject private var operation: GameOperation = .shared
-
+                
                 @State private var isLaunchErrorAlertPresented = false
                 @State private var launchError: Error?
-
+                
                 var body: some View {
-                    Button {
-                        Task(priority: .userInitiated) {
-                            do {
-                                try await game.launch()
-                            } catch {
-                                launchError = error
-                                isLaunchErrorAlertPresented = true
+                    if operation.current?.game == game {
+                        GameInstallProgressView()
+                    } else {
+                        Button {
+                            Task(priority: .userInitiated) {
+                                do {
+                                    try await game.launch()
+                                } catch {
+                                    launchError = error
+                                    isLaunchErrorAlertPresented = true
+                                }
                             }
-                        }
-                    } label: {
-                        if game.isLaunching {
-                             ProgressView()
-                                .controlSize(.small)
-                                .tint(.black)
-
-                            if withLabel {
-                                Text("Launching")
-                            }
-                        } else {
-                            if withLabel {
-                                Label("Play", systemImage: "play")
-                                    .symbolVariant(.fill)
+                        } label: {
+                            if game.isLaunching {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(.black)
+                                
+                                if withLabel {
+                                    Text("Launching")
+                                }
                             } else {
-                                Image(systemName: "play")
-                                    .symbolVariant(.fill)
-                                    .padding(2)
+                                if withLabel {
+                                    Label("Play", systemImage: "play")
+                                        .symbolVariant(.fill)
+                                } else {
+                                    Image(systemName: "play")
+                                        .symbolVariant(.fill)
+                                        .padding(2)
+                                }
                             }
                         }
-                    }
-                    .disabled(game.isLaunching)
-                    .disabled(operation.runningGames.contains(game))
-                    .disabled(operation.current?.game == game)
-                    .help("Play \"\(game.title)\"")
-
-                    .background(.white)
-                    .foregroundStyle(.black)
-
-                    .alert(isPresented: $isLaunchErrorAlertPresented) {
-                        Alert(
-                            title: Text("Error launching \"\(game.title)\"."),
-                            message: Text(launchError?.localizedDescription ?? "Unknown Error.")
-                        )
+                        .disabled(game.isLaunching)
+                        .disabled(operation.runningGames.contains(game))
+                        .disabled(operation.current?.game == game)
+                        .help("Play \"\(game.title)\"")
+                        
+                        .background(.white)
+                        .foregroundStyle(.black)
+                        
+                        .alert(isPresented: $isLaunchErrorAlertPresented) {
+                            Alert(
+                                title: Text("Error launching \"\(game.title)\"."),
+                                message: Text(launchError?.localizedDescription ?? "Unknown Error.")
+                            )
+                        }
                     }
                 }
             }
-
+            
             struct InstallButton: View {
                 @Binding var game: Game
                 var withLabel: Bool = false
-
+                
                 @EnvironmentObject var networkMonitor: NetworkMonitor
                 @ObservedObject private var operation: GameOperation = .shared
-
+                
                 @State private var isInstallSheetPresented = false
-
+                
                 var body: some View {
                     if operation.current?.game == game {
                         GameInstallProgressView()
@@ -103,7 +107,7 @@ import Shimmer
                         }
                         .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
                         .help("Install \"\(game.title)\"")
-
+                        
                         .sheet(isPresented: $isInstallSheetPresented) {
                             InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
                         }
@@ -111,14 +115,14 @@ import Shimmer
                 }
             }
         }
-
+        
         // TODO: turn into modal & make this reudundant
         struct EngineInstallButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @EnvironmentObject var networkMonitor: NetworkMonitor
-
+            
             var body: some View {
                 Button { // TODO: convert onboarding engine installer into standalone sheet
                     let app = MythicApp() // FIXME: is this dangerous or just stupid
@@ -136,14 +140,14 @@ import Shimmer
                 .help("Install Mythic Engine")
             }
         }
-
+        
         struct VerificationButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @EnvironmentObject var networkMonitor: NetworkMonitor
             @ObservedObject private var operation: GameOperation = .shared
-
+            
             var body: some View {
                 Button {
                     operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
@@ -162,10 +166,10 @@ import Shimmer
         struct UpdateButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @EnvironmentObject var networkMonitor: NetworkMonitor
             @ObservedObject private var operation: GameOperation = .shared
-
+            
             var body: some View {
                 Button {
                     operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
@@ -189,13 +193,13 @@ import Shimmer
                 .help("Update \"\(game.title)\"")
             }
         }
-
+        
         struct SettingsButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @Binding var isGameSettingsSheetPresented: Bool
-
+            
             var body: some View {
                 Button {
                     isGameSettingsSheetPresented = true
@@ -209,24 +213,24 @@ import Shimmer
                 }
                 .help("Modify settings for \"\(game.title)\"")
                 // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu` smh so much for modularity.
-                    // FIXME: you must add the sheet below to whatever view you call this button in!!
+                // FIXME: you must add the sheet below to whatever view you call this button in!!
                 /*
                  .sheet(isPresented: $isGameSettingsSheetPresented) {
-                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                         .padding()
-                         .frame(minWidth: 750)
+                 GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                 .padding()
+                 .frame(minWidth: 750)
                  }
                  */
             }
         }
-
+        
         struct FavouriteButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @State private var hoveringOverFavouriteButton = false
             @State private var animateFavouriteIcon = false
-
+            
             var body: some View {
                 Button {
                     game.isFavourited.toggle()
@@ -249,20 +253,20 @@ import Shimmer
                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
             }
         }
-
+        
         struct DeleteButton: View {
             @Binding var game: Game
             var withLabel: Bool = false
-
+            
             @ObservedObject private var operation: GameOperation = .shared
-
+            
             @State private var isUninstallSheetPresented = false
             @State private var hoveringOverDestructiveButton = false
-
+            
             var isDeleteDisabled: Bool {
                 operation.current?.game != nil || operation.runningGames.contains(game)
             }
-
+            
             var body: some View {
                 Button {
                     isUninstallSheetPresented = true
@@ -287,11 +291,11 @@ import Shimmer
             }
         }
     }
-
+    
     struct MenuView : View {
         @Binding var game: Game
         @State private var isGameSettingsSheetPresented: Bool = false
-
+        
         var body: some View {
             Menu {
                 GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
@@ -300,7 +304,7 @@ import Shimmer
                 GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true)
             } label: {
                 Button {
-
+                    
                 } label: {
                     Image(systemName: "ellipsis")
                 }
@@ -312,19 +316,19 @@ import Shimmer
             }
         }
     }
-
+    
     struct ButtonsView: View {
         @Binding var game: Game
         @ObservedObject private var operation: GameOperation = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
-
+        
         private func needsVerification(for game: Game) -> Bool {
             if let json = try? JSON(data: Data(contentsOf: URL(filePath: "\(Legendary.configLocation)/installed.json"))) {
                 return json[game.id]["needs_verification"].boolValue
             }
             return false
         }
-
+        
         var body: some View {
             if game.isInstalled {
                 Buttons.Prominent.PlayButton(game: $game)
@@ -334,20 +338,20 @@ import Shimmer
             }
         }
     }
-
+    
     struct SubscriptedInfoView: View {
         @Binding var game: Game
-
+        
         var body: some View {
             SubscriptedTextView(game.source.rawValue)
-
+            
             if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                recent == game {
                 SubscriptedTextView("Recent")
             }
         }
     }
-
+    
     // swiftlint:enable nesting
 }
 
