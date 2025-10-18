@@ -38,8 +38,10 @@ struct GameCard: View {
     var gameOverlay: some View {
         Group {
             HStack {
-                gameTitleStack
-                    .layoutPriority(1)
+                VStack(alignment: .leading) {
+                    GameCardVM.TitleAndInformationView(game: $game, font: .title3)
+                }
+                .layoutPriority(1)
 
                 Group {
                     if game.isInstalled {
@@ -74,25 +76,6 @@ struct GameCard: View {
             } else {
                 view
                     .padding(.bottom)
-            }
-        }
-    }
-
-    var gameTitleStack: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text(game.title)
-                    .font(.bold(.title3)())
-                    .truncationMode(.tail)
-                    .lineLimit(1)
-
-                if game.isFavourited {
-                    Image(systemName: "star.fill")
-                }
-            }
-
-            HStack {
-                GameCardVM.SubscriptedInfoView(game: $game)
             }
         }
     }

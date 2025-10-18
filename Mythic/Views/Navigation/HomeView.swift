@@ -52,13 +52,7 @@ struct HomeView: View {
                                 .font(.caption)
 
                             HStack {
-                                Text(recentGame.title)
-                                    .font(.title.bold())
-
-                                if recentGame.isFavourited {
-                                    Image(systemName: "star.fill")
-                                }
-
+                                GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: false)
                                 SubscriptedTextView(recentGame.source.rawValue)
                             }
                             HStack {

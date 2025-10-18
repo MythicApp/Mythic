@@ -312,7 +312,6 @@ import Shimmer
                 }
                 .sheet(isPresented: $isGameSettingsSheetPresented) {
                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                        .padding()
                         .frame(minWidth: 750)
                 }
             }
@@ -348,6 +347,32 @@ import Shimmer
             if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                recent == game {
                 SubscriptedTextView("Recent")
+            }
+        }
+    }
+
+    struct TitleAndInformationView: View {
+        @Binding var game: Game
+        var font: Font = .title
+        var withSubscriptedInfo: Bool = true
+
+        var body: some View {
+            HStack {
+                Text(game.title)
+                    .font(font)
+                    .bold()
+                    .truncationMode(.tail)
+                    .lineLimit(1)
+
+                if game.isFavourited {
+                    Image(systemName: "star.fill")
+                }
+            }
+
+            if withSubscriptedInfo {
+                HStack {
+                    GameCardVM.SubscriptedInfoView(game: $game)
+                }
             }
         }
     }
