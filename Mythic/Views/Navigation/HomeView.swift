@@ -43,69 +43,8 @@ struct HomeView: View {
             ScrollView {
                 if var recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
-                        if recentGame.wideImageURL != nil {
-                            AsyncImage(url: recentGame.wideImageURL) { phase in
-                                switch phase {
-                                case .empty:
-                                    Rectangle()
-                                        .fill(.quinary)
-                                        .shimmering(
-                                            animation: .easeInOut(duration: 1)
-                                                .repeatForever(autoreverses: false),
-                                            bandSize: 1
-                                        )
-                                        .onAppear {
-                                            withAnimation { isImageEmpty = true }
-                                        }
-                                case .success(let image):
-                                    image
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .glur(radius: 20, offset: 0.65, interpolation: 0.7)
-                                        .modifier(FadeInModifier())
-                                        .onAppear {
-                                            withAnimation { isImageEmpty = false }
-                                        }
-                                case .failure(let error):
-                                    ContentUnavailableView(
-                                        "Unable to load the image.",
-                                        systemImage: "photo.badge.exclamationmark",
-                                        description: .init(error.localizedDescription)
-                                    )
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
-                                    .background(.quinary)
-                                    .onAppear {
-                                        withAnimation { isImageEmpty = false }
-                                    }
-                                @unknown default:
-                                    ContentUnavailableView(
-                                        "Unable to load the image.",
-                                        systemImage: "photo.badge.exclamationmark",
-                                        description: .init("""
-                                        Please check your connection, and try again.
-                                        """)
-                                    )
-                                    .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
-                                    .background(.quinary)
-                                    .onAppear {
-                                        withAnimation { isImageEmpty = false }
-                                    }
-                                }
-                            }
-                            .frame(height: geometry.size.height * 0.75)
-                        } else {
-                            ContentUnavailableView(
-                                "Image Unavailable",
-                                systemImage: "photo.badge.exclamationmark",
-                                description: .init("""
-                                This game doesn't have a widescreen image that Mythic can display.
-                                """)
-                            )
-                            .frame(
-                                width: geometry.size.width,
-                                height: geometry.size.height * 0.75
-                            )
-                        }
+                        HeroGameImageCard(game: .constant(recentGame))
+                            .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
 
                         VStack(alignment: .leading) {
                             Text("CONTINUE PLAYING")

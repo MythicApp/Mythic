@@ -31,7 +31,7 @@ final class GameListVM: ObservableObject {
         case list = "List"
     }
 
-    var searchString: String = "" {
+    @Published var searchString: String = "" {
         didSet {
             debouncedUpdateGames()
         }
