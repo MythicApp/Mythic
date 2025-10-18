@@ -8,64 +8,92 @@ import OSLog
 struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
-
+    
     @ObservedObject var operation: GameOperation = .shared
-
+    
     @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
-
+    
     @State private var selectedContainerURL: URL?
     @State private var moving: Bool = false
     @State private var movingError: Error?
     @State private var isMovingErrorPresented: Bool = false
     @State private var typingArgument: String = .init()
     @State private var launchArguments: [String] = .init()
-
+    
     @State private var isImageEmpty: Bool = true
-
+    
     @State private var isFileSectionExpanded: Bool = true
-    @State private var isWineSectionExpanded: Bool = true
+    @State private var isContainerSectionExpanded: Bool = true
     @State private var isGameSectionExpanded: Bool = true
     @State private var isThumbnailURLChangeSheetPresented: Bool = false
-
+    
     init(game: Binding<Game>, isPresented: Binding<Bool>) {
         _game = game
         _isPresented = isPresented
         _selectedContainerURL = State(initialValue: game.wrappedValue.containerURL)
         _launchArguments = State(initialValue: game.launchArguments.wrappedValue)
     }
-
+    
     var body: some View {
-        VStack {
-            Text(game.title)
-                .font(.title)
+        GeometryReader { geometry in
+            ScrollView {
+                VStack {
+                    ZStack(alignment: .bottomLeading) {
+                        HeroGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                            .frame(width: geometry.size.width, height: geometry.size.height * 0.7)
 
-            HeroGameImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                        HStack {
+                            if isImageEmpty, game.isFallbackImageAvailable {
+                                GameCard.FallbackImageCard(game: .constant(game))
+                                    .frame(width: 65, height: 65)
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(.trailing)
+                            }
 
-            Divider()
-
-            Form {
-                Section("Options", isExpanded: $isGameSectionExpanded) {
-                    thumbnailURLRow
-                    launchArgumentsRow
-                    verifyFileIntegrityRow
-                }
-
-                Section("File", isExpanded: $isFileSectionExpanded) {
-                    moveGameRow
-                    gameLocationRow
-                }
-
-                Section("Engine (Wine)", isExpanded: $isWineSectionExpanded) {
-                    if selectedContainerURL != nil {
-                        ContainerSettingsView(selectedContainerURL: $selectedContainerURL, withPicker: true)
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    GameCardVM.TitleAndInformationView(game: $game)
+                                }
+                                HStack {
+                                    GameCardVM.ButtonsView(game: $game, withLabel: true)
+                                        .clipShape(.capsule)
+                                }
+                            }
+                        }
+                        .padding([.leading, .bottom])
+                        .conditionalTransform(if: !isImageEmpty) { view in
+                            view
+                                .foregroundStyle(.white)
+                        }
                     }
-                }
-                .disabled(game.platform != .windows)
-                .onChange(of: selectedContainerURL) { game.containerURL = $1 }
-            }
-            .formStyle(.grouped)
-        }
 
+                    Form {
+                        Section("Options", isExpanded: $isGameSectionExpanded) {
+                            thumbnailURLRow
+                            launchArgumentsRow
+                            verifyFileIntegrityRow
+                        }
+
+                        Section("File", isExpanded: $isFileSectionExpanded) {
+                            moveGameRow
+                            gameLocationRow
+                        }
+
+                        Section("Container Settings", isExpanded: $isContainerSectionExpanded) {
+                            if selectedContainerURL != nil {
+                                ContainerSettingsView(selectedContainerURL: $selectedContainerURL, withPicker: true)
+                            }
+                        }
+                        .disabled(game.platform != .windows)
+                        .onChange(of: selectedContainerURL) { game.containerURL = $1 }
+                    }
+                    .formStyle(.grouped)
+                }
+            }
+        }
+        .ignoresSafeArea(edges: .top)
+
+        
         bottomBar
     }
 }
@@ -80,9 +108,9 @@ private extension GameSettingsView {
                     .truncationMode(.middle)
                     .lineLimit(1)
             }
-
+            
             Spacer()
-
+            
             Button("Change...") {
                 isThumbnailURLChangeSheetPresented = true
             }
@@ -94,12 +122,12 @@ private extension GameSettingsView {
             .disabled(game.source != .local)
         }
     }
-
+    
     var launchArgumentsRow: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("Launch Arguments")
-
+                
                 if !launchArguments.isEmpty {
                     ScrollView(.horizontal) {
                         HStack {
@@ -107,16 +135,16 @@ private extension GameSettingsView {
                                 ArgumentItem(game: $game, launchArguments: $launchArguments, argument: argument)
                             }
                             .onChange(of: launchArguments, { game.launchArguments = $1 })
-
+                            
                             Spacer()
                         }
                     }
                     .scrollIndicators(.never)
                 }
             }
-
+            
             Spacer()
-
+            
             TextField("", text: Binding(
                 get: { typingArgument },
                 set: { newValue in
@@ -130,7 +158,7 @@ private extension GameSettingsView {
                 }
             ))
             .onSubmit(submitLaunchArgument)
-
+            
             if !typingArgument.isEmpty {
                 Button {
                     submitLaunchArgument()
@@ -141,37 +169,37 @@ private extension GameSettingsView {
             }
         }
     }
-
+    
     func submitLaunchArgument() {
         let cleanedArgument = typingArgument
             .trimmingCharacters(in: .illegalCharacters)
             .trimmingCharacters(in: .whitespacesAndNewlines)
-
+        
         let splitArguments = cleanedArgument
             .split(separator: .whitespace)
             .map({ String($0) })
-
+        
         if !cleanedArgument.isEmpty,
            !launchArguments.contains(typingArgument) {
             game.launchArguments += splitArguments
             launchArguments = game.launchArguments
-
+            
             typingArgument = .init()
         }
     }
-
+    
     var verifyFileIntegrityRow: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text("Verify File Integrity")
-
+                
                 if operation.current?.game == game {
                     verificationProgressView
                 }
             }
-
+            
             Spacer()
-
+            
             Button("Verify...") {
                 operation.queue.append(
                     GameOperation.InstallArguments(
@@ -184,7 +212,7 @@ private extension GameSettingsView {
             .disabled(operation.current?.game == game)
         }
     }
-
+    
     var verificationProgressView: some View {
         HStack {
             if operation.status.progress != nil {
@@ -205,9 +233,9 @@ private extension GameSettingsView {
     var moveGameRow: some View {
         HStack {
             Text("Move \"\(game.title)\"")
-
+            
             Spacer()
-
+            
             if !moving {
                 Button("Move...") {
                     moveGame()
@@ -225,7 +253,7 @@ private extension GameSettingsView {
             }
         }
     }
-
+    
     func moveGame() {
         let openPanel = NSOpenPanel()
         openPanel.prompt = "Move"
@@ -233,7 +261,7 @@ private extension GameSettingsView {
         openPanel.allowsMultipleSelection = false
         openPanel.canCreateDirectories = true
         openPanel.directoryURL = .init(filePath: game.path ?? .init())
-
+        
         if case .OK = openPanel.runModal(), let newLocation = openPanel.urls.first {
             Task {
                 do {
@@ -247,7 +275,7 @@ private extension GameSettingsView {
             }
         }
     }
-
+    
     var gameLocationRow: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -255,9 +283,9 @@ private extension GameSettingsView {
                 Text(URL(filePath: game.path ?? "Unknown").prettyPath())
                     .foregroundStyle(.secondary)
             }
-
+            
             Spacer()
-
+            
             Button("Show in Finder") {
                 workspace.activateFileViewerSelecting([URL(filePath: game.path!)])
             }
@@ -271,13 +299,14 @@ private extension GameSettingsView {
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
             GameCardVM.SubscriptedInfoView(game: $game)
-
+            
             Spacer()
             Button("Close") { isPresented = false }
                 .buttonStyle(.borderedProminent)
         }
+        .padding()
     }
-
+    
     func setDiscordPresence() {
         discordRPC.setPresence({
             var presence: RichPresence = .init()
@@ -295,16 +324,16 @@ extension GameSettingsView {
         @Binding var game: Game
         @Binding var launchArguments: [String]
         var argument: String
-
+        
         @State var isHoveringOverArgument: Bool = false
-
+        
         var body: some View {
             HStack {
                 if isHoveringOverArgument {
                     Image(systemName: "xmark.bin")
                         .imageScale(.small)
                 }
-
+                
                 Text(argument)
                     .monospaced()
                     .foregroundStyle(isHoveringOverArgument ? .red : .secondary)
@@ -330,44 +359,44 @@ extension GameSettingsView {
             }
         }
     }
-
+    
     struct ThumbnailURLChangeView: View {
         @Binding var game: Game
         @Binding var isPresented: Bool
-
+        
         @State private var newImageURLString: String = .init()
         @State private var isImageEmpty: Bool = true
         @State private var imageRefreshFlag: Bool = false
-
+        
         func modifyThumbnailURL() {
             game.imageURL = URL(string: newImageURLString) ?? nil
             Task { @MainActor in
                 isPresented = false
             }
         }
-
+        
         var body: some View {
             HStack {
                 GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
                     .id(imageRefreshFlag)
-
+                
                 VStack {
                     Form {
                         VStack(alignment: .leading) {
                             GameCard.ImageURLModifierView(game: $game, imageURLString: $newImageURLString)
                                 .onChange(of: newImageURLString, { imageRefreshFlag.toggle() })
-
+                            
                             Label("To use the default image, leave the field empty.", systemImage: "info.circle")
                                 .font(.footnote)
                         }
                     }
                     .formStyle(.grouped)
-
+                    
                     HStack {
                         Button("Close", action: { isPresented = false })
-
+                        
                         Spacer()
-
+                        
                         Button("Done", action: { modifyThumbnailURL() })
                             .buttonStyle(.borderedProminent)
                     }
@@ -378,5 +407,6 @@ extension GameSettingsView {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(.init(source: .epic, title: .init())), isPresented: .constant(true))
+    GameSettingsView(game: .constant(.init(source: .epic, title: "test123", wideImageURL: .init(string: "https://cdn1.epicgames.com/item/53ec6d9f552241549c4d8aa1a42bcb3b/EGS_DeliverUsMars_KeokeNInteractive_S1_2560x1440-b5b36e7ef7feabf180837cc9d15efdae")!)), isPresented: .constant(true))
+        .environmentObject(NetworkMonitor.shared)
 }

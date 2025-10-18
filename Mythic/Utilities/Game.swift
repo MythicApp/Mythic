@@ -62,7 +62,13 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         }
         set { _platform = newValue }
     }
-    
+
+    var isFallbackImageAvailable: Bool {
+        // for now, this is the only way a fallback will be available
+        // see `GameCard.FallbackImageCard`
+        return source == .local
+    }
+
     private var _imageURL: URL?
     var imageURL: URL? {
         get {

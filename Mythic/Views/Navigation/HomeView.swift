@@ -46,25 +46,34 @@ struct HomeView: View {
                         HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
 
-                        VStack(alignment: .leading) {
-                            Text("CONTINUE PLAYING")
-                                .foregroundStyle(.placeholder)
-                                .font(.caption)
-
-                            HStack {
-                                GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: false)
-                                SubscriptedTextView(recentGame.source.rawValue)
+                        HStack {
+                            if isImageEmpty, recentGame.isFallbackImageAvailable {
+                                GameCard.FallbackImageCard(game: .constant(recentGame))
+                                    .frame(width: 65, height: 65)
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(.trailing)
                             }
-                            HStack {
-                                GameCardVM.ButtonsView(game: .constant(recentGame), withLabel: true)
-                                    .clipShape(.capsule)
+
+                            VStack(alignment: .leading) {
+                                Text("CONTINUE PLAYING")
+                                    .foregroundStyle(.placeholder)
+                                    .font(.caption)
+
+                                HStack {
+                                    GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: false)
+                                    SubscriptedTextView(recentGame.source.rawValue)
+                                }
+                                HStack {
+                                    GameCardVM.ButtonsView(game: .constant(recentGame), withLabel: true)
+                                        .clipShape(.capsule)
+                                }
+                            }
+                            .conditionalTransform(if: !isImageEmpty) { view in
+                                view
+                                    .foregroundStyle(.white)
                             }
                         }
                         .padding([.leading, .bottom])
-                        .conditionalTransform(if: !isImageEmpty) { view in
-                            view
-                                .foregroundStyle(.white)
-                        }
                     }
                     .frame(height: geometry.size.height * 0.75)
                 } else {
