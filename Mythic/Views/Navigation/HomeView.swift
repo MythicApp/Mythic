@@ -43,7 +43,7 @@ struct HomeView: View {
             ScrollView {
                 if let recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
-                        HeroGameImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
+                        HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
 
                         VStack(alignment: .leading) {
