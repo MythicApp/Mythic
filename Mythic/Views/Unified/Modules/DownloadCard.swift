@@ -144,7 +144,7 @@ struct DownloadCard: View {
                                     .padding(5)
                                     .foregroundStyle(isHoveringOverDestructiveButton ? .red : .primary)
                             }
-                            .clipShape(.circle)
+                            .clipShape(.capsule)
                             .help("Remove from download queue")
                         }
                     }
