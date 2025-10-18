@@ -35,14 +35,11 @@ struct GameSettingsView: View {
     }
 
     var body: some View {
-        HStack {
-            VStack {
-                Text(game.title)
-                    .font(.title)
+        VStack {
+            Text(game.title)
+                .font(.title)
 
-                GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-            }
-            .padding(.trailing)
+            HeroGameImageCard(game: $game, isImageEmpty: $isImageEmpty)
 
             Divider()
 

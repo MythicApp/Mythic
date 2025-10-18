@@ -18,7 +18,7 @@ struct HeroGameCard: View {
 
 struct HeroGameImageCard: View {
     @Binding var game: Game
-    @State private var isImageEmpty: Bool = false
+    @Binding var isImageEmpty: Bool
 
     var body: some View {
         if game.wideImageURL != nil {
@@ -83,8 +83,11 @@ struct HeroGameImageCard: View {
 #Preview {
     GeometryReader { geometry in
         VStack {
-            HeroGameImageCard(game: .constant(.init(source: .local, title: "test")))
-                .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+            HeroGameImageCard(
+                game: .constant(.init(source: .local, title: "test")),
+                isImageEmpty: .constant(false)
+            )
+            .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
 
             Divider()
 
