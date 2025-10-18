@@ -100,6 +100,7 @@ extension GameInstallProgressView {
 
             if withPercentage, let percentage = operation.status.progress?.percentage {
                 Text("\(Int(percentage))%")
+                    .lineLimit(1)
             }
         }
     }
