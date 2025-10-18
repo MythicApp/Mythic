@@ -41,7 +41,7 @@ struct HomeView: View {
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if var recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
+                if let recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
                         HeroGameImageCard(game: .constant(recentGame))
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
@@ -62,12 +62,7 @@ struct HomeView: View {
                                 SubscriptedTextView(recentGame.source.rawValue)
                             }
                             HStack {
-                                GameCardVM.Buttons.Prominent.PlayButton(game: .init(get: { recentGame }, set: { recentGame = $0 }), withLabel: true)
-                                    .background(.white)
-                                    .foregroundStyle(.black)
-                                    .clipShape(.capsule)
-
-                                GameCardVM.MenuView(game: .init(get: { recentGame }, set: { recentGame = $0 }))
+                                GameCardVM.ButtonsView(game: .constant(recentGame), withLabel: true)
                                     .clipShape(.capsule)
                             }
                         }

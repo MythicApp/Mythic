@@ -324,16 +324,17 @@ import Shimmer
 
     struct ButtonsView: View {
         @Binding var game: Game
+        var withLabel = false
         @ObservedObject private var operation: GameOperation = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
         var body: some View {
             if game.isInstalled {
-                Buttons.Prominent.PlayButton(game: $game)
+                Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)
                     .layoutPriority(1)
             } else {
-                Buttons.Prominent.InstallButton(game: $game)
+                Buttons.Prominent.InstallButton(game: $game, withLabel: withLabel)
             }
         }
     }
