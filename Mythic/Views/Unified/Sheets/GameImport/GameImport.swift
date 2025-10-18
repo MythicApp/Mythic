@@ -33,7 +33,7 @@ struct GameImportView: View {
                     }
 
                     Tab("Steam", systemImage: "gamecontroller") {
-                        NotImplementedView()
+                        
                     }
                     .hidden()
 
