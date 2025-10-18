@@ -74,6 +74,9 @@ struct HomeView: View {
                                     )
                                     .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
                                     .background(.quinary)
+                                    .onAppear {
+                                        withAnimation { isImageEmpty = false }
+                                    }
                                 @unknown default:
                                     ContentUnavailableView(
                                         "Unable to load the image.",
@@ -84,6 +87,9 @@ struct HomeView: View {
                                     )
                                     .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
                                     .background(.quinary)
+                                    .onAppear {
+                                        withAnimation { isImageEmpty = false }
+                                    }
                                 }
                             }
                             .frame(height: geometry.size.height * 0.75)
@@ -127,7 +133,10 @@ struct HomeView: View {
                             }
                         }
                         .padding([.leading, .bottom])
-                        .foregroundStyle(.white)
+                        .conditionalTransform(if: !isImageEmpty) { view in
+                            view
+                                .foregroundStyle(.white)
+                        }
                     }
                     .frame(height: geometry.size.height * 0.75)
                 } else {
