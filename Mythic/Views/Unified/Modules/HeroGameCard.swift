@@ -8,6 +8,14 @@
 import Foundation
 import SwiftUI
 
+struct HeroGameCard: View {
+    @Binding var game: Game
+
+    var body: some View {
+        
+    }
+}
+
 struct HeroGameImageCard: View {
     @Binding var game: Game
     @State private var isImageEmpty: Bool = false

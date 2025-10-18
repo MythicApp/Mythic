@@ -53,7 +53,7 @@ struct GameListEvo: View {
                 ScrollView(.vertical) {
                     LazyVStack {
                         ForEach(viewModel.games) { game in
-                            GameListCard(game: .constant(game))
+                            ListGameCard(game: .constant(game))
                         }
                     }
                     .padding()

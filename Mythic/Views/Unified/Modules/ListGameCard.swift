@@ -1,5 +1,5 @@
 //
-//  GameListCard.swift
+//  ListGameCard.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 10/20/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GameListCard: View {
+struct ListGameCard: View {
     @ObservedObject var viewModel: GameCardVM = .init()
 
     @Binding var game: Game
@@ -99,6 +99,6 @@ struct GameListCard: View {
 }
 
 #Preview {
-    GameListCard(game: .constant(.init(source: .local, title: "MRAAAH")))
+    ListGameCard(game: .constant(.init(source: .local, title: "MRAAAH")))
         .environmentObject(NetworkMonitor.shared)
 }
