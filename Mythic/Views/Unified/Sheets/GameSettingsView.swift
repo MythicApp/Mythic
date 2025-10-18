@@ -52,7 +52,7 @@ struct GameSettingsView: View {
 
                             VStack(alignment: .leading) {
                                 HStack {
-                                    GameCardVM.TitleAndInformationView(game: $game)
+                                    GameCardVM.TitleAndInformationView(game: $game, withSubscriptedInfo: false)
                                 }
                                 HStack {
                                     GameCardVM.ButtonsView(game: $game, withLabel: true)
