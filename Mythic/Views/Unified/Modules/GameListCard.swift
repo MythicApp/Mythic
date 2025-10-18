@@ -85,15 +85,12 @@ struct GameListCard: View {
                     Spacer()
 
                     Group {
-                        // not using terenary operator to implicitly leave foregroundstyle unmodified
-                        if isImageEmpty {
-                            GameCardVM.ButtonsView(game: $game)
-                                .clipShape(.capsule)
-                        } else {
-                            GameCardVM.ButtonsView(game: $game)
-                                .clipShape(.capsule)
-                                .foregroundStyle(.white)
-                        }
+                        GameCardVM.ButtonsView(game: $game)
+                            .clipShape(.capsule)
+                            .conditionalTransform(if: isImageEmpty) { view in
+                                view
+                                    .foregroundStyle(.white)
+                            }
                     }
                     .padding(.trailing)
                 }
