@@ -93,7 +93,6 @@
 		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
 		6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */ = {isa = PBXBuildFile; productRef = 6AAD31142B08693D0035FA69 /* SemanticVersion */; };
-		6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */; };
 		6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 6AC742DC2B9314AB000EA1B2 /* SwordRPC */; };
 		6ACCEC1B2CD08DEE00611BEF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */; };
 		6ACFAD8B2D356915009B1554 /* Bool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ACFAD8A2D356910009B1554 /* Bool.swift */; };
@@ -198,7 +197,6 @@
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
 		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormView.swift; sourceTree = "<group>"; };
 		6ACCEC1A2CD08DEE00611BEF /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ACFAD8A2D356910009B1554 /* Bool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bool.swift; sourceTree = "<group>"; };
 		6AD9931C2D342838008DF690 /* SwordRPC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwordRPC.swift; sourceTree = "<group>"; };
@@ -322,7 +320,6 @@
 			children = (
 				6A02101A2D390370009C85F8 /* StarRatingView.swift */,
 				6A0688432C2BCE87004DF10F /* DownloadCard.swift */,
-				6AC45E082C1B2FC800ED9F64 /* SettingsFormView.swift */,
 				6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */,
 				6A8080CF2EA339CE00F10A00 /* HeroGameCard.swift */,
 				6A448E0D2CC4A531001E9F47 /* ListGameCard.swift */,
@@ -648,7 +645,6 @@
 				6A2935382BFCFAFD0035CE4B /* Logger.swift in Sources */,
 				6A2935372BFCFAFD0035CE4B /* Data.swift in Sources */,
 				6A2935482BFCFAFD0035CE4B /* EpicImport.swift in Sources */,
-				6AC45E092C1B2FD500ED9F64 /* SettingsFormView.swift in Sources */,
 				6A29353D2BFCFAFD0035CE4B /* LegendaryInterface.swift in Sources */,
 				6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */,
 				6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */,
