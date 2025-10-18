@@ -254,11 +254,6 @@ final class Legendary {
                     operation.current = nil; return
                 }
 
-                // FIXME: repeating code
-                if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
-                    let errorDescription = match.last?.substring ?? "Unknown Error."
-                    error = InstallationError(errorDescription: .init(errorDescription))
-                }
 
                 if output.stdout.contains("Installation requirements check returned the following results") {
                     if let match = try? Regex(#"Failure: (.*)"#).firstMatch(in: output.stdout) {
@@ -267,6 +262,12 @@ final class Legendary {
                     }
 
                     return
+                }
+
+                // FIXME: repeating code
+                if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
+                    let errorDescription = match.last?.substring ?? "Unknown Error."
+                    error = InstallationError(errorDescription: .init(errorDescription))
                 }
 
                 if output.stderr.contains("Verification finished successfully.") {
