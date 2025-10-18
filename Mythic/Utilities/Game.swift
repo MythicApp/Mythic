@@ -222,7 +222,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     /// Enumeration containing all available game types.
     enum Source: String, CaseIterable, Codable, Hashable {
-        case epic = "Epic"
+        case epic = "Epic Games"
         case local = "Local"
     }
 
@@ -234,7 +234,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
 
     enum InclusiveSource: String, CaseIterable {
         case all = "All"
-        case epic = "Epic"
+        case epic = "Epic Games"
         case local = "Local"
     }
 
