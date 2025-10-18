@@ -331,6 +331,7 @@ import Shimmer
             if game.isInstalled {
                 Buttons.Prominent.PlayButton(game: $game)
                 MenuView(game: $game)
+                    .layoutPriority(1)
             } else {
                 Buttons.Prominent.InstallButton(game: $game)
             }
