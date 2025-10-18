@@ -16131,6 +16131,9 @@
     "If the link didn't open, click on the button below to open it manually." : {
 
     },
+    "If you try to download more than one game at the same time, it'll be added to this queue." : {
+
+    },
     "Image Unavailable" : {
 
     },
@@ -23770,6 +23773,7 @@
 
     },
     "No other downloads are pending." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23958,6 +23962,9 @@
           }
         }
       }
+    },
+    "No queued downloads." : {
+
     },
     "Not signed in" : {
       "localizations" : {

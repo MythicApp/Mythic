@@ -29,9 +29,13 @@ struct DownloadsEvo: View {
                 Divider()
                 
                 if operation.queue.isEmpty {
-                    Text("No other downloads are pending.")
-                        .bold()
-                        .padding()
+                    ContentUnavailableView(
+                        "No queued downloads.",
+                        systemImage: "externaldrive.badge.checkmark",
+                        description: .init("""
+                        If you try to download more than one game at the same time, it'll be added to this queue.
+                        """)
+                    )
                 } else {
                     ForEach(operation.queue, id: \.self) { args in
                         DownloadCard(game: args.game, style: .normal)
