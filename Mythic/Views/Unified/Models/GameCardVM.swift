@@ -312,7 +312,7 @@ import Shimmer
                 }
                 .sheet(isPresented: $isGameSettingsSheetPresented) {
                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                        .frame(minWidth: 750)
+                        .frame(width: 700, height: 380)
                 }
             }
             .sheet(isPresented: $isUninstallSheetPresented) {
@@ -381,11 +381,6 @@ import Shimmer
 }
 
 #Preview {
-    //LibraryView()
-    //.environmentObject(NetworkMonitor.shared)
-    HStack {
-        GameCardVM.ButtonsView(game: .constant(.init(source: .local, title: "t")))
-            .environmentObject(NetworkMonitor.shared)
-            .padding()
-    }
+    LibraryView()
+        .environmentObject(NetworkMonitor.shared)
 }
