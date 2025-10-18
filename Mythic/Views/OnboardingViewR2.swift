@@ -435,6 +435,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                                         enables native Windows games to be playable on macOS, while coming closer to native
                                         performance than ever before. (performance will vary between games)
                                         """)
+                                        .padding()
                                     ))
                                 ]
                             )
