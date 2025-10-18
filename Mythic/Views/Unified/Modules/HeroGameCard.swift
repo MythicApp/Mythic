@@ -54,7 +54,7 @@ extension HeroGameCard {
                         )
                         .background(.quinary)
                         .onAppear {
-                            withAnimation { isImageEmpty = false }
+                            withAnimation { isImageEmpty = true }
                         }
                     @unknown default:
                         ContentUnavailableView(
@@ -66,7 +66,7 @@ extension HeroGameCard {
                         )
                         .background(.quinary)
                         .onAppear {
-                            withAnimation { isImageEmpty = false }
+                            withAnimation { isImageEmpty = true }
                         }
                     }
                 }

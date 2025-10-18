@@ -30,7 +30,7 @@ struct HomeView: View {
 
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
 
-    @State private var isImageEmpty = false
+    @State private var isImageEmpty = true
 
     @State private var isFavouritesSectionExpanded: Bool = true
     @State private var isContainersSectionExpanded: Bool = true
