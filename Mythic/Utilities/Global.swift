@@ -69,3 +69,18 @@ func isAppInstalled(bundleIdentifier: String) -> Bool {
     
     return !output.isEmpty
 }
+
+@MainActor
+protocol StagedFlow {
+    associatedtype Stage: CaseIterable & Equatable
+
+    var stages: [Stage] { get }
+    var currentStage: Stage { get set }
+
+    /**
+     Steps stage by delta value.
+     - Parameters:
+     - by: The integer to step the current stage by.
+     */
+    func stepStage(by delta: Int)
+}
