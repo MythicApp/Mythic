@@ -17,8 +17,15 @@
 import Foundation
 
 final class Rosetta {
-    static var exists: Bool { files.fileExists(atPath: "/Library/Apple/usr/share/rosetta") }
-    
+    static var exists: Bool { // thread-blocking, but ~0.04 sec cpu time
+        let output = try? Process.execute(
+            executableURL: URL(fileURLWithPath: "/usr/bin/pgrep"),
+            arguments: ["oahd"]
+        )
+
+        return output?.stdout.isEmpty == false
+    }
+
     struct AgreementFailure: LocalizedError {
         var errorDescription: String? = """
         Rosetta 2 cannot be installed, you failed to agree to the software license agreement.
@@ -38,11 +45,13 @@ final class Rosetta {
         task.standardOutput = stdoutPipe
         
         try task.run()
-        
+
         stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
             let line = String(decoding: handle.availableData, as: UTF8.self)
             if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: line) {
                 completion(Double(match.last?.substring ?? .init()) ?? 0.0)
+            } else if line.contains("Install of Rosetta 2 finished successfully") {
+                completion(100.0)
             }
         }
         
