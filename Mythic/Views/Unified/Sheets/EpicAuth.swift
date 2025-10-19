@@ -13,6 +13,7 @@
 
 import SwiftUI
 
+// TODO: make redundant
 struct EpicAuthView: View {
     @Binding var isPresented: Bool
     @Binding var isSigninSuccessful: Bool
