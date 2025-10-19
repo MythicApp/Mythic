@@ -22,29 +22,29 @@ struct RosettaInstallationView: View {
                 .font(.title.bold())
                 .padding(.bottom)
 
-            switch viewModel.currentStage {
-            case .disclaimer:
-                DisclaimerView(agreedToSLA: $agreedToSLA)
-            case .installer:
-                InstallationView(
-                    isPresented: $isPresented,
-                    agreedToSLA: $agreedToSLA,
-                    installationError: $installationError,
-                    installationComplete: $installationComplete
-                )
+            Group {
+                switch viewModel.currentStage {
+                case .disclaimer:
+                    DisclaimerView(agreedToSLA: $agreedToSLA)
+                case .installer:
+                    InstallationView(
+                        viewModel: viewModel,
+                        isPresented: $isPresented,
+                        agreedToSLA: $agreedToSLA,
+                        installationError: $installationError,
+                        installationComplete: $installationComplete
+                    )
+                    // THERE IS AN ONCHANGE AND IT DOES NOT FIRE HERE SO I PUT IT INSIDE THE VIEW ☹️☹️
+                case .finished:
+                    CompletionView(isPresented: $isPresented)
+                }
             }
 
-            if viewModel.currentStage != viewModel.stages.last! {
+            if viewModel.currentStage != .installer && viewModel.currentStage != .finished {
+                // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                 Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
                     .clipShape(.capsule)
                     .disabled(!agreedToSLA)
-            }
-        }
-        .onChange(of: installationComplete) { _, newValue in
-            if newValue {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // gives time for checkmark to propogate, and then close
-                    isPresented = false
-                }
             }
         }
     }
@@ -77,6 +77,7 @@ extension RosettaInstallationView {
     }
 
     struct InstallationView: View {
+        @ObservedObject var viewModel: ViewModel
         @Binding var isPresented: Bool
         @Binding var agreedToSLA: Bool
         @Binding var installationError: Error?
@@ -85,76 +86,69 @@ extension RosettaInstallationView {
         @State var installationProportion: Double = 0.0
         @State private var isInstallationErrorAlertPresented: Bool = false
 
-        var rosettaExists = Rosetta.exists
-
         var body: some View {
-            HStack {
-                if rosettaExists { // dirtyfix, using Rosetta.exists directly on this statement will result in a last-minute view update
-                    RosettaExistsView(isPresented: $isPresented)
-                        .task({ installationProportion = 100.0 })
-                } else {
-                    ProgressView(value: installationProportion / 100)
-                        .progressViewStyle(.linear)
-                        .task {
-                            do {
-                                try await Rosetta.install(
-                                    agreeToSLA: agreedToSLA,
-                                    completion: { progress in
-                                        Task { @MainActor in
-                                            installationProportion = progress
-                                        }
-                                    }
-                                )
-                            } catch {
-                                installationError = error
-                                isInstallationErrorAlertPresented = true
-                            }
-                        }
-                        .alert(
-                            "Unable to install Rosetta 2.",
-                            isPresented: $isInstallationErrorAlertPresented,
-                            presenting: installationError
-                        ) { _ in
-                            if #available(macOS 26.0, *) {
-                                Button("OK", role: .close) {
-                                    isPresented = false
-                                }
-                            } else {
-                                Button("OK", role: .cancel) {
-                                    isPresented = false
+            ProgressView(value: installationProportion / 100)
+                .progressViewStyle(.linear)
+                .task {
+                    do {
+                        try await Rosetta.install(
+                            agreeToSLA: agreedToSLA,
+                            completion: { progress in
+                                Task { @MainActor in
+                                    installationProportion = progress
                                 }
                             }
-                        } message: { error in
-                            Text(error.localizedDescription)
-                        }
-
-                    if installationComplete {
-                        Image(systemName: "checkmark")
+                        )
+                    } catch {
+                        installationError = error
+                        isInstallationErrorAlertPresented = true
                     }
                 }
-            }
-            .onChange(of: installationProportion) { _, newValue in
-                // 3-sec cooldown check because the installer spikes to 100 for some reason
-                if newValue == 100.0 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                        if installationProportion == newValue {
-                            withAnimation {
-                                installationComplete = true
+                .onChange(of: installationProportion) { _, newValue in
+                    // 3-sec cooldown check because the installer spikes to 100 for some reason
+                    if newValue == 100.0 {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                            if installationProportion == newValue {
+                                withAnimation {
+                                    installationComplete = true
+                                    viewModel.stepStage()
+                                }
                             }
                         }
                     }
                 }
-            }
+                .alert(
+                    "Unable to install Rosetta 2.",
+                    isPresented: $isInstallationErrorAlertPresented,
+                    presenting: installationError
+                ) { _ in
+                    if #available(macOS 26.0, *) {
+                        Button("OK", role: .close) {
+                            isPresented = false
+                        }
+                    } else {
+                        Button("OK", role: .cancel) {
+                            isPresented = false
+                        }
+                    }
+                } message: { error in
+                    Text(error.localizedDescription)
+                }
         }
     }
 
-    struct RosettaExistsView: View {
+    struct CompletionView: View {
         @Binding var isPresented: Bool
         var body: some View {
             ContentUnavailableView(
                 "Rosetta is installed.",
                 systemImage: "checkmark"
             )
+            .task {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    isPresented = false
+                }
+            }
         }
     }
 }
@@ -169,6 +163,7 @@ extension RosettaInstallationView {
         enum Stage: CaseIterable {
             case disclaimer
             case installer
+            case finished
         }
 
         var currentStage: Stage
