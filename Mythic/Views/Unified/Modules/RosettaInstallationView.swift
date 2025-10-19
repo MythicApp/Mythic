@@ -90,6 +90,10 @@ extension RosettaInstallationView {
             ProgressView(value: installationProportion / 100)
                 .progressViewStyle(.linear)
                 .task {
+                    guard !Rosetta.exists else {
+                        viewModel.stepStage(); return
+                    }
+
                     do {
                         try await Rosetta.install(
                             agreeToSLA: agreedToSLA,
