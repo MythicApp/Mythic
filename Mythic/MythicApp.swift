@@ -23,8 +23,8 @@ struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
-    @State var onboardingPhase: OnboardingR2.Phase = .allCases.first!
-    
+    @State var onboardingPhase: OnboardingR2.Phase = .logo
+
     @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
 
@@ -33,9 +33,8 @@ struct MythicApp: App {
     var body: some Scene {
         Window("Mythic", id: "main") {
             if isOnboardingPresented {
-                OnboardingR2(fromPhase: onboardingPhase)
-                    .contentTransition(.opacity)
-                    .onAppear {
+                OnboardingView()
+                    .task(priority: .high) { @MainActor in
                         if let window = NSApp.mainWindow {
                             window.isImmersive = true
 
@@ -45,7 +44,6 @@ struct MythicApp: App {
                     }
             } else {
                 ContentView()
-                    .contentTransition(.opacity)
                     .environmentObject(networkMonitor)
                     .environmentObject(sparkleController)
                     .frame(minWidth: 850, minHeight: 400)
