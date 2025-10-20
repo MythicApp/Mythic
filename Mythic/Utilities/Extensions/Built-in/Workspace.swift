@@ -18,7 +18,7 @@ import Foundation
 import AppKit
 
 extension NSWorkspace {
-    func isARM() -> Bool {
+    var isARM: Bool {
         var sysinfo = utsname()
         uname(&sysinfo)
         

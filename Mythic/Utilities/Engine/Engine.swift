@@ -44,7 +44,8 @@ final class Engine {
         guard files.fileExists(atPath: directory.path) else { return false }
         return true
     }
-    
+
+    // TODO: refactor
     static var version: SemanticVersion? {
         guard exists else { return nil }
         guard let properties = properties,
@@ -55,8 +56,13 @@ final class Engine {
         }
         return version
     }
-    
+
+    // TODO: refactor -- separate download & install logic, use better methods of tracking progress
     static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
+        guard workspace.isARM else {
+            // TODO: handle this case
+            return
+        }
         return try await withCheckedThrowingContinuation { continuation in
             let download = URLSession.shared.downloadTask(with: .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!) { tempfile, response, error in
                 if let error = error { continuation.resume(throwing: error); return }
@@ -69,7 +75,15 @@ final class Engine {
                         try files.unzipItem(at: tempfile, to: Bundle.appHome!, progress: unzipProgress)
                         if unzipProgress.isFinished {
                             let archive = Bundle.appHome!.appending(path: "Engine.txz")
-                            _ = try Process.execute(executableURL: .init(fileURLWithPath: "/usr/bin/tar"), arguments: ["-xJf", archive.path(percentEncoded: false), "-C", Bundle.appHome!.path(percentEncoded: false)])
+                            _ = try Process.execute(
+                                executableURL: .init(fileURLWithPath: "/usr/bin/tar"),
+                                arguments: [
+                                    "-xJf",
+                                    archive.path(percentEncoded: false),
+                                    "-C",
+                                    Bundle.appHome!.path(percentEncoded: false)
+                                ]
+                            )
                             try? files.removeItem(at: archive)
                         }
                         installHandler(true)
@@ -79,7 +93,7 @@ final class Engine {
                 }
             }
             
-            download.resume() // observer?
+            download.resume()
             
             Task(priority: .utility) {
                 var debounce: Bool = false
