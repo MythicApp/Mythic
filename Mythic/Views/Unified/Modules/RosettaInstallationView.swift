@@ -8,12 +8,17 @@
 import Foundation
 import SwiftUI
 
-struct RosettaInstallationView: View {
+struct RosettaInstallationView: View { // similar to EngineInstallationView
     @Binding var isPresented: Bool
     @Binding var installationError: Error?
     @Binding var installationComplete: Bool
 
-    @StateObject var viewModel: ViewModel = .init()
+#if DEBUG
+    @StateObject var viewModel: ViewModel = .init(initialStage: .installer)
+#else
+    @ObservedObject var viewModel: ViewModel = .init()
+#endif
+    
     @State private var agreedToSLA: Bool = false
 
     var body: some View {
@@ -28,13 +33,11 @@ struct RosettaInstallationView: View {
                     DisclaimerView(agreedToSLA: $agreedToSLA)
                 case .installer:
                     InstallationView(
-                        viewModel: viewModel,
-                        isPresented: $isPresented,
+                        isPresented: $isPresented, viewModel: viewModel,
                         agreedToSLA: $agreedToSLA,
                         installationError: $installationError,
                         installationComplete: $installationComplete
                     )
-                    // THERE IS AN ONCHANGE AND IT DOES NOT FIRE HERE SO I PUT IT INSIDE THE VIEW ☹️☹️
                 case .finished:
                     CompletionView(isPresented: $isPresented)
                 }
@@ -66,6 +69,7 @@ extension RosettaInstallationView {
                 to the terms of the software license agreement.
                 """
             )
+            .multilineTextAlignment(.center)
 
             Link(
                 "A list of Apple SLAs may be found here.",
@@ -77,17 +81,19 @@ extension RosettaInstallationView {
     }
 
     struct InstallationView: View {
-        @ObservedObject var viewModel: ViewModel
         @Binding var isPresented: Bool
+        @ObservedObject var viewModel: ViewModel
+        
         @Binding var agreedToSLA: Bool
+        
         @Binding var installationError: Error?
         @Binding var installationComplete: Bool
 
-        @State var installationProportion: Double = 0.0
+        @State var percentageCompletion: Double = 0.0
         @State private var isInstallationErrorAlertPresented: Bool = false
 
         var body: some View {
-            ProgressView(value: installationProportion / 100)
+            ProgressView(value: percentageCompletion / 100)
                 .progressViewStyle(.linear)
                 .task {
                     guard !Rosetta.exists else {
@@ -97,9 +103,9 @@ extension RosettaInstallationView {
                     do {
                         try await Rosetta.install(
                             agreeToSLA: agreedToSLA,
-                            completion: { progress in
+                            percentageCompletion: { progress in
                                 Task { @MainActor in
-                                    installationProportion = progress
+                                    percentageCompletion = progress
                                 }
                             }
                         )
@@ -108,11 +114,11 @@ extension RosettaInstallationView {
                         isInstallationErrorAlertPresented = true
                     }
                 }
-                .onChange(of: installationProportion) { _, newValue in
+                .onChange(of: percentageCompletion) { _, newValue in
                     // 3-sec cooldown check because the installer spikes to 100 for some reason
                     if newValue == 100.0 {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                            if installationProportion == newValue {
+                            if percentageCompletion == newValue {
                                 withAnimation {
                                     installationComplete = true
                                     viewModel.stepStage()

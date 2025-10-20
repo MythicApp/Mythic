@@ -33,7 +33,7 @@ final class Rosetta {
         """
     }
     
-    static func install(agreeToSLA: Bool, completion: @escaping (Double) -> Void) async throws {
+    static func install(agreeToSLA: Bool, percentageCompletion completion: @escaping (Double) -> Void) async throws {
         guard agreeToSLA else { throw AgreementFailure() }
         
         let task = Process()
