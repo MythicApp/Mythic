@@ -1913,6 +1913,9 @@
         }
       }
     },
+    "(this software is currently in its alpha stage.)" : {
+
+    },
     "(write)" : {
       "localizations" : {
         "af" : {
@@ -4219,6 +4222,9 @@
           }
         }
       }
+    },
+    "A list of Apple SLAs may be found here." : {
+
     },
     "A new window will open, prompting you to sign in to Epic Games." : {
 
@@ -15742,6 +15748,9 @@
         }
       }
     },
+    "Hi," : {
+
+    },
     "Home" : {
       "localizations" : {
         "af" : {
@@ -15936,6 +15945,9 @@
 
     },
     "How well did \"%@\" run?" : {
+
+    },
+    "I agree to the software license agreement." : {
 
     },
     "I have read and agreed to the terms of the software license agreement." : {
@@ -17277,6 +17289,9 @@
         }
       }
     },
+    "In order to run Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes,\nwith an average internet connection." : {
+
+    },
     "Initializing..." : {
       "localizations" : {
         "af" : {
@@ -18036,6 +18051,9 @@
           }
         }
       }
+    },
+    "Install Rosetta" : {
+
     },
     "Install Rosetta 2" : {
       "localizations" : {
@@ -22042,6 +22060,9 @@
     "Mythic Engine %@" : {
 
     },
+    "Mythic Engine is installed." : {
+
+    },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
       "localizations" : {
         "af" : {
@@ -22427,6 +22448,9 @@
           }
         }
       }
+    },
+    "Mythic is now ready for use." : {
+
     },
     "Mythic is now ready to use." : {
       "localizations" : {
@@ -22999,6 +23023,9 @@
       }
     },
     "Mythic is verifying the connection to Epic Games." : {
+
+    },
+    "Mythic Setup" : {
 
     },
     "Next" : {
@@ -26461,6 +26488,9 @@
     "Re-display epic signin window" : {
 
     },
+    "Ready to go!" : {
+
+    },
     "Remove" : {
       "localizations" : {
         "af" : {
@@ -29124,6 +29154,9 @@
         }
       }
     },
+    "Rosetta is installed." : {
+
+    },
     "Run specialised uninstaller (If applicable)" : {
       "localizations" : {
         "af" : {
@@ -30279,6 +30312,9 @@
         }
       }
     },
+    "Sign In" : {
+
+    },
     "Sign in to Epic Games" : {
       "localizations" : {
         "af" : {
@@ -30659,7 +30695,11 @@
         }
       }
     },
+    "Signed in as \"%@\"" : {
+
+    },
     "Signed in as \"%@\"." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -31040,6 +31080,7 @@
       }
     },
     "Sorry, this isn't implemented yet!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -33133,6 +33174,9 @@
         }
       }
     },
+    "The default container is initialised." : {
+
+    },
     "This area is where your most recently played game will appear — try launching one now!" : {
 
     },
@@ -34093,6 +34137,7 @@
       }
     },
     "This will sign you out of the account \"%@\"." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -34859,6 +34904,15 @@
 
     },
     "Unable to import thumbnail." : {
+
+    },
+    "Unable to initialise default container." : {
+
+    },
+    "Unable to install Mythic Engine." : {
+
+    },
+    "Unable to install Rosetta 2." : {
 
     },
     "Unable to load the image." : {
