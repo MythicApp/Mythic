@@ -17,6 +17,7 @@ import SwiftUI
 import SwiftyJSON
 import Shimmer
 
+// TODO: refactor to actually be a viewmodel, not a view extension
 @Observable final class GameCardVM: ObservableObject {
 
     // swiftlint:disable nesting
@@ -342,7 +343,13 @@ import Shimmer
         @Binding var game: Game
 
         var body: some View {
-            SubscriptedTextView(game.source.rawValue)
+            SubscriptedTextView({
+                if case .epic = game.source {
+                    return "Epic" // "Epic Games" is too verbose
+                }
+
+                return game.source.rawValue
+            }())
 
             if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
                recent == game {
