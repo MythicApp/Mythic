@@ -63,7 +63,7 @@ struct OnboardingR2: View { // TODO: ViewModel
                             continue
                         }
                     case .rosettaDisclaimer:
-                        if Rosetta.exists || !workspace.isARM() {
+                        if Rosetta.exists || !workspace.isARM {
                             nextIndex += 2
                             continue
                         }
