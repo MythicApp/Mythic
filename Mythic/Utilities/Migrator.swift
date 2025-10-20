@@ -143,7 +143,8 @@ final class Migrator {
     /// Updates containers without a default scale set.
     /// Affects migrators from versions below v0.4.0.
     static func updateContainerScalingIfNecessary() {
-        for container in Wine.containerObjects where container.settings.scaling == 0 /* Eligibility determiner */{
+        // If scaling value is 0, it does not have a default scale set.
+        for container in Wine.containerObjects where container.settings.scaling == 0 {
             let defaultScale = Wine.ContainerSettings().scaling
 
             Task(priority: .background) {

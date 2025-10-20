@@ -26,14 +26,21 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id
     }
-    
-    // MARK: Hash
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
     
     // MARK: Initializer
-    init(source: Source, title: String, id: String? = nil, platform: Platform? = nil, imageURL: URL? = nil, wideImageURL: URL? = nil, path: String? = nil) {
+    init(
+        source: Source,
+        title: String,
+        id: String? = nil,
+        platform: Platform? = nil,
+        imageURL: URL? = nil,
+        wideImageURL: URL? = nil,
+        path: String? = nil
+    ) {
         self.source = source
         self.title = title
         self.id = id ?? UUID().uuidString
@@ -47,7 +54,8 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
     var source: Source
     var title: String
     var id: String
-    
+
+    // MARK: Computed Properties
     private var _platform: Platform?
     var platform: Platform? {
         get {
