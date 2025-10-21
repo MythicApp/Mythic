@@ -271,14 +271,14 @@ struct SettingsView: View {
 
     private var engineUpdateStreamPicker: some View {
         Picker("Stream", systemImage: "app.badge.clock", selection: $engineBranch) {
-            Text("Stable", comment: "Within the context of Mythic Engine")
+            Text("Stable")
                 .tag(Engine.Stream.stable.rawValue)
                 .help("""
                     Existing stable features will be available in this stream.
                     This is the recommended stream for all users.
                     """)
 
-            Text("Preview", comment: "Within the context of Mythic Engine")
+            Text("Preview")
                 .tag(Engine.Stream.staging.rawValue)
                 .help("""
                     Experimental new features may be available in this stream, at the cost of stability.
