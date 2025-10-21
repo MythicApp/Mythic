@@ -310,7 +310,7 @@ private extension OnboardingView {
                                 case .success:
                                     propagateBootSuccess()
                                 case .failure(let failure):
-                                    guard type(of: failure) != Wine.ContainerAlreadyExistsError.self else {
+                                    if failure is Wine.ContainerAlreadyExistsError {
                                         propagateBootSuccess(); return
                                     }
 
