@@ -60,8 +60,7 @@ struct HomeView: View {
                                     .font(.caption)
 
                                 HStack {
-                                    GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: false)
-                                    SubscriptedTextView(recentGame.source.rawValue)
+                                    GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
                                 }
                                 HStack {
                                     GameCardVM.ButtonsView(game: .constant(recentGame), withLabel: true)
