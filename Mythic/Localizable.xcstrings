@@ -774,6 +774,7 @@
       }
     },
     "(alpha)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -964,6 +965,7 @@
       }
     },
     "(optional)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1154,6 +1156,7 @@
       }
     },
     "(Please restart Mythic.)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4034,6 +4037,7 @@
 
     },
     "A list of Apple SLAs may be found" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4224,9 +4228,6 @@
       }
     },
     "A list of Apple SLAs may be found here." : {
-
-    },
-    "A new window will open, prompting you to sign in to Epic Games." : {
 
     },
     "About Mythic" : {
@@ -4622,12 +4623,6 @@
 
     },
     "All downloads that may have been pending are complete.\nYou may access the downloaded games in your library." : {
-
-    },
-    "Alternative Signin" : {
-
-    },
-    "Alternatively, please use the alternative sign in method by clicking the 'Alternative Signin' button." : {
 
     },
     "Are you sure you want to cancel container creation?" : {
@@ -5207,6 +5202,7 @@
 
     },
     "Are you sure you want to skip this section?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5593,6 +5589,7 @@
       }
     },
     "Are you sure you want to stop installing Rosetta 2?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -14989,6 +14986,7 @@
 
     },
     "Hello, world!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15179,6 +15177,7 @@
       }
     },
     "Help" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15369,6 +15368,7 @@
       }
     },
     "here." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15559,6 +15559,7 @@
       }
     },
     "Hey, %@!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15951,6 +15952,7 @@
 
     },
     "I have read and agreed to the terms of the software license agreement." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -17100,6 +17102,7 @@
       }
     },
     "In order to launch and run Windows® games, Mythic must download\na specialized translation layer.\n\nThe download time should take ~10 minutes,\nwith an average internet connection." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18056,6 +18059,7 @@
 
     },
     "Install Rosetta 2" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18626,6 +18630,7 @@
       }
     },
     "Installing Rosetta 2..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22064,6 +22069,7 @@
 
     },
     "Mythic Engine is Mythic's implementation of Apple's game porting toolkit (GPTK),\nwhich combines wine and D3DMetal, to create a windows gaming experience on macOS.\nSimilar to Proton, Mythic Engine attempts to be an emulator-like experience that\nenables native Windows games to be playable on macOS, while coming closer to native\nperformance than ever before. (performance will vary between games)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22253,7 +22259,10 @@
         }
       }
     },
-    "Mythic Engine isn't installed." : {
+    "Mythic Engine is not installed." : {
+
+    },
+    "Mythic Engine is required to launch this game.\nWould you like to install it now?" : {
 
     },
     "Mythic is connected to the internet,\nbut is unable to verify the connection to Epic Games." : {
@@ -22453,6 +22462,7 @@
 
     },
     "Mythic is now ready to use." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22643,6 +22653,7 @@
       }
     },
     "Mythic is setting up the default filesystem container for Windows®.\nThis shouldn't take too long." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -24374,6 +24385,7 @@
       }
     },
     "Onboarding has failed to complete." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26483,9 +26495,6 @@
       }
     },
     "Quit games running in this container?" : {
-
-    },
-    "Re-display epic signin window" : {
 
     },
     "Ready to go!" : {
@@ -28961,9 +28970,6 @@
         }
       }
     },
-    "Return to Onboarding & Install" : {
-
-    },
     "Rosetta 2 enables a Mac with Apple silicon to use apps\nbuilt for a Mac with an Intel processor.\n\nIt's a key component for Windows® game functionality.\n\nTo install Rosetta, you must confirm you have read and agreed\nto the terms of the software license agreement." : {
       "localizations" : {
         "af" : {
@@ -29351,9 +29357,6 @@
 
     },
     "Scrolling Direction" : {
-
-    },
-    "Seems like the Epic Games signin window's been closed." : {
 
     },
     "Select a game:" : {
@@ -30890,6 +30893,7 @@
       }
     },
     "Skip" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32225,6 +32229,7 @@
       }
     },
     "Stop installing Rosetta 2" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -33947,6 +33952,7 @@
       }
     },
     "This will limit your ability to play Windows® games." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -34707,7 +34713,14 @@
         }
       }
     },
+    "To access containers, Mythic Engine must be installed." : {
+
+    },
+    "To change the engine stream, Mythic Engine must be reinstalled through onboarding." : {
+
+    },
     "To change the engine type, Mythic Engine must be reinstalled through onboarding." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -39893,6 +39906,7 @@
       }
     },
     "You're all set!" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

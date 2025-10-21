@@ -62,7 +62,6 @@
 		6A2935602BFCFAFD0035CE4B /* ContainerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E82BFCFAFD0035CE4B /* ContainerListView.swift */; };
 		6A2935612BFCFAFD0035CE4B /* GameListViewEvo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */; };
 		6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934EB2BFCFAFD0035CE4B /* WebView.swift */; };
-		6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */; };
 		6A2935662BFCFAFD0035CE4B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */; };
 		6A2935672BFCFAFD0035CE4B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */; };
 		6A2935682BFCFAFD0035CE4B /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934F22BFCFAFD0035CE4B /* Credits.rtf */; };
@@ -174,7 +173,6 @@
 		6A2934E82BFCFAFD0035CE4B /* ContainerListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerListView.swift; sourceTree = "<group>"; };
 		6A2934E92BFCFAFD0035CE4B /* GameListViewEvo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameListViewEvo.swift; sourceTree = "<group>"; };
 		6A2934EB2BFCFAFD0035CE4B /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingViewR2.swift; sourceTree = "<group>"; };
 		6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A2934F22BFCFAFD0035CE4B /* Credits.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
@@ -375,7 +373,6 @@
 				6A8080D12EA35F2F00F10A00 /* Onboarding */,
 				6A2934DA2BFCFAFD0035CE4B /* Navigation */,
 				6A2934EC2BFCFAFD0035CE4B /* Unified */,
-				6A2934ED2BFCFAFD0035CE4B /* OnboardingViewR2.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -657,7 +654,6 @@
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
-				6A2935642BFCFAFD0035CE4B /* OnboardingViewR2.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */,
 				6A2935382BFCFAFD0035CE4B /* Logger.swift in Sources */,
 				6A2935372BFCFAFD0035CE4B /* Data.swift in Sources */,
@@ -851,7 +847,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3621;
+				CURRENT_PROJECT_VERSION = 3629;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -898,7 +894,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3621;
+				CURRENT_PROJECT_VERSION = 3629;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
