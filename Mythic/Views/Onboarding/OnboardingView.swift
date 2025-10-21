@@ -146,10 +146,14 @@ struct OnboardingView: View {
                 VStack {
 #if DEBUG
                     HStack {
-                        Button(String(describing: "Restart (DEBUG)"), systemImage: "arrow.trianglehead.clockwise", action: viewModel.reset)
+                        // String(describing:) used to prevent localisation
+                        Button(String(describing: "Back (DEBUG)"), systemImage: "arrow.left", action: { viewModel.stepStage(by: -1) })
+                            .clipShape(.capsule)
+                        
+                        Button(String(describing: "Exit (DEBUG)"), systemImage: "xmark", action: { isOnboardingPresented = false })
                             .clipShape(.capsule)
 
-                        Button(String(describing: "Back (DEBUG)"), systemImage: "arrow.left", action: { viewModel.stepStage(by: -1) })
+                        Button(String(describing: "Restart (DEBUG)"), systemImage: "arrow.trianglehead.clockwise", action: viewModel.reset)
                             .clipShape(.capsule)
                     }
 #endif // DEBUG
