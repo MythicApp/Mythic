@@ -31,27 +31,23 @@ struct MythicApp: App {
 
     var body: some Scene {
         Window("Mythic", id: "main") {
-            if isOnboardingPresented {
-                OnboardingView()
-                    .task(priority: .high) { @MainActor in
-                        if let window = NSApp.mainWindow {
-                            window.isImmersive = true
+            Group {
+                if isOnboardingPresented {
+                    OnboardingView()
+                        .task(priority: .high) { @MainActor in
+                            NSApp.mainWindow?.isImmersive = true
+                        }
+                } else {
+                    ContentView()
+                        .environmentObject(networkMonitor)
+                        .environmentObject(sparkleController)
 
-                            window.makeKeyAndOrderFront(nil)
-                            NSApp.activate(ignoringOtherApps: true)
+                        .task(priority: .high) { @MainActor in
+                            NSApp.mainWindow?.isImmersive = false
                         }
-                    }
-            } else {
-                ContentView()
-                    .environmentObject(networkMonitor)
-                    .environmentObject(sparkleController)
-                    .frame(minWidth: 850, minHeight: 400)
-                    .onAppear {
-                        if let window = NSApp.mainWindow {
-                            window.isImmersive = false
-                        }
-                    }
+                }
             }
+            .frame(minWidth: 850, minHeight: 400)
         }
         .handlesExternalEvents(matching: ["open"])
         .environment(
@@ -69,24 +65,24 @@ struct MythicApp: App {
              )
         )
         .commands {
+            CommandGroup(replacing: .appInfo) {
+                Button {
+                    openWindow(id: "about")
+                } label: {
+                    Text("About Mythic")
+                }
+            }
+
             CommandGroup(after: .appInfo) {
                 Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
                     .disabled(!sparkleController.updater.canCheckForUpdates)
-                
+
                 Button("Restart Onboarding...") {
                     withAnimation {
                         isOnboardingPresented = true
                     }
                 }
                 .disabled(isOnboardingPresented)
-            }
-
-            CommandGroup(replacing: CommandGroupPlacement.appInfo) {
-                Button {
-                    openWindow(id: "about")
-                } label: {
-                    Text("About Mythic")
-                }
             }
         }
 
