@@ -529,54 +529,6 @@ struct SettingsView: View {
     }
 }
 
-extension SettingsView {
-    struct ActionButton: View {
-        @Binding var operating: Bool
-        @Binding var successful: Bool?
-        let action: () async -> Void
-        let label: () -> Label<Text, Image>
-        let autoReset: Bool = true
-
-        var body: some View {
-            HStack {
-                Button {
-                    Task {
-                        withAnimation {
-                            operating = true
-                            successful = nil
-                        }
-
-                        await action()
-
-                        withAnimation {
-                            operating = false
-                        }
-                    }
-                } label: {
-                    label()
-                }
-                .disabled(operating)
-
-                if operating {
-                    ProgressView()
-                        .controlSize(.small)
-                } else if let isSuccessful = successful {
-                    Image(systemName: isSuccessful ? "checkmark" : "xmark")
-                        .task {
-                            if autoReset {
-                                DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 3) {
-                                    withAnimation {
-                                        successful = nil
-                                    }
-                                }
-                            }
-                        }
-                }
-            }
-        }
-    }
-}
-
 #Preview {
     SettingsView()
         .environmentObject(SparkleController())
