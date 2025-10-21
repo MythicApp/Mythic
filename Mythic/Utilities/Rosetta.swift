@@ -18,12 +18,12 @@ import Foundation
 
 final class Rosetta {
     static var exists: Bool { // thread-blocking, but ~0.04 sec cpu time
-        let output = try? Process.execute(
+        let result = try? Process.execute(
             executableURL: URL(fileURLWithPath: "/usr/bin/pgrep"),
             arguments: ["oahd"]
         )
 
-        return output?.stdout.isEmpty == false
+        return result?.standardOutput.isEmpty == false
     }
 
     struct AgreementFailure: LocalizedError {

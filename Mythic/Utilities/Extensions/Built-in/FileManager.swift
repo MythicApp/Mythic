@@ -15,7 +15,7 @@ extension FileManager {
     }
 
     func forceCopyItem(at sourceURL: URL, to destinationURL: URL) throws {
-        let (stderr, _) = try Process.execute(
+        let result = try Process.execute(
             executableURL: .init(filePath: "/bin/cp"),
             arguments: [
                 "-f",
@@ -24,7 +24,7 @@ extension FileManager {
             ]
         )
 
-        if !stderr.isEmpty {
+        if !result.standardError.isEmpty {
             throw ForceCopyFailedError()
         }
     }

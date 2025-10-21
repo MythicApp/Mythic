@@ -400,7 +400,7 @@ class GameOperation: ObservableObject {
                 case .macOS:
                     return workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
                 case .windows: // hacky but functional
-                    let command = try? Process.execute(
+                    let result = try? Process.execute(
                         executableURL: .init(fileURLWithPath: "/bin/bash"),
                         arguments: [
                             "-c",
@@ -408,7 +408,7 @@ class GameOperation: ObservableObject {
                         ]
                     )
 
-                    return (command?.stdout.isEmpty == false)
+                    return (result?.standardOutput.isEmpty == false)
                 }
             }()
             

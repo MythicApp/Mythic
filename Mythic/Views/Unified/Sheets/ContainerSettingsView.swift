@@ -176,11 +176,9 @@ struct ContainerSettingsView: View {
                                         try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
 
                                         if container.settings.dxvk {
-                                            try await Wine.command(
+                                            try await Wine.run(
                                                 arguments: ["wineboot", "-u"],
-                                                identifier: "dxvkRestore",
-                                                containerURL: container.url,
-                                                completion: { _ in }
+                                                containerURL: container.url
                                             )
                                         } else {
                                             // x64

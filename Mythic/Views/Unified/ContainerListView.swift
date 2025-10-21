@@ -129,14 +129,12 @@ struct ContainerConfigurationView: View {
                         case .success(let url):
                             Task(priority: .userInitiated) {
                                 do {
-                                    try await Wine.command(
+                                    try await Wine.run(
                                         arguments: [
                                             url.path(percentEncoded: false)
                                         ],
-                                        identifier: "custom_launch_\(url)_\(UUID().uuidString)",
-                                        waits: true,
                                         containerURL: container.url
-                                    ) { _ in }
+                                    )
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true
@@ -159,18 +157,18 @@ struct ContainerConfigurationView: View {
                     }
                     
                     Button("Launch Winetricks") {
-                        try? Wine.launchWinetricks(containerURL: container.url)
+                        // TODO: yeah
                     }
                     .disabled(true)
                     .help("Winetricks GUI support is currently broken.")
 
                     Button("Launch Uninstaller") {
-                        Task { try await Wine.command(arguments: ["uninstaller"], identifier: "uninstaller", containerURL: container.url) { _ in } }
+                        Task { try await Wine.run(arguments: ["uninstaller"], containerURL: container.url) }
                     }
                     .disabled(uninstallerActive)
 
                     Button("Launch Configurator") {
-                        Task { try await Wine.command(arguments: ["winecfg"], identifier: "winecfg", containerURL: container.url) { _ in } }
+                        Task { try await Wine.run(arguments: ["winecfg"], containerURL: container.url) }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             Task(priority: .background) { @MainActor in
                                 configuratorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "winecfg.exe" })) ?? false
@@ -181,7 +179,7 @@ struct ContainerConfigurationView: View {
                     .disabled(configuratorActive)
                     
                     Button("Launch Registry Editor") {
-                        Task { try await Wine.command(arguments: ["regedit"], identifier: "regedit", containerURL: container.url) { _ in } }
+                        Task { try await Wine.run(arguments: ["regedit"], containerURL: container.url) }
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             Task(priority: .background) { @MainActor in
                                 registryEditorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "regedit.exe" })) ?? false

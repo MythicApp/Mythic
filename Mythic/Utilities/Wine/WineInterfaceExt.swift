@@ -18,15 +18,6 @@ import Foundation
 import OSLog
 
 extension Wine {
-    /// A struct to hold closures for handling stdout and stderr output.
-    struct OutputHandler {
-        /// A closure to handle stdout output.
-        let stdout: (String) -> Void
-
-        /// A closure to handle stderr output.
-        let stderr: (String) -> Void
-    }
-
     /// Signifies that a container is unable to boot.
     struct UnableToBootError: LocalizedError {
         var errorDescription: String? = "Container unable to boot." // TODO: add reason if possible

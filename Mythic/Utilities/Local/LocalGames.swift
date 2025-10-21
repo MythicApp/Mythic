@@ -98,12 +98,10 @@ final class LocalGames {
                 }
             }
 
-            try await Wine.command(
+            try await Wine.run(
                 arguments: [game.path!] + game.launchArguments,
-                identifier: "launch_\(game.title)",
                 containerURL: container.url,
-                environment: environmentVariables,
-                completion: { _ in }
+                environment: environmentVariables
             )
             
         case .none:
