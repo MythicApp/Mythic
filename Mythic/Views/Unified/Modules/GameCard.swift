@@ -43,17 +43,8 @@ struct GameCard: View {
                 }
                 .layoutPriority(1)
 
-                Group {
-                    if game.isInstalled {
-                        GameCardVM.Buttons.Prominent.PlayButton(game: $game)
-                            .clipShape(.capsule)
-                        GameCardVM.MenuView(game: $game)
-                            .clipShape(.capsule)
-                    } else {
-                        GameCardVM.Buttons.Prominent.InstallButton(game: $game)
-                            .clipShape(.capsule)
-                    }
-                }
+                GameCardVM.ButtonsView(game: $game)
+                    .clipShape(.capsule)
             }
             .padding(.horizontal)
             // conditionally change view foreground style for macOS <26

@@ -32,6 +32,10 @@ import Shimmer
                 @State private var isLaunchErrorAlertPresented = false
                 @State private var launchError: Error?
 
+                @State private var isEngineInstallationViewPresented: Bool = false
+                @State private var engineInstallationError: Error?
+                @State private var engineInstallationSuccess: Bool = false
+
                 var body: some View {
                     Button {
                         Task(priority: .userInitiated) {
@@ -44,22 +48,25 @@ import Shimmer
                         }
                     } label: {
                         if game.isLaunching {
-                             ProgressView()
-                                .controlSize(.small)
-                                .tint(.black)
+                            HStack {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(.black)
 
-                            if withLabel {
-                                Text("Launching")
+                                if withLabel {
+                                    Text("Launching")
+                                }
                             }
                         } else {
-                            if withLabel {
-                                Label("Play", systemImage: "play")
-                                    .symbolVariant(.fill)
-                            } else {
-                                Image(systemName: "play")
-                                    .symbolVariant(.fill)
-                                    .padding(2)
+                            Group {
+                                if withLabel {
+                                    Label("Play", systemImage: "play")
+                                } else {
+                                    Image(systemName: "play")
+                                        .padding(2)
+                                }
                             }
+                            .symbolVariant(.fill)
                         }
                     }
                     .disabled(game.isLaunching)
@@ -71,10 +78,32 @@ import Shimmer
                     .foregroundStyle(.black)
 
                     .alert(isPresented: $isLaunchErrorAlertPresented) {
-                        Alert(
-                            title: Text("Error launching \"\(game.title)\"."),
-                            message: Text(launchError?.localizedDescription ?? "Unknown Error.")
+                        if launchError is Engine.NotInstalledError {
+                            return Alert(
+                                title: Text("Mythic Engine is not installed."),
+                                message: Text("""
+                                    Mythic Engine is required to launch this game.
+                                    Would you like to install it now?
+                                    """),
+                                primaryButton: .default(.init("Install")) {
+                                    isEngineInstallationViewPresented = true
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        } else {
+                            return Alert(
+                                title: Text("Error launching \"\(game.title)\"."),
+                                message: Text(launchError?.localizedDescription ?? "Unknown Error.")
+                            )
+                        }
+                    }
+                    .sheet(isPresented: $isEngineInstallationViewPresented) {
+                        EngineInstallationView(
+                            isPresented: $isEngineInstallationViewPresented,
+                            installationError: $engineInstallationError,
+                            installationComplete: $engineInstallationSuccess
                         )
+                        .padding()
                     }
                 }
             }
@@ -121,10 +150,8 @@ import Shimmer
             @EnvironmentObject var networkMonitor: NetworkMonitor
 
             var body: some View {
-                Button { // TODO: convert onboarding engine installer into standalone sheet
-                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                    app.onboardingPhase = .engineDisclaimer // FIXME: doesnt even work lol
-                    app.isOnboardingPresented = true
+                Button {
+
                 } label: {
                     if withLabel {
                         Label("Install Mythic Engine", systemImage: "arrow.down.circle.dotted")
