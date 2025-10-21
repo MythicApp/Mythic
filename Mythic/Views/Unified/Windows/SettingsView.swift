@@ -57,6 +57,10 @@ struct SettingsView: View {
     @State private var isEngineRemoving: Bool = false
     @State private var isEngineRemovalSuccessful: Bool?
 
+    @State private var isEngineInstallationViewPresented: Bool = false
+    @State private var engineInstallationError: Error?
+    @State private var engineInstallationSuccessful: Bool = false
+
     @State private var isCleaning: Bool = false
     @State private var isCleanupSuccessful: Bool?
 
@@ -270,16 +274,16 @@ struct SettingsView: View {
             Text("Stable", comment: "Within the context of Mythic Engine")
                 .tag(Engine.Stream.stable.rawValue)
                 .help("""
-                Existing stable features will be available in this stream.
-                This is the recommended stream for all users.
-                """)
+                    Existing stable features will be available in this stream.
+                    This is the recommended stream for all users.
+                    """)
 
             Text("Preview", comment: "Within the context of Mythic Engine")
                 .tag(Engine.Stream.staging.rawValue)
                 .help("""
-                Experimental new features may be available in this stream, at the cost of stability.
-                Use at your own risk.
-                """)
+                    Experimental new features may be available in this stream, at the cost of stability.
+                    Use at your own risk.
+                    """)
         }
         .onChange(of: engineBranch) {
             isEngineStreamChangeAlertPresented = true
@@ -287,15 +291,19 @@ struct SettingsView: View {
         .alert(isPresented: $isEngineStreamChangeAlertPresented) {
             .init(
                 title: .init("Would you like to reinstall Mythic Engine?"),
-                message: .init("To change the engine type, Mythic Engine must be reinstalled through onboarding."),
+                message: .init("To change the engine stream, Mythic Engine must be reinstalled through onboarding."),
                 primaryButton: .destructive(.init("OK")) {
                     try? Engine.remove()
-
-                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                    app.onboardingPhase = .engineDisclaimer
-                    app.isOnboardingPresented = true
+                    isEngineInstallationViewPresented = true
                 },
                 secondaryButton: .cancel()
+            )
+        }
+        .sheet(isPresented: $isEngineInstallationViewPresented) {
+            EngineInstallationView(
+                isPresented: $isEngineInstallationViewPresented,
+                installationError: $engineInstallationError,
+                installationComplete: $engineInstallationSuccessful
             )
         }
     }
@@ -428,19 +436,8 @@ struct SettingsView: View {
                                     .padding()
                             }
                         } else {
-                            VStack {
-                                Text("Mythic Engine isn't installed.")
-                                    .font(.bold(.title)())
-                                Button {
-                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                    app.onboardingPhase = .engineDisclaimer
-                                    app.isOnboardingPresented = true
-                                } label: {
-                                    Label("Return to Onboarding & Install", systemImage: "arrow.down.to.line")
-                                        .padding(5)
-                                }
-                                .buttonStyle(.borderedProminent)
-                            }
+                            Engine.NotInstalledView()
+                                .padding()
                         }
                     }
 
