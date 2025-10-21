@@ -23,7 +23,6 @@ struct MythicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
-    @State var onboardingPhase: OnboardingR2.Phase = .logo
 
     @StateObject private var networkMonitor: NetworkMonitor = .shared
     @StateObject private var sparkleController: SparkleController = .init()
@@ -75,7 +74,7 @@ struct MythicApp: App {
                     .disabled(!sparkleController.updater.canCheckForUpdates)
                 
                 Button("Restart Onboarding...") {
-                    withAnimation(.easeInOut(duration: 2)) {
+                    withAnimation {
                         isOnboardingPresented = true
                     }
                 }
