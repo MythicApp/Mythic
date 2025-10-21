@@ -36,7 +36,7 @@ struct LibraryView: View {
         
         // MARK: - Toolbar
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .status) {
                     if variables.getVariable("isUpdatingLibrary") == true {
                         ProgressView()
                             .controlSize(.small)
@@ -45,8 +45,7 @@ struct LibraryView: View {
                     }
                 }
 
-                // MARK: Add Game Button
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .automatic) {
                     Button {
                         isGameImportSheetPresented = true
                     } label: {
@@ -55,61 +54,57 @@ struct LibraryView: View {
                     .help("Import a game")
                 }
 
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        gameListViewModel.refresh()
+                ToolbarItem(placement: .automatic) {
+                    Button("Force-refresh game list", systemImage: "arrow.clockwise", action: gameListViewModel.refresh)
+                        .help("Force-refresh the displayed games' status")
+                }
+
+                ToolbarItem(placement: .automatic) {
+                    Menu {
+                        Toggle("Installed", systemImage: "arrow.down.app", isOn: $gameListViewModel.filterOptions.showInstalled)
+
+                        Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
+                            ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
+                                Text(platform.rawValue)
+                            }
+                        }
+
+                        Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
+                            ForEach(
+                                Game.InclusiveSource.allCases,
+                                id: \.self
+                            ) { source in
+                                /*
+                                Label(platform.rawValue, systemImage: {
+                                    switch platform {
+                                    case .all: "display"
+                                    case .macOS: "macwindow"
+                                    case .windows: "pc"
+                                    }
+                                }())
+                                 */
+
+                                Text(source.rawValue)
+                            }
+                        }
                     } label: {
-                        Label("Force-refresh game list", systemImage: "arrow.clockwise")
-                    }
-                    .help("Import a game")
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Toggle("Installed", isOn: $gameListViewModel.filterOptions.showInstalled)
-                }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
-                        ForEach(
-                            Game.InclusiveSource.allCases,
-                            id: \.self
-                        ) { source in
-                            /*
-                            Label(platform.rawValue, systemImage: {
-                                switch platform {
-                                case .all: "display"
-                                case .macOS: "macwindow"
-                                case .windows: "pc"
-                                }
-                            }())
-                             */
-
-                            Text(source.rawValue)
-                        }
+                        Button("Filters", systemImage: "line.3.horizontal.decrease", action: {  })
                     }
                 }
                 
-                ToolbarItem(placement: .confirmationAction) {
-                    Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
-                        ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
-                            Text(platform.rawValue)
-                        }
-                    }
-                }
-                
-                ToolbarItem(placement: .confirmationAction) {
-                    Picker("View", systemImage: "desktopcomputer.and.arrow.down", selection: Binding(
+                ToolbarItem(placement: .automatic) {
+                    Picker("View", systemImage: "macwindow", selection: Binding(
                         get: { isListLayoutEnabled },
                         set: { newValue in
-                            withAnimation(.easeInOut(duration: 0.8)) {
+                            withAnimation {
                                 isListLayoutEnabled = newValue
                             }
                         }
                     )) {
-                        Label("List", systemImage: "list.triangle")
+                        Label("List", systemImage: "rectangle.grid.1x3")
                             .tag(true)
                         
-                        Label("Grid", systemImage: "square.grid.2x2")
+                        Label("Grid", systemImage: "square.grid.3x3")
                             .tag(false)
                     }
                 }

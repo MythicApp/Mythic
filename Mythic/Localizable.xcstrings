@@ -13810,6 +13810,9 @@
         }
       }
     },
+    "Filters" : {
+
+    },
     "Folder is not writable." : {
       "localizations" : {
         "af" : {
@@ -14194,6 +14197,9 @@
 
     },
     "Force-refresh game list" : {
+
+    },
+    "Force-refresh the displayed games' status" : {
 
     },
     "Game Location:" : {
