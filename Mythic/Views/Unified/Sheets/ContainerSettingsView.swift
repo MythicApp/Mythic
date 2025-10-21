@@ -16,7 +16,7 @@
 
 import SwiftUI
 
-// TODO: refactor
+// TODO: refactor, use ActionButton where possible
 struct ContainerSettingsView: View {
     @Binding var selectedContainerURL: URL?
     var withPicker: Bool

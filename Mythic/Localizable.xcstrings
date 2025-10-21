@@ -191,9 +191,6 @@
         }
       }
     },
-    " → \"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" ←" : {
-
-    },
     "\"An open-source macOS game launcher with the ability to play Windows games through a custom implementation of Apple's Game Porting Toolkit — supporting multiple platforms.\"" : {
 
     },
@@ -2108,9 +2105,6 @@
           }
         }
       }
-    },
-    "{\n    \"redirectUrl\": \"https://localhost/launcher/authorized?code=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\n    \"authorizationCode\": %@,\n    \"exchangeCode\": null,\n    \"sid\": null,\n    \"ssoV2Enabled\": true\n}" : {
-
     },
     "%@" : {
       "localizations" : {
@@ -4031,9 +4025,6 @@
       }
     },
     "© by vapidinfinity ✦" : {
-
-    },
-    "A link should open in your browser." : {
 
     },
     "A list of Apple SLAs may be found" : {
@@ -11525,6 +11516,7 @@
 
     },
     "Enter authorisation key..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -11904,9 +11896,6 @@
           }
         }
       }
-    },
-    "Enter the 'authorisationCode' from the JSON response in the field below." : {
-
     },
     "Enter Thumbnail URL here... (optional)" : {
       "extractionState" : "stale",
@@ -16141,9 +16130,6 @@
           }
         }
       }
-    },
-    "If the link didn't open, click on the button below to open it manually." : {
-
     },
     "If you try to download more than one game at the same time, it'll be added to this queue." : {
 
@@ -24765,9 +24751,6 @@
         }
       }
     },
-    "Open Signin Link" : {
-
-    },
     "Open..." : {
       "localizations" : {
         "af" : {
@@ -30319,6 +30302,7 @@
 
     },
     "Sign in to Epic Games" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -32800,6 +32784,7 @@
       }
     },
     "Submit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

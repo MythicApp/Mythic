@@ -88,7 +88,6 @@
 		6A8080D52EA3611A00F10A00 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */; };
 		6A93CC872DFBB7510079A0B0 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A93CC862DFBB74D0079A0B0 /* String.swift */; };
 		6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A955DEA2DF808D000BFA541 /* Mythic.icon */; };
-		6A9843D82EA52B8C00FD5728 /* EpicAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9843D72EA52B8C00FD5728 /* EpicAuth.swift */; };
 		6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */; };
 		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AACEF752C18846700258A7E /* exeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6AACEF742C18846700258A7E /* exeIcon.icns */; };
@@ -195,7 +194,6 @@
 		6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		6A93CC862DFBB74D0079A0B0 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		6A955DEA2DF808D000BFA541 /* Mythic.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Mythic.icon; sourceTree = "<group>"; };
-		6A9843D72EA52B8C00FD5728 /* EpicAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpicAuth.swift; sourceTree = "<group>"; };
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
 		6AACEF742C18846700258A7E /* exeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = exeIcon.icns; sourceTree = "<group>"; };
 		6AB474952AACBBE900AB9C63 /* Mythic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mythic.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -349,7 +347,6 @@
 				6A2934E42BFCFAFD0035CE4B /* InstallStatusView.swift */,
 				6A2934E52BFCFAFD0035CE4B /* StopDownloadAlert.swift */,
 				6A2934E62BFCFAFD0035CE4B /* UninstallGameView.swift */,
-				6A9843D72EA52B8C00FD5728 /* EpicAuth.swift */,
 			);
 			path = Sheets;
 			sourceTree = "<group>";
@@ -702,7 +699,6 @@
 				6A2935392BFCFAFD0035CE4B /* Process.swift in Sources */,
 				6A2935492BFCFAFD0035CE4B /* GameImport.swift in Sources */,
 				6A8080D02EA339D400F10A00 /* HeroGameCard.swift in Sources */,
-				6A9843D82EA52B8C00FD5728 /* EpicAuth.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

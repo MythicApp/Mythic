@@ -24,6 +24,7 @@ import Firebase
 import FirebaseCore
 import FirebaseCrashlytics
 
+// TODO: modularise
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
@@ -154,7 +155,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     if case .alertFirstButtonReturn = response {
                         let confirmation = NSAlert()
                         confirmation.messageText = "Are you sure you want to update now?"
-                        // FIXME: todo: modularise appdelegate and
                         confirmation.informativeText = """
                         This will remove the current version of Mythic Engine.
                         The latest version will be installed the next time you attempt to launch a Windows® game.

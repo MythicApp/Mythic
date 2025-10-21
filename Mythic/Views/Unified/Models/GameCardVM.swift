@@ -142,29 +142,6 @@ import Shimmer
             }
         }
 
-        // TODO: turn into modal & make this reudundant
-        struct EngineInstallButton: View {
-            @Binding var game: Game
-            var withLabel: Bool = false
-
-            @EnvironmentObject var networkMonitor: NetworkMonitor
-
-            var body: some View {
-                Button {
-
-                } label: {
-                    if withLabel {
-                        Label("Install Mythic Engine", systemImage: "arrow.down.circle.dotted")
-                    } else {
-                        Image(systemName: "arrow.down.circle.dotted")
-                            .padding(2)
-                    }
-                }
-                .disabled(!networkMonitor.isConnected)
-                .help("Install Mythic Engine")
-            }
-        }
-
         struct VerificationButton: View {
             @Binding var game: Game
             var withLabel: Bool = false

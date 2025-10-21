@@ -138,7 +138,6 @@ struct OnboardingView: View {
                             }
                         }
                     }
-                    // TODO: add restart button for view when Mythic encounters an error
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 
@@ -198,19 +197,12 @@ private extension OnboardingView {
     
     struct SignInStage: View {
         var body: some View {
-            // TODO: list accountcards, baically mini account view
             AccountsView()
         }
     }
 
     struct GreetingStage: View {
         var body: some View {
-            // TODO: greetings like:
-            /*
-             Hi, <source icon> <user>
-                 (animation pop up below it)
-                 <source icon> <user>
-             */
             VStack(alignment: .leading) {
                 HStack {
                     Text("Hi,")

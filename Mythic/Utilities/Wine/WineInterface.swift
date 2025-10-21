@@ -18,7 +18,6 @@ import Foundation
 import OSLog
 
 final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
-    // FIXME: TODO: all funcs should take urls as params not containers
     // MARK: - Variables
     
     /// Logger instance for swift parsing of wine.
@@ -220,7 +219,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         - settings: Default settings the container should be booted with, if none already exist.
         - completion: A closure to call with the output of the command-line process.
      */
-    static func boot( // TODO: promises & combine framework
+    static func boot(
         baseURL: URL? = containersDirectory,
         name: String,
         settings: ContainerSettings = .init(),
