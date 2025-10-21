@@ -60,6 +60,23 @@ struct LibraryView: View {
                 }
 
                 ToolbarItem(placement: .automatic) {
+                    Picker("View", systemImage: "macwindow", selection: Binding(
+                        get: { isListLayoutEnabled },
+                        set: { newValue in
+                            withAnimation {
+                                isListLayoutEnabled = newValue
+                            }
+                        }
+                    )) {
+                        Label("List", systemImage: "rectangle.grid.1x3")
+                            .tag(true)
+
+                        Label("Grid", systemImage: "square.grid.3x3")
+                            .tag(false)
+                    }
+                }
+
+                ToolbarItem(placement: .automatic) {
                     Menu {
                         Toggle("Installed", systemImage: "arrow.down.app", isOn: $gameListViewModel.filterOptions.showInstalled)
 
@@ -90,23 +107,7 @@ struct LibraryView: View {
                     } label: {
                         Button("Filters", systemImage: "line.3.horizontal.decrease", action: {  })
                     }
-                }
-                
-                ToolbarItem(placement: .automatic) {
-                    Picker("View", systemImage: "macwindow", selection: Binding(
-                        get: { isListLayoutEnabled },
-                        set: { newValue in
-                            withAnimation {
-                                isListLayoutEnabled = newValue
-                            }
-                        }
-                    )) {
-                        Label("List", systemImage: "rectangle.grid.1x3")
-                            .tag(true)
-                        
-                        Label("Grid", systemImage: "square.grid.3x3")
-                            .tag(false)
-                    }
+                    .menuIndicator(.hidden)
                 }
             }
         
