@@ -130,7 +130,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"), Engine.needsUpdate() == true, Engine.isLatestVersionReadyForDownload() == true {
+        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
+           Engine.needsUpdate() == true,
+           Engine.isLatestVersionReadyForDownload() == true {
             let alert = NSAlert()
             if let currentEngineVersion = Engine.version,
                let latestEngineVersion = Engine.fetchLatestVersion()
@@ -152,7 +154,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     if case .alertFirstButtonReturn = response {
                         let confirmation = NSAlert()
                         confirmation.messageText = "Are you sure you want to update now?"
-                        confirmation.informativeText = "Updating will remove the current version of Mythic Engine before installing the new one."
+                        // FIXME: todo: modularise appdelegate and
+                        confirmation.informativeText = """
+                        This will remove the current version of Mythic Engine.
+                        The latest version will be installed the next time you attempt to launch a Windows® game.
+                        """
                         confirmation.addButton(withTitle: "Update")
                         confirmation.addButton(withTitle: "Cancel")
 
@@ -160,9 +166,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             if case .alertFirstButtonReturn = response {
                                 do {
                                     try Engine.remove()
-                                    let app = MythicApp() // FIXME: is this dangerous or just stupid
-                                    app.onboardingPhase = .engineDisclaimer
-                                    app.isOnboardingPresented = true
+                                    let alert = NSAlert()
+                                    alert.alertStyle = .informational
+                                    alert.messageText = "Successfully removed Mythic Engine."
+                                    alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
+                                    alert.addButton(withTitle: "OK")
+
+                                    alert.beginSheetModal(for: window) { response in
+                                        if case .OK = response {
+                                            // exit(1) // literally why would it exit if you remove engine smh
+                                        }
+                                    }
                                 } catch {
                                     let error = NSAlert()
                                     error.alertStyle = .critical
@@ -171,7 +185,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
                                     error.beginSheetModal(for: window) { response in
                                         if case .OK = response {
-                                            exit(1)
+
                                         }
                                     }
                                 }
