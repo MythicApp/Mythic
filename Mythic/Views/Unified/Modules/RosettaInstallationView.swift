@@ -93,7 +93,7 @@ extension RosettaInstallationView {
         @State private var isInstallationErrorAlertPresented: Bool = false
 
         var body: some View {
-            ProgressView(value: percentageCompletion / 100)
+            ProgressView(value: percentageCompletion, total: 100.0)
                 .progressViewStyle(.linear)
                 .task {
                     guard !Rosetta.exists else {
