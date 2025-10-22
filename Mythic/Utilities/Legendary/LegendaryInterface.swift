@@ -43,13 +43,13 @@ final class Legendary {
         static let shared = RunningCommands() // singleton
 
         private var tasks: [String: Task<Void, Error>] = [:]
-        private var pendingCancel: Set<String> = []
+        private var pendingCancel: Set<String> = []   // keep pending stop requests
 
         func set(id: String, task: Task<Void, Error>) {
-            log.debug("added legendary task with id: \(id)")
-            // if a stop was requested before registration, cancel immediately.
+            log.debug("set task for id: \(id)")
+            // If a stop was requested before registration, cancel immediately and do not store.
             if pendingCancel.remove(id) != nil {
-                log.debug("task \(id) was removed before registration, cancelling immediately")
+                log.debug("task termination requested before registering, cancelling immediately")
                 task.cancel()
                 return
             }
@@ -58,23 +58,24 @@ final class Legendary {
 
         func remove(id: String) {
             tasks[id] = nil
-            // also clear any stale pending flag
+            pendingCancel.remove(id) // also clear any stale pending for this id
+        }
+
+        func clearPending(id: String) {
             pendingCancel.remove(id)
         }
 
         func stop(id: String) {
-            log.debug("added legendary task with id: \(id)")
+            log.debug("stop task for id: \(id)")
             if let task = tasks[id] {
                 task.cancel()
                 tasks.removeValue(forKey: id)
+                log.debug("task cancellation result \(task.isCancelled)")
             } else {
-                log.debug("legendary task not found")
+                log.debug("task not found")
+                // Not yet registered — queue cancellation so the next set() cancels immediately
                 let inserted = pendingCancel.insert(id).inserted
-                if inserted {
-                    log.debug("queued pending cancel for id \(id)")
-                } else {
-                    print("pending cancel already queued for id \(id)")
-                }
+                log.debug("\(inserted ? "" : " already")queued pending cancel for id \(id)")
             }
         }
 
@@ -84,6 +85,7 @@ final class Legendary {
             pendingCancel.removeAll()
         }
     }
+
 
 
 
@@ -551,8 +553,8 @@ final class Legendary {
     }
 
     /**
-        Retrieve a game's launch arguments from Legendary's `installed.json` file.
-        ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
+     Retrieve a game's launch arguments from Legendary's `installed.json` file.
+     ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
      */
     static func getGameLaunchArguments(game: Mythic.Game) throws -> [String] {
         let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
