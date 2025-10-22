@@ -43,25 +43,45 @@ final class Legendary {
         static let shared = RunningCommands() // singleton
 
         private var tasks: [String: Task<Void, Error>] = [:]
+        private var pendingCancel: Set<String> = []
 
         func set(id: String, task: Task<Void, Error>) {
+            log.debug("added legendary task with id: \(id)")
+            // if a stop was requested before registration, cancel immediately.
+            if pendingCancel.remove(id) != nil {
+                log.debug("task \(id) was removed before registration, cancelling immediately")
+                task.cancel()
+                return
+            }
             tasks[id] = task
         }
 
         func remove(id: String) {
             tasks[id] = nil
+            // also clear any stale pending flag
+            pendingCancel.remove(id)
         }
 
         func stop(id: String) {
+            log.debug("added legendary task with id: \(id)")
             if let task = tasks[id] {
                 task.cancel()
-                tasks[id] = nil
+                tasks.removeValue(forKey: id)
+            } else {
+                log.debug("legendary task not found")
+                let inserted = pendingCancel.insert(id).inserted
+                if inserted {
+                    log.debug("queued pending cancel for id \(id)")
+                } else {
+                    print("pending cancel already queued for id \(id)")
+                }
             }
         }
 
         func stopAll() {
             tasks.values.forEach { $0.cancel() }
             tasks.removeAll()
+            pendingCancel.removeAll()
         }
     }
 
