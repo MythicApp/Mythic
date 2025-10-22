@@ -50,10 +50,8 @@ final class Migrator {
                 settings.msync = oldSettings["msync"] ?? settings.msync
                 settings.retinaMode = oldSettings["retinaMode"] ?? settings.retinaMode
 
-                Task { @MainActor in
-                    convertedBottles.append(.init(name: name, url: url, settings: settings))
-                    Wine.containerURLs.insert(url)
-                }
+                convertedBottles.append(.init(name: name, url: url, settings: settings))
+                Wine.containerURLs.insert(url)
 
                 iterations += 1
 
@@ -142,15 +140,13 @@ final class Migrator {
 
     /// Updates containers without a default scale set.
     /// Affects migrators from versions below v0.4.0.
-    static func updateContainerScalingIfNecessary() {
+    static func updateContainerScalingIfNecessary() async {
         // If scaling value is 0, it does not have a default scale set.
         for container in Wine.containerObjects where container.settings.scaling == 0 {
             let defaultScale = Wine.ContainerSettings().scaling
-
-            Task(priority: .background) {
-                await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
-                container.settings.scaling = defaultScale
-            }
+            
+            await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
+            container.settings.scaling = defaultScale
         }
     }
 

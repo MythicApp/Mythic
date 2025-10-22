@@ -119,35 +119,50 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      - settings: Default settings the container should be booted with, if none already exist.
      - completion: A closure to call with the result (Container or Error).
      */
+    @discardableResult
     static func boot(
         baseURL: URL? = containersDirectory,
         name: String,
-        settings: ContainerSettings = .init(),
-        completion: @escaping (Result<Container, Error>) -> Void
-    ) async {
-        guard let baseURL = baseURL else { return }
-        guard files.fileExists(atPath: baseURL.path) else { completion(.failure(FileLocations.FileDoesNotExistError(baseURL))); return }
+        settings: ContainerSettings = .init()
+    ) async throws -> Container {
+        guard let baseURL = baseURL else {
+            throw FileLocations.FileDoesNotExistError(URL(fileURLWithPath: "nil baseURL"))
+        }
+        guard files.fileExists(atPath: baseURL.path) else {
+            throw FileLocations.FileDoesNotExistError(baseURL)
+        }
+
         let url = baseURL.appending(path: name)
 
-        guard Engine.exists else { completion(.failure(Engine.NotInstalledError())); return }
-        guard FileLocations.isWritableFolder(url: baseURL) else { completion(.failure(FileLocations.FileNotModifiableError(url))); return }
+        guard Engine.exists else {
+            throw Engine.NotInstalledError()
+        }
+        guard FileLocations.isWritableFolder(url: baseURL) else {
+            throw FileLocations.FileNotModifiableError(url)
+        }
+
         let hasExisted = containerExists(at: url)
 
         if !files.fileExists(atPath: url.path) {
             do {
                 try files.createDirectory(at: url, withIntermediateDirectories: true)
             } catch {
-                completion(.failure(error))
                 log.error("Unable to create container directory: \(error.localizedDescription)")
-                return
+                throw error
             }
         }
 
-        defer { VariableManager.shared.setVariable("booting", value: false) }
-        VariableManager.shared.setVariable("booting", value: true)
+        defer {
+            Task { @MainActor in
+                VariableManager.shared.setVariable("booting", value: false)
+            }
+        }
+        Task { @MainActor in
+            VariableManager.shared.setVariable("booting", value: true)
+        }
 
         do {
-            let newContainer: Container = .init(name: name, url: url, settings: settings)
+            let newContainer = Container(name: name, url: url, settings: settings)
 
             // Run wineboot and inspect stderr/stdout for the "updated" message.
             let result = try await run(arguments: ["wineboot"], containerURL: url)
@@ -155,15 +170,15 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             // swiftlint:disable:next force_try
             if result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) {
                 containerURLs.insert(url)
-                completion(.success(newContainer))
+                return newContainer
             }
 
             if hasExisted {
                 log.notice("Container already exists at \(url.prettyPath())")
-                if let container: Container = .init(knownURL: url) {
-                    completion(.success(container))
+                if let container = Container(knownURL: url) {
+                    return container
                 } else {
-                    completion(.failure(ContainerAlreadyExistsError()))
+                    throw ContainerAlreadyExistsError()
                 }
             } else {
                 await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
@@ -172,8 +187,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
 
             log.notice("Successfully booted container \"\(name)\"")
+            return newContainer
         } catch {
-            completion(.failure(error))
+            log.error("Boot failed for \(name): \(error.localizedDescription)")
+            throw error
         }
     }
 

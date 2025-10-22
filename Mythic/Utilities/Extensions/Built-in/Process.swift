@@ -7,7 +7,7 @@
 
 // MARK: - Copyright
 // Copyright © 2024 vapidinfinity
-
+//
 // This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
@@ -155,11 +155,13 @@ extension Process {
     }
 
     /// Starts a process and returns an ``AsyncThrowingStream`` of incremental ``OutputChunk``s.
+    /// If `onChunk` is provided, its return value (String) will be written to stdin for each chunk.
     static func stream(
         executableURL: URL,
         arguments: [String],
         environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
+        currentDirectoryURL: URL? = nil,
+        onChunk: (@Sendable (OutputChunk) -> String?)? = nil
     ) -> AsyncThrowingStream<OutputChunk, Error> {
         AsyncThrowingStream { continuation in
             let process: Process = .init()
@@ -172,6 +174,7 @@ extension Process {
             }
             process.currentDirectoryURL = currentDirectoryURL
 
+            let stdin = Pipe(); process.standardInput = stdin
             let stderr = Pipe(); process.standardError = stderr
             let stdout = Pipe(); process.standardOutput = stdout
 
@@ -180,13 +183,30 @@ extension Process {
                 category: "Process.stream@\(executableURL)"
             )
 
+            // safety first!! (keep swift 6 happy)
+            actor StdinWriter {
+                private let handle: FileHandle
+                init(handle: FileHandle) { self.handle = handle }
+                func write(_ string: String) {
+                    if let data = string.data(using: .utf8) {
+                        handle.write(data)
+                    }
+                }
+            }
+            let writer = StdinWriter(handle: stdin.fileHandleForWriting)
+
             stderr.fileHandleForReading.readabilityHandler = { handle in
                 let data = handle.availableData
                 guard !data.isEmpty else { return }
                 let text = String(decoding: data, as: UTF8.self)
-                if !text.isEmpty {
-                    continuation.yield(.init(stream: .standardError, output: text))
-                    logger.debug("[stderr] \(text, privacy: .public)")
+                guard !text.isEmpty else { return }
+
+                let chunk = OutputChunk(stream: .standardError, output: text)
+                continuation.yield(chunk)
+                logger.debug("[stderr] \(text, privacy: .public)")
+
+                if let onChunk, let reply = onChunk(chunk) {
+                    Task { await writer.write(reply) }
                 }
             }
 
@@ -194,24 +214,42 @@ extension Process {
                 let data = handle.availableData
                 guard !data.isEmpty else { return }
                 let text = String(decoding: data, as: UTF8.self)
-                if !text.isEmpty {
-                    continuation.yield(.init(stream: .standardOutput, output: text))
-                    logger.debug("[stdout] \(text, privacy: .public)")
+                guard !text.isEmpty else { return }
+
+                let chunk = OutputChunk(stream: .standardOutput, output: text)
+                continuation.yield(chunk)
+                logger.debug("[stdout] \(text, privacy: .public)")
+
+                if let onChunk, let reply = onChunk(chunk) {
+                    Task { await writer.write(reply) }
                 }
             }
 
-            process.terminationHandler = { _ in
+            @Sendable func safeClose() {
                 stderr.fileHandleForReading.readabilityHandler = nil
                 stdout.fileHandleForReading.readabilityHandler = nil
                 try? stderr.fileHandleForReading.close()
                 try? stdout.fileHandleForReading.close()
+                try? stdin.fileHandleForWriting.close()
+            }
 
+            // cancel/finish handling: if the consumer cancels, terminate the child gracefully.
+            continuation.onTermination = { @Sendable _ in
+                if process.isRunning {
+                    process.terminate()
+                }
+                safeClose()
+            }
+
+            process.terminationHandler = { _ in
+                safeClose()
                 continuation.finish()
             }
 
             do {
                 try process.run()
             } catch {
+                safeClose()
                 continuation.finish(throwing: error)
             }
         }

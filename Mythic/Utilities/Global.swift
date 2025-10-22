@@ -21,22 +21,22 @@ import SwordRPC
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
-let files: FileManager = .default
+nonisolated(unsafe) let files: FileManager = .default
 
 /// A simpler alias of `UserDefaults.standard`.
-let defaults: UserDefaults = .standard
+nonisolated(unsafe) let defaults: UserDefaults = .standard
 
 /// A simpler alias of `NSWorkspace.shared`.
-let workspace: NSWorkspace = .shared
+nonisolated(unsafe) let workspace: NSWorkspace = .shared
 
 /// A simpler alias of `NSApp[lication].shared`.
-let sharedApp: NSApplication = .shared
+@MainActor let sharedApp: NSApplication = .shared
 
-let notifications: UNUserNotificationCenter = .current()
+nonisolated(unsafe) let notifications: UNUserNotificationCenter = .current()
 
 let mainLock: NSRecursiveLock = .init()
 
-let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
+nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
 
 var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
 

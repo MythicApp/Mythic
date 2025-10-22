@@ -34,30 +34,27 @@ import Foundation
  variableManager.setVariable("hello", value: "hi")
  ```
  */
-@Observable class VariableManager: ObservableObject {
+@MainActor
+@Observable class VariableManager: ObservableObject, @unchecked Sendable {
     static let shared: VariableManager = .init()
     private init() { }
-
+    
     private var variables = [String: Any]()
-
+    
     /// Set variable data within the variable manager.
     func setVariable(_ key: String, value: Any) {
-        Task { @MainActor in
-            self.objectWillChange.send()
-            self.variables[key] = value
-        }
+        self.objectWillChange.send()
+        self.variables[key] = value
     }
-
+    
     /// Retrieve variable data from the variable manager.
     func getVariable<T>(_ key: String) -> T? {
         return variables[key] as? T
     }
-
+    
     /// Remove variable data from the variable manager.
     func removeVariable(_ key: String) {
-        Task { @MainActor in
-            self.objectWillChange.send()
-            self.variables[key] = nil
-        }
+        self.objectWillChange.send()
+        self.variables[key] = nil
     }
 }

@@ -73,7 +73,7 @@ struct EpicWebAuthView: View {
     }
 }
 
-final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate {
+final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, @unchecked Sendable {
     public static let shared = EpicWebAuthViewModel()
     @Published var signInSuccess = false
 

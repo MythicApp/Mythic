@@ -40,7 +40,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
 
-
+        
         Migrator.migrateFromOldBottleFormatIfNecessary()
         Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
 
@@ -49,8 +49,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }
 
-
-        Migrator.updateContainerScalingIfNecessary()
+        Task {
+            await Migrator.updateContainerScalingIfNecessary()
+        }
         Migrator.migrateEpicFolderNaming()
 
         // MARK: Start metadata update cycle for Epic games.
@@ -66,7 +67,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         // MARK: Autosync Epic savegames
 
         Task(priority: .utility) {
-            try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { _ in }
+            try? await Legendary.execute(arguments: ["-y", "sync-saves"])
         }
 
         // MARK: DiscordRPC Delegate Ininitialisation & Connection
@@ -238,9 +239,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
     func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
-        Legendary.stopAllCommands(forced: true)
+        Task { await Legendary.RunningCommands.shared.stopAll() }
 
-        Task { try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { _ in } }
+        Task { try? await Legendary.execute(arguments: ["cleanup"]) }
     }
 }
 

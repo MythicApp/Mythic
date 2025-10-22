@@ -301,18 +301,16 @@ private extension OnboardingView {
                     ProgressView()
                         .progressViewStyle(.linear)
                         .task {
-                            await Wine.boot(name: "Default") { result in
-                                switch result {
-                                case .success:
-                                    propagateBootSuccess()
-                                case .failure(let failure):
-                                    if failure is Wine.ContainerAlreadyExistsError {
-                                        propagateBootSuccess(); return
-                                    }
-
-                                    bootError = failure
-                                    isBootErrorAlertPresented = true
+                            do {
+                                _ = try await Wine.boot(name: "Default")
+                                propagateBootSuccess()
+                            } catch {
+                                if error is Wine.ContainerAlreadyExistsError {
+                                    propagateBootSuccess(); return
                                 }
+
+                                bootError = error
+                                isBootErrorAlertPresented = true
                             }
                         }
                 }

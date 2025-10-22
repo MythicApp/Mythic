@@ -240,7 +240,7 @@ private extension GameSettingsView {
                 Button("Move...") {
                     moveGame()
                 }
-                .disabled(GameOperation.shared.runningGames.contains(game))
+                .disabled(GameOperation.shared.runningGameIDs.contains(game.id))
                 .alert(isPresented: $isMovingErrorPresented) {
                     Alert(
                         title: .init("Unable to move \"\(game.title)\"."),

@@ -8,7 +8,7 @@
 import WhatsNewKit
 import SwiftUI
 
-extension MythicApp: WhatsNewCollectionProvider {
+extension MythicApp: @MainActor WhatsNewCollectionProvider {
     var whatsNewCollection: WhatsNewCollection {
         WhatsNew(
             version: "0.4.1",

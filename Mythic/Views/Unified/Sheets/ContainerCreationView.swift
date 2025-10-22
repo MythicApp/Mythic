@@ -100,16 +100,14 @@ struct ContainerCreationView: View {
                 Button("Done") {
                     Task(priority: .userInitiated) {
                         withAnimation { isBooting = true }
-                        await Wine.boot(baseURL: containerURL, name: containerName) { result in
-                            switch result {
-                            case .success:
-                                withAnimation { isBooting = false }
-                                isPresented = false
-                            case .failure(let error):
-                                bootErrorDescription = error.localizedDescription
-                                withAnimation { isBooting = false }
-                                isBootFailureAlertPresented = true
-                            }
+                        do {
+                            _ = try await Wine.boot(baseURL: containerURL, name: containerName)
+                            withAnimation { isBooting = false }
+                            isPresented = false
+                        } catch {
+                            bootErrorDescription = error.localizedDescription
+                            withAnimation { isBooting = false }
+                            isBootFailureAlertPresented = true
                         }
                     }
                 }

@@ -70,7 +70,7 @@ import Shimmer
                         }
                     }
                     .disabled(game.isLaunching)
-                    .disabled(operation.runningGames.contains(game))
+                    .disabled(operation.runningGameIDs.contains(game.id))
                     .disabled(operation.current?.game == game)
                     .help("Play \"\(game.title)\"")
 
@@ -189,7 +189,7 @@ import Shimmer
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .disabled(operation.runningGames.contains(game))
+                .disabled(operation.runningGameIDs.contains(game.id))
                 .disabled(!game.needsUpdate)
                 .help("Update \"\(game.title)\"")
             }
@@ -266,7 +266,7 @@ import Shimmer
             @State private var hoveringOverDestructiveButton = false
 
             var isDeleteDisabled: Bool {
-                operation.current?.game != nil || operation.runningGames.contains(game)
+                operation.current?.game != nil || operation.runningGameIDs.contains(game.id)
             }
 
             var body: some View {

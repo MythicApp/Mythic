@@ -172,7 +172,7 @@ struct ContainerConfigurationView: View {
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             Task(priority: .background) { @MainActor in
                                 configuratorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "winecfg.exe" })) ?? false
-                                if !configuratorActive { timer.invalidate() }
+                                // if !configuratorActive { timer.invalidate() } FIXME: swift 6
                             }
                         }
                     }
@@ -183,7 +183,7 @@ struct ContainerConfigurationView: View {
                         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
                             Task(priority: .background) { @MainActor in
                                 registryEditorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "regedit.exe" })) ?? false
-                                if !registryEditorActive { timer.invalidate() }
+                                // if !registryEditorActive { timer.invalidate() } FIXME: swift 6
                             }
                         }
                     }

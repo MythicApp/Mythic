@@ -20,7 +20,7 @@ import Foundation
 import Network
 import SwiftUI
 
-final class NetworkMonitor: ObservableObject {
+final class NetworkMonitor: ObservableObject, @unchecked Sendable {
 
     public static let shared: NetworkMonitor = .init()
 

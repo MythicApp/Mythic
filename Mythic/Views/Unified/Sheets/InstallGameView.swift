@@ -33,7 +33,8 @@ struct InstallViewEvo: View {
         guard !fetchingOptionalPacks else { return }
         withAnimation { fetchingOptionalPacks = true }
 
-        try? await Legendary.command(
+        let consumer = await Legendary.executeStreamed(
+            identifier: "parseOptionalPacks",
             arguments: [
                 "install", game.id,
                 "--platform", {
@@ -43,31 +44,49 @@ struct InstallViewEvo: View {
                     }
                 }()
             ],
-            identifier: "parseOptionalPacks"
-        ) { output in
-            if output.stdout.contains("The following optional packs are available") { // hate hardcoding
-                Logger.app.debug("Found optional packs")
-                output.stdout.enumerateLines { line, _ in
-                    Logger.app.debug("Adding optional pack \"\(line)\"")
-                    if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
-                        _ = withAnimation {
-                            optionalPacks.updateValue(String(match["name"]?.substring ?? .init()), forKey: String(match["identifier"]?.substring ?? .init()))
+            onChunk: { chunk in
+                switch chunk.stream {
+                case .standardError:
+                    if chunk.output.contains("Install size:") {
+                        if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: chunk.output) {
+                            let sizeString = match[1].substring ?? ""
+                            let sizeValue = Double(sizeString) ?? 0.0
+
+                            Task { @MainActor in
+                                installSize = sizeValue
+                            }
+                        }
+                    }
+                case .standardOutput:
+                    if chunk.output.contains("The following optional packs are available") { // hate hardcoding
+                        Logger.app.debug("Found optional packs")
+                        chunk.output.enumerateLines { line, _ in
+                            Logger.app.debug("Adding optional pack \"\(line)\"")
+                            if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: line) {
+                                let id = String(match["identifier"]?.substring ?? "")
+                                let name = String(match["name"]?.substring ?? "")
+
+                                _ = withAnimation {
+                                    Task { @MainActor in
+                                        optionalPacks.updateValue(name, forKey: id)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if chunk.output.contains("Do you wish to install") || chunk.output.contains("Additional packs") {
+                        Task { @MainActor in
+                            await Legendary.RunningCommands.shared.remove(id: "parseOptionalPacks")
                         }
                     }
                 }
-            }
 
-            if output.stderr.contains("Install size:") {
-                if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: output.stderr) {
-                    installSize = Double(match[1].substring ?? "") ?? 0.0
-                }
+                return nil
             }
+        )
 
-            if output.stdout.contains("Do you wish to install") || output.stdout.contains("Additional packs") {
-                Legendary.stopCommand(identifier: "parseOptionalPacks", forced: true)
-                return
-            }
-        }
+        try? await consumer.value // await completion of task
 
         withAnimation { fetchingOptionalPacks = false }
     }
@@ -85,7 +104,9 @@ struct InstallViewEvo: View {
                 )
             }
             .onDisappear {
-                Legendary.stopCommand(identifier: "parseOptionalPacks")
+                Task { @MainActor in
+                    await Legendary.RunningCommands.shared.stop(id: "parseOptionalPacks")
+                }
             }
             .padding([.horizontal, .top])
 

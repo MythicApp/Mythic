@@ -59,7 +59,7 @@ final class Engine {
     }
 
     // TODO: refactor -- separate download & install logic, use better methods of tracking progress
-    static func install(downloadHandler: @escaping (Progress) -> Void, installHandler: @escaping (Bool) -> Void) async throws { // Future?
+    static func install(downloadHandler: @Sendable @escaping (Progress) -> Void, installHandler: @Sendable @escaping (Bool) -> Void) async throws { // Future?
         guard workspace.isARM else {
             // TODO: handle this case
             return

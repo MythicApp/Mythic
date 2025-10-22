@@ -35,16 +35,7 @@ extension Legendary {
     struct IsNotLegendaryError: LocalizedError {
         var errorDescription: String? = "This is not an epic game."
     }
-    
-    /// A struct to hold closures for handling stdout and stderr output.
-    struct OutputHandler {
-        /// A closure to handle stdout output.
-        let stdout: (String) -> Void
-        
-        /// A closure to handle stderr output.
-        let stderr: (String) -> Void
-    }
-    
+
     /// Error when legendary is signed out on a command that enforces signin.
     struct NotSignedInError: LocalizedError {
         var errorDescription: String? = "You aren't signed in to epic games."

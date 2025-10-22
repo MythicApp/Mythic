@@ -17,6 +17,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 final class GameListVM: ObservableObject {
     static let shared: GameListVM = .init()
 
@@ -40,7 +41,9 @@ final class GameListVM: ObservableObject {
     var refreshFlag: Bool = false
     @Published var filterOptions: FilterOptions = .init() {
         didSet {
-            updateGames()
+            Task { @MainActor in
+                updateGames()
+            }
         }
     }
 
@@ -50,7 +53,9 @@ final class GameListVM: ObservableObject {
     private var isSorted = false
 
     private init() {
-        updateGames()
+        Task { @MainActor in
+            updateGames()
+        }
     }
 
     private func debouncedUpdateGames() {
@@ -73,6 +78,7 @@ final class GameListVM: ObservableObject {
 }
 
 private extension GameListVM {
+    @MainActor
     func updateGames() {
         let filteredGames = filterGames(unifiedGames)
 

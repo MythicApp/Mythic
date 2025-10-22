@@ -167,7 +167,7 @@ extension GameImportView {
                         .padding(0.5)
                 }
 
-                Button("Done") { performGameImport() }
+                Button("Done", action: performGameImport)
                     .disabled(isFormInvalid)
                     .buttonStyle(.borderedProminent)
             }
@@ -217,8 +217,9 @@ extension GameImportView {
         private func performGameImport() {
             withAnimation { isOperating = true }
 
-            Task(priority: .userInitiated) {
-                try? await Legendary.command(
+            Task { @MainActor in
+                let consumer = await Legendary.executeStreamed(
+                    identifier: "epicImport",
                     arguments: [
                         "import",
                         checkIntegrity ? nil : "--disable-check",
@@ -231,20 +232,20 @@ extension GameImportView {
                         }(),
                         game.id, path
                     ].compactMap { $0 },
-                    identifier: "epicImport"
-                ) { output in
-                    handleCommandOutput(output)
-                }
-            }
-        }
+                    onChunk: { chunk in
+                        Task { @MainActor in
+                            if case .standardOutput = chunk.stream, chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
+                                isPresented = false
+                            } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output) {
+                                withAnimation { isOperating = false }
+                                errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
+                                isErrorAlertPresented = true
+                            }
+                        }
 
-        private func handleCommandOutput(_ output: Process.CommandOutput) {
-            if output.stderr.contains("INFO: Game \"\(game.title)\" has been imported.") {
-                isPresented = false
-            } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: output.stderr) {
-                withAnimation { isOperating = false }
-                errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
-                isErrorAlertPresented = true
+                        return nil
+                    }
+                )
             }
         }
 

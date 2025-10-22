@@ -20,7 +20,7 @@ import OSLog
 // MARK: - Logger Extension
 extension Logger {
     // MARK: Subsystem
-    static var subsystem = Bundle.main.bundleIdentifier!
+    nonisolated(unsafe) static var subsystem = Bundle.main.bundleIdentifier!
 
     // MARK: - Custom Logger Method
     /**

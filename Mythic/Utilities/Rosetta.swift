@@ -32,10 +32,13 @@ final class Rosetta {
         A list of Apple SLAs may be found here: https://www.apple.com/legal/sla/
         """
     }
-    
-    static func install(agreeToSLA: Bool, percentageCompletion completion: @escaping (Double) -> Void) async throws {
+
+    static func install(
+        agreeToSLA: Bool,
+        percentageCompletion completion: @Sendable @escaping (Double) -> Void
+    ) async throws {
         guard agreeToSLA else { throw AgreementFailure() }
-        
+
         let task = Process()
         task.launchPath = "/usr/sbin/softwareupdate"
         task.arguments = ["--install-rosetta", "--agree-to-license"]

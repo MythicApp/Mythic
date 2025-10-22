@@ -26,7 +26,9 @@ func stopGameOperationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert { 
     return Alert(
         title: Text("Are you sure you want to stop \(GameOperation.shared.current?.type.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {
-            Legendary.stopCommand(identifier: "install")
+            Task { @MainActor in
+                await Legendary.RunningCommands.shared.stop(id: "install")
+            }
         },
         secondaryButton: .default(Text("Cancel")) { isPresented.wrappedValue = false }
     )

@@ -154,10 +154,9 @@ struct SettingsView: View {
             operating: $isCleaning,
             successful: $isCleanupSuccessful,
             action: {
-                try? await Legendary.command(arguments: ["cleanup"], identifier: "cleanup") { output in
-                    withAnimation {
-                        isCleanupSuccessful = output.stderr.contains("Cleanup complete")
-                    }
+                let commandResult = try? await Legendary.execute(arguments: ["cleanup"])
+                withAnimation {
+                    isCleanupSuccessful = commandResult?.standardError.contains("Cleanup complete")
                 }
             },
             label: {
@@ -171,15 +170,10 @@ struct SettingsView: View {
             operating: $isEpicCloudSynchronising,
             successful: $isEpicCloudSyncSuccessful,
             action: {
-                var syncSuccessful = false
-                try? await Legendary.command(arguments: ["-y", "sync-saves"], identifier: "sync-saves") { output in
-                    if (try? Regex(#"Got [0-9]+ remote save game"#).firstMatch(in: output.stderr)) != nil {
-                        syncSuccessful = true
-                    }
-                }
-
+                let regex = try! Regex(#"Got [0-9]+ remote save game"#)
+                let commandResult = try? await Legendary.execute(arguments: ["-y", "sync-saves"])
                 withAnimation {
-                    isEpicCloudSyncSuccessful = syncSuccessful
+                    isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: commandResult?.standardError ?? "") != nil)
                 }
             },
             label: {

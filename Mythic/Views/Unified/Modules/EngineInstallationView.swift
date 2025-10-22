@@ -105,7 +105,11 @@ extension EngineInstallationView {
                             downloadFractionCompleted = progress.fractionCompleted
                         },
                         installHandler: { complete in
-                            if complete { viewModel.stepStage() }
+                            if complete {
+                                Task { @MainActor in
+                                    viewModel.stepStage()
+                                }
+                            }
                         }
                     )
                 } catch {

@@ -21,7 +21,7 @@ import UserNotifications
 import SwordRPC
 import SwiftUI
 
-class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
+class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unchecked Sendable {
     // MARK: Stubs
     static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id
@@ -192,9 +192,9 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable {
         }
     }
 
-    var isInstalling: Bool { GameOperation.shared.current?.game == self }
-    var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
-    var isLaunching: Bool { GameOperation.shared.launching == self }
+    @MainActor var isInstalling: Bool { GameOperation.shared.current?.game == self }
+    @MainActor var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
+    @MainActor var isLaunching: Bool { GameOperation.shared.launching == self }
 
     // MARK: Functions
     func move(to newLocation: URL) async throws {
@@ -269,8 +269,8 @@ enum GameModificationType: String {
 }
 
 @available(*, deprecated, renamed: "GameOperation", message: "womp")
-@Observable class GameModification: ObservableObject {
-    static var shared: GameModification = .init()
+@Observable class GameModification: ObservableObject, @unchecked Sendable {
+    nonisolated(unsafe) static var shared: GameModification = .init()
     
     var game: Mythic.Game?
     var type: GameModificationType?
@@ -287,8 +287,8 @@ enum GameModificationType: String {
     var launching: Game? // no other place bruh
 }
 
-class GameOperation: ObservableObject {
-    static var shared: GameOperation = .init()
+class GameOperation: ObservableObject, @unchecked Sendable {
+    nonisolated(unsafe) static var shared: GameOperation = .init()
     
     internal static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
@@ -302,15 +302,19 @@ class GameOperation: ObservableObject {
             guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
             switch GameOperation.shared.current!.game.source {
             case .epic:
-                Task(priority: .high) { [weak self] in
-                    guard self != nil else { return }
+                guard let current = GameOperation.shared.current else { return }
+                let gameTitle = current.game.title
+                let type = current.type.rawValue
+
+                Task(priority: .high) {
                     do {
-                        try await Legendary.install(args: GameOperation.shared.current!, priority: false)
+                        try await Legendary.install(args: current, priority: false)
+
                         try? await notifications.add(
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
-                                      content.title = "Finished \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+                                      content.title = "Finished \(type) \"\(gameTitle)\"."
                                       return content
                                   }(),
                                   trigger: nil)
@@ -360,8 +364,8 @@ class GameOperation: ObservableObject {
         }
     }
     
-    @Published var runningGames: Set<Game> = .init()
-    
+    @Published var runningGameIDs: Set<String> = .init()
+
     private func checkIfGameOpen(_ game: Game) async {
         guard let gamePath = game.path, let gamePlatform = game.platform else { return }
 
@@ -380,7 +384,7 @@ class GameOperation: ObservableObject {
         GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
 
         Task { @MainActor in
-            GameOperation.shared.runningGames.insert(game)
+            GameOperation.shared.runningGameIDs.insert(game.id)
         }
 
         discordRPC.setPresence({
@@ -414,7 +418,7 @@ class GameOperation: ObservableObject {
             
             if !isRunning {
                 Task { @MainActor in
-                    GameOperation.shared.runningGames.remove(game)
+                    GameOperation.shared.runningGameIDs.remove(game.id)
                 }
 
                 isOpen = false
@@ -427,6 +431,7 @@ class GameOperation: ObservableObject {
     }
     
     // swiftlint:disable:next redundant_optional_initialization
+    @MainActor
     @Published var launching: Game? = nil {
         didSet {
             guard launching == nil, let oldValue = oldValue else { return }
