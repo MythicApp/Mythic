@@ -103,7 +103,8 @@ struct InstallViewEvo: View {
                     }
                 )
             }
-            .onDisappear {
+            .onChange(of: isPresented) { _, newValue in // don't use .onDisappear, it interferes with runningcommands' task handling
+                guard !newValue else { return }
                 Task { @MainActor in
                     await Legendary.RunningCommands.shared.stop(id: "parseOptionalPacks")
                 }
