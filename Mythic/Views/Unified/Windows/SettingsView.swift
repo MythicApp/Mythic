@@ -388,6 +388,21 @@ struct SettingsView: View {
                         .formStyle(.grouped)
                     }
 
+                    Tab("Updates", systemImage: "arrow.down.app") {
+                        Form {
+                            Section("Mythic", isExpanded: $isUpdatesMythicSectionExpanded) {
+                                mythicUpdateSettings
+                            }
+
+                            Section("Mythic Engine", isExpanded: $isUpdatesEngineSectionExpanded) {
+                                engineUpdateStreamPicker
+
+                                engineUpdateCheckerToggle
+                            }
+                        }
+                        .formStyle(.grouped)
+                    }
+
                     Tab("Services", systemImage: "app.connected.to.app.below.fill") {
                         Form {
                             Section("Discord", isExpanded: $isServicesDiscordSectionExpanded) {
@@ -433,21 +448,6 @@ struct SettingsView: View {
                             Engine.NotInstalledView()
                                 .padding()
                         }
-                    }
-
-                    Tab("Updates", systemImage: "arrow.down.app") {
-                        Form {
-                            Section("Mythic", isExpanded: $isUpdatesMythicSectionExpanded) {
-                                mythicUpdateSettings
-                            }
-
-                            Section("Mythic Engine", isExpanded: $isUpdatesEngineSectionExpanded) {
-                                engineUpdateStreamPicker
-
-                                engineUpdateCheckerToggle
-                            }
-                        }
-                        .formStyle(.grouped)
                     }
                 }
                 // .tabViewStyle(.sidebarAdaptable) // FIXME: SwiftUI opens settings as a different type of window leading to this having displaced UI elements
