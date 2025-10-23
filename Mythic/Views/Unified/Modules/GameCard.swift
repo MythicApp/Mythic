@@ -253,7 +253,7 @@ extension GameCard {
                                     guard url.startAccessingSecurityScopedResource() else { return }
                                     defer { url.stopAccessingSecurityScopedResource() }
 
-                                    let thumbnailDirectoryURL: URL = Bundle.appHome!.appending(path: "Thumbnails/Custom")
+                                    let thumbnailDirectoryURL: URL = Bundle.appHome!.appending(path: "Thumbnails/Custom/\(game.source.rawValue)")
 
                                     do {
                                         if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
@@ -266,11 +266,15 @@ extension GameCard {
                                         imageURLString = newThumbnailURL.absoluteString // game.path is not stateful, so i'll have to update it as a string
                                     } catch {
                                         Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
-                                        thumbnailImportError = error
-                                        isThumbnailImportErrorPresented = true
+                                        presentThumbnailImportError(error)
                                     }
                                 case .failure(let failure):
-                                    thumbnailImportError = failure
+                                    presentThumbnailImportError(failure)
+                                }
+
+                                @MainActor
+                                func presentThumbnailImportError(_ error: Error) {
+                                    thumbnailImportError = error
                                     isThumbnailImportErrorPresented = true
                                 }
                             }
