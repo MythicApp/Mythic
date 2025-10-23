@@ -402,14 +402,22 @@ final class Legendary {
 
         arguments.append(contentsOf: ["--"] + game.launchArguments)
 
-        _ = try await execute(arguments: arguments, environment: environmentVariables)
+        Task(priority: .userInitiated) {
+            _ = try await execute(
+                arguments: arguments,
+                environment: environmentVariables
+            )
+        }
 
         if defaults.bool(forKey: "minimiseOnGameLaunch") {
             await NSApp.windows.first?.miniaturize(nil)
         }
 
-        Task { @MainActor in
-            withAnimation { GameOperation.shared.launching = nil }
+
+        await MainActor.run {
+            withAnimation {
+                GameOperation.shared.launching = nil
+            }
         }
     }
 

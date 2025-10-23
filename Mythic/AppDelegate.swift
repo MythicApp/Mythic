@@ -242,7 +242,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
         Task { await Legendary.RunningCommands.shared.stopAll() }
-
         Task { try? await Legendary.execute(arguments: ["cleanup"]) }
     }
 }
