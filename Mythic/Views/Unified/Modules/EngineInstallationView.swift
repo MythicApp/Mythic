@@ -97,17 +97,23 @@ extension EngineInstallationView {
                 do {
                     try await Engine.install(
                         downloadHandler: { progress in
-                            // TODO: test if progress is directly stateful when assigned to; pseudo: @State downloadProgress = progress
-                            guard progress.fractionCompleted != 1, // FIXME: dirtyfix for fractioncompleted reaching 1 upon failure, invalidating the alert presentation
-                                  !isInstallationErrorAlertPresented else {
-                                return
+                            Task {
+                                await MainActor.run {
+                                    // TODO: test if progress is directly stateful when assigned to; pseudo: @State downloadProgress = progress
+                                    guard progress.fractionCompleted != 1, // FIXME: dirtyfix for fractioncompleted reaching 1 upon failure, invalidating the alert presentation
+                                          !isInstallationErrorAlertPresented else {
+                                        return
+                                    }
+                                    downloadFractionCompleted = progress.fractionCompleted
+                                }
                             }
-                            downloadFractionCompleted = progress.fractionCompleted
                         },
                         installHandler: { complete in
                             if complete {
-                                Task { @MainActor in
-                                    viewModel.stepStage()
+                                Task {
+                                    await MainActor.run {
+                                        viewModel.stepStage()
+                                    }
                                 }
                             }
                         }

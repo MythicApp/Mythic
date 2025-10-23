@@ -92,18 +92,28 @@ struct UninstallViewEvo: View {
                                                 let errorLine = chunk.output.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
                                                 // swiftlint:disable:previous force_try
                                                 guard !errorLine.contains("OSError(66, 'Directory not empty')") || !errorLine.contains("please remove manually") else {
-                                                    if let gamePath = game.path { try? files.removeItem(atPath: gamePath) }
+                                                    Task {
+                                                        await MainActor.run {
+                                                            if let gamePath = game.path {
+                                                                try? files.removeItem(atPath: gamePath)
+                                                            }
+                                                        }
+                                                    }
                                                     return nil
                                                 }
 
-                                                uninstallationErrorReason = String(errorLine)
-                                                isUninstallationErrorPresented = true
+                                                Task { @MainActor in
+                                                    uninstallationErrorReason = String(errorLine)
+                                                    isUninstallationErrorPresented = true
+                                                }
                                             }
 
                                             return nil
                                         }
                                     )
-                                    
+
+                                    try await consumer.value
+
                                     withAnimation { uninstalling = false }
                                 }
                             case .local:

@@ -34,16 +34,20 @@ struct MythicApp: App {
             Group {
                 if isOnboardingPresented {
                     OnboardingView()
-                        .task(priority: .high) { @MainActor in
-                            NSApp.mainWindow?.isImmersive = true
+                        .task(priority: .high) {
+                            await MainActor.run {
+                                NSApp.mainWindow?.isImmersive = true
+                            }
                         }
                 } else {
                     ContentView()
                         .environmentObject(networkMonitor)
                         .environmentObject(sparkleController)
 
-                        .task(priority: .high) { @MainActor in
-                            NSApp.mainWindow?.isImmersive = false
+                        .task(priority: .high) {
+                            await MainActor.run {
+                                NSApp.mainWindow?.isImmersive = false
+                            }
                         }
                 }
             }

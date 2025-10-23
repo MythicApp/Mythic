@@ -54,13 +54,15 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
         Migrator.migrateEpicFolderNaming()
 
-        // MARK: Start metadata update cycle for Epic games.
+        // MARK: Start metadata update cycle for Epic Games.
 
-        Task(priority: .utility) {
+        Task(priority: .utility) { @MainActor in
             Legendary.updateMetadata()
 
             Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { _ in
-                Legendary.updateMetadata()
+                Task(priority: .utility) { @MainActor in
+                    Legendary.updateMetadata()
+                }
             }
         }
 

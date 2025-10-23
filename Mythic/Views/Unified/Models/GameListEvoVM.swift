@@ -41,8 +41,10 @@ final class GameListVM: ObservableObject {
     var refreshFlag: Bool = false
     @Published var filterOptions: FilterOptions = .init() {
         didSet {
-            Task { @MainActor in
-                updateGames()
+            Task {
+                await MainActor.run {
+                    updateGames()
+                }
             }
         }
     }
@@ -53,8 +55,10 @@ final class GameListVM: ObservableObject {
     private var isSorted = false
 
     private init() {
-        Task { @MainActor in
-            updateGames()
+        Task {
+            await MainActor.run {
+                updateGames()
+            }
         }
     }
 
@@ -62,9 +66,7 @@ final class GameListVM: ObservableObject {
         debounceTask?.cancel()
         debounceTask = Task { @MainActor in
             try? await Task.sleep(for: .milliseconds(300))
-            if !Task.isCancelled {
-                updateGames()
-            }
+            if !Task.isCancelled { updateGames() }
         }
     }
 

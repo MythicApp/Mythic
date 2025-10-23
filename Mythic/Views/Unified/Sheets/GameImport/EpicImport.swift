@@ -218,7 +218,7 @@ extension GameImportView {
             withAnimation { isOperating = true }
 
             Task { @MainActor in
-                let consumer = await Legendary.executeStreamed(
+                await Legendary.executeStreamed(
                     identifier: "epicImport",
                     arguments: [
                         "import",
@@ -233,13 +233,15 @@ extension GameImportView {
                         game.id, path
                     ].compactMap { $0 },
                     onChunk: { chunk in
-                        Task { @MainActor in
-                            if case .standardOutput = chunk.stream, chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
-                                isPresented = false
-                            } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output) {
-                                withAnimation { isOperating = false }
-                                errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
-                                isErrorAlertPresented = true
+                        Task {
+                            await MainActor.run {
+                                if case .standardOutput = chunk.stream, chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
+                                    isPresented = false
+                                } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output) {
+                                    withAnimation { isOperating = false }
+                                    errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
+                                    isErrorAlertPresented = true
+                                }
                             }
                         }
 

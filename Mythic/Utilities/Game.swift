@@ -354,13 +354,17 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     static func advance() {
         log.debug("[operation.advance] attempting operation advancement")
         guard shared.current == nil, let first = shared.queue.first else { return }
-        Task { @MainActor in
-            shared.status = InstallStatus()
+        Task {
+            await MainActor.run {
+                shared.status = InstallStatus()
+            }
         }
         log.debug("[operation.advance] queuing configuration can advance, no active downloads, game present in queue")
-        Task { @MainActor in
-            shared.current = first; shared.queue.removeFirst()
-            log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.game.title))")
+        Task {
+            await MainActor.run {
+                shared.current = first; shared.queue.removeFirst()
+                log.debug("[operation.advance] queuing configuration advanced. current game will now begin installation. (\(shared.current!.game.title))")
+            }
         }
     }
     
@@ -383,8 +387,10 @@ class GameOperation: ObservableObject, @unchecked Sendable {
 
         GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
 
-        Task { @MainActor in
-            GameOperation.shared.runningGameIDs.insert(game.id)
+        Task {
+            await MainActor.run {
+                GameOperation.shared.runningGameIDs.insert(game.id)
+            }
         }
 
         discordRPC.setPresence({
@@ -417,8 +423,10 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             }()
             
             if !isRunning {
-                Task { @MainActor in
-                    GameOperation.shared.runningGameIDs.remove(game.id)
+                Task {
+                    await MainActor.run {
+                        GameOperation.shared.runningGameIDs.remove(game.id)
+                    }
                 }
 
                 isOpen = false

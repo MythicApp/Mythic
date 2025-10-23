@@ -104,8 +104,10 @@ extension RosettaInstallationView {
                         try await Rosetta.install(
                             agreeToSLA: agreedToSLA,
                             percentageCompletion: { progress in
-                                Task { @MainActor in
-                                    percentageCompletion = progress
+                                Task {
+                                    await MainActor.run {
+                                        percentageCompletion = progress
+                                    }
                                 }
                             }
                         )

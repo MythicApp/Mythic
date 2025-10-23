@@ -370,8 +370,10 @@ extension GameSettingsView {
         
         func modifyThumbnailURL() {
             game.imageURL = URL(string: newImageURLString) ?? nil
-            Task { @MainActor in
-                isPresented = false
+            Task {
+                await MainActor.run {
+                    isPresented = false
+                }
             }
         }
         

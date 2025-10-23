@@ -168,22 +168,34 @@ struct ContainerConfigurationView: View {
                     .disabled(uninstallerActive)
 
                     Button("Launch Configurator") {
-                        Task { try await Wine.run(arguments: ["winecfg"], containerURL: container.url) }
-                        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            Task(priority: .background) { @MainActor in
-                                configuratorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "winecfg.exe" })) ?? false
-                                // if !configuratorActive { timer.invalidate() } FIXME: swift 6
+                        let containerURL = container.url
+
+                        Task {
+                            try await Wine.run(arguments: ["winecfg"], containerURL: containerURL)
+
+                            while true {
+                                let active = (try? await Wine.tasklist(containerURL: containerURL)
+                                    .contains(where: { $0.name == "winecfg.exe" })) ?? false
+                                await MainActor.run { configuratorActive = active }
+                                if !active { break }
+                                try await Task.sleep(for: .seconds(1))
                             }
                         }
                     }
                     .disabled(configuratorActive)
                     
                     Button("Launch Registry Editor") {
-                        Task { try await Wine.run(arguments: ["regedit"], containerURL: container.url) }
-                        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                            Task(priority: .background) { @MainActor in
-                                registryEditorActive = (try? await Wine.tasklist(containerURL: container.url).contains(where: { $0.name == "regedit.exe" })) ?? false
-                                // if !registryEditorActive { timer.invalidate() } FIXME: swift 6
+                        let containerURL = container.url
+
+                        Task {
+                            try await Wine.run(arguments: ["regedit"], containerURL: containerURL)
+
+                            while true {
+                                let active = (try? await Wine.tasklist(containerURL: containerURL)
+                                    .contains(where: { $0.name == "regedit.exe" })) ?? false
+                                await MainActor.run { registryEditorActive = active }
+                                if !active { break }
+                                try await Task.sleep(for: .seconds(1))
                             }
                         }
                     }

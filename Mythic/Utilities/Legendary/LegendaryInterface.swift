@@ -230,7 +230,11 @@ final class Legendary {
                 }
 
                 if chunk.output.contains("All done! Download manager quitting...") {
-                    Task { @MainActor in GameOperation.shared.current = nil }
+                    Task {
+                        await MainActor.run {
+                            GameOperation.shared.current = nil
+                        }
+                    }
                 }
 
                 if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),

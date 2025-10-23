@@ -52,8 +52,10 @@ struct InstallViewEvo: View {
                             let sizeString = match[1].substring ?? ""
                             let sizeValue = Double(sizeString) ?? 0.0
 
-                            Task { @MainActor in
-                                installSize = sizeValue
+                            Task {
+                                await MainActor.run {
+                                    installSize = sizeValue
+                                }
                             }
                         }
                     }
@@ -67,8 +69,10 @@ struct InstallViewEvo: View {
                                 let name = String(match["name"]?.substring ?? "")
 
                                 _ = withAnimation {
-                                    Task { @MainActor in
-                                        optionalPacks.updateValue(name, forKey: id)
+                                    Task {
+                                        await MainActor.run {
+                                            optionalPacks.updateValue(name, forKey: id)
+                                        }
                                     }
                                 }
                             }
