@@ -33,8 +33,6 @@ final class Engine {
     
     static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
     
-    private static let lock = NSLock() // unused
-    
     /// The directory where Mythic Engine is installed.
     static let directory = Bundle.appHome!.appending(path: "Engine")
     
@@ -189,10 +187,7 @@ final class Engine {
     
     /// Removes Mythic Engine.
     static func remove() throws {
-        defer { lock.unlock() }
         guard exists else { throw NotInstalledError() }
-        
-        lock.lock()
         try files.removeItem(at: directory)
     }
 }
