@@ -38,7 +38,7 @@ extension Legendary {
 
     /// Error when legendary is signed out on a command that enforces signin.
     struct NotSignedInError: LocalizedError {
-        var errorDescription: String? = "You aren't signed in to epic games."
+        var errorDescription: String? = "You aren't signed in to Epic Games."
     }
 
     struct SignInError: LocalizedError {
