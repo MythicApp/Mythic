@@ -196,7 +196,7 @@ extension GameCard {
         var withBlur: Bool = true
 
         var body: some View {
-            if case .local = game.source, game.imageURL == nil {
+            if case .local = game.source {
                 let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
 
                 ZStack {
