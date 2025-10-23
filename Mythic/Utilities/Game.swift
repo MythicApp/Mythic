@@ -59,12 +59,12 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     private var _platform: Platform?
     var platform: Platform? {
         get {
-            return _platform ?? {
+            return {
                 switch self.source {
                 case .epic:
                     return try? Legendary.getGamePlatform(game: self)
                 case .local:
-                    return nil
+                    return _platform
                 }
             }()
         }
@@ -136,12 +136,12 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     private var _path: String?
     var path: String? {
         get {
-            return _path ?? {
+            return {
                 switch self.source {
                 case .epic:
                     return try? Legendary.getGamePath(game: self)
                 case .local:
-                    return nil
+                    return _path
                 }
             }()
         }
