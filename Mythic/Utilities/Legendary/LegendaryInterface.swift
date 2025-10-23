@@ -40,72 +40,49 @@ final class Legendary {
 
     // Minimal registry for running consumer tasks (cancel stops process via Process.stream cancellation)
     actor RunningCommands {
-        static let shared = RunningCommands() // singleton
+        static let shared = RunningCommands()
 
         private var tasks: [String: Task<Void, Error>] = [:]
-        private var pendingCancel: Set<String> = []   // keep pending stop requests
 
         func set(id: String, task: Task<Void, Error>) {
-            log.debug("set task for id: \(id)")
-            // If a stop was requested before registration, cancel immediately and do not store.
-            if pendingCancel.remove(id) != nil {
-                log.debug("task termination requested before registering, cancelling immediately")
-                task.cancel()
-                return
-            }
+            print("[t] added task id \(id)")
             tasks[id] = task
         }
 
-        func remove(id: String) {
-            tasks[id] = nil
-            pendingCancel.remove(id) // also clear any stale pending for this id
-        }
-
-        func clearPending(id: String) {
-            pendingCancel.remove(id)
+        fileprivate func remove(id: String) {
+            tasks.removeValue(forKey: id)
         }
 
         func stop(id: String) {
-            log.debug("stop task for id: \(id)")
+            print("[t] stop sent to id \(id)")
             if let task = tasks[id] {
+                print("[t] task found")
                 task.cancel()
-                tasks.removeValue(forKey: id)
-                log.debug("task cancellation result \(task.isCancelled)")
+                remove(id: id)
+                print("[t] task cancelled? \(task.isCancelled)")
             } else {
-                log.debug("task not found")
-                // Not yet registered — queue cancellation so the next set() cancels immediately
-                let inserted = pendingCancel.insert(id).inserted
-                log.debug("\(inserted ? "" : " already")queued pending cancel for id \(id)")
+                print("[t] task not found (no-op)")
             }
         }
 
         func stopAll() {
             tasks.values.forEach { $0.cancel() }
             tasks.removeAll()
-            pendingCancel.removeAll()
+            print("[t] stopAll: cancelled all")
         }
     }
-
-
-
-
-    // MARK: - Helpers
 
     private static var legendaryExecutableURL: URL {
         URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
     }
 
-    /// Inherit full environment and add LEGENDARY_CONFIG_PATH plus extras.
     private static func buildEnvironment(withAdditionalFlags environment: [String: String]?) -> [String: String] {
         var constructedEnvironment: [String: String] = .init()
-
         constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configLocation
-
         constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
         return constructedEnvironment
     }
 
-    /// Adds `--offline` when Epic is not accessible, read on the main actor.
     @MainActor
     private static func applyOfflineFlagIfNeeded(_ args: [String]) -> [String] {
         var out = args
@@ -115,7 +92,6 @@ final class Legendary {
         return out
     }
 
-    /// Asynchronously executes a process, and concurrently collects stdout and stderr.
     @discardableResult
     static func execute(
         arguments: [String],
@@ -131,10 +107,7 @@ final class Legendary {
         )
     }
 
-    // MARK: - Unified streaming API
-
-    /// Identical parameters to Process.stream: returns a stream; caller controls consumption/cancellation.
-    /// Note: caller should add "--offline" themselves if needed (or use `startStream(identifier:...)` which applies it).
+    // Build Process.stream (no registration here; the consumer Task handles it)
     private static func startStream(
         arguments: [String],
         environment: [String: String]? = nil,
@@ -151,8 +124,8 @@ final class Legendary {
         )
     }
 
-    /// Convenience: start consuming a stream under an identifier, so you can stop it later.
-    /// Cancelling the consumer task triggers Process.stream cancellation, which terminates the child.
+    // Create and REGISTER the consumer Task immediately; inside it, do the awaits and drain the stream.
+    // This removes the need for pending cancels or session tokens.
     @discardableResult
     static func executeStreamed(
         identifier: String,
@@ -161,18 +134,29 @@ final class Legendary {
         currentDirectoryURL: URL? = nil,
         onChunk: @Sendable @escaping (Process.OutputChunk) -> String?
     ) async -> Task<Void, Error> {
-        let args = await applyOfflineFlagIfNeeded(arguments)
-        let stream = startStream(
-            arguments: args,
-            environment: environment,
-            currentDirectoryURL: currentDirectoryURL,
-            onChunk: onChunk
-        )
         let consumer = Task {
-            for try await _ in stream {
-                // use onChunk!
+            let args = await applyOfflineFlagIfNeeded(arguments)
+            let stream = startStream(
+                arguments: args,
+                environment: environment,
+                currentDirectoryURL: currentDirectoryURL,
+                onChunk: onChunk
+            )
+
+            do {
+                for try await _ in stream {
+                    // work handled in onChunk
+                }
+            } catch is CancellationError {
+                // expected when cancelled via stop(id:)
+            } catch {
+                throw error
             }
+
+            // clean up tracking after completion/cancellation/error
+            await RunningCommands.shared.remove(id: identifier)
         }
+
         await RunningCommands.shared.set(id: identifier, task: consumer)
         return consumer
     }
@@ -315,7 +299,6 @@ final class Legendary {
 
         // Wait for streaming to finish
         try await consumer.value
-        await RunningCommands.shared.remove(id: "install")
 
         if let err = errorBox.get() {
             throw err

@@ -77,7 +77,7 @@ struct InstallViewEvo: View {
 
                     if chunk.output.contains("Do you wish to install") || chunk.output.contains("Additional packs") {
                         Task { @MainActor in
-                            await Legendary.RunningCommands.shared.remove(id: "parseOptionalPacks")
+                            await Legendary.RunningCommands.shared.stop(id: "parseOptionalPacks")
                         }
                     }
                 }
