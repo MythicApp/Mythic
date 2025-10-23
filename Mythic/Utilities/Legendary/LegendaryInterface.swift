@@ -199,7 +199,7 @@ final class Legendary {
         let optionalPacks = args.optionalPacks
         let gameTitle = args.game.title
 
-        // Thread-safe, @Sendable-friendly error holder to be captured inside onChunk
+        // i dont like you swift 6
         final class ErrorBox: @unchecked Sendable {
             private let lock = NSLock()
             private var storage: Error?
@@ -212,7 +212,6 @@ final class Legendary {
             identifier: "install",
             arguments: argBuilder,
             onChunk: { chunk in
-                // Regexes constructed inside to satisfy Sendable checks.
                 // swiftlint:disable force_try
                 let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
                 let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
@@ -402,22 +401,12 @@ final class Legendary {
 
         arguments.append(contentsOf: ["--"] + game.launchArguments)
 
+        // launch game; fire and forget
         Task(priority: .userInitiated) {
             _ = try await execute(
                 arguments: arguments,
                 environment: environmentVariables
             )
-        }
-
-        if defaults.bool(forKey: "minimiseOnGameLaunch") {
-            await NSApp.windows.first?.miniaturize(nil)
-        }
-
-
-        await MainActor.run {
-            withAnimation {
-                GameOperation.shared.launching = nil
-            }
         }
     }
 
@@ -428,8 +417,14 @@ final class Legendary {
             throw IsNotLegendaryError()
         }
 
-        let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
-        guard let platformString = installedData[game.id]["platform"].string else {
+        let installedData = URL(filePath: "\(configLocation)/installed.json")
+        let data = try Data(contentsOf: installedData)
+
+        guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
+            throw FileLocations.FileDoesNotExistError(installedData)
+        }
+
+        guard let platformString = installedGames[game.id]?["platform"] as? String else {
             throw UnableToRetrieveError()
         }
 

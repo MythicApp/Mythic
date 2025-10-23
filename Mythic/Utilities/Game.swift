@@ -26,7 +26,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id
     }
-
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
@@ -54,7 +54,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     var source: Source
     var title: String
     var id: String
-
+    
     // MARK: Computed Properties
     private var _platform: Platform?
     var platform: Platform? {
@@ -70,13 +70,13 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         }
         set { _platform = newValue }
     }
-
+    
     var isFallbackImageAvailable: Bool {
         // for now, this is the only way a fallback will be available
         // see `GameCard.FallbackImageCard`
         return source == .local
     }
-
+    
     private var _imageURL: URL?
     var imageURL: URL? {
         get {
@@ -106,7 +106,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         }
         set { _wideImageURL = newValue }
     }
-
+    
     private var _path: String?
     var path: String? {
         get {
@@ -133,7 +133,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             if defaults.url(forKey: key) == nil {
                 defaults.set(Wine.containerURLs.first, forKey: key)
             }
-
+            
             return defaults.url(forKey: key)
         }
         set {
@@ -142,7 +142,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             defaults.set(newValue, forKey: key)
         }
     }
-
+    
     var launchArguments: [String] {
         get {
             let key: String = id.appending("_launchArguments")
@@ -173,7 +173,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return true
         }
     }
-
+    
     var needsUpdate: Bool {
         switch self.source {
         case .epic:
@@ -182,7 +182,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return false
         }
     }
-
+    
     var needsVerification: Bool {
         switch self.source {
         case .epic:
@@ -191,11 +191,11 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return false
         }
     }
-
+    
     @MainActor var isInstalling: Bool { GameOperation.shared.current?.game == self }
     @MainActor var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
     @MainActor var isLaunching: Bool { GameOperation.shared.launching == self }
-
+    
     // MARK: Functions
     func move(to newLocation: URL) async throws {
         switch source {
@@ -212,7 +212,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             }
         }
     }
-
+    
     func launch() async throws {
         switch source {
         case .epic:
@@ -221,31 +221,31 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             try await LocalGames.launch(game: self)
         }
     }
-
+    
     /// Enumeration containing the two different game platforms available.
     enum Platform: String, CaseIterable, Codable, Hashable {
         case macOS = "macOS"
         case windows = "Windows®"
     }
-
+    
     /// Enumeration containing all available game types.
     enum Source: String, CaseIterable, Codable, Hashable {
         case epic = "Epic Games"
         case local = "Local"
     }
-
+    
     enum InclusivePlatform: String, CaseIterable {
         case all = "All"
         case macOS = "macOS"
         case windows = "Windows®"
     }
-
+    
     enum InclusiveSource: String, CaseIterable {
         case all = "All"
         case epic = "Epic Games"
         case local = "Local"
     }
-
+    
     enum Compatibility: String, CaseIterable {
         case unplayable = "The game doesn't launch."
         case launchable = "The game launches, but you are unable to play."
@@ -298,18 +298,17 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     // swiftlint:disable:next redundant_optional_initialization
     @Published var current: InstallArguments? = nil {
         didSet {
-            // @ObservedObject var operation: GameOperation = .shared
             guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
             switch GameOperation.shared.current!.game.source {
             case .epic:
                 guard let current = GameOperation.shared.current else { return }
                 let gameTitle = current.game.title
                 let type = current.type.rawValue
-
+                
                 Task(priority: .high) {
                     do {
                         try await Legendary.install(args: current, priority: false)
-
+                        
                         try? await notifications.add(
                             .init(identifier: UUID().uuidString,
                                   content: {
@@ -339,7 +338,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                     
                     GameOperation.advance()
                 }
-            case .local: // this should literally never happen how do you install a local game
+            case .local:
                 GameOperation.advance()
             }
         }
@@ -369,30 +368,67 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     }
     
     @Published var runningGameIDs: Set<String> = .init()
-
-    private func checkIfGameOpen(_ game: Game) async {
-        guard let gamePath = game.path, let gamePlatform = game.platform else { return }
-
-        var isOpen = true
-        defer {
-            discordRPC.setPresence({
-                var presence = RichPresence()
-                presence.details = "Just finished playing \(game.title)"
-                presence.state = "Idle"
-                presence.timestamps.start = .now
-                presence.assets.largeImage = "macos_512x512_2x"
-                return presence
-            }())
+    
+    internal static func isGameRunning(_ game: Game) -> Bool {
+        guard let gamePath = game.path, let gamePlatform = game.platform else { return false }
+        switch gamePlatform {
+        case .macOS:
+            return workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+        case .windows:
+            // hacky but functional
+            let result = try? Process.execute(
+                executableURL: .init(fileURLWithPath: "/bin/bash"),
+                arguments: [
+                    "-c",
+                    "ps aux | grep -i '\(gamePath)' | grep -v grep"
+                ]
+            )
+            return (result?.standardOutput.isEmpty == false)
         }
-
+    }
+    
+    // Wait until the game process appears (or timeout). Returns true if detected.
+    private static func awaitGameLaunch(for game: Game) async -> Bool {
+        for _ in 0..<15 {
+            if isGameRunning(game) {
+                return true
+            }
+            try? await Task.sleep(for: .milliseconds(500))
+        }
+        return false
+    }
+    
+    private func attemptToMonitor(game: Game) async {
+        GameOperation.log.debug("Preparing to monitor game \"\(game.title)\"")
+        
+        let started = await GameOperation.awaitGameLaunch(for: game)
+        
+        // clear the launching val once awaitGameLaunch completed
+        await MainActor.run {
+            withAnimation {
+                GameOperation.shared.launching = nil
+            }
+        }
+        
+        guard started, let gamePlatform = game.platform else {
+            GameOperation.log.debug("Game \"\(game.title)\" did not appear to start; skipping monitor.")
+            return
+        }
+        
+        if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            await MainActor.run {
+                NSApp.windows.first?.miniaturize(nil)
+            }
+        }
+        
         GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
-
+        
         Task {
             await MainActor.run {
                 GameOperation.shared.runningGameIDs.insert(game.id)
             }
         }
-
+        
         discordRPC.setPresence({
             var presence = RichPresence()
             presence.details = "Playing a \(gamePlatform.rawValue) game."
@@ -401,68 +437,60 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             presence.assets.largeImage = "macos_512x512_2x"
             return presence
         }())
-
-        while isOpen {
+        
+        while true {
             GameOperation.log.debug("checking if \"\(game.title)\" is still running")
-            
-            let isRunning = {
-                switch gamePlatform {
-                case .macOS:
-                    return workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath }) // debounce may be necessary because macOS is slow at opening apps
-                case .windows: // hacky but functional
-                    let result = try? Process.execute(
-                        executableURL: .init(fileURLWithPath: "/bin/bash"),
-                        arguments: [
-                            "-c",
-                            "ps aux | grep -i '\(gamePath)' | grep -v grep"
-                        ]
-                    )
-
-                    return (result?.standardOutput.isEmpty == false)
-                }
-            }()
-            
-            if !isRunning {
-                Task {
-                    await MainActor.run {
-                        GameOperation.shared.runningGameIDs.remove(game.id)
-                    }
-                }
-
-                isOpen = false
-            } else {
-                try? await Task.sleep(for: .seconds(3))
+            if !GameOperation.isGameRunning(game) {
+                break
             }
-            
-            GameOperation.log.debug("\"\(game.title)\" \(isRunning ? "is still running" : "has been quit" )")
+            try? await Task.sleep(for: .seconds(3))
         }
+        
+        Task {
+            await MainActor.run {
+                GameOperation.shared.runningGameIDs.remove(game.id)
+            }
+        }
+        
+        discordRPC.setPresence({
+            var presence = RichPresence()
+            presence.details = "Just finished playing \(game.title)"
+            presence.state = "Idle"
+            presence.timestamps.start = .now
+            presence.assets.largeImage = "macos_512x512_2x"
+            return presence
+        }())
+        
+        GameOperation.log.debug("\"\(game.title)\" has been quit")
     }
     
     // swiftlint:disable:next redundant_optional_initialization
     @MainActor
     @Published var launching: Game? = nil {
         didSet {
-            guard launching == nil, let oldValue = oldValue else { return }
-            Task(priority: .background) { await checkIfGameOpen(oldValue) }
+            // When a game is set, start a monitor that waits for start, clears launching, then tracks until exit.
+            if let game = launching {
+                Task(priority: .background) { await attemptToMonitor(game: game) }
+            }
         }
     }
-
+    
     struct InstallArguments: Equatable, Hashable {
         var game: Mythic.Game
-
+        
         /// The target installation's platform.
         var platform: Mythic.Game.Platform
-
+        
         /// The nature of the game modification.
         var type: GameModificationType
-
+        
         // swiftlint:disable redundant_optional_initialization
         /// (Legendary) packs to install along with the base game.
         var optionalPacks: [String]? = nil
-
+        
         /// Custom ``URL`` for the game to install to.
         var baseURL: URL? = nil
-
+        
         /// The absolute folder where the game should be installed to.
         var gameFolder: URL? = nil
         // swiftlint:enable redundant_optional_initialization
@@ -512,7 +540,7 @@ struct GameDoesNotExistError: LocalizedError {
     init(_ game: Mythic.Game) {
         self.game = game
     }
-
+    
     let game: Mythic.Game
     var errorDescription: String? { "The game \"\(game.title)\" doesn't exist." }
 }
