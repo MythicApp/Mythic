@@ -77,7 +77,20 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         return source == .local
     }
     
-    private var _imageURL: URL?
+    private var _imageURL: URL? {
+        get {
+            let key: String = id.appending("_imageURL")
+            return defaults.url(forKey: key)
+        }
+        set {
+            let key: String = id.appending("_imageURL")
+            if let newValue = newValue {
+                defaults.set(newValue, forKey: key)
+            } else {
+                defaults.removeObject(forKey: key)
+            }
+        }
+    }
     var imageURL: URL? {
         get {
             return _imageURL ?? {
@@ -92,7 +105,20 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         set { _imageURL = newValue }
     }
     
-    private var _wideImageURL: URL?
+    private var _wideImageURL: URL? {
+        get {
+            let key: String = id.appending("_wideImageURL")
+            return defaults.url(forKey: key)
+        }
+        set {
+            let key: String = id.appending("_wideImageURL")
+            if let newValue = newValue {
+                defaults.set(newValue, forKey: key)
+            } else {
+                defaults.removeObject(forKey: key)
+            }
+        }
+    }
     var wideImageURL: URL? {
         get {
             return _wideImageURL ?? {
