@@ -35,15 +35,15 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     init(
         source: Source,
         title: String,
-        id: String? = nil,
-        platform: Platform? = nil,
+        id: String = UUID().uuidString,
+        platform: Platform,
         imageURL: URL? = nil,
         wideImageURL: URL? = nil,
-        path: String? = nil
+        path: String
     ) {
         self.source = source
         self.title = title
-        self.id = id ?? UUID().uuidString
+        self.id = id
         self.platform = platform
         self.imageURL = imageURL
         self.wideImageURL = wideImageURL

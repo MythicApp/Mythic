@@ -114,6 +114,6 @@ extension ListGameCard {
 }
 
 #Preview {
-    ListGameCard(game: .constant(.init(source: .local, title: "MRAAAH")))
+    ListGameCard(game: .constant(.init(source: .local, title: "MRAAAH", platform: .macOS, path: "")))
         .environmentObject(NetworkMonitor.shared)
 }

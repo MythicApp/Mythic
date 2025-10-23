@@ -387,9 +387,6 @@ extension GameSettingsView {
                         VStack(alignment: .leading) {
                             GameCard.ImageURLModifierView(game: $game, imageURLString: $newImageURLString)
                                 .onChange(of: newImageURLString, { imageRefreshFlag.toggle() })
-                            
-                            Label("To use the default image, leave the field empty.", systemImage: "info.circle")
-                                .font(.footnote)
                         }
                     }
                     .formStyle(.grouped)
@@ -409,6 +406,6 @@ extension GameSettingsView {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(.init(source: .epic, title: "test123", wideImageURL: .init(string: "https://cdn1.epicgames.com/item/53ec6d9f552241549c4d8aa1a42bcb3b/EGS_DeliverUsMars_KeokeNInteractive_S1_2560x1440-b5b36e7ef7feabf180837cc9d15efdae")!)), isPresented: .constant(true))
+    GameSettingsView(game: .constant(.init(source: .epic, title: "test123", platform: .macOS, wideImageURL: .init(string: "https://cdn1.epicgames.com/item/53ec6d9f552241549c4d8aa1a42bcb3b/EGS_DeliverUsMars_KeokeNInteractive_S1_2560x1440-b5b36e7ef7feabf180837cc9d15efdae")!, path: "")), isPresented: .constant(true))
         .environmentObject(NetworkMonitor.shared)
 }

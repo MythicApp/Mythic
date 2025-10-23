@@ -155,5 +155,5 @@ struct DownloadCard: View {
 }
 
 #Preview {
-    DownloadCard(game: .init(source: .local, title: "test"), style: .prominent)
+    DownloadCard(game: .init(source: .local, title: "test", platform: .macOS, path: ""), style: .prominent)
 }

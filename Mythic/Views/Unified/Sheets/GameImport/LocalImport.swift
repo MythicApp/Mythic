@@ -24,7 +24,7 @@ extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
 
-        @State private var game: Game = .init(source: .local, title: .init())
+        @State private var game: Game = .init(source: .local, title: .init(), platform: .macOS, path: "")
         @State private var imageURLString: String = .init()
         @State private var title: String = .init()
         @State private var platform: Game.Platform = .macOS

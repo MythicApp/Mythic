@@ -287,6 +287,10 @@ extension GameCard {
                             }
 
                     }
+
+                    Button("Reset image to default") {
+                        imageURLString = .init()
+                    }
                 })
                 .truncationMode(.tail)
                 .onChange(of: imageURLString) {
@@ -298,6 +302,6 @@ extension GameCard {
 }
 
 #Preview {
-    GameCard(game: .constant(.init(source: .epic, title: "MRAAAHH")))
+    GameCard(game: .constant(.init(source: .epic, title: "MRAAAHH", platform: .macOS, path: "")))
         .environmentObject(NetworkMonitor.shared)
 }

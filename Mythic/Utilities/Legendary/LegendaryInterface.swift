@@ -412,7 +412,7 @@ final class Legendary {
 
     // MARK: Get Game Platform Method
 
-    static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform {
+    static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform? {
         guard case .epic = game.source else {
             throw IsNotLegendaryError()
         }
@@ -428,11 +428,7 @@ final class Legendary {
             throw UnableToRetrieveError()
         }
 
-        switch platformString {
-        case "Mac": return .macOS
-        case "Windows": return .windows
-        default: throw UnableToRetrieveError()
-        }
+        return matchPlatform(for: platformString)
     }
 
     // MARK: Needs Update Method
@@ -492,9 +488,15 @@ final class Legendary {
             throw FileLocations.FileDoesNotExistError(installedData)
         }
 
-        return installedGames.compactMap { (id, gameInfo) in
-            guard let title = gameInfo["title"] as? String else { return nil }
-            return .init(source: .epic, title: title, id: id)
+        return installedGames.compactMap { (id, gameInfo) -> Mythic.Game? in
+            guard let title = gameInfo["title"] as? String,
+                  let platformString = gameInfo["platform"] as? String,
+                  let platform: Mythic.Game.Platform = matchPlatform(for: platformString),
+                  let installPath = gameInfo["install_path"] as? String else {
+                return nil
+            }
+
+            return .init(source: .epic, title: title, id: id, platform: platform, path: installPath)
         }
     }
 
@@ -515,7 +517,7 @@ final class Legendary {
 
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
-            return .init(source: .epic, title: json["app_title"].stringValue, id: json["app_name"].stringValue)
+            return .init(source: .epic, title: json["app_title"].stringValue, id: json["app_name"].stringValue, platform: .macOS, path: "")
         }
 
         return games.sorted { $0.title < $1.title }
@@ -579,6 +581,17 @@ final class Legendary {
         }()
 
         return keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })
+    }
+
+    static func matchPlatform(for string: String) -> Game.Platform? {
+        switch string {
+        case "Windows":
+            return .windows
+        case "Mac":
+            return .macOS
+        default:
+            return nil
+        }
     }
 
     /**

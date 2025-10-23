@@ -22282,6 +22282,9 @@
         }
       }
     },
+    "Reset image to default" : {
+
+    },
     "Reset Mythic" : {
       "localizations" : {
         "af" : {
@@ -28026,9 +28029,6 @@
 
     },
     "To toggle DXVK, Mythic must quit all games currently running in this container.\nAdditionally, D3DMetal will be disabled.\n\nToggling DXVK may impact compatibility positively or negatively." : {
-
-    },
-    "To use the default image, leave the field empty." : {
 
     },
     "Unable to import thumbnail." : {

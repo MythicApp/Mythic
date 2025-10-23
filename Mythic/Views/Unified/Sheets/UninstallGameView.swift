@@ -157,5 +157,5 @@ struct UninstallViewEvo: View {
 }
 
 #Preview {
-    UninstallViewEvo(game: .constant(.init(source: .local, title: .init())), isPresented: .constant(true))
+    UninstallViewEvo(game: .constant(.init(source: .local, title: .init(), platform: .macOS, path: "")), isPresented: .constant(true))
 }

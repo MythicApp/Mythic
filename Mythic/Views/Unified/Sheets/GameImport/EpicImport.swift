@@ -26,7 +26,7 @@ extension GameImportView {
         @State private var isErrorAlertPresented = false
 
         @State private var installableGames: [Game] = .init()
-        @State private var game: Game = Game(source: .epic, title: .init())
+        @State private var game: Game = Game(source: .epic, title: .init(), platform: .macOS, path: "")
         @State private var path: String = .init()
         @State private var platform: Game.Platform = .macOS
 
@@ -190,12 +190,9 @@ extension GameImportView {
 
         private func fetchSupportedPlatforms(for game: Game) {
             if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
-                supportedPlatforms = fetchedPlatforms.keys.compactMap { key in
-                    switch key {
-                    case "Windows": return .windows
-                    case "Mac": return .macOS
-                    default: return nil
-                    }
+                withAnimation {
+                    supportedPlatforms = fetchedPlatforms.keys
+                        .compactMap { Legendary.matchPlatform(for: $0) }
                 }
                 platform = supportedPlatforms?.first ?? .macOS
             } else {
@@ -209,7 +206,7 @@ extension GameImportView {
                 let games = try? Legendary.getInstallable()
                 guard let games = games, !games.isEmpty else { return }
                 installableGames = games.filter { (try? !Legendary.getInstalledGames().contains($0)) ?? true }
-                game = installableGames.first ?? Game(source: .epic, title: "")
+                game = installableGames.first ?? Game(source: .epic, title: "", platform: .macOS, path: "")
                 withAnimation { isOperating = false }
             }
         }

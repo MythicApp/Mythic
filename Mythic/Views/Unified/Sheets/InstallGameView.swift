@@ -210,18 +210,10 @@ struct InstallViewEvo: View {
             if let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary {
                 withAnimation {
                     supportedPlatforms = fetchedPlatforms.keys
-                        .compactMap { key in
-                            switch key {
-                            case "Windows": return .windows
-                            case "Mac": return .macOS
-                            default: return nil
-                            }
-                        }
+                        .compactMap { Legendary.matchPlatform(for: $0) }
                 }
 
-                if let platforms = supportedPlatforms {
-                    platform = platforms.contains(.macOS) ? .macOS : (supportedPlatforms?.first ?? .windows)
-                }
+                platform = supportedPlatforms?.first ?? .macOS
 
                 if let supportedPlatforms = supportedPlatforms,
                    let firstPlatform = supportedPlatforms.first {
@@ -279,5 +271,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite")), isPresented: .constant(true))
+    InstallViewEvo(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite", platform: .windows, path: "")), isPresented: .constant(true))
 }

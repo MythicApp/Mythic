@@ -99,6 +99,6 @@ struct HarmonyRatingView: View {
         .sheet(isPresented: .constant(true)) {
             HarmonyRatingView(
                 isPresented: .constant(true),
-                game: .constant(.init(source: .epic, title: "poop")))
+                game: .constant(.init(source: .epic, title: "poop", platform: .macOS, path: "")))
         }
 }
