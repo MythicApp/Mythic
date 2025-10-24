@@ -60,10 +60,19 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return containerURLs.compactMap { try? getContainerObject(url: $0) }
     }
 
+    private static func constructEnvironment(containerURL: URL?, withAdditionalFlags environment: [String: String]?) -> [String: String] {
+        var constructedEnvironment: [String: String] = .init()
+        if let containerURL = containerURL {
+            constructedEnvironment["WINEPREFIX"] = containerURL.path
+        }
+        constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
+        return constructedEnvironment
+    }
+
     /// Run a wine command and collect stdout/stderr, returning the result.
     /// Prefer this for most operations that don't require interactive streaming.
     @discardableResult
-    static func run(
+    static func execute(
         arguments: [String],
         containerURL: URL?,
         environment: [String: String]? = nil,
@@ -75,13 +84,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw Engine.NotInstalledError()
         }
 
-        var constructedEnvironment: [String: String] = .init()
-
-        if let containerURL = containerURL {
-            constructedEnvironment["WINEPREFIX"] = containerURL.path
-        }
-
-        constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
+        var constructedEnvironment: [String: String] = constructEnvironment(
+            containerURL: containerURL,
+            withAdditionalFlags: environment
+        )
 
         return try await Process.executeAsync(
             executableURL: Engine.directory.appending(path: "wine/bin/wine64"),
@@ -96,7 +102,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         var list: [Container.Process] = .init()
 
         // Collect output and parse after the process exits
-        let result = try await run(arguments: ["tasklist"], containerURL: url)
+        let result = try await execute(arguments: ["tasklist"], containerURL: url)
         result.standardOutput.enumerateLines { line, _ in
             if let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: line) {
                 var process: Container.Process = .init()
@@ -165,7 +171,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             let newContainer = Container(name: name, url: url, settings: settings)
 
             // Run wineboot and inspect stderr/stdout for the "updated" message.
-            let result = try await run(arguments: ["wineboot"], containerURL: url)
+            let result = try await execute(arguments: ["wineboot"], containerURL: url)
 
             // swiftlint:disable:next force_try
             if result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) {
@@ -256,7 +262,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     private static func addRegistryKey(containerURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard containerExists(at: containerURL) else { throw ContainerDoesNotExistError() }
 
-        let result = try await run(
+        let result = try await execute(
             arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
             containerURL: containerURL
         )
@@ -270,7 +276,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     // MARK: - Query Registry Key Method
     static func queryRegistryKey(containerURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
         do {
-            let result = try await run(
+            let result = try await execute(
                 arguments: ["reg", "query", key, "-v", name],
                 containerURL: containerURL
             )
@@ -325,7 +331,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return try await withCheckedThrowingContinuation { continuation in
             Task {
                 do {
-                    let result = try await run(
+                    let result = try await execute(
                         arguments: ["winecfg", "-v"],
                         containerURL: containerURL
                     )
@@ -344,7 +350,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
     static func setWindowsVersion(containerURL: URL, version: WindowsVersion) async {
         do {
-            let result = try await run(
+            let result = try await execute(
                 arguments: ["winecfg", "-v", String(describing: version)],
                 containerURL: containerURL
             )

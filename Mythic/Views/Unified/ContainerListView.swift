@@ -129,7 +129,7 @@ struct ContainerConfigurationView: View {
                         case .success(let url):
                             Task(priority: .userInitiated) {
                                 do {
-                                    try await Wine.run(
+                                    try await Wine.execute(
                                         arguments: [
                                             url.path(percentEncoded: false)
                                         ],
@@ -163,7 +163,7 @@ struct ContainerConfigurationView: View {
                     .help("Winetricks GUI support is currently broken.")
 
                     Button("Launch Uninstaller") {
-                        Task { try await Wine.run(arguments: ["uninstaller"], containerURL: container.url) }
+                        Task { try await Wine.execute(arguments: ["uninstaller"], containerURL: container.url) }
                     }
                     .disabled(uninstallerActive)
 
@@ -171,7 +171,7 @@ struct ContainerConfigurationView: View {
                         let containerURL = container.url
 
                         Task {
-                            try await Wine.run(arguments: ["winecfg"], containerURL: containerURL)
+                            try await Wine.execute(arguments: ["winecfg"], containerURL: containerURL)
 
                             while true {
                                 let active = (try? await Wine.tasklist(containerURL: containerURL)
@@ -188,7 +188,7 @@ struct ContainerConfigurationView: View {
                         let containerURL = container.url
 
                         Task {
-                            try await Wine.run(arguments: ["regedit"], containerURL: containerURL)
+                            try await Wine.execute(arguments: ["regedit"], containerURL: containerURL)
 
                             while true {
                                 let active = (try? await Wine.tasklist(containerURL: containerURL)

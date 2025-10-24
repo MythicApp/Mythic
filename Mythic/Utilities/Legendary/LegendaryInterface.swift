@@ -76,7 +76,7 @@ final class Legendary {
         URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
     }
 
-    private static func buildEnvironment(withAdditionalFlags environment: [String: String]?) -> [String: String] {
+    private static func constructEnvironment(withAdditionalFlags environment: [String: String]?) -> [String: String] {
         var constructedEnvironment: [String: String] = .init()
         constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configLocation
         constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
@@ -102,7 +102,7 @@ final class Legendary {
         return try await Process.executeAsync(
             executableURL: legendaryExecutableURL,
             arguments: args,
-            environment: buildEnvironment(withAdditionalFlags: environment),
+            environment: constructEnvironment(withAdditionalFlags: environment),
             currentDirectoryURL: currentDirectoryURL
         )
     }
@@ -114,7 +114,7 @@ final class Legendary {
         currentDirectoryURL: URL? = nil,
         onChunk: (@Sendable (Process.OutputChunk) -> String?)? = nil
     ) -> AsyncThrowingStream<Process.OutputChunk, Error> {
-        let env = buildEnvironment(withAdditionalFlags: environment)
+        let env = constructEnvironment(withAdditionalFlags: environment)
         return Process.stream(
             executableURL: legendaryExecutableURL,
             arguments: arguments,

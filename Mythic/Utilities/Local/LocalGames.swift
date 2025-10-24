@@ -99,7 +99,7 @@ final class LocalGames {
                 }
             }
             
-            try await Wine.run(
+            try await Wine.execute(
                 arguments: [game.path!] + game.launchArguments,
                 containerURL: container.url,
                 environment: environmentVariables
