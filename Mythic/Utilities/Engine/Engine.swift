@@ -83,15 +83,13 @@ final class Engine {
 
                     // MARK: unzip
                     let unzipProgress = Progress(totalUnitCount: 100)
-                    var unzipObservation: NSKeyValueObservation?
-                    unzipObservation = unzipProgress.observe(\.fractionCompleted, options: [.new]) { value, _ in
-                        installationProgress.completedUnitCount = Int64(value.fractionCompleted * 50.0) // makes up half of the total unit count
+                    let unzipObservation = unzipProgress.observe(\.fractionCompleted, options: [.new]) { value, _ in
+                        installationProgress.completedUnitCount = Int64(value.fractionCompleted * 50.0)
                         continuation.yield(.init(stage: .installing, progress: installationProgress))
                     }
                     try files.unzipItem(at: downloadedFileURL, to: temporaryDirectory, progress: unzipProgress)
                     try? files.removeItem(at: downloadedFileURL)
-                    // release observer, unzip complete
-                    unzipObservation = nil
+                    unzipObservation.invalidate() // release observer, unzip complete
 
                     // MARK: extraction
                     // within the zipball lies the (tar + xz) file, created by the actual action, called Engine.txz
@@ -128,7 +126,7 @@ final class Engine {
                     
                     continuation.yield(.init(stage: .downloading, progress: downloadTask.progress))
                     log.debug("[Engine — Download] \(downloadTask.progress.fractionCompleted * 100)% complete")
-                    try? await Task.sleep(for: .milliseconds(500))
+                    try? await Task.sleep(for: .milliseconds(250))
                 }
             }
 
