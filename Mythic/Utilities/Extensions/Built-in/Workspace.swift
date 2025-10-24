@@ -24,7 +24,7 @@ extension NSWorkspace {
         
         let machine = withUnsafePointer(to: &sysinfo.machine) {
             $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                String(validatingUTF8: $0)
+                String(validatingCString: $0)
             }
         }
         
