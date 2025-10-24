@@ -84,15 +84,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw Engine.NotInstalledError()
         }
 
-        var constructedEnvironment: [String: String] = constructEnvironment(
-            containerURL: containerURL,
-            withAdditionalFlags: environment
-        )
-
         return try await Process.executeAsync(
             executableURL: Engine.directory.appending(path: "wine/bin/wine64"),
             arguments: arguments,
-            environment: constructedEnvironment,
+            environment: constructEnvironment(
+                containerURL: containerURL,
+                withAdditionalFlags: environment
+            ),
             currentDirectoryURL: currentDirectoryURL
         )
     }
