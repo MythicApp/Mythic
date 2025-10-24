@@ -67,6 +67,13 @@ import Shimmer
                                 }
                             }
                             .symbolVariant(.fill)
+                            .customTransform { view in
+                                if #unavailable(macOS 26.0) {
+                                    view.foregroundStyle(.black)
+                                } else {
+                                    view
+                                }
+                            }
                         }
                     }
                     .disabled(game.isLaunching)
@@ -318,6 +325,14 @@ import Shimmer
                 .sheet(isPresented: $isGameSettingsSheetPresented) {
                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
                         .frame(width: 700, height: 380)
+                }
+                .customTransform { view in
+                    if #unavailable(macOS 26.0) {
+                        view
+                            .fixedSize()
+                    } else {
+                        view
+                    }
                 }
             }
             .sheet(isPresented: $isUninstallSheetPresented) {

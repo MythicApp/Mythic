@@ -119,7 +119,7 @@ struct ActionButton: View {
                 Image(systemName: isSuccessful ? "checkmark" : "xmark")
                     .task {
                         if autoReset {
-                            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 3) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                                 withAnimation {
                                     successful = nil
                                 }
