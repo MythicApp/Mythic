@@ -31,180 +31,170 @@ final class Engine {
         category: "Engine"
     )
 
+    // TODO: refactor in favour of encoding stream object directly
     static let currentStream: String = defaults.string(forKey: "engineBranch") ?? Stream.stable.rawValue
 
     /// The directory where Mythic Engine is installed.
     static let directory = Bundle.appHome!.appending(path: "Engine")
 
-    /// The file location of Mythic Engine's property list.
-    static let properties = try? Data(contentsOf: directory.appending(path: "properties.plist"))
+    private let plistDecoder: PropertyListDecoder = .init()
+    static let propertyData = try? Data(contentsOf: directory.appending(path: "properties.plist"))
 
-    static var exists: Bool {
-        guard files.fileExists(atPath: directory.path) else { return false }
-        return true
-    }
+    static var exists: Bool { files.fileExists(atPath: directory.path) }
 
-    // TODO: refactor
     static var version: SemanticVersion? {
-        guard exists else { return nil }
-        guard let properties = properties,
-              let version = try? PropertyListDecoder().decode([String: SemanticVersion].self, from: properties)["version"]
-        else {
+        let decoder = PropertyListDecoder()
+        if exists,
+           let properties = propertyData,
+           let decodedProperties = try? decoder.decode([String: SemanticVersion].self, from: properties),
+           let version = decodedProperties["version"] {
+            return version
+        } else {
             log.error("Unable to get installed engine version.")
             return nil
         }
-        return version
     }
 
-    // TODO: refactor -- separate download & install logic, use better methods of tracking progress
-    static func install(
-        downloadHandler: @Sendable @escaping (Progress) -> Void,
-        installHandler: @Sendable @escaping (Bool) -> Void
-    ) async throws {
-        guard workspace.isARM else {
-            // TODO: handle non-ARM case appropriately
-            return
-        }
+    static func install() -> AsyncThrowingStream<InstallProgress, Error> {
+        AsyncThrowingStream { continuation in
+            guard workspace.isARM else { continuation.finish(); return }
 
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            let url = URL(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!
+#if DEBUG
+            let sourceURL: URL = .init(string: "http://dl.getmythic.app/engine/artifacts/test_2.6.0.txz.zip")!
+#else
+            let sourceURL: URL = .init(string: "https://nightly.link/MythicApp/Engine/workflows/build/\(currentStream)/Engine.zip")!
+#endif
 
-            let download = URLSession.shared.downloadTask(with: url) { tempfile, response, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                    return
+            let downloadTask = URLSession.shared.downloadTask(with: sourceURL) { downloadedFileURL, response, error in
+                if let error = error { continuation.finish(throwing: error); return }
+                if let httpResponse = response as? HTTPURLResponse,
+                   !(200...299).contains(httpResponse.statusCode) {
+                    continuation.finish(throwing: URLError(.badServerResponse)); return
                 }
-
-                guard let response = response as? HTTPURLResponse, (200...299).contains(response.statusCode) else {
-                    continuation.resume(throwing: URLError(.badServerResponse))
-                    return
-                }
-
-                guard let tempfile = tempfile else {
-                    continuation.resume(throwing: URLError(.cannotOpenFile))
-                    return
+                guard let downloadedFileURL = downloadedFileURL else {
+                    continuation.finish(throwing: URLError(.unknown)); return
                 }
 
                 do {
-                    installHandler(false)
+                    let temporaryDirectory = try files.createUniqueTemporaryDirectory()
 
-                    let unzipProgress = Progress()
-                    try files.unzipItem(at: tempfile, to: Bundle.appHome!, progress: unzipProgress)
+                    let installationProgress = Progress(totalUnitCount: 100)
+                    continuation.yield(.init(stage: .installing, progress: installationProgress))
 
-                    if unzipProgress.isFinished {
-                        let archive = Bundle.appHome!.appending(path: "Engine.txz")
-                        _ = try Process.execute(
-                            executableURL: .init(fileURLWithPath: "/usr/bin/tar"),
-                            arguments: [
-                                "-xJf",
-                                archive.path(percentEncoded: false),
-                                "-C",
-                                Bundle.appHome!.path(percentEncoded: false)
-                            ]
-                        )
-                        try? files.removeItem(at: archive)
+                    // MARK: unzip
+                    let unzipProgress = Progress(totalUnitCount: 100)
+                    var unzipObservation: NSKeyValueObservation?
+                    unzipObservation = unzipProgress.observe(\.fractionCompleted, options: [.new]) { value, _ in
+                        installationProgress.completedUnitCount = Int64(value.fractionCompleted * 50.0) // makes up half of the total unit count
+                        continuation.yield(.init(stage: .installing, progress: installationProgress))
                     }
+                    try files.unzipItem(at: downloadedFileURL, to: temporaryDirectory, progress: unzipProgress)
+                    try? files.removeItem(at: downloadedFileURL)
+                    // release observer, unzip complete
+                    unzipObservation = nil
 
-                    installHandler(true)
-                    continuation.resume(returning: ())
+                    // MARK: extraction
+                    // within the zipball lies the (tar + xz) file, created by the actual action, called Engine.txz
+                    let archive = temporaryDirectory.appending(path: "Engine.txz")
+
+                    // extract the folder within the tarfile to Mythic's home dir using xz decompression
+                    Task(priority: .userInitiated) {
+                        do {
+                            _ = try await Process.execute(
+                                executableURL: .init(fileURLWithPath: "/usr/bin/tar"),
+                                arguments: ["-xJf", archive.path, "-C", Bundle.appHome!.path]
+                            )
+                            
+                            // mark installationProgress as complete
+                            installationProgress.completedUnitCount = 100
+                            continuation.yield(.init(stage: .installing, progress: installationProgress))
+                            
+                            continuation.finish()
+                        } catch {
+                            continuation.finish(throwing: error)
+                        }
+                    }
                 } catch {
-                    continuation.resume(throwing: error)
+                    continuation.finish(throwing: error)
                 }
             }
 
             Task(priority: .utility) {
-                var debounce = false
                 while true {
-                    downloadHandler(download.progress)
-                    log.debug("[engine] [download] \(download.progress.fractionCompleted * 100)% complete")
-                    try? await Task.sleep(for: .seconds(0.5))
-                    if download.progress.isFinished {
-                        if !debounce { debounce = true } else { break }
+                    guard !(downloadTask.progress.isCancelled || downloadTask.progress.isFinished) else {
+                        continuation.yield(.init(stage: .downloading, progress: downloadTask.progress))
+                        break
                     }
+                    
+                    continuation.yield(.init(stage: .downloading, progress: downloadTask.progress))
+                    log.debug("[Engine — Download] \(downloadTask.progress.fractionCompleted * 100)% complete")
+                    try? await Task.sleep(for: .milliseconds(500))
                 }
             }
 
-            download.resume()
-        }
-    }
-
-    // MARK: - fetchLatestVersion Method
-    /**
-     Fetches the latest version of Mythic Engine.
-
-     - Returns: The semantic version of the latest libraries.
-     */
-    static func fetchLatestVersion(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> SemanticVersion? {
-        let group = DispatchGroup()
-        var latestVersion: SemanticVersion?
-
-        let task = URLSession.shared.dataTask(with: .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(stream.rawValue)/properties.plist")!) { data, _, error in
-            defer { group.leave() }
-
-            guard error == nil else { log.error("Unable to check for new Engine version: \(error!.localizedDescription)"); return }
-            guard let data = data else { log.error("Fetching latest Engine version returned no data"); return }
-
-            do {
-                latestVersion = try PropertyListDecoder().decode([String: SemanticVersion].self, from: data)["version"]
-            } catch {
-                log.error("Unable to decode upstream Engine version.")
-            }
-        }
-
-        group.enter()
-        task.resume()
-
-        group.wait()
-
-        return latestVersion
-    }
-
-    static func isLatestVersionReadyForDownload(stream: Stream = .init(rawValue: currentStream) ?? .stable) -> Bool? {
-        let group = DispatchGroup()
-        var result: Bool?
-
-        let task = URLSession.shared.dataTask(with: .init(string: "https://api.github.com/repos/MythicApp/Engine/actions/runs")!) { data, _, error in
-            defer { group.leave() }
-
-            guard error == nil else { log.error("Unable to connect to GitHub API, cannot verify if Mythic Engine is ready for download: \(error!.localizedDescription)"); return }
-            guard let data = data else { log.error("GitHub API returned nil data, unable to verify if Mythic Engine is ready for download."); return }
-
-            do {
-                let json = try JSON(data: data)
-                let runs = json["workflow_runs"]
-
-                func isSuccessfulRun(_ run: (key: String, value: JSON)) -> Bool {
-                    guard let branch = run.1["head_branch"].string,
-                          let status = run.1["status"].string,
-                          let conclusion = run.1["conclusion"].string else {
-                        return false
-                    }
-                    return branch == stream.rawValue && status == "completed" && conclusion == "success"
+            // If the consumer drops the stream, stop the download
+            continuation.onTermination = { @Sendable _ in
+                if downloadTask.state == .running {
+                    downloadTask.cancel()
                 }
-
-                let isFirstRunSuccessful = runs.first(where: isSuccessfulRun)
-                result = (isFirstRunSuccessful != nil)
-            } catch {
-                log.error("Unable to verify if Engine has finished cloud-compilation: \(error.localizedDescription)")
             }
 
+            downloadTask.resume()
         }
-
-        group.enter()
-        task.resume()
-
-        group.wait()
-
-        return result
     }
 
-    static func needsUpdate() -> Bool? {
-        guard let latestVersion = fetchLatestVersion(),
-              let currentVersion = version
-        else {
+    static func fetchLatestUpdateVersion(stream: Stream = .init(rawValue: currentStream) ?? .stable) async throws -> SemanticVersion? {
+        let sourceURL: URL = .init(string: "https://raw.githubusercontent.com/MythicApp/Engine/\(stream.rawValue)/properties.plist")!
+        let (data, response) = try await URLSession.shared.data(from: sourceURL)
+
+        if let httpResponse = response as? HTTPURLResponse,
+           !(200...299).contains(httpResponse.statusCode) {
             return nil
         }
-        return latestVersion > currentVersion
+
+        let decoder = PropertyListDecoder()
+        let versionData = try decoder.decode([String: SemanticVersion].self, from: data)
+
+        return versionData["version"]
+    }
+
+    static var isUpdateAvailable: Bool? {
+        get async {
+            guard let latestVersion = try? await fetchLatestUpdateVersion(),
+                  let currentVersion = version
+            else { return nil }
+            return latestVersion > currentVersion
+        }
+    }
+
+    static func checkIfLatestVersionDownloadable(stream: Stream = .init(rawValue: currentStream) ?? .stable) async throws -> Bool? {
+        let sourceURL: URL = .init(string: "https://api.github.com/repos/MythicApp/Engine/actions/runs")!
+        let (data, response) = try await URLSession.shared.data(from: sourceURL)
+
+        if let httpResponse = response as? HTTPURLResponse,
+           !(200...299).contains(httpResponse.statusCode) {
+            return nil
+        }
+
+        let json = try JSON(data: data)
+        let runs = json["workflow_runs"]
+
+        func isRunSuccessful(_ run: (key: String, value: JSON)) -> Bool {
+            guard let status = run.1["status"].string,
+                  let conclusion = run.1["conclusion"].string else {
+                return false
+            }
+
+            return status == "completed" && conclusion == "success"
+        }
+
+        // get the most recent run and check for its success
+        if let firstRun = runs.first(where: { $0.1["head_branch"].string == stream.rawValue }),
+           isRunSuccessful(firstRun) {
+            return true
+        }
+
+        return false
     }
 
     /// Removes Mythic Engine.

@@ -29,6 +29,12 @@ extension FileManager {
         }
     }
 
+    func createUniqueTemporaryDirectory() throws -> URL {
+        let temporaryDirectory = temporaryDirectory.appending(path: "Mythic/\(UUID().uuidString)")
+        try createDirectory(at: temporaryDirectory, withIntermediateDirectories: true, attributes: nil)
+        return temporaryDirectory
+    }
+
     /// An error indicating that force-copying files has failed.
     struct ForceCopyFailedError: LocalizedError {
         var errorDescription: String? = "Failed to force-copy files."

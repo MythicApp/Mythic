@@ -32,8 +32,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
 
-        // MARK: initialize default UserDefaults Values
-
         defaults.register(defaults: [
             "discordRPC": true,
             "engineAutomaticallyChecksForUpdates": true,
@@ -134,62 +132,59 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
-           Engine.needsUpdate() == true,
-           Engine.isLatestVersionReadyForDownload() == true {
-            let alert = NSAlert()
-            if let currentEngineVersion = Engine.version,
-               let latestEngineVersion = Engine.fetchLatestVersion()
-            {
-                alert.messageText = "Mythic Engine update available. (\(currentEngineVersion) → \(latestEngineVersion))"
-            } else {
-                alert.messageText = "Mythic Engine update available."
-            }
+        Task(priority: .utility) {
+            if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
+               await Engine.isUpdateAvailable == true,
+               (try? await Engine.checkIfLatestVersionDownloadable()) == true {
+                let alert = NSAlert()
+                if let currentEngineVersion = Engine.version,
+                   let latestEngineVersion = try? await Engine.fetchLatestUpdateVersion()
+                {
+                    alert.messageText = "Mythic Engine update available. (\(currentEngineVersion) → \(latestEngineVersion))"
+                } else {
+                    alert.messageText = "Mythic Engine update available."
+                }
 
-            alert.informativeText = """
-            A new version of Mythic Engine has released.
-            You're currently using \(Engine.version?.description ?? "an unknown version").
-            """
-            alert.addButton(withTitle: "Update")
-            alert.addButton(withTitle: "Cancel")
+                alert.informativeText = """
+                    A new version of Mythic Engine has released.
+                    You're currently using \(Engine.version?.description ?? "an unknown version").
+                    """
 
-            if let window = NSApp.windows.first {
-                alert.beginSheetModal(for: window) { response in
-                    if case .alertFirstButtonReturn = response {
-                        let confirmation = NSAlert()
-                        confirmation.messageText = "Are you sure you want to update now?"
-                        confirmation.informativeText = """
-                        This will remove the current version of Mythic Engine.
-                        The latest version will be installed the next time you attempt to launch a Windows® game.
-                        """
-                        confirmation.addButton(withTitle: "Update")
-                        confirmation.addButton(withTitle: "Cancel")
+                alert.addButton(withTitle: "Update")
+                alert.addButton(withTitle: "Cancel")
 
-                        confirmation.beginSheetModal(for: window) { response in
-                            if case .alertFirstButtonReturn = response {
-                                do {
-                                    try Engine.remove()
-                                    let alert = NSAlert()
-                                    alert.alertStyle = .informational
-                                    alert.messageText = "Successfully removed Mythic Engine."
-                                    alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
-                                    alert.addButton(withTitle: "OK")
+                if let window = NSApp.windows.first {
+                    alert.beginSheetModal(for: window) { response in
+                        if case .alertFirstButtonReturn = response {
+                            let confirmation = NSAlert()
+                            confirmation.messageText = "Are you sure you want to update now?"
 
-                                    alert.beginSheetModal(for: window) { response in
-                                        if case .OK = response {
-                                            // exit(1) // literally why would it exit if you remove engine smh
-                                        }
-                                    }
-                                } catch {
-                                    let error = NSAlert()
-                                    error.alertStyle = .critical
-                                    error.messageText = "Unable to remove Mythic Engine."
-                                    error.addButton(withTitle: "Quit")
+                            confirmation.informativeText = """
+                                This will remove the current version of Mythic Engine.
+                                The latest version will be installed the next time you attempt to launch a Windows® game.
+                                """
 
-                                    error.beginSheetModal(for: window) { response in
-                                        if case .OK = response {
+                            confirmation.addButton(withTitle: "Update")
+                            confirmation.addButton(withTitle: "Cancel")
 
-                                        }
+                            confirmation.beginSheetModal(for: window) { response in
+                                if case .alertFirstButtonReturn = response {
+                                    do {
+                                        try Engine.remove()
+                                        let alert = NSAlert()
+                                        alert.alertStyle = .informational
+                                        alert.messageText = "Successfully removed Mythic Engine."
+                                        alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
+                                        alert.addButton(withTitle: "OK")
+
+                                        alert.beginSheetModal(for: window)
+                                    } catch {
+                                        let error = NSAlert()
+                                        error.alertStyle = .critical
+                                        error.messageText = "Unable to remove Mythic Engine."
+                                        error.addButton(withTitle: "OK")
+
+                                        error.beginSheetModal(for: window)
                                     }
                                 }
                             }

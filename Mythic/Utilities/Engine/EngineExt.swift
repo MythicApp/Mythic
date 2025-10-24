@@ -17,6 +17,16 @@
 import Foundation
 
 extension Engine {
+    enum InstallStage {
+        case downloading
+        case installing
+    }
+
+    struct InstallProgress {
+        var stage: InstallStage
+        var progress: Progress
+    }
+
     enum Stream: String {
         case stable = "7.7"
         case staging = "staging"

@@ -13,19 +13,19 @@ struct EngineInstallationView: View { // similar to RosettaInstallationView
     @Binding var isPresented: Bool
     @Binding var installationError: Error?
     @Binding var installationComplete: Bool
-
+    
 #if DEBUG
     @StateObject var viewModel: ViewModel = .init(initialStage: .installer)
 #else
     @ObservedObject var viewModel: ViewModel = .init()
 #endif
-
+    
     var body: some View {
         VStack {
             Text("Install Mythic Engine")
                 .font(.title.bold())
                 .padding(.bottom)
-
+            
             Group {
                 switch viewModel.currentStage {
                 case .disclaimer:
@@ -41,7 +41,7 @@ struct EngineInstallationView: View { // similar to RosettaInstallationView
                     CompletionView(isPresented: $isPresented, viewModel: viewModel)
                 }
             }
-
+            
             if viewModel.currentStage != .installer && viewModel.currentStage != .finished {
                 // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                 Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
@@ -66,17 +66,18 @@ extension EngineInstallationView {
             .multilineTextAlignment(.center)
         }
     }
-
+    
     struct InstallationView: View {
         @Binding var isPresented: Bool
         @ObservedObject var viewModel: ViewModel
-
+        
         @Binding var installationError: Error?
         @Binding var installationComplete: Bool
-
+        
         @State private var downloadFractionCompleted: Double = 0.0
+        @State private var installFractionCompleted: Double = 0.0
         @State private var isInstallationErrorAlertPresented: Bool = false
-
+        
         var body: some View {
             Group {
                 if downloadFractionCompleted < 1.0 {
@@ -85,7 +86,7 @@ extension EngineInstallationView {
                         .progressViewStyle(.linear)
                 } else {
                     Text("Installing Mythic Engine...")
-                    ProgressView()
+                    ProgressView(value: installFractionCompleted)
                         .progressViewStyle(.linear)
                 }
             }
@@ -93,31 +94,16 @@ extension EngineInstallationView {
                 guard !Engine.exists else {
                     viewModel.stepStage(); return
                 }
-
+                
                 do {
-                    try await Engine.install(
-                        downloadHandler: { progress in
-                            Task {
-                                await MainActor.run {
-                                    // TODO: test if progress is directly stateful when assigned to; pseudo: @State downloadProgress = progress
-                                    guard progress.fractionCompleted != 1, // FIXME: dirtyfix for fractioncompleted reaching 1 upon failure, invalidating the alert presentation
-                                          !isInstallationErrorAlertPresented else {
-                                        return
-                                    }
-                                    downloadFractionCompleted = progress.fractionCompleted
-                                }
-                            }
-                        },
-                        installHandler: { complete in
-                            if complete {
-                                Task {
-                                    await MainActor.run {
-                                        viewModel.stepStage()
-                                    }
-                                }
-                            }
+                    for try await installation in Engine.install() {
+                        switch installation.stage {
+                        case .downloading:
+                            downloadFractionCompleted = installation.progress.fractionCompleted
+                        case .installing:
+                            installFractionCompleted = installation.progress.fractionCompleted
                         }
-                    )
+                    }
                 } catch {
                     installationError = error
                     isInstallationErrorAlertPresented = true
@@ -142,11 +128,11 @@ extension EngineInstallationView {
             }
         }
     }
-
+    
     struct CompletionView: View {
         @Binding var isPresented: Bool
         @ObservedObject var viewModel: ViewModel
-
+        
         var body: some View {
             ContentUnavailableView(
                 "Mythic Engine is installed.",
@@ -166,17 +152,17 @@ extension EngineInstallationView {
         init(initialStage stage: Stage = .disclaimer) {
             self.currentStage = stage
         }
-
+        
         public let stages = Stage.allCases
         enum Stage: CaseIterable {
             case disclaimer
             case installer
             case finished
         }
-
+        
         var currentStage: Stage
         var currentStageIndex: Int { stages.firstIndex(of: currentStage) ?? 0 }
-
+        
         func stepStage(by delta: Int = 1) {
             let newIndex = currentStageIndex + delta
             guard stages.indices.contains(newIndex) else { return }
