@@ -40,12 +40,11 @@ final class Legendary {
 
     // Minimal registry for running consumer tasks (cancel stops process via Process.stream cancellation)
     actor RunningCommands {
-        static let shared = RunningCommands()
+        static let shared: RunningCommands = .init()
 
         private var tasks: [String: Task<Void, Error>] = [:]
 
         func set(id: String, task: Task<Void, Error>) {
-            print("[t] added task id \(id)")
             tasks[id] = task
         }
 
@@ -54,21 +53,15 @@ final class Legendary {
         }
 
         func stop(id: String) {
-            print("[t] stop sent to id \(id)")
             if let task = tasks[id] {
-                print("[t] task found")
                 task.cancel()
                 remove(id: id)
-                print("[t] task cancelled? \(task.isCancelled)")
-            } else {
-                print("[t] task not found (no-op)")
             }
         }
 
         func stopAll() {
             tasks.values.forEach { $0.cancel() }
             tasks.removeAll()
-            print("[t] stopAll: cancelled all")
         }
     }
 
