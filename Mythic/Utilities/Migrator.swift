@@ -150,7 +150,6 @@ final class Migrator {
         }
     }
 
-    // MARK: <0.3.2 Config folder rename (Config → Epic)
     /// Rename Legendary configuration folder.
     /// Affects migrators from versions below v0.4.0.
     static func migrateEpicFolderNaming() {
