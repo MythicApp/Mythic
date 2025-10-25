@@ -108,7 +108,7 @@ final class Engine {
         AsyncThrowingStream { continuation in
             Task(priority: .high) {
                 do {
-                    guard !isInstalled else { return }
+                    guard !isInstalled else { continuation.finish(); return } // silent exit
                     let release = try await getLatestRelease()
 
                     let task = URLSession.shared.downloadTask(with: URL(string: release.downloadURL)!) { file, response, error in
