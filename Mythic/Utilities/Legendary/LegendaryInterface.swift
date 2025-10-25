@@ -347,6 +347,19 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
 
+        if game.needsVerification, let platform = game.platform {
+            GameOperation.shared.queue.append(
+                GameOperation.InstallArguments(
+                    game: game,
+                    platform: platform,
+                    type: .repair
+                )
+            )
+
+            // FIXME: notify the user lol
+            return // allow the game to repair first!!
+        }
+
         if game.platform == .windows, !Engine.isInstalled {
             throw Engine.NotInstalledError()
         }
