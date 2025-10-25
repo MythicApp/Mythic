@@ -81,7 +81,7 @@ final class FileLocations {
                 create: false
             )
         } catch {
-            Logger.file.error(" Unable to get user's Application Support directory: \(error.localizedDescription)")
+            Logger.file.error("Unable to get user's Application Support directory: \(error.localizedDescription)")
         }
         
         return nil
@@ -137,24 +137,4 @@ final class FileLocations {
         
         return nil
     }()
-    
-    // MARK: - Other
-    
-    struct FileDoesNotExistError: LocalizedError {
-        init(_ fileURL: URL?) {
-            self.fileURL = fileURL
-        }
-        
-        let fileURL: URL?
-        var errorDescription: String? = "The file/folder doesn't exist."
-    }
-    
-    struct FileNotModifiableError: LocalizedError { 
-        init(_ fileURL: URL?) {
-            self.fileURL = fileURL
-        }
-        
-        let fileURL: URL?
-        var errorDescription: String? = "The file/folder isn't modifiable."
-    }
 }

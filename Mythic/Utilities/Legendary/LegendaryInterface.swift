@@ -303,7 +303,7 @@ final class Legendary {
 
     static func move(game: Mythic.Game, newPath: String) async throws {
         if let oldPath = try getGamePath(game: game) {
-            guard files.isWritableFile(atPath: oldPath) else { throw FileLocations.FileNotModifiableError(.init(filePath: oldPath)) }
+            guard files.isWritableFile(atPath: oldPath) else { throw CocoaError(.fileWriteUnknown) }
             try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
 
             _ = try await execute(arguments: ["move", game.id, newPath, "--skip-move"])
@@ -414,7 +414,7 @@ final class Legendary {
         let data = try Data(contentsOf: installedData)
 
         guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
-            throw FileLocations.FileDoesNotExistError(installedData)
+            throw CocoaError(.fileNoSuchFile)
         }
 
         guard let platformString = installedGames[game.id]?["platform"] as? String else {
@@ -478,7 +478,7 @@ final class Legendary {
         let data = try Data(contentsOf: installedData)
 
         guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
-            throw FileLocations.FileDoesNotExistError(installedData)
+            throw CocoaError(.fileNoSuchFile)
         }
 
         return installedGames.compactMap { (id, gameInfo) -> Mythic.Game? in
@@ -523,7 +523,7 @@ final class Legendary {
         let metadataDirectoryString = "\(configLocation)/metadata"
 
         guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
-            throw FileLocations.FileDoesNotExistError(URL(filePath: metadataDirectoryString))
+            throw CocoaError(.fileNoSuchFile)
         }
 
         if let metadataFileName = metadataDirectoryContents.first(where: {
@@ -620,7 +620,7 @@ final class Legendary {
         let aliasesJSONFileURL: URL = URL(filePath: "\(configLocation)/aliases.json")
 
         guard let aliasesData = try? Data(contentsOf: aliasesJSONFileURL) else {
-            throw FileLocations.FileDoesNotExistError(aliasesJSONFileURL)
+            throw CocoaError(.fileNoSuchFile)
         }
 
         guard let json = try? JSON(data: aliasesData) else {

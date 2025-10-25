@@ -233,7 +233,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
                 if files.isWritableFile(atPath: newLocation.path(percentEncoded: false)) {
                     try files.moveItem(atPath: oldLocation, toPath: newLocation.path(percentEncoded: false)) // not very good
                 } else {
-                    throw FileLocations.FileNotModifiableError(nil)
+                    throw CocoaError(.fileWriteUnknown)
                 }
             }
         }

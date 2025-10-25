@@ -129,22 +129,18 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         name: String,
         settings: ContainerSettings = .init()
     ) async throws -> Container {
-        guard let baseURL = baseURL else {
-            throw FileLocations.FileDoesNotExistError(URL(fileURLWithPath: "nil baseURL"))
+        guard let baseURL = baseURL,
+              files.fileExists(atPath: baseURL.path) else {
+            throw CocoaError(.fileNoSuchFile)
         }
-        guard files.fileExists(atPath: baseURL.path) else {
-            throw FileLocations.FileDoesNotExistError(baseURL)
+        guard FileLocations.isWritableFolder(url: baseURL) else {
+            throw CocoaError(.fileWriteUnknown)
         }
-
-        let url = baseURL.appending(path: name)
-
         guard Engine.isInstalled else {
             throw Engine.NotInstalledError()
         }
-        guard FileLocations.isWritableFolder(url: baseURL) else {
-            throw FileLocations.FileNotModifiableError(url)
-        }
 
+        let url = baseURL.appending(path: name)
         let hasExisted = containerExists(at: url)
 
         if !files.fileExists(atPath: url.path) {
@@ -166,7 +162,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
 
         do {
-            let newContainer = Container(name: name, url: url, settings: settings)
+            let newContainer: Container = .init(name: name, url: url, settings: settings)
 
             // Run wineboot and inspect stderr/stdout for the "updated" message.
             let result = try await execute(arguments: ["wineboot"], containerURL: url)
@@ -230,16 +226,17 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         task.launchPath = "/usr/bin/getconf"
         task.arguments = ["DARWIN_USER_CACHE_DIR"]
 
-        let pipe = Pipe()
+        let pipe: Pipe = .init()
         task.standardOutput = pipe
         do { try task.run() } catch { return false }
 
         let userCachePath = String(
             decoding: pipe.fileHandleForReading.readDataToEndOfFile(),
             as: UTF8.self
-        ).trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+        let sanitizedPath = userCachePath.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        let d3dmcache = "\(userCachePath)/d3dm"
+        let d3dmcache = "\(sanitizedPath)/d3dm"
 
         task.waitUntilExit()
 
@@ -264,8 +261,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],
             containerURL: containerURL
         )
-
-        // Non-zero exit likely indicates failure to add key
+        
         guard result.exitCode == 0 else {
             throw UnableToQueryRegistryError()
         }
