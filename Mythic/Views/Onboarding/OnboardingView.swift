@@ -297,9 +297,9 @@ private extension OnboardingView {
                     }
                 } else {
                     Text("Setting up default container...")
+                        .font(.largeTitle.bold())
 
                     ProgressView()
-                        .progressViewStyle(.linear)
                         .task {
                             do {
                                 _ = try await Wine.boot(name: "Default")
