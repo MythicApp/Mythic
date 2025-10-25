@@ -54,7 +54,7 @@ final class Engine {
     }
 
     static func retrieveUpdateCatalog() async throws -> UpdateCatalog {
-        let catalogURL = URL(string: "https://dl.getmythic.app/engine/EngineUpdateStream.test.plist")!
+        let catalogURL = URL(string: "https://dl.getmythic.app/engine/EngineUpdateStream.plist")!
         let (data, response) = try await URLSession.shared.data(from: catalogURL)
         if let httpResponse = response as? HTTPURLResponse,
            !(200...299).contains(httpResponse.statusCode) {
