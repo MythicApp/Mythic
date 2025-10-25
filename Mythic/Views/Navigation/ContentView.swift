@@ -21,7 +21,6 @@ import SwiftUI
 import Foundation
 import OSLog
 import Combine
-import WhatsNewKit
 import SemanticVersion
 
 // MARK: - ContentView Struct
@@ -118,7 +117,6 @@ struct ContentView: View {
                 HomeView()
             }
         )
-        .whatsNewSheet()
         .toolbar {
             ToolbarItem(placement: .automatic) {
                 if !networkMonitor.isConnected {
