@@ -65,6 +65,14 @@ final class Engine {
         decoder.semanticVersionDecodingStrategy = .semverString
 
         let catalog = try decoder.decode(UpdateCatalog.self, from: data)
+
+        if catalog.version != UpdateCatalog.nativeVersion {
+            log.warning("""
+            UpdateCatalog was parsed, but its version does not match that of the currently implemented version.
+            An app update may be necessary.
+            """)
+        }
+
         return catalog
     }
 

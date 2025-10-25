@@ -18,6 +18,7 @@ import Foundation
 import SwiftUI
 import UserNotifications
 import SwordRPC
+import SemanticVersion
 
 // MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
@@ -42,6 +43,16 @@ var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInst
 
 struct UnknownError: LocalizedError {
     var errorDescription: String? = "An unknown error occurred."
+}
+
+var appVersion: SemanticVersion? {
+    guard let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+          let bundleVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String,
+          let appVersion: SemanticVersion = .init("\(shortVersion)+\(bundleVersion)") else {
+        return nil
+    }
+
+    return appVersion
 }
 
 // MARK: - Functions

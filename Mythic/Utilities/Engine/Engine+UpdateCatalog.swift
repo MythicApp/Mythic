@@ -10,6 +10,9 @@ import SemanticVersion
 
 extension Engine {
     struct UpdateCatalog: Codable {
+        /// Native `UpdateCatalog` version this struct is based upon.
+        static let nativeVersion: SemanticVersion = .init(0, 1, 0)
+
         let version: SemanticVersion
         let lastUpdated: Date
         let channels: [Channel]
@@ -19,7 +22,20 @@ extension Engine {
             let releases: [Release]
 
             var latestRelease: Release? {
-                releases.max(by: { $0.version < $1.version })
+                releases
+                    .filter { // exclude releases w/ unfulilled app version requirement
+                        guard let minimumAppVersion = $0.minimumAppVersion,
+                              let appVersion = Mythic.appVersion
+                        else { return true } // keep if appVersion unverifiable/no minimumAppVersion
+                        return minimumAppVersion <= appVersion
+                    }
+                    .filter { // exclude releases w/ unfulfilled macOS version requirement
+                        guard let minimumMacOSVersion = $0.minimumMacOSVersion,
+                              let macOSVersion = SemanticVersion.macOSVersion
+                        else { return true }
+                        return minimumMacOSVersion <= macOSVersion
+                    }
+                    .max(by: { $0.version < $1.version }) // get version w/ highest (thus newest) version
             }
         }
 
@@ -29,7 +45,7 @@ extension Engine {
             let downloadURL: String
             let checksumURL: String?
             let size: Int?
-            let minimumMacOSVersion: String? // SemanticVersion doesn't support semi-semantic versions (e.g. 14.0)
+            let minimumMacOSVersion: SemanticVersion? // upstream MUST have a patch version or this will fail to decode
             let minimumAppVersion: SemanticVersion?
             let releaseNotesURL: String?
             let critical: Bool
