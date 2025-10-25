@@ -136,11 +136,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
                (try? await Engine.isUpdateAvailable()) == true {
                 let alert = NSAlert()
+
+                let message = "Mythic Engine update available."
                 if let currentEngineVersion = await Engine.installedVersion,
-                   let latestEngineVersion = try? await Engine.getLatestRelease() {
-                    alert.messageText = "Mythic Engine update available. (\(currentEngineVersion) → \(latestEngineVersion))"
+                   let latestRelease = try? await Engine.getLatestRelease() {
+                    alert.messageText = "\(message) (\(currentEngineVersion) → \(latestRelease.version))"
                 } else {
-                    alert.messageText = "Mythic Engine update available."
+                    alert.messageText = message
                 }
 
                 alert.informativeText = """
@@ -170,6 +172,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                                     Task(priority: .userInitiated) {
                                         do {
                                             try await Engine.remove()
+
                                             let alert = NSAlert()
                                             alert.alertStyle = .informational
                                             alert.messageText = "Successfully removed Mythic Engine."
@@ -178,12 +181,13 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
                                             await alert.beginSheetModal(for: window)
                                         } catch {
-                                            let error = NSAlert()
-                                            error.alertStyle = .critical
-                                            error.messageText = "Unable to remove Mythic Engine."
-                                            error.addButton(withTitle: "OK")
+                                            let errorAlert = NSAlert()
+                                            errorAlert.alertStyle = .critical
+                                            errorAlert.messageText = "Unable to remove Mythic Engine."
+                                            errorAlert.informativeText = error.localizedDescription
+                                            errorAlert.addButton(withTitle: "OK")
 
-                                            await error.beginSheetModal(for: window)
+                                            await errorAlert.beginSheetModal(for: window)
                                         }
                                     }
                                 }
