@@ -16,6 +16,7 @@
 
 import SwiftUI
 import SwordRPC
+import SemanticVersion
 
 struct SettingsView: View {
     // Tab-style (macOS >14)
@@ -39,7 +40,7 @@ struct SettingsView: View {
     @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
     @AppStorage("quitOnAppClose") private var quitOnClose: Bool = false
     @AppStorage("discordRPC") private var rpc: Bool = true
-    @AppStorage("engineBranch") private var engineBranch: String = Engine.Stream.stable.rawValue
+    @AppStorage("engineChannel") private var engineChannel: String = Engine.ReleaseChannel.stable.rawValue
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
@@ -60,6 +61,7 @@ struct SettingsView: View {
     @State private var isEngineInstallationViewPresented: Bool = false
     @State private var engineInstallationError: Error?
     @State private var engineInstallationSuccessful: Bool = false
+    @State private var engineVersion: SemanticVersion?
 
     @State private var isCleaning: Bool = false
     @State private var isCleanupSuccessful: Bool?
@@ -67,7 +69,7 @@ struct SettingsView: View {
     @State private var isEpicCloudSynchronising: Bool = false
     @State private var isEpicCloudSyncSuccessful: Bool?
 
-    @State private var isEngineStreamChangeAlertPresented: Bool = false
+    @State private var isEngineChannelChangeAlertPresented: Bool = false
     @State private var isEngineRemovalAlertPresented: Bool = false
     @State private var isResetAlertPresented: Bool = false
     @State private var isResetSettingsAlertPresented: Bool = false
@@ -216,11 +218,13 @@ struct SettingsView: View {
                 title: .init("Are you sure you want to remove Mythic Engine?"),
                 message: .init("It'll have to be reinstalled in order to play Windows® games."),
                 primaryButton: .destructive(.init("Remove")) {
-                    do {
-                        try Engine.remove()
-                        isEngineRemovalSuccessful = true
-                    } catch {
-                        isEngineRemovalSuccessful = false
+                    Task { @MainActor in
+                        do {
+                            try await Engine.remove()
+                            isEngineRemovalSuccessful = true
+                        } catch {
+                            isEngineRemovalSuccessful = false
+                        }
                     }
                 },
                 secondaryButton: .cancel()
@@ -264,31 +268,33 @@ struct SettingsView: View {
     }
 
     private var engineUpdateStreamPicker: some View {
-        Picker("Stream", systemImage: "app.badge.clock", selection: $engineBranch) {
+        Picker("Release Channel", systemImage: "app.badge.clock", selection: $engineChannel) {
             Text("Stable")
-                .tag(Engine.Stream.stable.rawValue)
+                .tag(Engine.ReleaseChannel.stable.rawValue)
                 .help("""
-                    Existing stable features will be available in this stream.
+                    Existing stable features will be available in this channel.
                     This is the recommended stream for all users.
                     """)
 
             Text("Preview")
-                .tag(Engine.Stream.staging.rawValue)
+                .tag(Engine.ReleaseChannel.preview.rawValue)
                 .help("""
-                    Experimental new features may be available in this stream, at the cost of stability.
+                    Experimental new features may be available in this channel, at the cost of stability.
                     Use at your own risk.
                     """)
         }
-        .onChange(of: engineBranch) {
-            isEngineStreamChangeAlertPresented = true
+        .onChange(of: engineChannel) {
+            isEngineChannelChangeAlertPresented = true
         }
-        .alert(isPresented: $isEngineStreamChangeAlertPresented) {
+        .alert(isPresented: $isEngineChannelChangeAlertPresented) {
             .init(
                 title: .init("Would you like to reinstall Mythic Engine?"),
                 message: .init("To change the engine stream, Mythic Engine must be reinstalled through onboarding."),
                 primaryButton: .destructive(.init("OK")) {
-                    try? Engine.remove()
-                    isEngineInstallationViewPresented = true
+                    Task { @MainActor in
+                        try? await Engine.remove()
+                        isEngineInstallationViewPresented = true
+                    }
                 },
                 secondaryButton: .cancel()
             )
@@ -426,7 +432,7 @@ struct SettingsView: View {
                     }
 
                     Tab("Engine", systemImage: "gamecontroller.circle") {
-                        if Engine.exists {
+                        if Engine.isInstalled {
                             Form {
                                 engineKillRunningButton
 
@@ -437,13 +443,15 @@ struct SettingsView: View {
                                 }
                             }
                             .formStyle(.grouped)
-
-                            if Engine.exists {
-                                Text("\(Engine.version?.prettyString ?? "(Unknown Version)")")
-                                    .foregroundStyle(.placeholder)
-                                    .font(.footnote)
-                                    .padding()
-                            }
+                            
+                            
+                            Text("\(engineVersion?.prettyString ?? "(Unknown Version)")")
+                                .foregroundStyle(.placeholder)
+                                .font(.footnote)
+                                .padding()
+                                .task {
+                                    engineVersion = await Engine.installedVersion
+                                }
                         } else {
                             Engine.NotInstalledView()
                                 .padding()
@@ -475,13 +483,16 @@ struct SettingsView: View {
 
                             engineRemovalButton
 
-                            if Engine.exists {
-                                Text("Version \(Engine.version?.prettyString ?? "Unknown")")
-                                    .foregroundStyle(.placeholder)
-                            }
+                            Text("\(engineVersion?.prettyString ?? "(Unknown Version)")")
+                                .foregroundStyle(.placeholder)
+                                .font(.footnote)
+                                .padding()
+                                .task {
+                                    engineVersion = await Engine.installedVersion
+                                }
                         }
-                        .disabled(!Engine.exists)
-                        .help(Engine.exists ? "Mythic Engine is not installed." : .init())
+                        .disabled(!Engine.isInstalled)
+                        .help(Engine.isInstalled ? "Mythic Engine is not installed." : .init())
                     }
 
                     Section("Epic", isExpanded: $isEpicSectionExpanded) {
@@ -499,12 +510,6 @@ struct SettingsView: View {
 
                         Toggle("Automatically check for Mythic Engine updates", isOn: $engineAutomaticallyChecksForUpdates)
                     }
-
-                    /* FIXME: TODO: Temporarily disabled; awaiting view that directly edits Wine.defaultContainerSettings.
-                     Section("Default Container Settings", isExpanded: $isDefaultContainerSectionExpanded) {
-                     // ContainerSettingsView something
-                     }
-                     */
                 }
                 .formStyle(.grouped)
             }

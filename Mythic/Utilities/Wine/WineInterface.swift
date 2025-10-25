@@ -79,7 +79,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         currentDirectoryURL: URL? = nil,
         logCategory: String? = nil
     ) async throws -> Process.CommandResult {
-        guard Engine.exists else {
+        guard Engine.isInstalled else {
             log.error("Mythic Engine is not installed.")
             throw Engine.NotInstalledError()
         }
@@ -138,7 +138,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
         let url = baseURL.appending(path: name)
 
-        guard Engine.exists else {
+        guard Engine.isInstalled else {
             throw Engine.NotInstalledError()
         }
         guard FileLocations.isWritableFolder(url: baseURL) else {

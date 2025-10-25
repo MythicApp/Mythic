@@ -22,7 +22,9 @@ struct AboutView: View {
     @State private var showGradientView: Bool = false
     @State private var animateTextView: Bool = false
     @State private var isChevronHovered: Bool = false
-    
+
+    @State private var engineVersion: SemanticVersion?
+
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
@@ -49,9 +51,12 @@ struct AboutView: View {
                                         Text(mythicVersion.prettyString)
                                     }
                                     
-                                    if let engineVersion = Engine.version {
+                                    if let engineVersion = engineVersion {
                                         Text("Engine \(engineVersion.prettyString)")
                                     }
+                                }
+                                .task { @MainActor in
+                                    engineVersion = await Engine.installedVersion
                                 }
                                 .font(.footnote)
                                 .foregroundStyle(.placeholder)

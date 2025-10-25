@@ -40,7 +40,7 @@ struct ContainersView: View {
         }
 
         .toolbar {
-            if Engine.exists {
+            if Engine.isInstalled {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
                         isContainerCreationViewPresented = true

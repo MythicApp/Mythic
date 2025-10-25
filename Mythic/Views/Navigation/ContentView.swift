@@ -34,7 +34,9 @@ struct ContentView: View {
     
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
-    
+
+    @State private var engineVersion: SemanticVersion?
+
     // MARK: - Body
     var body: some View {
         NavigationSplitView(
@@ -101,9 +103,12 @@ struct ContentView: View {
                         Text("Mythic \(mythicVersion.prettyString)")
                     }
 
-                    if let engineVersion = Engine.version {
+                    if let engineVersion = engineVersion {
                         Text("Mythic Engine \(engineVersion.prettyString)")
                     }
+                }
+                .task { @MainActor in
+                    engineVersion = await Engine.installedVersion
                 }
                 .font(.footnote)
                 .foregroundStyle(.placeholder)

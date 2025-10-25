@@ -10749,10 +10749,10 @@
         }
       }
     },
-    "Existing stable features will be available in this stream.\nThis is the recommended stream for all users." : {
+    "Existing stable features will be available in this channel.\nThis is the recommended stream for all users." : {
 
     },
-    "Experimental new features may be available in this stream, at the cost of stability.\nUse at your own risk." : {
+    "Experimental new features may be available in this channel, at the cost of stability.\nUse at your own risk." : {
 
     },
     "Failed to boot \"%@\"." : {
@@ -21332,6 +21332,9 @@
     "Ready to go!" : {
 
     },
+    "Release Channel" : {
+
+    },
     "Remove" : {
       "localizations" : {
         "af" : {
@@ -26491,6 +26494,7 @@
       }
     },
     "Stream" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29965,6 +29969,7 @@
       }
     },
     "Version %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

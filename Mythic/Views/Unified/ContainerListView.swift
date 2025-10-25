@@ -23,7 +23,7 @@ struct ContainerListView: View {
     @State private var isDeletionAlertPresented = false
     
     var body: some View {
-        if Engine.exists {
+        if Engine.isInstalled {
             ForEach(Wine.containerObjects) { container in
                 HStack {
                     Text(container.name)
@@ -45,7 +45,7 @@ struct ContainerListView: View {
                     } label: {
                         Image(systemName: "gear")
                     }
-                    .disabled(!Engine.exists)
+                    .disabled(!Engine.isInstalled)
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
                     .sheet(isPresented: $isContainerConfigurationViewPresented) {

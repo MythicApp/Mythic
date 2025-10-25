@@ -91,7 +91,7 @@ extension EngineInstallationView {
                 }
             }
             .task {
-                guard !Engine.exists else {
+                guard !Engine.isInstalled else {
                     viewModel.stepStage(); return
                 }
                 
@@ -107,6 +107,15 @@ extension EngineInstallationView {
                 } catch {
                     installationError = error
                     isInstallationErrorAlertPresented = true
+                }
+            }
+            .onChange(of: installFractionCompleted) {
+                if $1 >= 1.0 {
+                    Task {
+                        await MainActor.run {
+                            viewModel.stepStage()
+                        }
+                    }
                 }
             }
             .alert(

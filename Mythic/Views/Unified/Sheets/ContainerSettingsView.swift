@@ -267,7 +267,7 @@ struct ContainerSettingsView: View {
                     }
                 }
             }
-            .disabled(!Engine.exists)
+            .disabled(!Engine.isInstalled)
             .task(priority: .high) { await fetchRetinaStatus() }
             .task(priority: .high) { await fetchWindowsVersion() }
             .onChange(of: selectedContainerURL) {

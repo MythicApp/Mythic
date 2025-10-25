@@ -347,7 +347,7 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
 
-        if game.platform == .windows, !Engine.exists {
+        if game.platform == .windows, !Engine.isInstalled {
             throw Engine.NotInstalledError()
         }
 

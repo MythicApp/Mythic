@@ -75,7 +75,7 @@ final class LocalGames {
                 log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
             }
         case .windows: // FIXME: unneeded unification
-            guard Engine.exists else {
+            guard Engine.isInstalled else {
                 throw Engine.NotInstalledError()
             }
             guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp

@@ -317,7 +317,7 @@ private extension OnboardingView {
             }
             .task(priority: .high) { @MainActor in
                 // no mythic engine means no container setup ☹️☹️
-                if !Engine.exists {
+                if !Engine.isInstalled {
                     isPresented = false
                 }
                 // if ~~default~~ ANY bottle already exists — no need to waste time/potentially break stuff calling wineboot

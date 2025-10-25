@@ -132,14 +132,12 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        Task(priority: .utility) {
+        Task(priority: .background) {
             if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
-               await Engine.isUpdateAvailable == true,
-               (try? await Engine.checkIfLatestVersionDownloadable()) == true {
+               (try? await Engine.isUpdateAvailable()) == true {
                 let alert = NSAlert()
-                if let currentEngineVersion = Engine.version,
-                   let latestEngineVersion = try? await Engine.fetchLatestUpdateVersion()
-                {
+                if let currentEngineVersion = await Engine.installedVersion,
+                   let latestEngineVersion = try? await Engine.getLatestRelease() {
                     alert.messageText = "Mythic Engine update available. (\(currentEngineVersion) → \(latestEngineVersion))"
                 } else {
                     alert.messageText = "Mythic Engine update available."
@@ -147,7 +145,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
                 alert.informativeText = """
                     A new version of Mythic Engine has released.
-                    You're currently using \(Engine.version?.description ?? "an unknown version").
+                    You're currently using \(await Engine.installedVersion?.description ?? "an unknown version").
                     """
 
                 alert.addButton(withTitle: "Update")
@@ -169,22 +167,24 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
                             confirmation.beginSheetModal(for: window) { response in
                                 if case .alertFirstButtonReturn = response {
-                                    do {
-                                        try Engine.remove()
-                                        let alert = NSAlert()
-                                        alert.alertStyle = .informational
-                                        alert.messageText = "Successfully removed Mythic Engine."
-                                        alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
-                                        alert.addButton(withTitle: "OK")
+                                    Task(priority: .userInitiated) {
+                                        do {
+                                            try await Engine.remove()
+                                            let alert = NSAlert()
+                                            alert.alertStyle = .informational
+                                            alert.messageText = "Successfully removed Mythic Engine."
+                                            alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
+                                            alert.addButton(withTitle: "OK")
 
-                                        alert.beginSheetModal(for: window)
-                                    } catch {
-                                        let error = NSAlert()
-                                        error.alertStyle = .critical
-                                        error.messageText = "Unable to remove Mythic Engine."
-                                        error.addButton(withTitle: "OK")
+                                            await alert.beginSheetModal(for: window)
+                                        } catch {
+                                            let error = NSAlert()
+                                            error.alertStyle = .critical
+                                            error.messageText = "Unable to remove Mythic Engine."
+                                            error.addButton(withTitle: "OK")
 
-                                        error.beginSheetModal(for: window)
+                                            await error.beginSheetModal(for: window)
+                                        }
                                     }
                                 }
                             }
