@@ -22096,6 +22096,7 @@
       }
     },
     "Reset" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -27266,7 +27267,11 @@
         }
       }
     },
+    "This will erase every persistent setting and container, and cannot be undone." : {
+
+    },
     "This will erase every persistent setting and container." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -28029,7 +28034,7 @@
     "To access containers, Mythic Engine must be installed." : {
 
     },
-    "To change the engine stream, Mythic Engine must be reinstalled through onboarding." : {
+    "To change Mythic Engine's release channel, it must be reinstalled.\nIf you choose not to, Mythic Engine will attempt to update to a \nnewer version if it exists the next time it launches." : {
 
     },
     "To toggle DXVK, Mythic must quit all games currently running in this container.\nAdditionally, D3DMetal will be disabled.\n\nToggling DXVK may impact compatibility positively or negatively." : {

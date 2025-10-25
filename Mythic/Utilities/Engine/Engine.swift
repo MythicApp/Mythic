@@ -143,7 +143,7 @@ final class Engine {
                                 // `man tar` (bsdtar) — The tar utility exits 0 on success, and >0 if an error occurs.
                                 guard process.exitCode == 0 else {
                                     log.error("unable to install engine, tar stderr: \(process.standardError)")
-                                    continuation.finish(throwing: Archive.ArchiveError.unwritableArchive); return
+                                    continuation.finish(throwing: CocoaError(.fileWriteUnknown)); return
                                 }
 
                                 installationProgress.completedUnitCount = 100

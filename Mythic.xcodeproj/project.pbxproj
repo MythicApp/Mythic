@@ -75,7 +75,6 @@
 		6A2C28622DBBA3F7005CD5A4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */; };
 		6A3436342DF9C0B2006429F6 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3436332DF9C0B0006429F6 /* View.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
-		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* ListGameCard.swift */; };
 		6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
@@ -226,7 +225,6 @@
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
 				6A2961072CE1DD6200917E90 /* FirebaseCrashlytics in Frameworks */,
 				6A2961032CE1DD6200917E90 /* FirebaseAnalytics in Frameworks */,
-				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -501,7 +499,6 @@
 			packageProductDependencies = (
 				6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */,
 				6AFC02802ABE02970004AB77 /* Sparkle */,
-				6A371B582AE7DFBF0054BF7A /* ZIPFoundation */,
 				6AAD31142B08693D0035FA69 /* SemanticVersion */,
 				6A12FF8D2B73AC4E00AA948C /* Glur */,
 				6A7A81152B77093600D19E32 /* ColorfulX */,
@@ -543,7 +540,6 @@
 			packageReferences = (
 				6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				6AFC027F2ABE02970004AB77 /* XCRemoteSwiftPackageReference "Sparkle" */,
-				6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 				6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */,
 				6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */,
@@ -984,14 +980,6 @@
 				minimumVersion = 1.4.2;
 			};
 		};
-		6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.17;
-			};
-		};
 		6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Lakr233/ColorfulX";
@@ -1067,11 +1055,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
 			productName = Shimmer;
-		};
-		6A371B582AE7DFBF0054BF7A /* ZIPFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
-			productName = ZIPFoundation;
 		};
 		6A7A81152B77093600D19E32 /* ColorfulX */ = {
 			isa = XCSwiftPackageProductDependency;
