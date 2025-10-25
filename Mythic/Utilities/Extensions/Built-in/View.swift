@@ -2,7 +2,7 @@
 //  View.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 11/6/2025.
+//  Created by vapidinfinity (esi) on 11/6/2025.
 //
 
 import Foundation

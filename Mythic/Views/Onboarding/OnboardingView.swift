@@ -2,7 +2,7 @@
 //  OnboardingView.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 18/10/2025.
+//  Created by vapidinfinity (esi) on 18/10/2025.
 //
 
 // Onboarding — Revision III

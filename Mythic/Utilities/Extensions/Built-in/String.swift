@@ -2,7 +2,7 @@
 //  String.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 13/6/2025.
+//  Created by vapidinfinity (esi) on 13/6/2025.
 //
 
 extension String {
