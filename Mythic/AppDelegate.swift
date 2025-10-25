@@ -38,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
 
-        
+
         Migrator.migrateFromOldBottleFormatIfNecessary()
         Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
 
@@ -79,7 +79,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         // MARK: Applications folder disclaimer
 
-// TODO: possibly turn this into an onboarding-style message.
+        // TODO: possibly turn this into an onboarding-style message.
 #if !DEBUG
         let currentAppURL = Bundle.main.bundleURL
         let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
@@ -132,7 +132,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             }
         }
 
-        Task(priority: .background) {
+        Task(priority: .background) { @MainActor in
             if defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
                (try? await Engine.isUpdateAvailable()) == true {
                 let alert = NSAlert()
@@ -199,11 +199,20 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
 
         // Version-specific app launch counter
-        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            let key = "launchCount"
-            var launchCountDictionary: [String: Int] = defaults.dictionary(forKey: key) as? [String: Int] ?? [:]
+        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           var launchCountDictionary: [String: Int] = defaults.dictionary(forKey: "launchCount") as? [String: Int] {
             launchCountDictionary[shortVersion, default: 0] += 1
-            defaults.set(launchCountDictionary, forKey: key)
+            defaults.set(launchCountDictionary, forKey: "launchCount")
+        }
+
+        // give people from <0.5.0 people a taste of vertical scroll library grid
+        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
+           shortVersion == "0.5.0",
+           let launchCountDictionary = defaults.dictionary(forKey: "launchCount") as? [String: Int],
+           defaults.bool(forKey: "isLibraryGridScrollingVertical") == false,
+           launchCountDictionary[shortVersion] == 1 {
+            // vertical as God intended
+            defaults.set(true, forKey: "isLibraryGridScrollingVertical")
         }
     }
 
@@ -215,6 +224,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         discordRPC.disconnect()
     }
 
+    @MainActor
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()

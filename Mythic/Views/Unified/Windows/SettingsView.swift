@@ -42,7 +42,7 @@ struct SettingsView: View {
     @AppStorage("discordRPC") private var rpc: Bool = true
     @AppStorage("engineChannel") private var engineChannel: String = Engine.ReleaseChannel.stable.rawValue
     @AppStorage("engineAutomaticallyChecksForUpdates") private var engineAutomaticallyChecksForUpdates: Bool = true
-    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = false
+    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
     @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
 
