@@ -10,7 +10,7 @@ import SemanticVersion
 
 extension Engine {
     struct UpdateCatalog: Codable {
-        let version: Int
+        let version: SemanticVersion
         let lastUpdated: Date
         let channels: [Channel]
 
@@ -28,8 +28,9 @@ extension Engine {
             let releaseDate: Date
             let downloadURL: String
             let checksumURL: String?
-            let size: Int
-            let minimumMacOSVersion: String?
+            let size: Int?
+            let minimumMacOSVersion: String? // SemanticVersion doesn't support semi-semantic versions (e.g. 14.0)
+            let minimumAppVersion: SemanticVersion?
             let releaseNotesURL: String?
             let critical: Bool
             let commitSHA: String
