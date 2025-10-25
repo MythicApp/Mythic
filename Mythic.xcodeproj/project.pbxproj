@@ -75,6 +75,7 @@
 		6A2C28622DBBA3F7005CD5A4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2C28612DBBA3F3005CD5A4 /* AboutView.swift */; };
 		6A3436342DF9C0B2006429F6 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3436332DF9C0B0006429F6 /* View.swift */; };
 		6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 6A34366D2B8D7F1200D35BCA /* Shimmer */; };
+		6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 6A371B582AE7DFBF0054BF7A /* ZIPFoundation */; };
 		6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* ListGameCard.swift */; };
 		6A448E102CC4BC55001E9F47 /* GameCardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCardVM.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
@@ -86,6 +87,8 @@
 		6A8080D52EA3611A00F10A00 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */; };
 		6A93CC872DFBB7510079A0B0 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A93CC862DFBB74D0079A0B0 /* String.swift */; };
 		6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A955DEA2DF808D000BFA541 /* Mythic.icon */; };
+		6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */; };
+		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AA445762EABA0E80064A14F /* Engine+UpdateCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */; };
 		6AA445792EABB1300064A14F /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA445782EABB12D0064A14F /* Engine.swift */; };
 		6AA4457B2EABBB3A0064A14F /* SemanticVersion+Codable(PropertyList).swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA4457A2EABBB350064A14F /* SemanticVersion+Codable(PropertyList).swift */; };
@@ -192,6 +195,7 @@
 		6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		6A93CC862DFBB74D0079A0B0 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		6A955DEA2DF808D000BFA541 /* Mythic.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Mythic.icon; sourceTree = "<group>"; };
+		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
 		6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Engine+UpdateCatalog.swift"; sourceTree = "<group>"; };
 		6AA445782EABB12D0064A14F /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		6AA4457A2EABBB350064A14F /* SemanticVersion+Codable(PropertyList).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SemanticVersion+Codable(PropertyList).swift"; sourceTree = "<group>"; };
@@ -216,11 +220,13 @@
 				6A2961052CE1DD6200917E90 /* FirebaseCore in Frameworks */,
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
+				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
 				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
 				6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
 				6A2961072CE1DD6200917E90 /* FirebaseCrashlytics in Frameworks */,
 				6A2961032CE1DD6200917E90 /* FirebaseAnalytics in Frameworks */,
+				6A371B592AE7DFBF0054BF7A /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -380,6 +386,7 @@
 			children = (
 				6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */,
 				6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */,
+				6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */,
 				6A2934EF2BFCFAFD0035CE4B /* Views */,
 				6A2934CA2BFCFAFD0035CE4B /* Utilities */,
 				6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */,
@@ -494,11 +501,13 @@
 			packageProductDependencies = (
 				6AFC027D2ABDB5D40004AB77 /* SwiftyJSON */,
 				6AFC02802ABE02970004AB77 /* Sparkle */,
+				6A371B582AE7DFBF0054BF7A /* ZIPFoundation */,
 				6AAD31142B08693D0035FA69 /* SemanticVersion */,
 				6A12FF8D2B73AC4E00AA948C /* Glur */,
 				6A7A81152B77093600D19E32 /* ColorfulX */,
 				6A34366D2B8D7F1200D35BCA /* Shimmer */,
 				6AC742DC2B9314AB000EA1B2 /* SwordRPC */,
+				6AA1744E2CD5CC290035B081 /* WhatsNewKit */,
 				6A2961022CE1DD6200917E90 /* FirebaseAnalytics */,
 				6A2961042CE1DD6200917E90 /* FirebaseCore */,
 				6A2961062CE1DD6200917E90 /* FirebaseCrashlytics */,
@@ -534,11 +543,13 @@
 			packageReferences = (
 				6AFC027C2ABDB5D40004AB77 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				6AFC027F2ABE02970004AB77 /* XCRemoteSwiftPackageReference "Sparkle" */,
+				6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */,
 				6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */,
 				6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */,
 				6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */,
+				6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */,
 				6A2961012CE1DD6200917E90 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
@@ -675,6 +686,7 @@
 				6A29355C2BFCFAFD0035CE4B /* InstallGameView.swift in Sources */,
 				6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */,
 				6A2961002CE1033200917E90 /* NSWindow.swift in Sources */,
+				6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */,
 				6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6A1357B32CE4B0CD00B19213 /* SemanticVersion+Extensions.swift in Sources */,
@@ -972,12 +984,28 @@
 				minimumVersion = 1.4.2;
 			};
 		};
+		6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.17;
+			};
+		};
 		6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Lakr233/ColorfulX";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.0;
+			};
+		};
+		6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SvenTiigi/WhatsNewKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.1;
 			};
 		};
 		6AAD31132B08693D0035FA69 /* XCRemoteSwiftPackageReference "SemanticVersion" */ = {
@@ -1040,10 +1068,20 @@
 			package = 6A34366C2B8D7F1200D35BCA /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
 			productName = Shimmer;
 		};
+		6A371B582AE7DFBF0054BF7A /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A371B572AE7DFBF0054BF7A /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
 		6A7A81152B77093600D19E32 /* ColorfulX */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */;
 			productName = ColorfulX;
+		};
+		6AA1744E2CD5CC290035B081 /* WhatsNewKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */;
+			productName = WhatsNewKit;
 		};
 		6AAD31142B08693D0035FA69 /* SemanticVersion */ = {
 			isa = XCSwiftPackageProductDependency;

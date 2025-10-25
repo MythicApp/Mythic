@@ -16,6 +16,7 @@
 
 import SwiftUI
 import Sparkle
+import WhatsNewKit
 
 @main
 struct MythicApp: App {
@@ -53,6 +54,20 @@ struct MythicApp: App {
             .frame(minWidth: 850, minHeight: 400)
         }
         .handlesExternalEvents(matching: ["open"])
+        .environment(
+            \.whatsNew,
+             WhatsNewEnvironment(
+                versionStore:
+                    {
+#if DEBUG
+                        InMemoryWhatsNewVersionStore()
+#else
+                        UserDefaultsWhatsNewVersionStore()
+#endif
+                    }(),
+                whatsNewCollection: self
+             )
+        )
         .commands {
             CommandGroup(replacing: .appInfo) {
                 Button {
