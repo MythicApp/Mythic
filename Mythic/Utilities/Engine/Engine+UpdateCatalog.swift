@@ -42,7 +42,7 @@ extension Engine {
         struct Release: Codable {
             let version: SemanticVersion
             let releaseDate: Date
-            let downloadURL: String
+            let downloadURL: String // cannot use URL type, URLs are stored as dicts for some strange reason
             let checksumURL: String?
             let size: Int?
             let minimumMacOSVersion: SemanticVersion? // upstream MUST have a patch version or this will fail to decode
