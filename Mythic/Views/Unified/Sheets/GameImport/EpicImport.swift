@@ -232,7 +232,7 @@ extension GameImportView {
                     onChunk: { chunk in
                         Task {
                             await MainActor.run {
-                                if case .standardOutput = chunk.stream, chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
+                                if case .standardError = chunk.stream, chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
                                     isPresented = false
                                 } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output) {
                                     withAnimation { isOperating = false }
