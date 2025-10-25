@@ -141,7 +141,7 @@ extension GameImportView {
             case .macOS:
                 return [.application]
             case .windows:
-                return [.exe]
+                return [.folder]
             }
         }
 
