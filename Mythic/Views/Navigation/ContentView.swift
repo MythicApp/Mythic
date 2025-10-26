@@ -188,3 +188,4 @@ struct ContentView: View {
     ContentView()
         .environmentObject(NetworkMonitor.shared)
 }
+
