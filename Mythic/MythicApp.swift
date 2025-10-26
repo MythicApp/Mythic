@@ -84,6 +84,7 @@ struct MythicApp: App {
 
         Window("About Mythic", id: "about") {
             AboutView()
+                .frame(width: 285, height: 400)
                 .onAppear {
                     if let window = NSApp.window(withID: "about") {
                         window.isImmersive = true
