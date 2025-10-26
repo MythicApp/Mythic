@@ -7,8 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1217C8A92EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A22EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift */; };
+		1217C8AA2EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A72EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift */; };
+		1217C8AB2EADC525003EC8C9 /* SparkleUpdaterFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A42EADC525003EC8C9 /* SparkleUpdaterFinishView.swift */; };
+		1217C8AC2EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A12EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift */; };
+		1217C8AD2EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A32EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift */; };
+		1217C8AF2EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A62EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift */; };
+		1217C8B82EADC544003EC8C9 /* ColorfulBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */; };
+		1217C8B92EADC544003EC8C9 /* BundleIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B02EADC544003EC8C9 /* BundleIconView.swift */; };
+		1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B22EADC544003EC8C9 /* RichAlertView.swift */; };
+		1217C8BC2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8BB2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift */; };
+		1217C8BF2EADC5C5003EC8C9 /* AppLoggerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8BE2EADC5C5003EC8C9 /* AppLoggerModel.swift */; };
+		1217C8C22EADC680003EC8C9 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1217C8C12EADC680003EC8C9 /* MarkdownUI */; };
+		1217C8C62EADC9BD003EC8C9 /* BackgroundEventServiceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8C52EADC9BD003EC8C9 /* BackgroundEventServiceModel.swift */; };
+		1217C8C82EADCA06003EC8C9 /* AppSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8C72EADCA06003EC8C9 /* AppSettingsModel.swift */; };
 		5A62AE982C27DB1200BA31D2 /* GameListEvoVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */; };
-		5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A9573A92C29BBEC009C8F85 /* SparkleController.swift */; };
 		6A0210162D390022009C85F8 /* HarmonyRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0210152D390016009C85F8 /* HarmonyRatingView.swift */; };
 		6A02101B2D390377009C85F8 /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A02101A2D390370009C85F8 /* StarRatingView.swift */; };
 		6A0688442C2BCE8B004DF10F /* DownloadCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0688432C2BCE87004DF10F /* DownloadCard.swift */; };
@@ -119,8 +132,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1217C8A12EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterCheckingView.swift; sourceTree = "<group>"; };
+		1217C8A22EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterDownloadingView.swift; sourceTree = "<group>"; };
+		1217C8A32EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterExtractingView.swift; sourceTree = "<group>"; };
+		1217C8A42EADC525003EC8C9 /* SparkleUpdaterFinishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterFinishView.swift; sourceTree = "<group>"; };
+		1217C8A62EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterPreviewView.swift; sourceTree = "<group>"; };
+		1217C8A72EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterSheetViewModifier.swift; sourceTree = "<group>"; };
+		1217C8B02EADC544003EC8C9 /* BundleIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleIconView.swift; sourceTree = "<group>"; };
+		1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorfulBackgroundView.swift; sourceTree = "<group>"; };
+		1217C8B22EADC544003EC8C9 /* RichAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichAlertView.swift; sourceTree = "<group>"; };
+		1217C8BB2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdateControllerModel.swift; sourceTree = "<group>"; };
+		1217C8BE2EADC5C5003EC8C9 /* AppLoggerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerModel.swift; sourceTree = "<group>"; };
+		1217C8C52EADC9BD003EC8C9 /* BackgroundEventServiceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundEventServiceModel.swift; sourceTree = "<group>"; };
+		1217C8C72EADCA06003EC8C9 /* AppSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsModel.swift; sourceTree = "<group>"; };
 		5A62AE972C27DB1200BA31D2 /* GameListEvoVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListEvoVM.swift; sourceTree = "<group>"; };
-		5A9573A92C29BBEC009C8F85 /* SparkleController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleController.swift; sourceTree = "<group>"; };
 		6A0210152D390016009C85F8 /* HarmonyRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyRatingView.swift; sourceTree = "<group>"; };
 		6A02101A2D390370009C85F8 /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
 		6A0688432C2BCE87004DF10F /* DownloadCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadCard.swift; sourceTree = "<group>"; };
@@ -217,6 +242,7 @@
 				6AC742DD2B9314AB000EA1B2 /* SwordRPC in Frameworks */,
 				6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */,
 				6A2961052CE1DD6200917E90 /* FirebaseCore in Frameworks */,
+				1217C8C22EADC680003EC8C9 /* MarkdownUI in Frameworks */,
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
 				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
@@ -231,6 +257,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1217C8A82EADC525003EC8C9 /* SparkleUpdater */ = {
+			isa = PBXGroup;
+			children = (
+				1217C8A12EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift */,
+				1217C8A22EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift */,
+				1217C8A32EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift */,
+				1217C8A42EADC525003EC8C9 /* SparkleUpdaterFinishView.swift */,
+				1217C8A62EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift */,
+				1217C8A72EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift */,
+			);
+			path = SparkleUpdater;
+			sourceTree = "<group>";
+		};
+		1217C8B52EADC544003EC8C9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				1217C8B02EADC544003EC8C9 /* BundleIconView.swift */,
+				1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */,
+				1217C8B22EADC544003EC8C9 /* RichAlertView.swift */,
+				6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		1217C8BD2EADC5A8003EC8C9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1217C8BE2EADC5C5003EC8C9 /* AppLoggerModel.swift */,
+				1217C8C52EADC9BD003EC8C9 /* BackgroundEventServiceModel.swift */,
+				1217C8BB2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift */,
+				1217C8C72EADCA06003EC8C9 /* AppSettingsModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		6A2934AF2BFCFAFD0035CE4B /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -300,7 +361,6 @@
 				6A2934C62BFCFAFD0035CE4B /* Global.swift */,
 				6A6EE1862DBA650F00870AC4 /* Migrator.swift */,
 				6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */,
-				5A9573A92C29BBEC009C8F85 /* SparkleController.swift */,
 				6A2934C82BFCFAFD0035CE4B /* Rosetta.swift */,
 				6A2934C92BFCFAFD0035CE4B /* VariableManager.swift */,
 			);
@@ -335,7 +395,6 @@
 				6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */,
 				6A2934DE2BFCFAFD0035CE4B /* SubscriptedTextView.swift */,
 				6A2934EB2BFCFAFD0035CE4B /* WebView.swift */,
-				6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -372,6 +431,8 @@
 		6A2934EF2BFCFAFD0035CE4B /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1217C8B52EADC544003EC8C9 /* Components */,
+				1217C8A82EADC525003EC8C9 /* SparkleUpdater */,
 				6A8080D12EA35F2F00F10A00 /* Onboarding */,
 				6A2934DA2BFCFAFD0035CE4B /* Navigation */,
 				6A2934EC2BFCFAFD0035CE4B /* Unified */,
@@ -385,6 +446,7 @@
 				6A2934F02BFCFAFD0035CE4B /* AppDelegate.swift */,
 				6A2934F62BFCFAFD0035CE4B /* MythicApp.swift */,
 				6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */,
+				1217C8BD2EADC5A8003EC8C9 /* Models */,
 				6A2934EF2BFCFAFD0035CE4B /* Views */,
 				6A2934CA2BFCFAFD0035CE4B /* Utilities */,
 				6A2934F12BFCFAFD0035CE4B /* Assets.xcassets */,
@@ -490,6 +552,7 @@
 				6E47429A2B0A85C4004FA8A8 /* SwiftLint */,
 				6A71D3D32BFD00B600A2C74D /* Embed Libraries */,
 				6ACCEC192CD088A400611BEF /* Crashlytics */,
+				12B45E7A2EAD76DB0000634B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -508,6 +571,7 @@
 				6A2961022CE1DD6200917E90 /* FirebaseAnalytics */,
 				6A2961042CE1DD6200917E90 /* FirebaseCore */,
 				6A2961062CE1DD6200917E90 /* FirebaseCrashlytics */,
+				1217C8C12EADC680003EC8C9 /* MarkdownUI */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -547,6 +611,7 @@
 				6AC742DB2B9314AB000EA1B2 /* XCRemoteSwiftPackageReference "SwordRPC" */,
 				6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */,
 				6A2961012CE1DD6200917E90 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -654,8 +719,12 @@
 				6A29355F2BFCFAFD0035CE4B /* UninstallGameView.swift in Sources */,
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */,
+				1217C8BF2EADC5C5003EC8C9 /* AppLoggerModel.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */,
+				1217C8B82EADC544003EC8C9 /* ColorfulBackgroundView.swift in Sources */,
+				1217C8B92EADC544003EC8C9 /* BundleIconView.swift in Sources */,
+				1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */,
 				6A2935382BFCFAFD0035CE4B /* Logger.swift in Sources */,
 				6AA445792EABB1300064A14F /* Engine.swift in Sources */,
 				6A2935372BFCFAFD0035CE4B /* Data.swift in Sources */,
@@ -664,12 +733,12 @@
 				6A29353D2BFCFAFD0035CE4B /* LegendaryInterface.swift in Sources */,
 				6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */,
 				6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */,
-				5A9573AA2C29BBEC009C8F85 /* SparkleController.swift in Sources */,
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
 				6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */,
 				6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */,
 				6A2935632BFCFAFD0035CE4B /* WebView.swift in Sources */,
 				6A3436342DF9C0B2006429F6 /* View.swift in Sources */,
+				1217C8BC2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift in Sources */,
 				6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */,
 				6A2935542BFCFAFD0035CE4B /* SupportView.swift in Sources */,
 				6A29354E2BFCFAFD0035CE4B /* ContainersView.swift in Sources */,
@@ -686,13 +755,21 @@
 				6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6A1357B32CE4B0CD00B19213 /* SemanticVersion+Extensions.swift in Sources */,
+				1217C8C82EADCA06003EC8C9 /* AppSettingsModel.swift in Sources */,
 				6A8080D32EA35FA000F10A00 /* OnboardingView.swift in Sources */,
 				6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */,
 				6A0210162D390022009C85F8 /* HarmonyRatingView.swift in Sources */,
 				6A02101B2D390377009C85F8 /* StarRatingView.swift in Sources */,
+				1217C8A92EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift in Sources */,
+				1217C8AA2EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift in Sources */,
+				1217C8AB2EADC525003EC8C9 /* SparkleUpdaterFinishView.swift in Sources */,
+				1217C8AC2EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift in Sources */,
+				1217C8AD2EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift in Sources */,
+				1217C8AF2EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift in Sources */,
 				6A93CC872DFBB7510079A0B0 /* String.swift in Sources */,
 				6A29354D2BFCFAFD0035CE4B /* AccountsView.swift in Sources */,
 				6A2935352BFCFAFD0035CE4B /* Bundle.swift in Sources */,
+				1217C8C62EADC9BD003EC8C9 /* BackgroundEventServiceModel.swift in Sources */,
 				6A0CB9802EACCCAD00757AC5 /* Engine+Extensions.swift in Sources */,
 				6AC2847A2EA45ED30008091F /* RosettaInstallationView.swift in Sources */,
 				6A29353C2BFCFAFD0035CE4B /* Workspace.swift in Sources */,
@@ -956,6 +1033,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
 		6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/joogps/Glur";
@@ -1031,6 +1116,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		1217C8C12EADC680003EC8C9 /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
 		6A12FF8D2B73AC4E00AA948C /* Glur */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */;

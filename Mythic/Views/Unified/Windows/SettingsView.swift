@@ -231,8 +231,6 @@ extension SettingsView {
     }
 
     struct UpdatesView: View {
-        @EnvironmentObject var sparkleController: SparkleController
-
         @State private var isMythicUpdatesSectionExpanded: Bool = true
         @State private var isEngineUpdatesSectionExpanded: Bool = true
 
@@ -247,23 +245,23 @@ extension SettingsView {
 
         var body: some View {
             Section("Mythic", isExpanded: $isMythicUpdatesSectionExpanded) {
-                Toggle(
-                    "Automatically check for Mythic updates",
-                    systemImage: "arrow.down.app.dashed",
-                    isOn: Binding(
-                        get: { sparkleController.updater.automaticallyChecksForUpdates },
-                        set: { sparkleController.updater.automaticallyChecksForUpdates = $0 }
-                    )
-                )
-
-                Toggle(
-                    "Automatically download Mythic updates",
-                    systemImage: "arrow.down.app",
-                    isOn: Binding(
-                        get: { sparkleController.updater.automaticallyDownloadsUpdates },
-                        set: { sparkleController.updater.automaticallyDownloadsUpdates = $0 }
-                    )
-                )
+//                Toggle(
+//                    "Automatically check for Mythic updates",
+//                    systemImage: "arrow.down.app.dashed",
+//                    isOn: Binding(
+//                        get: { sparkleController.updater.automaticallyChecksForUpdates },
+//                        set: { sparkleController.updater.automaticallyChecksForUpdates = $0 }
+//                    )
+//                )
+//
+//                Toggle(
+//                    "Automatically download Mythic updates",
+//                    systemImage: "arrow.down.app",
+//                    isOn: Binding(
+//                        get: { sparkleController.updater.automaticallyDownloadsUpdates },
+//                        set: { sparkleController.updater.automaticallyDownloadsUpdates = $0 }
+//                    )
+//                )
             }
 
             Section("Mythic Engine", isExpanded: $isEngineUpdatesSectionExpanded) {
@@ -478,5 +476,4 @@ extension SettingsView {
 
 #Preview {
     SettingsView()
-        .environmentObject(SparkleController())
 }

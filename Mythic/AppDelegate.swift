@@ -15,7 +15,8 @@
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import OSLog
-import Sparkle
+
+import SemanticVersion
 import SwiftUI
 import SwordRPC
 import UserNotifications
@@ -26,6 +27,12 @@ import FirebaseCrashlytics
 
 // TODO: modularise
 class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/zyfjpzpn
+
+    public static let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Mythic"
+    public static let applicationVersion = SemanticVersion(Bundle.main.infoDictionary?["CFBundleShortVersionString"]
+                                                           as? String ?? "0.0.0") ?? .init(0, 0, 0)
+    public static let applicationBundleName = Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "Application"
+
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
         FirebaseApp.configure()
@@ -256,8 +263,6 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {}
-
-extension AppDelegate: SPUUpdaterDelegate {} // FIXME: nonfunctional
 
 extension AppDelegate: SwordRPCDelegate {
     func swordRPCDidConnect(_ rpc: SwordRPC) {

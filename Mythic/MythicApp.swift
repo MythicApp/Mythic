@@ -25,7 +25,6 @@ struct MythicApp: App {
     @AppStorage("isOnboardingPresented") var isOnboardingPresented: Bool = true
 
     @StateObject private var networkMonitor: NetworkMonitor = .shared
-    @StateObject private var sparkleController: SparkleController = .init()
 
     @Environment(\.openWindow) private var openWindow
 
@@ -42,8 +41,6 @@ struct MythicApp: App {
                 } else {
                     ContentView()
                         .environmentObject(networkMonitor)
-                        .environmentObject(sparkleController)
-
                         .task(priority: .high) {
                             await MainActor.run {
                                 NSApp.mainWindow?.isImmersive = false
@@ -51,6 +48,7 @@ struct MythicApp: App {
                         }
                 }
             }
+            .modifier(SparkleUpdaterSheetViewModifier())
             .frame(minWidth: 850, minHeight: 400)
         }
         .handlesExternalEvents(matching: ["open"])
@@ -78,8 +76,9 @@ struct MythicApp: App {
             }
 
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates...", action: sparkleController.updater.checkForUpdates)
-                    .disabled(!sparkleController.updater.canCheckForUpdates)
+                Button("Check for Updates...", action: {
+                    SparkleUpdateControllerModel.shared.checkForUpdates(userInitiated: true)
+                })
 
                 Button("Restart Onboarding...") {
                     withAnimation {
@@ -102,7 +101,6 @@ struct MythicApp: App {
 
         Settings {
             SettingsView()
-                .environmentObject(sparkleController)
         }
     }
 }
@@ -110,5 +108,4 @@ struct MythicApp: App {
 #Preview {
     ContentView()
         .environmentObject(NetworkMonitor.shared)
-        .environmentObject(SparkleController())
 }
