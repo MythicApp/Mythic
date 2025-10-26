@@ -190,11 +190,14 @@ extension Wine {
     }
 
     struct ContainerDoesNotExistError: LocalizedError {
-        var errorDescription: String? = "Attempted to modify a container which doesn't exist."
+        var errorDescription: String? = """
+        Attempted to access a container that doesn't exist.
+        If relevant, please verify that the container is set correctly.
+        """
     }
 
     struct ContainerAlreadyExistsError: LocalizedError {
-        var errorDescription: String? = "Attempted to modify a container which already exists."
+        var errorDescription: String? = "Attempted to access a container that already exists."
     }
 
     struct UnableToQueryRegistryError: LocalizedError {
