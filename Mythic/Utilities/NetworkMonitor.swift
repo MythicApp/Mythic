@@ -82,5 +82,4 @@ final class NetworkMonitor: ObservableObject, @unchecked Sendable {
 #Preview {
     ContentView()
         .environmentObject(NetworkMonitor.shared)
-        .environmentObject(SparkleController())
 }

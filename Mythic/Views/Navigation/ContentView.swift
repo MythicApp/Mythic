@@ -27,8 +27,8 @@ import SemanticVersion
 // MARK: - ContentView Struct
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    @EnvironmentObject var sparkleController: SparkleController
 
+    @ObservedObject private var updateController: SparkleUpdateControllerModel = .shared
     @ObservedObject private var variables: VariableManager = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
@@ -114,6 +114,41 @@ struct ContentView: View {
                 .foregroundStyle(.placeholder)
                 .padding(.bottom)
 #endif // DEBUG
+                switch updateController.state {
+                case .updateAvailable:
+                    VStack(alignment: .center, spacing: 4) {
+                        Text("Update Available")
+                            .font(.footnote)
+                            .foregroundStyle(.placeholder)
+                        Button {
+                            updateController.checkForUpdates(userInitiated: true)
+                        } label: {
+                            Text("Show More")
+                                .frame(maxWidth: .infinity)
+                        }
+                            .buttonStyle(.borderedProminent)
+                            .clipShape(.capsule)
+                    }
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+                case .readyToRelaunch(let acknowledge):
+                    VStack(alignment: .center, spacing: 4) {
+                        Text("Update Ready")
+                            .font(.footnote)
+                            .foregroundStyle(.placeholder)
+                        Button {
+                            acknowledge(.update)
+                        } label: {
+                            Text("Relaunch")
+                                .frame(maxWidth: .infinity)
+                        }
+                            .buttonStyle(.borderedProminent)
+                            .clipShape(.capsule)
+                    }
+                    .padding(8)
+                    .frame(maxWidth: .infinity)
+                default: EmptyView()
+                }
             }, detail: {
                 HomeView()
             }
@@ -149,5 +184,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
         .environmentObject(NetworkMonitor.shared)
-        .environmentObject(SparkleController())
 }
