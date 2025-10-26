@@ -8,7 +8,6 @@
 import Foundation
 import OSLog
 import SemanticVersion
-import ZIPFoundation
 
 final class Engine {
     private static let log = Logger(
