@@ -311,6 +311,7 @@ extension SettingsView {
                         installationError: $engineInstallationError,
                         installationComplete: $engineInstallationSuccessful
                     )
+                    .padding()
                 }
 
                 Toggle("Automatically check for Mythic Engine updates", systemImage: "arrow.down.app.dashed", isOn: $engineAutomaticallyChecksForUpdates)
