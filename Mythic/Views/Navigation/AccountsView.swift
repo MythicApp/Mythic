@@ -19,145 +19,184 @@ import SwordRPC
 
 struct AccountsView: View {
     @ObservedObject private var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
+    @State private var isSignOutConfirmationPresented: Bool = false
+    @State private var epicSignOutStatusDidChange: Bool = false
+    @State private var isHoveringOverDestructiveEpicButton: Bool = false
+    // @State private var isEpicSigninFallbackAlertPresented: Bool = false
+    @State private var isEpicSigninFallbackViewPresented: Bool = false
+    @State private var isEpicSigninFallbackSuccessful: Bool = false
+    @State private var epicSigninAttemptCount: Int = 0
 
-    @State private var isEpicSignOutConfirmationAlertPresented: Bool = false
-    @State private var epicSignOutError: Error?
-    @State private var isEpicSignOutErrorAlertPresented: Bool = false
-    @State private var isEpicAccountCardRefreshed = false
+    @State private var isHoveringOverDestructiveSteamButton: Bool = false
 
+    // Spacer()s here are necessary
     var body: some View {
-        ScrollView {
+        VStack {
             HStack {
-                AccountCard(
-                    signedInUser: .constant(Legendary.user),
-                    image: Image("EGFaceless"),
-                    source: .epic,
-                    signInAction: {
-                        Task { @MainActor in
-                            epicWebAuthViewModel.showSignInWindow()
-                        }
-                    },
-                    signOutAction: {
-                        isEpicSignOutConfirmationAlertPresented = true
-                    }
-                )
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.quinary)
-                )
-                .alert(
-                    "Are you sure you want to sign out of Epic Games?",
-                    isPresented: $isEpicSignOutConfirmationAlertPresented
-                ) {
-                    Button(role: .destructive) {
-                        Task {
-                            do {
-                                try await Legendary.signOut()
-                                isEpicAccountCardRefreshed.toggle()
-                                // FIXME: no way to propogate error
-                                // below is the code to do it
-                                /*
-                                .alert(
-                                    "Unable to sign out of Epic Games.",
-                                    isPresented: $isEpicSignOutErrorAlertPresented,
-                                    presenting: epicSignOutError
-                                ) { _ in
-                                    Button(role: .close) {
+                // MARK: Epic Card
+                // TODO: create AccountCard
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.background)
+                    .aspectRatio(4/3, contentMode: .fit)
+                    .frame(maxWidth: 240)
+                    .overlay(alignment: .top) {
+                        VStack {
+                            Image("EGFaceless")
+                                .resizable()
+                                .aspectRatio(1, contentMode: .fit)
+                                .frame(width: 60)
+                            
+                            Spacer()
+                            
+                            VStack {
+                                HStack {
+                                    Text("Epic")
+                                    Spacer()
+                                }
+                                
+                                HStack {
+                                    Text(Legendary.signedIn ? "Signed in as \"\(Legendary.user ?? "Unknown")\"." : "Not signed in")
+                                        .font(.bold(.title3)())
+                                    Spacer()
+                                }
+                            }
+                            
+                            Button {
+                                if Legendary.signedIn {
+                                    isSignOutConfirmationPresented = true
+                                } else {
+                                    epicSigninAttemptCount += 1
 
-                                    } label: {
-                                        Text("OK")
+                                    if epicSigninAttemptCount < 2 {
+                                        epicWebAuthViewModel.showSignInWindow()
+                                    } else {
+                                        isEpicSigninFallbackViewPresented = true
                                     }
-                                } message: { error in
-                                    Text(error.localizedDescription)
                                 }
-                                */
-                            } catch {
-                                epicSignOutError = error
-                                isEpicSignOutErrorAlertPresented = true
+                            } label: {
+                                Image(systemName: "person")
+                                    .symbolVariant(Legendary.signedIn ? .slash : .none)
+                                    .foregroundStyle(isHoveringOverDestructiveEpicButton ? .red : .primary)
+                                    .padding(5)
+                                
+                            }
+                            .clipShape(.circle)
+                            .onHover { hovering in
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isHoveringOverDestructiveEpicButton = (hovering && Legendary.signedIn)
+                                }
+                            }
+                            /*
+                            .onChange(of: epicWebAuthViewModel.isEpicSignInWindowVisible) { _, visible in
+                                if !visible, !epicWebAuthViewModel.signInSuccess {
+                                    isEpicSigninFallbackAlertPresented = true
+                                }
+                            }
+                             // FIXME: SwiftUI doesn't like this alert, beats me.
+                             .alert(isPresented: $isEpicSigninFallbackAlertPresented) {
+                                 Alert(
+                                     title: .init("Having trouble signing in?"),
+                                     message: .init("""
+                                     Try signing into your Epic Games account manually through a web browser and try again.
+                                     If that doesn't work, you can try using the fallback method below.
+                                     """),
+                                     primaryButton: .default(.init("Try Fallback Method")) {
+                                         isEpicSigninFallbackViewPresented = true
+                                     },
+                                     secondaryButton: .cancel()
+                                 )
+                             }
+                             */
+                            .sheet(isPresented: $isEpicSigninFallbackViewPresented) {
+                                AuthView(
+                                    isPresented: $isEpicSigninFallbackViewPresented,
+                                    isSigninSuccessful: $isEpicSigninFallbackSuccessful
+                                )
+                                .padding()
                             }
                         }
-                    } label: {
-                        Text("Sign Out")
+                        .padding()
                     }
-                }
-                .id(isEpicAccountCardRefreshed)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .navigationTitle("Accounts")
-        .task(priority: .background) {
-            discordRPC.setPresence({
-                var presence: RichPresence = .init()
-                presence.details = "Currently in the accounts section."
-                presence.state = "Checking out all their accounts"
-                presence.timestamps.start = .now
-                presence.assets.largeImage = "macos_512x512_2x"
+                    .id(epicWebAuthViewModel.signInSuccess)
+                    .id(isEpicSigninFallbackSuccessful)
+                    .id(epicSignOutStatusDidChange)
+                    .alert(isPresented: $isSignOutConfirmationPresented) {
+                        Alert(
+                            title: .init("Are you sure you want to sign out of Epic Games?"),
+                            message: .init("This will sign you out of the account \"\(Legendary.user ?? "Unknown")\"."),
+                            primaryButton: .destructive(.init("Sign Out")) {
+                                Task(priority: .high) {
+                                    try? await Legendary.signOut()
+                                    epicSignOutStatusDidChange.toggle()
+                                }
+                            },
+                            secondaryButton: .cancel(.init("Cancel"))
+                        )
+                    }
 
-                return presence
-            }())
-        }
-    }
-}
-
-extension AccountsView {
-    struct AccountCard: View {
-        @Binding var signedInUser: String?
-
-        var image: Image
-        var source: Game.Source
-        var signInAction: () -> Void
-        var signOutAction: () -> Void
-
-        @State private var isHoveringOverSignOutButton: Bool = false
-        // @State private var isSignOutConfirmationAlertPresented: Bool = false
-
-        var body: some View {
-            HStack {
-                image
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .frame(width: 60)
-
-                VStack(alignment: .leading) {
-                    Text(source.rawValue)
-                        .font(.title.bold())
-
-                    Text(signedInUser != nil ? "Signed in as \"\(signedInUser ?? "Unknown")\"" : "Not signed in")
-                }
-
-                Group {
-                    if signedInUser != nil {
-                        Button("Sign Out", systemImage: "person.slash", action: signOutAction)
+                // MARK: Steam Card
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.background)
+                    .aspectRatio(4/3, contentMode: .fit)
+                    .frame(maxWidth: 240)
+                    .overlay(alignment: .top) {
+                        VStack {
+                            Image("Steam")
+                                .resizable()
+                                .aspectRatio(1, contentMode: .fit)
+                                .frame(width: 60)
+                            
+                            Spacer()
+                            
+                            VStack {
+                                HStack {
+                                    Text("Steam")
+                                    Spacer()
+                                }
+                                
+                                HStack {
+                                    Text("Coming Soon")
+                                        .font(.bold(.title3)())
+                                    Spacer()
+                                }
+                            }
+                            
+                            Button {
+                                //
+                            } label: {
+                                Image(systemName: /* signedIn ? "person.slash" : */ "person")
+                                    .foregroundStyle(isHoveringOverDestructiveSteamButton ? .red : .primary)
+                                    .padding(5)
+                                
+                            }
+                            .clipShape(.circle)
                             .onHover { hovering in
-                                withAnimation {
-                                    isHoveringOverSignOutButton = hovering
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    isHoveringOverDestructiveSteamButton = (hovering && Legendary.signedIn)
                                 }
                             }
-                            .conditionalTransform(if: isHoveringOverSignOutButton) { view in
-                                view
-                                    .foregroundStyle(.red)
-                            }
-                        /* ☹️☹️ swiftui will not let me do this, stupid hierarchy stupid swiftui rules
-                            .alert(
-                                "Are you sure you want to sign out of Epic Games?",
-                                isPresented: $isEpicSignOutConfirmationAlertPresented
-                            ) {
-                                Button(role: .destructive) {
-                                    signOutAction()
-                                } label: {
-                                    Text("Sign Out")
-                                }
-                            }
-                         */
-                    } else {
-                        Button("Sign In", systemImage: "person", action: signInAction)
+                        }
+                        .padding()
                     }
-                }
-                .clipShape(.capsule)
-                .padding(.leading)
+                    .disabled(true)
+                
+                Spacer() // push to top corner..
             }
+            .padding()
+            .navigationTitle("Accounts")
+            .task(priority: .background) {
+                discordRPC.setPresence({
+                    var presence: RichPresence = .init()
+                    presence.details = "Currently in the accounts section."
+                    presence.state = "Checking out all their accounts"
+                    presence.timestamps.start = .now
+                    presence.assets.largeImage = "macos_512x512_2x"
+                    
+                    return presence
+                }())
+            }
+            
+            Spacer() // push to top corner..
         }
     }
 }

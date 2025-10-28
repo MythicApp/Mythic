@@ -51,6 +51,7 @@ struct MythicApp: App {
             .modifier(SparkleUpdaterSheetViewModifier())
             .frame(minWidth: 850, minHeight: 400)
         }
+        
         .handlesExternalEvents(matching: ["open"])
         .environment(
             \.whatsNew,
@@ -83,9 +84,50 @@ struct MythicApp: App {
                 Button("Restart Onboarding...") {
                     withAnimation {
                         isOnboardingPresented = true
+                        }
+                    }
+                    .disabled(isOnboardingPresented)
+                }
+                
+            CommandGroup(replacing: .help){
+                Button("Website") {
+                    if let websiteURL = URL(string: "https://getmythic.app/") {
+                        NSWorkspace.shared.open(websiteURL)
+                        }
+                    }
+
+                Button("Documentation") {
+                    if let docUrl = URL(string: "https://docs.getmythic.app/") {
+                        NSWorkspace.shared.open(docUrl)
+                        }
+                    }
+                Button("Discord Server") {
+                    if let discordInviteUrl = URL(string: "https://discord.gg/kQKdvjTVqh") {
+                        NSWorkspace.shared.open(discordInviteUrl)
+                        }
+                    }
+                Button("GitHub Repository") {
+                    if let githubUrl = URL(string: "https://github.com/MythicApp/Mythic") {
+                        NSWorkspace.shared.open(githubUrl)
                     }
                 }
-                .disabled(isOnboardingPresented)
+                Button("Compatibility List") {
+                    if let gameListURL = URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/") {
+                        NSWorkspace.shared.open(gameListURL)
+                    }
+                }
+                Divider()
+                Button("What's new in Mythic") {
+                    if let whatsNewUrl = URL(string: "https://github.com/MythicApp/Mythic/releases") {
+                        NSWorkspace.shared.open(whatsNewUrl)
+                    }
+                }
+                Divider()
+                Button("Support the project") {
+                    if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
+                        NSWorkspace.shared.open(donationUrl)
+                    }
+                }
             }
         }
 
