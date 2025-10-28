@@ -1,7 +1,7 @@
 <h1 align="center">
   <br>
   <a href="https://getmythic.app">
-    <img src="https://github.com/MythicApp/Mythic/assets/41133734/55df5b7d-f40f-4048-a5d9-e3746d92e138" 
+    <img src="https://github.com/user-attachments/assets/dd702812-0d06-47a5-bd25-3f2dcf40aeee" 
       style="width: 20%; height: 20%;">
   </a>
 
@@ -13,10 +13,9 @@
   [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
 </h1>
 
-<h4><b>A unique open-source game launcher for macOS with the ability to run Windows games.</b></h4>
+<h3 align="center">A unique open-source game launcher for macOS with the ability to run Windows games, and integrate with other game sources.</h3>
 
-
-Mythic is also a GUI frontend for [Legendary](https://github.com/derrod/legendary), that keeps coherence with the rest of macOS in mind.
+<br>
 
 ## Features
 - [x] [Windows Game Support](https://github.com/MythicApp/Engine) (DX9-12) (64-bit)
@@ -31,8 +30,6 @@ There are more big things coming your way for Mythic, see the [roadmap](https://
 If you believe something's missing from the roadmap that we should add to the app, join our [Discord](https://discord.com/invite/58NZ7fFqPy), [open an issue](https://github.com/MythicApp/Mythic/issues/new/choose), or open a [pull request](https://github.com/MythicApp/Mythic/pulls).
 
 ## Download
-At midnight on the 19th of May, Mythic finally released!
-
 [Download it now!](https://github.com/MythicApp/Mythic/releases)
 
 * Please note Mythic is only available for macOS 14 (Sonoma) and above.
@@ -41,14 +38,15 @@ At midnight on the 19th of May, Mythic finally released!
 ## Dependencies
 Mythic uses the following Swift dependencies:
 
-- [Sparkle](https://github.com/sparkle-project/Sparkle) - A software update framework for macOS.
-- [swiftui-cached-asyncimage](https://github.com/lorenzofiamingo/swiftui-cached-async-image) - CachedAsyncImage is the simplest way to add cache to your AsyncImage.
-- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) - The better way to deal with JSON data in Swift. 
-- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) - Effortless ZIP Handling in Swift
-- [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) - Semantic version structuring & parsing
-- [ColorfulX](https://github.com/Lakr233/ColorfulX) - An implementation using Metal for crafting multi-colored gradients.
-- [Glur](https://github.com/joogps/Glur) - A SwiftUI library that uses Metal to display efficient progressive blurs
-- [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) - A Swift Package to easily showcase your new app features.
+- [Sparkle](https://github.com/sparkle-project/Sparkle) — A software update framework for macOS.
+- [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) — The better way to deal with JSON data in Swift. 
+- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) — Effortless ZIP Handling in Swift
+- [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) — Semantic version structuring & parsing
+- [ColorfulX](https://github.com/Lakr233/ColorfulX) — An implementation using Metal for crafting multi-colored gradients.
+- [Glur](https://github.com/joogps/Glur) — A SwiftUI library that uses Metal to display efficient progressive blurs
+- [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) — A Swift Package to easily showcase your new app features.
+- [firebase-ios-sdk](https://github.com/firebase/firebase-ios-sdk) — Firebase SDK for Apple App Development
+- [SwiftUI-Shimmer](https://github.com/markiv/SwiftUI-Shimmer) — A super-light modifier that adds a shimmering effect to any SwiftUI View.
 
 ## License
 Copyright © 2025 vapidinfinity
