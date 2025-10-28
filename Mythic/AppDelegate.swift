@@ -241,11 +241,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     }
                 }
             }
+
+            return .terminateLater
         }
 
         return .terminateNow
     }
 
+    @MainActor
     func applicationWillTerminate(_: Notification) {
         if defaults.bool(forKey: "quitOnAppClose") { try? Wine.killAll() }
         Task { await Legendary.RunningCommands.shared.stopAll() }
