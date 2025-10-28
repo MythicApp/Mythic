@@ -7,39 +7,12 @@
   },
   "groups" : [
     {
-      "blur-material" : 0.5,
-      "hidden" : false,
       "layers" : [
         {
-          "glass" : true,
-          "image-name" : "Rectangles 3.svg",
-          "name" : "Rectangles 3",
+          "image-name" : "Mythic Evo Icon.svg",
+          "name" : "Mythic Evo Icon",
           "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "blend-mode" : "normal",
-          "glass" : true,
-          "image-name" : "Rectangles 2.svg",
-          "name" : "Rectangles 2",
-          "position" : {
-            "scale" : 1,
-            "translation-in-points" : [
-              0,
-              0
-            ]
-          }
-        },
-        {
-          "image-name" : "Rectangles 1.svg",
-          "name" : "Rectangles 1",
-          "position" : {
-            "scale" : 1,
+            "scale" : 1.2,
             "translation-in-points" : [
               0,
               0
@@ -47,19 +20,10 @@
           }
         }
       ],
-      "lighting" : "combined",
-      "position" : {
-        "scale" : 1.5,
-        "translation-in-points" : [
-          0,
-          0
-        ]
-      },
       "shadow" : {
-        "kind" : "layer-color",
+        "kind" : "neutral",
         "opacity" : 0.5
       },
-      "specular" : true,
       "translucency" : {
         "enabled" : true,
         "value" : 0.5
