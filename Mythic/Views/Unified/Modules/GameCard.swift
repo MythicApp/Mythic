@@ -247,8 +247,8 @@ extension GameCard {
                                 case .success(let url):
                                     guard url.startAccessingSecurityScopedResource() else { return }
                                     defer { url.stopAccessingSecurityScopedResource() }
-
-                                    let thumbnailDirectoryURL: URL = Bundle.appHome!.appending(path: "Thumbnails/Custom/\(game.source.rawValue)")
+                                    guard let appHome = Bundle.appHome else { return }
+                                    let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(game.source.rawValue)")
 
                                     do {
                                         if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {

@@ -101,8 +101,7 @@ struct InstallStatusView: View {
         }
         
         HStack {
-            GameInstallProgressView
-                .OperationProgressView(showInitializer: false)
+            GameInstallProgressView.OperationProgressView(operation: operation, showInitializer: false)
 
             Button("Close") { isPresented = false }
                 .buttonStyle(.borderedProminent)

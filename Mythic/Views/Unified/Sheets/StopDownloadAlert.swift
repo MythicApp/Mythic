@@ -15,7 +15,7 @@ import SwiftUI
     - game: The game for which the download is stopped.
  - Returns: An `Alert` instance.
  */
-func stopGameOperationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert { // rename to stopGameOperationAlert
+func stopGameOperationAlert(isPresented: Binding<Bool>, game: Game?) -> Alert {
     return Alert(
         title: Text("Are you sure you want to stop \(GameOperation.shared.current?.type.rawValue ?? "modifying") \(game?.title ?? "this game")?"),
         primaryButton: .destructive(Text("Stop")) {

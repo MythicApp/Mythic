@@ -13,68 +13,81 @@ struct GameInstallProgressView: View {
     var withPercentage: Bool = true
 
     @ObservedObject private var operation: GameOperation = .shared
-    @State private var isStopGameModificationAlertPresented: Bool = false
     @State private var isInstallStatusViewPresented: Bool = false
-    @State private var isHoveringOverDestructiveButton: Bool = false
     @State private var paused: Bool = false // For issue: https://github.com/derrod/legendary/issues/40
 
     var body: some View {
-        if operation.current?.game != nil {
+        if let currentOperation = operation.current {
             HStack {
-                OperationProgressView(withPercentage: withPercentage)
+                OperationProgressView(operation: operation, withPercentage: withPercentage)
                     .layoutPriority(1)
 
-                if operation.current?.type != .repair {
-                    infoButton()
+                if currentOperation.type != .repair {
+                    StatusButton()
                 }
 
-                stopButton()
+                StopButton(operation: operation)
+            }
+        }
+    }
+}
+
+extension GameInstallProgressView {
+    struct StatusButton: View {
+        @State private var isInstallStatusViewPresented: Bool = false
+
+        var body: some View {
+            Button {
+                isInstallStatusViewPresented = true
+            } label: {
+                Image(systemName: "info.circle")
+            }
+            .clipShape(.capsule)
+            .help("Show install status")
+            .sheet(isPresented: $isInstallStatusViewPresented) {
+                InstallStatusView(isPresented: $isInstallStatusViewPresented)
             }
         }
     }
 
-    // MARK: - Helper Functions
+    struct StopButton: View {
+        @ObservedObject var operation: GameOperation
 
-    @ViewBuilder
-    private func infoButton() -> some View {
-        Button {
-            isInstallStatusViewPresented = true
-        } label: {
-            Image(systemName: "info.circle")
-        }
-        .clipShape(.capsule)
-        .help("Show install status")
-        .sheet(isPresented: $isInstallStatusViewPresented) {
-            InstallStatusView(isPresented: $isInstallStatusViewPresented)
-        }
-    }
+        @State private var isStopGameModificationAlertPresented: Bool = false
+        @State private var isHoveringOverDestructiveButton: Bool = false
 
-    @ViewBuilder
-    private func stopButton() -> some View {
-        Button {
-            isStopGameModificationAlertPresented = true
-        } label: {
-            Image(systemName: "xmark")
-                .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
-                    view.foregroundStyle(.red)
+        var body: some View {
+            if let currentOperation = operation.current {
+                Button {
+                    isStopGameModificationAlertPresented = true
+                } label: {
+                    Image(systemName: "xmark")
+                        .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
+                            view.foregroundStyle(.red)
+                        }
                 }
-        }
-        .clipShape(.capsule)
-        .help("Stop installing")
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.1)) {
-                isHoveringOverDestructiveButton = hovering
+                .clipShape(.capsule)
+                .help("Stop installing")
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: 0.1)) {
+                        isHoveringOverDestructiveButton = hovering
+                    }
+                }
+                .alert(isPresented: $isStopGameModificationAlertPresented) {
+                    stopGameOperationAlert(
+                        isPresented: $isStopGameModificationAlertPresented,
+                        game: currentOperation.game
+                    )
+                }
             }
-        }
-        .alert(isPresented: $isStopGameModificationAlertPresented) {
-            stopGameOperationAlert(isPresented: $isStopGameModificationAlertPresented, game: operation.current!.game)
         }
     }
 }
 
 extension GameInstallProgressView {
     struct OperationProgressView: View {
-        @ObservedObject private var operation: GameOperation = .shared
+        @ObservedObject var operation: GameOperation
+
         var withPercentage: Bool = false
         var showInitializer: Bool = true
 
