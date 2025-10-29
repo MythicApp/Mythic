@@ -153,7 +153,13 @@ import Shimmer
 
             var body: some View {
                 Button {
-                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .repair))
+                    operation.queue.append(
+                        GameOperation.InstallArguments(
+                            game: game,
+                            platform: game.platform!,
+                            type: .repair
+                        )
+                    )
                 } label: {
                     if withLabel {
                         Label("Verify", systemImage: "checkmark.circle.badge.questionmark")
@@ -175,7 +181,13 @@ import Shimmer
 
             var body: some View {
                 Button {
-                    operation.queue.append(GameOperation.InstallArguments(game: game, platform: game.platform!, type: .update))
+                    operation.queue.append(
+                        GameOperation.InstallArguments(
+                            game: game,
+                            platform: game.platform!,
+                            type: .update
+                        )
+                    )
                 } label: {
                     if withLabel {
                         if game.needsUpdate {
