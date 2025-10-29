@@ -18,7 +18,7 @@ struct InstallViewEvo: View {
 
     @State private var isInstallLocationFileImporterPresented: Bool = false
 
-    @State var installSize: Double?
+    @State var installSizeInBytes: Int64?
 
     @State private var supportedPlatforms: [Game.Platform]?
     @State var platform: Game.Platform = .macOS
@@ -28,6 +28,9 @@ struct InstallViewEvo: View {
 
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
     @ObservedObject var operation: GameOperation = .shared
+
+    @State private var isFreeSpaceAlertPresented: Bool = false
+    @State private var freeSpaceInBytes: Int64?
 
     private func fetchOptionalPacks() async {
         guard !fetchingOptionalPacks else { return }
@@ -47,15 +50,13 @@ struct InstallViewEvo: View {
             onChunk: { chunk in
                 switch chunk.stream {
                 case .standardError:
-                    if chunk.output.contains("Install size:") {
-                        if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: chunk.output) {
-                            let sizeString = match[1].substring ?? ""
-                            let sizeValue = Double(sizeString) ?? 0.0
+                    if let match = try? Regex(#"Install size: (\d+(\.\d+)?) MiB"#).firstMatch(in: chunk.output) { // install size is explicitly returned as MiB
+                        let sizeString = match[1].substring ?? ""
+                        let sizeValue = Double(sizeString) ?? 0.0
 
-                            Task {
-                                await MainActor.run {
-                                    installSize = sizeValue
-                                }
+                        Task {
+                            await MainActor.run {
+                                installSizeInBytes = Int64(Int(sizeValue) * 1048576) // convert MiB → B, double-wrap is necessary
                             }
                         }
                     }
@@ -234,10 +235,42 @@ struct InstallViewEvo: View {
             Spacer()
 
             HStack {
-                if let installSize = installSize, !fetchingOptionalPacks {
-                    Text("\(String(format: "%.2f", Double(installSize * (1000000 / 1048576)) / (installSize > 1024 ? 1024 : 1))) \(installSize > 1024 ? "GB" : "MB")")
+                if let installSize = installSizeInBytes, !fetchingOptionalPacks {
+                    Text(ByteCountFormatter.string(fromByteCount: installSize, countStyle: .file))
                         .font(.footnote)
                         .foregroundStyle(.placeholder)
+                        .onAppear {
+                            let filesystemAttributes = try? files.attributesOfFileSystem(forPath: Bundle.appHome?.path ?? "/")
+                            guard let freeSpace = filesystemAttributes?[.systemFreeSize] as? Int64 else { return }
+                            freeSpaceInBytes = freeSpace
+                            if freeSpace < installSize {
+                                isFreeSpaceAlertPresented = true
+                            }
+                        }
+                        .alert(
+                            "Insufficient Free Space",
+                            isPresented: $isFreeSpaceAlertPresented,
+                            presenting: freeSpaceInBytes
+                        ) { _ in
+                            if #available(macOS 26.0, *) {
+                                Button("OK", role: .close) {
+                                    isPresented = false
+                                }
+                            } else {
+                                Button("OK", role: .cancel) {
+                                    isPresented = false
+                                }
+                            }
+                        } message: { freeSpaceInBytes in
+                            let formattedFreeSpace: String = ByteCountFormatter.string(fromByteCount: freeSpaceInBytes, countStyle: .file)
+                            let formattedInstallSize: String = ByteCountFormatter.string(fromByteCount: installSize, countStyle: .file)
+
+                            Text("""
+                                This game requires \(formattedInstallSize) of free space to install.
+                                Currently, you only have \(formattedFreeSpace) available.
+                                Please create more storage space and try installing the game again.
+                                """)
+                        }
                 }
 
                 if fetchingOptionalPacks {
