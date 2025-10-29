@@ -40,7 +40,7 @@ extension Legendary {
 
     /// Installation error with a message, see ``Legendary.install()``
     struct InstallationError: LocalizedError {
-        init(errorDescription: String, reason: String = .init()) {
+        init(reason: String = .init()) {
             self.reason = reason
         }
 

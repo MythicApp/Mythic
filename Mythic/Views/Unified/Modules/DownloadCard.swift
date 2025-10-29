@@ -33,8 +33,8 @@ struct DownloadCard: View {
     
     private var progressText: Text {
         let progress = Int(operation.status.progress?.percentage ?? 0)
-        let speed = Int(operation.status.downloadSpeed?.raw ?? 0.0 * (1000000 / 1048576) /* MiB/s to MB/s conversion */)
-        let eta = operation.status.progress?.eta ?? "00:00:00"
+        let speed = Int(operation.status.downloadSpeed?.raw ?? 0.0 * (1000000 / 1048576) /* FIXME: MiB/s to MB/s conversion */)
+        let eta = operation.status.progress?.eta ?? "Unknown"
         return .init("\(progress)% • ↓ \(speed) MB/s • ⏲︎ \(eta)")
     }
     

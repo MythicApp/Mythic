@@ -46,7 +46,7 @@ struct InstallStatusView: View {
                     Text("Time Remaining:")
                     Spacer()
                     Text("\(operation.status.progress?.eta ?? "Unknown")")
-                    Text("(\(operation.status.progress?.runtime ?? "00:00:00") Elapsed)")
+                    Text("(\(operation.status.progress?.runtime ?? "N/A") Elapsed)")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -95,9 +95,10 @@ struct InstallStatusView: View {
             }
             .formStyle(.grouped)
         } else {
-            Text("No installation is currently running.")
-                .font(.bold(.title)())
-                .padding([.horizontal, .top])
+            ContentUnavailableView(
+                "No download is currently in progress.",
+                systemImage: "externaldrive.badge.checkmark"
+            )
         }
         
         HStack {

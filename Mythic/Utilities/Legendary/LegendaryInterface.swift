@@ -134,7 +134,7 @@ final class Legendary {
                     // work handled in onChunk
                 }
             } catch is CancellationError {
-                // expected when cancelled via stop(id:)
+                do {} // expected when cancelled via stop(id:)
             } catch {
                 throw error
             }
@@ -151,39 +151,43 @@ final class Legendary {
     /**
      Installs, updates, or repairs games using legendary.
      */
-    static func install(args: GameOperation.InstallArguments, priority: Bool = false) async throws {
+    static func install(arguments: GameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn else { throw NotSignedInError() }
-        guard case .epic = args.game.source else { throw IsNotLegendaryError() }
+        guard case .epic = arguments.game.source else { throw IsNotLegendaryError() }
 
-        var argBuilder = [
+        var commandArguments = [
             "-y", "install",
-            args.game.id,
-            {
-                switch args.type {
-                case .install: return nil
-                case .update:  return "--update-only"
-                case .repair:  return "--repair"
-                }
-            }()
-        ].compactMap { $0 }
+            arguments.game.id
+        ]
+        
+        switch arguments.type {
+        case .install:
+            do {} // installs by default; no arguments necessary
+        case .update:
+            commandArguments.append("--update-only")
+        case .repair:
+            commandArguments.append("--repair")
+        }
 
-        if case .install = args.type {
-            switch args.platform {
-            case .macOS:   argBuilder += ["--platform", "Mac"]
-            case .windows: argBuilder += ["--platform", "Windows"]
+        if case .install = arguments.type {
+            switch arguments.platform {
+            case .macOS:
+                commandArguments += ["--platform", "Mac"]
+            case .windows:
+                commandArguments += ["--platform", "Windows"]
             }
 
-            if let baseURL = args.baseURL, files.fileExists(atPath: baseURL.path) {
-                argBuilder += ["--base-path", baseURL.path(percentEncoded: false)]
+            if let baseURL = arguments.baseURL, files.fileExists(atPath: baseURL.path) {
+                commandArguments += ["--base-path", baseURL.path(percentEncoded: false)]
             }
 
-            if let gameFolder = args.gameFolder, files.fileExists(atPath: gameFolder.path) {
-                argBuilder += ["--game-folder", gameFolder.absoluteString]
+            if let gameFolder = arguments.gameFolder, files.fileExists(atPath: gameFolder.path) {
+                commandArguments += ["--game-folder", gameFolder.absoluteString]
             }
         }
 
-        let optionalPacks = args.optionalPacks
-        let gameTitle = args.game.title
+        let optionalPacks = arguments.optionalPacks
+        let gameTitle = arguments.game.title
 
         // i dont like you swift 6
         final class ErrorBox: @unchecked Sendable {
@@ -202,98 +206,127 @@ final class Legendary {
                 }
             }
         }
+
         let errorBox = ErrorBox()
 
         let consumer = await executeStreamed(
             identifier: "install",
-            arguments: argBuilder,
+            arguments: commandArguments,
             onChunk: { chunk in
-                // swiftlint:disable force_try
-                let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
-                let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
-                let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
-                let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
-                let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
-                // swiftlint:enable force_try
+                switch chunk.stream {
+                case .standardError:
+                    if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
+                       let errorReason = match.last?.substring {
+                        errorBox.set(Legendary.InstallationError(reason: String(errorReason)))
+                    }
 
-                if chunk.output.contains("Additional packs") {
-                    if let packs = optionalPacks, !packs.isEmpty {
-                        return packs.joined(separator: ", ") + "\n"
-                    } else {
-                        return "\n"
+                    if chunk.output.contains("Verification finished successfully.") {
+                        Task { @MainActor in
+                            let alert = NSAlert()
+                            alert.messageText = "Successfully verified \"\(gameTitle)\"."
+                            alert.informativeText = "\"\(gameTitle)\" is now ready to be played."
+                            alert.alertStyle = .informational
+                            alert.addButton(withTitle: "OK")
+                            if let window = NSApp.windows.first { alert.beginSheetModal(for: window) }
+                        }
+                    }
+
+                    if chunk.output.contains("All done! Download manager quitting...") {
+                        Task { @MainActor in
+                            GameOperation.shared.current = nil
+                        }
+                    }
+
+                case .standardOutput:
+                    // append optional packs to legendary's stdin when it requests for them
+                    if chunk.output.contains("Additional packs") {
+                        return (optionalPacks?.joined(separator: ", ") ?? .init()) + "\n" // use \n as return key
                     }
                 }
 
-                if chunk.output.contains("All done! Download manager quitting...") {
-                    Task {
-                        await MainActor.run {
-                            GameOperation.shared.current = nil
+                // Download status handling
+                if case .standardError = chunk.stream {
+                    // swiftlint:disable force_try
+                    let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
+                    let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
+                    let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
+                    let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
+                    let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
+                    // swiftlint:enable force_try
+
+                    /*
+                     SAMPLE LEGENDARY OUTPUT
+                     [DLManager] INFO: = Progress: 47.28% (261/552), Running for 00:00:14, ETA: 00:00:15
+                     [DLManager] INFO:  - Downloaded: 93.43 MiB, Written: 215.42 MiB
+                     [DLManager] INFO:  - Cache usage: 33.00 MiB, active tasks: 32
+                     [DLManager] INFO:  + Download    - 7.99 MiB/s (raw) / 17.00 MiB/s (decompressed)
+                     [DLManager] INFO:  + Disk    - 17.00 MiB/s (write) / 0.00 MiB/s (read)
+                     */
+
+                    Task { @MainActor in
+                        if let match = try? progressRegex.firstMatch(in: chunk.output) {
+                            GameOperation.shared.status.progress = GameOperation.InstallStatus.Progress(
+                                percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
+                                downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
+                                totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? ""),
+                                runtime: match["runtime"]?.substring.map(String.init),
+                                eta: match["eta"]?.substring.map(String.init)
+                            )
+                        }
+                        if let match = try? downloadRegex.firstMatch(in: chunk.output) {
+                            GameOperation.shared.status.download = GameOperation.InstallStatus.Download(
+                                downloaded: Double(match["downloaded"]?.substring.map(String.init) ?? ""),
+                                written: Double(match["written"]?.substring.map(String.init) ?? "")
+                            )
+                        }
+                        if let match = try? cacheRegex.firstMatch(in: chunk.output) {
+                            GameOperation.shared.status.cache = GameOperation.InstallStatus.Cache(
+                                usage: Double(match["usage"]?.substring.map(String.init) ?? ""),
+                                activeTasks: Int(match["activeTasks"]?.substring.map(String.init) ?? "")
+                            )
+                        }
+                        if let match = try? downloadSpeedRegex.firstMatch(in: chunk.output) {
+                            GameOperation.shared.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                                raw: Double(match["raw"]?.substring.map(String.init) ?? ""),
+                                decompressed: Double(match["decompressed"]?.substring.map(String.init) ?? "")
+                            )
+                        }
+                        if let match = try? diskSpeedRegex.firstMatch(in: chunk.output) {
+                            GameOperation.shared.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
+                                write: Double(match["write"]?.substring.map(String.init) ?? ""),
+                                read: Double(match["read"]?.substring.map(String.init) ?? "")
+                            )
                         }
                     }
                 }
 
-                if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
-                   let reasonSS = match.last?.substring {
-                    errorBox.set(Legendary.InstallationError(errorDescription: String(reasonSS)))
-                }
-
-                if chunk.output.contains("Verification finished successfully.") {
-                    Task { @MainActor in
-                        let alert = NSAlert()
-
-                        alert.messageText = String(localized: "Successfully verified \"\(gameTitle)\".")
-                        alert.informativeText = String(localized: "\"\(gameTitle)\" is now ready to be played.")
-                        alert.alertStyle = .informational
-                        alert.addButton(withTitle: String(localized: "OK"))
-
-                        if let window = NSApp.windows.first { alert.beginSheetModal(for: window) }
+                // Verification status handling
+                if case .standardOutput = chunk.stream, case .repair = arguments.type {
+                    // swiftlint:disable force_try
+                    let verificationProgressRegex = try! Regex(#"Verification progress: (?<downloadedObjects>\d+)\/(?<totalObjects>\d+) \((?<percentage>[\d.]+)%\) \[(?<rawDownloadSpeed>[\d.]+) MiB\/s\]"#)
+                    // swiftlint:enable force_try
+                    
+                    /*
+                     SAMPLE LEGENDARY OUTPUT
+                     Verification progress: 18053/18780 (98.7%) [1020.6 MiB/s] // main progress
+                     => Verifying large file "TAGame/CookedPCConsole/Textures3.tfc": 45% (1151.0/2576.2 MiB) [1186.8 MiB/s] // progress for large files (unhandled)
+                     */
+                    
+                    if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
+                        Task { @MainActor in
+                            GameOperation.shared.status.progress = GameOperation.InstallStatus.Progress(
+                                percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
+                                downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
+                                totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? "")
+                            )
+                            
+                            GameOperation.shared.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                                raw: Double(match["rawDownloadSpeed"]?.substring.map(String.init) ?? "")
+                            )
+                        }
                     }
                 }
-
-                if let match = try? progressRegex.firstMatch(in: chunk.output) {
-                    Task { @MainActor in
-                        GameOperation.shared.status.progress = GameOperation.InstallStatus.Progress(
-                            percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
-                            downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? "") ?? 0,
-                            totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? "") ?? 0,
-                            runtime: match["runtime"]?.substring.map(String.init) ?? "00:00:00",
-                            eta: match["eta"]?.substring.map(String.init) ?? "00:00:00"
-                        )
-                    }
-                }
-                if let match = try? downloadRegex.firstMatch(in: chunk.output) {
-                    Task { @MainActor in
-                        GameOperation.shared.status.download = GameOperation.InstallStatus.Download(
-                            downloaded: Double(match["downloaded"]?.substring.map(String.init) ?? "") ?? 0.0,
-                            written: Double(match["written"]?.substring.map(String.init) ?? "") ?? 0.0
-                        )
-                    }
-                }
-                if let match = try? cacheRegex.firstMatch(in: chunk.output) {
-                    Task { @MainActor in
-                        GameOperation.shared.status.cache = GameOperation.InstallStatus.Cache(
-                            usage: Double(match["usage"]?.substring.map(String.init) ?? "") ?? 0.0,
-                            activeTasks: Int(match["activeTasks"]?.substring.map(String.init) ?? "") ?? 0
-                        )
-                    }
-                }
-                if let match = try? downloadSpeedRegex.firstMatch(in: chunk.output) {
-                    Task { @MainActor in
-                        GameOperation.shared.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
-                            raw: Double(match["raw"]?.substring.map(String.init) ?? "") ?? 0.0,
-                            decompressed: Double(match["decompressed"]?.substring.map(String.init) ?? "") ?? 0.0
-                        )
-                    }
-                }
-                if let match = try? diskSpeedRegex.firstMatch(in: chunk.output) {
-                    Task { @MainActor in
-                        GameOperation.shared.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
-                            write: Double(match["write"]?.substring.map(String.init) ?? "") ?? 0.0,
-                            read: Double(match["read"]?.substring.map(String.init) ?? "") ?? 0.0
-                        )
-                    }
-                }
-
+                
                 return nil
             }
         )
@@ -327,11 +360,10 @@ final class Legendary {
     @discardableResult
     static func signIn(authKey: String) async throws -> String {
         let result = try await execute(arguments: ["auth", "--code", authKey])
-        // Legendary prints login success to stderr
         if let match = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#).firstMatch(in: result.standardError),
-           let usernameSS = match["username"]?.substring {
+           let username = match["username"]?.substring {
             await GameListVM.shared.refresh()
-            return String(usernameSS)
+            return String(username)
         }
         throw SignInError()
     }
@@ -361,7 +393,6 @@ final class Legendary {
                 )
             }
 
-            // FIXME: notify the user lol
             return // allow the game to repair first!!
         }
 

@@ -234,10 +234,15 @@ extension Process {
 
             // cancel/finish handling: if the consumer cancels, terminate the child gracefully.
             continuation.onTermination = { @Sendable _ in
-                if process.isRunning {
-                    process.terminate()
+                Task.detached {
+                    if process.isRunning { process.interrupt() } // try sigint
+                    try? await Task.sleep(for: .seconds(5))
+                    if process.isRunning { process.terminate() } // try sigterm
+                    try? await Task.sleep(for: .seconds(2))
+                    if process.isRunning { kill(process.processIdentifier, SIGKILL) } // sigkill, taking too long smh
+
+                    safeClose()
                 }
-                safeClose()
             }
 
             process.terminationHandler = { _ in

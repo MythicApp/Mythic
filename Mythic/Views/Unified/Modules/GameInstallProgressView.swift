@@ -17,7 +17,7 @@ struct GameInstallProgressView: View {
     @State private var paused: Bool = false // For issue: https://github.com/derrod/legendary/issues/40
 
     var body: some View {
-        if let currentOperation = operation.current {
+        if operation.current != nil {
             HStack {
                 OperationProgressView(operation: operation, withPercentage: withPercentage)
                     .layoutPriority(1)

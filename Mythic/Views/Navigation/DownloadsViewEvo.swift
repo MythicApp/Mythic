@@ -26,7 +26,7 @@ struct DownloadsEvo: View {
                         "No queued downloads.",
                         systemImage: "externaldrive.badge.checkmark",
                         description: .init("""
-                        If you try to download more than one game at the same time, it'll be added to this queue.
+                        If you attempt to download more than one game at the same time, it'll be added to this queue.
                         """)
                     )
                 } else {

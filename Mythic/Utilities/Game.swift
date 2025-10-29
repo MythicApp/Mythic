@@ -326,7 +326,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                 
                 Task(priority: .high) {
                     do {
-                        try await Legendary.install(args: current, priority: false)
+                        try await Legendary.install(arguments: current, priority: false)
                         
                         try? await notifications.add(
                             .init(identifier: UUID().uuidString,
@@ -519,30 +519,30 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         // swiftlint:disable nesting
         struct Progress {
             var percentage: Double
-            var downloadedObjects: Int
-            var totalObjects: Int
-            var runtime: String
-            var eta: String
+            var downloadedObjects: Int?
+            var totalObjects: Int?
+            var runtime: String?
+            var eta: String?
         }
         
         struct Download {
-            var downloaded: Double
-            var written: Double
+            var downloaded: Double?
+            var written: Double?
         }
         
         struct Cache {
-            var usage: Double
-            var activeTasks: Int
+            var usage: Double?
+            var activeTasks: Int?
         }
         
         struct DownloadSpeed {
-            var raw: Double
-            var decompressed: Double
+            var raw: Double?
+            var decompressed: Double?
         }
         
         struct DiskSpeed {
-            var write: Double
-            var read: Double
+            var write: Double?
+            var read: Double?
         }
         // swiftlint:enable nesting
         
