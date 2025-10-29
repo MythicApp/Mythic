@@ -22,9 +22,7 @@ struct GameInstallProgressView: View {
                 OperationProgressView(operation: operation, withPercentage: withPercentage)
                     .layoutPriority(1)
 
-                if currentOperation.type != .repair {
-                    StatusButton()
-                }
+                StatusButton()
 
                 StopButton(operation: operation)
             }
