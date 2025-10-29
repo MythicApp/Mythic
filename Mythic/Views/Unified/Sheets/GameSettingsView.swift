@@ -215,7 +215,7 @@ private extension GameSettingsView {
     var verificationProgressView: some View {
         HStack {
             if operation.status.progress != nil {
-                ProgressView(value: operation.status.progress?.percentage)
+                ProgressView(value: operation.status.progress?.percentage, total: 100.0)
                     .controlSize(.small)
                     .progressViewStyle(.linear)
             } else {
