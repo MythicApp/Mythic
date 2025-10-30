@@ -19,8 +19,16 @@ jobs:
     runs-on: macos-26
     steps:
     - uses: actions/checkout@v5
+
+    - uses: irgaly/xcode-cache@v1
+      with:
+        key: xcode-cache-deriveddata-${{ github.workflow }}-${{ github.sha }}
+        restore-keys: xcode-cache-deriveddata-${{ github.workflow }}-
+        
     - run: |
         xcodebuild -scheme Mythic \
           CODE_SIGNING_ALLOWED=NO \
           SWIFTLINT=NO \
+          -parallel-testing-enabled YES \
+          -jobs $(sysctl -n hw.ncpu) \
           -verbose
