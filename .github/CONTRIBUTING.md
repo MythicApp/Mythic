@@ -48,7 +48,7 @@
   ```swift
   <#Xcode default header#>
   
-  // Copyright © 2025 vapidinfinity
+  // Copyright © 2023-<#Current year#> vapidinfinity
   ```
 
 ## Getting Help
