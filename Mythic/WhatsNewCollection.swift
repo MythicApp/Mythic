@@ -8,7 +8,7 @@
 import WhatsNewKit
 import SwiftUI
 
-extension MythicApp: WhatsNewCollectionProvider {
+extension MythicApp: @MainActor WhatsNewCollectionProvider {
     var whatsNewCollection: WhatsNewCollection {
         WhatsNew(
             version: "0.4.1",
@@ -204,6 +204,88 @@ extension MythicApp: WhatsNewCollectionProvider {
             secondaryAction: .init(
                 title: "Learn more",
                 action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.5"))
+            )
+        )
+
+        WhatsNew(
+            version: "0.4.5",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(
+                        systemName: "ladybug",
+                        foregroundColor: .red
+                    ),
+                    title: "Bug Fixes & Performance Improvements",
+                    subtitle: "Back to just the usual. 🙏🏾"
+                ),
+                .init(
+                    image: .init(
+                        systemName: "person.badge.shield.exclamationmark",
+                        foregroundColor: .orange
+                    ),
+                    title: "Added fallback signin view support",
+                    subtitle: "Users can now sign into Epic Games accounts through third parties by using the fallback signin view."
+                ),
+                .init(
+                    image: .init(
+                        systemName: "progress.indicator",
+                        foregroundColor: .purple
+                    ),
+                    title: "Immediate game library population",
+                    subtitle: "Mythic's game library will now immediately populate upon signing in."
+                ),
+                .init(
+                    image: .init(image: {
+                        Image("HarmonyIcon")
+                            .resizable()
+                            .scaledToFit()
+                    }),
+                    title: "Stay tuned! 👀",
+                    subtitle: "Something's coming to Mythic."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.5"))
+            )
+        )
+
+        WhatsNew(
+            version: "0.5.0",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(systemName: "ladybug"),
+                    title: "Bug Fixes & Performance Improvements",
+                    subtitle: "A fair bit of bugfixes this time around."
+                ),
+                .init(
+                    image: .init(systemName: "macwindow"),
+                    title: "Brand New Interface",
+                    subtitle: "Mythic now uses Apple's new 'Liquid Glass' design language (and looks amazing doing it!)"
+                ),
+                .init(
+                    image: .init(systemName: "figure.wave"),
+                    title: "Overhauled Onboarding Experience",
+                    subtitle: "Reimagined for speed and ease-of-use."
+                ),
+                .init(
+                    image: .init(systemName: "macwindow.and.pointer.arrow"),
+                    title: "Improved View Responsiveness",
+                    subtitle: "Smoother scrolling, snappier animations, happier everyone!!"
+                ),
+                .init(
+                    image: .init(systemName: "curlybraces"),
+                    title: "Codebase Improvements",
+                    subtitle: "Refactored EVERYTHING for Swift 6 safety and swiftness."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.5.0"))
             )
         )
     }

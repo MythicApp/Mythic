@@ -27,64 +27,104 @@ import SwordRPC
 struct HomeView: View {
     @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
-    
-    @State private var loadingError = false
-    @State private var isLoading = false
-    @State private var canGoBack = false
-    @State private var canGoForward = false
-    @State private var urlString = "https://store.epicgames.com/"
-    
-    @State private var isAlertPresented: Bool = false
-    
-    @Environment(\.colorScheme) var colorScheme
-    
+
+    @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
+
+    @State private var isImageEmpty = true
+
+    @State private var isFavouritesSectionExpanded: Bool = true
+    @State private var isContainersSectionExpanded: Bool = true
+
+    @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) })
+
     // MARK: - Body
     var body: some View {
-        HStack {
-            // MARK: - Recent Game Display
-            if let recentlyPlayedObject = defaults.object(forKey: "recentlyPlayed") as? Data,
-               var recentlyPlayedGame: Game = try? PropertyListDecoder().decode(Game.self, from: recentlyPlayedObject),
-               recentlyPlayedGame.isInstalled {
-                GameCard(game: .init(get: { recentlyPlayedGame }, set: { recentlyPlayedGame = $0 }))
-            }
-            
-            // MARK: - Side Views
-            VStack {
-                // MARK: View 1 (Top)
-                VStack {
-                    if !unifiedGames.filter({ $0.isFavourited == true }).isEmpty {
-                        ScrollView(.horizontal) {
-                            LazyHGrid(rows: [.init(.adaptive(minimum: 115))]) {
-                                ForEach(unifiedGames.filter({ $0.isFavourited == true })) { game in
-                                    CompactGameCard(game: .constant(game))
-                                        .padding(5)
+        GeometryReader { geometry in
+            ScrollView {
+                if let recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
+                    ZStack(alignment: .bottomLeading) {
+                        HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
+                            .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+
+                        HStack {
+                            if isImageEmpty, recentGame.isFallbackImageAvailable {
+                                GameCard.FallbackImageCard(game: .constant(recentGame))
+                                    .frame(width: 65, height: 65)
+                                    .aspectRatio(contentMode: .fit)
+                                    .padding(.trailing)
+                            }
+
+                            VStack(alignment: .leading) {
+                                Text("CONTINUE PLAYING")
+                                    .foregroundStyle(.placeholder)
+                                    .font(.caption)
+
+                                HStack {
+                                    GameCardVM.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
+                                }
+                                HStack {
+                                    GameCardVM.ButtonsView(game: .constant(recentGame), withLabel: true)
+                                        .clipShape(.capsule)
+                                }
+                            }
+                            .conditionalTransform(if: !isImageEmpty) { view in
+                                view
+                                    .foregroundStyle(.white)
+                            }
+                        }
+                        .padding([.leading, .bottom])
+                    }
+                    .frame(height: geometry.size.height * 0.75)
+                } else {
+                    ContentUnavailableView(
+                        "Welcome to Mythic!",
+                        systemImage: "hand.wave",
+                        description: .init("""
+                        This area is where your most recently played game will appear — try launching one now!
+                        """)
+                    )
+                    .frame(
+                        width: geometry.size.width,
+                        height: geometry.size.height * 0.75
+                    )
+                    .background(.quinary)
+                }
+
+                Form {
+                    Section("Your Favourites", isExpanded: $isFavouritesSectionExpanded) {
+                        if favouritesExcludingRecent.isEmpty {
+                            HStack(alignment: .center) {
+                                Spacer()
+                                ContentUnavailableView(
+                                    "No Favourites",
+                                    systemImage: "star.slash.fill",
+                                    description: .init("""
+                                    Games you favourite will appear here.
+                                    You can favourite a game by pressing [􀍠] → [􀋂].
+                                    """)
+                                )
+                                Spacer()
+                            }
+                        } else {
+                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                                ForEach(favouritesExcludingRecent) { game in
+                                    GameCard(game: .constant(game))
                                 }
                             }
                         }
-                    } else {
-                        HStack {
-                            Image(systemName: "star")
-                                .symbolVariant(.fill)
-                            
-                            Text("No games are favourited.")
-                        }
                     }
+
+                    Section("Your Containers", isExpanded: $isContainersSectionExpanded) {
+                        ContainerListView()
+                    }
+
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 20))
-                
-                // MARK: View 2 (Bottom)
-                VStack {
-                    ContainerListView()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.background)
-                .clipShape(.rect(cornerRadius: 20))
+                .formStyle(.grouped)
             }
         }
+        .ignoresSafeArea(edges: .top)
+
         .navigationTitle("Home")
-        .padding()
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
@@ -92,7 +132,7 @@ struct HomeView: View {
                 presence.state = "Idle"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
-                
+
                 return presence
             }())
         }

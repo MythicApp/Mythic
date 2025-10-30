@@ -55,6 +55,9 @@ struct HarmonyRatingView: View {
                 }
             }
             .formStyle(.grouped)
+            .lineLimit(2, reservesSpace: true)
+            .scrollDisabled(true)
+            .scrollIndicators(.hidden)
 
             HStack {
                 Button("Cancel", role: .cancel) {
@@ -96,6 +99,6 @@ struct HarmonyRatingView: View {
         .sheet(isPresented: .constant(true)) {
             HarmonyRatingView(
                 isPresented: .constant(true),
-                game: .constant(.init(source: .epic, title: "poop")))
+                game: .constant(.init(source: .epic, title: "poop", platform: .macOS, path: "")))
         }
 }

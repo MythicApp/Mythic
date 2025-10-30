@@ -15,7 +15,6 @@
 // This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License along with this program. If not, see http://www.gnu.org/licenses/.
 
-
 // You can fold these comments by pressing [⌃ ⇧ ⌘ ◀︎], unfold with [⌃ ⇧ ⌘ ▶︎]
 
 import SwiftUI
@@ -24,6 +23,7 @@ import OSLog
 import Combine
 import WhatsNewKit
 import SemanticVersion
+
 // MARK: - ContentView Struct
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -69,13 +69,10 @@ struct ContentView: View {
                                 .help("Manage containers for Windows® applications")
                         }
 
-                        Button(action: {
-                            SupportWindowController.show()
-                            }) {
-                                Label("Support", systemImage: "questionmark.bubble")
-                                    .help("Get support/Support Mythic")
-                            }
-                            .buttonStyle(.plain)
+                        NavigationLink(destination: SupportView()) {
+                            Label("Support", systemImage: "questionmark.bubble")
+                                .help("Get support/Support Mythic")
+                        }
 
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
@@ -188,4 +185,3 @@ struct ContentView: View {
     ContentView()
         .environmentObject(NetworkMonitor.shared)
 }
-
