@@ -1,12 +1,12 @@
 name: Build Mythic
 on:
   push:
-    paths: &mythic_paths
+    paths: &workflow_paths
       - '.github/workflows/build.yml'
       - 'Mythic.xcodeproj/**'
       - 'Mythic/**'
   pull_request:
-    paths: *mythic_paths
+    paths: *workflow_paths
   workflow_dispatch:
 
 # cancel previous runs w/ same ref, save CI minutes
