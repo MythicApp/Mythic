@@ -193,9 +193,7 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     return
                 }
 
-                if let code = json["authorizationCode"].string {
-                    self.parent.completion(code)
-                } else if let errorCode = json["errorCode"].string,
+                if let errorCode = json["errorCode"].string,
                           var error = json["message"].string {
                     self.parent.isWebAuthViewBlurred = true // no animation
 
@@ -212,6 +210,20 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     )
 
                     withAnimation { self.parent.isWebAuthViewBlurred = false }
+                } else {
+                    guard let code = json["authorizationCode"].string else {
+                        self.parent.viewModel.invokeSignInError(
+                            errorMessage: Legendary.SignInError().localizedDescription,
+                            errorDescription: """
+                                The signin page did not return an authorization code.
+                                Please attempt to sign in using your main web browser (e.g. Safari), Check your network settings, and try again.
+                                """
+                        )
+
+                        return
+                    }
+
+                    self.parent.completion(code)
                 }
             }
         }
