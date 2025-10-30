@@ -1,57 +1,28 @@
-name: Build
+name: Build Mythic
 on:
   push:
-    paths:
+    paths: &mythic_paths
       - '.github/workflows/build.yml'
       - 'Mythic.xcodeproj/**'
       - 'Mythic/**'
     paths-ignore:
       - '**/Localizable.xcstrings'
   pull_request:
-    paths:
-      - '.github/workflows/build.yml'
-      - 'Mythic.xcodeproj/**'
-      - 'Mythic/**'
+    paths: *mythic_paths
   workflow_dispatch:
+
+# cancel previous runs w/ same ref, save CI minutes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Debug - List directory contents
-      run: ls -R
-      
-    - name: Debug - Print environment variables
-      run: env
-      
-    - name: Install Command Line Tools for Xcode (if it's not installed)
-      run: |
-        echo "Checking Xcode Command Line Tools..."
-        if xcode-select --version >/dev/null 2>&1; then
-          echo "Xcode Command Line Tools is installed, skipping."
-        else
-          echo "Xcode Command Line Tools is not installed, installing."
-          xcode-select --install
-        fi
-        
-    - name: Debug - Xcode version
-      run: xcodebuild -version
-      
-    - name: Debug - Available Xcode schemes
-      run: xcodebuild -list -project Mythic.xcodeproj
-      
-    - name: Build
-      run: |
-        echo "Starting build process..."
-        set -x  # Enable command echoing
-        xcodebuild -scheme Mythic CODE_SIGNING_ALLOWED=NO SWIFTLINT=NO -verbose
-        set +x  # Disable command echoing
-      
-    - name: Debug - Build artifacts
-      if: failure()
-      run: |
-        echo "Listing build artifacts..."
-        ls -R ~/Library/Developer/Xcode/DerivedData
+    - uses: actions/checkout@v5
+    - run: |
+        xcodebuild -scheme Mythic \
+          CODE_SIGNING_ALLOWED=NO \
+          SWIFTLINT=NO \
+          -verbose
