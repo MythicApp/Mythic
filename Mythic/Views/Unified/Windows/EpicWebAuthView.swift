@@ -136,7 +136,7 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
         let error = NSAlert()
         error.messageText = errorMessage
         error.informativeText = errorDescription
-        error.addButton(withTitle: "Close")
+        error.addButton(withTitle: String(localized: "Close"))
 
         error.beginSheetModal(for: window) { response in
             if case .alertFirstButtonReturn = response {
@@ -177,8 +177,8 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     self.parent.isWebAuthViewBlurred = true // no animation
 
                     self.parent.viewModel.invokeSignInError(
-                        errorMessage: "Error reading webpage.",
-                        errorDescription: error?.localizedDescription ?? "Unknown Error."
+                        errorMessage: String(localized: "Error accessing the Epic Games webpage."),
+                        errorDescription: error?.localizedDescription ?? String(localized: "Unknown Error.")
                     )
 
                     withAnimation { self.parent.isWebAuthViewBlurred = false }
@@ -200,7 +200,10 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     self.parent.isWebAuthViewBlurred = true // no animation
 
                     if errorCode == "errors.com.epicgames.oauth.corrective_action_required" {
-                        error = "Please visit https://www.epicgames.com/id/login/correction on a normal web browser, and then try signing in through Mythic again."
+                        error = String(localized: """
+                            Please visit https://www.epicgames.com/id/login/correction on a normal web browser,
+                            and then try signing in through Mythic again.
+                            """)
                     }
 
                     self.parent.viewModel.invokeSignInError(

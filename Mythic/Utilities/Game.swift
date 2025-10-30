@@ -332,7 +332,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
-                                      content.title = "Finished \(type) \"\(gameTitle)\"."
+                                      content.title = "Finished \(type) \"\(gameTitle)\"." // cannot localise raw values
                                       return content
                                   }(),
                                   trigger: nil)
@@ -340,11 +340,12 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                     } catch {
                         Task { @MainActor in
                             let alert = NSAlert()
-                            alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"."
+
+                            alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"." // cannot localise raw values
                             alert.informativeText = error.localizedDescription
                             alert.alertStyle = .warning
-                            alert.addButton(withTitle: "OK")
-                            
+                            alert.addButton(withTitle: String(localized: "OK"))
+
                             if let window = NSApp.windows.first {
                                 alert.beginSheetModal(for: window)
                             }

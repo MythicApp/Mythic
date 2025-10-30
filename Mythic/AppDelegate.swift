@@ -86,10 +86,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
         if !currentAppURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
-            alert.messageText = "Move Mythic to the Applications folder?"
-            alert.informativeText = "Mythic has detected it's running outside of the applications folder."
-            alert.addButton(withTitle: "Move")
-            alert.addButton(withTitle: "Cancel")
+
+            alert.messageText = String(localized: "Move Mythic to the Applications folder?")
+            alert.informativeText = String(localized: "Mythic has detected it's running outside of the applications folder.")
+            alert.addButton(withTitle: String(localized: "Move"))
+            alert.addButton(withTitle: String(localized: "Cancel"))
 
             if let window = NSApp.windows.first, let optimalAppURL = optimalAppURL {
                 alert.beginSheetModal(for: window) { response in
@@ -101,8 +102,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             Logger.file.error("Unable to move Mythic to Applications: \(error)")
 
                             let error = NSAlert()
-                            error.messageText = "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\"."
-                            error.addButton(withTitle: "Quit")
+                            error.messageText = String(localized: "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\".")
+                            error.addButton(withTitle: String(localized: "Quit"))
 
                             error.beginSheetModal(for: window) { response in
                                 if case .alertFirstButtonReturn = response {
@@ -135,18 +136,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                (try? await Engine.isUpdateAvailable()) == true {
                 let alert = NSAlert()
 
-                let message = "Mythic Engine update available."
                 if let currentEngineVersion = await Engine.installedVersion,
                    let latestRelease = try? await Engine.getLatestRelease() {
-                    alert.messageText = "\(message) (\(currentEngineVersion) → \(latestRelease.version))"
+                    let message = String(localized: "Mythic Engine update available. (\(currentEngineVersion) → \(latestRelease.version))")
                 } else {
-                    alert.messageText = message
+                    alert.messageText = String(localized: "")
                 }
 
-                alert.informativeText = """
+                alert.informativeText = String(localized: """
                     A new version of Mythic Engine has released.
                     You're currently using \(await Engine.installedVersion?.description ?? "an unknown version").
-                    """
+                    """)
 
                 alert.addButton(withTitle: "Update")
                 alert.addButton(withTitle: "Cancel")
@@ -155,15 +155,15 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                     alert.beginSheetModal(for: window) { response in
                         if case .alertFirstButtonReturn = response {
                             let confirmation = NSAlert()
-                            confirmation.messageText = "Are you sure you want to update now?"
+                            confirmation.messageText = String(localized: "Are you sure you want to update now?")
 
-                            confirmation.informativeText = """
+                            confirmation.informativeText = String(localized: """
                                 This will remove the current version of Mythic Engine.
                                 The latest version will be installed the next time you attempt to launch a Windows® game.
-                                """
+                                """)
 
-                            confirmation.addButton(withTitle: "Update")
-                            confirmation.addButton(withTitle: "Cancel")
+                            confirmation.addButton(withTitle: String(localized: "Update"))
+                            confirmation.addButton(withTitle: String(localized: "Cancel"))
 
                             confirmation.beginSheetModal(for: window) { response in
                                 if case .alertFirstButtonReturn = response {
@@ -173,17 +173,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
 
                                             let alert = NSAlert()
                                             alert.alertStyle = .informational
-                                            alert.messageText = "Successfully removed Mythic Engine."
-                                            alert.informativeText = "The latest version will be installed the next time you attempt to launch a Windows® game."
-                                            alert.addButton(withTitle: "OK")
+                                            alert.messageText = String(localized: "Successfully removed Mythic Engine.")
+                                            alert.informativeText = String(localized: "The latest version will be installed the next time you attempt to launch a Windows® game.")
+                                            alert.addButton(withTitle: String(localized: "OK"))
 
                                             await alert.beginSheetModal(for: window)
                                         } catch {
                                             let errorAlert = NSAlert()
                                             errorAlert.alertStyle = .critical
-                                            errorAlert.messageText = "Unable to remove Mythic Engine."
+                                            errorAlert.messageText = String(localized: "Unable to remove Mythic Engine.")
                                             errorAlert.informativeText = error.localizedDescription
-                                            errorAlert.addButton(withTitle: "OK")
+                                            errorAlert.addButton(withTitle: String(localized: "OK"))
 
                                             await errorAlert.beginSheetModal(for: window)
                                         }
@@ -226,11 +226,11 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty {
             let alert = NSAlert()
-            alert.messageText = "Are you sure you want to quit?"
-            alert.informativeText = "Mythic is still modifying games."
+            alert.messageText = String(localized: "Are you sure you want to quit?")
+            alert.informativeText = String(localized: "Mythic is still modifying games.")
             alert.alertStyle = .warning
-            alert.addButton(withTitle: "Quit")
-            alert.addButton(withTitle: "Cancel")
+            alert.addButton(withTitle: String(localized: "Quit"))
+            alert.addButton(withTitle: String(localized: "Cancel"))
 
             if let window = sender.windows.first {
                 alert.beginSheetModal(for: window) { response in

@@ -191,6 +191,19 @@
         }
       }
     },
+    "\"%@\" can now be found at %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "\"%1$@\" can now be found at %2$@"
+          }
+        }
+      }
+    },
+    "\"%@\" is now ready to be played." : {
+
+    },
     "\"An open-source macOS game launcher with the ability to play Windows games through a custom implementation of Apple's Game Porting Toolkit — supporting multiple platforms.\"" : {
 
     },
@@ -3485,6 +3498,9 @@
     "A list of Apple SLAs may be found here." : {
 
     },
+    "A new version of Mythic Engine has released.\nYou're currently using %@." : {
+
+    },
     "About Mythic" : {
 
     },
@@ -4263,6 +4279,9 @@
     "Are you sure you want to proceed without rating?" : {
 
     },
+    "Are you sure you want to quit?" : {
+
+    },
     "Are you sure you want to remove Mythic Engine?" : {
       "localizations" : {
         "af" : {
@@ -4841,6 +4860,9 @@
           }
         }
       }
+    },
+    "Are you sure you want to update now?" : {
+
     },
     "Asynchronous DXVK" : {
 
@@ -10030,6 +10052,9 @@
     "Epic Games" : {
 
     },
+    "Error accessing the Epic Games webpage." : {
+
+    },
     "Error importing game \"%@\"." : {
       "localizations" : {
         "af" : {
@@ -11564,6 +11589,9 @@
       }
     },
     "Filters" : {
+
+    },
+    "Finished moving \"%@\"." : {
 
     },
     "Folder is not writable." : {
@@ -18292,6 +18320,16 @@
     "Mythic Engine is required to launch this game.\nWould you like to install it now?" : {
 
     },
+    "Mythic Engine update available. (%@ → %@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Mythic Engine update available. (%1$@ → %2$@)"
+          }
+        }
+      }
+    },
     "Mythic is connected to the internet,\nbut is unable to verify the connection to Epic Games." : {
 
     },
@@ -18486,6 +18524,9 @@
       }
     },
     "Mythic is now ready for use." : {
+
+    },
+    "Mythic is still modifying games." : {
 
     },
     "Mythic is updating your library." : {
@@ -20615,6 +20656,9 @@
     "Please choose a rating." : {
 
     },
+    "Please visit https://www.epicgames.com/id/login/correction on a normal web browser,\nand then try signing in through Mythic again." : {
+
+    },
     "Preview" : {
       "comment" : "Within the context of Mythic Engine",
       "localizations" : {
@@ -21378,6 +21422,9 @@
           }
         }
       }
+    },
+    "Quit" : {
+
     },
     "Quit games running in this container?" : {
 
@@ -26368,6 +26415,12 @@
         }
       }
     },
+    "Successfully removed Mythic Engine." : {
+
+    },
+    "Successfully verified \"%@\"." : {
+
+    },
     "Support" : {
       "localizations" : {
         "af" : {
@@ -26559,6 +26612,9 @@
       }
     },
     "The default container is initialised." : {
+
+    },
+    "The latest version will be installed the next time you attempt to launch a Windows® game." : {
 
     },
     "The update has been installed successfully. Relaunch to apply the update." : {
@@ -27150,6 +27206,9 @@
           }
         }
       }
+    },
+    "This will remove the current version of Mythic Engine.\nThe latest version will be installed the next time you attempt to launch a Windows® game." : {
+
     },
     "Thumbnail URL" : {
       "localizations" : {
@@ -27935,6 +27994,9 @@
         }
       }
     },
+    "Unable to remove Mythic Engine." : {
+
+    },
     "Unable to sign in to Epic Games." : {
 
     },
@@ -28510,6 +28572,9 @@
           }
         }
       }
+    },
+    "Unknown Error." : {
+
     },
     "Up to date" : {
 

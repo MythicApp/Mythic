@@ -240,10 +240,12 @@ final class Legendary {
                 if chunk.output.contains("Verification finished successfully.") {
                     Task { @MainActor in
                         let alert = NSAlert()
-                        alert.messageText = "Successfully verified \"\(gameTitle)\"."
-                        alert.informativeText = "\"\(gameTitle)\" is now ready to be played."
+
+                        alert.messageText = String(localized: "Successfully verified \"\(gameTitle)\".")
+                        alert.informativeText = String(localized: "\"\(gameTitle)\" is now ready to be played.")
                         alert.alertStyle = .informational
-                        alert.addButton(withTitle: "OK")
+                        alert.addButton(withTitle: String(localized: "OK"))
+
                         if let window = NSApp.windows.first { alert.beginSheetModal(for: window) }
                     }
                 }
@@ -315,8 +317,8 @@ final class Legendary {
                 .init(identifier: UUID().uuidString,
                       content: {
                           let content = UNMutableNotificationContent()
-                          content.title = "Finished moving \"\(game.title)\"."
-                          content.body = "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath())"
+                          content.title = String(localized: "Finished moving \"\(game.title)\".")
+                          content.body = String(localized: "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath())")
                           return content
                       }(),
                       trigger: nil)
