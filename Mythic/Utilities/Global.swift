@@ -99,7 +99,7 @@ struct ActionButton: View {
     var body: some View {
         HStack {
             Button {
-                Task {
+                Task(priority: .userInitiated) {
                     withAnimation {
                         operating = true
                         successful = nil
