@@ -5,6 +5,8 @@
 //  Created by Josh on 10/24/24.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 import Foundation
 
 public struct BackgroundEventServiceModel: Sendable {

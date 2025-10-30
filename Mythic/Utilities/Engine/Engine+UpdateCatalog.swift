@@ -5,6 +5,8 @@
 //  Created by vapidinfinity (esi) on 24/10/2025.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 import Foundation
 import SemanticVersion
 

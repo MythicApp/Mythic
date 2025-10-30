@@ -1,7 +1,11 @@
 //
-//  AppSettings.swift
+//  SparkleUpdateControllerModel.swift
 //  Mythic
 //
+//  Created by Josh.
+//
+
+// Copyright © 2023-2025 vapidinfinity
 
 import Foundation
 

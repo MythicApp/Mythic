@@ -5,6 +5,8 @@
 //  Created by vapidinfinity (esi) on 15/1/2025.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 import Foundation
 
 extension FileManager {

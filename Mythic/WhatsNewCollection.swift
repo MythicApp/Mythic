@@ -5,6 +5,8 @@
 //  Created by vapidinfinity (esi) on 11/9/24.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 import WhatsNewKit
 import SwiftUI
 

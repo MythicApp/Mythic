@@ -5,6 +5,8 @@
 //  Created by vapidinfinity (esi) on 13/6/2025.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 extension String {
     var sentenceCased: String {
         guard !self.isEmpty else { return self }

@@ -5,6 +5,8 @@
 //  Created by Josh on 11/14/24.
 //
 
+// Copyright © 2023-2025 vapidinfinity
+
 import Foundation
 import Combine
 import Sparkle
