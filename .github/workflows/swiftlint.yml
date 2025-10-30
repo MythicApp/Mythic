@@ -6,23 +6,19 @@ concurrency:
 
 on:
   push:
-    paths:
+    paths: &workflow_paths
       - '.github/workflows/swiftlint.yml'
       - '.swiftlint.yml'
       - '**/*.swift'
-    paths-ignore:
-      - '/Localizable.xcstrings'
   pull_request:
-    paths:
-      - '.github/workflows/swiftlint.yml'
-      - '.swiftlint.yml'
-      - '**/*.swift'
+    paths: *workflow_paths
+  workflow_dispatch:
 
 jobs:
   SwiftLint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       
       - name: GitHub Action for SwiftLint
         uses: norio-nomura/action-swiftlint@3.2.1
