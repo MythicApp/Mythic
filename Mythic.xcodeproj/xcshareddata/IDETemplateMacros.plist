@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 <key>FILEHEADER</key>
-<string>
+<string> <!-- https://help.apple.com/xcode/mac/current/#/dev7fe737ce0 -->
 //  ___FILENAME___
 //  ___PACKAGENAME___
 //
