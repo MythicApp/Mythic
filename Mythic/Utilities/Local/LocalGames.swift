@@ -37,7 +37,6 @@ final class LocalGames {
             throw GameDoesNotExistError(game)
         }
         
-        
         await MainActor.run {
             withAnimation {
                 GameOperation.shared.launching = game

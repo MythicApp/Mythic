@@ -138,13 +138,9 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
         error.informativeText = errorDescription
         error.addButton(withTitle: "Close")
 
-        error.beginSheetModal(for: window) { [self] response in
-            switch response {
-            case .alertFirstButtonReturn:
-                fallthrough
-            default:
-                closeSignInWindow()
-                break
+        error.beginSheetModal(for: window) { response in
+            if case .alertFirstButtonReturn = response {
+                self.closeSignInWindow()
             }
         }
     }
@@ -161,7 +157,7 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
     }
 }
 
-fileprivate struct EpicInterceptorWebView: NSViewRepresentable {
+private struct EpicInterceptorWebView: NSViewRepresentable {
     @ObservedObject var viewModel: EpicWebAuthViewModel
     @Binding var isWebAuthViewBlurred: Bool
     @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString

@@ -90,8 +90,7 @@ struct MythicApp: App {
                     }
                 }
         }
-
-
+        
         Settings {
             SettingsView()
         }

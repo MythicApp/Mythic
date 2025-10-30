@@ -300,7 +300,7 @@ import Shimmer
         }
     }
 
-    struct MenuView : View {
+    struct MenuView: View {
         @Binding var game: Game
         @State private var isGameSettingsSheetPresented: Bool = false
         @State private var isUninstallSheetPresented: Bool = false

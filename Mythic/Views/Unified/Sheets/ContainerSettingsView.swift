@@ -140,7 +140,7 @@ struct ContainerSettingsView: View {
                 if !modifyingDXVK, dxvkError == nil {
                     Toggle("DXVK", isOn: Binding(
                         get: { container.settings.dxvk },
-                        set: { newValue in
+                        set: { _ in // show irrespective of toggle state
                             isDXVKDisclaimerPresented = true
                         }
                     ))

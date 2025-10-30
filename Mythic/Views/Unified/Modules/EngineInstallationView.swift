@@ -165,6 +165,7 @@ extension EngineInstallationView {
         }
         
         public let stages = Stage.allCases
+        // swiftlint:disable:next nesting
         enum Stage: CaseIterable {
             case disclaimer
             case installer

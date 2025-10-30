@@ -10,6 +10,7 @@
 import Foundation
 import SemanticVersion
 
+// swiftlint:disable nesting
 extension Engine {
     struct UpdateCatalog: Codable {
         /// Native `UpdateCatalog` version this struct is based upon.
@@ -60,6 +61,7 @@ extension Engine {
         case preview
     }
 }
+// swiftlint:enable nesting
 
 extension Collection where Element == Engine.UpdateCatalog.Channel {
     // typed lookup by enum

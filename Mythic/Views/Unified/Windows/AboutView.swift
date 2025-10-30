@@ -36,7 +36,6 @@ struct AboutView: View {
                             .resizable()
                             .frame(width: 100, height: 100)
                         
-                        
                         if !animateTextView {
                             Group {
                                 Text("Mythic")

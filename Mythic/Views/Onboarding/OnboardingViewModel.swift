@@ -20,6 +20,7 @@ extension OnboardingView {
         }
 
         let stages = Stage.allCases
+        // swiftlint:disable:next nesting
         enum Stage: String, CaseIterable, Equatable, Identifiable, Comparable {
             static func < (lhs: OnboardingView.ViewModel.Stage, rhs: OnboardingView.ViewModel.Stage) -> Bool {
                 return allCases.firstIndex(of: lhs)! < allCases.firstIndex(of: rhs)!

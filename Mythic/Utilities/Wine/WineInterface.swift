@@ -216,19 +216,21 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     // MARK: - Clear Shader Cache Method
-    static func purgeShaderCache(game: Game? = nil) -> Bool {
+    static func purgeShaderCache(game: Game? = nil) throws -> Bool {
         let task = Process()
         task.launchPath = "/usr/bin/getconf"
         task.arguments = ["DARWIN_USER_CACHE_DIR"]
 
         let pipe: Pipe = .init()
         task.standardOutput = pipe
-        do { try task.run() } catch { return false }
+        try task.run()
 
-        let userCachePath = String(
+        // swiftlint:disable:next optional_data_string_conversion
+        let userCachePath = String( // WILL fail if String(bytes:encoding:) is used
             decoding: pipe.fileHandleForReading.readDataToEndOfFile(),
             as: UTF8.self
         )
+
         let sanitizedPath = userCachePath.trimmingCharacters(in: .whitespacesAndNewlines)
 
         let d3dmcache = "\(sanitizedPath)/d3dm"
@@ -239,11 +241,9 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         if let scriptObject = NSAppleScript(source: "do shell script \"sudo rm -rf \(d3dmcache)\" with administrator privileges") {
             let output = scriptObject.executeAndReturnError(&error)
             Logger.app.debug("output from shader cache purge: \(output.stringValue ?? "none")")
-
-            if error != nil {
-                return false
-            }
         }
+
+        guard error != nil else { throw CocoaError(.fileWriteUnknown) }
 
         return true
     }

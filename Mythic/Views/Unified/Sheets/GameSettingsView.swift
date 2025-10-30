@@ -92,7 +92,6 @@ struct GameSettingsView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
-
         
         bottomBar
     }

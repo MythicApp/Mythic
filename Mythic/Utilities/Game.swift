@@ -482,10 +482,9 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         
         GameOperation.log.debug("\"\(game.title)\" has been quit")
     }
-    
+
     // swiftlint:disable:next redundant_optional_initialization
-    @MainActor
-    @Published var launching: Game? = nil {
+    @MainActor @Published var launching: Game? = nil {
         didSet {
             // When a game is set, start a monitor that waits for start, clears launching, then tracks until exit.
             if let game = launching {

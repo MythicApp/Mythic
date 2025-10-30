@@ -103,6 +103,7 @@ extension Wine {
 
         private(set) var propertiesFile: URL
 
+        // swiftlint:disable:next nesting
         struct Process {
             var name: String = .init()
             var pid: Int = .init()
@@ -119,6 +120,7 @@ extension Wine {
         var scaling: Int
         var avx2: Bool
 
+        // swiftlint:disable:next nesting
         enum CodingKeys: String, CodingKey {
             case metalHUD
             case msync

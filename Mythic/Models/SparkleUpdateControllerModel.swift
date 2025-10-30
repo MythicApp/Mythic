@@ -226,8 +226,9 @@ public final class SparkleUpdateControllerModel: NSObject, SPUUserDriver, Observ
 
     /// An update is available.
     /// Implementation of `SPUUserDriver` protocol.
-    public func showUpdateFound(with appcastItem: SUAppcastItem, state: SPUUserUpdateState,
-                                  reply: @escaping (SPUUserUpdateChoice) -> Void) {
+    public func showUpdateFound(with appcastItem: SUAppcastItem,
+                                state: SPUUserUpdateState,
+                                reply: @escaping (SPUUserUpdateChoice) -> Void) {
         logger.debug("Update found: \(appcastItem.displayVersionString.isEmpty ? "unknown" : appcastItem.displayVersionString).")
 
         if !userInitiatedCheck && getUpdaterAction() == .install {

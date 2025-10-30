@@ -26,7 +26,7 @@ public struct SparkleUpdaterSheetViewModifier: ViewModifier {
         }
         return .empty()
     }
-    private var downloadProgress: (started: Date, total: UInt64, completed: UInt64) {
+    private var downloadProgress: (started: Date, total: UInt64, completed: UInt64) { // swiftlint:disable:this large_tuple
         if case .downloadingUpdate(_, let progress) = updateController.state {
             return (progress.started, progress.total, progress.completed)
         }

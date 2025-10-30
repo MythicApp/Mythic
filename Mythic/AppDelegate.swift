@@ -38,11 +38,9 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             "quitOnAppClose": false
         ])
 
-
         Migrator.migrateFromOldBottleFormatIfNecessary()
         Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
-
-
+        
         // MARK: Container cleanup in the event of external deletion
 
         Wine.containerURLs = Wine.containerURLs.filter { files.fileExists(atPath: $0.path(percentEncoded: false)) }

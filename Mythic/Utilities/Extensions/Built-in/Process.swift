@@ -63,8 +63,10 @@ extension Process {
 
         process.waitUntilExit()
 
+        // swiftlint:disable optional_data_string_conversion
         let stdoutOutput = String(decoding: stdoutData, as: UTF8.self)
         let stderrOutput = String(decoding: stderrData, as: UTF8.self)
+        // swiftlint:enable optional_data_string_conversion
 
         return CommandResult(
             standardOutput: stdoutOutput,
@@ -103,6 +105,7 @@ extension Process {
         // accumulate piped data asynchronously
         let stdoutTask = Task.detached(priority: .utility) { () -> String in
             let data = stdout.fileHandleForReading.readDataToEndOfFile()
+            // swiftlint:disable:next optional_data_string_conversion
             let text = String(decoding: data, as: UTF8.self)
             if !text.isEmpty {
                 logger.debug("[stdout] \(text, privacy: .public)")
@@ -112,6 +115,7 @@ extension Process {
 
         let stderrTask = Task.detached(priority: .utility) { () -> String in
             let data = stderr.fileHandleForReading.readDataToEndOfFile()
+            // swiftlint:disable:next optional_data_string_conversion
             let text = String(decoding: data, as: UTF8.self)
             if !text.isEmpty {
                 logger.debug("[stderr] \(text, privacy: .public)")
@@ -191,6 +195,7 @@ extension Process {
             stderr.fileHandleForReading.readabilityHandler = { handle in
                 let data = handle.availableData
                 guard !data.isEmpty else { return }
+                // swiftlint:disable:next optional_data_string_conversion
                 let text = String(decoding: data, as: UTF8.self)
                 guard !text.isEmpty else { return }
 
@@ -206,6 +211,7 @@ extension Process {
             stdout.fileHandleForReading.readabilityHandler = { handle in
                 let data = handle.availableData
                 guard !data.isEmpty else { return }
+                // swiftlint:disable:next optional_data_string_conversion
                 let text = String(decoding: data, as: UTF8.self)
                 guard !text.isEmpty else { return }
 

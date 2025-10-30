@@ -22,6 +22,7 @@ public class AppSettingsModel: ObservableObject {
     
         /// Auto update settings.
         public enum AutoUpdateAction: String, Sendable, Codable, Hashable {
+            // swiftlint:disable:previous nesting
             case off
             case check
             case install

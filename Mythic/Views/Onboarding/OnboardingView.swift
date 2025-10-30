@@ -141,8 +141,7 @@ struct OnboardingView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-
-
+                
                 VStack {
 #if DEBUG
                     HStack {

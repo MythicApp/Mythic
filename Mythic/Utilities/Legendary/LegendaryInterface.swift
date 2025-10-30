@@ -189,8 +189,18 @@ final class Legendary {
         final class ErrorBox: @unchecked Sendable {
             private let lock = NSLock()
             private var storage: Error?
-            func set(_ e: Error) { lock.lock(); storage = e; lock.unlock() }
-            func get() -> Error? { lock.lock(); defer { lock.unlock() }; return storage }
+
+            func set(_ error: Error) {
+                lock.withLock {
+                    storage = error
+                }
+            }
+
+            func get() -> Error? {
+                lock.withLock {
+                    return storage
+                }
+            }
         }
         let errorBox = ErrorBox()
 

@@ -189,7 +189,7 @@ extension SettingsView {
 
     struct DownloadsView: View {
         @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
-        @State private var isDefaultInstallLocationFileImporterPresented: Bool = false
+        @State private var isImporterPresented: Bool = false
 
         var body: some View {
             HStack {
@@ -211,10 +211,10 @@ extension SettingsView {
 
                 VStack(alignment: .trailing) {
                     Button("Browse...") {
-                        isDefaultInstallLocationFileImporterPresented = true
+                        isImporterPresented = true
                     }
                     .fileImporter(
-                        isPresented: $isDefaultInstallLocationFileImporterPresented,
+                        isPresented: $isImporterPresented,
                         allowedContentTypes: [.folder]
                     ) { result in
                         if case .success(let url) = result {
@@ -222,7 +222,6 @@ extension SettingsView {
                         }
                     }
                     .buttonStyle(.borderedProminent)
-
 
                     Button("Reset to Default") {
                         installBaseURL = Bundle.appGames!
@@ -363,7 +362,7 @@ extension SettingsView {
                     operating: $isEpicCloudSynchronising,
                     successful: $isEpicCloudSyncSuccessful,
                     action: {
-                        let regex = try! Regex(#"Got [0-9]+ remote save game"#)
+                        let regex = try! Regex(#"Got [0-9]+ remote save game"#) // swiftlint:disable:this force_try
                         let commandResult = try? await Legendary.execute(arguments: ["-y", "sync-saves"])
                         withAnimation {
                             isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: commandResult?.standardError ?? "") != nil)
@@ -452,15 +451,14 @@ extension SettingsView {
                         operating: $isShaderCachePurging,
                         successful: $isShaderCachePurgeSuccessful,
                         action: {
-                            isShaderCachePurgeSuccessful = Wine.purgeShaderCache()
+                            isShaderCachePurgeSuccessful = (try? Wine.purgeShaderCache()) ?? false
                         },
                         label: {
                             Label("Purge D3DMetal Shader Cache", systemImage: "square.stack.3d.up.slash")
                         }
                     )
                 }
-
-
+                
                 Text("Mythic Engine \(engineVersion?.prettyString ?? "(Unknown Version)")")
                     .foregroundStyle(.placeholder)
                     .font(.footnote)
