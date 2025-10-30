@@ -552,7 +552,6 @@
 				6E47429A2B0A85C4004FA8A8 /* SwiftLint */,
 				6A71D3D32BFD00B600A2C74D /* Embed Libraries */,
 				6ACCEC192CD088A400611BEF /* Crashlytics */,
-				12B45E7A2EAD76DB0000634B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -942,7 +941,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 vapidinfinity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2025 vapidinfinity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -990,7 +989,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Mythic;
 				INFOPLIST_KEY_GCSupportsControllerUserInteraction = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 vapidinfinity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023-2025 vapidinfinity";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
