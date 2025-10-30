@@ -40,7 +40,6 @@ Mythic uses the following Swift dependencies:
 
 - [Sparkle](https://github.com/sparkle-project/Sparkle) — A software update framework for macOS.
 - [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) — The better way to deal with JSON data in Swift. 
-- [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) — Effortless ZIP Handling in Swift
 - [SemanticVersion](https://github.com/SwiftPackageIndex/SemanticVersion) — Semantic version structuring & parsing
 - [ColorfulX](https://github.com/Lakr233/ColorfulX) — An implementation using Metal for crafting multi-colored gradients.
 - [Glur](https://github.com/joogps/Glur) — A SwiftUI library that uses Metal to display efficient progressive blurs
