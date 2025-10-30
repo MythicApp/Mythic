@@ -220,6 +220,8 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         switch source {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
+
+            // reason for disabling force_try is that if this game's path is unknown by legendary after moving, it's literally lost
             path = try! Legendary.getGamePath(game: self) // swiftlint:disable:this force_try
         case .local:
             if let oldLocation = path {
