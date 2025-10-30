@@ -1,5 +1,5 @@
 //
-//  LocalGamesExt.swift
+//  LocalGames+Extensions.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 5/1/2024.

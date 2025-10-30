@@ -1,5 +1,5 @@
 //
-//  WineInterfaceExt.swift
+//  WineInterface+Extensions.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 30/10/2023.

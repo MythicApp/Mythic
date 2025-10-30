@@ -39,11 +39,11 @@
 		6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934B92BFCFAFD0035CE4B /* URL.swift */; };
 		6A29353C2BFCFAFD0035CE4B /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934BA2BFCFAFD0035CE4B /* Workspace.swift */; };
 		6A29353D2BFCFAFD0035CE4B /* LegendaryInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934BC2BFCFAFD0035CE4B /* LegendaryInterface.swift */; };
-		6A29353E2BFCFAFD0035CE4B /* LegendaryInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934BD2BFCFAFD0035CE4B /* LegendaryInterfaceExt.swift */; };
+		6A29353E2BFCFAFD0035CE4B /* LegendaryInterface+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934BD2BFCFAFD0035CE4B /* LegendaryInterface+Extensions.swift */; };
 		6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934BF2BFCFAFD0035CE4B /* LocalGames.swift */; };
-		6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C02BFCFAFD0035CE4B /* LocalGamesExt.swift */; };
+		6A2935402BFCFAFD0035CE4B /* LocalGames+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C02BFCFAFD0035CE4B /* LocalGames+Extensions.swift */; };
 		6A2935412BFCFAFD0035CE4B /* WineInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C22BFCFAFD0035CE4B /* WineInterface.swift */; };
-		6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C32BFCFAFD0035CE4B /* WineInterfaceExt.swift */; };
+		6A2935422BFCFAFD0035CE4B /* WineInterface+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C32BFCFAFD0035CE4B /* WineInterface+Extensions.swift */; };
 		6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C52BFCFAFD0035CE4B /* FileLocations.swift */; };
 		6A2935442BFCFAFD0035CE4B /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C62BFCFAFD0035CE4B /* Global.swift */; };
 		6A2935452BFCFAFD0035CE4B /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */; };
@@ -161,11 +161,11 @@
 		6A2934B92BFCFAFD0035CE4B /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		6A2934BA2BFCFAFD0035CE4B /* Workspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		6A2934BC2BFCFAFD0035CE4B /* LegendaryInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegendaryInterface.swift; sourceTree = "<group>"; };
-		6A2934BD2BFCFAFD0035CE4B /* LegendaryInterfaceExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LegendaryInterfaceExt.swift; sourceTree = "<group>"; };
+		6A2934BD2BFCFAFD0035CE4B /* LegendaryInterface+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LegendaryInterface+Extensions.swift"; sourceTree = "<group>"; };
 		6A2934BF2BFCFAFD0035CE4B /* LocalGames.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalGames.swift; sourceTree = "<group>"; };
-		6A2934C02BFCFAFD0035CE4B /* LocalGamesExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalGamesExt.swift; sourceTree = "<group>"; };
+		6A2934C02BFCFAFD0035CE4B /* LocalGames+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LocalGames+Extensions.swift"; sourceTree = "<group>"; };
 		6A2934C22BFCFAFD0035CE4B /* WineInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WineInterface.swift; sourceTree = "<group>"; };
-		6A2934C32BFCFAFD0035CE4B /* WineInterfaceExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WineInterfaceExt.swift; sourceTree = "<group>"; };
+		6A2934C32BFCFAFD0035CE4B /* WineInterface+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WineInterface+Extensions.swift"; sourceTree = "<group>"; };
 		6A2934C52BFCFAFD0035CE4B /* FileLocations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLocations.swift; sourceTree = "<group>"; };
 		6A2934C62BFCFAFD0035CE4B /* Global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		6A2934C72BFCFAFD0035CE4B /* NetworkMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -322,7 +322,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2934BC2BFCFAFD0035CE4B /* LegendaryInterface.swift */,
-				6A2934BD2BFCFAFD0035CE4B /* LegendaryInterfaceExt.swift */,
+				6A2934BD2BFCFAFD0035CE4B /* LegendaryInterface+Extensions.swift */,
 			);
 			path = Legendary;
 			sourceTree = "<group>";
@@ -331,7 +331,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2934BF2BFCFAFD0035CE4B /* LocalGames.swift */,
-				6A2934C02BFCFAFD0035CE4B /* LocalGamesExt.swift */,
+				6A2934C02BFCFAFD0035CE4B /* LocalGames+Extensions.swift */,
 			);
 			path = Local;
 			sourceTree = "<group>";
@@ -340,7 +340,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2934C22BFCFAFD0035CE4B /* WineInterface.swift */,
-				6A2934C32BFCFAFD0035CE4B /* WineInterfaceExt.swift */,
+				6A2934C32BFCFAFD0035CE4B /* WineInterface+Extensions.swift */,
 			);
 			path = Wine;
 			sourceTree = "<group>";
@@ -726,7 +726,7 @@
 				6A8080D52EA3611A00F10A00 /* OnboardingViewModel.swift in Sources */,
 				6A2935482BFCFAFD0035CE4B /* EpicImport.swift in Sources */,
 				6A29353D2BFCFAFD0035CE4B /* LegendaryInterface.swift in Sources */,
-				6A2935422BFCFAFD0035CE4B /* WineInterfaceExt.swift in Sources */,
+				6A2935422BFCFAFD0035CE4B /* WineInterface+Extensions.swift in Sources */,
 				6A29353F2BFCFAFD0035CE4B /* LocalGames.swift in Sources */,
 				6A29355B2BFCFAFD0035CE4B /* GameSettingsView.swift in Sources */,
 				6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */,
@@ -740,14 +740,14 @@
 				6A2935412BFCFAFD0035CE4B /* WineInterface.swift in Sources */,
 				6A2935362BFCFAFD0035CE4B /* Color.swift in Sources */,
 				6A2935512BFCFAFD0035CE4B /* ContentView.swift in Sources */,
-				6A29353E2BFCFAFD0035CE4B /* LegendaryInterfaceExt.swift in Sources */,
+				6A29353E2BFCFAFD0035CE4B /* LegendaryInterface+Extensions.swift in Sources */,
 				6A29354B2BFCFAFD0035CE4B /* LocalImport.swift in Sources */,
 				6A2960FC2CE0ED0D00917E90 /* EpicWebAuthView.swift in Sources */,
 				6A29355C2BFCFAFD0035CE4B /* InstallGameView.swift in Sources */,
 				6A2935432BFCFAFD0035CE4B /* FileLocations.swift in Sources */,
 				6A2961002CE1033200917E90 /* NSWindow.swift in Sources */,
 				6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */,
-				6A2935402BFCFAFD0035CE4B /* LocalGamesExt.swift in Sources */,
+				6A2935402BFCFAFD0035CE4B /* LocalGames+Extensions.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6A1357B32CE4B0CD00B19213 /* SemanticVersion+Extensions.swift in Sources */,
 				1217C8C82EADCA06003EC8C9 /* AppSettingsModel.swift in Sources */,
@@ -919,7 +919,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3773;
+				CURRENT_PROJECT_VERSION = 3774;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -967,7 +967,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3773;
+				CURRENT_PROJECT_VERSION = 3774;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";

@@ -1,5 +1,5 @@
 //
-//  LegendaryInterfaceExt.swift
+//  LegendaryInterface+Extensions.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 10/10/2023.
