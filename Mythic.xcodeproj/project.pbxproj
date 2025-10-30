@@ -13,7 +13,6 @@
 		1217C8AC2EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A12EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift */; };
 		1217C8AD2EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A32EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift */; };
 		1217C8AF2EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A62EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift */; };
-		1217C8B82EADC544003EC8C9 /* ColorfulBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */; };
 		1217C8B92EADC544003EC8C9 /* BundleIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B02EADC544003EC8C9 /* BundleIconView.swift */; };
 		1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B22EADC544003EC8C9 /* RichAlertView.swift */; };
 		1217C8BC2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8BB2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift */; };
@@ -139,7 +138,6 @@
 		1217C8A62EADC525003EC8C9 /* SparkleUpdaterPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterPreviewView.swift; sourceTree = "<group>"; };
 		1217C8A72EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterSheetViewModifier.swift; sourceTree = "<group>"; };
 		1217C8B02EADC544003EC8C9 /* BundleIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleIconView.swift; sourceTree = "<group>"; };
-		1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorfulBackgroundView.swift; sourceTree = "<group>"; };
 		1217C8B22EADC544003EC8C9 /* RichAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichAlertView.swift; sourceTree = "<group>"; };
 		1217C8BB2EADC5A3003EC8C9 /* SparkleUpdateControllerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdateControllerModel.swift; sourceTree = "<group>"; };
 		1217C8BE2EADC5C5003EC8C9 /* AppLoggerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoggerModel.swift; sourceTree = "<group>"; };
@@ -274,7 +272,6 @@
 			isa = PBXGroup;
 			children = (
 				1217C8B02EADC544003EC8C9 /* BundleIconView.swift */,
-				1217C8B12EADC544003EC8C9 /* ColorfulBackgroundView.swift */,
 				1217C8B22EADC544003EC8C9 /* RichAlertView.swift */,
 				6AEEFA462CA9173C0025C840 /* WindowBlurView.swift */,
 			);
@@ -721,7 +718,6 @@
 				1217C8BF2EADC5C5003EC8C9 /* AppLoggerModel.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL.swift in Sources */,
-				1217C8B82EADC544003EC8C9 /* ColorfulBackgroundView.swift in Sources */,
 				1217C8B92EADC544003EC8C9 /* BundleIconView.swift in Sources */,
 				1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */,
 				6A2935382BFCFAFD0035CE4B /* Logger.swift in Sources */,

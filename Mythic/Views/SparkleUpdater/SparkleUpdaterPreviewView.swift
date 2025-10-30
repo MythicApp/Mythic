@@ -10,10 +10,19 @@
 import SwiftUI
 import Sparkle
 import MarkdownUI
+import ColorfulX
 
 public struct SparkleUpdaterPreviewView: View {
     public let appcast: SUAppcastItem
     public let choice: (SparkleUpdateControllerModel.UpdateChoice) -> Void
+
+    @State private var colorfulAnimationColors: [Color] = [
+        .init(hex: "#5412F6"),
+        .init(hex: "#7E1ED8"),
+        .init(hex: "#2C2C2C")
+    ]
+    @State private var colorfulAnimationSpeed: Double = 1
+    @State private var colorfulAnimationNoise: Double = 0
 
     public var body: some View {
         HStack(spacing: 0) {
@@ -69,7 +78,11 @@ public struct SparkleUpdaterPreviewView: View {
             .padding(24)
             .frame(width: 256, height: nil, alignment: .center)
             .frame(maxHeight: .infinity)
-            .background(ColorfulBackgroundView())
+            .background(
+                ColorfulView(color: $colorfulAnimationColors,
+                            speed: $colorfulAnimationSpeed,
+                            noise: $colorfulAnimationNoise)
+            )
             .foregroundStyle(.white)
             if let itemDescription = appcast.itemDescription, !itemDescription.isEmpty {
                 ScrollView {
