@@ -136,20 +136,14 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                (try? await Engine.isUpdateAvailable()) == true {
                 let alert = NSAlert()
 
-                if let currentEngineVersion = await Engine.installedVersion,
-                   let latestRelease = try? await Engine.getLatestRelease() {
-                    let message = String(localized: "Mythic Engine update available. (\(currentEngineVersion) → \(latestRelease.version))")
-                } else {
-                    alert.messageText = String(localized: "")
-                }
-
+                alert.messageText = String(localized: "Mythic Engine update available.")
                 alert.informativeText = String(localized: """
-                    A new version of Mythic Engine has released.
-                    You're currently using \(await Engine.installedVersion?.description ?? "an unknown version").
+                    A new version of Mythic Engine (\((try? await Engine.getLatestRelease())?.version.description ?? String(localized: "Unknown")) has released.
+                    You're currently using \(await Engine.installedVersion?.description ?? String(localized: "an unknown version", comment: "Of Mythic Engine")).
                     """)
 
-                alert.addButton(withTitle: "Update")
-                alert.addButton(withTitle: "Cancel")
+                alert.addButton(withTitle: String(localized: "Update"))
+                alert.addButton(withTitle: String(localized: "Cancel"))
 
                 if let window = NSApp.windows.first {
                     alert.beginSheetModal(for: window) { response in

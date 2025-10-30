@@ -201,9 +201,6 @@
         }
       }
     },
-    "\"%@\" is now ready to be played." : {
-
-    },
     "\"An open-source macOS game launcher with the ability to play Windows games through a custom implementation of Apple's Game Porting Toolkit — supporting multiple platforms.\"" : {
 
     },
@@ -3498,8 +3495,15 @@
     "A list of Apple SLAs may be found here." : {
 
     },
-    "A new version of Mythic Engine has released.\nYou're currently using %@." : {
-
+    "A new version of Mythic Engine (%@ has released.\nYou're currently using %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "A new version of Mythic Engine (%1$@ has released.\nYou're currently using %2$@."
+          }
+        }
+      }
     },
     "About Mythic" : {
 
@@ -3895,6 +3899,9 @@
     },
     "All downloads that may have been pending are complete.\nYou may access the downloaded games in your library." : {
 
+    },
+    "an unknown version" : {
+      "comment" : "Of Mythic Engine"
     },
     "Are you sure you want to cancel container creation?" : {
       "localizations" : {
@@ -18323,15 +18330,8 @@
     "Mythic Engine is required to launch this game.\nWould you like to install it now?" : {
 
     },
-    "Mythic Engine update available. (%@ → %@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Mythic Engine update available. (%1$@ → %2$@)"
-          }
-        }
-      }
+    "Mythic Engine update available." : {
+
     },
     "Mythic is connected to the internet,\nbut is unable to verify the connection to Epic Games." : {
 
@@ -26425,9 +26425,6 @@
     "Successfully removed Mythic Engine." : {
 
     },
-    "Successfully verified \"%@\"." : {
-
-    },
     "Support" : {
       "localizations" : {
         "af" : {
@@ -28589,6 +28586,9 @@
           }
         }
       }
+    },
+    "Unknown" : {
+
     },
     "Unknown Error." : {
 
