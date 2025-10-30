@@ -235,7 +235,10 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
             if let window = sender.windows.first {
                 alert.beginSheetModal(for: window) { response in
                     if case .alertFirstButtonReturn = response {
-                        sender.reply(toApplicationShouldTerminate: true)
+                        Task { @MainActor in
+                            await Legendary.RunningCommands.shared.stopAll()
+                            sender.reply(toApplicationShouldTerminate: true)
+                        }
                     } else {
                         sender.reply(toApplicationShouldTerminate: false)
                     }
