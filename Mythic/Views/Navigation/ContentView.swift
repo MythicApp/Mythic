@@ -62,10 +62,14 @@ struct ContentView: View {
                                 .help("Manage containers for Windows® applications")
                         }
 
-                        NavigationLink(destination: SupportView()) {
-                            Label("Support", systemImage: "questionmark.bubble")
-                                .help("Get support/Support Mythic")
-                        }
+                        Button(action: {
+                            SupportWindowController.show()
+                            }) {
+                                Label("Support", systemImage: "questionmark.bubble")
+                                    .help("Get support/Support Mythic")
+                            }
+                            .buttonStyle(.plain)
+
 
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
