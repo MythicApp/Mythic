@@ -117,12 +117,14 @@ public class SupportWindowController: NSWindowController {
         visualEffectView.translatesAutoresizingMaskIntoConstraints = false
         visualEffectView.addSubview(hosting.view)
         hosting.view.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
             hosting.view.leadingAnchor.constraint(equalTo: visualEffectView.leadingAnchor),
             hosting.view.trailingAnchor.constraint(equalTo: visualEffectView.trailingAnchor),
             hosting.view.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 28),
             hosting.view.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor)
         ])
+        
         window.contentView = visualEffectView
         window.center()
         self.init(window: window)

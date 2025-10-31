@@ -115,7 +115,7 @@ struct MythicApp: App {
                     }
                 }
                 Divider()
-                Button("Support the project") {
+                Button("Support the project", systemImage: "heart.fill") {
                     if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
                         NSWorkspace.shared.open(donationUrl)
                     }
