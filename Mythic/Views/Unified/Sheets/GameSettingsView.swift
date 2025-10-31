@@ -147,6 +147,7 @@ private extension GameSettingsView {
             TextField("", text: Binding(
                 get: { typingArgument },
                 set: { newValue in
+                    // reduce performance overhead by only allowing animations for the first two characters
                     if (0...1).contains(typingArgument.count) {
                         withAnimation {
                             typingArgument = newValue
