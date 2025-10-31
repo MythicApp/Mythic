@@ -189,25 +189,7 @@ final class Legendary {
         let optionalPacks = arguments.optionalPacks
         let gameTitle = arguments.game.title
 
-        // i dont like you swift 6
-        final class ErrorBox: @unchecked Sendable {
-            private let lock = NSLock()
-            private var storage: Error?
-            
-            func set(_ error: Error) {
-                lock.withLock {
-                    storage = error
-                }
-            }
-
-            func get() -> Error? {
-                lock.withLock {
-                    return storage
-                }
-            }
-        }
-
-        let errorBox = ErrorBox()
+        let safeErrorStorage = SafeErrorStorage()
 
         let consumer = await executeStreamed(
             identifier: "install",
@@ -217,7 +199,7 @@ final class Legendary {
                 case .standardError:
                     if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
                        let errorReason = match.last?.substring {
-                        errorBox.set(Legendary.InstallationError(reason: String(errorReason)))
+                        safeErrorStorage.set(Legendary.InstallationError(reason: String(errorReason)))
                     }
 
                     if chunk.output.contains("Verification finished successfully.") {
@@ -332,8 +314,43 @@ final class Legendary {
         )
 
         try await consumer.value
-        if let err = errorBox.get() {
-            throw err
+        if let error = safeErrorStorage.get() {
+            throw error
+        }
+    }
+
+    static func uninstall(game: Mythic.Game, deleteFiles: Bool, runUninstaller: Bool) async throws {
+        let output = try await Legendary.execute(
+            arguments: [
+                "-y", "uninstall",
+                deleteFiles ? nil : "--keep-files",
+                runUninstaller ? nil : "--skip-uninstaller",
+                game.id
+            ]
+                .compactMap { $0 }
+        )
+
+        if output.standardError.contains("ERROR:") {
+            // swiftlint:disable:next force_try
+            let errorLine = output.standardError.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
+
+            // dirtyfix for error cases where legendary is unable to remove the game
+            if errorLine.contains("OSError(66, 'Directory not empty')") || errorLine.contains("please remove manually") {
+                if let gamePath = game.path {
+                    try files.removeItem(atPath: gamePath)
+                }
+
+                return
+            } else {
+                throw InstallationError(reason: String(errorLine))
+            }
+        }
+
+        favouriteGames.remove(game.id)
+
+        if let recentGame = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
+           recentGame == game {
+            defaults.removeObject(forKey: "recentlyPlayed")
         }
     }
 
@@ -449,21 +466,9 @@ final class Legendary {
             // required for launching w/ legendary
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
 
-            environmentVariables["WINEMSYNC"] = container.settings.msync.numericalValue.description
-            environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2.numericalValue.description
-
-            if container.settings.dxvk {
-                environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
-                environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
-            }
-
-            if container.settings.metalHUD {
-                if container.settings.dxvk {
-                    environmentVariables["DXVK_HUD"] = "full"
-                } else {
-                    environmentVariables["MTL_HUD_ENABLED"] = "1"
-                }
-            }
+            environmentVariables.merge(
+                try Wine.assembleEnvironmentVariables(forGame: game),
+                uniquingKeysWith: { $1 })
         }
 
         arguments.append(contentsOf: ["--"] + game.launchArguments)

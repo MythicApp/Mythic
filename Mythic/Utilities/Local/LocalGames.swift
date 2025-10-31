@@ -28,11 +28,12 @@ final class LocalGames {
         }
     }
     
-    static func launch(game: Mythic.Game) async throws { // TODO: be able to tell when game is runnning
+    static func launch(game: Mythic.Game) async throws {
         Logger.app.notice("Launching local game \(game.title) (\(game.platform?.rawValue ?? "unknown"))")
         
         guard let library = library,
-              library.contains(game) else {
+              library.contains(game),
+        let gamePath = game.path else {
             log.error("Unable to launch local game, not installed or missing")
             throw GameDoesNotExistError(game)
         }
@@ -49,13 +50,13 @@ final class LocalGames {
         case .macOS:
             if FileManager.default.fileExists(atPath: game.path ?? .init()) {
                 workspace.open(
-                    URL(filePath: game.path ?? .init()),
+                    .init(filePath: gamePath),
                     configuration: {
                         let configuration = NSWorkspace.OpenConfiguration()
                         configuration.arguments = game.launchArguments
                         return configuration
                     }(),
-                    completionHandler: { (_/*game*/, error) in
+                    completionHandler: { (_/*running app*/, error) in
                         if let error = error {
                             log.error("Error launching local macOS game \"\(game.title)\": \(error)")
                         } else {
@@ -64,33 +65,17 @@ final class LocalGames {
                     }
                 )
             } else {
-                log.critical("\("The game at \(game.path ?? "[Unknown]") doesn't exist, cannot launch local macOS game!")")
+                log.critical("\("The game at \(String(describing: game.path)) doesn't exist, cannot launch local macOS game!")")
             }
-        case .windows: // FIXME: unneeded unification
+        case .windows:
             guard Engine.isInstalled else {
                 throw Engine.NotInstalledError()
             }
-            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() }
             let container = try Wine.getContainerObject(url: containerURL)
             
-            var environmentVariables = [
-                "WINEMSYNC": container.settings.msync.numericalValue.description,
-                "ROSETTA_ADVERTISE_AVX": container.settings.avx2.numericalValue.description
-            ]
-            
-            if container.settings.dxvk {
-                environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
-                environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
-            }
-            
-            if container.settings.metalHUD {
-                if container.settings.dxvk {
-                    environmentVariables["DXVK_HUD"] = "full"
-                } else {
-                    environmentVariables["MTL_HUD_ENABLED"] = "1"
-                }
-            }
-            
+            let environmentVariables = try Wine.assembleEnvironmentVariables(forGame: game)
+
             try await Wine.execute(
                 arguments: [game.path!] + game.launchArguments,
                 containerURL: container.url,
@@ -98,14 +83,35 @@ final class LocalGames {
             )
             
         case .none:
-            do {  } // this should never happen
+            log.critical("game platform cannot be inferred. this is not intended behaviour")
         }
         
         if defaults.bool(forKey: "minimiseOnGameLaunch") {
             await NSApp.windows.first?.miniaturize(nil)
         }
+
         await MainActor.run {
             GameOperation.shared.launching = nil
+        }
+    }
+
+    static func uninstall(game: Mythic.Game, deleteFiles: Bool = true) async throws {
+        guard let gamePath = game.path else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        if files.fileExists(atPath: gamePath),
+           deleteFiles {
+            try files.removeItem(atPath: gamePath)
+        }
+
+        LocalGames.library?.remove(game)
+
+        favouriteGames.remove(game.id)
+
+        if let recentGame = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
+           recentGame == game {
+            defaults.removeObject(forKey: "recentlyPlayed")
         }
     }
 }

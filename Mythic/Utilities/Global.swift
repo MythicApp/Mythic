@@ -34,8 +34,12 @@ nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712
 
 var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
 
-struct UnknownError: LocalizedError {
-    var errorDescription: String? = "An unknown error occurred."
+final class SafeErrorStorage: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: Error?
+
+    func set(_ newValue: Error) { lock.withLock { value = newValue } }
+    func get() -> Error? { lock.withLock { value } }
 }
 
 var appVersion: SemanticVersion? {

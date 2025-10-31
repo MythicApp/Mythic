@@ -189,6 +189,34 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
+    /// - Returns: Relevant environment variables as configured in a container for game launch.
+    static func assembleEnvironmentVariables(forGame game: Game, container: Container? = nil) throws -> [String: String] {
+        guard let containerURL = game.containerURL else {
+            throw ContainerDoesNotExistError()
+        }
+
+        let container = try container ?? getContainerObject(url: containerURL)
+        var environmentVariables: [String: String] = [:]
+
+        environmentVariables["WINEMSYNC"] = container.settings.msync.numericalValue.description
+        environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2.numericalValue.description
+
+        if container.settings.dxvk {
+            environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
+            environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
+        }
+
+        if container.settings.metalHUD {
+            if container.settings.dxvk {
+                environmentVariables["DXVK_HUD"] = "full"
+            } else {
+                environmentVariables["MTL_HUD_ENABLED"] = "1"
+            }
+        }
+
+        return environmentVariables
+    }
+
     // MARK: - Delete Container Method
     @discardableResult
     static func deleteContainer(containerURL: URL) throws -> Bool {
