@@ -114,9 +114,17 @@ struct MythicApp: App {
                         NSWorkspace.shared.open(whatsNewUrl)
                     }
                 }
+
                 Divider()
-                Button("Support the project", systemImage: "heart.fill") {
+
+                Button("Donate to the developer", systemImage: "heart.fill") {
                     if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
+                        NSWorkspace.shared.open(donationUrl)
+                    }
+                }
+                
+                Button("Support the project", systemImage: "heart.fill") {
+                    if let donationUrl = URL(string: "https://github.com/sponsors/MythicApp") {
                         NSWorkspace.shared.open(donationUrl)
                     }
                 }
