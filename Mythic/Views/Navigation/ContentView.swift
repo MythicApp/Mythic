@@ -149,25 +149,11 @@ struct ContentView: View {
         )
         .whatsNewSheet()
         .toolbar {
-            ToolbarItem(placement: .automatic) {
+            ToolbarItem(placement: .status) {
                 if !networkMonitor.isConnected {
-                    switch networkMonitor.epicAccessibilityState {
-                    case .accessible:
-                        Image(systemName: "bolt.horizontal.fill")
-                            .help("""
-                            Mythic is connected to the internet,
-                            but is unable to verify the connection to Epic Games.
-                            """)
-                    case .checking, .none:
-                        Image(systemName: "network")
-                            .symbolVariant(.slash)
-                            .symbolEffect(.pulse)
-                            .help("Mythic is verifying the connection to Epic Games.")
-                    case .inaccessible:
-                        Image(systemName: "network")
-                            .symbolVariant(.slash)
-                            .help("Mythic is not connected to the internet.")
-                    }
+                    Image(systemName: "network")
+                        .symbolVariant(.slash)
+                        .help("Mythic is not connected to the internet.")
                 }
             }
         }

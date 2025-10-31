@@ -14,39 +14,38 @@ import Network
 import SwiftUI
 
 final class NetworkMonitor: ObservableObject, @unchecked Sendable {
+    static let shared: NetworkMonitor = .init()
 
-    public static let shared: NetworkMonitor = .init()
+    private let monitor: NWPathMonitor = .init()
+    private let queue: DispatchQueue = .init(label: "NetworkMonitor", qos: .background)
 
-    private let networkPathMonitor: NWPathMonitor = .init()
-    private let queue = DispatchQueue(label: "network-monitor-queue")
+    @MainActor @Published private(set) var isConnected: Bool = false
 
-    @MainActor @Published var isConnected: Bool = false
-    @MainActor @Published var epicAccessibilityState: NetworkAccessibility?
-
+    @MainActor @Published private(set) var epicAccessibilityState: NetworkAccessibility?
     enum NetworkAccessibility {
         case accessible
         case checking
         case inaccessible
     }
 
-    private init() {
-        networkPathMonitor.pathUpdateHandler = { [weak self] path in
+     private init() {
+         monitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
 
             Task { @MainActor in
                 self.isConnected = (path.status == .satisfied)
 
                 if self.isConnected {
-                    self.checkEpicAccessibility()
+                    try? await self.checkEpicAccessibility()
                 }
             }
         }
 
-        networkPathMonitor.start(queue: queue)
+         monitor.start(queue: queue)
     }
 
-    private func checkEpicAccessibility() {
-        Task { @MainActor in
+    private func checkEpicAccessibility() async throws {
+        await MainActor.run {
             self.epicAccessibilityState = .checking
         }
 
@@ -56,19 +55,12 @@ final class NetworkMonitor: ObservableObject, @unchecked Sendable {
             timeoutInterval: .init(5)
         )
 
-        let session = URLSession.shared.dataTask(with: request) { [weak self] _, response, error in
-            guard let self = self else { return }
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
 
-            guard error == nil else { return }
-            guard let response = response as? HTTPURLResponse else { return }
-
-            let responseOK: Bool = (200...299).contains(response.statusCode)
-            Task { @MainActor in
-                self.epicAccessibilityState = responseOK ? .accessible : .inaccessible
-            }
+        await MainActor.run {
+            self.epicAccessibilityState = (200...299).contains(httpResponse.statusCode) ? .accessible : .inaccessible
         }
-
-        session.resume()
     }
 }
 
