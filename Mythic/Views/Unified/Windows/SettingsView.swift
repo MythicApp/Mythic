@@ -452,7 +452,7 @@ extension SettingsView {
                         operating: $isShaderCachePurging,
                         successful: $isShaderCachePurgeSuccessful,
                         action: {
-                            isShaderCachePurgeSuccessful = (try? Wine.purgeShaderCache()) ?? false
+                            isShaderCachePurgeSuccessful = (try? Wine.purgeD3DMetalShaderCache()) != nil
                         },
                         label: {
                             Label("Purge D3DMetal Shader Cache", systemImage: "square.stack.3d.up.slash")

@@ -46,6 +46,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
+    static func containerExists(at url: URL) -> Bool {
+        return (try? files.contentsOfDirectory(atPath: url.path).contains("drive_c")) ?? false
+    }
+
     static func getContainerObject(url: URL) throws -> Container {
         let decoder = PropertyListDecoder()
         return try decoder.decode(Container.self, from: .init(contentsOf: url.appending(path: "properties.plist")))
@@ -90,7 +94,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         )
     }
 
-    // MARK: - API Methods (refactored to use run/execute)
     static func tasklist(containerURL url: URL) async throws -> [Container.Process] {
         var list: [Container.Process] = .init()
 
@@ -108,7 +111,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return list
     }
 
-    // MARK: - Boot Method
     /**
      Boot a wine prefix/container.
 
@@ -128,38 +130,35 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
               files.fileExists(atPath: baseURL.path) else {
             throw CocoaError(.fileNoSuchFile)
         }
-        guard FileLocations.isWritableFolder(url: baseURL) else {
-            throw CocoaError(.fileWriteUnknown)
-        }
-        guard Engine.isInstalled else {
-            throw Engine.NotInstalledError()
-        }
+
+        guard FileLocations.isWritableFolder(url: baseURL) else { throw CocoaError(.fileWriteUnknown) }
+        guard Engine.isInstalled else { throw Engine.NotInstalledError() }
 
         let url = baseURL.appending(path: name)
-        let hasExisted = containerExists(at: url)
 
-        if !files.fileExists(atPath: url.path) {
-            do {
-                try files.createDirectory(at: url, withIntermediateDirectories: true)
-            } catch {
-                log.error("Unable to create container directory: \(error.localizedDescription)")
-                throw error
-            }
-        }
+        try files.createDirectory(at: url, withIntermediateDirectories: true)
 
         defer {
             Task { @MainActor in
                 VariableManager.shared.setVariable("booting", value: false)
             }
         }
+
         Task { @MainActor in
             VariableManager.shared.setVariable("booting", value: true)
         }
 
         do {
-            let newContainer: Container = .init(name: name, url: url, settings: settings)
+            guard !containerExists(at: url) else {
+                log.notice("Container already exists at \(url.prettyPath())")
+                if let container = Container(knownURL: url) {
+                    return container
+                } else {
+                    throw ContainerAlreadyExistsError()
+                }
+            }
 
-            // Run wineboot and inspect stderr/stdout for the "updated" message.
+            let newContainer = Container(name: name, url: url, settings: settings)
             let result = try await execute(arguments: ["wineboot"], containerURL: url)
 
             // swiftlint:disable:next force_try
@@ -168,23 +167,14 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 return newContainer
             }
 
-            if hasExisted {
-                log.notice("Container already exists at \(url.prettyPath())")
-                if let container = Container(knownURL: url) {
-                    return container
-                } else {
-                    throw ContainerAlreadyExistsError()
-                }
-            } else {
-                await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
-                await setWindowsVersion(containerURL: url, version: settings.windowsVersion)
-                await setDisplayScaling(containerURL: url, dpi: settings.scaling)
-            }
+            await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
+            await setWindowsVersion(containerURL: url, version: settings.windowsVersion)
+            await setDisplayScaling(containerURL: url, dpi: settings.scaling)
 
             log.notice("Successfully booted container \"\(name)\"")
             return newContainer
         } catch {
-            log.error("Boot failed for \(name): \(error.localizedDescription)")
+            log.error("Boot failed for container \"\(name)\": \(error.localizedDescription)")
             throw error
         }
     }
@@ -217,18 +207,14 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         return environmentVariables
     }
 
-    // MARK: - Delete Container Method
-    @discardableResult
-    static func deleteContainer(containerURL: URL) throws -> Bool {
-        Logger.file.notice("Deleting container \(containerURL.lastPathComponent) (\(containerURL))")
+    static func deleteContainer(containerURL: URL) throws {
+        log.notice("Deleting container \(containerURL.lastPathComponent) (\(containerURL))")
         guard containerExists(at: containerURL) else { throw ContainerDoesNotExistError() }
+
         try files.removeItem(at: containerURL)
         containerURLs.remove(containerURL)
-
-        return true
     }
 
-    // MARK: - Kill All Method
     static func killAll(containerURLs urls: [URL] = .init()) throws {
         let task = Process()
         task.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
@@ -243,40 +229,19 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
-    // MARK: - Clear Shader Cache Method
-    static func purgeShaderCache(game: Game? = nil) throws -> Bool {
-        let task = Process()
-        task.launchPath = "/usr/bin/getconf"
-        task.arguments = ["DARWIN_USER_CACHE_DIR"]
-
-        let pipe: Pipe = .init()
-        task.standardOutput = pipe
-        try task.run()
-
-        // swiftlint:disable:next optional_data_string_conversion
-        let userCachePath = String( // WILL fail if String(bytes:encoding:) is used
-            decoding: pipe.fileHandleForReading.readDataToEndOfFile(),
-            as: UTF8.self
+    static func purgeD3DMetalShaderCache(game: Game? = nil) throws {
+        let output = try Process.execute(
+            executableURL: .init(filePath: "/usr/bin/getconf"),
+            arguments: ["DARWIN_USER_CACHE_DIR"]
         )
+        
+        let cachePath = output.standardOutput.trimmingCharacters(in: .whitespacesAndNewlines)
+        let d3dmCachePath = cachePath.appending("/d3dm")
 
-        let sanitizedPath = userCachePath.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        let d3dmcache = "\(sanitizedPath)/d3dm"
-
-        task.waitUntilExit()
-
-        var error: NSDictionary?
-        if let scriptObject = NSAppleScript(source: "do shell script \"sudo rm -rf \(d3dmcache)\" with administrator privileges") {
-            let output = scriptObject.executeAndReturnError(&error)
-            Logger.app.debug("output from shader cache purge: \(output.stringValue ?? "none")")
-        }
-
-        guard error != nil else { throw CocoaError(.fileWriteUnknown) }
-
-        return true
+        // although success may be limited, this is MUCH less risky than using applescript w/ string interpolation
+        try files.removeItem(at: URL(filePath: d3dmCachePath))
     }
 
-    // MARK: - Add Registry Key Method
     private static func addRegistryKey(containerURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
         guard containerExists(at: containerURL) else { throw ContainerDoesNotExistError() }
 
@@ -290,7 +255,6 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
-    // MARK: - Query Registry Key Method
     static func queryRegistryKey(containerURL: URL, key: String, name: String, type: RegistryType, completion: @escaping (Result<String, Error>) -> Void) async {
         do {
             let result = try await execute(
@@ -314,11 +278,14 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             completion(.failure(error))
         }
     }
-
-    // MARK: - Toggle Retina Mode Method
+    
     static func toggleRetinaMode(containerURL: URL, toggle: Bool) async {
         do {
-            try await addRegistryKey(containerURL: containerURL, key: RegistryKey.macDriver.rawValue, name: "RetinaMode", data: toggle ? "y" : "n", type: .string)
+            try await addRegistryKey(containerURL: containerURL,
+                                     key: RegistryKey.macDriver.rawValue,
+                                     name: "RetinaMode",
+                                     data: toggle ? "y" : "n",
+                                     type: .string)
         } catch {
             log.error("Unable to toggle retina mode to \(toggle) in container at \(containerURL): \(error)")
         }
@@ -327,12 +294,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func getRetinaMode(containerURL: URL) async throws -> Bool {
         return try await withCheckedThrowingContinuation { continuation in
             Task {
-                await queryRegistryKey(
-                    containerURL: containerURL,
-                    key: RegistryKey.macDriver.rawValue,
-                    name: "RetinaMode",
-                    type: .string
-                ) { result in
+                await queryRegistryKey(containerURL: containerURL,
+                                       key: RegistryKey.macDriver.rawValue,
+                                       name: "RetinaMode",
+                                       type: .string) { result in
                     switch result {
                     case .success(let value):
                         continuation.resume(returning: value == "y")
@@ -382,12 +347,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func getDisplayScaling(containerURL: URL) async throws -> Int {
         return try await withCheckedThrowingContinuation { continuation in
             Task {
-                await queryRegistryKey(
-                    containerURL: containerURL,
-                    key: RegistryKey.desktop.rawValue,
-                    name: "LogPixels",
-                    type: .dword
-                ) { result in
+                await queryRegistryKey(containerURL: containerURL,
+                                       key: RegistryKey.desktop.rawValue,
+                                       name: "LogPixels",
+                                       type: .dword) { result in
                     switch result {
                     case .success(let value):
                         guard let scale = Int(value.trimmingPrefix("0x"), radix: 16) else {
@@ -407,26 +370,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func setDisplayScaling(containerURL: URL, dpi: Int) async {
         guard (96...480).contains(dpi) else { return }
         do {
-            try await addRegistryKey(
-                containerURL: containerURL,
-                key: RegistryKey.desktop.rawValue,
-                name: "LogPixels",
-                data: String(dpi),
-                type: .dword
-            )
+            try await addRegistryKey(containerURL: containerURL,
+                                     key: RegistryKey.desktop.rawValue,
+                                     name: "LogPixels",
+                                     data: String(dpi),
+                                     type: .dword)
         } catch {
             log.error("Unable to set display scaling value to \(dpi) DPI in container at \(containerURL): \(error)")
         }
-    }
-
-    // MARK: - Container Exists Method
-    /**
-     Check for a wine prefix/container's existence at a URL.
-
-     - Parameter at: The `URL` of the container that needs to be checked.
-     - Returns: Boolean value denoting the container's existence.
-     */
-    static func containerExists(at url: URL) -> Bool {
-        return (try? files.contentsOfDirectory(atPath: url.path).contains("drive_c")) ?? false
     }
 }
