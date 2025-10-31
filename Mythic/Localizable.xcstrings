@@ -5449,6 +5449,9 @@
     "AVX2 is only supported on macOS Sequoia (15) or later." : {
 
     },
+    "Before running this game, Mythic must verify that the game's files are intact.\nThis may take a while." : {
+
+    },
     "Browse..." : {
       "localizations" : {
         "af" : {
@@ -26640,6 +26643,9 @@
           }
         }
       }
+    },
+    "This game's data integrity must be verified." : {
+
     },
     "This may take a while." : {
       "comment" : "A message displayed in the alert when an update is being extracted.",

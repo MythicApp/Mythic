@@ -382,8 +382,9 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
 
-        if game.needsVerification, let platform = game.platform {
-            await MainActor.run {
+        if game.needsVerification,
+           let platform = game.platform {
+            func addGameToOperationQueue() {
                 GameOperation.shared.queue.append(
                     .init(
                         game: game,
@@ -391,6 +392,30 @@ final class Legendary {
                         type: .repair
                     )
                 )
+            }
+
+            await MainActor.run {
+                if let window = NSApp.windows.first { // display alert if possible (rarely impossible)
+                    let alert = NSAlert()
+
+                    alert.alertStyle = .informational
+                    alert.messageText = String(localized: "This game's data integrity must be verified.")
+                    alert.informativeText = String(localized: """
+                        Before running this game, Mythic must verify that the game's files are intact.
+                        This may take a while.
+                        """)
+
+                    alert.addButton(withTitle: String(localized: "OK"))
+                    alert.addButton(withTitle: String(localized: "Cancel"))
+
+                    alert.beginSheetModal(for: window) { response in
+                        if case .alertFirstButtonReturn = response {
+                            addGameToOperationQueue()
+                        }
+                    }
+                } else {
+                    addGameToOperationQueue()
+                }
             }
 
             return // allow the game to repair first!!
