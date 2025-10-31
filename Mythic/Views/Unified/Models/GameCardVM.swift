@@ -405,6 +405,7 @@ import Shimmer
             if withSubscriptedInfo {
                 HStack {
                     GameCardVM.SubscriptedInfoView(game: $game)
+                        .lineLimit(1)
                 }
             }
         }
