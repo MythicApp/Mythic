@@ -96,21 +96,23 @@ final class LocalGames {
     }
 
     static func uninstall(game: Mythic.Game, deleteFiles: Bool = true) async throws {
+        func performUninstall() {
+            LocalGames.library?.remove(game)
+            favouriteGames.remove(game.id)
+        }
+
         guard let gamePath = game.path else {
+            performUninstall()
             throw CocoaError(.fileNoSuchFile)
         }
 
-        if files.fileExists(atPath: gamePath),
-           deleteFiles {
+        if files.fileExists(atPath: gamePath), deleteFiles {
             try files.removeItem(atPath: gamePath)
+            performUninstall()
         }
 
-        LocalGames.library?.remove(game)
-
-        favouriteGames.remove(game.id)
-
-        if let recentGame = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
-           recentGame == game {
+        if let recent = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
+           recent == game {
             defaults.removeObject(forKey: "recentlyPlayed")
         }
     }
