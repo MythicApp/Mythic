@@ -3,7 +3,8 @@
 <plist version="1.0">
 <dict>
 <key>FILEHEADER</key>
-<string> <!-- https://help.apple.com/xcode/mac/current/#/dev7fe737ce0 -->
+<!-- https://help.apple.com/xcode/mac/current/#/dev7fe737ce0 -->
+<string>
 //  ___FILENAME___
 //  ___PACKAGENAME___
 //
@@ -11,6 +12,7 @@
 //
 
 // Copyright © 2023-2025 vapidinfinity
-</string> <!-- would've preferred to use ___NSHUMANREADABLECOPYRIGHTPLIST___, but it doesn't seem to be functional. -->
+</string>
+<!-- would've preferred to use ___NSHUMANREADABLECOPYRIGHTPLIST___, but it doesn't seem to be functional. -->
 </dict>
 </plist>
