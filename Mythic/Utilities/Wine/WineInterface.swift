@@ -144,7 +144,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
         }
 
-        Task { @MainActor in
+        await MainActor.run {
             VariableManager.shared.setVariable("booting", value: true)
         }
 
