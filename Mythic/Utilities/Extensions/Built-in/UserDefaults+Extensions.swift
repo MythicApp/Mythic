@@ -11,7 +11,7 @@ import Foundation
 
 extension UserDefaults {
     @discardableResult
-    func encodeAndSet<T: Encodable>(_ data: T, forKey key: String) throws -> Data {
+    func encodeAndSet<T>(_ data: T, forKey key: String) throws -> Data where T: Encodable {
         let encodedData = try PropertyListEncoder().encode(data)
         set(encodedData, forKey: key)
         return encodedData
@@ -27,7 +27,7 @@ extension UserDefaults {
         return dictionaryRepresentation()
     }
     
-    func decodeAndGet<T: Decodable>(_ type: T.Type, forKey key: String) throws -> T? {
+    func decodeAndGet<T>(_ type: T.Type, forKey key: String) throws -> T? where T: Decodable {
         guard let data = data(forKey: key) else { return nil }
         let decodedData = try PropertyListDecoder().decode(T.self, from: data)
         return decodedData

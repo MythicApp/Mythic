@@ -12,7 +12,6 @@ import SwordRPC
 
 struct ContainerCreationView: View {
     @Binding var isPresented: Bool
-    @ObservedObject private var variables: VariableManager = .shared
 
     @State private var containerName: String = "My Container"
     @State private var containerURL: URL = Wine.containersDirectory!

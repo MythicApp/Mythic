@@ -1,5 +1,5 @@
 //
-//  GameListEvoVM.swift
+//  GameListViewModel.swift
 //  Mythic
 //
 //  Created by Marcus Ziade on ~23/06/24.

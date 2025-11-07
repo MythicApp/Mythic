@@ -13,8 +13,7 @@ import OSLog
 import Combine
 
 extension OnboardingView {
-    @MainActor
-    @Observable final class ViewModel: ObservableObject, StagedFlow {
+    @MainActor @Observable final class ViewModel: ObservableObject, StagedFlow {
         init(initialStage stage: Stage = .welcome) {
             self.currentStage = stage
         }

@@ -1,5 +1,5 @@
 //
-//  GameCardVM.swift
+//  GameCardViewModel.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 10/20/24.
@@ -227,7 +227,7 @@ import Shimmer
                     }
                 }
                 .help("Modify settings for \"\(game.title)\"")
-                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu` smh so much for modularity.
+                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu`. smh so much for modularity
                     // FIXME: you must add the sheet below to whatever view you call this button in!!
                 /*
                  .sheet(isPresented: $isGameSettingsSheetPresented) {

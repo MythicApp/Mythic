@@ -18,7 +18,6 @@ import SwordRPC
  The main view displaying the home screen of the Mythic app.
  */
 struct HomeView: View {
-    @ObservedObject private var variables: VariableManager = .shared
     @EnvironmentObject var networkMonitor: NetworkMonitor
 
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0

@@ -10,15 +10,11 @@
 import SwiftUI
 
 public struct BundleIconView: View {
-    private var appIconName: String? {
-        guard let icon = Bundle.main.object(forInfoDictionaryKey: "CFBundleIconName") as? String else { return nil }
-
-        return icon
-    }
+    private let bundleIconName = Bundle.main.object(forInfoDictionaryKey: "CFBundleIconName") as? String
 
     public var body: some View {
-        if let appIconName = appIconName,
-            let icon = NSImage(named: appIconName) {
+        if let bundleIconName = bundleIconName,
+            let icon = NSImage(named: bundleIconName) {
             Image(nsImage: icon)
                 .resizable()
                 .scaledToFit()

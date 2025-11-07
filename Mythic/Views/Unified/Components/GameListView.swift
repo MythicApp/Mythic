@@ -12,7 +12,6 @@ import SwiftUI
 
 struct GameListEvo: View {
     @ObservedObject var viewModel: GameListVM = .shared
-    @ObservedObject private var variables: VariableManager = .shared
 
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true

@@ -8,8 +8,6 @@ import SwiftUI
 import WebKit
 import OSLog
 
-// MARK: - WebView Struct
-/// SwiftUI view representing a WebView.
 struct WebView: NSViewRepresentable {
     var url: URL
     var datastore: WKWebsiteDataStore = .default()
