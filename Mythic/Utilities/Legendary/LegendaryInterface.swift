@@ -366,7 +366,7 @@ final class Legendary {
                       content: {
                           let content = UNMutableNotificationContent()
                           content.title = String(localized: "Finished moving \"\(game.title)\".")
-                          content.body = String(localized: "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath())")
+                          content.body = String(localized: "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath)")
                           return content
                       }(),
                       trigger: nil)

@@ -102,7 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
                             Logger.file.error("Unable to move Mythic to Applications: \(error)")
 
                             let error = NSAlert()
-                            error.messageText = String(localized: "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath())\".")
+                            error.messageText = String(localized: "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath)\".")
                             error.addButton(withTitle: String(localized: "Quit"))
 
                             error.beginSheetModal(for: window) { response in

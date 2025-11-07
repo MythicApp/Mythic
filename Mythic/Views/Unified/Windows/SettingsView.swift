@@ -196,7 +196,7 @@ extension SettingsView {
                 VStack(alignment: .leading) {
                     Label("Default Install Location", systemImage: "externaldrive.fill.badge.checkmark")
                     HStack {
-                        Text(installBaseURL.prettyPath())
+                        Text(installBaseURL.prettyPath)
                             .foregroundStyle(.placeholder)
 
                         if !FileLocations.isWritableFolder(url: installBaseURL) {

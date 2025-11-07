@@ -103,7 +103,7 @@ extension GameImportView {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Where is the game located?")
-                    Text(URL(filePath: path).prettyPath())
+                    Text(URL(filePath: path).prettyPath)
                         .foregroundStyle(.placeholder)
                 }
 

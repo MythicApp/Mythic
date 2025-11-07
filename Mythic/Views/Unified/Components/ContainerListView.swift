@@ -24,7 +24,7 @@ struct ContainerListView: View {
                     Button {
                         workspace.open(container.url)
                     } label: {
-                        Text("\(container.url.prettyPath()) \(Image(systemName: "link"))")
+                        Text("\(container.url.prettyPath) \(Image(systemName: "link"))")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .scaledToFit()

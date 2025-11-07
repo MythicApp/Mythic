@@ -280,7 +280,7 @@ private extension GameSettingsView {
         HStack {
             VStack(alignment: .leading) {
                 Text("Game Location:")
-                Text(URL(filePath: game.path ?? "Unknown").prettyPath())
+                Text(URL(filePath: game.path ?? "Unknown").prettyPath)
                     .foregroundStyle(.secondary)
             }
             

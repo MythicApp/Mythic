@@ -150,7 +150,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
         do {
             guard !containerExists(at: url) else {
-                log.notice("Container already exists at \(url.prettyPath())")
+                log.notice("Container already exists at \(url.prettyPath)")
                 if let container = try? Container(knownURL: url) {
                     return container
                 } else {
@@ -341,7 +341,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 log.error("winecfg -v \(version.rawValue) non-zero exit: \(result.exitCode)")
             }
         } catch {
-            log.error("Unable to set windows version in \(containerURL.prettyPath()) to \(version.rawValue): \(error.localizedDescription)")
+            log.error("Unable to set windows version in \(containerURL.prettyPath) to \(version.rawValue): \(error.localizedDescription)")
         }
     }
 

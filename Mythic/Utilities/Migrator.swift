@@ -57,7 +57,7 @@ final class Migrator {
 
                 iterations += 1
 
-                Logger.app.log("converted \(url.prettyPath()) (\(iterations)/\(decodedData.count))")
+                Logger.app.log("converted \(url.prettyPath) (\(iterations)/\(decodedData.count))")
             }
 
             Logger.file.notice("Bottle management system migration complete.")

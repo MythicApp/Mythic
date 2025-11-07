@@ -10,9 +10,9 @@
 import Foundation
 
 extension URL {
-    public func prettyPath() -> String {
+    public var prettyPath: String {
         return path(percentEncoded: false)
-            .replacingOccurrences(of: Bundle.main.bundleIdentifier!, with: "Mythic")
+            .replacingOccurrences(of: Bundle.main.bundleIdentifier!, with: "(Mythic)")
             .replacingOccurrences(of: "/Users/\(NSUserName())", with: "~")
             .replacingOccurrences(of: "file://", with: "")
     }

@@ -37,7 +37,7 @@ struct ContainerCreationView: View {
                     VStack(alignment: .leading) {
                         Text("Where do you want the container's base path to be located?")
 
-                        Text(containerURL.prettyPath())
+                        Text(containerURL.prettyPath)
                             .foregroundStyle(.placeholder)
                     }
 

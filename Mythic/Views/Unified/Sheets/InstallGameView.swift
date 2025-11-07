@@ -160,7 +160,7 @@ struct InstallViewEvo: View {
                 VStack(alignment: .leading) {
                     Text("Where do you want the game's base path to be located?")
 
-                    Text(baseURL.prettyPath())
+                    Text(baseURL.prettyPath)
                         .foregroundStyle(.placeholder)
                 }
 

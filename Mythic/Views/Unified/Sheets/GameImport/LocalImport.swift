@@ -107,7 +107,7 @@ extension GameImportView {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Choose the game's install location:")
-                    Text(URL(filePath: path).prettyPath())
+                    Text(URL(filePath: path).prettyPath)
                         .foregroundStyle(.placeholder)
                 }
 
