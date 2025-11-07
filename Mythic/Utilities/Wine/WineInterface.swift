@@ -151,7 +151,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         do {
             guard !containerExists(at: url) else {
                 log.notice("Container already exists at \(url.prettyPath())")
-                if let container = Container(knownURL: url) {
+                if let container = try? Container(knownURL: url) {
                     return container
                 } else {
                     throw Container.AlreadyExistsError()

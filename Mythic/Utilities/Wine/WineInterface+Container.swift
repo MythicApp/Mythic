@@ -42,12 +42,13 @@ extension Wine {
             saveProperties()
         }
 
-        init?(knownURL: URL) {
-            guard containerExists(at: knownURL) else { log.warning("Container Initializer: Unable to intialize nonexistent container."); return nil }
-            guard let object = try? getContainerObject(url: knownURL) else {
-                log.error("Container Initializer: Unable to fetch object for existing container.")
-                return nil
+        init(knownURL: URL) throws {
+            guard containerExists(at: knownURL) else {
+                log.warning("Container Initializer: Unable to intialize nonexistent container.")
+                throw Container.DoesNotExistError()
             }
+
+            let object = try getContainerObject(url: knownURL)
 
             self.name = object.name
             self.url = knownURL

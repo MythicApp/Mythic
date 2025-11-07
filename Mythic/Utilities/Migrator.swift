@@ -86,7 +86,7 @@ final class Migrator {
 
                 if let contents = try? files.contentsOfDirectory(at: newScheme, includingPropertiesForKeys: nil) {
                     for containerURL in contents {
-                        Logger.app.debug("Migrating container object: \(String(describing: Wine.Container(knownURL: containerURL)))")
+                        Logger.app.debug("Migrating container object: \(String(describing: try? Wine.Container(knownURL: containerURL)))")
                     }
                 }
 
