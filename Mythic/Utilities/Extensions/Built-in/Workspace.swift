@@ -9,22 +9,22 @@
 
 import Foundation
 import AppKit
+import SwiftUI
 
 extension NSWorkspace {
-    var isARM: Bool {
+    var systemArchitecture: String? {
         var sysinfo = utsname()
         uname(&sysinfo)
-        
-        let machine = withUnsafePointer(to: &sysinfo.machine) {
+
+        return withUnsafePointer(to: &sysinfo.machine) {
             $0.withMemoryRebound(to: CChar.self, capacity: 1) {
                 String(validatingCString: $0)
             }
         }
-        
-        guard let machineString = machine else {
-            return false
-        }
+    }
 
-        return machineString.contains("arm64")
+    var isARM: Bool {
+        let arch = systemArchitecture ?? .init()
+        return arch.contains("arm64")
     }
 }
