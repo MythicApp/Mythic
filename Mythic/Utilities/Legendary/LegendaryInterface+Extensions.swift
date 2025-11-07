@@ -22,16 +22,16 @@ extension Legendary {
     }
 
     struct UnableToRetrieveError: LocalizedError {
-        var errorDescription: String? = "Mythic is unable to retrive the requested metadata for this game."
+        var errorDescription: String? = String(localized: "Mythic is unable to retrive the requested metadata for this game.")
     }
 
     struct IsNotLegendaryError: LocalizedError {
-        var errorDescription: String? = "This is not an epic game."
+        var errorDescription: String? = String(localized: "This is not an Epic Games game.")
     }
 
     /// Error when legendary is signed out on a command that enforces signin.
     struct NotSignedInError: LocalizedError {
-        var errorDescription: String? = "You aren't signed in to Epic Games."
+        var errorDescription: String? = String(localized: "You aren't signed in to Epic Games.")
     }
 
     struct SignInError: LocalizedError {

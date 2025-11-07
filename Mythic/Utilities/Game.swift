@@ -563,5 +563,5 @@ struct GameDoesNotExistError: LocalizedError {
     }
     
     let game: Mythic.Game
-    var errorDescription: String? { "The game \"\(game.title)\" doesn't exist." }
+    var errorDescription: String? { String(localized: "The game \"\(game.title)\" doesn't exist.") }
 }

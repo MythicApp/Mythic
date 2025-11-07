@@ -22,7 +22,7 @@ struct ContainerCreationView: View {
     @State private var isBooting: Bool = false
     @State private var isCancellationAlertPresented: Bool = false
     
-    @State private var bootErrorDescription: String = "Unknown Error."
+    @State private var bootErrorDescription: String = String(localized: "Unknown Error.")
     @State private var isBootFailureAlertPresented: Bool = false
     
     var body: some View {

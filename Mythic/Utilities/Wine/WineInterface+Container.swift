@@ -163,17 +163,17 @@ extension Wine.Container {
     }
 
     struct DoesNotExistError: LocalizedError {
-        var errorDescription: String? = """
+        var errorDescription: String? = String(localized: """
             Attempted to access a container that doesn't exist.
             If relevant, please verify that the container is set correctly.
-            """
+            """)
     }
 
     struct UnableToBootError: LocalizedError {
-        var errorDescription: String? = "Container unable to boot." // TODO: add reason if possible
+        var errorDescription: String? = String(localized: "Container unable to boot.") // TODO: add reason if possible
     }
 
     struct AlreadyExistsError: LocalizedError {
-        var errorDescription: String? = "Attempted to access a container that already exists."
+        var errorDescription: String? = String(localized: "Attempted to access a container that already exists.")
     }
 }

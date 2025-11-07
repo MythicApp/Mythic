@@ -29,11 +29,11 @@ extension Engine {
 // MARK: errors
 extension Engine {
     struct NotInstalledError: LocalizedError {
-        var errorDescription: String? = "Mythic Engine is not installed."
+        var errorDescription: String? = String(localized: "Mythic Engine is not installed.")
     }
 
     struct UnableToParseChannelError: LocalizedError {
-        var errorDescription: String? = "Unable to parse mythic engine update channel."
+        var errorDescription: String? = String(localized: "Unable to parse mythic engine update channel.")
     }
 }
 

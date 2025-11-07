@@ -214,10 +214,10 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     guard let code = json["authorizationCode"].string else {
                         self.parent.viewModel.invokeSignInError(
                             errorMessage: Legendary.SignInError().localizedDescription,
-                            errorDescription: """
+                            errorDescription: String(localized: """
                                 The signin page did not return an authorization code.
                                 Please attempt to sign in using your main web browser (e.g. Safari), Check your network settings, and try again.
-                                """
+                                """)
                         )
 
                         return

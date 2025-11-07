@@ -39,6 +39,6 @@ extension FileManager {
 
     /// An error indicating that force-copying files has failed.
     struct ForceCopyFailedError: LocalizedError {
-        var errorDescription: String? = "Failed to force-copy files."
+        var errorDescription: String? = String(localized: "Failed to force-copy files.")
     }
 }

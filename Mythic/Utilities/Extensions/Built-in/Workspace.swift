@@ -29,9 +29,9 @@ extension NSWorkspace {
     }
 
     struct UnsupportedArchitectureError: LocalizedError {
-        var errorDescription: String? = """
+        var errorDescription: String? = String(localized: """
             Your device uses an Intel® processor.
             This feature isn’t available on Intel®-based macs.
-            """
+            """)
     }
 }

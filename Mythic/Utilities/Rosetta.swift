@@ -20,10 +20,11 @@ final class Rosetta {
     }
 
     struct AgreementFailure: LocalizedError {
-        var errorDescription: String? = """
-        Rosetta 2 cannot be installed, you failed to agree to the software license agreement.
-        A list of Apple SLAs may be found here: https://www.apple.com/legal/sla/
-        """
+        var errorDescription: String? = String(localized: """
+            You failed to agree to the software license agreement.
+            As a result, Rosetta 2 cannot be installed.
+            A list of Apple SLAs may be found here: https://www.apple.com/legal/sla/
+            """)
     }
 
     static func install(
