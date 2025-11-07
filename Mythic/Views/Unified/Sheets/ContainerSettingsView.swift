@@ -16,9 +16,9 @@ struct ContainerSettingsView: View {
 
     @ObservedObject private var variables: VariableManager = .shared
 
-    @State private var containerScope: Wine.ContainerScope = .individual
+    @State private var containerScope: Wine.Container.Scope = .individual
 
-    @State private var retinaMode: Bool = Wine.ContainerSettings().retinaMode
+    @State private var retinaMode: Bool = Wine.Container.Settings().retinaMode
     @State private var modifyingRetinaMode: Bool = true
     @State private var retinaModeError: Error?
 
@@ -26,7 +26,7 @@ struct ContainerSettingsView: View {
     @State private var modifyingDXVK: Bool = false
     @State private var dxvkError: Error?
 
-    @State private var windowsVersion: Wine.WindowsVersion = Wine.ContainerSettings().windowsVersion
+    @State private var windowsVersion: Wine.WindowsVersion = Wine.Container.Settings().windowsVersion
     @State private var modifyingWindowsVersion: Bool = true
     @State private var windowsVersionError: Error?
 

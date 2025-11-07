@@ -42,7 +42,7 @@ final class Migrator {
                     return
                 }
 
-                var settings: Wine.ContainerSettings = .init()
+                var settings: Wine.Container.Settings = .init()
                 guard let oldSettings = bottle["settings"] as? [String: Bool] else {
                     Logger.file.warning("Unable to read old bottle settings; using default")
                     continue
@@ -145,7 +145,7 @@ final class Migrator {
     static func updateContainerScalingIfNecessary() async {
         // If scaling value is 0, it does not have a default scale set.
         for container in Wine.containerObjects where container.settings.scaling == 0 {
-            let defaultScale = Wine.ContainerSettings().scaling
+            let defaultScale = Wine.Container.Settings().scaling
             
             await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
             container.settings.scaling = defaultScale

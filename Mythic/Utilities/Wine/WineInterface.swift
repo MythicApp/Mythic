@@ -124,7 +124,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static func boot(
         baseURL: URL? = containersDirectory,
         name: String,
-        settings: ContainerSettings = .init()
+        settings: Container.Settings = .init()
     ) async throws -> Container {
         guard let baseURL = baseURL,
               files.fileExists(atPath: baseURL.path) else {
@@ -154,7 +154,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
                 if let container = Container(knownURL: url) {
                     return container
                 } else {
-                    throw ContainerAlreadyExistsError()
+                    throw Container.AlreadyExistsError()
                 }
             }
 
@@ -162,10 +162,11 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             let result = try await execute(arguments: ["wineboot"], containerURL: url)
 
             // swiftlint:disable:next force_try
-            if result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) {
-                containerURLs.insert(url)
-                return newContainer
+            guard result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) else {
+                throw Container.UnableToBootError()
             }
+
+            containerURLs.insert(url)
 
             await toggleRetinaMode(containerURL: url, toggle: settings.retinaMode)
             await setWindowsVersion(containerURL: url, version: settings.windowsVersion)
@@ -182,7 +183,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     /// - Returns: Relevant environment variables as configured in a container for game launch.
     static func assembleEnvironmentVariables(forGame game: Game, container: Container? = nil) throws -> [String: String] {
         guard let containerURL = game.containerURL else {
-            throw ContainerDoesNotExistError()
+            throw Container.DoesNotExistError()
         }
 
         let container = try container ?? getContainerObject(url: containerURL)
@@ -209,7 +210,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
     static func deleteContainer(containerURL: URL) throws {
         log.notice("Deleting container \(containerURL.lastPathComponent) (\(containerURL))")
-        guard containerExists(at: containerURL) else { throw ContainerDoesNotExistError() }
+        guard containerExists(at: containerURL) else { throw Container.DoesNotExistError() }
 
         try files.removeItem(at: containerURL)
         containerURLs.remove(containerURL)
@@ -243,7 +244,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     private static func addRegistryKey(containerURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
-        guard containerExists(at: containerURL) else { throw ContainerDoesNotExistError() }
+        guard containerExists(at: containerURL) else { throw Container.DoesNotExistError() }
 
         let result = try await execute(
             arguments: ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"],

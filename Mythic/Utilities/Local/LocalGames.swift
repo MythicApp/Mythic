@@ -71,7 +71,7 @@ final class LocalGames {
             guard Engine.isInstalled else {
                 throw Engine.NotInstalledError()
             }
-            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() }
+            guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
             let container = try Wine.getContainerObject(url: containerURL)
             
             let environmentVariables = try Wine.assembleEnvironmentVariables(forGame: game)

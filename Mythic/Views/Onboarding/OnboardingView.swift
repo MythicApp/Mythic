@@ -305,7 +305,7 @@ private extension OnboardingView {
                                 _ = try await Wine.boot(name: "Default")
                                 propagateBootSuccess()
                             } catch {
-                                if error is Wine.ContainerAlreadyExistsError {
+                                if error is Wine.Container.AlreadyExistsError {
                                     propagateBootSuccess(); return
                                 }
 

@@ -459,10 +459,11 @@ final class Legendary {
         var environmentVariables: [String: String] = .init()
 
         if case .windows = game.platform {
-            guard let containerURL = game.containerURL else { throw Wine.ContainerDoesNotExistError() } // FIXME: Container Revamp
+            guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() } // FIXME: Container Revamp
             let container = try Wine.getContainerObject(url: containerURL)
 
             arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
+            
             // required for launching w/ legendary
             environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
 
