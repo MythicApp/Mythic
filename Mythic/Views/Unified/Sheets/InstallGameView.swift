@@ -8,7 +8,7 @@
 import SwiftUI
 import OSLog
 
-struct InstallViewEvo: View {
+struct InstallGameView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
 
@@ -304,5 +304,5 @@ struct InstallViewEvo: View {
 }
 
 #Preview {
-    InstallViewEvo(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite", platform: .windows, path: "")), isPresented: .constant(true))
+    InstallGameView(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite", platform: .windows, path: "")), isPresented: .constant(true))
 }

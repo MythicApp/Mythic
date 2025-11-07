@@ -8,7 +8,7 @@
 import SwiftUI
 import OSLog
 
-struct UninstallViewEvo: View {
+struct UninstallGameView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
     @ObservedObject var gameListViewModel: GameListVM = .shared
@@ -108,5 +108,5 @@ struct UninstallViewEvo: View {
 }
 
 #Preview {
-    UninstallViewEvo(game: .constant(.init(source: .local, title: .init(), platform: .macOS, path: "")), isPresented: .constant(true))
+    UninstallGameView(game: .constant(.init(source: .local, title: .init(), platform: .macOS, path: "")), isPresented: .constant(true))
 }

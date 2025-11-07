@@ -10,7 +10,7 @@
 import SwiftUI
 import Shimmer
 
-struct DownloadsEvo: View {
+struct DownloadsView: View {
     @ObservedObject private var operation: GameOperation = .shared
     @State private var cardsUpdated: Bool = false
     
@@ -53,5 +53,5 @@ struct DownloadsEvo: View {
 }
 
 #Preview {
-    DownloadsEvo()
+    DownloadsView()
 }

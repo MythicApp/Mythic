@@ -24,7 +24,7 @@ struct LibraryView: View {
     
     // MARK: - Body
     var body: some View {
-        GameListEvo()
+        GameListView()
             .navigationTitle("Library")
         
         // MARK: - Toolbar

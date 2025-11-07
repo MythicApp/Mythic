@@ -137,7 +137,7 @@ import Shimmer
                         .help("Install \"\(game.title)\"")
 
                         .sheet(isPresented: $isInstallSheetPresented) {
-                            InstallViewEvo(game: $game, isPresented: $isInstallSheetPresented)
+                            InstallGameView(game: $game, isPresented: $isInstallSheetPresented)
                         }
                     }
                 }
@@ -305,7 +305,7 @@ import Shimmer
                     // FIXME: you must add the sheet below to whatever view you call this button in!!
                 /*
                 .sheet(isPresented: $isUninstallSheetPresented) {
-                    UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
+                    UninstallGameView(game: $game, isPresented: $isUninstallSheetPresented)
                 }
                  */
             }
@@ -343,7 +343,7 @@ import Shimmer
                 }
             }
             .sheet(isPresented: $isUninstallSheetPresented) {
-                UninstallViewEvo(game: $game, isPresented: $isUninstallSheetPresented)
+                UninstallGameView(game: $game, isPresented: $isUninstallSheetPresented)
             }
         }
     }

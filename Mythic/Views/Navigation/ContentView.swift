@@ -78,7 +78,7 @@ struct ContentView: View {
 
                 if operation.current != nil || !operation.queue.isEmpty {
                     List { // must wrap in a list to have the same styling as the other links
-                        NavigationLink(destination: DownloadsEvo()) {
+                        NavigationLink(destination: DownloadsView()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")
                                 .help("View all downloads")
                         }

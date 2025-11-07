@@ -1,5 +1,5 @@
 //
-//  GameListEvo.swift
+//  GameListView.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 6/3/2024.
@@ -10,7 +10,7 @@
 import Foundation
 import SwiftUI
 
-struct GameListEvo: View {
+struct GameListView: View {
     @ObservedObject var viewModel: GameListVM = .shared
 
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
@@ -80,6 +80,6 @@ struct GameListEvo: View {
 }
 
 #Preview {
-    GameListEvo()
+    GameListView()
         .environmentObject(NetworkMonitor.shared)
 }
