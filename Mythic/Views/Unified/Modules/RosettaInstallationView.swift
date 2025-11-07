@@ -33,12 +33,6 @@ struct RosettaInstallationView: View { // similar to EngineInstallationView
                 switch viewModel.currentStage {
                 case .disclaimer:
                     DisclaimerView(agreedToSLA: $agreedToSLA)
-                        .task {
-                            // Intel-based devices cannot install Rosetta.
-                            if !workspace.isARM {
-                                isPresented = false
-                            }
-                        }
                 case .installer:
                     InstallationView(
                         isPresented: $isPresented, viewModel: viewModel,
@@ -109,6 +103,10 @@ extension RosettaInstallationView {
                     }
 
                     do {
+                        guard workspace.isARM else {
+                            throw NSWorkspace.UnsupportedArchitectureError()
+                        }
+                        
                         try await Rosetta.install(
                             agreeToSLA: agreedToSLA,
                             percentageCompletion: { progress in

@@ -27,4 +27,11 @@ extension NSWorkspace {
         let arch = systemArchitecture ?? .init()
         return arch.contains("arm64")
     }
+
+    struct UnsupportedArchitectureError: LocalizedError {
+        var errorDescription: String? = """
+            Your device uses an Intel® processor.
+            This feature isn’t available on Intel®-based macs.
+            """
+    }
 }

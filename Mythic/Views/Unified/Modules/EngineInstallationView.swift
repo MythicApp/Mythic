@@ -96,8 +96,12 @@ extension EngineInstallationView {
                 guard !Engine.isInstalled else {
                     viewModel.stepStage(); return
                 }
-                
+
                 do {
+                    guard workspace.isARM else {
+                        throw NSWorkspace.UnsupportedArchitectureError()
+                    }
+
                     for try await installation in Engine.install() {
                         switch installation.stage {
                         case .downloading:
