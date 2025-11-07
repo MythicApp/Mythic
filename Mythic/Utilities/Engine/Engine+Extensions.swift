@@ -26,7 +26,6 @@ extension Engine {
     }
 }
 
-// MARK: errors
 extension Engine {
     struct NotInstalledError: LocalizedError {
         var errorDescription: String? = String(localized: "Mythic Engine is not installed.")

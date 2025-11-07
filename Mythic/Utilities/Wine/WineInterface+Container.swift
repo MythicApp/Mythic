@@ -80,7 +80,6 @@ extension Wine.Container: Hashable {
 }
 
 extension Wine.Container: Codable {
-    // swiftlint:disable:next nesting
     enum CodingKeys: String, CodingKey {
         case name
         case url
