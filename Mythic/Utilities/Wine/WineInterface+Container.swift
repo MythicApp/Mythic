@@ -11,61 +11,8 @@ import Foundation
 import OSLog
 
 extension Wine {
-    class Container: Codable, Hashable, Identifiable, Equatable, ObservableObject {
-        static func == (lhs: Container, rhs: Container) -> Bool {
-            return (lhs.url == rhs.url && lhs.id == rhs.id)
-        }
-
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(url)
-            hasher.combine(id)
-        }
-
-        /// Initializes a new container, checking if a container at the given URL already exists and attempting to fetch its properties.
-        init(name: String, url: URL, id: UUID = .init(), settings: Container.Settings) {
-            let existingContainer = try? getContainerObject(url: url)
-            if existingContainer != nil {
-                log.notice("Container Initializer: Container already exists at \(url.prettyPath()); fetching known properties.")
-                if existingContainer?.url != url {
-                    log.debug("Container Initializer: Fetched URL doesn't match known URL; updating.")
-                }
-            } else if containerExists(at: url) {
-                log.warning("Container Initializer: Container already exists at \(url.prettyPath()), but unable to fetch known properties; overwriting")
-            }
-
-            self.name = existingContainer?.name ?? name
-            self.url = url
-            self.id = existingContainer?.id ?? id
-            self.settings = existingContainer?.settings ?? settings
-            self.propertiesFile = url.appendingPathComponent("properties.plist")
-
-            saveProperties()
-        }
-
-        init(knownURL: URL) throws {
-            guard containerExists(at: knownURL) else {
-                log.warning("Container Initializer: Unable to intialize nonexistent container.")
-                throw Container.DoesNotExistError()
-            }
-
-            let object = try getContainerObject(url: knownURL)
-
-            self.name = object.name
-            self.url = knownURL
-            self.id = object.id
-            self.settings = object.settings
-            self.propertiesFile = knownURL.appendingPathComponent("properties.plist")
-
-            if object.url != knownURL {
-                log.warning("Container Initializer: Fetched URL doesn't match known URL; updating.")
-                saveProperties()
-            }
-        }
-
-        /// Convenience initializer to create a container from a URL.
-        convenience init(createFrom url: URL) {
-            self.init(name: url.lastPathComponent, url: url, settings: .init())
-        }
+    final class Container: Identifiable, ObservableObject { // FIXME: final.. for now
+        private static let log: Logger = .custom(category: "Wine.Container")
 
         /// Saves the container properties to disk.
         func saveProperties() {
@@ -74,26 +21,80 @@ extension Wine {
                 let data = try encoder.encode(self)
                 try data.write(to: propertiesFile)
             } catch {
-                Logger.app.error("Error encoding & writing to properties file for container \"\(self.name)\" (\(self.url.prettyPath()))")
+                Wine.Container.log.error("Error writing properties for container \"\(self.name)\" (\(self.url.prettyPath))")
             }
         }
 
-        var name: String { didSet { saveProperties() } } // MARK: futureproofing
+        /// Initialise a new container, checking if a container at the given URL already exists.
+        init(name: String, url: URL, id: UUID = .init(), settings: Container.Settings) {
+            let existingContainer = try? Container(knownURL: url)
+
+            self.name = existingContainer?.name ?? name
+            self.url = url
+            self.id = existingContainer?.id ?? id
+            self.settings = existingContainer?.settings ?? settings
+
+            saveProperties()
+        }
+
+        /// Initialise a container from an existing URL
+        init(knownURL: URL) throws {
+            guard containerExists(at: knownURL) else {
+                Wine.Container.log.warning("Unable to initialise nonexistent container.")
+                throw Container.DoesNotExistError()
+            }
+
+            let object = try getContainerObject(url: knownURL)
+
+            self.name = object.name
+            self.url = object.url
+            self.id = object.id
+            self.settings = object.settings
+        }
+
+        /// Synthesize a container object from a URL.
+        convenience init(createFrom url: URL) {
+            self.init(name: url.lastPathComponent, url: url, settings: .init())
+        }
+
+        var name: String { didSet { saveProperties() } }
         var url: URL
         var id: UUID
-        var settings: Container.Settings { didSet { saveProperties() } } // FIXME: just for certainty; mythic's still in alpha, remember?
+        var settings: Container.Settings { didSet { saveProperties() } }
 
-        private(set) var propertiesFile: URL
+        var propertiesFile: URL { url.appending(path: "properties.plist") }
+    }
+}
 
-        // swiftlint:disable:next nesting
-        struct Process {
-            var name: String = .init()
-            var pid: Int = .init()
-        }
+extension Wine.Container: Equatable {
+    static func == (lhs: Wine.Container, rhs: Wine.Container) -> Bool {
+        return (lhs.url == rhs.url && lhs.id == rhs.id)
+    }
+}
+
+extension Wine.Container: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+        hasher.combine(id)
+    }
+}
+
+extension Wine.Container: Codable {
+    // swiftlint:disable:next nesting
+    enum CodingKeys: String, CodingKey {
+        case name
+        case url
+        case id
+        case settings
     }
 }
 
 extension Wine.Container {
+    struct Process {
+        var name: String = .init()
+        var pid: Int = .init()
+    }
+
     struct Settings: Codable, Hashable, Equatable {
         var metalHUD: Bool
         var msync: Bool
@@ -154,14 +155,14 @@ extension Wine.Container {
             self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2
         }
     }
-}
 
-extension Wine.Container {
     enum Scope: String, CaseIterable {
         case individual
         case global
     }
+}
 
+extension Wine.Container {
     struct DoesNotExistError: LocalizedError {
         var errorDescription: String? = String(localized: """
             Attempted to access a container that doesn't exist.
