@@ -1,55 +1,169 @@
 # Contributing to Mythic
 
-> Thank you for helping build a great macOS game launcher. Please read this guide before opening a PR.
+Thank you for helping build a great macOS game launcher! Please read this guide before opening a PR.
+
+---
 
 ## Code of Conduct
-- Ensure you’ve read and understand the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Please read and understand our [Code of Conduct](CODE_OF_CONDUCT.md) before contributing.
+
+---
 
 ## Quick Start
-- Requirements: Xcode 26+, Swift 6.0+
-- Open `Mythic.xcodeproj` and build the `Mythic` scheme.
 
-## Workflow
-- Discuss first: create an issue or comment on an existing one before large changes.
-- Fork, create a feature branch, commit using Conventional Commits, then open a PR.
-- Keep PRs focused and small; include a clear summary and screenshots/videos when UI changes.
+**Requirements:**
+- Xcode 16+
+- Swift 6.0+
+
+**To build:**
+1. Open `Mythic.xcodeproj`
+2. Build the `Mythic` scheme
+
+---
+
+## Contribution Workflow
+
+1. **Discuss first:** Create an issue or comment on an existing one before making large changes
+2. **Fork & branch:** Fork the repository and create a feature branch
+3. **Commit:** Use [Conventional Commits](https://conventionalcommits.org) format
+4. **Open a PR:** Keep PRs focused and small with clear summaries
+5. **Include visuals:** Add screenshots or videos for UI changes
+
+---
 
 ## Commit and PR Conventions
-- Use [Conventional Commits](https://conventionalcommits.org).
-  - Examples: `feat(library): vertical grid scrolling`, `fix(engine): prevent nil version crash`, `chore(ci): speed up build`.
-  - Use `!` for breaking changes: `feat(api)!: remove deprecated endpoints`.
-- Title your PR with the same style and reference related issues (e.g., `(fixes #123)`).
+
+### Conventional Commits Format
+
+Use the [Conventional Commits](https://conventionalcommits.org) specification:
+
+**Examples:**
+- `feat(library): add vertical grid scrolling`
+- `fix: prevent nil version crash`
+- `chore(ci): speed up build`
+
+**Breaking changes:** Use `!` after the scope:
+- `feat(api)!: remove deprecated endpoints`
+
+### Pull Request Titles
+
+Title your PR using the same convention and reference related issues:
+- `feat(library): add grid view (fixes #123, #456)`
+
+---
 
 ## CI Requirements
-- PRs must pass:
-  - SwiftLint: configured via `.swiftlint.yml` (runs in `.github/workflows/swiftlint.yml`).
-  - Build: Xcode build on macOS (see `.github/workflows/build.yml`).
 
-- [Install & Run SwiftLint locally](https://github.com/realm/SwiftLint#installation) if available.
+All PRs must pass:
 
-## Code Style (Swift + SwiftUI)
-- Prefer Swift Concurrency (async/await, Task) over callbacks; mark UI entry points with `@MainActor`.
-- Document public types and important functions with `/** ... */` (DocC comments).
-- Organize code by existing structure:
-  - Models → `Mythic/Models`
-  - Utilities/Globals/Extensions → `Mythic/Utilities`
-    - Engine/Legendary/Wine, etc. live under their existing folders—follow the current layout.
-  - Views (Components/Navigation/Onboarding/Unified) → `Mythic/Views`
-- Logging: prefer `OSLog`/`Logger` categories used in the project over `print`.
-- Globals: if absolutely necessary, prefer adding to `Global.swift` following the existing pattern; avoid new singletons unless justified.
-- Dependencies: prefer Swift Package Manager; propose new dependencies in an issue before submitting.
+- **SwiftLint:** Configured via `.swiftlint.yml` (see [here](.github/workflows/swiftlint.yml).)
+- **Build:** Xcode build on macOS (see [here](.github/workflows/build.yml).)
 
-## Localization
-- English is the source; translations are managed via [Crowdin](crowdin.getmythic.app). 
+**Tip:** [Install SwiftLint locally](https://github.com/realm/SwiftLint#installation) to catch issues before pushing.
 
-## License
-- By contributing, you agree your contributions are licensed under GNU GPLv3 ([view license](../LICENSE.md)).
-- New Swift files should start with a header like:
+---
+
+## Code Style Guidelines
+
+### General Principles
+
+- Follow the [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
+- Use **Model-View-ViewModel (MVVM)** architecture (see [example](Mythic/Views/Onboarding))
+- Write **dynamic and reusable code** that adapts to different contexts
+- **Search existing code** before creating new methods to reduce duplication
+
+### Swift & SwiftUI Best Practices
+
+#### Naming
+- Use **descriptive names** — avoid shorthand like `e`; use `example` instead
+- Only add **singleton variables** to global scope:
   ```swift
-  <#Xcode default header#>
-  
-  // Copyright © 2023-<#Current year#> vapidinfinity
+  nonisolated(unsafe) let workspace: NSWorkspace = .shared // ✅
+  var isInstallingGame: Bool = false // ❌
   ```
 
+#### Type Declarations
+- Prefer **explicit types and referencing using `.`, e.g. `.init()`, `.shared`**:
+  ```swift
+  let example: String = .init() // ✅
+  let example = String() // ❌
+  ```
+
+#### Views
+- **Prefer creating new view types** over using `@ViewBuilder`.
+- Use **SwiftUI only**
+  - AppKit workarounds are allowed only if:
+    - Functionality is unavailable in SwiftUI
+    - Implementation is isolated and reasonably sized
+    - Functionality is necessary
+
+#### Concurrency
+- Use **Swift Concurrency** (`async`/`await`, `Task`, `@MainActor`)
+- Avoid older APIs like `DispatchQueue.main.async`
+- Adhere to **Swift 6 concurrency requirements** — avoid creating new `@unchecked` code
+- Initialize `Task`s with appropriate `TaskPriority` for efficient scheduling
+- Only execute code on main actor when necessary
+- Mark UI entry points with `@MainActor`
+
+#### Logging
+- Use **`OSLog`'s `Logger`** for logging.
+- **Do not use `print()`**.
+
+#### Documentation
+- Document public types and important functions:
+  - `/** ... */` for multiple lines
+  - `///` for single lines
+  - See [Apple's documentation guide](https://developer.apple.com/documentation/xcode/writing-symbol-documentation-in-your-source-files)
+- Only comment when **clarification is necessary** — avoid obvious comments
+
+### Code Organization
+
+Follow the existing project structure:
+
+- **Utilities/Globals/Extensions** → `Mythic/Utilities`
+- **Views** → `Mythic/Views`
+  - Components/Navigation/Onboarding/Unified subdirectories
+
+### Dependencies
+
+- Prefer **Swift Package Manager**
+- Propose new dependencies in an issue **before** submitting a PR
+
+---
+
+## Localization
+
+- **Source language:** English
+- **Translations:** Managed via [Crowdin](https://crowdin.getmythic.app)
+  - Strings are automatically added to [`Localizable.xcstrings`](Mythic/Localizable.xcstrings)
+
+**For non-SwiftUI strings:** Wrap string literals in `String(localized:)`:
+```swift
+let message = String(localized: "Welcome to Mythic")
+```
+
+---
+
+### File Headers
+
+New Swift files should include this header:
+```swift
+<#Xcode default header#>
+
+// Copyright © 2023-<#Current year#> vapidinfinity
+```
+
+*Note: This header should be automatically generated when creating files in Xcode.*
+
+---
+
 ## Getting Help
-- Questions? Use GitHub Issues or join our Discord shown in the README.
+
+Have questions?
+- **GitHub Issues:** Open an issue for bugs or feature requests
+- **Discord:** Join our community (link in [README](README.md))
+
+---
+
+if you actually read this you're cool bro 🗣️
