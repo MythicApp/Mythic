@@ -47,7 +47,7 @@ extension Wine {
             let object = try getContainerObject(url: knownURL)
 
             self.name = object.name
-            self.url = object.url
+            self.url = knownURL
             self.id = object.id
             self.settings = object.settings
         }
