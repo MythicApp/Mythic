@@ -1,5 +1,5 @@
 //
-//  GameCardViewModel.swift
+//  GameCard+Extensions.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 10/20/24.
