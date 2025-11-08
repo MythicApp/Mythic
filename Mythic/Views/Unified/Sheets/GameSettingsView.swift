@@ -52,10 +52,10 @@ struct GameSettingsView: View {
 
                             VStack(alignment: .leading) {
                                 HStack {
-                                    GameCardViewModel.TitleAndInformationView(game: $game, withSubscriptedInfo: false)
+                                    GameCard.TitleAndInformationView(game: $game, withSubscriptedInfo: false)
                                 }
                                 HStack {
-                                    GameCardViewModel.ButtonsView(game: $game, withLabel: true)
+                                    GameCard.ButtonsView(game: $game, withLabel: true)
                                         .clipShape(.capsule)
                                 }
                             }
@@ -298,7 +298,7 @@ private extension GameSettingsView {
     var bottomBar: some View {
         HStack {
             SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
-            GameCardViewModel.SubscriptedInfoView(game: $game)
+            GameCard.SubscriptedInfoView(game: $game)
             
             Spacer()
             Button("Close") { isPresented = false }

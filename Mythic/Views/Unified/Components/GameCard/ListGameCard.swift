@@ -10,8 +10,6 @@
 import SwiftUI
 
 struct ListGameCard: View {
-    @ObservedObject var viewModel: GameCardViewModel = .init()
-
     @Binding var game: Game
     @ObservedObject private var operation: GameOperation = .shared
 
@@ -36,7 +34,7 @@ struct ListGameCard: View {
                         .font(.system(.title, weight: .bold))
 
                     HStack {
-                        GameCardViewModel.SubscriptedInfoView(game: $game)
+                        GameCard.SubscriptedInfoView(game: $game)
                     }
                 }
                 .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
@@ -45,7 +43,7 @@ struct ListGameCard: View {
                 Spacer()
 
                 Group {
-                    GameCardViewModel.ButtonsView(game: $game)
+                    GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
                         .conditionalTransform(if: isImageEmpty) { view in
                             view

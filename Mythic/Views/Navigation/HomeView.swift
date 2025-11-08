@@ -52,10 +52,10 @@ struct HomeView: View {
                                     .font(.caption)
 
                                 HStack {
-                                    GameCardViewModel.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
+                                    GameCard.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
                                 }
                                 HStack {
-                                    GameCardViewModel.ButtonsView(game: .constant(recentGame), withLabel: true)
+                                    GameCard.ButtonsView(game: .constant(recentGame), withLabel: true)
                                         .clipShape(.capsule)
                                 }
                             }
