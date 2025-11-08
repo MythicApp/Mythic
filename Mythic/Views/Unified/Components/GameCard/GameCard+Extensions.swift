@@ -10,6 +10,7 @@
 import Foundation
 import SwiftUI
 
+// swiftlint:disable nesting
 extension GameCard {
     struct Buttons {
         struct Prominent {
@@ -406,6 +407,7 @@ extension GameCard {
         }
     }
 }
+// swiftlint:enable nesting
 
 #Preview {
     LibraryView()
