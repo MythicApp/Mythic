@@ -15,7 +15,7 @@ import OSLog
 
 struct GameCard: View {
     @Binding var game: Game
-    @ObservedObject var viewModel: GameCardVM = .init()
+    @ObservedObject var viewModel: GameCardViewModel = .init()
 
     @State private var isImageEmpty: Bool = true
     @State private var isImageEmptyPreMacOSTahoe: Bool = true
@@ -32,11 +32,11 @@ struct GameCard: View {
         Group {
             HStack {
                 VStack(alignment: .leading) {
-                    GameCardVM.TitleAndInformationView(game: $game, font: .title3)
+                    GameCardViewModel.TitleAndInformationView(game: $game, font: .title3)
                 }
                 .layoutPriority(1)
 
-                GameCardVM.ButtonsView(game: $game)
+                GameCardViewModel.ButtonsView(game: $game)
                     .clipShape(.capsule)
             }
             .padding(.horizontal)

@@ -13,7 +13,7 @@ import SwiftyJSON
 import Shimmer
 
 // TODO: refactor to actually be a viewmodel, not a view extension
-@Observable final class GameCardVM: ObservableObject {
+@Observable final class GameCardViewModel: ObservableObject {
 
     // swiftlint:disable nesting
     struct Buttons {
@@ -320,10 +320,10 @@ import Shimmer
         var body: some View {
             Group { // annoying, but the only way two sheets'll fit in here
                 Menu {
-                    GameCardVM.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
-                    GameCardVM.Buttons.UpdateButton(game: $game, withLabel: true)
-                    GameCardVM.Buttons.FavouriteButton(game: $game, withLabel: true)
-                    GameCardVM.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
+                    GameCardViewModel.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
+                    GameCardViewModel.Buttons.UpdateButton(game: $game, withLabel: true)
+                    GameCardViewModel.Buttons.FavouriteButton(game: $game, withLabel: true)
+                    GameCardViewModel.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
                 } label: {
                     Button { } label: {
                         Image(systemName: "ellipsis")
@@ -404,7 +404,7 @@ import Shimmer
 
             if withSubscriptedInfo {
                 HStack {
-                    GameCardVM.SubscriptedInfoView(game: $game)
+                    GameCardViewModel.SubscriptedInfoView(game: $game)
                         .lineLimit(1)
                 }
             }

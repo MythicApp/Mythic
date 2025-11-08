@@ -11,8 +11,8 @@ import Foundation
 import SwiftUI
 
 @MainActor
-final class GameListVM: ObservableObject {
-    static let shared: GameListVM = .init()
+final class GameListViewModel: ObservableObject {
+    static let shared: GameListViewModel = .init()
 
     struct FilterOptions {
         var showInstalled: Bool = false
@@ -72,7 +72,7 @@ final class GameListVM: ObservableObject {
     }
 }
 
-private extension GameListVM {
+private extension GameListViewModel {
     @MainActor
     func updateGames() {
         let filteredGames = filterGames(unifiedGames)

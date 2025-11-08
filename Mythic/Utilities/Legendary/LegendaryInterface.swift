@@ -379,7 +379,7 @@ final class Legendary {
         let result = try await execute(arguments: ["auth", "--code", authKey])
         if let match = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#).firstMatch(in: result.standardError),
            let username = match["username"]?.substring {
-            await GameListVM.shared.refresh()
+            await GameListViewModel.shared.refresh()
             return String(username)
         }
         throw SignInError()

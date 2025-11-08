@@ -19,7 +19,7 @@ struct LibraryView: View {
 
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
-    @ObservedObject var gameListViewModel: GameListVM = .shared
+    @ObservedObject var gameListViewModel: GameListViewModel = .shared
     @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
     
     // MARK: - Body
