@@ -16,7 +16,7 @@ import SwiftUI
 ///
 /// You can use this just like `@AppStorage`, including access to a `Binding` via `$`.
 @propertyWrapper
-struct CodableAppStorage<T: Codable & Sendable>: DynamicProperty, Sendable {
+struct CodableAppStorage<T>: DynamicProperty, Sendable where T: Codable & Sendable {
     @State private var value: T
     private let key: String
 
@@ -24,7 +24,7 @@ struct CodableAppStorage<T: Codable & Sendable>: DynamicProperty, Sendable {
         get { value }
         nonmutating set {
             value = newValue
-            try? defaults.encodeAndSet(newValue, forKey: key)
+            _ = try? defaults.encodeAndSet(newValue, forKey: key)
         }
     }
 
@@ -33,7 +33,7 @@ struct CodableAppStorage<T: Codable & Sendable>: DynamicProperty, Sendable {
             get: { self.value },
             set: {
                 self.value = $0
-                try? defaults.encodeAndSet($0, forKey: self.key)
+                _ = try? defaults.encodeAndSet($0, forKey: self.key)
             }
         )
     }
@@ -44,7 +44,7 @@ struct CodableAppStorage<T: Codable & Sendable>: DynamicProperty, Sendable {
             self._value = State(initialValue: saved)
         } else {
             self._value = State(initialValue: defaultValue)
-            try? defaults.encodeAndSet(defaultValue, forKey: key)
+            _ = try? defaults.encodeAndSet(defaultValue, forKey: key)
         }
     }
 }
