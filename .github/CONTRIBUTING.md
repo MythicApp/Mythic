@@ -72,6 +72,7 @@ All PRs must pass:
 - Use **Model-View-ViewModel (MVVM)** architecture (see [example](Mythic/Views/Onboarding))
 - Write **dynamic and reusable code** that adapts to different contexts
 - **Search existing code** before creating new methods to reduce duplication
+- Store structs, enums, and other similar data structures in **class extensions**
 
 ### Swift & SwiftUI Best Practices
 
