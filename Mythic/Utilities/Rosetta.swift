@@ -33,26 +33,18 @@ final class Rosetta {
     ) async throws {
         guard agreeToSLA else { throw AgreementFailure() }
 
-        let task = Process()
-        task.launchPath = "/usr/sbin/softwareupdate"
-        task.arguments = ["--install-rosetta", "--agree-to-license"]
-        task.qualityOfService = .userInitiated
-        
-        let stdoutPipe = Pipe()
-        task.standardOutput = stdoutPipe
-        
-        try task.run()
+        let stream = Process.stream(executableURL: .init(filePath: "/usr/sbin/softwareupdate"),
+                       arguments: ["--install-rosetta", "--agree-to-license"])
 
-        stdoutPipe.fileHandleForReading.readabilityHandler = { handle in
+        for try await chunk in stream {
+            guard case .standardOutput = chunk.stream else { continue }
+
             // swiftlint:disable:next optional_data_string_conversion
-            let line = String(decoding: handle.availableData, as: UTF8.self)
-            if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: line) {
+            if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: chunk.output) {
                 completion(Double(match.last?.substring ?? .init()) ?? 0.0)
-            } else if line.contains("Install of Rosetta 2 finished successfully") {
+            } else if chunk.output.contains("Install of Rosetta 2 finished successfully") {
                 completion(100.0)
             }
         }
-        
-        task.waitUntilExit()
     }
 }
