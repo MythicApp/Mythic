@@ -14,23 +14,37 @@ import OSLog
 
 /// A property wrapper type that reflects a `Codable` value from `UserDefaults` and invalidates a view on a change when said value changes.
 @MainActor
-@frozen @propertyWrapper public struct CodableAppStorage<Value>: DynamicProperty where Value: Codable & Sendable & Equatable {
+@frozen @propertyWrapper public struct CodableAppStorage<Value>: @MainActor DynamicProperty where Value: Codable & Sendable & Equatable {
 
     @StateObject private var observer: CodableUserDefaultsObserver<Value>
+    @State private var transaction: Transaction = .init()
 
     private let key: String
     private let store: UserDefaults
 
     public var wrappedValue: Value {
         get { observer.value }
-        nonmutating set { observer.setValue(newValue, forKey: key, in: store) }
+        nonmutating set {
+            withTransaction(transaction) {
+                observer.setValue(newValue, forKey: key, in: store)
+            }
+        }
     }
 
     public var projectedValue: Binding<Value> {
         .init(
             get: { self.observer.value },
-            set: { self.observer.setValue($0, forKey: self.key, in: self.store) }
+            set: { newValue in
+                withTransaction(self.transaction) {
+                    self.observer.setValue(newValue, forKey: self.key, in: self.store)
+                }
+            }
         )
+    }
+    
+    public mutating func update() {
+        _observer.update()
+        _transaction.update()
     }
 }
 
@@ -65,6 +79,7 @@ extension CodableAppStorage {
                 initialValue: initialValue
             )
         )
+        self._transaction = .init(initialValue: .init())
     }
 }
 
@@ -95,6 +110,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
                 initialValue: initialValue
             )
         )
+        self._transaction = .init(initialValue: .init())
     }
 }
 

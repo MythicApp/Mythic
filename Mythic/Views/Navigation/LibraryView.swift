@@ -20,8 +20,8 @@ struct LibraryView: View {
     // MARK: - State Variables
     @State private var isGameImportSheetPresented = false
     @ObservedObject var gameListViewModel: GameListViewModel = .shared
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
-    
+    @CodableAppStorage("gameListLayout") var gameListLayout: GameListViewModel.Layout = .grid
+
     // MARK: - Body
     var body: some View {
         GameListView()
@@ -54,18 +54,18 @@ struct LibraryView: View {
 
                 ToolbarItem(placement: .automatic) {
                     Picker("View", systemImage: "macwindow", selection: Binding(
-                        get: { isListLayoutEnabled },
+                        get: { gameListLayout },
                         set: { newValue in
                             withAnimation {
-                                isListLayoutEnabled = newValue
+                                gameListLayout = newValue
                             }
                         }
                     )) {
                         Label("List", systemImage: "rectangle.grid.1x3")
-                            .tag(true)
+                            .tag(GameListViewModel.Layout.list)
 
                         Label("Grid", systemImage: "square.grid.3x3")
-                            .tag(false)
+                            .tag(GameListViewModel.Layout.grid)
                     }
                 }
 

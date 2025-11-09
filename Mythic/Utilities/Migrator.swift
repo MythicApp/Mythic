@@ -10,6 +10,7 @@
 import Foundation
 import OSLog
 
+// ‼️ This code should be removed before v1.0.0
 /// Reinitialise redundant data structure.
 final class Migrator {
     private static let log = Logger(

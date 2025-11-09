@@ -13,7 +13,7 @@ import SwiftUI
 struct GameListView: View {
     @ObservedObject var viewModel: GameListViewModel = .shared
 
-    @AppStorage("isGameListLayoutEnabled") private var isListLayoutEnabled: Bool = false
+    @CodableAppStorage("gameListLayout") var layout: GameListViewModel.Layout = .grid
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
 
@@ -41,7 +41,7 @@ struct GameListView: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            } else if isListLayoutEnabled {
+            } else if case .list = layout {
                 ScrollView(.vertical) {
                     LazyVStack {
                         ForEach(viewModel.games) { game in
@@ -51,7 +51,7 @@ struct GameListView: View {
                     .padding()
                     .searchable(text: $viewModel.searchString, placement: .toolbar)
                 }
-            } else {
+            } else if case .grid = layout {
                 if isLibraryGridScrollingVertical {
                     ScrollView(.vertical) {
                         LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {

@@ -22,7 +22,7 @@ final class GameListViewModel: ObservableObject {
         var source: Game.InclusiveSource = .all
     }
 
-    enum ViewStyle: String, CaseIterable, Sendable {
+    enum Layout: String, CaseIterable, Sendable, Codable {
         case grid = "Grid"
         case list = "List"
     }
@@ -42,7 +42,7 @@ final class GameListViewModel: ObservableObject {
     private let installedGamesCache: InstalledGamesCache = .init()
     private var sortCriteria: [SortCriteria] = [.favorite, .installed, .title]
     private let debounceInterval: TimeInterval = 0.3
-    private let logger: Logger = .init(subsystem: Bundle.main.bundleIdentifier ?? "Mythic", category: "GameListViewModel")
+    private let logger: Logger = .custom(category: "GameListViewModel")
 
     private init() {
         setupBindings()
