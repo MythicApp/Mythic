@@ -6,7 +6,6 @@
 
 import SwiftUI
 
-// MARK: - StopDownloadAlert Function
 /**
  Creates an alert for stopping the download.
  

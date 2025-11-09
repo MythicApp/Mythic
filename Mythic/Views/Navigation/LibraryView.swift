@@ -11,23 +11,19 @@ import SwiftUI
 import SwiftyJSON
 import SwordRPC
 
-// MARK: - LibraryView Struct
 /// A view displaying the user's library of games.
 struct LibraryView: View {
     @ObservedObject private var operation: GameOperation = .shared
     @ObservedObject private var variables: VariableManager = .shared
-
-    // MARK: - State Variables
+    
     @State private var isGameImportSheetPresented = false
     @ObservedObject var gameListViewModel: GameListViewModel = .shared
     @CodableAppStorage("gameListLayout") var gameListLayout: GameListViewModel.Layout = .grid
-
-    // MARK: - Body
+    
     var body: some View {
         GameListView()
             .navigationTitle("Library")
         
-        // MARK: - Toolbar
             .toolbar {
                 ToolbarItem(placement: .status) {
                     if variables.getVariable("isUpdatingLibrary") == true {
@@ -37,7 +33,7 @@ struct LibraryView: View {
                             .padding(10)
                     }
                 }
-
+                
                 ToolbarItem(placement: .automatic) {
                     Button {
                         isGameImportSheetPresented = true
@@ -46,12 +42,12 @@ struct LibraryView: View {
                     }
                     .help("Import a game")
                 }
-
+                
                 ToolbarItem(placement: .automatic) {
                     Button("Force-refresh game list", systemImage: "arrow.clockwise", action: gameListViewModel.refresh)
                         .help("Force-refresh the displayed games' status")
                 }
-
+                
                 ToolbarItem(placement: .automatic) {
                     Picker("View", systemImage: "macwindow", selection: Binding(
                         get: { gameListLayout },
@@ -63,37 +59,37 @@ struct LibraryView: View {
                     )) {
                         Label("List", systemImage: "rectangle.grid.1x3")
                             .tag(GameListViewModel.Layout.list)
-
+                        
                         Label("Grid", systemImage: "square.grid.3x3")
                             .tag(GameListViewModel.Layout.grid)
                     }
                 }
-
+                
                 ToolbarItem(placement: .automatic) {
                     Menu {
                         Toggle("Installed", systemImage: "arrow.down.app", isOn: $gameListViewModel.filterOptions.showInstalled)
-
+                        
                         Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
                             ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
                                 Text(platform.rawValue)
                             }
                         }
-
+                        
                         Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
                             ForEach(
                                 Game.InclusiveSource.allCases,
                                 id: \.self
                             ) { source in
                                 /*
-                                Label(platform.rawValue, systemImage: {
-                                    switch platform {
-                                    case .all: "display"
-                                    case .macOS: "macwindow"
-                                    case .windows: "pc"
-                                    }
-                                }())
+                                 Label(platform.rawValue, systemImage: {
+                                 switch platform {
+                                 case .all: "display"
+                                 case .macOS: "macwindow"
+                                 case .windows: "pc"
+                                 }
+                                 }())
                                  */
-
+                                
                                 Text(source.rawValue)
                             }
                         }
@@ -116,7 +112,6 @@ struct LibraryView: View {
                 }())
             }
         
-        // MARK: - Other Properties
             .sheet(isPresented: $isGameImportSheetPresented) {
                 GameImportView(isPresented: $isGameImportSheetPresented)
                     .fixedSize()

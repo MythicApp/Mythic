@@ -11,15 +11,11 @@ import SwiftUI
 import Foundation
 import Charts // TODO: TODO
 
-// MARK: - InstallStatusView Struct
 /// A view displaying the installation status of a game.
-
 struct InstallStatusView: View {
-    // MARK: - Binding Variables
     @Binding var isPresented: Bool
     @ObservedObject private var operation: GameOperation = .shared
-        
-    // MARK: - Body
+
     var body: some View {
         if let current = operation.current {
             VStack {
@@ -112,7 +108,6 @@ struct InstallStatusView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
     InstallStatusView(isPresented: .constant(true))
 }

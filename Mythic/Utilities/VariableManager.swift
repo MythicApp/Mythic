@@ -9,7 +9,6 @@
 
 import Foundation
 
-// MARK: - VariableManager Class
 /**
  A flexible class that enables cross-script variables.
  

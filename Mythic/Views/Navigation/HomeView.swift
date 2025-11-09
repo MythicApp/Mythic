@@ -13,23 +13,21 @@ import Glur
 import Shimmer
 import SwordRPC
 
-// MARK: - HomeView Struct
 /**
  The main view displaying the home screen of the Mythic app.
  */
 struct HomeView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
-
+    
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
-
+    
     @State private var isImageEmpty = true
-
+    
     @State private var isFavouritesSectionExpanded: Bool = true
     @State private var isContainersSectionExpanded: Bool = true
-
+    
     @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) })
-
-    // MARK: - Body
+    
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -37,7 +35,7 @@ struct HomeView: View {
                     ZStack(alignment: .bottomLeading) {
                         HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
-
+                        
                         HStack {
                             if isImageEmpty, recentGame.isFallbackImageAvailable {
                                 GameCard.FallbackImageCard(game: .constant(recentGame))
@@ -45,12 +43,12 @@ struct HomeView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .padding(.trailing)
                             }
-
+                            
                             VStack(alignment: .leading) {
                                 Text("CONTINUE PLAYING")
                                     .foregroundStyle(.placeholder)
                                     .font(.caption)
-
+                                
                                 HStack {
                                     GameCard.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
                                 }
@@ -81,7 +79,7 @@ struct HomeView: View {
                     )
                     .background(.quinary)
                 }
-
+                
                 Form {
                     Section("Your Favourites", isExpanded: $isFavouritesSectionExpanded) {
                         if favouritesExcludingRecent.isEmpty {
@@ -105,17 +103,17 @@ struct HomeView: View {
                             }
                         }
                     }
-
+                    
                     Section("Your Containers", isExpanded: $isContainersSectionExpanded) {
                         ContainerListView()
                     }
-
+                    
                 }
                 .formStyle(.grouped)
             }
         }
         .ignoresSafeArea(edges: .top)
-
+        
         .navigationTitle("Home")
         .task(priority: .background) {
             discordRPC.setPresence({
@@ -124,14 +122,13 @@ struct HomeView: View {
                 presence.state = "Idle"
                 presence.timestamps.start = .now
                 presence.assets.largeImage = "macos_512x512_2x"
-
+                
                 return presence
             }())
         }
     }
 }
 
-// MARK: - Preview
 #Preview {
     HomeView()
         .environmentObject(NetworkMonitor.shared)

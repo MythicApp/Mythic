@@ -14,15 +14,12 @@ import OSLog
 import UserNotifications
 import RegexBuilder
 
-// MARK: - Legendary Class
 /**
  Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities.
 
  [Legendary GitHub Repository](https://github.com/derrod/legendary)
  */
 final class Legendary {
-
-    // MARK: - Properties
 
     static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
     /// The file location for legendary's configuration files.
@@ -147,7 +144,6 @@ final class Legendary {
         return consumer
     }
 
-    // MARK: - Install Method
     /**
      Installs, updates, or repairs games using legendary.
      */
@@ -549,8 +545,6 @@ final class Legendary {
     /// Checks account signin state.
     static var signedIn: Bool { return user != nil }
 
-    // MARK: - Get Installed Games Method
-
     static func getInstalledGames() throws -> [Mythic.Game] {
         guard signedIn else { throw NotSignedInError() }
 
@@ -581,8 +575,6 @@ final class Legendary {
         return installed[game.id]["install_path"].string
     }
 
-    // MARK: - Get Installable Method
-
     static func getInstallable() throws -> [Mythic.Game] {
         guard signedIn else { throw NotSignedInError() }
 
@@ -595,8 +587,6 @@ final class Legendary {
 
         return games.sorted { $0.title < $1.title }
     }
-
-    // MARK: - Get Game Metadata Method
 
     static func getGameMetadata(game: Mythic.Game) throws -> JSON? {
         guard case .epic = game.source else { throw IsNotLegendaryError() }
@@ -691,8 +681,6 @@ final class Legendary {
         // fallback #2
         return keyImages.first?["url"].stringValue ?? .init()
     }
-
-    // MARK: - Is Alias Method
 
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
         guard signedIn else { throw NotSignedInError() }

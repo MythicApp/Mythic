@@ -13,7 +13,6 @@ import UserNotifications
 import SwordRPC
 import SemanticVersion
 
-// MARK: - Global Constants
 /// A simpler alias of `FileManager.default`.
 nonisolated(unsafe) let files: FileManager = .default
 
@@ -37,7 +36,7 @@ var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInst
 final class SafeErrorStorage: @unchecked Sendable {
     private let lock = NSLock()
     private var value: Error?
-
+    
     func set(_ newValue: Error) { lock.withLock { value = newValue } }
     func get() -> Error? { lock.withLock { value } }
 }
@@ -48,43 +47,17 @@ var appVersion: SemanticVersion? {
           let appVersion: SemanticVersion = .init("\(shortVersion)+\(bundleVersion)") else {
         return nil
     }
-
+    
     return appVersion
-}
-
-// MARK: - Functions
-// MARK: App Install Checker
-/**
- Checks if an app with the given bundle identifier is installed on the system.
- 
- - Parameter bundleIdentifier: The bundle identifier of the app.
- - Returns: `true` if the app is installed; otherwise, `false`.
- */
-func isAppInstalled(bundleIdentifier: String) -> Bool {
-    let process: Process = .init()
-    process.launchPath = "/usr/bin/env"
-    process.arguments = [
-        "bash", "-c",
-        "mdfind \"kMDItemCFBundleIdentifier == '\(bundleIdentifier)'\""
-    ]
-    
-    let stdout: Pipe = .init()
-    process.standardOutput = stdout
-    process.launch()
-    
-    let data: Data = stdout.fileHandleForReading.readDataToEndOfFile()
-    let output: String = .init(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
-    
-    return !output.isEmpty
 }
 
 @MainActor
 protocol StagedFlow {
     associatedtype Stage: CaseIterable & Equatable
-
+    
     var stages: [Stage] { get }
     var currentStage: Stage { get set }
-
+    
     /**
      Steps stage by delta value.
      - Parameters:
@@ -99,7 +72,7 @@ struct ActionButton: View {
     let action: () async -> Void
     let label: () -> Label<Text, Image>
     let autoReset: Bool = true
-
+    
     var body: some View {
         HStack {
             Button {
@@ -108,9 +81,9 @@ struct ActionButton: View {
                         operating = true
                         successful = nil
                     }
-
+                    
                     await action()
-
+                    
                     withAnimation {
                         operating = false
                     }
@@ -119,7 +92,7 @@ struct ActionButton: View {
                 label()
             }
             .disabled(operating)
-
+            
             if operating {
                 ProgressView()
                     .controlSize(.small)

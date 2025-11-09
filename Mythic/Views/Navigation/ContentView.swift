@@ -17,19 +17,17 @@ import Combine
 import WhatsNewKit
 import SemanticVersion
 
-// MARK: - ContentView Struct
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
-
+    
     @ObservedObject private var updateController: SparkleUpdateControllerModel = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
-
+    
     @State private var engineVersion: SemanticVersion?
-
-    // MARK: - Body
+    
     var body: some View {
         NavigationSplitView(
             sidebar: {
@@ -39,12 +37,12 @@ struct ContentView: View {
                             Label("Home", systemImage: "house")
                                 .help("Everything in one place")
                         }
-
+                        
                         NavigationLink(destination: LibraryView()) {
                             Label("Library", systemImage: "books.vertical")
                                 .help("View your games")
                         }
-
+                        
                         NavigationLink(destination: StoreView()) {
                             Label("Store", systemImage: "basket")
                                 .help("Purchase new games from Epic")
@@ -52,21 +50,21 @@ struct ContentView: View {
                     } header: {
                         Text("Dashboard")
                     }
-
+                    
                     Spacer()
-
+                    
                     Section {
                         NavigationLink(destination: ContainersView()) {
                             Label("Containers", systemImage: "cube")
                                 .help("Manage containers for Windows® applications")
                         }
-
+                        
                         Button("Support", systemImage: "questionmark.bubble") {
                             SupportWindowController.show()
                         }
                         .help("Get support")
                         .buttonStyle(.plain)
-
+                        
                         NavigationLink(destination: AccountsView()) {
                             Label("Accounts", systemImage: "person.2")
                                 .help("View all currently signed in accounts")
@@ -75,7 +73,7 @@ struct ContentView: View {
                         Text("Management")
                     }
                 }
-
+                
                 if operation.current != nil || !operation.queue.isEmpty {
                     List { // must wrap in a list to have the same styling as the other links
                         NavigationLink(destination: DownloadsView()) {
@@ -87,7 +85,7 @@ struct ContentView: View {
                     .scrollDisabled(true)
                     .scrollIndicators(.hidden)
                 }
-
+                
 #if DEBUG
                 VStack {
                     if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
@@ -95,7 +93,7 @@ struct ContentView: View {
                        let mythicVersion: SemanticVersion = .init("\(shortVersion)+\(bundleVersion)") {
                         Text("Mythic \(mythicVersion.prettyString)")
                     }
-
+                    
                     if let engineVersion = engineVersion {
                         Text("Mythic Engine \(engineVersion.prettyString)")
                     }
@@ -119,8 +117,8 @@ struct ContentView: View {
                             Text("Show More")
                                 .frame(maxWidth: .infinity)
                         }
-                            .buttonStyle(.borderedProminent)
-                            .clipShape(.capsule)
+                        .buttonStyle(.borderedProminent)
+                        .clipShape(.capsule)
                     }
                     .padding(8)
                     .frame(maxWidth: .infinity)
@@ -135,8 +133,8 @@ struct ContentView: View {
                             Text("Relaunch")
                                 .frame(maxWidth: .infinity)
                         }
-                            .buttonStyle(.borderedProminent)
-                            .clipShape(.capsule)
+                        .buttonStyle(.borderedProminent)
+                        .clipShape(.capsule)
                     }
                     .padding(8)
                     .frame(maxWidth: .infinity)
@@ -159,7 +157,6 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Preview
 #Preview {
     ContentView()
         .environmentObject(NetworkMonitor.shared)

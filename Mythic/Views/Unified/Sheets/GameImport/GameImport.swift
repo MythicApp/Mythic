@@ -13,10 +13,9 @@ import OSLog
 struct GameImportView: View {
     @Binding var isPresented: Bool
     @ObservedObject var gameListViewModel: GameListViewModel = .shared
-
+    
     @State private var source: Game.Source = .epic
     
-    // MARK: - Body
     var body: some View {
         VStack {
             if #available(macOS 15.0, *) {
@@ -24,12 +23,12 @@ struct GameImportView: View {
                     Tab("Epic", systemImage: "gamecontroller") {
                         GameImportView.Epic(isPresented: $isPresented)
                     }
-
+                    
                     Tab("Steam", systemImage: "gamecontroller") {
                         
                     }
                     .hidden()
-
+                    
                     Tab("Local", systemImage: "gamecontroller") {
                         GameImportView.Local(isPresented: $isPresented)
                     }
@@ -42,7 +41,7 @@ struct GameImportView: View {
                         .tabItem {
                             Label("Epic", systemImage: "gamecontroller")
                         }
-
+                    
                     GameImportView.Local(isPresented: $isPresented)
                         .tabItem {
                             Label("Local", systemImage: "gamecontroller")

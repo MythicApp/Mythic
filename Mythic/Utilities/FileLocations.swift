@@ -10,12 +10,7 @@
 import Foundation
 import OSLog
 
-// MARK: - File Locations Class
 final class FileLocations {
-    
-    // MARK: - Functions
-    
-    // MARK: - Global Applications Directory
     /** The global Applications directory.
      
      - Returns: An optional URL representing the global Applications directory.
@@ -34,8 +29,7 @@ final class FileLocations {
         
         return nil
     }()
-    
-    // MARK: - Global Games Directory
+
     /** A directory in global applications where games should be located.
      (Force-unwrappable)
      
@@ -57,8 +51,7 @@ final class FileLocations {
         
         return nil
     }()
-    
-    // MARK: - User Application Support Directory
+
     /** The current user's Application Support directory.
      
      (Force-unwrappable)
@@ -107,8 +100,7 @@ final class FileLocations {
 
         return nil
     }()
-
-    // MARK: - User Containers Directory
+    
     /** The current user's Containers directory.
      
      (Force-unwrappable)
