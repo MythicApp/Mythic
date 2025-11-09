@@ -334,7 +334,8 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                             .init(identifier: UUID().uuidString,
                                   content: {
                                       let content = UNMutableNotificationContent()
-                                      content.title = "Finished \(type) \"\(gameTitle)\"." // cannot localise raw values
+                                      content.title = String(localized: "Finished \(type) \"\(gameTitle)\".",
+                                                             comment: "")
                                       return content
                                   }(),
                                   trigger: nil)

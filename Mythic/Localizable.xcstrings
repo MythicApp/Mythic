@@ -11634,6 +11634,16 @@
     "Filters" : {
 
     },
+    "Finished %@ \"%@\"." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Finished %1$@ \"%2$@\"."
+          }
+        }
+      }
+    },
     "Finished moving \"%@\"." : {
 
     },

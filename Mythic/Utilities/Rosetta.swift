@@ -39,7 +39,6 @@ final class Rosetta {
         for try await chunk in stream {
             guard case .standardOutput = chunk.stream else { continue }
 
-            // swiftlint:disable:next optional_data_string_conversion
             if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: chunk.output) {
                 completion(Double(match.last?.substring ?? .init()) ?? 0.0)
             } else if chunk.output.contains("Install of Rosetta 2 finished successfully") {
