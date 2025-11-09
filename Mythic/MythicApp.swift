@@ -108,12 +108,6 @@ struct MythicApp: App {
                         NSWorkspace.shared.open(gameListURL)
                     }
                 }
-                Divider()
-                Button("What's new in Mythic") {
-                    if let whatsNewUrl = URL(string: "https://github.com/MythicApp/Mythic/releases") {
-                        NSWorkspace.shared.open(whatsNewUrl)
-                    }
-                }
 
                 Divider()
 
