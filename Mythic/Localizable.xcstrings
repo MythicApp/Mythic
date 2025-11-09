@@ -7374,6 +7374,9 @@
         }
       }
     },
+    "Configure Container..." : {
+
+    },
     "Container Settings" : {
 
     },
@@ -14735,6 +14738,9 @@
     "Install Rosetta" : {
 
     },
+    "Install/Uninstall..." : {
+
+    },
     "Installed" : {
       "localizations" : {
         "af" : {
@@ -15499,6 +15505,7 @@
       }
     },
     "Launch Configurator" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -15877,9 +15884,6 @@
           }
         }
       }
-    },
-    "Launch Uninstaller" : {
-
     },
     "Launch Winetricks" : {
       "localizations" : {
@@ -30796,9 +30800,6 @@
           }
         }
       }
-    },
-    "What's new in Mythic" : {
-
     },
     "Where do you want the container's base path to be located?" : {
       "localizations" : {

@@ -155,12 +155,12 @@ struct ContainerConfigurationView: View {
                     .disabled(true)
                     .help("Winetricks GUI support is currently broken.")
 
-                    Button("Launch Uninstaller") {
+                    Button("Install/Uninstall...") {
                         Task { try await Wine.execute(arguments: ["uninstaller"], containerURL: container.url) }
                     }
                     .disabled(uninstallerActive)
 
-                    Button("Launch Configurator") {
+                    Button("Configure Container...") {
                         let containerURL = container.url
 
                         Task {
