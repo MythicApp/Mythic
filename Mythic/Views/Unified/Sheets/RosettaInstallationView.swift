@@ -15,12 +15,8 @@ struct RosettaInstallationView: View { // similar to EngineInstallationView
     @Binding var installationError: Error?
     @Binding var installationComplete: Bool
 
-#if DEBUG
-    @StateObject var viewModel: ViewModel = .init(initialStage: .installer)
-#else
-    @ObservedObject var viewModel: ViewModel = .init()
-#endif
-    
+    @StateObject var viewModel: ViewModel = .init()
+
     @State private var agreedToSLA: Bool = false
 
     var body: some View {
