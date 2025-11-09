@@ -11,7 +11,7 @@ import SwiftUI
 import Sparkle
 
 public struct SparkleUpdaterSheetViewModifier: ViewModifier {
-    @ObservedObject private var updateController = SparkleUpdateControllerModel.shared
+    @ObservedObject private var updateController: SparkleUpdateController = .shared
     @State private var checkingForUpdatesSheetPresented = false
     @State private var noUpdateAvailableAlertPresented = false
     @State private var updateAvailableSheetPresented = false

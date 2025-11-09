@@ -20,7 +20,7 @@ import SemanticVersion
 struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
-    @ObservedObject private var updateController: SparkleUpdateControllerModel = .shared
+    @ObservedObject private var updateController: SparkleUpdateController = .shared
     @ObservedObject private var operation: GameOperation = .shared
     
     @State private var appVersion: String = .init()

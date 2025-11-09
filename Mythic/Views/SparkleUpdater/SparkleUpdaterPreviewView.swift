@@ -14,7 +14,7 @@ import ColorfulX
 
 public struct SparkleUpdaterPreviewView: View {
     public let appcast: SUAppcastItem
-    public let choice: (SparkleUpdateControllerModel.UpdateChoice) -> Void
+    public let choice: (SparkleUpdateController.UpdateChoice) -> Void
 
     @State private var colorfulAnimationColors: [Color] = [
         .init(hex: "#5412F6"),
