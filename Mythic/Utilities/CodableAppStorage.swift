@@ -1,5 +1,5 @@
 //
-//  SwiftUI+CodableAppStorage.swift
+//  CodableAppStorage.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 7/11/2025.
@@ -7,44 +7,133 @@
 
 // Copyright © 2023-2025 vapidinfinity
 
+import Foundation
 import SwiftUI
+import Combine
+import OSLog
 
-/// A property wrapper that provides `@AppStorage`-like functionality for any `Codable` type.
-///
-/// This wrapper stores and retrieves `Codable` values from `UserDefaults`, using custom `.decodeAndGet` and `.encodeAndSet`.
-/// SwiftUI views to automatically update when the stored value changes.
-///
-/// You can use this just like `@AppStorage`, including access to a `Binding` via `$`.
-@propertyWrapper
-struct CodableAppStorage<T>: DynamicProperty, Sendable where T: Codable & Sendable {
-    @State private var value: T
+/// A property wrapper type that reflects a `Codable` value from `UserDefaults` and invalidates a view on a change when said value changes.
+@MainActor
+@frozen @propertyWrapper public struct CodableAppStorage<Value>: DynamicProperty where Value: Codable & Sendable & Equatable {
+
+    @StateObject private var observer: CodableUserDefaultsObserver<Value>
+
     private let key: String
+    private let store: UserDefaults
 
-    public var wrappedValue: T {
-        get { value }
-        nonmutating set {
-            value = newValue
-            _ = try? defaults.encodeAndSet(newValue, forKey: key)
-        }
+    public var wrappedValue: Value {
+        get { observer.value }
+        nonmutating set { observer.setValue(newValue, forKey: key, in: store) }
     }
 
-    public var projectedValue: Binding<T> {
-        Binding(
-            get: { self.value },
-            set: {
-                self.value = $0
-                _ = try? defaults.encodeAndSet($0, forKey: self.key)
-            }
+    public var projectedValue: Binding<Value> {
+        .init(
+            get: { self.observer.value },
+            set: { self.observer.setValue($0, forKey: self.key, in: self.store) }
         )
     }
+}
 
-    public init(wrappedValue defaultValue: T, _ key: String, store defaults: UserDefaults = .standard) {
+extension CodableAppStorage {
+
+    /**
+     Creates a property that can read and write to a codable user default.
+
+     - Parameters:
+       - wrappedValue: The default value if a codable value is not specified for the given key.
+       - key: The key to read and write the value to in the user defaults store.
+       - store: The user defaults store to read and write to. A value of `nil` will use the `.standard` store.
+     */
+    public init(wrappedValue: Value, _ key: String, store: UserDefaults = .standard) {
         self.key = key
-        if let saved = try? defaults.decodeAndGet(T.self, forKey: key) {
-            self._value = State(initialValue: saved)
+        self.store = store
+
+        let initialValue: Value
+        if let actualValue = try? self.store.decodeAndGet(Value.self, forKey: key) {
+            initialValue = actualValue
         } else {
-            self._value = State(initialValue: defaultValue)
-            _ = try? defaults.encodeAndSet(defaultValue, forKey: key)
+            initialValue = wrappedValue
+            _ = try? self.store.encodeAndSet(wrappedValue, forKey: key)
         }
+
+        let capturedStore: UserDefaults = self.store
+        self._observer = .init(
+            wrappedValue: .init(
+                key: key,
+                defaultValue: wrappedValue,
+                store: capturedStore,
+                initialValue: initialValue
+            )
+        )
+    }
+}
+
+extension CodableAppStorage where Value: ExpressibleByNilLiteral {
+
+    /**
+     Creates a property that can read and write an Optional codable user
+     default.
+
+     Defaults to nil if there is no restored value.
+
+     - Parameters:
+       - key: The key to read and write the value to in the user defaults store.
+       - store: The user defaults store to read and write to. A value of `nil` will use the user default store from the environment.
+     */
+    public init(_ key: String, store: UserDefaults = .standard) {
+        self.key = key
+        self.store = store
+
+        let initialValue: Value = (try? self.store.decodeAndGet(Value.self, forKey: key)) ?? nil
+
+        let capturedStore: UserDefaults = self.store
+        self._observer = .init(
+            wrappedValue: .init(
+                key: key,
+                defaultValue: nil,
+                store: capturedStore,
+                initialValue: initialValue
+            )
+        )
+    }
+}
+
+/// Internal observable object that monitors UserDefaults changes for Codable types.
+@MainActor
+@usableFromInline final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & Sendable & Equatable {
+    @Published public private(set) var value: T
+
+    private let key: String
+    private let defaultValue: T
+    private let store: UserDefaults
+    private var cancellable: AnyCancellable?
+
+    public init(key: String, defaultValue: T, store: UserDefaults, initialValue: T) {
+        self.key = key
+        self.defaultValue = defaultValue
+        self.store = store
+        self.value = initialValue
+
+        self.cancellable = NotificationCenter.default
+            .publisher(for: UserDefaults.didChangeNotification, object: store)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.updateFromDefaults()
+            }
+    }
+
+    /// Updates the value and persists it to UserDefaults.
+    public func setValue(_ newValue: T, forKey key: String, in store: UserDefaults) {
+        guard newValue != value else { return }
+
+        _ = try? store.encodeAndSet(newValue, forKey: key)
+        // placement is important here, only set value if encoding succeeds
+        value = newValue
+    }
+
+    private func updateFromDefaults() {
+        let newValue: T = (try? store.decodeAndGet(T.self, forKey: key)) ?? defaultValue
+        guard newValue != value else { return }
+        value = newValue
     }
 }
