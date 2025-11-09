@@ -12,16 +12,16 @@ import AppKit
 import SwordRPC
 
 struct SupportView: View {
-    
+
     var body: some View {
         Text("Support")
             .font(.title)
             .fontWeight(.bold)
             .frame(maxWidth: 400, alignment: .leading)
             .padding(.leading)
-            
+
         Spacer()
-            
+
         VStack {
             Text("Resources")
                 .font(.title2)
@@ -42,7 +42,7 @@ struct SupportView: View {
             }
             .padding(.bottom)
             .frame(maxWidth: 400, alignment: .leading)
-            
+
             Text("Recieve Help")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -60,11 +60,11 @@ struct SupportView: View {
         }
         .padding([.leading, .bottom])
         .frame(maxWidth: 400, alignment: .leading)
-            
+
         Spacer()
-        
+
         VStack{
-            Text("\(Image(systemName: "exclamationmark.triangle.fill")) Go through all resources before reporting an issue.")
+            Label("Please consult resources before creating an issue — you may find a solution there.", systemImage: "exclamationmark.bubble")
                 .font(.footnote)
                 .frame(maxWidth: 400, alignment: .leading)
                 .padding([.leading, .bottom])
@@ -86,11 +86,11 @@ struct SupportView: View {
 
 public class SupportWindowController: NSWindowController {
     static var shared: SupportWindowController?
-    
+
     convenience init() {
         let supportView = SupportView()
         let hosting = NSHostingController(rootView: supportView)
-        
+
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 300),
             styleMask: [
@@ -101,15 +101,15 @@ public class SupportWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        
+
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
         window.titleVisibility = .hidden
-        
+
         if let zoomButton = window.standardWindowButton(.zoomButton) {
             zoomButton.isEnabled = false
         }
-            
+
         let visualEffectView = NSVisualEffectView()
         visualEffectView.material = .sidebar
         visualEffectView.blendingMode = .behindWindow
@@ -124,12 +124,12 @@ public class SupportWindowController: NSWindowController {
             hosting.view.topAnchor.constraint(equalTo: visualEffectView.topAnchor, constant: 28),
             hosting.view.bottomAnchor.constraint(equalTo: visualEffectView.bottomAnchor)
         ])
-        
+
         window.contentView = visualEffectView
         window.center()
         self.init(window: window)
     }
-        
+
     static func show() {
         if let existing = shared {
             existing.window?.makeKeyAndOrderFront(nil)
@@ -142,13 +142,13 @@ public class SupportWindowController: NSWindowController {
         }
     }
 }
-    
+
 private func openLink(urlString: String) {
     if let url = URL(string: urlString) {
         NSWorkspace.shared.open(url)
     }
 }
-    
+
 @ViewBuilder
 private func verticalDivider(height: CGFloat) -> some View {
     Divider()
