@@ -75,6 +75,7 @@ struct GameListView: View {
                 }
             }
         }
+        .animation(.easeInOut, value: layout)
         .id(viewModel.refreshFlag)
     }
 }
