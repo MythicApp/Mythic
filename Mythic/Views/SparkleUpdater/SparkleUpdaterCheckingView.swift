@@ -9,27 +9,29 @@
 
 import SwiftUI
 
-public struct SparkleUpdaterCheckingView: View {
-    public let cancel: () -> Void
+extension SparkleUpdater {
+    struct CheckingView: View {
+        let cancel: () -> Void
 
-    public var body: some View {
-        RichAlertView(
-            title: {
-                Text("Checking for Updates")
-            },
-            content: {
-                ProgressView()
-                    .progressViewStyle(.linear)
-            },
-            buttonsRight: {
-                Button("Cancel") {
-                    cancel()
+        var body: some View {
+            RichAlertView(
+                title: {
+                    Text("Checking for Updates")
+                },
+                content: {
+                    ProgressView()
+                        .progressViewStyle(.linear)
+                },
+                buttonsRight: {
+                    Button("Cancel") {
+                        cancel()
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
 #Preview {
-    SparkleUpdaterCheckingView(cancel: {})
+    SparkleUpdater.CheckingView(cancel: {})
 }

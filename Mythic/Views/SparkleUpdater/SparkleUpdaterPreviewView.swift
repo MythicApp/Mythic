@@ -12,106 +12,103 @@ import Sparkle
 import MarkdownUI
 import ColorfulX
 
-public struct SparkleUpdaterPreviewView: View {
-    public let appcast: SUAppcastItem
-    public let choice: (SparkleUpdateController.UpdateChoice) -> Void
+extension SparkleUpdater {
+    struct PreviewView: View {
+        let appcast: SUAppcastItem
+        let choice: (SparkleUpdateController.UpdateChoice) -> Void
 
-    @State private var colorfulAnimationColors: [Color] = [
-        .init(hex: "#5412F6"),
-        .init(hex: "#7E1ED8"),
-        .init(hex: "#2C2C2C")
-    ]
-    @State private var colorfulAnimationSpeed: Double = 1
-    @State private var colorfulAnimationNoise: Double = 0
+        @State private var colorfulAnimationColors: [Color] = [
+            .init(hex: "#5412F6"),
+            .init(hex: "#7E1ED8"),
+            .init(hex: "#2C2C2C")
+        ]
+        @State private var colorfulAnimationSpeed: Double = 1
+        @State private var colorfulAnimationNoise: Double = 0
 
-    public var body: some View {
-        HStack(spacing: 0) {
-            VStack(alignment: .center, spacing: 32) {
-                VStack(spacing: 16) {
-                    VStack(spacing: 16) {
-                        BundleIconView()
-                            .shadow(radius: 16)
-                            .frame(width: 64, height: 64)
-                        VStack(spacing: 2) {
-                            Text(AppDelegate.applicationBundleName)
-                                .font(.title2)
-                                .bold()
-                            Text(String(format: "v%@ (%@)",
-                                        appcast.displayVersionString.isEmpty ? "0.0.0" : appcast.displayVersionString,
-                                        appcast.versionString.isEmpty ? "0" : appcast.versionString))
-                            .font(.caption)
-                            .opacity(0.6)
+        var body: some View {
+            HStack(spacing: 0) {
+                VStack(alignment: .center) {
+                    VStack {
+                        VStack {
+                            BundleIconView()
+                                .shadow(radius: .leastNormalMagnitude)
+                                .aspectRatio(contentMode: .fit)
+                            
+                            VStack {
+                                Text(Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "Unknown")
+                                    .font(.title2)
+                                    .bold()
+                                
+                                Text("v\(appcast.displayVersionString.isEmpty ? "0.0.0" : appcast.displayVersionString) (\(appcast.versionString.isEmpty ? "0" : appcast.versionString))")
+                                    .font(.caption)
+                                    .opacity(0.6)
+                            }
                         }
-                    }
-                    
-                    Text(String(format: String(localized: "You are running %@. Would you like to download the update?"),
-                                String(format: "v%@", AppDelegate.applicationVersion.description)))
-                    .font(.callout)
-                    .multilineTextAlignment(.center)
-                    .opacity(0.6)
-                }
-
-                VStack(spacing: 8) {
-                    Button {
-                        choice(.update)
-                    } label: {
-                        Text("Update", comment: "Sparkle Updater")
-                            .padding(4)
+                        
+                        Text("You are running \(Mythic.appVersion?.description ?? "Unknown"). Would you like to download the update?")
+                            .font(.callout)
                             .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity)
+                            .opacity(0.6)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(.capsule)
-                    if !appcast.isCriticalUpdate {
+
+                    VStack {
                         Button {
-                            choice(.dismiss)
+                            choice(.update)
                         } label: {
-                            Text("Dismiss", comment: "Sparkle Updater")
-                                .padding(4)
+                            Text("Update")
+                                .padding(.vertical)
                                 .multilineTextAlignment(.center)
                                 .frame(maxWidth: .infinity)
                         }
+                        .buttonStyle(.borderedProminent)
                         .clipShape(.capsule)
+                        
+                        if !appcast.isCriticalUpdate {
+                            Button {
+                                choice(.dismiss)
+                            } label: {
+                                Text("Dismiss")
+                                    .padding(.vertical)
+                                    .multilineTextAlignment(.center)
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .clipShape(.capsule)
+                        }
                     }
                 }
-            }
-            .padding(24)
-            .frame(width: 256, height: nil, alignment: .center)
-            .frame(maxHeight: .infinity)
-            .background(
-                ColorfulView(color: $colorfulAnimationColors,
-                            speed: $colorfulAnimationSpeed,
-                            noise: $colorfulAnimationNoise)
-            )
-            .foregroundStyle(.white)
-            if let itemDescription = appcast.itemDescription, !itemDescription.isEmpty {
-                ScrollView {
-                    Markdown {
-                        itemDescription
+                .padding()
+                .frame(maxHeight: .infinity)
+                .background(
+                    ColorfulView(
+                        color: $colorfulAnimationColors,
+                        speed: $colorfulAnimationSpeed,
+                        noise: $colorfulAnimationNoise
+                    )
+                )
+                .foregroundStyle(.white)
+                
+                if let itemDescription = appcast.itemDescription, !itemDescription.isEmpty {
+                    ScrollView {
+                        Markdown {
+                            itemDescription
+                        }
+                        .multilineTextAlignment(.leading)
+                        .padding()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                     }
-                    .multilineTextAlignment(.leading)
-                    .padding(20)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ContentUnavailableView(
+                        "No Release Notes Found.",
+                        systemImage: "pc"
+                    )
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                VStack(alignment: .center, spacing: 16) {
-                    Image(systemName: "pc")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 96, height: 96)
-                    Text("No Release Notes Found")
-                }
-                .multilineTextAlignment(.center)
-                .padding(20)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                .foregroundStyle(.secondary)
             }
+            .fixedSize()
         }
-        .frame(width: 668, height: 384)
     }
 }
 
 #Preview {
-    SparkleUpdaterPreviewView(appcast: .empty(), choice: { _ in })
+    SparkleUpdater.PreviewView(appcast: .empty(), choice: { _ in })
 }

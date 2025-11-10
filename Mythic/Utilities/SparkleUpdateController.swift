@@ -12,23 +12,23 @@ import Combine
 import Sparkle
 import OSLog
 
-final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
+final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
     @MainActor static let shared: SparkleUpdateController = .init()
-    
-    private let log: Logger = .custom(category: "SparkleUpdateController")
-    
+
+    private let log: Logger = .custom(category: "SparkleUpdaterController")
+
     private var sparkleUpdater: SPUUpdater?
-    
+
     @Published private(set) var state: UpdateState = .idle
     @Published private(set) var userInitiatedCheck: Bool = false
-    
+
     private var updateSettingsCancellables: Set<AnyCancellable> = []
     private var backgroundTask: AnyCancellable?
     private let backgroundQueue: DispatchQueue = .init(label: "BackgroudEventService", qos: .background)
-    
-    @MainActor override init() {
+
+    override init() {
         super.init()
-        
+
         let updaterController: SPUUpdater = .init(
             hostBundle: Bundle.main,
             applicationBundle: Bundle.main,
@@ -36,16 +36,16 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
             delegate: nil
         )
         self.sparkleUpdater = updaterController
-        
+
         updaterController.automaticallyChecksForUpdates = false
         updaterController.automaticallyDownloadsUpdates = false
         do { try updaterController.start() } catch {
             log.error("Sparkle failed to start: \(error.localizedDescription).")
         }
-        
+
         self.manageBackgroundTask(sparkleUpdateAction != .off)
     }
-    
+
     private func manageBackgroundTask(_ enabled: Bool) {
         if enabled {
             backgroundTask = AnyCancellable(
@@ -62,7 +62,7 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
             backgroundTask?.cancel()
         }
     }
-    
+
     func clearState() -> Bool {
         switch state {
         case .idle:
@@ -86,11 +86,11 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
         case .error(let acknowledge, _):
             acknowledge()
         }
-        
+
         return true
     }
-    
-    @MainActor func checkForUpdates(userInitiated: Bool = false) {
+
+    func checkForUpdates(userInitiated: Bool = false) {
         guard let updater = sparkleUpdater, !updater.sessionInProgress else {
             log.info("\(userInitiated ? "User-initiated" : "Automatic") update check ignored due to in-progress update session.")
             if userInitiated {
@@ -98,13 +98,13 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
             }
             return
         }
-        
+
         log.info("\(userInitiated ? "User-initiated" : "Automatic") update check initiated...")
         _ = clearState()
         userInitiatedCheck = userInitiated
         updater.checkForUpdates()
     }
-    
+
     private var sparkleUpdateAction: AutoUpdateAction {
         if Thread.isMainThread {
             var action: AutoUpdateAction = .off
@@ -119,7 +119,7 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
         }
         return action
     }
-    
+
     private func preferSilent() -> Bool {
         if Thread.isMainThread {
             var action: Bool = false
@@ -134,27 +134,27 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
         }
         return action
     }
-    
-    public func show(_ request: SPUUpdatePermissionRequest) async -> SUUpdatePermissionResponse {
+
+    func show(_ request: SPUUpdatePermissionRequest) async -> SUUpdatePermissionResponse {
         log.debug("Update permission request received.")
         return .init(
             automaticUpdateChecks: false,
             sendSystemProfile: false
         )
     }
-    
-    public func showUserInitiatedUpdateCheck(cancellation: @escaping () -> Void) {
+
+    func showUserInitiatedUpdateCheck(cancellation: @escaping () -> Void) {
         log.debug("Update check initiated.")
         state = .checkingForUpdates {
             cancellation()
         }
     }
-    
-    public func showUpdateFound(with appcastItem: SUAppcastItem,
-                                state: SPUUserUpdateState,
-                                reply: @escaping (SPUUserUpdateChoice) -> Void) {
+
+    func showUpdateFound(with appcastItem: SUAppcastItem,
+                         state: SPUUserUpdateState,
+                         reply: @escaping (SPUUserUpdateChoice) -> Void) {
         log.debug("Update found: \(appcastItem.displayVersionString.isEmpty ? "unknown" : appcastItem.displayVersionString).")
-        
+
         if !userInitiatedCheck && sparkleUpdateAction == .install {
             reply(.install)
             self.state = .initializingUpdate
@@ -162,7 +162,7 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
         } else if sparkleUpdateAction == .check && !preferSilent() {
             userInitiatedCheck = true
         }
-        
+
         self.state = .updateAvailable(choice: { choice in
             switch choice {
             case .update:
@@ -174,94 +174,94 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
             }
         }, appcast: appcastItem)
     }
-    
-    public func showUpdateReleaseNotes(with downloadData: SPUDownloadData) {
+
+    func showUpdateReleaseNotes(with downloadData: SPUDownloadData) {
         log.debug("Release notes received.")
     }
-    
-    public func showUpdateReleaseNotesFailedToDownloadWithError(_ error: Error) {
+
+    func showUpdateReleaseNotesFailedToDownloadWithError(_ error: Error) {
         log.error("Failed to download release notes: \(error.localizedDescription).")
-        
+
         if !userInitiatedCheck {
             self.state = .idle
             return
         }
-        
+
         state = .error(acknowledge: {
             self.state = .idle
         }, error: error)
     }
-    
-    public func showUpdateNotFoundWithError(_ error: Error, acknowledgement: @escaping () -> Void) {
+
+    func showUpdateNotFoundWithError(_ error: Error, acknowledgement: @escaping () -> Void) {
         log.info("No update available.")
-        
+
         if !userInitiatedCheck {
             acknowledgement()
             self.state = .idle
             return
         }
-        
+
         state = .noUpdateAvailable(acknowledge: {
             acknowledgement()
             self.state = .idle
         })
     }
-    
-    public func showUpdaterError(_ error: Error, acknowledgement: @escaping () -> Void) {
+
+    func showUpdaterError(_ error: Error, acknowledgement: @escaping () -> Void) {
         log.error("Updater error: \(error.localizedDescription).")
-        
+
         if !userInitiatedCheck {
             acknowledgement()
             self.state = .idle
             return
         }
-        
+
         state = .error(acknowledge: {
             acknowledgement()
             self.state = .idle
         }, error: error)
     }
-    
-    public func showDownloadInitiated(cancellation: @escaping () -> Void) {
+
+    func showDownloadInitiated(cancellation: @escaping () -> Void) {
         log.debug("Update download initiated.")
         state = .downloadingUpdate(cancel: {
             cancellation()
             self.state = .idle
         }, progress: .init(started: .init(), total: 0, completed: 0))
     }
-    
-    public func showDownloadDidReceiveExpectedContentLength(_ expectedContentLength: UInt64) {
+
+    func showDownloadDidReceiveExpectedContentLength(_ expectedContentLength: UInt64) {
         guard case .downloadingUpdate(let cancel, var progress) = state else { return }
-        
+
         progress.total = expectedContentLength
         state = .downloadingUpdate(cancel: cancel, progress: progress)
     }
-    
-    public func showDownloadDidReceiveData(ofLength length: UInt64) {
+
+    func showDownloadDidReceiveData(ofLength length: UInt64) {
         guard case .downloadingUpdate(let cancel, var progress) = state else { return }
-        
+
         progress.completed += length
         state = .downloadingUpdate(cancel: cancel, progress: progress)
     }
-    
-    public func showDownloadDidStartExtractingUpdate() {
+
+    func showDownloadDidStartExtractingUpdate() {
         log.debug("Update download complete; extracting...")
         state = .extractingUpdate(progress: .init(started: .init(), progress: 0))
     }
-    
-    public func showExtractionReceivedProgress(_ progress: Double) {
+
+    func showExtractionReceivedProgress(_ progress: Double) {
         guard case .extractingUpdate(let currentProgress) = state else { return }
-        
+
         state = .extractingUpdate(progress: .init(started: currentProgress.started, progress: progress))
     }
-    
-    public func showReady(toInstallAndRelaunch reply: @escaping (SPUUserUpdateChoice) -> Void) {
+
+    func showReady(toInstallAndRelaunch reply: @escaping (SPUUserUpdateChoice) -> Void) {
         log.debug("Update ready to install.")
-        
+
         if !userInitiatedCheck && !preferSilent() {
             userInitiatedCheck = true
         }
-        
+
         state = .readyToRelaunch { choice in
             switch choice {
             case .update:
@@ -273,28 +273,28 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
             }
         }
     }
-    
-    public func showInstallingUpdate(withApplicationTerminated applicationTerminated: Bool,
-                                     retryTerminatingApplication: @escaping () -> Void) {
+
+    func showInstallingUpdate(withApplicationTerminated applicationTerminated: Bool,
+                              retryTerminatingApplication: @escaping () -> Void) {
         log.debug("Update installing...")
         state = .installingUpdate
         if !applicationTerminated {
             retryTerminatingApplication()
         }
     }
-    
-    public func showUpdateInstalledAndRelaunched(_ relaunched: Bool, acknowledgement: @escaping () -> Void) {
+
+    func showUpdateInstalledAndRelaunched(_ relaunched: Bool, acknowledgement: @escaping () -> Void) {
         acknowledgement()
     }
-    
-    public func showUpdateInFocus() {}
-    
-    public func dismissUpdateInstallation() {
+
+    func showUpdateInFocus() {  }
+
+    func dismissUpdateInstallation() {
         guard userInitiatedCheck else {
             self.state = .idle
             return
         }
-        
+
         if case .checkingForUpdates = state {
             state = .noUpdateAvailable {
                 self.state = .idle
@@ -304,22 +304,22 @@ final public class SparkleUpdateController: NSObject, SPUUserDriver, ObservableO
 }
 
 extension SparkleUpdateController {
-    public enum UpdateChoice {
+    enum UpdateChoice {
         case update
         case dismiss
     }
-    
+
     struct DownloadProgress {
         let started: Date
         var total: UInt64
         var completed: UInt64
     }
-    
+
     struct ExtractProgress {
         let started: Date
         var progress: Double
     }
-    
+
     enum UpdateState {
         var stateType: Int {
             switch self {
@@ -335,7 +335,7 @@ extension SparkleUpdateController {
             case .error: return 9
             }
         }
-        
+
         case idle
         case checkingForUpdates(cancel: () -> Void)
         case updateAvailable(choice: (UpdateChoice) -> Void, appcast: SUAppcastItem)
@@ -347,7 +347,7 @@ extension SparkleUpdateController {
         case installingUpdate
         case error(acknowledge: () -> Void, error: Error)
     }
-    
+
     enum AutoUpdateAction: String, Sendable, Codable, Hashable {
         case off
         case check

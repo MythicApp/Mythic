@@ -10,102 +10,112 @@
 import SwiftUI
 import Sparkle
 
-public struct SparkleUpdaterSheetViewModifier: ViewModifier {
-    @ObservedObject private var updateController: SparkleUpdateController = .shared
-    @State private var checkingForUpdatesSheetPresented = false
-    @State private var noUpdateAvailableAlertPresented = false
-    @State private var updateAvailableSheetPresented = false
-    @State private var downloadSheetPresented = false
-    @State private var extractSheetPresented = false
-    @State private var restartSheetPresented = false
-    @State private var errorSheetPresented = false
+struct SparkleUpdater: ViewModifier {
+    @ObservedObject private var controller: SparkleUpdateController = .shared
+    
+    @State private var checkingForUpdatesSheetPresented: Bool = false
+    @State private var noUpdateAvailableAlertPresented: Bool = false
+    @State private var updateAvailableSheetPresented: Bool = false
+    @State private var downloadSheetPresented: Bool = false
+    @State private var extractSheetPresented: Bool = false
+    @State private var restartSheetPresented: Bool = false
+    @State private var errorSheetPresented: Bool = false
 
     private var updateAvailableAppcast: SUAppcastItem {
-        if case .updateAvailable(_, let appcast) = updateController.state {
+        if case .updateAvailable(_, let appcast) = controller.state {
             return appcast
         }
         return .empty()
     }
+
     private var downloadProgress: (started: Date, total: UInt64, completed: UInt64) { // swiftlint:disable:this large_tuple
-        if case .downloadingUpdate(_, let progress) = updateController.state {
+        if case .downloadingUpdate(_, let progress) = controller.state {
             return (progress.started, progress.total, progress.completed)
         }
         return (.init(), 0, 0)
     }
+
     private var extractProgress: (started: Date, progress: Double) {
-        if case .extractingUpdate(let progress) = updateController.state {
+        if case .extractingUpdate(let progress) = controller.state {
             return (progress.started, progress.progress)
         }
         return (.init(), 0)
     }
     
-    public func body(content: Content) -> some View {
+    func body(content: Content) -> some View {
         content
             .sheet(isPresented: $checkingForUpdatesSheetPresented) {
-                SparkleUpdaterCheckingView(cancel: {
-                    if case .checkingForUpdates(let cancel) = updateController.state {
+                CheckingView {
+                    if case .checkingForUpdates(let cancel) = controller.state {
                         cancel()
                     }
-                })
+                }
             }
-            .alert("No Update Available",
-                   isPresented: $noUpdateAvailableAlertPresented,
-                   actions: {
-                Button("OK", role: .cancel) {}
-            }, message: {
-                Text(String(format: String(localized: "You are on the latest available version of %@, %@."),
-                            AppDelegate.applicationBundleName,
-                            "v" + AppDelegate.applicationVersion.description))
-            })
+            .alert(
+                "No Update Available",
+                isPresented: $noUpdateAvailableAlertPresented,
+                actions: {
+                    Button("OK", role: .cancel) {}
+                },
+                message: {
+                    Text("You are on the latest available version of \(Bundle.main.infoDictionary?["CFBundleName"] as? String ?? "Unknown"), \(Mythic.appVersion?.description ?? "Unknown").")
+                }
+            )
             .sheet(isPresented: $updateAvailableSheetPresented) {
-                SparkleUpdaterPreviewView(appcast: updateAvailableAppcast, choice: { choiceValue in
-                    if case .updateAvailable(let choice, _) = updateController.state {
+                PreviewView(appcast: updateAvailableAppcast) { choiceValue in
+                    if case .updateAvailable(let choice, _) = controller.state {
                         choice(choiceValue)
                     }
-                })
+                }
             }
             .sheet(isPresented: $downloadSheetPresented) {
-               SparkleUpdaterDownloadingView(cancel: {
-                    if case .downloadingUpdate(let cancel, _) = updateController.state {
-                        cancel()
-                    }
-                }, downloadStartTimestamp: downloadProgress.started, bytesDownloaded: downloadProgress.completed, bytesTotal: downloadProgress.total)
+                DownloadingView(
+                    cancel: {
+                        if case .downloadingUpdate(let cancel, _) = controller.state {
+                            cancel()
+                        }
+                    },
+                    downloadStartTimestamp: downloadProgress.started,
+                    bytesDownloaded: downloadProgress.completed,
+                    bytesTotal: downloadProgress.total
+                )
             }
             .sheet(isPresented: $extractSheetPresented) {
-                SparkleUpdaterExtractingView(progress: extractProgress.progress)
+                ExtractingView(progress: extractProgress.progress)
             }
             .sheet(isPresented: $restartSheetPresented) {
-                SparkleUpdaterFinishView(dismiss: { relaunch in
-                    if case .readyToRelaunch(let acknowledge) = updateController.state {
+                FinishView { relaunch in
+                    if case .readyToRelaunch(let acknowledge) = controller.state {
                         acknowledge(relaunch ? .update : .dismiss)
                     }
-                })
-            }
-            .alert("Update Error",
-                   isPresented: $errorSheetPresented,
-                   actions: {
-                Button("OK", role: .cancel) {}
-            }, message: {
-                if case .error(_, let error) = updateController.state {
-                    Text(error.localizedDescription)
                 }
-            })
+            }
+            .alert(
+                "Update Error",
+                isPresented: $errorSheetPresented,
+                actions: {
+                    Button("OK", role: .cancel) {}
+                },
+                message: {
+                    if case .error(_, let error) = controller.state {
+                        Text(error.localizedDescription)
+                    }
+                }
+            )
             .onChange(of: noUpdateAvailableAlertPresented) {
-                if case .noUpdateAvailable(let acknowledge) = updateController.state,
-                     !noUpdateAvailableAlertPresented {
+                if case .noUpdateAvailable(let acknowledge) = controller.state, !noUpdateAvailableAlertPresented {
                     acknowledge()
                 }
             }
             .onChange(of: errorSheetPresented) {
-                if case .error(let acknowledge, _) = updateController.state,
-                     !errorSheetPresented {
+                if case .error(let acknowledge, _) = controller.state, !errorSheetPresented {
                     acknowledge()
                 }
             }
-            .onChange(of: updateController.state.stateType) {
+            .onChange(of: controller.state.stateType) {
                 updateState()
             }
-            .onChange(of: updateController.userInitiatedCheck) {
+            .onChange(of: controller.userInitiatedCheck) {
                 updateState()
             }
     }
@@ -118,9 +128,9 @@ public struct SparkleUpdaterSheetViewModifier: ViewModifier {
         extractSheetPresented = false
         restartSheetPresented = false
         
-        if !updateController.userInitiatedCheck { return }
+        if !controller.userInitiatedCheck { return }
 
-        switch updateController.state {
+        switch controller.state {
         case .checkingForUpdates:
             checkingForUpdatesSheetPresented = true
         case .noUpdateAvailable:
@@ -139,5 +149,4 @@ public struct SparkleUpdaterSheetViewModifier: ViewModifier {
             break
         }
     }
-    
 }

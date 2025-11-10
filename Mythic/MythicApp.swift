@@ -41,7 +41,7 @@ struct MythicApp: App {
                         }
                 }
             }
-            .modifier(SparkleUpdaterSheetViewModifier())
+            .modifier(SparkleUpdater())
             .frame(minWidth: 850, minHeight: 400)
         }
         .handlesExternalEvents(matching: ["open"])

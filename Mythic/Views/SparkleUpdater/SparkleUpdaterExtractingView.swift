@@ -9,28 +9,27 @@
 
 import SwiftUI
 
-public struct SparkleUpdaterExtractingView: View {
-    public var progress: Double
+extension SparkleUpdater {
+    struct ExtractingView: View {
+        let progress: Double
 
-    @State private var timeRemaining: Double?
-    @State private var downloaded: Double = 0
-
-    public var body: some View {
-        RichAlertView(
-            title: {
-                Text("Extracting Update")
-            },
-            message: {
-                Text("This may take a while.")
-            },
-            content: {
-                ProgressView(value: progress * 1000, total: 1000)
-                    .progressViewStyle(.linear)
-            }
-        )
+        var body: some View {
+            RichAlertView(
+                title: {
+                    Text("Extracting Update")
+                },
+                message: {
+                    Text("This may take a while.")
+                },
+                content: {
+                    ProgressView(value: progress)
+                        .progressViewStyle(.linear)
+                }
+            )
+        }
     }
 }
 
 #Preview {
-    SparkleUpdaterExtractingView(progress: 0.5)
+    SparkleUpdater.ExtractingView(progress: 0.5)
 }

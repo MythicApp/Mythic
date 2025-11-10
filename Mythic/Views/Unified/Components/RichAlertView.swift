@@ -9,20 +9,20 @@
 
 import SwiftUI
 
-public struct RichAlertView<
+struct RichAlertView<
     TitleContent: View,
     MessageContent: View,
     Content: View,
     LeadingContent: View,
     TrailingContent: View
 >: View {
-    public let title: (() -> TitleContent)
-    public let message: (() -> MessageContent)
-    public let content: (() -> Content)
-    public let buttonsLeading: (() -> LeadingContent)
-    public let buttonsTrailing: (() -> TrailingContent)
+    let title: (() -> TitleContent)
+    let message: (() -> MessageContent)
+    let content: (() -> Content)
+    let buttonsLeading: (() -> LeadingContent)
+    let buttonsTrailing: (() -> TrailingContent)
 
-    public init(
+    init(
         title: @escaping () -> TitleContent,
         message: @escaping (() -> MessageContent) = EmptyView.init,
         content: @escaping (() -> Content) = EmptyView.init,
@@ -36,25 +36,33 @@ public struct RichAlertView<
         self.buttonsTrailing = buttonsRight
     }
 
-    public var body: some View {
+    var body: some View {
         HStack(alignment: .top, spacing: 16) {
             BundleIconView()
                 .frame(width: 56, height: 56)
+            
             VStack(alignment: .leading, spacing: 8) {
                 VStack(alignment: .leading, spacing: 4) {
-                    title().bold()
+                    title()
+                        .bold()
+                    
                     if MessageContent.self != EmptyView.self {
-                        message().foregroundStyle(.secondary)
+                        message()
+                            .foregroundStyle(.secondary)
                     }
                 }
+                
                 if Content.self != EmptyView.self {
                     content()
                 }
+                
                 HStack(spacing: 8) {
                     if LeadingContent.self != EmptyView.self {
                         buttonsLeading()
                     }
+                    
                     Spacer()
+                    
                     if TrailingContent.self != EmptyView.self {
                         buttonsTrailing()
                     }
