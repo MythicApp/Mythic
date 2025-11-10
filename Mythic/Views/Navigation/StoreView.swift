@@ -24,10 +24,7 @@ struct StoreView: View {
         WebView(
             url: url,
             datastore: .init(
-                forIdentifier: (
-                    .init(uuidString: webDataStoreIdentifierString)
-                    ?? WKWebsiteDataStore.default().identifier
-                )!
+                forIdentifier: (.init(uuidString: webDataStoreIdentifierString) ?? WKWebsiteDataStore.default().identifier)!
             ),
             error: .constant(nil),
             canGoBack: canGoBack,

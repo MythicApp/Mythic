@@ -123,6 +123,7 @@ struct HomeView: View {
                 view
             }
         }
+
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()

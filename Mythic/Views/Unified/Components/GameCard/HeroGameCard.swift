@@ -78,8 +78,8 @@ extension HeroGameCard {
                         "Image Unavailable",
                         systemImage: "photo.badge.exclamationmark",
                         description: .init("""
-                This game doesn't have a widescreen image that Mythic can display.
-                """)
+                            This game doesn't have a widescreen image that Mythic can display.
+                            """)
                     )
                 }
             }
