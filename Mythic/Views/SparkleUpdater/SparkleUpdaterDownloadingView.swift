@@ -33,7 +33,10 @@ extension SparkleUpdater {
                                 .progressViewStyle(.linear)
                             
                             if let timeRemaining = timeRemaining {
-                                Text("\(formatBytes(downloaded)) of \(formatBytes(bytesTotal)) downloaded, about \(formatTimeRemaining(timeRemaining)) remaining.")
+                                Text("""
+                                    \(formatBytes(downloaded)) of \(formatBytes(bytesTotal)) downloaded.
+                                    About \(formatTimeRemaining(timeRemaining)) remaining.
+                                    """)
                                     .foregroundStyle(.secondary)
                                     .font(.system(.caption, design: .monospaced))
                             } else {
