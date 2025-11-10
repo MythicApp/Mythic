@@ -119,8 +119,10 @@ struct HomeView: View {
             if #available(macOS 15.0, *) {
                 view
                     .toolbar(removing: .title)
+                    .toolbarBackgroundVisibility(.hidden) // dirtyfixes toolbar reappearance on view reload in navigationsplitview
             } else {
                 view
+                    .toolbarBackground(.hidden) // dirtyfixes toolbar reappearance on view reload in navigationsplitview
             }
         }
 
