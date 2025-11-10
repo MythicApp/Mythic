@@ -84,12 +84,13 @@ All PRs must pass:
   var isInstallingGame: Bool = false // ❌
   ```
 
-#### Type Declarations
+#### Declarations
 - Prefer **explicit types and referencing using `.`, e.g. `.init()`, `.shared`**:
   ```swift
   let example: String = .init() // ✅
   let example = String() // ❌
   ```
+- Prefer expressing generic types' protocol conformance using `where`, as opposed to direct colon usage
 
 #### Views
 - **Prefer creating new view types** over using `@ViewBuilder`.
