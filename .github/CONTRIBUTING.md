@@ -98,6 +98,7 @@ All PRs must pass:
     - Functionality is unavailable in SwiftUI
     - Implementation is isolated and reasonably sized
     - Functionality is necessary
+- Avoid explicit `spacing:` and `frame` values where possible
 
 #### Concurrency
 - Use **Swift Concurrency** (`async`/`await`, `Task`, `@MainActor`)
