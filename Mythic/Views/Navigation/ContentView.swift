@@ -10,11 +10,8 @@
 
 // Copyright © 2023-2025 vapidinfinity
 
-import SwiftUI
 import Foundation
-import OSLog
-import Combine
-import WhatsNewKit
+import SwiftUI
 import SemanticVersion
 
 struct ContentView: View {
@@ -44,14 +41,10 @@ struct ContentView: View {
                         }
                         
                         NavigationLink(destination: StoreView()) {
-                            Label("Store", systemImage: "basket")
+                            Label("Store", systemImage: "bag")
                                 .help("Purchase new games from Epic")
                         }
-                    } header: {
-                        Text("Dashboard")
                     }
-                    
-                    Spacer()
                     
                     Section {
                         NavigationLink(destination: ContainersView()) {
@@ -73,7 +66,8 @@ struct ContentView: View {
                         Text("Management")
                     }
                 }
-                
+
+                // separate downloads view from main list because alignment doesn't work within the main list
                 if operation.current != nil || !operation.queue.isEmpty {
                     List { // must wrap in a list to have the same styling as the other links
                         NavigationLink(destination: DownloadsView()) {
@@ -105,46 +99,23 @@ struct ContentView: View {
                 .foregroundStyle(.placeholder)
                 .padding(.bottom)
 #endif // DEBUG
+
                 switch updateController.state {
                 case .updateAvailable:
-                    VStack(alignment: .center, spacing: 4) {
-                        Text("Update Available")
-                            .font(.footnote)
-                            .foregroundStyle(.placeholder)
-                        Button {
-                            updateController.checkForUpdates(userInitiated: true)
-                        } label: {
-                            Text("Show More")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .clipShape(.capsule)
+                    updateBlock("Update Available", buttonText: "Show More") {
+                        updateController.checkForUpdates(userInitiated: true)
                     }
-                    .padding(8)
-                    .frame(maxWidth: .infinity)
-                case .readyToRelaunch(let acknowledge):
-                    VStack(alignment: .center, spacing: 4) {
-                        Text("Update Ready")
-                            .font(.footnote)
-                            .foregroundStyle(.placeholder)
-                        Button {
-                            acknowledge(.update)
-                        } label: {
-                            Text("Relaunch")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .clipShape(.capsule)
+                case .readyToRelaunch(let acknowledgement):
+                    updateBlock("Update Ready", buttonText: "Relaunch") {
+                        acknowledgement(.update)
                     }
-                    .padding(8)
-                    .frame(maxWidth: .infinity)
-                default: EmptyView()
+                default:
+                    EmptyView()
                 }
             }, detail: {
                 HomeView()
             }
         )
-        .whatsNewSheet()
         .toolbar {
             ToolbarItem(placement: .status) {
                 if !networkMonitor.isConnected {
@@ -154,6 +125,24 @@ struct ContentView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private func updateBlock(_ title: String, buttonText: String, action: @escaping () -> Void) -> some View {
+        VStack {
+            Label(title, systemImage: "info.circle")
+                .font(.footnote)
+                .foregroundStyle(.placeholder)
+
+            Button(action: action, label: {
+                Text(buttonText)
+                    .frame(maxWidth: .infinity)
+            })
+            .buttonStyle(.borderedProminent)
+            .clipShape(.capsule)
+        }
+        .padding(8)
+        .frame(maxWidth: .infinity)
     }
 }
 

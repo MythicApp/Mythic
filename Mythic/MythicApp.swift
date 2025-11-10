@@ -33,6 +33,7 @@ struct MythicApp: App {
                         }
                 } else {
                     ContentView()
+                        .whatsNewSheet()
                         .environmentObject(networkMonitor)
                         .task(priority: .high) {
                             await MainActor.run {
