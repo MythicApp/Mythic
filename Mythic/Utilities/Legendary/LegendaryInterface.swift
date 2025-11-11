@@ -201,11 +201,14 @@ final class Legendary {
                     if chunk.output.contains("Verification finished successfully.") {
                         Task { @MainActor in
                             let alert = NSAlert()
-                            alert.messageText = "Successfully verified \"\(gameTitle)\"."
-                            alert.informativeText = "\"\(gameTitle)\" is now ready to be played."
+                            alert.messageText = String(localized: "Successfully verified \"\(gameTitle)\".")
+                            alert.informativeText = String(localized: "\"\(gameTitle)\" is now ready to be played.")
                             alert.alertStyle = .informational
-                            alert.addButton(withTitle: "OK")
-                            if let window = NSApp.windows.first { alert.beginSheetModal(for: window) }
+                            alert.addButton(withTitle: String(localized: "OK"))
+
+                            if let window = NSApp.windows.first {
+                                alert.beginSheetModal(for: window)
+                            }
                         }
                     }
 
