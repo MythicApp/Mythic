@@ -33,11 +33,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
     static var containerURLs: Set<URL> {
         get {
+            // FIXME: [URL] as opposed to Set<URL> for backward compatibility, will be migrated in the future
             return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? [])
         }
         set {
+            let filteredNewValue = newValue.filter({ containerExists(at: $0) })
             do {
-                try defaults.encodeAndSet(Array(newValue), forKey: "containerURLs")
+                try defaults.encodeAndSet(Array(filteredNewValue), forKey: "containerURLs")
             } catch {
                 log.error("Unable to encode and/or set/update containerURLs array to UserDefaults: \(error.localizedDescription)")
             }
