@@ -144,31 +144,39 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     // MARK: Properties
     var containerURL: URL? {
         get {
-            let key: String = id.appending("_containerURL")
-            if let url = defaults.url(forKey: key), !Wine.containerExists(at: url) {
-                defaults.removeObject(forKey: key)
-            }
-            
-            if defaults.url(forKey: key) == nil {
-                defaults.set(Wine.containerURLs.first, forKey: key)
-            }
-            
-            return defaults.url(forKey: key)
+            Migrator.migrateContainerURLDefinition(forGame: self)
+            let urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
+            return urls?[self]
         }
         set {
-            let key: String = id.appending("_containerURL")
-            guard let newValue = newValue else { defaults.set(nil, forKey: key); return }
-            defaults.set(newValue, forKey: key)
+            var urls = (try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")) ?? .init()
+
+            // if nil is set, remove the key-value pair from the dictionary.
+            guard let newValue = newValue else {
+                if urls.contains(where: { $0.key == self }) {
+                    urls.removeValue(forKey: self)
+                    _ = try? defaults.encodeAndSet(urls, forKey: "gameContainerURLs")
+                }
+                return
+            }
+
+            urls[self] = newValue
+
+            _ = try? defaults.encodeAndSet(urls, forKey: "gameContainerURLs")
         }
     }
     
     var launchArguments: [String] {
         get {
-            let key: String = id.appending("_launchArguments")
-            return defaults.array(forKey: key) as? [String] ?? .init()
+            Migrator.migrateGameLaunchArgumentDefinition(forGame: self)
+            let arguments = try? defaults.decodeAndGet([Game: [String]].self, forKey: "gameLaunchArguments")
+            return arguments?[self] ?? []
         }
         set {
-            defaults.set(newValue, forKey: id.appending("_launchArguments"))
+            var urls = (try? defaults.decodeAndGet([Game: [String]].self, forKey: "gameLaunchArguments")) ?? .init()
+            urls[self] = newValue
+
+            _ = try? defaults.encodeAndSet(urls, forKey: "gameLaunchArguments")
         }
     }
     
@@ -187,7 +195,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         switch self.source {
         case .epic:
             let games = try? Legendary.getInstalledGames()
-            return games?.contains(self) == true
+            return (games?.contains(self) == true)
         case .local:
             return true
         }
