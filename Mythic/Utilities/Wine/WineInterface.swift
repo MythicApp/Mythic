@@ -154,11 +154,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         do {
             guard !containerExists(at: url) else {
                 log.notice("Container already exists at \(url.prettyPath)")
-                if let container = try? Container(knownURL: url) {
-                    return container
-                } else {
-                    throw Container.AlreadyExistsError()
-                }
+                let container = try Container(knownURL: url)
+
+                // if container is found, insert in case it's not already present
+                // welcome to alpha software
+                containerURLs.insert(url)
+
+                return container
             }
 
             let newContainer = Container(name: name, url: url, settings: settings)
