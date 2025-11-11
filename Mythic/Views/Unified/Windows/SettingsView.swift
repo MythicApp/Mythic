@@ -345,34 +345,26 @@ extension SettingsView {
             .help(discordRPC.isDiscordInstalled ? .init() : "Discord is not installed.")
 
             Section("Epic Games", isExpanded: $isServicesEpicSectionExpanded) {
-                ActionButton(
+                OperationButton(
+                    "Clean Up Miscellaneous Caches",
+                    systemImage: "bubbles.and.sparkles",
                     operating: $isCleaning,
-                    successful: $isCleanupSuccessful,
-                    action: {
-                        let commandResult = try? await Legendary.execute(arguments: ["cleanup"])
-                        withAnimation {
-                            isCleanupSuccessful = commandResult?.standardError.contains("Cleanup complete")
-                        }
-                    },
-                    label: {
-                        Label("Clean Up Miscellaneous Caches", systemImage: "bubbles.and.sparkles")
-                    }
-                )
+                    successful: $isCleanupSuccessful
+                ) {
+                    let commandResult = try? await Legendary.execute(arguments: ["cleanup"])
+                    isCleanupSuccessful = commandResult?.standardError.contains("Cleanup complete")
+                }
 
-                ActionButton(
+                OperationButton(
+                    "Manually Synchronise Cloud Saves",
+                    systemImage: "arrow.triangle.2.circlepath",
                     operating: $isEpicCloudSynchronising,
-                    successful: $isEpicCloudSyncSuccessful,
-                    action: {
-                        let regex = try! Regex(#"Got [0-9]+ remote save game"#) // swiftlint:disable:this force_try
-                        let commandResult = try? await Legendary.execute(arguments: ["-y", "sync-saves"])
-                        withAnimation {
-                            isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: commandResult?.standardError ?? "") != nil)
-                        }
-                    },
-                    label: {
-                        Label("Manually Synchronise Cloud Saves", systemImage: "arrow.triangle.2.circlepath")
-                    }
-                )
+                    successful: $isEpicCloudSyncSuccessful
+                ) {
+                    let regex = try! Regex(#"Got [0-9]+ remote save game"#) // swiftlint:disable:this force_try
+                    let commandResult = try? await Legendary.execute(arguments: ["-y", "sync-saves"])
+                    isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: commandResult?.standardError ?? "") != nil)
+                }
 
                 // TODO: potenially add manual cloud save deletion
             }
@@ -399,32 +391,28 @@ extension SettingsView {
         @State private var engineVersion: SemanticVersion?
         var body: some View {
             if Engine.isInstalled {
-                ActionButton(
+                OperationButton(
+                    "Force Quit Running Windows® Applications",
+                    systemImage: "xmark.app",
                     operating: $isForceQuitting,
-                    successful: $isForceQuitSuccessful,
-                    action: {
-                        do {
-                            try Wine.killAll()
-                            isForceQuitSuccessful = true
-                        } catch {
-                            isForceQuitSuccessful = false
-                        }
-                    },
-                    label: {
-                        Label("Force Quit Running Windows® Applications", systemImage: "xmark.app")
+                    successful: $isForceQuitSuccessful
+                ) {
+                    do {
+                        try Wine.killAll()
+                        isForceQuitSuccessful = true
+                    } catch {
+                        isForceQuitSuccessful = false
                     }
-                )
+                }
 
-                ActionButton(
+                OperationButton(
+                    "Remove Mythic Engine",
+                    systemImage: "gear.badge.xmark",
                     operating: $isEngineRemoving,
-                    successful: $isEngineRemovalSuccessful,
-                    action: {
-                        isEngineRemovalAlertPresented = true
-                    },
-                    label: {
-                        Label("Remove Mythic Engine", systemImage: "gear.badge.xmark")
-                    }
-                )
+                    successful: $isEngineRemovalSuccessful
+                ) {
+                    isEngineRemovalAlertPresented = true
+                }
                 .alert(
                     "Are you sure you want to remove Mythic Engine?",
                     isPresented: $isEngineRemovalAlertPresented,
@@ -448,18 +436,16 @@ extension SettingsView {
                 )
 
                 Section("Advanced", isExpanded: $isAdvancedSectionExpanded) {
-                    ActionButton(
+                    OperationButton(
+                        "Purge D3DMetal Shader Cache",
+                        systemImage: "square.stack.3d.up.slash",
                         operating: $isShaderCachePurging,
-                        successful: $isShaderCachePurgeSuccessful,
-                        action: {
-                            isShaderCachePurgeSuccessful = (try? Wine.purgeD3DMetalShaderCache()) != nil
-                        },
-                        label: {
-                            Label("Purge D3DMetal Shader Cache", systemImage: "square.stack.3d.up.slash")
-                        }
-                    )
+                        successful: $isShaderCachePurgeSuccessful
+                    ) {
+                        isShaderCachePurgeSuccessful = (try? Wine.purgeD3DMetalShaderCache()) != nil
+                    }
                 }
-                
+
                 Text("Mythic Engine \(engineVersion?.prettyString ?? "(Unknown Version)")")
                     .foregroundStyle(.placeholder)
                     .font(.footnote)

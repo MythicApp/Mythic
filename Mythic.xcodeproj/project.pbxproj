@@ -84,6 +84,7 @@
 		6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0D2CC4A531001E9F47 /* ListGameCard.swift */; };
 		6A448E102CC4BC55001E9F47 /* GameCard+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A448E0F2CC4BC50001E9F47 /* GameCard+Extensions.swift */; };
 		6A496A732C1AF75B00FD637B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A496A722C1AF75600FD637B /* Game.swift */; };
+		6A49F9E12EC2F1DF0015B084 /* OperationStatusViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A49F9E02EC2F1DF0015B084 /* OperationStatusViewModifier.swift */; };
 		6A6EE1872DBA651700870AC4 /* Migrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A6EE1862DBA650F00870AC4 /* Migrator.swift */; };
 		6A71D3D92BFD01AB00A2C74D /* legendary in Resources */ = {isa = PBXBuildFile; fileRef = 6A71D3D82BFD01AB00A2C74D /* legendary */; };
 		6A7A81162B77093600D19E32 /* ColorfulX in Frameworks */ = {isa = PBXBuildFile; productRef = 6A7A81152B77093600D19E32 /* ColorfulX */; };
@@ -92,6 +93,8 @@
 		6A8080D52EA3611A00F10A00 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */; };
 		6A93CC872DFBB7510079A0B0 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A93CC862DFBB74D0079A0B0 /* String+Extensions.swift */; };
 		6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A955DEA2DF808D000BFA541 /* Mythic.icon */; };
+		6A9ADCE82EC300C500D159A3 /* OperationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ADCE72EC300C100D159A3 /* OperationButton.swift */; };
+		6A9ADCEA2EC3010D00D159A3 /* View+OperationStatusViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ADCE92EC300ED00D159A3 /* View+OperationStatusViewModifier.swift */; };
 		6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */; };
 		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AA445762EABA0E80064A14F /* Engine+UpdateCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */; };
@@ -202,6 +205,7 @@
 		6A448E0D2CC4A531001E9F47 /* ListGameCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListGameCard.swift; sourceTree = "<group>"; };
 		6A448E0F2CC4BC50001E9F47 /* GameCard+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameCard+Extensions.swift"; sourceTree = "<group>"; };
 		6A496A722C1AF75600FD637B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		6A49F9E02EC2F1DF0015B084 /* OperationStatusViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationStatusViewModifier.swift; sourceTree = "<group>"; };
 		6A6EE1862DBA650F00870AC4 /* Migrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migrator.swift; sourceTree = "<group>"; };
 		6A71D3D82BFD01AB00A2C74D /* legendary */ = {isa = PBXFileReference; lastKnownFileType = folder; path = legendary; sourceTree = "<group>"; };
 		6A8080CF2EA339CE00F10A00 /* HeroGameCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroGameCard.swift; sourceTree = "<group>"; };
@@ -209,6 +213,8 @@
 		6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 		6A93CC862DFBB74D0079A0B0 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		6A955DEA2DF808D000BFA541 /* Mythic.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = Mythic.icon; sourceTree = "<group>"; };
+		6A9ADCE72EC300C100D159A3 /* OperationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationButton.swift; sourceTree = "<group>"; };
+		6A9ADCE92EC300ED00D159A3 /* View+OperationStatusViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OperationStatusViewModifier.swift"; sourceTree = "<group>"; };
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
 		6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Engine+UpdateCatalog.swift"; sourceTree = "<group>"; };
 		6AA445782EABB12D0064A14F /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
@@ -302,6 +308,7 @@
 		6A2934BB2BFCFAFD0035CE4B /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				6A9ADCEB2EC3012200D159A3 /* OperationStatusViewModifier */,
 				6A1357B22CE4B0C900B19213 /* SemanticVersion+Extensions.swift */,
 				6AA4457A2EABBB350064A14F /* SemanticVersion+Codable(PropertyList).swift */,
 				6AD9931C2D342838008DF690 /* SwordRPC+Extensions.swift */,
@@ -461,6 +468,16 @@
 				5A62AE972C27DB1200BA31D2 /* GameListViewModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		6A9ADCEB2EC3012200D159A3 /* OperationStatusViewModifier */ = {
+			isa = PBXGroup;
+			children = (
+				6A49F9E02EC2F1DF0015B084 /* OperationStatusViewModifier.swift */,
+				6A9ADCE92EC300ED00D159A3 /* View+OperationStatusViewModifier.swift */,
+				6A9ADCE72EC300C100D159A3 /* OperationButton.swift */,
+			);
+			path = OperationStatusViewModifier;
 			sourceTree = "<group>";
 		};
 		6AB463A92C2F1682008FFA63 /* GameImport */ = {
@@ -690,6 +707,7 @@
 				6A496A732C1AF75B00FD637B /* Game.swift in Sources */,
 				6A08A29B2D36E0B800E6AEFB /* FileManager+Extensions.swift in Sources */,
 				6A2935602BFCFAFD0035CE4B /* ContainerListView.swift in Sources */,
+				6A9ADCEA2EC3010D00D159A3 /* View+OperationStatusViewModifier.swift in Sources */,
 				6A29355E2BFCFAFD0035CE4B /* StopDownloadAlert.swift in Sources */,
 				6A2935662BFCFAFD0035CE4B /* AppDelegate.swift in Sources */,
 				6AA445762EABA0E80064A14F /* Engine+UpdateCatalog.swift in Sources */,
@@ -710,6 +728,7 @@
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */,
 				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
+				6A49F9E12EC2F1DF0015B084 /* OperationStatusViewModifier.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL+Extensions.swift in Sources */,
 				1217C8B92EADC544003EC8C9 /* BundleIconView.swift in Sources */,
 				1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */,
@@ -757,6 +776,7 @@
 				6A29354D2BFCFAFD0035CE4B /* AccountsView.swift in Sources */,
 				6A2935352BFCFAFD0035CE4B /* Bundle+Extensions.swift in Sources */,
 				6AE18E072EBE04C300766258 /* WineInterface+Extensions.swift in Sources */,
+				6A9ADCE82EC300C500D159A3 /* OperationButton.swift in Sources */,
 				6A0CB9802EACCCAD00757AC5 /* Engine+Extensions.swift in Sources */,
 				6AC2847A2EA45ED30008091F /* RosettaInstallationView.swift in Sources */,
 				6A29353C2BFCFAFD0035CE4B /* Workspace+Extensions.swift in Sources */,
@@ -911,7 +931,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3845;
+				CURRENT_PROJECT_VERSION = 3852;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -959,7 +979,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3845;
+				CURRENT_PROJECT_VERSION = 3852;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";

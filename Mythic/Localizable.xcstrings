@@ -6411,9 +6411,6 @@
         }
       }
     },
-    "Clean Up Miscellaneous Caches" : {
-
-    },
     "Close" : {
       "localizations" : {
         "af" : {
@@ -9120,9 +9117,6 @@
     "DXVK" : {
 
     },
-    "DXVK cannot be modified: %@" : {
-
-    },
     "Engine" : {
 
     },
@@ -11452,9 +11446,6 @@
           }
         }
       }
-    },
-    "Force Quit Running Windows® Applications" : {
-
     },
     "Force-refresh game list" : {
 
@@ -16080,6 +16071,7 @@
       }
     },
     "Manually Synchronise Cloud Saves" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -18795,6 +18787,9 @@
         }
       }
     },
+    "Operation %@." : {
+
+    },
     "Options" : {
       "localizations" : {
         "af" : {
@@ -20144,9 +20139,6 @@
         }
       }
     },
-    "Purge D3DMetal Shader Cache" : {
-
-    },
     "QUEUED %@" : {
       "localizations" : {
         "af" : {
@@ -20927,6 +20919,7 @@
       }
     },
     "Remove Mythic Engine" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22456,6 +22449,7 @@
       }
     },
     "Retina Mode cannot be modified: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -30419,6 +30413,7 @@
       }
     },
     "Windows version cannot be modified: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
