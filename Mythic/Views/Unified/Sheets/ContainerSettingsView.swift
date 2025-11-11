@@ -29,17 +29,16 @@ struct ContainerSettingsView: View {
     @State private var modifyingWindowsVersion: Bool = true // keep progressview displayed until async fetching is complete
     @State private var windowsVersionSuccess: Bool?
 
-    // FIXME: setting 'operating' variable causes the `withOperationStatus` to set the value,
-    // FIXME: even though there's a guard statement that should stop this from happening.
-    // FIXME: this does not impact functionality, but means that fetching may be slower, since it has to set and then get.
-
     private func fetchRetinaStatus() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
 
         if let fetchedRetinaMode = try? await Wine.getRetinaMode(containerURL: selectedContainerURL) {
+            await MainActor.run(body: { retinaMode = fetchedRetinaMode })
+            // intentionally separated, to prevent both variable updates from occuring during the same render cycle
             await MainActor.run {
-                retinaMode = fetchedRetinaMode
-                modifyingRetinaMode = false
+                withAnimation {
+                    modifyingRetinaMode = false
+                }
             }
         }
     }
@@ -48,9 +47,12 @@ struct ContainerSettingsView: View {
         guard let selectedContainerURL = selectedContainerURL else { return }
 
         if let fetchedWindowsVersion = try? await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
+            await MainActor.run(body: { windowsVersion = fetchedWindowsVersion })
+            // intentionally separated, to prevent both variable updates from occuring during the same render cycle
             await MainActor.run {
-                windowsVersion = fetchedWindowsVersion
-                modifyingWindowsVersion = false
+                withAnimation {
+                    modifyingWindowsVersion = false
+                }
             }
         }
     }
