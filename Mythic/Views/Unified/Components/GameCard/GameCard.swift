@@ -121,7 +121,10 @@ extension GameCard {
                             .aspectRatio(3/4, contentMode: .fill)
                             .customTransform { view in
                                 if #unavailable(macOS 26.0) {
-                                    view.glur(radius: 20, offset: 0.7, interpolation: 0.7)
+                                    view.glur(radius: 20,
+                                              offset: 0.7,
+                                              interpolation: 0.7,
+                                              drawingGroup: true)
                                 } else {
                                     view
                                 }

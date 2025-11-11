@@ -44,7 +44,10 @@ extension HeroGameCard {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
-                                .glur(radius: 20, offset: 0.65, interpolation: 0.7)
+                                .glur(radius: 20,
+                                      offset: 0.5,
+                                      interpolation: 0.7,
+                                      drawingGroup: true)
                                 .modifier(FadeInModifier())
                                 .onAppear {
                                     withAnimation { isImageEmpty = false }
