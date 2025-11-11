@@ -23,6 +23,8 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
         FirebaseApp.configure()
+        
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
 
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
 
