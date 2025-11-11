@@ -66,7 +66,7 @@ struct SettingsView: View {
                         .formStyle(.grouped)
                     }
                 }
-                .tabViewStyle(.sidebarAdaptable)
+                .tabViewStyle(.automatic)
             } else { // macOS 15 unavailable ↓
                 Form {
                     Section("General", content: { GeneralView() })
