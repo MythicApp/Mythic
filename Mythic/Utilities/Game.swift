@@ -155,7 +155,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
                 self.containerURL = Wine.containerURLs.first
             }
 
-            return urls?[self]
+            return urls?[self] ?? Wine.containerURLs.first
         }
         set {
             var urls = (try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")) ?? .init()
