@@ -63,7 +63,7 @@ struct ContainerSettingsView: View {
                 Picker("Current Container", selection: $selectedContainerURL) {
                     ForEach(Wine.containerObjects) { container in
                         Text(container.name)
-                            .tag(container.url.appending(path: "") as URL?)
+                            .tag(container.url)
                     }
                 }
             } else {
