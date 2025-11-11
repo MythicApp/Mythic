@@ -94,7 +94,7 @@ final class Migrator {
                         if currentPath.contains(oldScheme.path(percentEncoded: false)) {
                             let newPath = currentPath.replacingOccurrences(of: oldScheme.path(percentEncoded: false), with: newScheme.path(percentEncoded: false))
                             log.debug("Migrating bottle (modifying bottle URL from \(bottleURL) to \(newPath))...")
-                            return URL(fileURLWithPath: newPath)
+                            return URL(filePath: newPath)
                         } else {
                             return bottleURL
                         }
@@ -119,7 +119,7 @@ final class Migrator {
                         let filteredURL: URL
                         if currentPath.contains(oldScheme.path(percentEncoded: false)) {
                             let newPath = currentPath.replacingOccurrences(of: oldScheme.path(percentEncoded: false), with: newScheme.path(percentEncoded: false))
-                            filteredURL = URL(fileURLWithPath: newPath)
+                            filteredURL = URL(filePath: newPath)
                         } else {
                             filteredURL = currentURL
                         }

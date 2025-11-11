@@ -12,7 +12,7 @@ import Foundation
 final class Rosetta {
     static var exists: Bool { // thread-blocking, but ~0.04 sec cpu time
         let result = try? Process.execute(
-            executableURL: URL(fileURLWithPath: "/usr/bin/pgrep"),
+            executableURL: URL(filePath: "/usr/bin/pgrep"),
             arguments: ["oahd"]
         )
 

@@ -137,7 +137,7 @@ final class Engine {
 
                                 continuation.yield(.init(stage: .installing, progress: installationProgress))
                                 let process = try await Process.execute(
-                                    executableURL: .init(fileURLWithPath: "/usr/bin/tar"),
+                                    executableURL: .init(filePath: "/usr/bin/tar"),
                                     arguments: ["-xJf", file.path, "-C", directory.path]
                                 )
 

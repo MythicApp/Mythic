@@ -417,7 +417,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         case .windows:
             // hacky but functional
             let result = try? Process.execute(
-                executableURL: .init(fileURLWithPath: "/bin/bash"),
+                executableURL: .init(filePath: "/bin/bash"),
                 arguments: [
                     "-c",
                     "ps aux | grep -i '\(gamePath)' | grep -v grep"
