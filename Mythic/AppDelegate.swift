@@ -23,7 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
     func applicationDidFinishLaunching(_: Notification) {
         // Use the Firebase library to configure APIs.
         FirebaseApp.configure()
-        
+
         FirebaseConfiguration.shared.setLoggerLevel(.min)
 
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
@@ -72,43 +72,17 @@ class AppDelegate: NSObject, NSApplicationDelegate { // https://arc.net/l/quote/
         }
 
         // MARK: Applications folder disclaimer
-
-        // TODO: possibly turn this into an onboarding-style message.
 #if !DEBUG
-        let currentAppURL = Bundle.main.bundleURL
-        let optimalAppURL = FileLocations.globalApplications?.appendingPathComponent(currentAppURL.lastPathComponent)
-
-        // MARK: Move to Applications
-
-        if !currentAppURL.pathComponents.contains("Applications") {
+        if !Bundle.main.bundleURL.pathComponents.contains("Applications") {
             let alert = NSAlert()
 
-            alert.messageText = String(localized: "Move Mythic to the Applications folder?")
-            alert.informativeText = String(localized: "Mythic has detected it's running outside of the applications folder.")
-            alert.addButton(withTitle: String(localized: "Move"))
-            alert.addButton(withTitle: String(localized: "Cancel"))
+            alert.messageText = String(localized: "Mythic has detected it's running outside of the applications folder.")
+            alert.informativeText = String(localized: "It's recommended to move Mythic into the Applications folder on your device.")
+            alert.alertStyle = .informational
+            alert.addButton(withTitle: String(localized: "OK"))
 
-            if let window = NSApp.windows.first, let optimalAppURL = optimalAppURL {
-                alert.beginSheetModal(for: window) { response in
-                    if case .alertFirstButtonReturn = response {
-                        do {
-                            _ = try files.replaceItemAt(optimalAppURL, withItemAt: currentAppURL)
-                            workspace.open(optimalAppURL)
-                        } catch {
-                            Logger.file.error("Unable to move Mythic to Applications: \(error)")
-
-                            let error = NSAlert()
-                            error.messageText = String(localized: "Unable to move Mythic to \"\(optimalAppURL.deletingLastPathComponent().prettyPath)\".")
-                            error.addButton(withTitle: String(localized: "Quit"))
-
-                            error.beginSheetModal(for: window) { response in
-                                if case .alertFirstButtonReturn = response {
-                                    exit(1)
-                                }
-                            }
-                        }
-                    }
-                }
+            if let window = NSApp.windows.first {
+                alert.beginSheetModal(for: window)
             }
         }
 #endif // !DEBUG
