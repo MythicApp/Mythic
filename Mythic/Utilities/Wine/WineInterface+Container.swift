@@ -40,7 +40,7 @@ extension Wine {
         /// Initialise a container from an existing URL
         init(knownURL: URL) throws {
             guard containerExists(at: knownURL) else {
-                Wine.Container.log.warning("Unable to initialise nonexistent container.")
+                Wine.Container.log.warning("Attempted to initialise nonexistent container from known URL.")
                 throw Container.DoesNotExistError()
             }
 
