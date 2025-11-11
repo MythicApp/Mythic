@@ -48,6 +48,4 @@ extension Wine {
     struct UnableToQueryRegistryError: LocalizedError {
         var errorDescription: String? = String(localized: "Unable to query registry of container.")
     }
-
-
 }
