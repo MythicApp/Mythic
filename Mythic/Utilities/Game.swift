@@ -146,6 +146,9 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
         get {
             Migrator.migrateContainerURLDefinition(forGame: self)
             let urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
+            if let urls = urls, urls[self] == nil {
+                self.containerURL = Wine.containerURLs.first
+            }
             return urls?[self]
         }
         set {
