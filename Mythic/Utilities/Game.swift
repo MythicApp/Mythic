@@ -333,7 +333,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         category: "GameOperation"
     )
     
-    // swiftlint:disable:next redundant_optional_initialization
+    // swiftlint:disable:next implicit_optional_initialization
     @Published var current: InstallArguments? = nil {
         didSet {
             guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
@@ -504,7 +504,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         GameOperation.log.debug("\"\(game.title)\" has been quit")
     }
 
-    // swiftlint:disable:next redundant_optional_initialization
+    // swiftlint:disable:next implicit_optional_initialization
     @MainActor @Published var launching: Game? = nil {
         didSet {
             // When a game is set, start a monitor that waits for start, clears launching, then tracks until exit.
@@ -523,7 +523,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         /// The nature of the game modification.
         var type: GameModificationType
         
-        // swiftlint:disable redundant_optional_initialization
+        // swiftlint:disable implicit_optional_initialization
         /// (Legendary) packs to install along with the base game.
         var optionalPacks: [String]? = nil
         
@@ -532,7 +532,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         
         /// The absolute folder where the game should be installed to.
         var gameFolder: URL? = nil
-        // swiftlint:enable redundant_optional_initialization
+        // swiftlint:enable implicit_optional_initialization
     }
     
     struct InstallStatus {
