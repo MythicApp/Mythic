@@ -26,7 +26,7 @@ struct ContainerCreationView: View {
     
     var body: some View {
         VStack {
-            Text("Create a container")
+            Text("Create Container")
                 .font(.title)
                 .padding([.horizontal, .top])
 

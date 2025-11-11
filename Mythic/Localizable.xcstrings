@@ -7190,6 +7190,7 @@
 
     },
     "Create a container" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -7380,6 +7381,9 @@
       }
     },
     "Create a support ticket" : {
+
+    },
+    "Create Container" : {
 
     },
     "Current Container" : {
