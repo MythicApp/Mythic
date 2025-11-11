@@ -113,7 +113,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     
     @discardableResult
     static func boot(containerURL url: URL, parameters: [BootParameter]) async throws -> Process.CommandResult {
-        try await execute(arguments: parameters.map(\.rawValue), containerURL: url)
+        try await execute(arguments: ["wineboot"] + parameters.map(\.rawValue), containerURL: url)
     }
 
     /**
