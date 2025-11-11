@@ -32,8 +32,7 @@ struct AboutView: View {
             ScrollView(showsIndicators: false) {
                 VStack {
                     VStack(alignment: .center) {
-                        Image("MythicIcon")
-                            .resizable()
+                        BundleIconView()
                             .frame(width: 100, height: 100)
                         
                         if !animateTextView {
