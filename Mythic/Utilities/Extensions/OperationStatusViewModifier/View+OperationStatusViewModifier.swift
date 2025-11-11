@@ -35,7 +35,7 @@ extension View {
         self
             .disabled(disablesDuringOperation && operating.wrappedValue)
             .onChange(of: value.wrappedValue) {
-                guard $0 != $1 else { return }
+                guard $0 != $1 && !operating.wrappedValue else { return }
 
                 Task(priority: .userInitiated) {
                     successful.wrappedValue = nil

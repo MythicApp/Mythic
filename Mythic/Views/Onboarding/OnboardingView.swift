@@ -302,7 +302,7 @@ private extension OnboardingView {
                     ProgressView()
                         .task {
                             do {
-                                _ = try await Wine.boot(name: "Default")
+                                _ = try await Wine.createContainer(name: "Default")
                                 propagateBootSuccess()
                             } catch {
                                 if error is Wine.Container.AlreadyExistsError {

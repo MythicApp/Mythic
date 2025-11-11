@@ -18,7 +18,7 @@ struct ContainerSettingsView: View {
     @State private var containerScope: Wine.Container.Scope = .individual
 
     @State private var retinaMode: Bool = Wine.Container.Settings().retinaMode
-    @State private var modifyingRetinaMode: Bool = false
+    @State private var modifyingRetinaMode: Bool = true // keep progressview displayed until async fetching is complete
     @State private var retinaModeSuccess: Bool?
 
     @State private var isDXVKDisclaimerPresented: Bool = false
@@ -26,26 +26,32 @@ struct ContainerSettingsView: View {
     @State private var dxvkSuccess: Bool?
 
     @State private var windowsVersion: Wine.WindowsVersion = Wine.Container.Settings().windowsVersion
-    @State private var modifyingWindowsVersion: Bool = false
+    @State private var modifyingWindowsVersion: Bool = true // keep progressview displayed until async fetching is complete
     @State private var windowsVersionSuccess: Bool?
+
+    // FIXME: setting 'operating' variable causes the `withOperationStatus` to set the value,
+    // FIXME: even though there's a guard statement that should stop this from happening.
+    // FIXME: this does not impact functionality, but means that fetching may be slower, since it has to set and then get.
 
     private func fetchRetinaStatus() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
-        do {
-            retinaMode = try await Wine.getRetinaMode(containerURL: selectedContainerURL)
-        } catch {
-            retinaModeSuccess = false
+
+        if let fetchedRetinaMode = try? await Wine.getRetinaMode(containerURL: selectedContainerURL) {
+            await MainActor.run {
+                retinaMode = fetchedRetinaMode
+                modifyingRetinaMode = false
+            }
         }
     }
 
     private func fetchWindowsVersion() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
-        do {
-            if let fetchedWindowsVersion = try await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
+
+        if let fetchedWindowsVersion = try? await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
+            await MainActor.run {
                 windowsVersion = fetchedWindowsVersion
+                modifyingWindowsVersion = false
             }
-        } catch {
-            windowsVersionSuccess = false
         }
     }
 
@@ -79,6 +85,10 @@ struct ContainerSettingsView: View {
 
                 Toggle("Retina Mode", isOn: $retinaMode)
                     .disabled(variables.getVariable("booting") == true)
+                    .task(priority: .high) {
+                        // asynchronously fetch retina mode status upon view presentation
+                        await fetchRetinaStatus()
+                    }
                     .withOperationStatus(
                         operating: $modifyingRetinaMode,
                         successful: $retinaModeSuccess,
@@ -124,66 +134,35 @@ struct ContainerSettingsView: View {
                     placement: .leading,
                     action: {} // handled by alert presentation
                 )
-                .alert(isPresented: $isDXVKDisclaimerPresented) {
-                    .init(
-                        title: .init("Quit games running in this container?"),
-                        message: .init("""
-                            To toggle DXVK, Mythic must quit all games currently running in this container.
-                            Additionally, D3DMetal will be disabled.
-                            
-                            Toggling DXVK may impact compatibility positively or negatively.
-                            """),
-                        primaryButton: .default(.init("OK")) {
-                            Task(priority: .userInitiated) {
-                                modifyingDXVK = true
-                                do {
-                                    try Wine.killAll(containerURLs: [container.url])
+                .alert("Quit games running in this container?",
+                       isPresented: $isDXVKDisclaimerPresented) {
+                    Button("OK", role: .destructive) {
+                        Task(priority: .userInitiated) {
+                            modifyingDXVK = true
+                            defer { modifyingDXVK = false }
 
-                                    // x64
-                                    try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d10core.dll"))
-                                    try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/system32/d3d11.dll"))
-
-                                    // x32
-                                    try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
-                                    try files.removeItemIfExists(at: container.url.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
-
-                                    if container.settings.dxvk {
-                                        try await Wine.execute(
-                                            arguments: ["wineboot", "-u"],
-                                            containerURL: container.url
-                                        )
-                                    } else {
-                                        // x64
-                                        try files.forceCopyItem(
-                                            at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
-                                            to: container.url.appending(path: "drive_c/windows/system32")
-                                        )
-                                        try files.forceCopyItem(
-                                            at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
-                                            to: container.url.appending(path: "drive_c/windows/system32")
-                                        )
-
-                                        // x32
-                                        try files.forceCopyItem(
-                                            at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
-                                            to: container.url.appending(path: "drive_c/windows/syswow64")
-                                        )
-                                        try files.forceCopyItem(
-                                            at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
-                                            to: container.url.appending(path: "drive_c/windows/syswow64")
-                                        )
-                                    }
-
-                                    container.settings.dxvk.toggle()
-                                    dxvkSuccess = true
-                                } catch {
-                                    dxvkSuccess = false
+                            do {
+                                if container.settings.dxvk {
+                                    try await Wine.boot(containerURL: container.url, parameters: [.update])
+                                } else {
+                                    try await Wine.DXVK.install(toContainerAtURL: container.url)
                                 }
-                                modifyingDXVK = false
+                                container.settings.dxvk.toggle()
+                                dxvkSuccess = true
+                            } catch {
+                                dxvkSuccess = false
                             }
-                        },
-                        secondaryButton: .cancel()
-                    )
+                        }
+                    }
+
+                    Button("Cancel", role: .cancel, action: {})
+                } message: {
+                    Text("""
+                        To toggle DXVK, Mythic must quit all games currently running in this container.
+                        Additionally, D3DMetal will be disabled.
+                        
+                        Toggling DXVK may impact compatibility positively or negatively.
+                        """)
                 }
 
                 Toggle("Asynchronous DXVK", isOn: Binding(
@@ -197,6 +176,10 @@ struct ContainerSettingsView: View {
                         Text("Windows® \(version.rawValue)").tag(version)
                     }
                 }
+                .task(priority: .high) {
+                    // asynchronously fetch windows version upon view presentation
+                    await fetchWindowsVersion()
+                }
                 .withOperationStatus(
                     operating: $modifyingWindowsVersion,
                     successful: $windowsVersionSuccess,
@@ -209,8 +192,6 @@ struct ContainerSettingsView: View {
                 }
             }
             .disabled(!Engine.isInstalled)
-            .task(priority: .high) { await fetchRetinaStatus() }
-            .task(priority: .high) { await fetchWindowsVersion() }
             .onChange(of: selectedContainerURL) {
                 Task(priority: .userInitiated) { await fetchRetinaStatus() }
                 Task(priority: .userInitiated) { await fetchWindowsVersion() }

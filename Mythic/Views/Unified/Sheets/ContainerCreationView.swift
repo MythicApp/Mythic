@@ -93,7 +93,7 @@ struct ContainerCreationView: View {
                     Task(priority: .userInitiated) {
                         withAnimation { isBooting = true }
                         do {
-                            _ = try await Wine.boot(baseURL: containerURL, name: containerName)
+                            _ = try await Wine.createContainer(baseURL: containerURL, name: containerName)
                             withAnimation { isBooting = false }
                             isPresented = false
                         } catch {

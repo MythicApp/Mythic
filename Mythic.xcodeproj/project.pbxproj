@@ -96,6 +96,7 @@
 		6A9ADCE82EC300C500D159A3 /* OperationButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ADCE72EC300C100D159A3 /* OperationButton.swift */; };
 		6A9ADCEA2EC3010D00D159A3 /* View+OperationStatusViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9ADCE92EC300ED00D159A3 /* View+OperationStatusViewModifier.swift */; };
 		6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */; };
+		6AA134C52EC30C8200632FDE /* WineInterface+DXVK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA134C42EC30C7D00632FDE /* WineInterface+DXVK.swift */; };
 		6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA1744E2CD5CC290035B081 /* WhatsNewKit */; };
 		6AA445762EABA0E80064A14F /* Engine+UpdateCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */; };
 		6AA445792EABB1300064A14F /* Engine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA445782EABB12D0064A14F /* Engine.swift */; };
@@ -216,6 +217,7 @@
 		6A9ADCE72EC300C100D159A3 /* OperationButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationButton.swift; sourceTree = "<group>"; };
 		6A9ADCE92EC300ED00D159A3 /* View+OperationStatusViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+OperationStatusViewModifier.swift"; sourceTree = "<group>"; };
 		6A9FE1152CDEED7200C36058 /* WhatsNewCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewCollection.swift; sourceTree = "<group>"; };
+		6AA134C42EC30C7D00632FDE /* WineInterface+DXVK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WineInterface+DXVK.swift"; sourceTree = "<group>"; };
 		6AA445752EABA0DF0064A14F /* Engine+UpdateCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Engine+UpdateCatalog.swift"; sourceTree = "<group>"; };
 		6AA445782EABB12D0064A14F /* Engine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Engine.swift; sourceTree = "<group>"; };
 		6AA4457A2EABBB350064A14F /* SemanticVersion+Codable(PropertyList).swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SemanticVersion+Codable(PropertyList).swift"; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2934C22BFCFAFD0035CE4B /* WineInterface.swift */,
+				6AA134C42EC30C7D00632FDE /* WineInterface+DXVK.swift */,
 				6A2934C32BFCFAFD0035CE4B /* WineInterface+Container.swift */,
 				6AE18E062EBE04BA00766258 /* WineInterface+Extensions.swift */,
 			);
@@ -761,6 +764,7 @@
 				6A9FE1162CDEED7A00C36058 /* WhatsNewCollection.swift in Sources */,
 				6A2935502BFCFAFD0035CE4B /* HomeView.swift in Sources */,
 				6A1357B32CE4B0CD00B19213 /* SemanticVersion+Extensions.swift in Sources */,
+				6AA134C52EC30C8200632FDE /* WineInterface+DXVK.swift in Sources */,
 				6A8080D32EA35FA000F10A00 /* OnboardingView.swift in Sources */,
 				6AEEFA472CA9174B0025C840 /* WindowBlurView.swift in Sources */,
 				6AE18E0B2EBE11AD00766258 /* CodableAppStorage.swift in Sources */,
@@ -931,7 +935,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3852;
+				CURRENT_PROJECT_VERSION = 3866;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -979,7 +983,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3852;
+				CURRENT_PROJECT_VERSION = 3866;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";

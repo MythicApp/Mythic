@@ -29,8 +29,16 @@ struct OperationStatusViewModifier: ViewModifier {
     @ViewBuilder
     private func layout(_ content: Content) -> some View {
         switch placement {
-        case .trailing: HStack { content; indicator }
-        case .leading: HStack { indicator; content }
+        case .trailing:
+            HStack {
+                content
+                indicator
+            }
+        case .leading:
+            HStack {
+                indicator
+                content
+            }
         case .overlapping:
             if operating || successful != nil {
                 indicator

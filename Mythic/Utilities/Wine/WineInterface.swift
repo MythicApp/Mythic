@@ -108,9 +108,14 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
         return list
     }
+    
+    @discardableResult
+    static func boot(containerURL url: URL, parameters: [BootParameter]) async throws -> Process.CommandResult {
+        try await execute(arguments: parameters.map(\.rawValue), containerURL: url)
+    }
 
     /**
-     Boot a wine prefix/container.
+     Create a wine prefix (container).
 
      - Parameters:
      - baseURL: The URL where the container should be booted from.
@@ -119,7 +124,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
      - completion: A closure to call with the result (Container or Error).
      */
     @discardableResult
-    static func boot(
+    static func createContainer(
         baseURL: URL? = containersDirectory,
         name: String,
         settings: Container.Settings = .init()
@@ -157,7 +162,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
 
             let newContainer = Container(name: name, url: url, settings: settings)
-            let result = try await execute(arguments: ["wineboot"], containerURL: url)
+            let result = try await boot(containerURL: url, parameters: [.prefixInit])
 
             // swiftlint:disable:next force_try
             guard result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) else {

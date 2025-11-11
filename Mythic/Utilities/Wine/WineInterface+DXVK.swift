@@ -1,0 +1,49 @@
+//
+//  WineInterface+DXVK.swift
+//  Mythic
+//
+//  Created by Esiayo Alegbe on 11/11/2025.
+//
+
+// Copyright © 2023-2025 vapidinfinity
+
+import Foundation
+
+extension Wine {
+    final class DXVK {
+        /// Replaces the Engine’s DirectX DLLs in the specified Wine container with their DXVK equivalents.
+        static func install(toContainerAtURL containerURL: URL) async throws {
+            try Wine.killAll(containerURLs: [containerURL])
+
+            // x64
+            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d10core.dll"))
+            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d11.dll"))
+
+            // x32
+            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
+            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
+
+            // x64
+            try files.forceCopyItem(
+                at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
+                to: containerURL.appending(path: "drive_c/windows/system32")
+            )
+            try files.forceCopyItem(
+                at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
+                to: containerURL.appending(path: "drive_c/windows/system32")
+            )
+
+            // x32
+            try files.forceCopyItem(
+                at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
+                to: containerURL.appending(path: "drive_c/windows/syswow64")
+            )
+            try files.forceCopyItem(
+                at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
+                to: containerURL.appending(path: "drive_c/windows/syswow64")
+            )
+        }
+
+        // to remove DXVK, you must run wineboot in update mode
+    }
+}
