@@ -142,20 +142,14 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
     }
     
     // MARK: Properties
-    // TODO: refactor
     var containerURL: URL? {
         get {
             Migrator.migrateContainerURLDefinition(forGame: self)
-            var urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
 
-            // if gameContainerURLs is nil (doesnt exist or can't parse),
-            // instantiate it using a dummy array.
-            if urls == nil {
-                let dummy: [Game: URL] = .init()
-                _ = try? defaults.encodeAndSet(dummy, forKey: "gameContainerURLs")
-            }
+            // register gameContainerURLs if it doesn't exist, since containerURL should have a default value
+            _ = try? defaults.encodeAndRegister(defaults: ["gameContainerURLs": [Game: URL].init()])
 
-            urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
+            let urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
 
             if let urls = urls, urls[self] == nil {
                 self.containerURL = Wine.containerURLs.first
