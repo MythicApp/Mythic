@@ -34,8 +34,8 @@ struct HomeView: View {
                 if let recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
                         HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
-                            .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
-                        
+                            .frame(width: geometry.size.width, height: geometry.size.height * 0.75, alignment: .top)
+
                         HStack {
                             if isImageEmpty, recentGame.isFallbackImageAvailable {
                                 GameCard.FallbackImageCard(game: .constant(recentGame))
