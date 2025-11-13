@@ -97,7 +97,7 @@ struct ContainerSettingsView: View {
                         observing: $retinaMode,
                         placement: .leading
                     ) {
-                        await Wine.toggleRetinaMode(containerURL: container.url, toggle: retinaMode)
+                        try? await Wine.toggleRetinaMode(containerURL: container.url, toggle: retinaMode)
                         container.settings.retinaMode = retinaMode
                         retinaModeSuccess = true
                     }
@@ -188,7 +188,7 @@ struct ContainerSettingsView: View {
                     observing: $windowsVersion,
                     placement: .leading
                 ) {
-                    await Wine.setWindowsVersion(containerURL: container.url, version: windowsVersion)
+                    try await Wine.setWindowsVersion(containerURL: container.url, version: windowsVersion)
                     container.settings.windowsVersion = windowsVersion
                     windowsVersionSuccess = true
                 }

@@ -11,14 +11,15 @@ import Foundation
 import OSLog
 
 extension Process {
-    // TODO: FIXME: make redundant ASAP, refactors can be found in my stash, 84505d2
-    final class CommandOutput {
-        var stdout: String = .init()
-        var stderr: String = .init()
-    }
-}
+    struct NonZeroExitCodeError: LocalizedError {
+        init(exitCode: Int32? = nil) {
+            self.exitCode = exitCode
+        }
 
-extension Process {
+        var exitCode: Int32?
+        var errorDescription: String? = String(localized: "Process execution was unsuccessful. (Non-zero exit code)")
+    }
+
     enum Stream: Sendable {
         case standardError
         case standardOutput
@@ -34,7 +35,9 @@ extension Process {
         public let standardError: String
         public let exitCode: Int32
     }
+}
 
+extension Process {
     /// Synchronously executes a process, and immediately attempts to collect complete stdout/stderr.
     /// Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
     static func execute(

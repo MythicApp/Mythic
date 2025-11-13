@@ -145,8 +145,12 @@ final class Migrator {
         for container in Wine.containerObjects where container.settings.scaling == 0 {
             let defaultScale = Wine.Container.Settings().scaling
 
-            await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
-            container.settings.scaling = defaultScale
+            do {
+                try await Wine.setDisplayScaling(containerURL: container.url, dpi: defaultScale)
+                container.settings.scaling = defaultScale
+            } catch {
+                log.error("Unable to migrate scaling for container at URL \(container.url.prettyPath): \(error)")
+            }
         }
         log.info("Migrated container scaling.")
     }

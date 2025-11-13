@@ -30,7 +30,7 @@ extension View {
         autoReset: Bool = true,
         disablesDuringOperation: Bool = true,
         placement: OperationStatusViewModifier.Placement = .trailing,
-        action: @escaping () async -> Void
+        action: @escaping () async throws -> Void
     ) -> some View where Value: Equatable {
         self
             .disabled(disablesDuringOperation && operating.wrappedValue)
@@ -44,8 +44,8 @@ extension View {
                     defer {
                         operating.wrappedValue = false
                     }
-
-                    await action()
+                    
+                    try? await action()
                 }
             }
             .modifier(
