@@ -21,7 +21,7 @@ extension UserDefaults {
         // If the data is not an array or dictionary, wrap it in an array.
         let encodedData: Data
         switch mirror.displayStyle {
-        case .collection, .dictionary:
+        case .collection, .dictionary, .set:
             encodedData = try encoder.encode(data)
         default:
             encodedData = try encoder.encode([data])
