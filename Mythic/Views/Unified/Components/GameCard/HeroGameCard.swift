@@ -27,52 +27,61 @@ extension HeroGameCard {
         var body: some View {
             Group {
                 if game.wideImageURL != nil {
-                    AsyncImage(url: game.wideImageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            Rectangle()
-                                .fill(.quinary)
-                                .shimmering(
-                                    animation: .easeInOut(duration: 1)
-                                        .repeatForever(autoreverses: false),
-                                    bandSize: 1
+                    GeometryReader { geometry in
+                        AsyncImage(url: game.wideImageURL) { phase in
+                            switch phase {
+                            case .empty:
+                                Rectangle()
+                                    .fill(.quinary)
+                                    .shimmering(
+                                        animation: .easeInOut(duration: 1)
+                                            .repeatForever(autoreverses: false),
+                                        bandSize: 1
+                                    )
+                                    .frame(width: geometry.size.width,
+                                           height: geometry.size.height)
+                                    .onAppear {
+                                        withAnimation { isImageEmpty = true }
+                                    }
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .glur(radius: 20,
+                                          offset: 0.5,
+                                          interpolation: 0.7,
+                                          drawingGroup: true)
+                                    .modifier(FadeInModifier())
+                                    .frame(width: geometry.size.width,
+                                           height: geometry.size.height,
+                                           alignment: .top)
+                                    .onAppear {
+                                        withAnimation { isImageEmpty = false }
+                                    }
+                            case .failure(let error):
+                                ContentUnavailableView(
+                                    "Unable to load the image.",
+                                    systemImage: "photo.badge.exclamationmark",
+                                    description: .init(error.localizedDescription)
                                 )
+                                .frame(width: geometry.size.width,
+                                       height: geometry.size.height)
+                                .background(.quinary)
                                 .onAppear {
                                     withAnimation { isImageEmpty = true }
                                 }
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .glur(radius: 20,
-                                      offset: 0.5,
-                                      interpolation: 0.7,
-                                      drawingGroup: true)
-                                .modifier(FadeInModifier())
+                            @unknown default:
+                                ContentUnavailableView(
+                                    "Unable to load the image.",
+                                    systemImage: "photo.badge.exclamationmark",
+                                    description: .init("Please check your connection.")
+                                )
+                                .frame(width: geometry.size.width,
+                                       height: geometry.size.height)
+                                .background(.quinary)
                                 .onAppear {
-                                    withAnimation { isImageEmpty = false }
+                                    withAnimation { isImageEmpty = true }
                                 }
-                        case .failure(let error):
-                            ContentUnavailableView(
-                                "Unable to load the image.",
-                                systemImage: "photo.badge.exclamationmark",
-                                description: .init(error.localizedDescription)
-                            )
-                            .background(.quinary)
-                            .onAppear {
-                                withAnimation { isImageEmpty = true }
-                            }
-                        @unknown default:
-                            ContentUnavailableView(
-                                "Unable to load the image.",
-                                systemImage: "photo.badge.exclamationmark",
-                                description: .init("""
-                        Please check your connection, and try again.
-                        """)
-                            )
-                            .background(.quinary)
-                            .onAppear {
-                                withAnimation { isImageEmpty = true }
                             }
                         }
                     }
