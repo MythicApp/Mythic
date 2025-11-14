@@ -67,12 +67,12 @@ final class Legendary {
     }
 
     @MainActor
-    private static func applyOfflineFlagIfNeeded(_ args: [String]) -> [String] {
-        var out = args
+    private static func applyOfflineFlagIfNeeded(_ currentArguments: [String]) -> [String] {
+        var modifiedArguments = currentArguments
         if NetworkMonitor.shared.epicAccessibilityState != .accessible {
-            out.append("--offline")
+            modifiedArguments.append("--offline")
         }
-        return out
+        return modifiedArguments
     }
 
     @discardableResult
@@ -173,10 +173,12 @@ final class Legendary {
                 commandArguments += ["--platform", "Windows"]
             }
 
+            // optional: add installation base URL
             if let baseURL = arguments.baseURL, files.fileExists(atPath: baseURL.path) {
                 commandArguments += ["--base-path", baseURL.path(percentEncoded: false)]
             }
 
+            // optional: add dedicated game folder as argument
             if let gameFolder = arguments.gameFolder, files.fileExists(atPath: gameFolder.path) {
                 commandArguments += ["--game-folder", gameFolder.absoluteString]
             }
