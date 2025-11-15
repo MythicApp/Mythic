@@ -11,6 +11,7 @@ import Foundation
 import SwiftUI
 import OSLog
 
+// TODO: refactor
 final class LocalGames {
     public static let log = Logger(subsystem: Logger.subsystem, category: "localGames")
     
@@ -29,15 +30,15 @@ final class LocalGames {
     }
     
     static func launch(game: Mythic.Game) async throws {
-        Logger.app.notice("Launching local game \(game.title) (\(game.platform?.rawValue ?? "unknown"))")
+        Logger.app.notice("Launching local game \(game.title) (\(game.platform.rawValue))")
         
         guard let library = library,
               library.contains(game),
-        let gamePath = game.path else {
+              let gameLocation = game.location else {
             log.error("Unable to launch local game, not installed or missing")
             throw GameDoesNotExistError(game)
         }
-        
+
         await MainActor.run {
             withAnimation {
                 GameOperation.shared.launching = game
@@ -48,24 +49,20 @@ final class LocalGames {
         
         switch game.platform {
         case .macOS:
-            if FileManager.default.fileExists(atPath: game.path ?? .init()) {
-                workspace.open(
-                    .init(filePath: gamePath),
-                    configuration: {
-                        let configuration = NSWorkspace.OpenConfiguration()
-                        configuration.arguments = game.launchArguments
-                        return configuration
-                    }(),
-                    completionHandler: { (_/*running app*/, error) in
-                        if let error = error {
-                            log.error("Error launching local macOS game \"\(game.title)\": \(error)")
-                        } else {
-                            log.info("Launched local macOS game \"\(game.title)\".")
-                        }
+            let openConfiguration: NSWorkspace.OpenConfiguration = .init()
+            openConfiguration.arguments = game.launchArguments
+
+            if FileManager.default.fileExists(atPath: gameLocation.path) {
+                workspace.open(gameLocation, configuration: openConfiguration) { (_/*running app*/, error) in
+                    guard error == nil else {
+                        log.error("Error launching local macOS game \"\(game.title)\": \(error)")
+                        return
                     }
-                )
+
+                    log.info("Launched local macOS game \"\(game.title)\".")
+                }
             } else {
-                log.critical("\("The game at \(String(describing: game.path)) doesn't exist, cannot launch local macOS game!")")
+                log.critical("\("The game at \(gameLocation) doesn't exist, cannot launch local macOS game!")")
             }
         case .windows:
             guard Engine.isInstalled else {
@@ -73,19 +70,16 @@ final class LocalGames {
             }
             guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
             let container = try Wine.getContainerObject(url: containerURL)
-            
+
             let environmentVariables = try Wine.assembleEnvironmentVariables(forGame: game)
 
             try await Wine.execute(
-                arguments: [game.path!] + game.launchArguments,
+                arguments: [gameLocation.path] + game.launchArguments,
                 containerURL: container.url,
                 environment: environmentVariables
             )
-            
-        case .none:
-            log.critical("game platform cannot be inferred. this is not intended behaviour")
         }
-        
+
         if defaults.bool(forKey: "minimiseOnGameLaunch") {
             await NSApp.windows.first?.miniaturize(nil)
         }
@@ -101,13 +95,13 @@ final class LocalGames {
             favouriteGames.remove(game.id)
         }
 
-        guard let gamePath = game.path else {
+        guard let gameLocation = game.location else {
             performUninstall()
             throw CocoaError(.fileNoSuchFile)
         }
 
-        if files.fileExists(atPath: gamePath), deleteFiles {
-            try files.removeItem(atPath: gamePath)
+        if files.fileExists(atPath: gameLocation.path), deleteFiles {
+            try files.removeItem(at: gameLocation)
             performUninstall()
         }
 

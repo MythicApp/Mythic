@@ -118,7 +118,7 @@ private extension GameListViewModel {
                     let isInstalled: Bool = await cache.isInstalled(game)
                     let matchesInstalled: Bool = !filterOptions.showInstalled || isInstalled
 
-                    let matchesPlatform: Bool = filterOptions.platform == .all || game.platform?.rawValue == filterOptions.platform.rawValue
+                    let matchesPlatform: Bool = filterOptions.platform == .all || game.platform.rawValue == filterOptions.platform.rawValue
                     let matchesSource: Bool = filterOptions.source == .all || game.source.rawValue == filterOptions.source.rawValue
 
                     let passes: Bool = matchesSearch && matchesInstalled && matchesPlatform && matchesSource

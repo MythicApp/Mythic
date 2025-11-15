@@ -152,7 +152,7 @@ extension GameCard {
                     operation.queue.append(
                         GameOperation.InstallArguments(
                             game: game,
-                            platform: game.platform!,
+                            platform: game.platform,
                             type: .repair
                         )
                     )
@@ -180,7 +180,7 @@ extension GameCard {
                     operation.queue.append(
                         GameOperation.InstallArguments(
                             game: game,
-                            platform: game.platform!,
+                            platform: game.platform,
                             type: .update
                         )
                     )

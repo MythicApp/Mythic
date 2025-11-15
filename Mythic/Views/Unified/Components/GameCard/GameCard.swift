@@ -78,7 +78,8 @@ extension GameCard {
         var withBlur: Bool = true
 
         var body: some View {
-            blankImageView
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.quinary)
                 .aspectRatio(3/4, contentMode: .fit)
                 .overlay {
                     gameImage
@@ -161,19 +162,14 @@ extension GameCard {
                 }
             }
             .grayscale({
-                if let path = game.path,
-                   !files.fileExists(atPath: path),
+                if let location = game.location,
+                   !files.fileExists(atPath: location.path),
                    game.isInstalled {
                     return 1.0
                 }
 
                 return 0.0
             }())
-        }
-
-        private var blankImageView: some View {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.quinary)
         }
     }
 }
@@ -194,6 +190,6 @@ struct FadeInModifier: ViewModifier {
 }
 
 #Preview {
-    GameCard(game: .constant(.init(source: .epic, title: "MRAAAHH", platform: .macOS, path: "")))
+    GameCard(game: .constant(placeholderGame(forSource: .local)))
         .environmentObject(NetworkMonitor.shared)
 }

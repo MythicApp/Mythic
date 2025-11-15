@@ -14,192 +14,118 @@ import UserNotifications
 import SwordRPC
 import SwiftUI
 
-class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unchecked Sendable {
-    // MARK: Stubs
-    static func == (lhs: Game, rhs: Game) -> Bool {
-        return lhs.id == rhs.id
+func placeholderGame(forSource source: Game.Source,
+                     forPlatform platform: Game.Platform = .windows) -> Game {
+    switch source {
+    case .epic:
+        return .init(id: .init(), title: "MRAAAHHH", source: source, platform: platform)
+    case .local:
+        return .init(title: "GROAAARR", source: source, platform: platform)
     }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    // MARK: Initializer
-    init(
-        source: Source,
-        title: String,
-        id: String = UUID().uuidString,
-        platform: Platform,
-        imageURL: URL? = nil,
-        wideImageURL: URL? = nil,
-        path: String
-    ) {
-        self.source = source
+}
+
+class Game: ObservableObject, Identifiable, Codable, @unchecked Sendable {
+    // TODO: FOR ME TO READ LATER;
+    // THE PLAN IS TO HAVE A 'GAMES' SET OF LOCAL AND EPIC AND OTHER GAMES
+    // IN USERDEFAULTS, THAT INITIALLY STORED PROPERTIES AS A CACHE
+    // REDUCING THE NEED FOR ME TO STORE DATA IN A SEPARATE ARRAY (PersistentGameData)
+    // TODO: LIST
+    // - MIGRATOR FOR SEPARATED VARIABLES
+    // - CODING KEYS FOR OLD VALUES IN SEPARATE EXTENSION
+
+    init(id: String? = nil,
+         title: String,
+         source: Source,
+         platform: Platform,
+         location: URL? = nil,
+         imageURL: URL? = nil,
+         wideImageURL: URL? = nil,
+         containerURL: URL? = nil) /* throws */ {
+        /*
+        guard !(source == .epic && id == nil) else {
+            throw CocoaError(.featureUnsupported)
+        }
+         */
+
+        self.id = id ?? UUID().uuidString
         self.title = title
-        self.id = id
-        self.platform = platform
-        self.imageURL = imageURL
-        self.wideImageURL = wideImageURL
-        self.path = path
+        self.source = source
+        self._platform = platform
+        self._location = location
+
+        self.imageURL = imageURL ?? {
+            if case .epic = source, let url = Legendary.getImageURL(of: self, type: .tall) {
+                return URL(string: url)
+            }
+
+            return nil
+        }()
+
+        self.wideImageURL = wideImageURL ?? {
+            if case .epic = source, let url = Legendary.getImageURL(of: self, type: .normal) {
+                return URL(string: url)
+            }
+
+            return nil
+        }()
+
+        self.containerURL = containerURL ?? Wine.containerURLs.first
     }
-    
+
     // MARK: Mutables
-    var source: Source
-    var title: String
     var id: String
-    
-    // MARK: Computed Properties
-    private var _platform: Platform?
-    var platform: Platform? {
+    var title: String
+    var source: Source
+
+    private var _platform: Platform
+    private var _location: URL?
+
+    var imageURL: URL?
+    var wideImageURL: URL?
+
+    var containerURL: URL?
+    var launchArguments: [String] = .init()
+
+    var isFavourited: Bool = false
+
+    var platform: Platform {
         get {
-            return {
-                switch self.source {
-                case .epic:
-                    return try? Legendary.getGamePlatform(game: self)
-                case .local:
-                    return _platform
-                }
-            }()
+            if case .epic = source,
+               let fetchedPlatform = try? Legendary.getGamePlatform(game: self),
+               _platform != fetchedPlatform {
+                _platform = fetchedPlatform
+            }
+
+            return _platform
         }
         set { _platform = newValue }
     }
-    
+
+    var location: URL? {
+        get {
+            if case .epic = source,
+               let fetchedPath = try? Legendary.getGamePath(game: self),
+               _location?.path != fetchedPath {
+                _location = .init(filePath: fetchedPath)
+            }
+
+            return _location
+        }
+        set { _location = newValue }
+    }
+
     var isFallbackImageAvailable: Bool {
+        switch platform {
+        case .macOS:
+            do {} // TODO: see `GameCard.FallbackImageCard`
+        case .windows:
+            do {} // TODO: implmement ms portable executable, and get image that way
+        }
+
         // for now, this is the only way a fallback will be available
-        // see `GameCard.FallbackImageCard`
-        return source == .local
+        return (platform == .macOS) // FIXME: stub
     }
-    
-    private var _imageURL: URL? {
-        get {
-            let key: String = id.appending("_imageURL")
-            return defaults.url(forKey: key)
-        }
-        set {
-            let key: String = id.appending("_imageURL")
-            if let newValue = newValue {
-                defaults.set(newValue, forKey: key)
-            } else {
-                defaults.removeObject(forKey: key)
-            }
-        }
-    }
-    var imageURL: URL? {
-        get {
-            return _imageURL ?? {
-                switch self.source {
-                case .epic:
-                    return .init(string: Legendary.getImage(of: self, type: .tall)) // TODO: make getimage return URL
-                case .local:
-                    return nil
-                }
-            }()
-        }
-        set { _imageURL = newValue }
-    }
-    
-    private var _wideImageURL: URL? {
-        get {
-            let key: String = id.appending("_wideImageURL")
-            return defaults.url(forKey: key)
-        }
-        set {
-            let key: String = id.appending("_wideImageURL")
-            if let newValue = newValue {
-                defaults.set(newValue, forKey: key)
-            } else {
-                defaults.removeObject(forKey: key)
-            }
-        }
-    }
-    var wideImageURL: URL? {
-        get {
-            return _wideImageURL ?? {
-                switch self.source {
-                case .epic:
-                    return .init(string: Legendary.getImage(of: self, type: .normal)) // TODO: make getimage return URL
-                case .local:
-                    return nil
-                }
-            }()
-        }
-        set { _wideImageURL = newValue }
-    }
-    
-    private var _path: String?
-    var path: String? {
-        get {
-            return {
-                switch self.source {
-                case .epic:
-                    return try? Legendary.getGamePath(game: self)
-                case .local:
-                    return _path
-                }
-            }()
-        }
-        set { _path = newValue }
-    }
-    
-    // MARK: Properties
-    var containerURL: URL? {
-        get {
-            Migrator.migrateContainerURLDefinition(forGame: self)
 
-            // register gameContainerURLs if it doesn't exist, since containerURL should have a default value
-            _ = try? defaults.encodeAndRegister(defaults: ["gameContainerURLs": [Game: URL].init()])
-
-            let urls = try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")
-
-            if let urls = urls, urls[self] == nil {
-                self.containerURL = Wine.containerURLs.first
-            }
-
-            return urls?[self] ?? Wine.containerURLs.first
-        }
-        set {
-            var urls = (try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")) ?? .init()
-
-            // if nil is set, remove the key-value pair from the dictionary.
-            guard let newValue = newValue else {
-                if urls.contains(where: { $0.key == self }) {
-                    urls.removeValue(forKey: self)
-                    _ = try? defaults.encodeAndSet(urls, forKey: "gameContainerURLs")
-                }
-                return
-            }
-
-            urls[self] = newValue
-
-            _ = try? defaults.encodeAndSet(urls, forKey: "gameContainerURLs")
-        }
-    }
-    
-    var launchArguments: [String] {
-        get {
-            Migrator.migrateGameLaunchArgumentDefinition(forGame: self)
-            let arguments = try? defaults.decodeAndGet([Game: [String]].self, forKey: "gameLaunchArguments")
-            return arguments?[self] ?? []
-        }
-        set {
-            var urls = (try? defaults.decodeAndGet([Game: [String]].self, forKey: "gameLaunchArguments")) ?? .init()
-            urls[self] = newValue
-
-            _ = try? defaults.encodeAndSet(urls, forKey: "gameLaunchArguments")
-        }
-    }
-    
-    var isFavourited: Bool {
-        get { favouriteGames.contains(id) }
-        set {
-            if newValue {
-                favouriteGames.insert(id)
-            } else {
-                favouriteGames.remove(id)
-            }
-        }
-    }
-    
     var isInstalled: Bool {
         switch self.source {
         case .epic:
@@ -209,7 +135,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return true
         }
     }
-    
+
     var needsUpdate: Bool {
         switch self.source {
         case .epic:
@@ -218,7 +144,7 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return false
         }
     }
-    
+
     var needsVerification: Bool {
         switch self.source {
         case .epic:
@@ -227,30 +153,30 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             return false
         }
     }
-    
+
     @MainActor var isInstalling: Bool { GameOperation.shared.current?.game == self }
     @MainActor var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
     @MainActor var isLaunching: Bool { GameOperation.shared.launching == self }
-    
+
     // MARK: Functions
     func move(to newLocation: URL) async throws {
+        guard files.isWritableFile(atPath: newLocation.path) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+
         switch source {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
+            guard let retrievedNewPath = try Legendary.getGamePath(game: self) else { throw CocoaError(.fileWriteUnknown) }
 
-            // reason for disabling force_try is that if this game's path is unknown by legendary after moving, it's literally lost
-            path = try! Legendary.getGamePath(game: self) // swiftlint:disable:this force_try
+            location = .init(filePath: retrievedNewPath)
         case .local:
-            if let oldLocation = path {
-                if files.isWritableFile(atPath: newLocation.path(percentEncoded: false)) {
-                    try files.moveItem(atPath: oldLocation, toPath: newLocation.path(percentEncoded: false)) // not very good
-                } else {
-                    throw CocoaError(.fileWriteUnknown)
-                }
-            }
+            guard let location = self.location else { throw CocoaError(.fileNoSuchFile) }
+            try files.moveItem(at: location, to: newLocation)
+            self.location = newLocation
         }
     }
-    
+
     func launch() async throws {
         switch source {
         case .epic:
@@ -259,17 +185,37 @@ class Game: ObservableObject, Hashable, Codable, Identifiable, Equatable, @unche
             try await LocalGames.launch(game: self)
         }
     }
-    
+}
+
+extension Game: Equatable {
+    static func == (lhs: Game, rhs: Game) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+extension Game: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
+extension Game {
+    enum ImageType {
+        case vertical
+        case horizontal
+        case custom(URL)
+    }
+
     /// Enumeration containing the two different game platforms available.
     enum Platform: String, CaseIterable, Codable, Hashable {
         case macOS = "macOS"
         case windows = "Windows®"
     }
     
-    /// Enumeration containing all available game types.
+    /// Enumeration containing all available game sources (storefronts).
     enum Source: String, CaseIterable, Codable, Hashable {
         case epic = "Epic Games"
-        case local = "Local"
+        case local = "Local" // TODO: remove this explicitly, rename parent enum to 'Storefront', cases epic, steam, etc
     }
     
     enum InclusivePlatform: String, CaseIterable {
@@ -410,17 +356,17 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     @Published var runningGameIDs: Set<String> = .init()
     
     internal static func isGameRunning(_ game: Game) -> Bool {
-        guard let gamePath = game.path, let gamePlatform = game.platform else { return false }
-        switch gamePlatform {
+        guard let location = game.location else { return false }
+        switch game.platform {
         case .macOS:
-            return workspace.runningApplications.contains(where: { $0.bundleURL?.path == gamePath })
+            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
         case .windows:
             // hacky but functional
             let result = try? Process.execute(
                 executableURL: .init(filePath: "/bin/bash"),
                 arguments: [
                     "-c",
-                    "ps aux | grep -i '\(gamePath)' | grep -v grep"
+                    "ps aux | grep -i '\(location.path)' | grep -v grep"
                 ]
             )
             return (result?.standardOutput.isEmpty == false)
@@ -450,7 +396,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             }
         }
         
-        guard started, let gamePlatform = game.platform else {
+        guard started else {
             GameOperation.log.debug("Game \"\(game.title)\" did not appear to start; skipping monitor.")
             return
         }
@@ -461,8 +407,8 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             }
         }
         
-        GameOperation.log.debug("Now monitoring \(gamePlatform.rawValue) game \"\(game.title)\"")
-        
+        GameOperation.log.debug("Now monitoring \(game.platform.rawValue) game \"\(game.title)\"")
+
         Task {
             await MainActor.run {
                 GameOperation.shared.runningGameIDs.insert(game.id)
@@ -471,7 +417,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         
         discordRPC.setPresence({
             var presence = RichPresence()
-            presence.details = "Playing a \(gamePlatform.rawValue) game."
+            presence.details = "Playing a \(game.platform.rawValue) game."
             presence.state = "Playing \(game.title)"
             presence.timestamps.start = .now
             presence.assets.largeImage = "macos_512x512_2x"

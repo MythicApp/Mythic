@@ -335,12 +335,11 @@ final class Legendary {
             // swiftlint:disable:next force_try
             let errorLine = output.standardError.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
 
-            // dirtyfix for error cases where legendary is unable to remove the game
+            // dirtyfix; error cases where legendary is unable to remove the game
             if errorLine.contains("OSError(66, 'Directory not empty')") || errorLine.contains("please remove manually") {
-                if let gamePath = game.path {
-                    try files.removeItem(atPath: gamePath)
+                if let location = game.location {
+                    try files.removeItem(atPath: location.path)
                 }
-
                 return
             } else {
                 throw InstallationError(reason: String(errorLine))
@@ -356,23 +355,12 @@ final class Legendary {
     }
 
     static func move(game: Mythic.Game, newPath: String) async throws {
-        if let oldPath = try getGamePath(game: game) {
-            guard files.isWritableFile(atPath: oldPath) else { throw CocoaError(.fileWriteUnknown) }
-            try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
+        guard let oldPath = try getGamePath(game: game) else { throw CocoaError(.fileReadUnknown) }
 
-            _ = try await execute(arguments: ["move", game.id, newPath, "--skip-move"])
+        guard files.isWritableFile(atPath: oldPath) else { throw CocoaError(.fileWriteUnknown) }
+        try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
 
-            try await notifications.add(
-                .init(identifier: UUID().uuidString,
-                      content: {
-                          let content = UNMutableNotificationContent()
-                          content.title = String(localized: "Finished moving \"\(game.title)\".")
-                          content.body = String(localized: "\"\(game.title)\" can now be found at \(URL(filePath: newPath).prettyPath)")
-                          return content
-                      }(),
-                      trigger: nil)
-            )
-        }
+        try await execute(arguments: ["move", game.id, newPath, "--skip-move"])
     }
 
     @discardableResult
@@ -400,13 +388,12 @@ final class Legendary {
             throw GameDoesNotExistError(game)
         }
 
-        if game.needsVerification,
-           let platform = game.platform {
+        if game.needsVerification {
             func addGameToOperationQueue() {
                 GameOperation.shared.queue.append(
                     .init(
                         game: game,
-                        platform: platform,
+                        platform: game.platform,
                         type: .repair
                     )
                 )
@@ -568,7 +555,11 @@ final class Legendary {
                 return nil
             }
 
-            return .init(source: .epic, title: title, id: id, platform: platform, path: installPath)
+            return .init(id: id,
+                         title: title,
+                         source: .epic,
+                         platform: platform,
+                         location: .init(filePath: installPath))
         }
     }
 
@@ -587,7 +578,10 @@ final class Legendary {
 
         let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
-            return .init(source: .epic, title: json["app_title"].stringValue, id: json["app_name"].stringValue, platform: .macOS, path: "")
+            return .init(id: json["app_name"].stringValue,
+                         title: json["app_title"].stringValue,
+                         source: .epic,
+                         platform: .macOS /* FIXME: stub */)
         }
 
         return games.sorted { $0.title < $1.title }
@@ -638,8 +632,8 @@ final class Legendary {
     }
 
     static func getImageMetadata(for game: Mythic.Game, type: ImageType) -> JSON? {
-        let metadata = try? getGameMetadata(game: game)
-        let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
+        guard let metadata = try? getGameMetadata(game: game),
+              let keyImages = metadata["metadata"]["keyImages"].array else { return nil }
 
         let prioritisedTypes: [String] = {
             switch type {
@@ -665,26 +659,26 @@ final class Legendary {
     /**
      Retrieves game thumbnail image from legendary's downloaded metadata.
      */
-    static func getImage(of game: Mythic.Game, type: ImageType) -> String {
+    static func getImageURL(of game: Mythic.Game, type: ImageType) -> String? {
         let imageMetadata = getImageMetadata(for: game, type: type)
 
-        if let imageURL = imageMetadata?["url"].stringValue {
+        if let imageURL = imageMetadata?["url"].string {
             return imageURL
         }
 
+        // fallback #1 — attempt to fetch best matching image for specified image type
         let metadata = try? getGameMetadata(game: game)
         let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
 
-        // fallback #1
-        if let fallbackURL = keyImages.first(where: {
+        if let bestImageMetadata = keyImages.first(where: {
             guard let width = $0["width"].int, let height = $0["height"].int else { return false }
             return (type == .normal && width >= height) || (type == .tall && height > width)
-        })?["url"].stringValue {
-            return fallbackURL
+        }) {
+            return bestImageMetadata["url"].string
         }
 
-        // fallback #2
-        return keyImages.first?["url"].stringValue ?? .init()
+        // fallback #2 — use any available image
+        return keyImages.first?["url"].string
     }
 
     static func isAlias(game: String) throws -> (Bool?, of: String?) {

@@ -304,5 +304,5 @@ struct InstallGameView: View {
 }
 
 #Preview {
-    InstallGameView(game: .constant(.init(source: .epic, title: "Fortnite (Test)", id: "Fortnite", platform: .windows, path: "")), isPresented: .constant(true))
+    InstallGameView(game: .constant(.init(title: "Fortnite (Test)", source: .epic, platform: .windows, location: .temporaryDirectory)), isPresented: .constant(true))
 }

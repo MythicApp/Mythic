@@ -36,9 +36,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             "quitOnAppClose": false
         ])
 
+        _ = try? defaults.encodeAndRegister(defaults: [
+            "gameContainerURLs": [Game: URL].init(),
+            "gameLaunchArguments": [Game: [String]].init()
+        ])
+
         // MARK: Run Migrations
         Migrator.migrateFromOldBottleFormatIfNecessary()
         Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
+        
+        // FIXME: Migrator.migrateContainerURLDefinition(forGame: self)
+        // FIXME: Migrator.migrateGameLaunchArgumentDefinition(forGame: self)
 
         Task {
             await Migrator.updateContainerScalingIfNecessary()

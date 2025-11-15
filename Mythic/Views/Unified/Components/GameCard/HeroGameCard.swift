@@ -110,7 +110,7 @@ extension HeroGameCard {
     GeometryReader { geometry in
         VStack {
             HeroGameCard.ImageCard(
-                game: .constant(.init(source: .local, title: "test", platform: .macOS, path: "")),
+                game: .constant(placeholderGame(forSource: .local)),
                 isImageEmpty: .constant(false)
             )
             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)

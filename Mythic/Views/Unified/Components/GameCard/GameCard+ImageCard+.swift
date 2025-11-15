@@ -18,8 +18,10 @@ extension GameCard {
         var withBlur: Bool = true
 
         var body: some View {
-            if case .local = game.source {
-                let image = Image(nsImage: workspace.icon(forFile: game.path ?? .init()))
+            if case .local = game.source,
+               let location = game.location {
+
+                let image = Image(nsImage: workspace.icon(forFile: location.path))
 
                 ZStack {
                     if withBlur && (gameCardBlur > 0) /* dirtyfix */ {

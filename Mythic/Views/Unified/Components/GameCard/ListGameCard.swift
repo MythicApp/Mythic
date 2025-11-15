@@ -68,7 +68,7 @@ extension ListGameCard {
                 .fill(.quinary)
                 .frame(idealHeight: 120)
                 .overlay {
-                    AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
+                    AsyncImage(url: URL(string: Legendary.getImageURL(of: game, type: .normal) ?? .init())) { phase in
                         switch phase {
                         case .empty:
                             EmptyView()
@@ -114,6 +114,6 @@ extension ListGameCard {
 }
 
 #Preview {
-    ListGameCard(game: .constant(.init(source: .local, title: "MRAAAH", platform: .macOS, path: "")))
+    ListGameCard(game: .constant(placeholderGame(forSource: .local)))
         .environmentObject(NetworkMonitor.shared)
 }

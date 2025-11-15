@@ -9,6 +9,7 @@
 
 import SwiftUI
 
+// FIXME: refactor: warning ‼️ below code may need a cleanup
 struct DownloadCard: View {
     @ObservedObject private var operation: GameOperation = .shared
     @State private var isHoveringOverDestructiveButton: Bool = false
@@ -44,7 +45,7 @@ struct DownloadCard: View {
             .frame(maxHeight: 120)
             .opacity(style == .prominent ? 0 : 1)
             .overlay {
-                AsyncImage(url: URL(string: Legendary.getImage(of: game, type: .normal))) { phase in
+                AsyncImage(url: game.wideImageURL) { phase in
                     switch phase {
                     case .empty:
                         RoundedRectangle(cornerRadius: 20)
@@ -148,5 +149,5 @@ struct DownloadCard: View {
 }
 
 #Preview {
-    DownloadCard(game: .init(source: .local, title: "test", platform: .macOS, path: ""), style: .prominent)
+    DownloadCard(game: placeholderGame(forSource: .local), style: .prominent)
 }

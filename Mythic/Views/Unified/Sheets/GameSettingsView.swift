@@ -5,6 +5,7 @@ import SwiftUI
 import SwordRPC
 import OSLog
 
+// FIXME: refactor: warning ‼️ below code may need a cleanup
 struct GameSettingsView: View {
     @Binding var game: Game
     @Binding var isPresented: Bool
@@ -76,7 +77,21 @@ struct GameSettingsView: View {
 
                         Section("File", isExpanded: $isFileSectionExpanded) {
                             moveGameRow
-                            gameLocationRow
+                            if let gameLocation = game.location {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text("Location", comment: "game context")
+                                        Text(gameLocation.prettyPath)
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    Button("Show in Finder") {
+                                        workspace.activateFileViewerSelecting([gameLocation])
+                                    }
+                                }
+                            }
                         }
 
                         Section("Container Settings", isExpanded: $isContainerSectionExpanded) {
@@ -202,8 +217,9 @@ private extension GameSettingsView {
             
             Button("Verify...") {
                 operation.queue.append(
-                    GameOperation.InstallArguments(
-                        game: game, platform: game.platform!, type: .repair
+                    GameOperation.InstallArguments(game: game,
+                                                   platform: game.platform,
+                                                   type: .repair
                     )
                 )
             }
@@ -260,8 +276,8 @@ private extension GameSettingsView {
         openPanel.canChooseDirectories = true
         openPanel.allowsMultipleSelection = false
         openPanel.canCreateDirectories = true
-        openPanel.directoryURL = .init(filePath: game.path ?? .init())
-        
+        openPanel.directoryURL = game.location
+
         if case .OK = openPanel.runModal(), let newLocation = openPanel.urls.first {
             Task {
                 do {
@@ -275,29 +291,12 @@ private extension GameSettingsView {
             }
         }
     }
-    
-    var gameLocationRow: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text("Game Location:")
-                Text(URL(filePath: game.path ?? "Unknown").prettyPath)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            Button("Show in Finder") {
-                workspace.activateFileViewerSelecting([URL(filePath: game.path!)])
-            }
-            .disabled(game.path == nil)
-        }
-    }
 }
 
 private extension GameSettingsView {
     var bottomBar: some View {
         HStack {
-            SubscriptedTextView(game.platform?.rawValue ?? "Unknown")
+            SubscriptedTextView(game.platform.rawValue)
             GameCard.SubscriptedInfoView(game: $game)
             
             Spacer()
@@ -310,7 +309,7 @@ private extension GameSettingsView {
     func setDiscordPresence() {
         discordRPC.setPresence({
             var presence: RichPresence = .init()
-            presence.details = "Configuring \(game.platform?.rawValue ?? .init()) game \"\(game.title)\""
+            presence.details = "Configuring \(game.platform.rawValue) game \"\(game.title)\""
             presence.state = "Configuring \(game.title)"
             presence.timestamps.start = .now
             presence.assets.largeImage = "macos_512x512_2x"
@@ -329,30 +328,19 @@ extension GameSettingsView {
         
         var body: some View {
             HStack {
-                if isHoveringOverArgument {
-                    Image(systemName: "xmark.bin")
-                        .imageScale(.small)
-                }
-                
                 Text(argument)
                     .monospaced()
                     .foregroundStyle(isHoveringOverArgument ? .red : .secondary)
             }
             .padding(3)
-            .overlay(content: {
-                RoundedRectangle(cornerRadius: 7)
-                    .foregroundStyle(.tertiary)
-                    .shadow(radius: 5)
-            })
+            .background(in: .capsule)
             .onHover { hovering in
-                withAnimation(.easeInOut(duration: 0.3)) {
-                    isHoveringOverArgument = hovering
-                }
+                withAnimation { isHoveringOverArgument = hovering }
             }
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     launchArguments.removeAll(where: { $0 == argument })
-                    if launchArguments.isEmpty { // fix for `.onChange` not firing when args become empty
+                    if launchArguments.isEmpty { // FIXME: for `.onChange` not firing when args become empty
                         game.launchArguments = .init()
                     }
                 }
@@ -406,6 +394,6 @@ extension GameSettingsView {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(.init(source: .epic, title: "test123", platform: .macOS, wideImageURL: .init(string: "https://cdn1.epicgames.com/item/53ec6d9f552241549c4d8aa1a42bcb3b/EGS_DeliverUsMars_KeokeNInteractive_S1_2560x1440-b5b36e7ef7feabf180837cc9d15efdae")!, path: "")), isPresented: .constant(true))
+    GameSettingsView(game: .constant(placeholderGame(forSource: .local)), isPresented: .constant(true))
         .environmentObject(NetworkMonitor.shared)
 }

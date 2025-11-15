@@ -108,5 +108,5 @@ struct UninstallGameView: View {
 }
 
 #Preview {
-    UninstallGameView(game: .constant(.init(source: .local, title: .init(), platform: .macOS, path: "")), isPresented: .constant(true))
+    UninstallGameView(game: .constant(placeholderGame(forSource: .local)), isPresented: .constant(true))
 }
