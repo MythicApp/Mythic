@@ -44,7 +44,7 @@ protocol StorefrontGameManager: GameManager {
         - priority: Whether this installation should be prioritized
         - Throws: Various installation errors
      */
-    static func install(arguments: GameOperation.InstallArguments, priority: Bool) async throws
+    static func install(arguments: LegacyGameOperation.InstallArguments, priority: Bool) async throws
 
     /// Check if a game update is available.
     static func fetchUpdateAvailability(for game: Game) -> Bool

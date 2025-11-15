@@ -18,7 +18,7 @@ struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     @ObservedObject private var updateController: SparkleUpdateController = .shared
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
     
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0

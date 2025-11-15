@@ -14,7 +14,7 @@ import Charts // TODO: TODO
 /// A view displaying the installation status of a game.
 struct InstallStatusView: View {
     @Binding var isPresented: Bool
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
 
     var body: some View {
         if let current = operation.current {

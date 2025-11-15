@@ -10,7 +10,7 @@ struct GameSettingsView: View {
     @Binding var game: LegacyGame
     @Binding var isPresented: Bool
     
-    @ObservedObject var operation: GameOperation = .shared
+    @ObservedObject var operation: LegacyGameOperation = .shared
     
     @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
     
@@ -217,7 +217,7 @@ private extension GameSettingsView {
             
             Button("Verify...") {
                 operation.queue.append(
-                    GameOperation.InstallArguments(game: game,
+                    LegacyGameOperation.InstallArguments(game: game,
                                                    platform: game.platform,
                                                    type: .repair
                     )
@@ -256,7 +256,7 @@ private extension GameSettingsView {
                 Button("Move...") {
                     moveGame()
                 }
-                .disabled(GameOperation.shared.runningGameIDs.contains(game.id))
+                .disabled(LegacyGameOperation.shared.runningGameIDs.contains(game.id))
                 .alert(isPresented: $isMovingErrorPresented) {
                     Alert(
                         title: .init("Unable to move \"\(game.title)\"."),

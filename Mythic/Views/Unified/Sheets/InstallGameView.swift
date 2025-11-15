@@ -27,7 +27,7 @@ struct InstallGameView: View {
     @State private var installationError: Error?
 
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
-    @ObservedObject var operation: GameOperation = .shared
+    @ObservedObject var operation: LegacyGameOperation = .shared
 
     @State private var isFreeSpaceAlertPresented: Bool = false
     @State private var freeSpaceInBytes: Int64?
@@ -283,7 +283,7 @@ struct InstallGameView: View {
                     isPresented = false
                     Task(priority: .userInitiated) {
                         operation.queue.append(
-                            GameOperation.InstallArguments(
+                            LegacyGameOperation.InstallArguments(
                                 game: game,
                                 platform: platform,
                                 type: .install,

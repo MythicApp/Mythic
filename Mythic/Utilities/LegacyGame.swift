@@ -157,13 +157,13 @@ final class LegacyGame: ObservableObject, Identifiable, @unchecked Sendable {
     }
 
     @MainActor var isInstalling: Bool {
-        GameOperation.shared.current?.game == self
+        LegacyGameOperation.shared.current?.game == self
     }
     @MainActor var isQueuedForInstalling: Bool {
-        GameOperation.shared.queue.contains(where: { $0.game == self })
+        LegacyGameOperation.shared.queue.contains(where: { $0.game == self })
     }
     @MainActor var isLaunching: Bool {
-        GameOperation.shared.launching == self
+        LegacyGameOperation.shared.launching == self
     }
 
     // MARK: Functions
@@ -270,7 +270,7 @@ enum GameModificationType: String {
     // TODO: case uninstall = "uninstalling"
 }
 
-@available(*, deprecated, renamed: "GameOperation", message: "womp")
+@available(*, deprecated, renamed: "LegacyGameOperation", message: "womp")
 @Observable class GameModification: ObservableObject, @unchecked Sendable {
     nonisolated(unsafe) static var shared: GameModification = .init()
     
@@ -289,21 +289,21 @@ enum GameModificationType: String {
     var launching: LegacyGame? // no other place bruh
 }
 
-class GameOperation: ObservableObject, @unchecked Sendable {
-    nonisolated(unsafe) static var shared: GameOperation = .init()
+class LegacyGameOperation: ObservableObject, @unchecked Sendable {
+    nonisolated(unsafe) static var shared: LegacyGameOperation = .init()
     
     internal static let log = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
-        category: "GameOperation"
+        category: "LegacyGameOperation"
     )
     
     // swiftlint:disable:next implicit_optional_initialization
     @Published var current: InstallArguments? = nil {
         didSet {
-            guard GameOperation.shared.current != oldValue, GameOperation.shared.current != nil else { return }
-            switch GameOperation.shared.current!.game.source {
+            guard LegacyGameOperation.shared.current != oldValue, LegacyGameOperation.shared.current != nil else { return }
+            switch LegacyGameOperation.shared.current!.game.source {
             case .epic:
-                guard let current = GameOperation.shared.current else { return }
+                guard let current = LegacyGameOperation.shared.current else { return }
                 let gameTitle = current.game.title
                 let type = current.type.rawValue
                 
@@ -325,7 +325,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                         Task { @MainActor in
                             let alert = NSAlert()
 
-                            alert.messageText = "Error \(GameOperation.shared.current?.type.rawValue ?? "modifying") \"\(GameOperation.shared.current?.game.title ?? "Unknown")\"." // cannot localise raw values
+                            alert.messageText = "Error \(LegacyGameOperation.shared.current?.type.rawValue ?? "modifying") \"\(LegacyGameOperation.shared.current?.game.title ?? "Unknown")\"." // cannot localise raw values
                             alert.informativeText = error.localizedDescription
                             alert.alertStyle = .warning
                             alert.addButton(withTitle: String(localized: "OK"))
@@ -337,21 +337,21 @@ class GameOperation: ObservableObject, @unchecked Sendable {
                     }
                     
                     DispatchQueue.main.asyncAndWait {
-                        GameOperation.shared.current = nil
+                        LegacyGameOperation.shared.current = nil
                     }
                     
-                    GameOperation.advance()
+                    LegacyGameOperation.advance()
                 }
             case .local:
-                GameOperation.advance()
+                LegacyGameOperation.advance()
             }
         }
     }
     
-    @Published var status: GameOperation.InstallStatus = .init()
+    @Published var status: LegacyGameOperation.InstallStatus = .init()
     
     @Published var queue: [InstallArguments] = .init() {
-        didSet { GameOperation.advance() }
+        didSet { LegacyGameOperation.advance() }
     }
     
     static func advance() {
@@ -403,19 +403,19 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     }
     
     private func attemptToMonitor(game: LegacyGame) async {
-        GameOperation.log.debug("Preparing to monitor game \"\(game.title)\"")
+        LegacyGameOperation.log.debug("Preparing to monitor game \"\(game.title)\"")
         
-        let started = await GameOperation.awaitGameLaunch(for: game)
+        let started = await LegacyGameOperation.awaitGameLaunch(for: game)
         
         // clear the launching val once awaitGameLaunch completed
         await MainActor.run {
             withAnimation {
-                GameOperation.shared.launching = nil
+                LegacyGameOperation.shared.launching = nil
             }
         }
         
         guard started else {
-            GameOperation.log.debug("Game \"\(game.title)\" did not appear to start; skipping monitor.")
+            LegacyGameOperation.log.debug("Game \"\(game.title)\" did not appear to start; skipping monitor.")
             return
         }
         
@@ -425,11 +425,11 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             }
         }
         
-        GameOperation.log.debug("Now monitoring \(game.platform.rawValue) game \"\(game.title)\"")
+        LegacyGameOperation.log.debug("Now monitoring \(game.platform.rawValue) game \"\(game.title)\"")
 
         Task {
             await MainActor.run {
-                GameOperation.shared.runningGameIDs.insert(game.id)
+                LegacyGameOperation.shared.runningGameIDs.insert(game.id)
             }
         }
         
@@ -443,8 +443,8 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         }())
         
         while true {
-            GameOperation.log.debug("checking if \"\(game.title)\" is still running")
-            if !GameOperation.isGameRunning(game) {
+            LegacyGameOperation.log.debug("checking if \"\(game.title)\" is still running")
+            if !LegacyGameOperation.isGameRunning(game) {
                 break
             }
             try? await Task.sleep(for: .seconds(3))
@@ -452,7 +452,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         
         Task {
             await MainActor.run {
-                GameOperation.shared.runningGameIDs.remove(game.id)
+                LegacyGameOperation.shared.runningGameIDs.remove(game.id)
             }
         }
         
@@ -465,7 +465,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
             return presence
         }())
         
-        GameOperation.log.debug("\"\(game.title)\" has been quit")
+        LegacyGameOperation.log.debug("\"\(game.title)\" has been quit")
     }
 
     // swiftlint:disable:next implicit_optional_initialization

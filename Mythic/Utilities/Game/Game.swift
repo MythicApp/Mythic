@@ -10,7 +10,7 @@
 import Foundation
 
 // TODO: migrate favouriteGames
-// TODO: update GameOperation to GameDispatch, fix implementation to be less convoluted
+// TODO: update LegacyGameOperation, fix implementation to be less convoluted
 
 class Game: Identifiable {
     let id: String
@@ -56,13 +56,13 @@ class Game: Identifiable {
 
     /* FIXME: TODO: uncomment
     @MainActor var isInstalling: Bool {
-        GameOperation.shared.current?.game == self
+        LegacyGameOperation.shared.current?.game == self
     }
     @MainActor var isQueuedForInstalling: Bool {
-        GameOperation.shared.queue.contains(where: { $0.game == self })
+        LegacyGameOperation.shared.queue.contains(where: { $0.game == self })
     }
     @MainActor var isLaunching: Bool {
-        GameOperation.shared.launching == self
+        LegacyGameOperation.shared.launching == self
     }
      */
 

@@ -147,7 +147,7 @@ final class Legendary {
     /**
      Installs, updates, or repairs games using legendary.
      */
-    static func install(arguments: GameOperation.InstallArguments, priority: Bool = false) async throws {
+    static func install(arguments: LegacyGameOperation.InstallArguments, priority: Bool = false) async throws {
         guard signedIn else { throw NotSignedInError() }
         guard case .epic = arguments.game.source else { throw IsNotLegendaryError() }
 
@@ -216,7 +216,7 @@ final class Legendary {
 
                     if chunk.output.contains("All done! Download manager quitting...") {
                         Task { @MainActor in
-                            GameOperation.shared.current = nil
+                            LegacyGameOperation.shared.current = nil
                         }
                     }
 
@@ -248,7 +248,7 @@ final class Legendary {
 
                     Task { @MainActor in
                         if let match = try? progressRegex.firstMatch(in: chunk.output) {
-                            GameOperation.shared.status.progress = GameOperation.InstallStatus.Progress(
+                            LegacyGameOperation.shared.status.progress = LegacyGameOperation.InstallStatus.Progress(
                                 percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
                                 downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
                                 totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? ""),
@@ -257,25 +257,25 @@ final class Legendary {
                             )
                         }
                         if let match = try? downloadRegex.firstMatch(in: chunk.output) {
-                            GameOperation.shared.status.download = GameOperation.InstallStatus.Download(
+                            LegacyGameOperation.shared.status.download = LegacyGameOperation.InstallStatus.Download(
                                 downloaded: Double(match["downloaded"]?.substring.map(String.init) ?? ""),
                                 written: Double(match["written"]?.substring.map(String.init) ?? "")
                             )
                         }
                         if let match = try? cacheRegex.firstMatch(in: chunk.output) {
-                            GameOperation.shared.status.cache = GameOperation.InstallStatus.Cache(
+                            LegacyGameOperation.shared.status.cache = LegacyGameOperation.InstallStatus.Cache(
                                 usage: Double(match["usage"]?.substring.map(String.init) ?? ""),
                                 activeTasks: Int(match["activeTasks"]?.substring.map(String.init) ?? "")
                             )
                         }
                         if let match = try? downloadSpeedRegex.firstMatch(in: chunk.output) {
-                            GameOperation.shared.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                            LegacyGameOperation.shared.status.downloadSpeed = LegacyGameOperation.InstallStatus.DownloadSpeed(
                                 raw: Double(match["raw"]?.substring.map(String.init) ?? ""),
                                 decompressed: Double(match["decompressed"]?.substring.map(String.init) ?? "")
                             )
                         }
                         if let match = try? diskSpeedRegex.firstMatch(in: chunk.output) {
-                            GameOperation.shared.status.diskSpeed = GameOperation.InstallStatus.DiskSpeed(
+                            LegacyGameOperation.shared.status.diskSpeed = LegacyGameOperation.InstallStatus.DiskSpeed(
                                 write: Double(match["write"]?.substring.map(String.init) ?? ""),
                                 read: Double(match["read"]?.substring.map(String.init) ?? "")
                             )
@@ -297,13 +297,13 @@ final class Legendary {
                     
                     if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
                         Task { @MainActor in
-                            GameOperation.shared.status.progress = GameOperation.InstallStatus.Progress(
+                            LegacyGameOperation.shared.status.progress = LegacyGameOperation.InstallStatus.Progress(
                                 percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
                                 downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
                                 totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? "")
                             )
                             
-                            GameOperation.shared.status.downloadSpeed = GameOperation.InstallStatus.DownloadSpeed(
+                            LegacyGameOperation.shared.status.downloadSpeed = LegacyGameOperation.InstallStatus.DownloadSpeed(
                                 raw: Double(match["rawDownloadSpeed"]?.substring.map(String.init) ?? "")
                             )
                         }
@@ -390,7 +390,7 @@ final class Legendary {
 
         if game.needsVerification {
             func addGameToOperationQueue() {
-                GameOperation.shared.queue.append(
+                LegacyGameOperation.shared.queue.append(
                     .init(
                         game: game,
                         platform: game.platform,
@@ -432,7 +432,7 @@ final class Legendary {
 
         await MainActor.run {
             withAnimation {
-                GameOperation.shared.launching = game
+                LegacyGameOperation.shared.launching = game
             }
         }
 

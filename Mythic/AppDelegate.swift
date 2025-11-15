@@ -190,7 +190,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard GameOperation.shared.current != nil || !GameOperation.shared.queue.isEmpty else {
+        guard LegacyGameOperation.shared.current != nil || !LegacyGameOperation.shared.queue.isEmpty else {
             return .terminateNow
         }
 

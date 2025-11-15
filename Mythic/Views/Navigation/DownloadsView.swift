@@ -11,7 +11,7 @@ import SwiftUI
 import Shimmer
 
 struct DownloadsView: View {
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
     @State private var cardsUpdated: Bool = false
     
     var body: some View {

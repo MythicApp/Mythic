@@ -41,7 +41,7 @@ final class LocalGames {
 
         await MainActor.run {
             withAnimation {
-                GameOperation.shared.launching = game
+                LegacyGameOperation.shared.launching = game
             }
         }
         
@@ -85,7 +85,7 @@ final class LocalGames {
         }
 
         await MainActor.run {
-            GameOperation.shared.launching = nil
+            LegacyGameOperation.shared.launching = nil
         }
     }
 

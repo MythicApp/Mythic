@@ -12,7 +12,7 @@ import SwiftUI
 struct GameInstallProgressView: View {
     var withPercentage: Bool = true
 
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
     @State private var isInstallStatusViewPresented: Bool = false
     @State private var paused: Bool = false // For issue: https://github.com/derrod/legendary/issues/40
 
@@ -49,7 +49,7 @@ extension GameInstallProgressView {
     }
 
     struct StopButton: View {
-        @ObservedObject var operation: GameOperation
+        @ObservedObject var operation: LegacyGameOperation
 
         @State private var isStopGameModificationAlertPresented: Bool = false
         @State private var isHoveringOverDestructiveButton: Bool = false
@@ -72,7 +72,7 @@ extension GameInstallProgressView {
                     }
                 }
                 .alert(isPresented: $isStopGameModificationAlertPresented) {
-                    stopGameOperationAlert(
+                    stopLegacyGameOperationAlert(
                         isPresented: $isStopGameModificationAlertPresented,
                         game: currentOperation.game
                     )
@@ -84,7 +84,7 @@ extension GameInstallProgressView {
 
 extension GameInstallProgressView {
     struct OperationProgressView: View {
-        @ObservedObject var operation: GameOperation
+        @ObservedObject var operation: LegacyGameOperation
 
         var withPercentage: Bool = false
         var showInitializer: Bool = true

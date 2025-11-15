@@ -13,7 +13,7 @@ import SwordRPC
 
 /// A view displaying the user's library of games.
 struct LibraryView: View {
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
     @ObservedObject private var variables: VariableManager = .shared
     
     @State private var isGameImportSheetPresented = false

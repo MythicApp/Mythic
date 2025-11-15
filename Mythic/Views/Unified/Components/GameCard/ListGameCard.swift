@@ -11,7 +11,7 @@ import SwiftUI
 
 struct ListGameCard: View {
     @Binding var game: LegacyGame
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
 
     @State private var isHoveringOverDestructiveButton: Bool = false
 

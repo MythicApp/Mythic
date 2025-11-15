@@ -18,7 +18,7 @@ extension GameCard {
                 @Binding var game: LegacyGame
                 var withLabel: Bool = false
 
-                @ObservedObject private var operation: GameOperation = .shared
+                @ObservedObject private var operation: LegacyGameOperation = .shared
 
                 @State private var isLaunchErrorAlertPresented = false
                 @State private var launchError: Error?
@@ -111,7 +111,7 @@ extension GameCard {
                 var withLabel: Bool = false
 
                 @EnvironmentObject var networkMonitor: NetworkMonitor
-                @ObservedObject private var operation: GameOperation = .shared
+                @ObservedObject private var operation: LegacyGameOperation = .shared
 
                 @State private var isInstallSheetPresented = false
 
@@ -145,12 +145,12 @@ extension GameCard {
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
-            @ObservedObject private var operation: GameOperation = .shared
+            @ObservedObject private var operation: LegacyGameOperation = .shared
 
             var body: some View {
                 Button {
                     operation.queue.append(
-                        GameOperation.InstallArguments(
+                        LegacyGameOperation.InstallArguments(
                             game: game,
                             platform: game.platform,
                             type: .repair
@@ -173,12 +173,12 @@ extension GameCard {
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
-            @ObservedObject private var operation: GameOperation = .shared
+            @ObservedObject private var operation: LegacyGameOperation = .shared
 
             var body: some View {
                 Button {
                     operation.queue.append(
-                        GameOperation.InstallArguments(
+                        LegacyGameOperation.InstallArguments(
                             game: game,
                             platform: game.platform,
                             type: .update
@@ -271,7 +271,7 @@ extension GameCard {
 
             @Binding var isUninstallSheetPresented: Bool
 
-            @ObservedObject private var operation: GameOperation = .shared
+            @ObservedObject private var operation: LegacyGameOperation = .shared
 
             @State private var hoveringOverDestructiveButton = false
 
@@ -347,7 +347,7 @@ extension GameCard {
     struct ButtonsView: View {
         @Binding var game: LegacyGame
         var withLabel = false
-        @ObservedObject private var operation: GameOperation = .shared
+        @ObservedObject private var operation: LegacyGameOperation = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
         var body: some View {

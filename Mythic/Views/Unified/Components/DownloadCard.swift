@@ -11,7 +11,7 @@ import SwiftUI
 
 // FIXME: refactor: warning ‼️ below code may need a cleanup
 struct DownloadCard: View {
-    @ObservedObject private var operation: GameOperation = .shared
+    @ObservedObject private var operation: LegacyGameOperation = .shared
     @State private var isHoveringOverDestructiveButton: Bool = false
     @State private var isImageEmpty: Bool = true
 
