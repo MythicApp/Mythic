@@ -14,6 +14,8 @@ import UserNotifications
 import SwordRPC
 import SwiftUI
 
+// FIXME: this function should not be needed, ideally.
+// TODO: find all non-preview that uses this function and prevent that from happening.
 func placeholderGame(forSource source: Game.Source,
                      forPlatform platform: Game.Platform = .windows) -> Game {
     switch source {
@@ -24,8 +26,9 @@ func placeholderGame(forSource source: Game.Source,
     }
 }
 
-class Game: ObservableObject, Identifiable, Codable, @unchecked Sendable {
+final class Game: ObservableObject, Identifiable, @unchecked Sendable {
     // TODO: FOR ME TO READ LATER;
+    // TODO: polymorphism
     // THE PLAN IS TO HAVE A 'GAMES' SET OF LOCAL AND EPIC AND OTHER GAMES
     // IN USERDEFAULTS, THAT INITIALLY STORED PROPERTIES AS A CACHE
     // REDUCING THE NEED FOR ME TO STORE DATA IN A SEPARATE ARRAY (PersistentGameData)
@@ -53,21 +56,19 @@ class Game: ObservableObject, Identifiable, Codable, @unchecked Sendable {
         self._platform = platform
         self._location = location
 
-        self.imageURL = imageURL ?? {
-            if case .epic = source, let url = Legendary.getImageURL(of: self, type: .tall) {
-                return URL(string: url)
-            }
+        if let imageURL = imageURL {
+            self.imageURL = imageURL
+        } else if case .epic = source,
+                  let url = Legendary.getImageURL(of: self, type: .tall) {
+            self.imageURL = .init(string: url)
+        }
 
-            return nil
-        }()
-
-        self.wideImageURL = wideImageURL ?? {
-            if case .epic = source, let url = Legendary.getImageURL(of: self, type: .normal) {
-                return URL(string: url)
-            }
-
-            return nil
-        }()
+        if let wideImageURL = wideImageURL {
+            self.wideImageURL = wideImageURL
+        } else if case .epic = source,
+                  let url = Legendary.getImageURL(of: self, type: .normal) {
+            self.wideImageURL = .init(string: url)
+        }
 
         self.containerURL = containerURL ?? Wine.containerURLs.first
     }
@@ -154,9 +155,15 @@ class Game: ObservableObject, Identifiable, Codable, @unchecked Sendable {
         }
     }
 
-    @MainActor var isInstalling: Bool { GameOperation.shared.current?.game == self }
-    @MainActor var isQueuedForInstalling: Bool { GameOperation.shared.queue.contains(where: { $0.game == self }) }
-    @MainActor var isLaunching: Bool { GameOperation.shared.launching == self }
+    @MainActor var isInstalling: Bool {
+        GameOperation.shared.current?.game == self
+    }
+    @MainActor var isQueuedForInstalling: Bool {
+        GameOperation.shared.queue.contains(where: { $0.game == self })
+    }
+    @MainActor var isLaunching: Bool {
+        GameOperation.shared.launching == self
+    }
 
     // MARK: Functions
     func move(to newLocation: URL) async throws {
@@ -167,11 +174,18 @@ class Game: ObservableObject, Identifiable, Codable, @unchecked Sendable {
         switch source {
         case .epic:
             try await Legendary.move(game: self, newPath: newLocation.path(percentEncoded: false))
-            guard let retrievedNewPath = try Legendary.getGamePath(game: self) else { throw CocoaError(.fileWriteUnknown) }
+
+            // confirm that the game actually moved, otherwise we have unhandled behaviour.
+            guard let retrievedNewPath = try Legendary.getGamePath(game: self) else {
+                throw CocoaError(.fileWriteUnknown)
+            }
 
             location = .init(filePath: retrievedNewPath)
         case .local:
-            guard let location = self.location else { throw CocoaError(.fileNoSuchFile) }
+            guard let location = self.location else {
+                throw CocoaError(.fileNoSuchFile)
+            }
+
             try files.moveItem(at: location, to: newLocation)
             self.location = newLocation
         }
@@ -197,6 +211,9 @@ extension Game: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+}
+
+extension Game: Codable {
 }
 
 extension Game {
