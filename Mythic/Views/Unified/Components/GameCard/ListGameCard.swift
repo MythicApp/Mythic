@@ -10,7 +10,7 @@
 import SwiftUI
 
 struct ListGameCard: View {
-    @Binding var game: Game
+    @Binding var game: LegacyGame
     @ObservedObject private var operation: GameOperation = .shared
 
     @State private var isHoveringOverDestructiveButton: Bool = false
@@ -58,7 +58,7 @@ struct ListGameCard: View {
 
 extension ListGameCard {
     struct ImageCard: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @Binding var isImageEmpty: Bool
 
         @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0

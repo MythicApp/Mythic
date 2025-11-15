@@ -13,7 +13,7 @@ import OSLog
 
 extension GameCard {
     struct FallbackImageCard: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
         var withBlur: Bool = true
 
@@ -49,7 +49,7 @@ extension GameCard {
     }
 
     struct ImageURLModifierView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @Binding var imageURLString: String
 
         @State private var isThumbnailFileImporterPresented: Bool = false

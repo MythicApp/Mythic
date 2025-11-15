@@ -99,7 +99,7 @@ extension AccountsView {
         @Binding var signedInUser: String?
 
         var image: Image
-        var source: Game.Source
+        var source: LegacyGame.Source
         var signInAction: () -> Void
         var signOutAction: () -> Void
 

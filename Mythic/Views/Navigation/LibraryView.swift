@@ -70,14 +70,14 @@ struct LibraryView: View {
                         Toggle("Installed", systemImage: "arrow.down.app", isOn: $gameListViewModel.filterOptions.showInstalled)
                         
                         Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
-                            ForEach(Game.InclusivePlatform.allCases, id: \.self) { platform in
+                            ForEach(LegacyGame.InclusivePlatform.allCases, id: \.self) { platform in
                                 Text(platform.rawValue)
                             }
                         }
                         
                         Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
                             ForEach(
-                                Game.InclusiveSource.allCases,
+                                LegacyGame.InclusiveSource.allCases,
                                 id: \.self
                             ) { source in
                                 /*

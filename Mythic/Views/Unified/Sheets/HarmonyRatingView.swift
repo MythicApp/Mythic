@@ -10,9 +10,9 @@ import SwiftUI
 
 struct HarmonyRatingView: View {
     @Binding var isPresented: Bool
-    @Binding var game: Game
+    @Binding var game: LegacyGame
 
-    @State private var rating: Game.Compatibility?
+    @State private var rating: LegacyGame.Compatibility?
     @State private var hoveringOverIndex: Int = 0
 
     @State private var isConfirmationPresented: Bool = false
@@ -41,15 +41,15 @@ struct HarmonyRatingView: View {
 
             StarRatingView(
                 rating: .init(
-                    get: { rating.flatMap { Game.Compatibility.allCases.firstIndex(of: $0).map { $0 + 1 } } ?? 0 },
-                    set: { rating = Game.Compatibility.allCases[$0 - 1] }
+                    get: { rating.flatMap { LegacyGame.Compatibility.allCases.firstIndex(of: $0).map { $0 + 1 } } ?? 0 },
+                    set: { rating = LegacyGame.Compatibility.allCases[$0 - 1] }
                 ),
                 hoveringOverIndex: $hoveringOverIndex
             )
 
             Form {
                 if hoveringOverIndex > 0 {
-                    Text(Game.Compatibility.allCases[hoveringOverIndex - 1].rawValue)
+                    Text(LegacyGame.Compatibility.allCases[hoveringOverIndex - 1].rawValue)
                 } else {
                     Text("Please choose a rating.")
                 }

@@ -37,8 +37,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ])
 
         _ = try? defaults.encodeAndRegister(defaults: [
-            "gameContainerURLs": [Game: URL].init(),
-            "gameLaunchArguments": [Game: [String]].init()
+            "gameContainerURLs": [LegacyGame: URL].init(),
+            "gameLaunchArguments": [LegacyGame: [String]].init()
         ])
 
         // MARK: Run Migrations

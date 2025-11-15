@@ -191,7 +191,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     /// - Returns: Relevant environment variables as configured in a container for game launch.
-    static func assembleEnvironmentVariables(forGame game: Game, container: Container? = nil) throws -> [String: String] {
+    static func assembleEnvironmentVariables(forGame game: LegacyGame, container: Container? = nil) throws -> [String: String] {
         guard let containerURL = game.containerURL else {
             throw Container.DoesNotExistError()
         }
@@ -240,7 +240,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
-    static func purgeD3DMetalShaderCache(game: Game? = nil) throws {
+    static func purgeD3DMetalShaderCache(game: LegacyGame? = nil) throws {
         let output = try Process.execute(
             executableURL: .init(filePath: "/usr/bin/getconf"),
             arguments: ["DARWIN_USER_CACHE_DIR"]

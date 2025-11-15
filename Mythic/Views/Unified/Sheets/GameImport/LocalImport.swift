@@ -18,10 +18,10 @@ extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
 
-        @State private var game: Game = placeholderGame(forSource: .local)
+        @State private var game: LegacyGame = placeholderGame(forSource: .local)
         @State private var imageURLString: String = .init()
         @State private var title: String = .init()
-        @State private var platform: Game.Platform = .macOS
+        @State private var platform: LegacyGame.Platform = .macOS
         @State private var location: URL?
 
         @State private var isImageEmpty: Bool = true
@@ -65,7 +65,7 @@ extension GameImportView {
                             .onChange(of: title) { game.title = $1 }
 
                         Picker("Choose the game's native platform:", selection: $platform) {
-                            ForEach(Game.Platform.allCases, id: \.self) {
+                            ForEach(LegacyGame.Platform.allCases, id: \.self) {
                                 Text($0.rawValue)
                             }
                         }
@@ -136,7 +136,7 @@ extension GameImportView {
             }
         }
 
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+        private func allowedContentTypes(for platform: LegacyGame.Platform) -> [UTType] {
             switch platform {
             case .macOS:
                 return [.application]

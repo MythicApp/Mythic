@@ -16,8 +16,8 @@ import SwiftUI
 
 // FIXME: this function should not be needed, ideally.
 // TODO: find all non-preview that uses this function and prevent that from happening.
-func placeholderGame(forSource source: Game.Source,
-                     forPlatform platform: Game.Platform = .windows) -> Game {
+func placeholderGame(forSource source: LegacyGame.Source,
+                     forPlatform platform: LegacyGame.Platform = .windows) -> LegacyGame {
     switch source {
     case .epic:
         return .init(id: .init(), title: "MRAAAHHH", source: source, platform: platform)
@@ -26,7 +26,8 @@ func placeholderGame(forSource source: Game.Source,
     }
 }
 
-final class Game: ObservableObject, Identifiable, @unchecked Sendable {
+@available(*, deprecated, message: "Replaced by polymorphic Game")
+final class LegacyGame: ObservableObject, Identifiable, @unchecked Sendable {
     // TODO: FOR ME TO READ LATER;
     // TODO: polymorphism
     // THE PLAN IS TO HAVE A 'GAMES' SET OF LOCAL AND EPIC AND OTHER GAMES
@@ -201,22 +202,22 @@ final class Game: ObservableObject, Identifiable, @unchecked Sendable {
     }
 }
 
-extension Game: Equatable {
-    static func == (lhs: Game, rhs: Game) -> Bool {
+extension LegacyGame: Equatable {
+    static func == (lhs: LegacyGame, rhs: LegacyGame) -> Bool {
         return lhs.id == rhs.id
     }
 }
 
-extension Game: Hashable {
+extension LegacyGame: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }
 
-extension Game: Codable {
+extension LegacyGame: Codable {
 }
 
-extension Game {
+extension LegacyGame {
     enum ImageType {
         case vertical
         case horizontal
@@ -273,7 +274,7 @@ enum GameModificationType: String {
 @Observable class GameModification: ObservableObject, @unchecked Sendable {
     nonisolated(unsafe) static var shared: GameModification = .init()
     
-    var game: Mythic.Game?
+    var game: Mythic.LegacyGame?
     var type: GameModificationType?
     var status: [String: [String: Any]]?
     
@@ -285,7 +286,7 @@ enum GameModificationType: String {
         }
     }
     
-    var launching: Game? // no other place bruh
+    var launching: LegacyGame? // no other place bruh
 }
 
 class GameOperation: ObservableObject, @unchecked Sendable {
@@ -372,7 +373,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     
     @Published var runningGameIDs: Set<String> = .init()
     
-    internal static func isGameRunning(_ game: Game) -> Bool {
+    internal static func isGameRunning(_ game: LegacyGame) -> Bool {
         guard let location = game.location else { return false }
         switch game.platform {
         case .macOS:
@@ -391,7 +392,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     }
     
     // Wait until the game process appears (or timeout). Returns true if detected.
-    private static func awaitGameLaunch(for game: Game) async -> Bool {
+    private static func awaitGameLaunch(for game: LegacyGame) async -> Bool {
         for _ in 0..<15 {
             if isGameRunning(game) {
                 return true
@@ -401,7 +402,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
         return false
     }
     
-    private func attemptToMonitor(game: Game) async {
+    private func attemptToMonitor(game: LegacyGame) async {
         GameOperation.log.debug("Preparing to monitor game \"\(game.title)\"")
         
         let started = await GameOperation.awaitGameLaunch(for: game)
@@ -468,7 +469,7 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     }
 
     // swiftlint:disable:next implicit_optional_initialization
-    @MainActor @Published var launching: Game? = nil {
+    @MainActor @Published var launching: LegacyGame? = nil {
         didSet {
             // When a game is set, start a monitor that waits for start, clears launching, then tracks until exit.
             if let game = launching {
@@ -478,10 +479,10 @@ class GameOperation: ObservableObject, @unchecked Sendable {
     }
     
     struct InstallArguments: Equatable, Hashable {
-        var game: Mythic.Game
+        var game: Mythic.LegacyGame
         
         /// The target installation's platform.
-        var platform: Mythic.Game.Platform
+        var platform: Mythic.LegacyGame.Platform
         
         /// The nature of the game modification.
         var type: GameModificationType
@@ -539,10 +540,10 @@ class GameOperation: ObservableObject, @unchecked Sendable {
 
 /// Your father.
 struct GameDoesNotExistError: LocalizedError {
-    init(_ game: Mythic.Game) {
+    init(_ game: Mythic.LegacyGame) {
         self.game = game
     }
     
-    let game: Mythic.Game
+    let game: Mythic.LegacyGame
     var errorDescription: String? { String(localized: "The game \"\(game.title)\" doesn't exist.") }
 }

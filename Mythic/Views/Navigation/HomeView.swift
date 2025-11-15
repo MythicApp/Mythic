@@ -26,12 +26,12 @@ struct HomeView: View {
     @State private var isFavouritesSectionExpanded: Bool = true
     @State private var isContainersSectionExpanded: Bool = true
     
-    @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed")) })
+    @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed")) })
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if let recentGame = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed") {
+                if let recentGame = try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed") {
                     ZStack(alignment: .bottomLeading) {
                         HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)

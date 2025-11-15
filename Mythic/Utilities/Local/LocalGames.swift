@@ -16,7 +16,7 @@ final class LocalGames {
     public static let log = Logger(subsystem: Logger.subsystem, category: "localGames")
     
     // TODO: DocC
-    static var library: Set<Mythic.Game>? {
+    static var library: Set<Mythic.LegacyGame>? {
         get {
             return (try? defaults.decodeAndGet(Set.self, forKey: "localGamesLibrary")) ?? .init()
         }
@@ -29,7 +29,7 @@ final class LocalGames {
         }
     }
     
-    static func launch(game: Mythic.Game) async throws {
+    static func launch(game: Mythic.LegacyGame) async throws {
         Logger.app.notice("Launching local game \(game.title) (\(game.platform.rawValue))")
         
         guard let library = library,
@@ -89,7 +89,7 @@ final class LocalGames {
         }
     }
 
-    static func uninstall(game: Mythic.Game, deleteFiles: Bool = true) async throws {
+    static func uninstall(game: Mythic.LegacyGame, deleteFiles: Bool = true) async throws {
         func performUninstall() {
             LocalGames.library?.remove(game)
             favouriteGames.remove(game.id)
@@ -105,7 +105,7 @@ final class LocalGames {
             performUninstall()
         }
 
-        if let recent = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
+        if let recent = try? defaults.decodeAndGet(Mythic.LegacyGame.self, forKey: "recentlyPlayed"),
            recent == game {
             defaults.removeObject(forKey: "recentlyPlayed")
         }

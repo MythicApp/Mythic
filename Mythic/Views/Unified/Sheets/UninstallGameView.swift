@@ -9,7 +9,7 @@ import SwiftUI
 import OSLog
 
 struct UninstallGameView: View {
-    @Binding var game: Game
+    @Binding var game: LegacyGame
     @Binding var isPresented: Bool
     @ObservedObject var gameListViewModel: GameListViewModel = .shared
 
@@ -22,7 +22,7 @@ struct UninstallGameView: View {
     @State private var isUninstallationErrorPresented: Bool = false
     @State private var uninstallationErrorReason: String?
     
-    init(game: Binding<Game>, isPresented: Binding<Bool>) {
+    init(game: Binding<LegacyGame>, isPresented: Binding<Bool>) {
         self._game = game
         self._isPresented = isPresented
         self.runUninstaller = (game.wrappedValue.source != .local)

@@ -18,8 +18,8 @@ final class GameListViewModel: ObservableObject {
 
     struct FilterOptions: Equatable, Sendable {
         var showInstalled: Bool = false
-        var platform: Game.InclusivePlatform = .all
-        var source: Game.InclusiveSource = .all
+        var platform: LegacyGame.InclusivePlatform = .all
+        var source: LegacyGame.InclusiveSource = .all
     }
 
     enum Layout: String, CaseIterable, Sendable, Codable {
@@ -35,7 +35,7 @@ final class GameListViewModel: ObservableObject {
 
     @Published var searchString: String = .init()
     @Published var filterOptions: FilterOptions = .init()
-    @Published var games: [Game] = []
+    @Published var games: [LegacyGame] = []
     @Published var refreshFlag: Bool = false
 
     private var cancellables: Set<AnyCancellable> = .init()
@@ -91,8 +91,8 @@ private extension GameListViewModel {
 
     func updateGames() {
         Task(priority: .userInitiated) {
-            let filtered: [Game] = await filterGames(unifiedGames)
-            let sorted: [Game] = await sortGames(filtered)
+            let filtered: [LegacyGame] = await filterGames(unifiedGames)
+            let sorted: [LegacyGame] = await sortGames(filtered)
 
             withAnimation {
                 games = sorted
@@ -100,14 +100,14 @@ private extension GameListViewModel {
         }
     }
 
-    func filterGames(_ games: [Game]) async -> [Game] {
+    func filterGames(_ games: [LegacyGame]) async -> [LegacyGame] {
         let searchString: String = self.searchString
         let filterOptions: FilterOptions = self.filterOptions
         let cache: InstalledGamesCache = self.installedGamesCache
 
         struct IndexedGame: Sendable {
             let index: Int
-            let game: Game
+            let game: LegacyGame
         }
 
         return await withTaskGroup(of: IndexedGame?.self) { group in
@@ -136,12 +136,12 @@ private extension GameListViewModel {
         }
     }
 
-    func sortGames(_ games: [Game]) async -> [Game] {
+    func sortGames(_ games: [LegacyGame]) async -> [LegacyGame] {
         let sortCriteria: [SortCriteria] = self.sortCriteria
         let cache: InstalledGamesCache = self.installedGamesCache
 
         struct GameMetadata: Sendable {
-            let game: Game
+            let game: LegacyGame
             let isFavorited: Bool
             let isInstalled: Bool
         }
@@ -186,10 +186,10 @@ private extension GameListViewModel {
 }
 
 actor InstalledGamesCache {
-    private var cache: Set<Game>?
+    private var cache: Set<LegacyGame>?
 
     /// Checks if a game is installed
-    func isInstalled(_ game: Game) -> Bool {
+    func isInstalled(_ game: LegacyGame) -> Bool {
         if cache == nil {
             refreshCache()
         }

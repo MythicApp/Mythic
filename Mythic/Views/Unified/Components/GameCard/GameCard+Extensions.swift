@@ -15,7 +15,7 @@ extension GameCard {
     struct Buttons {
         struct Prominent {
             struct PlayButton: View {
-                @Binding var game: Game
+                @Binding var game: LegacyGame
                 var withLabel: Bool = false
 
                 @ObservedObject private var operation: GameOperation = .shared
@@ -107,7 +107,7 @@ extension GameCard {
             }
 
             struct InstallButton: View {
-                @Binding var game: Game
+                @Binding var game: LegacyGame
                 var withLabel: Bool = false
 
                 @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -141,7 +141,7 @@ extension GameCard {
         }
 
         struct VerificationButton: View {
-            @Binding var game: Game
+            @Binding var game: LegacyGame
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -169,7 +169,7 @@ extension GameCard {
             }
         }
         struct UpdateButton: View {
-            @Binding var game: Game
+            @Binding var game: LegacyGame
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -206,7 +206,7 @@ extension GameCard {
         }
 
         struct SettingsButton: View {
-            @Binding var game: Game
+            @Binding var game: LegacyGame
             var withLabel: Bool = false
 
             @Binding var isGameSettingsSheetPresented: Bool
@@ -236,7 +236,7 @@ extension GameCard {
         }
 
         struct FavouriteButton: View {
-            @Binding var game: Game
+            @Binding var game: LegacyGame
             var withLabel: Bool = false
 
             @State private var hoveringOverFavouriteButton = false
@@ -266,7 +266,7 @@ extension GameCard {
         }
 
         struct DeleteButton: View {
-            @Binding var game: Game
+            @Binding var game: LegacyGame
             var withLabel: Bool = false
 
             @Binding var isUninstallSheetPresented: Bool
@@ -309,7 +309,7 @@ extension GameCard {
     }
 
     struct MenuView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @State private var isGameSettingsSheetPresented: Bool = false
         @State private var isUninstallSheetPresented: Bool = false
 
@@ -345,7 +345,7 @@ extension GameCard {
     }
 
     struct ButtonsView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         var withLabel = false
         @ObservedObject private var operation: GameOperation = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
@@ -362,7 +362,7 @@ extension GameCard {
     }
 
     struct SubscriptedInfoView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
 
         var body: some View {
             SubscriptedTextView({
@@ -373,7 +373,7 @@ extension GameCard {
                 return game.source.rawValue
             }())
 
-            if let recent = try? defaults.decodeAndGet(Game.self, forKey: "recentlyPlayed"),
+            if let recent = try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed"),
                recent == game {
                 SubscriptedTextView("Recent")
             }
@@ -381,7 +381,7 @@ extension GameCard {
     }
 
     struct TitleAndInformationView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         var font: Font = .title
         var withSubscriptedInfo: Bool = true
 

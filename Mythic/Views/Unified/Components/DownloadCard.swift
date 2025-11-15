@@ -15,7 +15,7 @@ struct DownloadCard: View {
     @State private var isHoveringOverDestructiveButton: Bool = false
     @State private var isImageEmpty: Bool = true
 
-    var game: Game
+    var game: LegacyGame
     var style: DownloadCardStyle
     
     enum DownloadCardStyle {

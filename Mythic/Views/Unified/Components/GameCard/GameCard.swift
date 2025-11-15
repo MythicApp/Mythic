@@ -14,7 +14,7 @@ import Glur
 import OSLog
 
 struct GameCard: View {
-    @Binding var game: Game
+    @Binding var game: LegacyGame
 
     @State private var isImageEmpty: Bool = true
     @State private var isImageEmptyPreMacOSTahoe: Bool = true
@@ -68,7 +68,7 @@ struct GameCard: View {
 
 extension GameCard {
     struct ImageCard: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
 
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool

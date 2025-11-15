@@ -320,7 +320,7 @@ final class Legendary {
         }
     }
 
-    static func uninstall(game: Mythic.Game, deleteFiles: Bool, runUninstaller: Bool) async throws {
+    static func uninstall(game: Mythic.LegacyGame, deleteFiles: Bool, runUninstaller: Bool) async throws {
         let output = try await Legendary.execute(
             arguments: [
                 "-y", "uninstall",
@@ -348,13 +348,13 @@ final class Legendary {
 
         favouriteGames.remove(game.id)
 
-        if let recentGame = try? defaults.decodeAndGet(Mythic.Game.self, forKey: "recentlyPlayed"),
+        if let recentGame = try? defaults.decodeAndGet(Mythic.LegacyGame.self, forKey: "recentlyPlayed"),
            recentGame == game {
             defaults.removeObject(forKey: "recentlyPlayed")
         }
     }
 
-    static func move(game: Mythic.Game, newPath: String) async throws {
+    static func move(game: Mythic.LegacyGame, newPath: String) async throws {
         guard let oldPath = try getGamePath(game: game) else { throw CocoaError(.fileReadUnknown) }
 
         guard files.isWritableFile(atPath: oldPath) else { throw CocoaError(.fileWriteUnknown) }
@@ -382,7 +382,7 @@ final class Legendary {
     /**
      Launches games.
      */
-    static func launch(game: Mythic.Game) async throws {
+    static func launch(game: Mythic.LegacyGame) async throws {
         guard try Legendary.getInstalledGames().contains(game) else {
             log.error("Unable to launch game, not installed or missing")
             throw GameDoesNotExistError(game)
@@ -473,7 +473,7 @@ final class Legendary {
 
     // MARK: Get Game Platform Method
 
-    static func getGamePlatform(game: Mythic.Game) throws -> Mythic.Game.Platform? {
+    static func getGamePlatform(game: Mythic.LegacyGame) throws -> Mythic.LegacyGame.Platform? {
         guard case .epic = game.source else {
             throw IsNotLegendaryError()
         }
@@ -494,7 +494,7 @@ final class Legendary {
 
     // MARK: Needs Update Method
 
-    static func needsUpdate(game: Mythic.Game) -> Bool {
+    static func needsUpdate(game: Mythic.LegacyGame) -> Bool {
         do {
             let metadata = try getGameMetadata(game: game)
             let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
@@ -515,7 +515,7 @@ final class Legendary {
         }
     }
 
-    static func needsVerification(game: Mythic.Game) -> Bool {
+    static func needsVerification(game: Mythic.LegacyGame) -> Bool {
         do {
             let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
             return installedJSON[game.id]["needs_verification"].boolValue
@@ -537,7 +537,7 @@ final class Legendary {
     /// Checks account signin state.
     static var signedIn: Bool { return user != nil }
 
-    static func getInstalledGames() throws -> [Mythic.Game] {
+    static func getInstalledGames() throws -> [Mythic.LegacyGame] {
         guard signedIn else { throw NotSignedInError() }
 
         let installedData = URL(filePath: "\(configLocation)/installed.json")
@@ -547,10 +547,10 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        return installedGames.compactMap { (id, gameInfo) -> Mythic.Game? in
+        return installedGames.compactMap { (id, gameInfo) -> Mythic.LegacyGame? in
             guard let title = gameInfo["title"] as? String,
                   let platformString = gameInfo["platform"] as? String,
-                  let platform: Mythic.Game.Platform = matchPlatform(for: platformString),
+                  let platform: Mythic.LegacyGame.Platform = matchPlatform(for: platformString),
                   let installPath = gameInfo["install_path"] as? String else {
                 return nil
             }
@@ -563,7 +563,7 @@ final class Legendary {
         }
     }
 
-    static func getGamePath(game: Mythic.Game) throws -> String? {
+    static func getGamePath(game: Mythic.LegacyGame) throws -> String? {
         guard signedIn else { throw NotSignedInError() }
         guard case .epic = game.source else { throw IsNotLegendaryError() }
 
@@ -571,12 +571,12 @@ final class Legendary {
         return installed[game.id]["install_path"].string
     }
 
-    static func getInstallable() throws -> [Mythic.Game] {
+    static func getInstallable() throws -> [Mythic.LegacyGame] {
         guard signedIn else { throw NotSignedInError() }
 
         let metadata = "\(configLocation)/metadata"
 
-        let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.Game in
+        let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.LegacyGame in
             let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
             return .init(id: json["app_name"].stringValue,
                          title: json["app_title"].stringValue,
@@ -587,7 +587,7 @@ final class Legendary {
         return games.sorted { $0.title < $1.title }
     }
 
-    static func getGameMetadata(game: Mythic.Game) throws -> JSON? {
+    static func getGameMetadata(game: Mythic.LegacyGame) throws -> JSON? {
         guard case .epic = game.source else { throw IsNotLegendaryError() }
         let metadataDirectoryString = "\(configLocation)/metadata"
 
@@ -610,7 +610,7 @@ final class Legendary {
      Retrieve a game's launch arguments from Legendary's `installed.json` file.
      ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
      */
-    static func getGameLaunchArguments(game: Mythic.Game) throws -> [String] {
+    static func getGameLaunchArguments(game: Mythic.LegacyGame) throws -> [String] {
         let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
         guard let arguments = installedData[game.id]["launch_parameters"].string else {
             throw UnableToRetrieveError()
@@ -631,7 +631,7 @@ final class Legendary {
         }
     }
 
-    static func getImageMetadata(for game: Mythic.Game, type: ImageType) -> JSON? {
+    static func getImageMetadata(for game: Mythic.LegacyGame, type: ImageType) -> JSON? {
         guard let metadata = try? getGameMetadata(game: game),
               let keyImages = metadata["metadata"]["keyImages"].array else { return nil }
 
@@ -645,7 +645,7 @@ final class Legendary {
         return keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })
     }
 
-    static func matchPlatform(for string: String) -> Game.Platform? {
+    static func matchPlatform(for string: String) -> LegacyGame.Platform? {
         switch string {
         case "Windows":
             return .windows
@@ -659,7 +659,7 @@ final class Legendary {
     /**
      Retrieves game thumbnail image from legendary's downloaded metadata.
      */
-    static func getImageURL(of game: Mythic.Game, type: ImageType) -> String? {
+    static func getImageURL(of game: Mythic.LegacyGame, type: ImageType) -> String? {
         let imageMetadata = getImageMetadata(for: game, type: type)
 
         if let imageURL = imageMetadata?["url"].string {

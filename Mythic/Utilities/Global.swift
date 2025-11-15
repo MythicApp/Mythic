@@ -31,7 +31,7 @@ let mainLock: NSRecursiveLock = .init()
 
 nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
 
-var unifiedGames: [Game] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
+var unifiedGames: [LegacyGame] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
 
 final class SafeErrorStorage: @unchecked Sendable {
     private let lock = NSLock()

@@ -12,7 +12,7 @@ import SwiftUI
 
 // FIXME: stub — may be unnecesary since only used once (`HomeView`)
 struct HeroGameCard: View {
-    @Binding var game: Game
+    @Binding var game: LegacyGame
 
     var body: some View {
 
@@ -21,7 +21,7 @@ struct HeroGameCard: View {
 
 extension HeroGameCard {
     struct ImageCard: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @Binding var isImageEmpty: Bool
 
         var body: some View {

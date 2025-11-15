@@ -14,7 +14,7 @@ struct GameImportView: View {
     @Binding var isPresented: Bool
     @ObservedObject var gameListViewModel: GameListViewModel = .shared
     
-    @State private var source: Game.Source = .epic
+    @State private var source: LegacyGame.Source = .epic
     
     var body: some View {
         VStack {

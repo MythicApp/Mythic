@@ -7,7 +7,7 @@ import OSLog
 
 // FIXME: refactor: warning ‼️ below code may need a cleanup
 struct GameSettingsView: View {
-    @Binding var game: Game
+    @Binding var game: LegacyGame
     @Binding var isPresented: Bool
     
     @ObservedObject var operation: GameOperation = .shared
@@ -28,7 +28,7 @@ struct GameSettingsView: View {
     @State private var isGameSectionExpanded: Bool = true
     @State private var isThumbnailURLChangeSheetPresented: Bool = false
     
-    init(game: Binding<Game>, isPresented: Binding<Bool>) {
+    init(game: Binding<LegacyGame>, isPresented: Binding<Bool>) {
         _game = game
         _isPresented = isPresented
         _selectedContainerURL = State(initialValue: game.wrappedValue.containerURL)
@@ -320,7 +320,7 @@ private extension GameSettingsView {
 
 extension GameSettingsView {
     struct ArgumentItem: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @Binding var launchArguments: [String]
         var argument: String
         
@@ -349,7 +349,7 @@ extension GameSettingsView {
     }
     
     struct ThumbnailURLChangeView: View {
-        @Binding var game: Game
+        @Binding var game: LegacyGame
         @Binding var isPresented: Bool
         
         @State private var newImageURLString: String = .init()

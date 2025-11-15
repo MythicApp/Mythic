@@ -19,14 +19,14 @@ extension GameImportView {
         @State private var errorDescription: String = .init()
         @State private var isErrorAlertPresented = false
 
-        @State private var installableGames: [Game] = .init()
-        @State private var supportedPlatforms: [Game.Platform]?
-        @State private var game: Game = .init(id: .init(),
+        @State private var installableGames: [LegacyGame] = .init()
+        @State private var supportedPlatforms: [LegacyGame.Platform]?
+        @State private var game: LegacyGame = .init(id: .init(),
                                               title: .init(),
                                               source: .epic,
                                               platform: .macOS)
 
-        @State private var gamePlatform: Game.Platform = .macOS
+        @State private var gamePlatform: LegacyGame.Platform = .macOS
         @State private var gameLocation: URL? = nil
 
         @State private var isFetchingInstallableGames: Bool = false
@@ -174,7 +174,7 @@ extension GameImportView {
             }
         }
 
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
+        private func allowedContentTypes(for platform: LegacyGame.Platform) -> [UTType] {
             switch platform {
             case .macOS:
                 return [.application]

@@ -167,7 +167,7 @@ final class Migrator {
     }
 
     /// Data migration from versions v0.5.0 and below.
-    static func migrateContainerURLDefinition(forGame game: Game) {
+    static func migrateContainerURLDefinition(forGame game: LegacyGame) {
         let oldKey: String = game.id.appending("_containerURL")
         guard let containerURL = defaults.url(forKey: oldKey) else { return }
 
@@ -183,7 +183,7 @@ final class Migrator {
             return
         }
 
-        var containerURLs: [Game: URL] = (try? defaults.decodeAndGet([Game: URL].self, forKey: "gameContainerURLs")) ?? .init()
+        var containerURLs: [LegacyGame: URL] = (try? defaults.decodeAndGet([LegacyGame: URL].self, forKey: "gameContainerURLs")) ?? .init()
         containerURLs[game] = containerURL
 
         do {
@@ -194,7 +194,7 @@ final class Migrator {
     }
 
     /// Data migration from versions v0.5.0 and below.
-    static func migrateGameLaunchArgumentDefinition(forGame game: Game) {
+    static func migrateGameLaunchArgumentDefinition(forGame game: LegacyGame) {
         let oldKey: String = game.id.appending("_launchArguments")
         guard let arguments = defaults.array(forKey: oldKey) as? [String] else { return }
 
@@ -210,7 +210,7 @@ final class Migrator {
             return
         }
 
-        var launchArguments: [Game: [String]] = (try? defaults.decodeAndGet([Game: [String]].self, forKey: "gameLaunchArguments")) ?? .init()
+        var launchArguments: [LegacyGame: [String]] = (try? defaults.decodeAndGet([LegacyGame: [String]].self, forKey: "gameLaunchArguments")) ?? .init()
         launchArguments[game] = arguments
 
         do {
