@@ -94,7 +94,7 @@ extension Wine.Container {
         var pid: Int = .init()
     }
 
-    struct Settings: Codable, Hashable, Equatable {
+    struct Settings: Hashable, Equatable {
         var metalHUD: Bool
         var msync: Bool
         var retinaMode: Bool
@@ -103,18 +103,6 @@ extension Wine.Container {
         var windowsVersion: Wine.WindowsVersion
         var scaling: Int
         var avx2: Bool
-
-        // swiftlint:disable:next nesting
-        enum CodingKeys: String, CodingKey {
-            case metalHUD
-            case msync
-            case retinaMode
-            case dxvk
-            case dxvkAsync
-            case windowsVersion
-            case scaling
-            case avx2
-        }
 
         init(metalHUD: Bool = false,
              msync: Bool = true,
@@ -139,25 +127,38 @@ extension Wine.Container {
                 }
             }()
         }
-
-        init(from decoder: Decoder) throws {
-            self.init()
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-
-            self.metalHUD = try container.decodeIfPresent(Bool.self, forKey: .metalHUD) ?? self.metalHUD
-            self.msync = try container.decodeIfPresent(Bool.self, forKey: .msync) ?? self.msync
-            self.retinaMode = try container.decodeIfPresent(Bool.self, forKey: .retinaMode) ?? self.retinaMode
-            self.dxvk = try container.decodeIfPresent(Bool.self, forKey: .dxvk) ?? self.dxvk
-            self.dxvkAsync = try container.decodeIfPresent(Bool.self, forKey: .dxvkAsync) ?? self.dxvkAsync
-            self.windowsVersion = try container.decodeIfPresent(Wine.WindowsVersion.self, forKey: .windowsVersion) ?? self.windowsVersion
-            self.scaling = try container.decodeIfPresent(Int.self, forKey: .scaling) ?? self.scaling
-            self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2
-        }
     }
 
     enum Scope: String, CaseIterable {
         case individual
         case global
+    }
+}
+
+extension Wine.Container.Settings: Codable {
+    enum CodingKeys: String, CodingKey {
+        case metalHUD
+        case msync
+        case retinaMode
+        case dxvk
+        case dxvkAsync
+        case windowsVersion
+        case scaling
+        case avx2
+    }
+
+    init(from decoder: Decoder) throws {
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.metalHUD = try container.decodeIfPresent(Bool.self, forKey: .metalHUD) ?? self.metalHUD
+        self.msync = try container.decodeIfPresent(Bool.self, forKey: .msync) ?? self.msync
+        self.retinaMode = try container.decodeIfPresent(Bool.self, forKey: .retinaMode) ?? self.retinaMode
+        self.dxvk = try container.decodeIfPresent(Bool.self, forKey: .dxvk) ?? self.dxvk
+        self.dxvkAsync = try container.decodeIfPresent(Bool.self, forKey: .dxvkAsync) ?? self.dxvkAsync
+        self.windowsVersion = try container.decodeIfPresent(Wine.WindowsVersion.self, forKey: .windowsVersion) ?? self.windowsVersion
+        self.scaling = try container.decodeIfPresent(Int.self, forKey: .scaling) ?? self.scaling
+        self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2
     }
 }
 
