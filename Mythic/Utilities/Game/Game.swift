@@ -12,12 +12,24 @@ import Foundation
 // TODO: migrate favouriteGames
 // TODO: update LegacyGameOperation, fix implementation to be less convoluted
 
-class Game: Identifiable {
+actor GameStore {
+    var games: [Game] {
+        get { (try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? [] }
+        set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
+    }
+}
+
+class Game: Codable, Identifiable {
+    static let store: GameStore = .init()
+
     let id: String
     let title: String
     let platform: Platform
 
-    // use underlying variable
+    /*
+     Store file location in underlying variable
+     to be exposed by inheritors.
+     */
     // swiftlint:disable:next identifier_name
     var _location: URL?
 
@@ -28,6 +40,7 @@ class Game: Identifiable {
 
     var launchArguments: [String] = []
     var isFavourited: Bool = false
+    var lastLaunched: Date?
 
     init(id: String,
          title: String,
@@ -42,8 +55,8 @@ class Game: Identifiable {
         self.containerURL = containerURL ?? Wine.containerURLs.first
     }
 
-    var isInstalled: Bool { false }                 // override in subclass
-    var needsVerification: Bool? { nil }            // override in subclass
+    var isInstalled: Bool { false }         // override in subclass
+    var needsVerification: Bool? { nil }    // override in subclass
 
     final var isFallbackImageAvailable: Bool {
         switch platform {
@@ -67,9 +80,14 @@ class Game: Identifiable {
      */
 
     // MARK: Actions
+    final func launch() async throws {
+        lastLaunched = .now
+        try await _launch()
+    }
+
     @MainActor
-    func launch() async throws {
-        fatalError("Subclasses must implement launch()")
+    func _launch() async throws {
+        fatalError("Subclasses must implement _launch()")
     }
 
     func move(to newLocation: URL) async throws {

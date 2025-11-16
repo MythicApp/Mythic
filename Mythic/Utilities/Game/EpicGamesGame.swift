@@ -24,7 +24,11 @@ class EpicGamesGame: Game {
                    location: location,
                    containerURL: containerURL)
     }
-
+    
+    required init(from decoder: any Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
+    
     override var isInstalled: Bool {
         guard let installedGames = try? Legendary.getInstalledGames() else {
             return false
@@ -43,7 +47,7 @@ class EpicGamesGame: Game {
         return true // FIXME: stub
     }
 
-    override func launch() async throws {
+    override func _launch() async throws {
         // TODO: FIXME: try await Legendary.launch(game: self)
     }
 }

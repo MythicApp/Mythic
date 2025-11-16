@@ -24,13 +24,17 @@ class LocalGame: Game {
                    location: location,
                    containerURL: containerURL)
     }
-
+    
+    required init(from decoder: any Decoder) throws {
+        fatalError("init(from:) has not been implemented")
+    }
+    
     // Local games are always present on disk.
     override var isInstalled: Bool { true }
     // Verification for local games isn't possible.
     override var needsVerification: Bool? { false }
 
-    override func launch() async throws {
+    override func _launch() async throws {
         
     }
 }
