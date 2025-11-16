@@ -62,6 +62,7 @@ final class GameOperation: Identifiable, @unchecked Sendable {
     let function: @Sendable () async throws -> Sendable
 
     private(set) var status: OperationStatus = .pending
+    // swiftlint:disable:next identifier_name
     private(set) var _task: Task<Sendable, Error>? = nil
 
     init(game: Game,
