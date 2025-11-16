@@ -44,9 +44,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // MARK: Run Migrations
         Migrator.migrateFromOldBottleFormatIfNecessary()
         Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
-        
-        // FIXME: Migrator.migrateContainerURLDefinition(forGame: self)
-        // FIXME: Migrator.migrateGameLaunchArgumentDefinition(forGame: self)
 
         Task {
             await Migrator.updateContainerScalingIfNecessary()
