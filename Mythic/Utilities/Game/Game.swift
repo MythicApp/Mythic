@@ -80,29 +80,30 @@ class Game: Codable, Identifiable {
      */
 
     // MARK: Actions
-    final func launch() async throws {
+    @MainActor final func launch() async throws {
         lastLaunched = .now
         try await _launch()
     }
 
-    @MainActor
-    func _launch() async throws {
+    /// Launch the underlying game.
+    @MainActor internal func _launch() async throws {
         fatalError("Subclasses must implement _launch()")
     }
 
+    /// Launch the underlying game.
     func move(to newLocation: URL) async throws {
         fatalError("Subclasses must implement move(to:)")
     }
 }
 
 extension Game: Equatable {
-    static func == (lhs: Game, rhs: Game) -> Bool {
+    public static func == (lhs: Game, rhs: Game) -> Bool {
         return lhs.id == rhs.id
     }
 }
 
 extension Game: Hashable {
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
 }
