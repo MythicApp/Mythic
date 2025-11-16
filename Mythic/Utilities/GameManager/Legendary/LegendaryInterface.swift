@@ -19,6 +19,7 @@ import RegexBuilder
 
  [Legendary GitHub Repository](https://github.com/derrod/legendary)
  */
+// FIXME: this code is on its way out. legendary will no longer be a Mythic dependency
 final class Legendary {
 
     static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
