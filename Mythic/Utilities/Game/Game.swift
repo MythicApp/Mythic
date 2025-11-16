@@ -38,7 +38,18 @@ class Game: Codable, Identifiable {
     var verticalImageURL: URL?
     var horizontalImageURL: URL?
 
-    var containerURL: URL?
+    internal var _containerURL: URL?
+    final var containerURL: URL? {
+        get {
+            if Wine.containerURLs.first(where: { $0 == _containerURL }) == nil
+                || _containerURL == nil {
+                _containerURL = Wine.containerURLs.first
+            }
+
+            return _containerURL
+        }
+        set { _containerURL = newValue }
+    }
 
     var launchArguments: [String] = []
     var isFavourited: Bool = false
@@ -54,7 +65,7 @@ class Game: Codable, Identifiable {
         self.platform = platform
         self._location = location
 
-        self.containerURL = containerURL ?? Wine.containerURLs.first
+        self._containerURL = containerURL ?? Wine.containerURLs.first
     }
 
     var isInstalled: Bool { false }         // override in subclass
