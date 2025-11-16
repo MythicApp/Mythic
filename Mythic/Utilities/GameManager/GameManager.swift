@@ -41,18 +41,17 @@ protocol StorefrontGameManager: GameManager {
      Install, update, or repair a game
      - Parameters:
         - arguments: Installation configuration and parameters
-        - priority: Whether this installation should be prioritized
         - Throws: Various installation errors
      */
-    static func install(arguments: LegacyGameOperation.InstallArguments, priority: Bool) async throws
+    static func install(game: Game) async throws
 
     /// Check if a game update is available.
-    static func fetchUpdateAvailability(for game: Game) -> Bool
+    static func fetchUpdateAvailability(for game: Game) async throws -> Bool
 
     /**
      Check if a game needs file verification
      - Parameter game: The game to check
      - Returns: `true` if verification is needed
      */
-    static func isFileVerificationRequired(for game: Game) -> Bool
+    static func isFileVerificationRequired(for game: Game) async throws -> Bool
 }
