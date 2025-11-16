@@ -104,17 +104,19 @@ class Game: Codable, Identifiable {
         try await _launch()
     }
 
+    // override in subclass
     @MainActor internal func _launch() async throws {
         // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _launch()")
     }
 
-    /// Launch the underlying game.
+    /// Move the underlying game to a specified `URL`.
     @MainActor final func move(to newLocation: URL) async throws {
         try await _move(to: newLocation)
         _location = newLocation
     }
 
+    // override in subclass
     @MainActor internal func _move(to newLocation: URL) async throws {
         // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _move(to:)")
