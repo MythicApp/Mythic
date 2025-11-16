@@ -9,13 +9,19 @@
 
 import Foundation
 
-// TODO: migrate favouriteGames
-// TODO: update LegacyGameOperation, fix implementation to be less convoluted
-
 actor GameDataStore {
-    var games: [Game] {
-        get { (try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? [] }
+    // TODO: Migrate favouriteGames
+    // TODO: Migrate localGamesLibrary
+    // TODO: Migrate (id)_containerURL
+    // TODO: Migrate (id)_launchArguments
+    // TODO: Migrate (id)_containerURL
+    var games: Set<Game> {
+        get { Set((try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? []) }
         set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
+    }
+
+    func refresh() async throws {
+
     }
 }
 
