@@ -38,6 +38,7 @@ class Game: Codable, Identifiable {
     var verticalImageURL: URL?
     var horizontalImageURL: URL?
 
+    // swiftlint:disable:next identifier_name
     internal var _containerURL: URL?
     final var containerURL: URL? {
         get {
