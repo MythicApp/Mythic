@@ -12,7 +12,7 @@ import Foundation
 // TODO: migrate favouriteGames
 // TODO: update LegacyGameOperation, fix implementation to be less convoluted
 
-actor GameStore {
+actor GameDataStore {
     var games: [Game] {
         get { (try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? [] }
         set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
@@ -20,7 +20,7 @@ actor GameStore {
 }
 
 class Game: Codable, Identifiable {
-    static let store: GameStore = .init()
+    static let store: GameDataStore = .init()
 
     let id: String
     let title: String
@@ -80,19 +80,26 @@ class Game: Codable, Identifiable {
      */
 
     // MARK: Actions
+    /// Launch the underlying game.
     @MainActor final func launch() async throws {
         lastLaunched = .now
         try await _launch()
     }
 
-    /// Launch the underlying game.
     @MainActor internal func _launch() async throws {
+        // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _launch()")
     }
 
     /// Launch the underlying game.
-    func move(to newLocation: URL) async throws {
-        fatalError("Subclasses must implement move(to:)")
+    @MainActor final func move(to newLocation: URL) async throws {
+        try await _move(to: newLocation)
+        _location = newLocation
+    }
+
+    @MainActor internal func _move(to newLocation: URL) async throws {
+        // swiftlint:disable:previous identifier_name
+        fatalError("Subclasses must implement _move(to:)")
     }
 }
 

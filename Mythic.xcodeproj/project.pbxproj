@@ -29,6 +29,7 @@
 		6A1192802EC8C208005A3E05 /* SteamGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A11927F2EC8C205005A3E05 /* SteamGame.swift */; };
 		6A1192822EC8C2D7005A3E05 /* Game+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1192812EC8C2D4005A3E05 /* Game+Extensions.swift */; };
 		6A1192852EC8D4FD005A3E05 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1192842EC8D4FB005A3E05 /* GameManager.swift */; };
+		6A1192892EC9A89C005A3E05 /* GameOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1192882EC9A898005A3E05 /* GameOperation.swift */; };
 		6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6A12FF8D2B73AC4E00AA948C /* Glur */; };
 		6A1357B32CE4B0CD00B19213 /* SemanticVersion+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1357B22CE4B0C900B19213 /* SemanticVersion+Extensions.swift */; };
 		6A2935322BFCFAFD0035CE4B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */; };
@@ -160,6 +161,7 @@
 		6A11927F2EC8C205005A3E05 /* SteamGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamGame.swift; sourceTree = "<group>"; };
 		6A1192812EC8C2D4005A3E05 /* Game+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Game+Extensions.swift"; sourceTree = "<group>"; };
 		6A1192842EC8D4FB005A3E05 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		6A1192882EC9A898005A3E05 /* GameOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameOperation.swift; sourceTree = "<group>"; };
 		6A1357B22CE4B0C900B19213 /* SemanticVersion+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SemanticVersion+Extensions.swift"; sourceTree = "<group>"; };
 		6A2934AE2BFCFAFD0035CE4B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		6A2934B32BFCFAFD0035CE4B /* Bundle+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
@@ -384,6 +386,7 @@
 		6A2934CA2BFCFAFD0035CE4B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				6A1192882EC9A898005A3E05 /* GameOperation.swift */,
 				6A1192782EC8C1D3005A3E05 /* Game */,
 				6A1192832EC8D4F5005A3E05 /* GameManager */,
 				6A2934B22BFCFAFD0035CE4B /* Engine */,
@@ -751,6 +754,7 @@
 				6AA445762EABA0E80064A14F /* Engine+UpdateCatalog.swift in Sources */,
 				6A29355D2BFCFAFD0035CE4B /* InstallStatusView.swift in Sources */,
 				5A62AE982C27DB1200BA31D2 /* GameListViewModel.swift in Sources */,
+				6A1192892EC9A89C005A3E05 /* GameOperation.swift in Sources */,
 				6AC2847C2EA5234B0008091F /* EngineInstallationView.swift in Sources */,
 				6A11927A2EC8C1DA005A3E05 /* Game.swift in Sources */,
 				6A29354C2BFCFAFD0035CE4B /* LibraryView.swift in Sources */,
