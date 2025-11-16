@@ -21,6 +21,7 @@ actor GameDataStore {
 
 class Game: Codable, Identifiable {
     static let store: GameDataStore = .init()
+    @MainActor static private let operationManager: GameOperationManager = .shared
 
     let id: String
     let title: String
@@ -68,17 +69,15 @@ class Game: Codable, Identifiable {
         }
     }
 
-    /* FIXME: TODO: uncomment
-    @MainActor var isInstalling: Bool {
-        LegacyGameOperation.shared.current?.game == self
+    @MainActor final func isOperating() async -> Bool {
+        let currentOperation = await Game.operationManager.queueStore.currentOperation
+        return currentOperation?.game == self
     }
-    @MainActor var isQueuedForInstalling: Bool {
-        LegacyGameOperation.shared.queue.contains(where: { $0.game == self })
+
+    @MainActor final func isQueuedForOperation() async -> Bool {
+        let operationQueue = await Game.operationManager.queueStore._queue
+        return operationQueue.contains(where: { $0.game == self })
     }
-    @MainActor var isLaunching: Bool {
-        LegacyGameOperation.shared.launching == self
-    }
-     */
 
     // MARK: Actions
     /// Launch the underlying game.
