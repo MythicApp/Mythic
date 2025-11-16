@@ -15,6 +15,7 @@ actor GameDataStore {
     // TODO: Migrate (id)_containerURL
     // TODO: Migrate (id)_launchArguments
     // TODO: Migrate (id)_containerURL
+    // TODO: Acknowledge there is no need to migrate recentlyPlayed, due to lastLaunched
     var games: Set<Game> {
         get { Set((try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? []) }
         set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
@@ -133,4 +134,8 @@ extension Game: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+}
+
+extension Game: CustomStringConvertible {
+    var description: String { "\(title) (\(platform), \(id))" }
 }
