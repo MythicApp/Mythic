@@ -59,21 +59,19 @@ final class GameOperation: Identifiable, @unchecked Sendable {
     let id: UUID = .init()
     let game: Game
     let type: OperationType
-    let function: @Sendable () async throws -> Sendable
+    let function: @Sendable () async throws -> Void
 
     private(set) var status: OperationStatus = .pending
     // swiftlint:disable:next identifier_name
-    private(set) var _task: Task<Sendable, Error>? = nil
+    private(set) var _task: Task<Sendable, Error>?
 
     init(game: Game,
          type: OperationType,
-         function: @Sendable @escaping () async throws -> Sendable,
-         status: OperationStatus,
+         function: @Sendable @escaping () async throws -> Void,
          task: Task<Sendable, Error>? = nil) {
         self.game = game
         self.type = type
         self.function = function
-        self.status = status
         self._task = task
     }
 

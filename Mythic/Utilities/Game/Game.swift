@@ -28,7 +28,7 @@ actor GameDataStore {
 
 class Game: Codable, Identifiable {
     static let store: GameDataStore = .init()
-    @MainActor static private let operationManager: GameOperationManager = .shared
+    @MainActor static let operationManager: GameOperationManager = .shared
 
     let id: String
     let title: String

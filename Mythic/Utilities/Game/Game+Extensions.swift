@@ -24,7 +24,7 @@ extension Game {
 
     /// Enumeration containing all available game storefronts.
     enum Storefront: String, CaseIterable, Codable, Hashable {
-        case epic = "Epic Games"
+        case epicGames = "Epic Games"
         case local = "Local"
     }
 

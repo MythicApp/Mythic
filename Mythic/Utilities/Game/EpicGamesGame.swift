@@ -12,7 +12,7 @@ import Foundation
 class EpicGamesGame: Game {
     var location: URL? { super._location }
 
-    override var storefront: Storefront? { .epic }
+    override var storefront: Storefront? { .epicGames }
 
     init(id: String,
          title: String,
