@@ -25,6 +25,7 @@ class Game: Codable, Identifiable {
     let id: String
     let title: String
     let platform: Platform
+    var storefront: Storefront? { nil } // override in subclass
 
     /*
      Store file location in underlying variable

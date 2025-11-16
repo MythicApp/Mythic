@@ -13,6 +13,8 @@ class LocalGame: Game {
     // Local games MUST have .location, as marked in .init()
     var location: URL { super._location! }
 
+    override var storefront: Storefront? { .local }
+
     init(id: String = UUID().uuidString,
          title: String,
          platform: Platform,

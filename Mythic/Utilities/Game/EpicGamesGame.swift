@@ -10,10 +10,11 @@
 import Foundation
 
 class EpicGamesGame: Game {
-    // Local games MUST have .location, as marked in .init()
-    var location: URL { super._location! }
+    var location: URL? { super._location }
 
-    init(id: String = UUID().uuidString,
+    override var storefront: Storefront? { .epic }
+
+    init(id: String,
          title: String,
          platform: Platform,
          location: URL,
