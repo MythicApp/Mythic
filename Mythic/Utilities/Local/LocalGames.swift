@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 import OSLog
 
-// TODO: refactor
+@available(*, deprecated, renamed: "LocalGameManager", message: "this class is garbo, go use that")
 final class LocalGames {
     public static let log = Logger(subsystem: Logger.subsystem, category: "localGames")
     
