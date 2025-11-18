@@ -23,11 +23,9 @@ import RegexBuilder
 final class Legendary {
 
     static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
-    /// The file location for legendary's configuration files.
-    static let configLocation = configurationFolder.path // TODO: phase out of use
 
     /// Logger instance for legendary.
-    static let log = Logger(subsystem: Logger.subsystem, category: "legendaryInterface")
+    static let log: Logger = .custom(category: "LegendaryInterface")
 
     // Minimal registry for running consumer tasks (cancel stops process via Process.stream cancellation)
     actor RunningCommands {
@@ -56,14 +54,17 @@ final class Legendary {
         }
     }
 
-    private static var legendaryExecutableURL: URL {
-        URL(filePath: Bundle.main.path(forResource: "legendary/cli", ofType: nil)!)
-    }
+    private static var legendaryExecutableURL: URL { Bundle.main.url(forResource: "legendary/cli", withExtension: nil)! }
 
     private static func constructEnvironment(withAdditionalFlags environment: [String: String]?) -> [String: String] {
         var constructedEnvironment: [String: String] = .init()
-        constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configLocation
-        constructedEnvironment.merge(environment ?? .init(), uniquingKeysWith: { $1 })
+
+        constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configurationFolder.path
+
+        if let environment = environment {
+            constructedEnvironment.merge(environment, uniquingKeysWith: { $1 })
+        }
+
         return constructedEnvironment
     }
 
@@ -74,6 +75,22 @@ final class Legendary {
             modifiedArguments.append("--offline")
         }
         return modifiedArguments
+    }
+
+    private static func onChunkWithLegendaryErrorHandling(
+        _ onChunk: (@Sendable (Process.OutputChunk) throws -> String?)?
+    ) -> (@Sendable (Process.OutputChunk) throws -> String?)? {
+        guard let onChunk = onChunk else { return nil }
+        return { chunk in
+            // handle and throw generic Legendary errors
+            if case .standardError = chunk.stream,
+               let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
+               let errorReason = match.last?.substring {
+                throw Legendary.GenericError(reason: String(errorReason))
+            }
+
+            return try onChunk(chunk)
+        }
     }
 
     @discardableResult
@@ -91,12 +108,11 @@ final class Legendary {
         )
     }
 
-    // Build Process.stream (no registration here; the consumer Task handles it)
     private static func startStream(
         arguments: [String],
         environment: [String: String]? = nil,
         currentDirectoryURL: URL? = nil,
-        onChunk: (@Sendable (Process.OutputChunk) -> String?)? = nil
+        onChunk: (@Sendable (Process.OutputChunk) throws -> String?)? = nil
     ) -> AsyncThrowingStream<Process.OutputChunk, Error> {
         let env = constructEnvironment(withAdditionalFlags: environment)
         return Process.stream(
@@ -104,19 +120,17 @@ final class Legendary {
             arguments: arguments,
             environment: env,
             currentDirectoryURL: currentDirectoryURL,
-            onChunk: onChunk
+            onChunk: onChunkWithLegendaryErrorHandling(onChunk)
         )
     }
 
-    // Create and REGISTER the consumer Task immediately; inside it, do the awaits and drain the stream.
-    // This removes the need for pending cancels or session tokens.
     @discardableResult
     static func executeStreamed(
         identifier: String,
         arguments: [String],
         environment: [String: String]? = nil,
         currentDirectoryURL: URL? = nil,
-        onChunk: @Sendable @escaping (Process.OutputChunk) -> String?
+        onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?
     ) async -> Task<Void, Error> {
         let consumer = Task {
             let args = await applyOfflineFlagIfNeeded(arguments)
@@ -132,7 +146,9 @@ final class Legendary {
                     // work handled in onChunk
                 }
             } catch is CancellationError {
-                do {} // expected when cancelled via stop(id:)
+                // expected when cancelled via RunningCommands.stop(id:)
+                // since it relies on `Task` cancellation
+                do {}
             } catch {
                 throw error
             }
@@ -145,223 +161,176 @@ final class Legendary {
         return consumer
     }
 
-    /**
-     Installs, updates, or repairs games using legendary.
-     */
-    static func install(arguments: LegacyGameOperation.InstallArguments, priority: Bool = false) async throws {
-        guard signedIn else { throw NotSignedInError() }
-        guard case .epic = arguments.game.source else { throw IsNotLegendaryError() }
+    /// Parse legendary's DLManager status output, and use it to update a `Progress` object.
+    private static func handleDownloadManagerOutputProgress(for output: String,
+                                                            progress: Progress) {
+        // these regexes are not dynamic, so there's no reason why they should fail to initialise
+        // swiftlint:disable force_try
+        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
+        let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
+        let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
+        let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
+        let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
+        // swiftlint:enable force_try
 
-        var commandArguments = [
-            "-y", "install",
-            arguments.game.id
-        ]
-        
-        switch arguments.type {
-        case .install:
-            do {} // installs by default; no arguments necessary
-        case .update:
-            commandArguments.append("--update-only")
-        case .repair:
-            commandArguments.append("--repair")
+        /*
+         SAMPLE LEGENDARY OUTPUT
+         [DLManager] INFO: = Progress: 47.28% (261/552), Running for 00:00:14, ETA: 00:00:15
+         [DLManager] INFO:  - Downloaded: 93.43 MiB, Written: 215.42 MiB
+         [DLManager] INFO:  - Cache usage: 33.00 MiB, active tasks: 32
+         [DLManager] INFO:  + Download    - 7.99 MiB/s (raw) / 17.00 MiB/s (decompressed)
+         [DLManager] INFO:  + Disk    - 17.00 MiB/s (write) / 0.00 MiB/s (read)
+         */
+
+        if let match = try? progressRegex.firstMatch(in: output) {
+            // an assumption is made that `.completedUnitCount` is set to 100.
+            progress.completedUnitCount = Int64(match["percentage"]?.substring ?? .init()) ?? 0
+
+            progress.estimatedTimeRemaining = TimeInterval(HH_MM_SSString: String(match["eta"]?.substring ?? .init()))
+            progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
+            progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
         }
 
-        if case .install = arguments.type {
-            switch arguments.platform {
-            case .macOS:
-                commandArguments += ["--platform", "Mac"]
-            case .windows:
-                commandArguments += ["--platform", "Windows"]
-            }
-
-            // optional: add installation base URL
-            if let baseURL = arguments.baseURL, files.fileExists(atPath: baseURL.path) {
-                commandArguments += ["--base-path", baseURL.path(percentEncoded: false)]
-            }
-
-            // optional: add dedicated game folder as argument
-            if let gameFolder = arguments.gameFolder, files.fileExists(atPath: gameFolder.path) {
-                commandArguments += ["--game-folder", gameFolder.absoluteString]
-            }
+        if let match = try? downloadSpeedRegex.firstMatch(in: output) {
+            // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
+            progress.throughput = (Int(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0) * Int(pow(1024.0, 2.0))
         }
 
-        let optionalPacks = arguments.optionalPacks
-        let gameTitle = arguments.game.title
+        // the others aren't really necessary, or useful information for endusers
 
-        let safeErrorStorage = SafeErrorStorage()
+        // for download speeds, use * pow(1024, 2), to convert from MiB to B
+    }
 
-        let consumer = await executeStreamed(
-            identifier: "install",
-            arguments: commandArguments,
-            onChunk: { chunk in
-                switch chunk.stream {
-                case .standardError:
-                    if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
-                       let errorReason = match.last?.substring {
-                        safeErrorStorage.set(Legendary.InstallationError(reason: String(errorReason)))
-                    }
+    static func install(game: EpicGamesGame,
+                        qos: QualityOfService,
+                        optionalPacks: [String] = .init(),
+                        gameDirectoryURL: URL? = Bundle.appGames) async throws {
+        var arguments: [String] = ["-y", "install", game.id]
+        arguments += ["--platform", Legendary.matchPlatform(for: game.platform)]
 
-                    if chunk.output.contains("Verification finished successfully.") {
-                        Task { @MainActor in
-                            let alert = NSAlert()
-                            alert.messageText = String(localized: "Successfully verified \"\(gameTitle)\".")
-                            alert.informativeText = String(localized: "\"\(gameTitle)\" is now ready to be played.")
-                            alert.alertStyle = .informational
-                            alert.addButton(withTitle: String(localized: "OK"))
+        guard let gameDirectoryURL = gameDirectoryURL else {
+            log.error("Failed to infer default base URL, installation cannot continue")
+            throw CocoaError(.fileReadUnknown)
+        }
+        arguments += ["--game-folder", gameDirectoryURL.path]
 
-                            if let window = NSApp.windows.first {
-                                alert.beginSheetModal(for: window)
-                            }
-                        }
-                    }
+        let operation: GameOperation = .init(game: game, type: .updating) { [arguments] progress in
+            progress.totalUnitCount = 100
+            progress.fileOperationKind = .downloading
 
-                    if chunk.output.contains("All done! Download manager quitting...") {
-                        Task { @MainActor in
-                            LegacyGameOperation.shared.current = nil
-                        }
-                    }
-
-                case .standardOutput:
-                    // append optional packs to legendary's stdin when it requests for them
-                    if chunk.output.contains("Additional packs") {
-                        return (optionalPacks?.joined(separator: ", ") ?? .init()) + "\n" // use \n as return key
+            let consumer = await Legendary.executeStreamed(identifier: "install",
+                                                           arguments: arguments) { chunk in
+                // append optional packs to legendary's stdin when it requests for them
+                if case .standardOutput = chunk.stream {
+                    if chunk.output.contains("Additional packs"), !optionalPacks.isEmpty {
+                        return optionalPacks.joined(separator: ", ") + "\n" // use \n as return key
                     }
                 }
 
-                // Download status handling
                 if case .standardError = chunk.stream {
-                    // swiftlint:disable force_try
-                    let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
-                    let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
-                    let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
-                    let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
-                    let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
-                    // swiftlint:enable force_try
-
-                    /*
-                     SAMPLE LEGENDARY OUTPUT
-                     [DLManager] INFO: = Progress: 47.28% (261/552), Running for 00:00:14, ETA: 00:00:15
-                     [DLManager] INFO:  - Downloaded: 93.43 MiB, Written: 215.42 MiB
-                     [DLManager] INFO:  - Cache usage: 33.00 MiB, active tasks: 32
-                     [DLManager] INFO:  + Download    - 7.99 MiB/s (raw) / 17.00 MiB/s (decompressed)
-                     [DLManager] INFO:  + Disk    - 17.00 MiB/s (write) / 0.00 MiB/s (read)
-                     */
-
-                    Task { @MainActor in
-                        if let match = try? progressRegex.firstMatch(in: chunk.output) {
-                            LegacyGameOperation.shared.status.progress = LegacyGameOperation.InstallStatus.Progress(
-                                percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
-                                downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
-                                totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? ""),
-                                runtime: match["runtime"]?.substring.map(String.init),
-                                eta: match["eta"]?.substring.map(String.init)
-                            )
-                        }
-                        if let match = try? downloadRegex.firstMatch(in: chunk.output) {
-                            LegacyGameOperation.shared.status.download = LegacyGameOperation.InstallStatus.Download(
-                                downloaded: Double(match["downloaded"]?.substring.map(String.init) ?? ""),
-                                written: Double(match["written"]?.substring.map(String.init) ?? "")
-                            )
-                        }
-                        if let match = try? cacheRegex.firstMatch(in: chunk.output) {
-                            LegacyGameOperation.shared.status.cache = LegacyGameOperation.InstallStatus.Cache(
-                                usage: Double(match["usage"]?.substring.map(String.init) ?? ""),
-                                activeTasks: Int(match["activeTasks"]?.substring.map(String.init) ?? "")
-                            )
-                        }
-                        if let match = try? downloadSpeedRegex.firstMatch(in: chunk.output) {
-                            LegacyGameOperation.shared.status.downloadSpeed = LegacyGameOperation.InstallStatus.DownloadSpeed(
-                                raw: Double(match["raw"]?.substring.map(String.init) ?? ""),
-                                decompressed: Double(match["decompressed"]?.substring.map(String.init) ?? "")
-                            )
-                        }
-                        if let match = try? diskSpeedRegex.firstMatch(in: chunk.output) {
-                            LegacyGameOperation.shared.status.diskSpeed = LegacyGameOperation.InstallStatus.DiskSpeed(
-                                write: Double(match["write"]?.substring.map(String.init) ?? ""),
-                                read: Double(match["read"]?.substring.map(String.init) ?? "")
-                            )
-                        }
-                    }
+                    handleDownloadManagerOutputProgress(for: chunk.output,
+                                                        progress: progress)
                 }
 
-                // Verification status handling
-                if case .standardOutput = chunk.stream, case .repair = arguments.type {
+                return nil
+            }
+        }
+
+        await Game.operationManager.queueOperation(operation)
+    }
+
+    static func update(game: EpicGamesGame, qos: QualityOfService) async throws {
+        let arguments: [String] = ["-y", "install", game.id, "--update-only"]
+
+        let operation: GameOperation = .init(game: game, type: .updating) { progress in
+            progress.totalUnitCount = 100
+            progress.fileOperationKind = .downloading
+
+            let consumer = await Legendary.executeStreamed(identifier: "update",
+                                                           arguments: arguments) { chunk in
+                if case .standardError = chunk.stream {
+                    handleDownloadManagerOutputProgress(for: chunk.output,
+                                                        progress: progress)
+                }
+
+                return nil
+            }
+        }
+
+        await Game.operationManager.queueOperation(operation)
+    }
+
+    static func repair(game: EpicGamesGame, qos: QualityOfService) async throws {
+        let arguments: [String] = ["-y", "install", game.id, "--repair"]
+
+        let operation: GameOperation = .init(game: game, type: .launching) { progress in
+            progress.totalUnitCount = 100
+            progress.fileOperationKind = .downloading
+
+            let consumer = await Legendary.executeStreamed(identifier: "repair",
+                                                           arguments: arguments) { chunk in
+                if case .standardOutput = chunk.stream {
+                    // this regex is not dynamic, so there's no reason why they should fail to initialise
                     // swiftlint:disable force_try
                     let verificationProgressRegex = try! Regex(#"Verification progress: (?<downloadedObjects>\d+)\/(?<totalObjects>\d+) \((?<percentage>[\d.]+)%\) \[(?<rawDownloadSpeed>[\d.]+) MiB\/s\]"#)
                     // swiftlint:enable force_try
-                    
+
                     /*
                      SAMPLE LEGENDARY OUTPUT
                      Verification progress: 18053/18780 (98.7%) [1020.6 MiB/s] // main progress
                      => Verifying large file "TAGame/CookedPCConsole/Textures3.tfc": 45% (1151.0/2576.2 MiB) [1186.8 MiB/s] // progress for large files (unhandled)
                      */
-                    
+
                     if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
-                        Task { @MainActor in
-                            LegacyGameOperation.shared.status.progress = LegacyGameOperation.InstallStatus.Progress(
-                                percentage: Double(match["percentage"]?.substring.map(String.init) ?? "") ?? 0.0,
-                                downloadedObjects: Int(match["downloadedObjects"]?.substring.map(String.init) ?? ""),
-                                totalObjects: Int(match["totalObjects"]?.substring.map(String.init) ?? "")
-                            )
-                            
-                            LegacyGameOperation.shared.status.downloadSpeed = LegacyGameOperation.InstallStatus.DownloadSpeed(
-                                raw: Double(match["rawDownloadSpeed"]?.substring.map(String.init) ?? "")
-                            )
-                        }
+                        progress.completedUnitCount = Int64(match["percentage"]?.substring ?? .init()) ?? 0
+                        progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
+                        progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
+
+                        // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
+                        progress.throughput = (Int(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0) * Int(pow(1024.0, 2.0))
                     }
                 }
-                
                 return nil
             }
-        )
-
-        try await consumer.value
-        if let error = safeErrorStorage.get() {
-            throw error
         }
+
+        await Game.operationManager.queueOperation(operation)
     }
 
-    static func uninstall(game: Mythic.LegacyGame, deleteFiles: Bool, runUninstaller: Bool) async throws {
-        let output = try await Legendary.execute(
-            arguments: [
-                "-y", "uninstall",
-                deleteFiles ? nil : "--keep-files",
-                runUninstaller ? nil : "--skip-uninstaller",
-                game.id
-            ]
-                .compactMap { $0 }
-        )
+    static func uninstall(game: EpicGamesGame,
+                          persistFiles: Bool,
+                          runUninstallerIfPossible: Bool = true) async throws {
+        let gameID = game.id
 
-        if output.standardError.contains("ERROR:") {
-            // swiftlint:disable:next force_try
-            let errorLine = output.standardError.trimmingPrefix(try! Regex(#"\[(.*?)\]"#)).trimmingPrefix("ERROR: ")
+        let operation: GameOperation = .init(game: game, type: .launching) { _ in
+            var arguments: [String] = ["-y", "uninstall", gameID]
 
-            // dirtyfix; error cases where legendary is unable to remove the game
-            if errorLine.contains("OSError(66, 'Directory not empty')") || errorLine.contains("please remove manually") {
-                if let location = game.location {
-                    try files.removeItem(atPath: location.path)
-                }
-                return
-            } else {
-                throw InstallationError(reason: String(errorLine))
-            }
+            if persistFiles { arguments += ["--keep-files"] }
+            if !runUninstallerIfPossible { arguments += ["--skip-uninstaller"] }
+
+            // legendary is inconsistent with this,
+            // may have to use files.removeItem(atPath:)
+            try await Legendary.execute(arguments: arguments)
         }
 
-        favouriteGames.remove(game.id)
-
-        if let recentGame = try? defaults.decodeAndGet(Mythic.LegacyGame.self, forKey: "recentlyPlayed"),
-           recentGame == game {
-            defaults.removeObject(forKey: "recentlyPlayed")
-        }
+        await Game.operationManager.queueOperation(operation)
     }
 
-    static func move(game: Mythic.LegacyGame, newPath: String) async throws {
-        guard let oldPath = try getGamePath(game: game) else { throw CocoaError(.fileReadUnknown) }
+    @MainActor static func move(game: EpicGamesGame, to newLocation: URL) async throws {
+        let gameIsInstalled = game.isInstalled
+        let currentGameLocation = game.location
+        let gameID = game.id
 
-        guard files.isWritableFile(atPath: oldPath) else { throw CocoaError(.fileWriteUnknown) }
-        try files.moveItem(atPath: oldPath, toPath: "\(newPath)/\(oldPath.components(separatedBy: "/").last!)")
+        let operation: GameOperation = .init(game: game, type: .launching) { _ in
+            guard gameIsInstalled,
+                  let currentGameLocation = currentGameLocation else { throw CocoaError(.fileNoSuchFile) }
 
-        try await execute(arguments: ["move", game.id, newPath, "--skip-move"])
+            try files.moveItem(at: currentGameLocation, to: newLocation)
+
+            try await Legendary.execute(arguments: ["move", gameID, newLocation.path, "--skip-move"])
+        }
+
+        Game.operationManager.queueOperation(operation)
     }
 
     @discardableResult
@@ -383,104 +352,49 @@ final class Legendary {
     /**
      Launches games.
      */
-    static func launch(game: Mythic.LegacyGame) async throws {
-        guard try Legendary.getInstalledGames().contains(game) else {
-            log.error("Unable to launch game, not installed or missing")
-            throw GameDoesNotExistError(game)
-        }
+    @MainActor static func launch(game: EpicGamesGame) async throws {
+        guard game.isInstalled else { throw CocoaError(.fileNoSuchFile) }
 
-        if game.needsVerification {
-            func addGameToOperationQueue() {
-                LegacyGameOperation.shared.queue.append(
-                    .init(
-                        game: game,
-                        platform: game.platform,
-                        type: .repair
-                    )
-                )
+        let gameContainerURL = game.containerURL
+        let gameID = game.id
+        let gameNeedsVerification = game.needsVerification
+        let gamePlatform = game.platform
+        let gameLaunchArguments = game.launchArguments
+
+        let operation: GameOperation = .init(game: game, type: .launching) { progress in
+            guard let containerURL = gameContainerURL else { throw Wine.Container.DoesNotExistError() }
+
+            var arguments: [String] = ["launch", gameID]
+            var environment: [String: String] = .init()
+
+            guard !gameNeedsVerification else { throw EpicGamesGame.VerificationRequiredError() }
+
+            // uses legendary's native launch process
+            switch gamePlatform {
+            case .macOS:
+                do {} //
+            case .windows:
+                environment = try Wine.assembleEnvironmentVariables(forContainer: containerURL)
+                // legendary requires this, since it calls wine directly.
+                environment["WINEPREFIX"] = containerURL.path(percentEncoded: false)
+
+                arguments += ["--wine", Engine.wineExecutableURL.path]
             }
 
-            await MainActor.run {
-                if let window = NSApp.windows.first { // display alert if possible (rarely impossible)
-                    let alert = NSAlert()
+            arguments.append(contentsOf: ["--"] + gameLaunchArguments)
 
-                    alert.alertStyle = .informational
-                    alert.messageText = String(localized: "This game's data integrity must be verified.")
-                    alert.informativeText = String(localized: """
-                        Before running this game, Mythic must verify that the game's files are intact.
-                        This may take a while.
-                        """)
-
-                    alert.addButton(withTitle: String(localized: "OK"))
-                    alert.addButton(withTitle: String(localized: "Cancel"))
-
-                    alert.beginSheetModal(for: window) { response in
-                        if case .alertFirstButtonReturn = response {
-                            addGameToOperationQueue()
-                        }
-                    }
-                } else {
-                    addGameToOperationQueue()
-                }
-            }
-
-            return // allow the game to repair first!!
+            try await Legendary.execute(arguments: arguments,
+                                        environment: environment)
         }
 
-        if game.platform == .windows, !Engine.isInstalled {
-            throw Engine.NotInstalledError()
-        }
-
-        await MainActor.run {
-            withAnimation {
-                LegacyGameOperation.shared.launching = game
-            }
-        }
-
-        try defaults.encodeAndSet(game, forKey: "recentlyPlayed")
-
-        var arguments = [
-            "launch",
-            game.id,
-            needsUpdate(game: game) ? "--skip-version-check" : nil
-        ].compactMap { $0 }
-
-        var environmentVariables: [String: String] = .init()
-
-        if case .windows = game.platform {
-            guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() } // FIXME: Container Revamp
-            let container = try Wine.getContainerObject(url: containerURL)
-
-            arguments += ["--wine", Engine.directory.appending(path: "wine/bin/wine64").path]
-            
-            // required for launching w/ legendary
-            environmentVariables["WINEPREFIX"] = container.url.path(percentEncoded: false)
-
-            environmentVariables.merge(
-                try Wine.assembleEnvironmentVariables(forGame: game),
-                uniquingKeysWith: { $1 })
-        }
-
-        arguments.append(contentsOf: ["--"] + game.launchArguments)
-
-        // launch game; fire and forget
-        Task(priority: .userInitiated) {
-            _ = try await execute(
-                arguments: arguments,
-                environment: environmentVariables
-            )
-        }
+        Game.operationManager.queueOperation(operation)
     }
 
     // MARK: Get Game Platform Method
 
-    static func getGamePlatform(game: Mythic.LegacyGame) throws -> Mythic.LegacyGame.Platform? {
-        guard case .epic = game.source else {
-            throw IsNotLegendaryError()
-        }
-
-        let installedData = URL(filePath: "\(configLocation)/installed.json")
-        let data = try Data(contentsOf: installedData)
+    static func getGamePlatform(game: EpicGamesGame) throws -> EpicGamesGame.Platform? {
+        let installedData: URL = configurationFolder.appending(path: "installed.json")
+        let data: Data = try .init(contentsOf: installedData)
 
         guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
             throw CocoaError(.fileNoSuchFile)
@@ -490,45 +404,42 @@ final class Legendary {
             throw UnableToRetrieveError()
         }
 
-        return matchPlatform(for: platformString)
+        return matchPlatformString(for: platformString)
     }
 
-    // MARK: Needs Update Method
+    static func fetchUpdateAvailability(for game: EpicGamesGame) async throws -> Bool {
+        let metadata = try Legendary.getGameMetadata(game: game)
 
-    static func needsUpdate(game: Mythic.LegacyGame) -> Bool {
-        do {
-            let metadata = try getGameMetadata(game: game)
-            let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
+        let installedJSON = try JSON(data: installedJSONData)
 
-            guard
-                let installedVersion = installedJSON[game.id]["version"].string,
-                let platform = installedJSON[game.id]["platform"].string,
-                let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string
-            else {
-                log.error("Unable to compare versions for game \"\(game.title)\".")
-                return false
-            }
-
-            return upstreamVersion != installedVersion
-        } catch {
-            log.error("Error checking if \(game.title) needs an update: \(error.localizedDescription)")
-            return false
+        guard
+            let installedVersion = installedJSON[game.id]["version"].string,
+            let platform = installedJSON[game.id]["platform"].string,
+            let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string
+        else {
+            throw CocoaError(.coderValueNotFound)
         }
+
+        // it would be more ideal checking if upstreamVersion is greater than
+        // installedVersion, but to do that, we'd need to convert them into
+        // SemanticVersion, which is problematic because we have no guarantee
+        // that the game uses semantic versioning.
+        return upstreamVersion != installedVersion
     }
 
-    static func needsVerification(game: Mythic.LegacyGame) -> Bool {
-        do {
-            let installedJSON = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
-            return installedJSON[game.id]["needs_verification"].boolValue
-        } catch {
-            log.error("Error checking if \(game.title) needs verification: \(error.localizedDescription)")
-            return false
-        }
+    static func isFileVerificationRequired(for game: EpicGamesGame) async throws -> Bool {
+        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
+        let installedJSON = try JSON(data: installedJSONData)
+
+        return installedJSON[game.id]["needs_verification"].boolValue
     }
 
     /// Queries for the user that is currently signed into epic games.
     static var user: String? {
-        let json: URL = .init(filePath: "\(configLocation)/user.json")
+        let json: URL = configurationFolder.appending(path: "user.json")
         guard let json = try? JSON(data: .init(contentsOf: json)) else {
             return nil
         }
@@ -538,69 +449,64 @@ final class Legendary {
     /// Checks account signin state.
     static var signedIn: Bool { return user != nil }
 
-    static func getInstalledGames() throws -> [Mythic.LegacyGame] {
+    static func getInstalledGames() throws -> [EpicGamesGame] {
         guard signedIn else { throw NotSignedInError() }
 
-        let installedData = URL(filePath: "\(configLocation)/installed.json")
+        let installedData = configurationFolder.appending(path: "installed.json")
         let data = try Data(contentsOf: installedData)
 
         guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        return installedGames.compactMap { (id, gameInfo) -> Mythic.LegacyGame? in
+        return installedGames.compactMap { (id, gameInfo) -> EpicGamesGame? in
             guard let title = gameInfo["title"] as? String,
                   let platformString = gameInfo["platform"] as? String,
-                  let platform: Mythic.LegacyGame.Platform = matchPlatform(for: platformString),
+                  let platform: Game.Platform = matchPlatformString(for: platformString),
                   let installPath = gameInfo["install_path"] as? String else {
                 return nil
             }
 
             return .init(id: id,
                          title: title,
-                         source: .epic,
                          platform: platform,
                          location: .init(filePath: installPath))
         }
     }
 
-    static func getGamePath(game: Mythic.LegacyGame) throws -> String? {
+    static func getGamePath(game: EpicGamesGame) throws -> String? {
         guard signedIn else { throw NotSignedInError() }
-        guard case .epic = game.source else { throw IsNotLegendaryError() }
 
-        let installed = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+        let installed = try JSON(data: Data(contentsOf: configurationFolder.appending(path: "installed.json")))
         return installed[game.id]["install_path"].string
     }
 
-    static func getInstallable() throws -> [Mythic.LegacyGame] {
+    static func getInstallable() throws -> [EpicGamesGame] {
         guard signedIn else { throw NotSignedInError() }
 
-        let metadata = "\(configLocation)/metadata"
+        let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
-        let games = try files.contentsOfDirectory(atPath: metadata).map { file -> Mythic.LegacyGame in
-            let json = try JSON(data: .init(contentsOf: .init(filePath: "\(metadata)/\(file)")))
+        let games = try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
+            let json = try JSON(data: .init(contentsOf: metadataDirectory.appending(path: fileName)))
             return .init(id: json["app_name"].stringValue,
                          title: json["app_title"].stringValue,
-                         source: .epic,
-                         platform: .macOS /* FIXME: stub */)
+                         platform: .macOS, // FIXME: stub
+                         location: nil)
         }
 
         return games.sorted { $0.title < $1.title }
     }
 
-    static func getGameMetadata(game: Mythic.LegacyGame) throws -> JSON? {
-        guard case .epic = game.source else { throw IsNotLegendaryError() }
-        let metadataDirectoryString = "\(configLocation)/metadata"
+    static func getGameMetadata(game: EpicGamesGame) throws -> JSON? {
+        let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
-        guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectoryString) else {
+        guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectory.path) else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        if let metadataFileName = metadataDirectoryContents.first(where: {
-            $0.hasSuffix(".json") && $0.contains(game.id)
-        }),
-           let data = try? Data(contentsOf: URL(filePath: "\(metadataDirectoryString)/\(metadataFileName)")),
-           let json = try? JSON(data: data) {
+        if let metadataFileName: String = metadataDirectoryContents.first(where: { $0.hasSuffix(".json") && $0.contains(game.id) }),
+           let data: Data = try? .init(contentsOf: URL(filePath: metadataDirectory.appending(path: metadataFileName).path)),
+           let json: JSON = try? .init(data: data) {
             return json
         }
 
@@ -611,8 +517,8 @@ final class Legendary {
      Retrieve a game's launch arguments from Legendary's `installed.json` file.
      ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
      */
-    static func getGameLaunchArguments(game: Mythic.LegacyGame) throws -> [String] {
-        let installedData = try JSON(data: Data(contentsOf: URL(filePath: "\(configLocation)/installed.json")))
+    static func getGameLaunchArguments(game: EpicGamesGame) throws -> [String] {
+        let installedData = try JSON(data: Data(contentsOf: configurationFolder.appending(path: "installed.json")))
         guard let arguments = installedData[game.id]["launch_parameters"].string else {
             throw UnableToRetrieveError()
         }
@@ -632,7 +538,7 @@ final class Legendary {
         }
     }
 
-    static func getImageMetadata(for game: Mythic.LegacyGame, type: ImageType) -> JSON? {
+    static func getImageMetadata(for game: EpicGamesGame, type: ImageType) -> JSON? {
         guard let metadata = try? getGameMetadata(game: game),
               let keyImages = metadata["metadata"]["keyImages"].array else { return nil }
 
@@ -646,21 +552,23 @@ final class Legendary {
         return keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })
     }
 
-    static func matchPlatform(for string: String) -> LegacyGame.Platform? {
+    static func matchPlatformString(for string: String) -> Game.Platform? {
         switch string {
-        case "Windows":
-            return .windows
-        case "Mac":
-            return .macOS
-        default:
-            return nil
+        case "Windows": .windows
+        case "Mac":     .macOS
+        default:        nil
         }
     }
 
-    /**
-     Retrieves game thumbnail image from legendary's downloaded metadata.
-     */
-    static func getImageURL(of game: Mythic.LegacyGame, type: ImageType) -> String? {
+    static func matchPlatform(for platform: Game.Platform) -> String {
+        switch platform {
+        case .windows:  "Windows"
+        case .macOS:    "Mac"
+        }
+    }
+
+    /// Retrieves game thumbnail image from legendary's downloaded metadata.
+    static func getImageURL(of game: EpicGamesGame, type: ImageType) -> String? {
         let imageMetadata = getImageMetadata(for: game, type: type)
 
         if let imageURL = imageMetadata?["url"].string {
@@ -682,14 +590,13 @@ final class Legendary {
         return keyImages.first?["url"].string
     }
 
+    // don't use or at least refactor 💔 i could not code back in 2023
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
         guard signedIn else { throw NotSignedInError() }
 
-        let aliasesJSONFileURL: URL = URL(filePath: "\(configLocation)/aliases.json")
+        let aliasesFile: URL = configurationFolder.appending(path: "aliases.json")
 
-        guard let aliasesData = try? Data(contentsOf: aliasesJSONFileURL) else {
-            throw CocoaError(.fileNoSuchFile)
-        }
+        let aliasesData = try Data(contentsOf: aliasesFile)
 
         guard let json = try? JSON(data: aliasesData) else {
             return (nil, of: nil)

@@ -14,18 +14,18 @@ class EpicGamesGame: Game {
 
     override var storefront: Storefront? { .epicGames }
 
-    init(id: String,
-         title: String,
-         platform: Platform,
-         location: URL,
-         containerURL: URL? = nil) {
+    override init(id: String,
+                  title: String,
+                  platform: Game.Platform,
+                  location: URL?,
+                  containerURL: URL? = nil) {
         super.init(id: id,
                    title: title,
                    platform: platform,
                    location: location,
                    containerURL: containerURL)
     }
-    
+
     required init(from decoder: any Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
@@ -42,13 +42,19 @@ class EpicGamesGame: Game {
         // TODO: FIXME: return try? Legendary.needsUpdate(game: self)
         return true // FIXME: stub
     }
-
-    override var needsVerification: Bool? {
+    
+    var needsVerification: Bool {
         // TODO: FIXME: return try? Legendary.needsVerification(game: self)
         return true // FIXME: stub
     }
 
     override func _launch() async throws {
         // TODO: FIXME: try await Legendary.launch(game: self)
+    }
+}
+
+extension EpicGamesGame {
+    struct VerificationRequiredError: LocalizedError {
+        var errorDescription: String? { String(localized: "This game's data integrity must be verified.") }
     }
 }

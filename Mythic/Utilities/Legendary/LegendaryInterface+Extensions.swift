@@ -38,13 +38,12 @@ extension Legendary {
         var errorDescription: String? = "Unable to sign in to Epic Games."
     }
 
-    /// Installation error with a message, see ``Legendary.install()``
-    struct InstallationError: LocalizedError {
+    struct GenericError: LocalizedError {
         init(reason: String = .init()) {
             self.reason = reason
         }
 
-        var errorDescription: String? { "Unable to install game\(reason.isEmpty ? "" : ": \(reason)")." }
+        var errorDescription: String? { String(localized: "An error occurred while interfacing with Epic Games.") + "\n" + reason }
         var reason: String
     }
 }

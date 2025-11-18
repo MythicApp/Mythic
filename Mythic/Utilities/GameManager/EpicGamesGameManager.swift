@@ -10,22 +10,36 @@
 import Foundation
 import OSLog
 
-extension EpicGamesGameManager: @MainActor StorefrontGameManager {
-    @MainActor static func install(game: Game) async throws {
+extension EpicGamesGameManager: StorefrontGameManager {
+    static func install(game: Game, qos: QualityOfService) async throws {
         guard case .epicGames = game.storefront,
-              let castGame = game as? EpicGamesGame else { return }
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await install(game: castGame)
+        try await install(game: castGame, qos: qos)
     }
 
-    @MainActor static func fetchUpdateAvailability(for game: Game) async throws -> Bool {
+    static func update(game: Game, qos: QualityOfService) async throws {
+        guard case .epicGames = game.storefront,
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
+
+        try await update(game: castGame, qos: qos)
+    }
+
+    static func repair(game: Game, qos: QualityOfService) async throws {
+        guard case .epicGames = game.storefront,
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
+
+        try await repair(game: castGame, qos: qos)
+    }
+
+    static func fetchUpdateAvailability(for game: Game) async throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         return try await fetchUpdateAvailability(for: castGame)
     }
 
-    @MainActor static func isFileVerificationRequired(for game: Game) async throws -> Bool {
+    static func isFileVerificationRequired(for game: Game) async throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
@@ -34,23 +48,23 @@ extension EpicGamesGameManager: @MainActor StorefrontGameManager {
 
     @MainActor static func launch(game: Game) async throws {
         guard case .epicGames = game.storefront,
-              let castGame = game as? EpicGamesGame else { return }
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         try await launch(game: castGame)
     }
 
     @MainActor static func move(game: Game,
-                                to location: URL) async throws {
+                     to location: URL) async throws {
         guard case .epicGames = game.storefront,
-              let castGame = game as? EpicGamesGame else { return }
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         try await move(game: castGame, to: location)
     }
 
-    @MainActor static func uninstall(game: Game,
-                                     persistFiles: Bool) async throws {
+    static func uninstall(game: Game,
+                          persistFiles: Bool) async throws {
         guard case .epicGames = game.storefront,
-              let castGame = game as? EpicGamesGame else { return }
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         try await uninstall(game: castGame, persistFiles: persistFiles)
     }
@@ -59,29 +73,46 @@ extension EpicGamesGameManager: @MainActor StorefrontGameManager {
 class EpicGamesGameManager {
     static var log: Logger { .custom(category: "EpicGamesGameManager") }
 
-    @MainActor static func install(game: EpicGamesGame) async throws {
-        <#code#>
+    static func install(game: EpicGamesGame,
+                        qos: QualityOfService,
+                        optionalPacks: [String] = .init(),
+                        gameDirectoryURL: URL? = Bundle.appGames) async throws {
+        try await Legendary.install(game: game,
+                                    qos: qos,
+                                    optionalPacks: optionalPacks,
+                                    gameDirectoryURL: gameDirectoryURL)
     }
 
-    @MainActor static func fetchUpdateAvailability(for game: EpicGamesGame) async throws -> Bool {
-        <#code#>
+    static func update(game: EpicGamesGame, qos: QualityOfService) async throws {
+        try await Legendary.update(game: game, qos: qos)
     }
 
-    @MainActor static func isFileVerificationRequired(for game: EpicGamesGame) async throws -> Bool {
-        <#code#>
+    static func repair(game: EpicGamesGame, qos: QualityOfService) async throws {
+        try await Legendary.repair(game: game, qos: qos)
+    }
+
+    static func fetchUpdateAvailability(for game: EpicGamesGame) async throws -> Bool {
+        try await Legendary.fetchUpdateAvailability(for: game)
+    }
+
+    static func isFileVerificationRequired(for game: EpicGamesGame) async throws -> Bool {
+        try await Legendary.isFileVerificationRequired(for: game)
     }
 
     @MainActor static func launch(game: EpicGamesGame) async throws {
-        <#code#>
+        try await Legendary.launch(game: game)
     }
 
     @MainActor static func move(game: EpicGamesGame,
-                                to location: URL) async throws {
-        <#code#>
+                     to newLocation: URL) async throws {
+        try await Legendary.move(game: game, to: newLocation)
     }
 
-    @MainActor static func uninstall(game: EpicGamesGame,
-                                     persistFiles: Bool) async throws {
-        <#code#>
+    static func uninstall(game: EpicGamesGame,
+                          persistFiles: Bool,
+                          runUninstallerIfPossible: Bool = true) async throws {
+        try await Legendary.uninstall(game: game,
+                                      persistFiles: persistFiles,
+                                      runUninstallerIfPossible: runUninstallerIfPossible)
     }
 }

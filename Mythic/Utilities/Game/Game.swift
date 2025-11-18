@@ -76,8 +76,7 @@ class Game: Codable, Identifiable {
         self._containerURL = containerURL ?? Wine.containerURLs.first
     }
 
-    var isInstalled: Bool { false }         // override in subclass
-    var needsVerification: Bool? { nil }    // override in subclass
+    var isInstalled: Bool { false } // override in subclass
 
     final var isFallbackImageAvailable: Bool {
         switch platform {
@@ -89,13 +88,9 @@ class Game: Codable, Identifiable {
     }
 
     @MainActor final func isOperating() async -> Bool {
-        let currentOperation = await Game.operationManager.queueStore.currentOperation
-        return currentOperation?.game == self
-    }
-
-    @MainActor final func isQueuedForOperation() async -> Bool {
-        let operationQueue = await Game.operationManager.queueStore._queue
-        return operationQueue.contains(where: { $0.game == self })
+        let operationQueue = Game.operationManager.queue
+        let operation = operationQueue.first(where: { $0.game == self })
+        return operation?.isExecuting == true
     }
 
     // MARK: Actions

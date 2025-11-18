@@ -51,7 +51,7 @@ class LocalGameManager {
             }
         }
 
-        let operation: GameOperation = .init(game: game, type: .launching) {
+        let operation: GameOperation = .init(game: game, type: .launching) { _ in
             switch platform {
             case .macOS:
                 let configuration: NSWorkspace.OpenConfiguration = .init()

@@ -191,10 +191,8 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     /// - Returns: Relevant environment variables as configured in a container for game launch.
-    static func assembleEnvironmentVariables(forGame game: LegacyGame, container: Container? = nil) throws -> [String: String] {
-        guard let containerURL = game.containerURL else {
-            throw Container.DoesNotExistError()
-        }
+    static func assembleEnvironmentVariables(forContainer containerURL: URL, container: Container? = nil) throws -> [String: String] {
+        guard containerExists(at: containerURL) else { throw Wine.Container.DoesNotExistError() }
 
         let container = try container ?? getContainerObject(url: containerURL)
         var environmentVariables: [String: String] = [:]

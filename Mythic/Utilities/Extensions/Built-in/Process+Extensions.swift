@@ -161,7 +161,7 @@ extension Process {
         arguments: [String],
         environment: [String: String]? = nil,
         currentDirectoryURL: URL? = nil,
-        onChunk: (@Sendable (OutputChunk) -> String?)? = nil
+        onChunk: (@Sendable (OutputChunk) throws -> String?)? = nil
     ) -> AsyncThrowingStream<OutputChunk, Error> {
         AsyncThrowingStream { continuation in
             let process: Process = .init()
@@ -203,11 +203,15 @@ extension Process {
                 guard !text.isEmpty else { return }
 
                 let chunk = OutputChunk(stream: .standardError, output: text)
-                continuation.yield(chunk)
-                logger.debug("[stderr] \(text, privacy: .public)")
 
-                if let onChunk, let reply = onChunk(chunk) {
-                    Task { await writer.write(reply) }
+                do {
+                    if let onChunk, let reply = try onChunk(chunk) {
+                        Task { await writer.write(reply) }
+                    }
+                    continuation.yield(chunk)
+                    logger.debug("[stderr] \(text, privacy: .public)")
+                } catch {
+                    continuation.finish(throwing: error)
                 }
             }
 
@@ -219,11 +223,14 @@ extension Process {
                 guard !text.isEmpty else { return }
 
                 let chunk = OutputChunk(stream: .standardOutput, output: text)
-                continuation.yield(chunk)
-                logger.debug("[stdout] \(text, privacy: .public)")
-
-                if let onChunk, let reply = onChunk(chunk) {
-                    Task { await writer.write(reply) }
+                do {
+                    if let onChunk, let reply = try onChunk(chunk) {
+                        Task { await writer.write(reply) }
+                    }
+                    continuation.yield(chunk)
+                    logger.debug("[stdout] \(text, privacy: .public)")
+                } catch {
+                    continuation.finish(throwing: error)
                 }
             }
 
@@ -239,7 +246,7 @@ extension Process {
             continuation.onTermination = { @Sendable _ in
                 Task.detached {
                     if process.isRunning { process.interrupt() } // try sigint
-                    try? await Task.sleep(for: .seconds(5))
+                    try? await Task.sleep(for: .seconds(8))
                     if process.isRunning { process.terminate() } // try sigterm
                     try? await Task.sleep(for: .seconds(2))
                     if process.isRunning { kill(process.processIdentifier, SIGKILL) } // sigkill, taking too long smh

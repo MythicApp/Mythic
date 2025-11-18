@@ -2,101 +2,83 @@
 //  GameOperation.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 16/11/2025.
+//  Created by Esiayo Alegbe on 17/11/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
-import OSLog
 
-@Observable final class GameOperationManager: ObservableObject {
-    @MainActor static var shared: GameOperationManager = .init()
+import Foundation
 
-    internal static let log: Logger = .custom(category: "GameOperationManager")
-
-    var queueStore: QueueStore = .init()
-}
-
-extension GameOperationManager {
-    actor QueueStore {
-        // swiftlint:disable:next identifier_name
-        private(set) var _queue: [GameOperation] = .init()
-        var currentOperation: GameOperation? { _queue.first }
-
-        private var loop: Task<Sendable, Error>?
-
-        func add(_ operation: GameOperation) {
-            _queue.append(operation)
-        }
-
-        private func startOperationLoop() async {
-            guard loop == nil else { return }
-            loop = .init(operation: { await taskLoop() })
-
-            func taskLoop() async {
-                while !_queue.isEmpty {
-                    let operation = _queue.removeFirst()
-                    if operation._task == nil {
-                        await operation.startTask()
-                    }
-                }
-            }
-        }
-
-        func remove(_ operation: GameOperation) {
-            _queue.removeAll(where: { $0 == operation })
-        }
-
-        func fetchQueue() -> [GameOperation] { return _queue }
-    }
-}
-
-// FIXME: The use of `@unchecked Sendable` is technically safe at present moment.
-// FIXME: This may change, and should be properly implemented in the future.
-
-final class GameOperation: Identifiable, @unchecked Sendable {
+final class GameOperation: Operation, Identifiable, @unchecked Sendable {
     let id: UUID = .init()
     let game: Game
-    let type: OperationType
-    let function: @Sendable () async throws -> Void
+    let type: ActiveOperationType
+    private(set) var progress: Progress
+    let function: @Sendable (Progress) async throws -> Void
 
-    private(set) var status: OperationStatus = .pending
-    // swiftlint:disable:next identifier_name
-    private(set) var _task: Task<Sendable, Error>?
+    var error: Error?
 
     init(game: Game,
-         type: OperationType,
-         function: @Sendable @escaping () async throws -> Void,
-         task: Task<Sendable, Error>? = nil) {
+         type: ActiveOperationType,
+         progress: Progress = .init(),
+         function: @Sendable @escaping (Progress) async throws -> Void) {
         self.game = game
         self.type = type
+        self.progress = progress
         self.function = function
-        self._task = task
+
+        // initialise `Operation`
+        super.init()
     }
 
-    func startTask() async {
-        self._task = .init(operation: function)
-        self.status = .inProgress
+    // MARK: `Operation` inheritance overrides
+    override func start() {
+        Task(priority: .utility) {
+            defer {
+                isExecuting = false
+                isFinished = true
+            }
 
-        do {
-            _ = try await self._task?.value
-            self.status = .completed
-        } catch {
-            self.status = .failed
+            guard !isCancelled else { return }
+
+            do {
+                isExecuting = true
+                try await function(progress)
+            } catch {
+                self.error = error
+            }
+        }
+    }
+
+    override var isAsynchronous: Bool { true }
+
+    private var _isExecuting = false
+    override private(set) var isExecuting: Bool {
+        get { _isExecuting }
+        set { // + KVO awareness, to spec
+            willChangeValue(for: \.isExecuting)
+            _isExecuting = newValue
+            didChangeValue(for: \.isExecuting)
+        }
+    }
+
+    private var _isFinished = false
+    override private(set) var isFinished: Bool {
+        get { _isFinished }
+        set { // + KVO awareness, to spec
+            willChangeValue(for: \.isFinished)
+            _isFinished = newValue
+            didChangeValue(for: \.isFinished)
         }
     }
 }
 
-extension GameOperation: Equatable {
-    static func == (lhs: GameOperation,
-                    rhs: GameOperation) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
+// MARK: - Types
 
 extension GameOperation {
-    enum OperationType {
+    enum ActiveOperationType {
         case downloading
         case installing
         case updating
@@ -105,10 +87,9 @@ extension GameOperation {
         case launching
     }
 
-    enum OperationStatus {
-        case pending
-        case inProgress
-        case completed
-        case failed
+    enum OperationType {
+        case install
+        case update
+        case repair
     }
 }

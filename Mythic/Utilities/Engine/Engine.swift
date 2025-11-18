@@ -34,6 +34,7 @@ final class Engine {
     }
 
     static let directory = Bundle.appHome!.appending(path: "Engine")
+    static let wineExecutableURL = directory.appending(path: "wine/bin/wine64")
 
     // TODO: use checksum to verify?
     // sum generated using `shasum` of the actual tarfile
