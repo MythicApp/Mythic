@@ -12,6 +12,9 @@ import Foundation
 class EpicGamesGame: Game {
     var location: URL? { super._location }
 
+    override var computedVerticalImageURL: URL? { Legendary.getImageURL(of: self, type: .tall) }
+    override var computedHorizontalImageURL: URL? { Legendary.getImageURL(of: self, type: .normal) }
+
     override var storefront: Storefront? { .epicGames }
 
     override init(id: String,
@@ -38,18 +41,11 @@ class EpicGamesGame: Game {
         return installedGames.contains(where: { $0.id == id })
     }
     
-    var needsUpdate: Bool? {
-        // TODO: FIXME: return try? Legendary.needsUpdate(game: self)
-        return true // FIXME: stub
-    }
-    
-    var needsVerification: Bool {
-        // TODO: FIXME: return try? Legendary.needsVerification(game: self)
-        return true // FIXME: stub
-    }
+    var isUpdateAvailable: Bool? { try? Legendary.fetchUpdateAvailability(for: self) }
+    var isFileVerificationRequired: Bool? { try? Legendary.isFileVerificationRequired(for: self) }
 
     override func _launch() async throws {
-        // TODO: FIXME: try await Legendary.launch(game: self)
+        try await EpicGamesGameManager.launch(game: self)
     }
 }
 

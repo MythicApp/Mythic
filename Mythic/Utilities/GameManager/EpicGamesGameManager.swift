@@ -32,18 +32,18 @@ extension EpicGamesGameManager: StorefrontGameManager {
         try await repair(game: castGame, qos: qos)
     }
 
-    static func fetchUpdateAvailability(for game: Game) async throws -> Bool {
+    static func fetchUpdateAvailability(for game: Game) throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        return try await fetchUpdateAvailability(for: castGame)
+        return try fetchUpdateAvailability(for: castGame)
     }
 
-    static func isFileVerificationRequired(for game: Game) async throws -> Bool {
+    static func isFileVerificationRequired(for game: Game) throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        return try await isFileVerificationRequired(for: castGame)
+        return try isFileVerificationRequired(for: castGame)
     }
 
     @MainActor static func launch(game: Game) async throws {
@@ -70,7 +70,7 @@ extension EpicGamesGameManager: StorefrontGameManager {
     }
 }
 
-class EpicGamesGameManager {
+final class EpicGamesGameManager {
     static var log: Logger { .custom(category: "EpicGamesGameManager") }
 
     static func install(game: EpicGamesGame,
@@ -91,12 +91,12 @@ class EpicGamesGameManager {
         try await Legendary.repair(game: game, qos: qos)
     }
 
-    static func fetchUpdateAvailability(for game: EpicGamesGame) async throws -> Bool {
-        try await Legendary.fetchUpdateAvailability(for: game)
+    static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
+        try Legendary.fetchUpdateAvailability(for: game)
     }
 
-    static func isFileVerificationRequired(for game: EpicGamesGame) async throws -> Bool {
-        try await Legendary.isFileVerificationRequired(for: game)
+    static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
+        try Legendary.isFileVerificationRequired(for: game)
     }
 
     @MainActor static func launch(game: EpicGamesGame) async throws {

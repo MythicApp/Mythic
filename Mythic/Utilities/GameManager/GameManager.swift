@@ -47,12 +47,8 @@ protocol StorefrontGameManager: GameManager {
     static func repair(game: Game, qos: QualityOfService) async throws
 
     /// Check if a game update is available.
-    static func fetchUpdateAvailability(for game: Game) async throws -> Bool
+    static func fetchUpdateAvailability(for game: Game) throws -> Bool
 
-    /**
-     Check if a game needs file verification
-     - Parameter game: The game to check
-     - Returns: `true` if verification is needed
-     */
-    static func isFileVerificationRequired(for game: Game) async throws -> Bool
+    /// Check if a game's files require verification.
+    static func isFileVerificationRequired(for game: Game) throws -> Bool
 }

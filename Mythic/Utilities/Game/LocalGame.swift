@@ -35,6 +35,6 @@ class LocalGame: Game {
     override var isInstalled: Bool { true }
 
     override func _launch() async throws {
-        
+        try await LocalGameManager.launch(game: self)
     }
 }

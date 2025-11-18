@@ -16,6 +16,7 @@ actor GameDataStore {
     // TODO: Migrate (id)_launchArguments
     // TODO: Migrate (id)_containerURL
     // TODO: Acknowledge there is no need to migrate recentlyPlayed, due to lastLaunched
+
     var games: Set<Game> {
         get { Set((try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? []) }
         set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
@@ -38,17 +39,25 @@ class Game: Codable, Identifiable {
     /*
      Store file location in underlying variable
      to be exposed by inheritors.
+     i.e. `var location: URL { super._location! }`
      */
     // swiftlint:disable:next identifier_name
     var _location: URL?
 
-    var verticalImageURL: URL?
-    var horizontalImageURL: URL?
+    internal final var _verticalImageURL: URL? // for custom images
+    final var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
+    internal var computedVerticalImageURL: URL? { nil } // override in subclass
+
+    internal final var _horizontalImageURL: URL? // for custom images
+    final var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
+    internal var computedHorizontalImageURL: URL? { nil } // override in subclass
 
     // swiftlint:disable:next identifier_name
-    internal var _containerURL: URL?
+    internal final var _containerURL: URL?
     final var containerURL: URL? {
         get {
+            guard case .windows = self.platform else { return nil }
+
             if Wine.containerURLs.first(where: { $0 == _containerURL }) == nil
                 || _containerURL == nil {
                 _containerURL = Wine.containerURLs.first
@@ -84,6 +93,22 @@ class Game: Codable, Identifiable {
             return false // FIXME: stub
         case .windows:
             return false // FIXME: stub
+        }
+    }
+
+    // FIXME: better implementation, this is pulled from the old game management system
+    final var isGameRunning: Bool {
+        guard let location = _location else { return false }
+
+        switch platform {
+        case .macOS:
+            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
+        case .windows:
+            // FIXME: hacky but functional
+            let result = try? Process.execute(executableURL: .init(filePath: "/bin/bash"),
+                arguments: ["-c", "ps aux | grep -i '\(location.path)' | grep -v grep"])
+
+            return (result?.standardOutput.isEmpty == false)
         }
     }
 

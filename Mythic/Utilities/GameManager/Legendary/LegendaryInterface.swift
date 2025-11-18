@@ -9,7 +9,6 @@
 
 import Foundation
 import SwiftUI
-import SwiftyJSON
 import OSLog
 import UserNotifications
 import RegexBuilder
@@ -357,7 +356,7 @@ final class Legendary {
 
         let gameContainerURL = game.containerURL
         let gameID = game.id
-        let gameNeedsVerification = game.needsVerification
+        let gameFileVerificationRequired = game.isFileVerificationRequired
         let gamePlatform = game.platform
         let gameLaunchArguments = game.launchArguments
 
@@ -367,7 +366,7 @@ final class Legendary {
             var arguments: [String] = ["launch", gameID]
             var environment: [String: String] = .init()
 
-            guard !gameNeedsVerification else { throw EpicGamesGame.VerificationRequiredError() }
+            guard gameFileVerificationRequired != true else { throw EpicGamesGame.VerificationRequiredError() }
 
             // uses legendary's native launch process
             switch gamePlatform {
@@ -395,29 +394,25 @@ final class Legendary {
     static func getGamePlatform(game: EpicGamesGame) throws -> EpicGamesGame.Platform? {
         let installedData: URL = configurationFolder.appending(path: "installed.json")
         let data: Data = try .init(contentsOf: installedData)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: data)
 
-        guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        guard let platformString = installedGames[game.id]?["platform"] as? String else {
+        guard let installedGame = installedGames[game.id] else {
             throw UnableToRetrieveError()
         }
 
-        return matchPlatformString(for: platformString)
+        return matchPlatformString(for: installedGame.platform)
     }
 
-    static func fetchUpdateAvailability(for game: EpicGamesGame) async throws -> Bool {
+    static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
         let metadata = try Legendary.getGameMetadata(game: game)
 
         let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
         let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
-        let installedJSON = try JSON(data: installedJSONData)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
 
         guard
-            let installedVersion = installedJSON[game.id]["version"].string,
-            let platform = installedJSON[game.id]["platform"].string,
-            let upstreamVersion = metadata?["asset_infos"][platform]["build_version"].string
+            let installedGame = installedGames[game.id],
+            let assetInfo = metadata.assetInfos[installedGame.platform]
         else {
             throw CocoaError(.coderValueNotFound)
         }
@@ -426,24 +421,26 @@ final class Legendary {
         // installedVersion, but to do that, we'd need to convert them into
         // SemanticVersion, which is problematic because we have no guarantee
         // that the game uses semantic versioning.
-        return upstreamVersion != installedVersion
+        return assetInfo.buildVersion != installedGame.version
     }
 
-    static func isFileVerificationRequired(for game: EpicGamesGame) async throws -> Bool {
+    static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
         let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
         let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
-        let installedJSON = try JSON(data: installedJSONData)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
 
-        return installedJSON[game.id]["needs_verification"].boolValue
+        return installedGames[game.id]?.needsVerification ?? false
     }
 
     /// Queries for the user that is currently signed into epic games.
     static var user: String? {
-        let json: URL = configurationFolder.appending(path: "user.json")
-        guard let json = try? JSON(data: .init(contentsOf: json)) else {
+        let userURL: URL = configurationFolder.appending(path: "user.json")
+        guard let userData = try? Data(contentsOf: userURL),
+              let userObject = try? JSONDecoder().decode(User.self, from: userData) else {
             return nil
         }
-        return String(describing: json["displayName"])
+
+        return userObject.displayName
     }
 
     /// Checks account signin state.
@@ -454,31 +451,26 @@ final class Legendary {
 
         let installedData = configurationFolder.appending(path: "installed.json")
         let data = try Data(contentsOf: installedData)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: data)
 
-        guard let installedGames = try JSONSerialization.jsonObject(with: data) as? [String: [String: Any]] else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        return installedGames.compactMap { (id, gameInfo) -> EpicGamesGame? in
-            guard let title = gameInfo["title"] as? String,
-                  let platformString = gameInfo["platform"] as? String,
-                  let platform: Game.Platform = matchPlatformString(for: platformString),
-                  let installPath = gameInfo["install_path"] as? String else {
+        return installedGames.compactMap { (id, installedGame) -> EpicGamesGame? in
+            guard let platform: Game.Platform = matchPlatformString(for: installedGame.platform) else {
                 return nil
             }
 
             return .init(id: id,
-                         title: title,
+                         title: installedGame.title,
                          platform: platform,
-                         location: .init(filePath: installPath))
+                         location: .init(filePath: installedGame.installPath))
         }
     }
 
     static func getGamePath(game: EpicGamesGame) throws -> String? {
         guard signedIn else { throw NotSignedInError() }
 
-        let installed = try JSON(data: Data(contentsOf: configurationFolder.appending(path: "installed.json")))
-        return installed[game.id]["install_path"].string
+        let installedData = try Data(contentsOf: configurationFolder.appending(path: "installed.json"))
+        let installed = try JSONDecoder().decode(Installed.self, from: installedData)
+        return installed[game.id]?.installPath
     }
 
     static func getInstallable() throws -> [EpicGamesGame] {
@@ -487,9 +479,10 @@ final class Legendary {
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
         let games = try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
-            let json = try JSON(data: .init(contentsOf: metadataDirectory.appending(path: fileName)))
-            return .init(id: json["app_name"].stringValue,
-                         title: json["app_title"].stringValue,
+            let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
+            let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
+            return .init(id: metadata.appName,
+                         title: metadata.appTitle,
                          platform: .macOS, // FIXME: stub
                          location: nil)
         }
@@ -497,20 +490,18 @@ final class Legendary {
         return games.sorted { $0.title < $1.title }
     }
 
-    static func getGameMetadata(game: EpicGamesGame) throws -> JSON? {
+    static func getGameMetadata(game: EpicGamesGame) throws -> GameMetadata {
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
+        let metadataDirectoryContents = try files.contentsOfDirectory(atPath: metadataDirectory.path)
 
-        guard let metadataDirectoryContents = try? files.contentsOfDirectory(atPath: metadataDirectory.path) else {
+        guard let metadataFileName: String = metadataDirectoryContents.first(where: { $0 == "\(game.id).json" }) else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        if let metadataFileName: String = metadataDirectoryContents.first(where: { $0.hasSuffix(".json") && $0.contains(game.id) }),
-           let data: Data = try? .init(contentsOf: URL(filePath: metadataDirectory.appending(path: metadataFileName).path)),
-           let json: JSON = try? .init(data: data) {
-            return json
-        }
+        let data: Data = try .init(contentsOf: URL(filePath: metadataDirectory.appending(path: metadataFileName).path))
+        let metadata: GameMetadata = try JSONDecoder().decode(GameMetadata.self, from: data)
 
-        return nil
+        return metadata
     }
 
     /**
@@ -518,11 +509,14 @@ final class Legendary {
      ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
      */
     static func getGameLaunchArguments(game: EpicGamesGame) throws -> [String] {
-        let installedData = try JSON(data: Data(contentsOf: configurationFolder.appending(path: "installed.json")))
-        guard let arguments = installedData[game.id]["launch_parameters"].string else {
+        let installedData = try Data(contentsOf: configurationFolder.appending(path: "installed.json"))
+        let installed = try JSONDecoder().decode(Installed.self, from: installedData)
+
+        guard let installedGame = installed[game.id] else {
             throw UnableToRetrieveError()
         }
-        return arguments.components(separatedBy: .whitespaces)
+
+        return installedGame.launchParameters.components(separatedBy: .whitespaces)
     }
 
     /// Create an asynchronous task to update Legendary's stored metadata.
@@ -538,9 +532,10 @@ final class Legendary {
         }
     }
 
-    static func getImageMetadata(for game: EpicGamesGame, type: ImageType) -> JSON? {
-        guard let metadata = try? getGameMetadata(game: game),
-              let keyImages = metadata["metadata"]["keyImages"].array else { return nil }
+    static func getImageMetadata(for game: EpicGamesGame, type: ImageType) -> KeyImage? {
+        guard let metadata = try? getGameMetadata(game: game) else { return nil }
+
+        let keyImages = metadata.metadata.keyImages
 
         let prioritisedTypes: [String] = {
             switch type {
@@ -549,7 +544,7 @@ final class Legendary {
             }
         }()
 
-        return keyImages.first(where: { prioritisedTypes.contains($0["type"].stringValue) })
+        return keyImages.first(where: { prioritisedTypes.contains($0.type) })
     }
 
     static func matchPlatformString(for string: String) -> Game.Platform? {
@@ -568,26 +563,28 @@ final class Legendary {
     }
 
     /// Retrieves game thumbnail image from legendary's downloaded metadata.
-    static func getImageURL(of game: EpicGamesGame, type: ImageType) -> String? {
-        let imageMetadata = getImageMetadata(for: game, type: type)
-
-        if let imageURL = imageMetadata?["url"].string {
-            return imageURL
+    static func getImageURL(of game: EpicGamesGame, type: ImageType) -> URL? {
+        if let imageMetadata = getImageMetadata(for: game, type: type) {
+            return .init(string: imageMetadata.url)
         }
 
         // fallback #1 — attempt to fetch best matching image for specified image type
-        let metadata = try? getGameMetadata(game: game)
-        let keyImages = metadata?["metadata"]["keyImages"].array ?? .init()
+        guard let metadata = try? getGameMetadata(game: game) else { return nil }
+        let keyImages = metadata.metadata.keyImages
 
         if let bestImageMetadata = keyImages.first(where: {
-            guard let width = $0["width"].int, let height = $0["height"].int else { return false }
-            return (type == .normal && width >= height) || (type == .tall && height > width)
+            (type == .normal && $0.width >= $0.height) || (type == .tall && $0.height > $0.width)
         }) {
-            return bestImageMetadata["url"].string
+            return .init(string: bestImageMetadata.url)
         }
 
         // fallback #2 — use any available image
-        return keyImages.first?["url"].string
+        if let firstKeyImage = keyImages.first {
+            return .init(string: firstKeyImage.url)
+        }
+
+        // fallback #3 — 🪦
+        return nil
     }
 
     // don't use or at least refactor 💔 i could not code back in 2023
@@ -595,15 +592,14 @@ final class Legendary {
         guard signedIn else { throw NotSignedInError() }
 
         let aliasesFile: URL = configurationFolder.appending(path: "aliases.json")
-
         let aliasesData = try Data(contentsOf: aliasesFile)
 
-        guard let json = try? JSON(data: aliasesData) else {
+        guard let aliases = try? JSONDecoder().decode(Aliases.self, from: aliasesData) else {
             return (nil, of: nil)
         }
 
-        for (id, dict) in json {
-            if id == game || dict.compactMap({ $0.1.rawString() }).contains(game) {
+        for (id, aliasList) in aliases {
+            if id == game || aliasList.contains(game) {
                 return (true, of: id)
             }
         }
