@@ -329,6 +329,7 @@
 				6A1192842EC8D4FB005A3E05 /* GameManager.swift */,
 				6A11928C2ECA0114005A3E05 /* LocalGameManager.swift */,
 				6A11928E2ECA15AD005A3E05 /* EpicGamesGameManager.swift */,
+				6A2934BE2BFCFAFD0035CE4B /* Legendary */,
 			);
 			path = GameManager;
 			sourceTree = "<group>";
@@ -401,7 +402,6 @@
 				6A2934B22BFCFAFD0035CE4B /* Engine */,
 				6A2934C42BFCFAFD0035CE4B /* Wine */,
 				6A2934BB2BFCFAFD0035CE4B /* Extensions */,
-				6A2934BE2BFCFAFD0035CE4B /* Legendary */,
 				6A2934C12BFCFAFD0035CE4B /* Local */,
 				6A2934C52BFCFAFD0035CE4B /* FileLocations.swift */,
 				6ABE9B8F2EC0F059002DBE82 /* SparkleUpdateController.swift */,
