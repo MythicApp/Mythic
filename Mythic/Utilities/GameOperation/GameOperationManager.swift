@@ -14,9 +14,10 @@ import OSLog
     @MainActor static var shared: GameOperationManager = .init()
     internal static let log: Logger = .custom(category: "GameOperationManager")
 
+    // ‼️ operationqueue should NOT be accessed outside, this will always be private
     private var _queue: OperationQueue
     // necessitated by deprecation of `OperationQueue.operations`
-    private(set) var queue: [GameOperation] = .init()
+    internal private(set) var queue: [GameOperation] = .init()
 
     init() {
         let queue: OperationQueue = .init()
@@ -27,8 +28,6 @@ import OSLog
     }
 
     @MainActor func queueOperation(_ operation: GameOperation) {
-        queue.append(operation)
-
         // remove operation from `queue` on completion, mirroring `_queue`
         operation.completionBlock = {
             Task { @MainActor in
@@ -37,5 +36,6 @@ import OSLog
         }
 
         _queue.addOperation(operation)
+        queue.append(operation)
     }
 }
