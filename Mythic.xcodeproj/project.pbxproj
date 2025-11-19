@@ -393,9 +393,8 @@
 		6A2934CA2BFCFAFD0035CE4B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				6ABEA9112ECB5CF3006F5182 /* GameOperation.swift */,
-				6ABEA90F2ECB5895006F5182 /* GameOperationManager.swift */,
 				6A1192782EC8C1D3005A3E05 /* Game */,
+				6AF7B5DC2ECDF30C00906632 /* GameOperation */,
 				6A1192832EC8D4F5005A3E05 /* GameManager */,
 				6A2934B22BFCFAFD0035CE4B /* Engine */,
 				6A2934C42BFCFAFD0035CE4B /* Wine */,
@@ -594,6 +593,15 @@
 				6A448E0F2CC4BC50001E9F47 /* GameCard+Extensions.swift */,
 			);
 			path = GameCard;
+			sourceTree = "<group>";
+		};
+		6AF7B5DC2ECDF30C00906632 /* GameOperation */ = {
+			isa = PBXGroup;
+			children = (
+				6ABEA90F2ECB5895006F5182 /* GameOperationManager.swift */,
+				6ABEA9112ECB5CF3006F5182 /* GameOperation.swift */,
+			);
+			path = GameOperation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
