@@ -40,11 +40,11 @@ extension Legendary {
         /// Application identifier
         let appName: String
         /// Asset identifier (usually same as appName)
-        let assetId: String
+        let assetID: String
         /// Build version string
         let buildVersion: String
         /// Catalog item identifier in the Epic Games Store
-        let catalogItemId: String
+        let catalogItemID: String
         /// Label name indicating platform and environment (e.g., "Live-Mac", "Live-Windows")
         let labelName: String
         /// Additional metadata for the asset
@@ -56,9 +56,9 @@ extension Legendary {
 
         enum CodingKeys: String, CodingKey {
             case appName = "app_name"
-            case assetId = "asset_id"
+            case assetID = "asset_id"
             case buildVersion = "build_version"
-            case catalogItemId = "catalog_item_id"
+            case catalogItemID = "catalog_item_id"
             case labelName = "label_name"
             case metadata
             case namespace
@@ -71,18 +71,18 @@ extension Legendary {
     /// **File:** `assets.json`
     struct AssetMetadata: Codable {
         /// Installation pool identifier
-        let installationPoolId: String?
+        let installationPoolID: String?
         /// Type of update (e.g., "MINOR", "PATCH", "MAJOR")
         let updateType: String?
 
         enum CodingKeys: String, CodingKey {
-            case installationPoolId = "installationPoolId"
+            case installationPoolID = "installationPoolId"
             case updateType = "update_type"
         }
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            installationPoolId = try container.decodeIfPresent(String.self, forKey: .installationPoolId)
+            installationPoolID = try container.decodeIfPresent(String.self, forKey: .installationPoolID)
             updateType = try container.decodeIfPresent(String.self, forKey: .updateType)
         }
     }
@@ -100,11 +100,11 @@ extension Legendary {
         /// Application identifier
         let appName: String
         /// Download base URLs for game files
-        let baseUrls: [String]
+        let baseURLs: [String]
         /// Whether the game can run without internet connection
         let canRunOffline: Bool
         /// Epic Games Launcher GUID
-        let eglGuid: String
+        let eglGUID: String
         /// Executable path relative to install path
         let executable: String
         /// Full installation directory path
@@ -114,7 +114,7 @@ extension Legendary {
         /// Installation tags (usually empty)
         let installTags: [String]
         /// Whether this is DLC content
-        let isDlc: Bool
+        let isDLC: Bool
         /// Additional command-line launch parameters
         let launchParameters: String
         /// Path to the manifest file
@@ -126,7 +126,7 @@ extension Legendary {
         /// Prerequisite installation information (path or configuration string)
         let prereqInfo: String?
         /// Whether it requires OT (Online Token)
-        let requiresOt: Bool
+        let requiresOT: Bool
         /// Path to save files
         let savePath: String?
         /// Human-readable game title
@@ -138,20 +138,20 @@ extension Legendary {
 
         enum CodingKeys: String, CodingKey {
             case appName = "app_name"
-            case baseUrls = "base_urls"
+            case baseURLs = "base_urls"
             case canRunOffline = "can_run_offline"
-            case eglGuid = "egl_guid"
+            case eglGUID = "egl_guid"
             case executable
             case installPath = "install_path"
             case installSize = "install_size"
             case installTags = "install_tags"
-            case isDlc = "is_dlc"
+            case isDLC = "is_dlc"
             case launchParameters = "launch_parameters"
             case manifestPath = "manifest_path"
             case needsVerification = "needs_verification"
             case platform
             case prereqInfo = "prereq_info"
-            case requiresOt = "requires_ot"
+            case requiresOT = "requires_ot"
             case savePath = "save_path"
             case title
             case uninstaller
@@ -167,7 +167,7 @@ extension Legendary {
         /// Access token for authenticated API calls
         let accessToken: String
         /// User's Epic Games account identifier
-        let accountId: String
+        let accountID: String
         /// Authentication context class reference
         let acr: String
         /// Application identifier
@@ -175,11 +175,11 @@ extension Legendary {
         /// Authentication timestamp (ISO 8601 format)
         let authTime: String
         /// OAuth client identifier
-        let clientId: String
+        let clientID: String
         /// Client service name (e.g., "launcher")
         let clientService: String
         /// Unique device identifier
-        let deviceId: String
+        let deviceID: String
         /// User's display name
         let displayName: String
         /// Access token expiration timestamp (ISO 8601 format)
@@ -187,7 +187,7 @@ extension Legendary {
         /// Access token expiration duration in seconds
         let expiresIn: Int
         /// In-app user identifier
-        let inAppId: String
+        let inAppID: String
         /// Whether this is an internal Epic Games client
         let internalClient: Bool
         /// Refresh token expiration duration in seconds
@@ -203,17 +203,17 @@ extension Legendary {
 
         enum CodingKeys: String, CodingKey {
             case accessToken = "access_token"
-            case accountId = "account_id"
+            case accountID = "account_id"
             case acr
             case app
             case authTime = "auth_time"
-            case clientId = "client_id"
+            case clientID = "client_id"
             case clientService = "client_service"
-            case deviceId = "device_id"
+            case deviceID = "device_id"
             case displayName
             case expiresAt = "expires_at"
             case expiresIn = "expires_in"
-            case inAppId = "in_app_id"
+            case inAppID = "in_app_id"
             case internalClient = "internal_client"
             case refreshExpires = "refresh_expires"
             case refreshExpiresAt = "refresh_expires_at"
@@ -272,7 +272,7 @@ extension Legendary {
     /// **File:** `version.json`
     struct CXBottle: Codable {
         /// Base URL for downloading bottle files (if different from manifest)
-        let baseUrl: String?
+        let baseURL: String?
         /// List of game app IDs compatible with this bottle
         let compatibleApps: [String]
         /// CrossOver system architecture (e.g., "darwin")
@@ -293,7 +293,7 @@ extension Legendary {
         let version: Int
 
         enum CodingKeys: String, CodingKey {
-            case baseUrl = "base_url"
+            case baseURL = "base_url"
             case compatibleApps = "compatible_apps"
             case cxSystem = "cx_system"
             case cxVersion = "cx_version"
@@ -310,7 +310,7 @@ extension Legendary {
     /// **File:** `version.json`
     struct EGLConfig: Codable {
         /// OAuth client ID for Epic Games API
-        let clientId: String
+        let clientID: String
         /// OAuth client secret for Epic Games API
         let clientSecret: String
         /// Data encryption keys
@@ -321,7 +321,7 @@ extension Legendary {
         let version: String
 
         enum CodingKeys: String, CodingKey {
-            case clientId = "client_id"
+            case clientID = "client_id"
             case clientSecret = "client_secret"
             case dataKeys = "data_keys"
             case label
@@ -425,7 +425,7 @@ extension Legendary {
         /// Download URLs for platform-specific binaries
         let downloads: Downloads
         /// GitHub release page URL
-        let ghUrl: String
+        let ghURL: String
         /// Release code name
         let name: String
         /// Release summary and changelog
@@ -437,7 +437,7 @@ extension Legendary {
             case critical
             case downloadHashes = "download_hashes"
             case downloads
-            case ghUrl = "gh_url"
+            case ghURL = "gh_url"
             case name
             case summary
             case version
@@ -466,6 +466,8 @@ extension Legendary {
         let windows: String
     }
 
+    typealias AssetInfos = [String: Asset]
+
     // MARK: - metadata/*.json
     /// Root structure for game metadata files.
     /// Contains comprehensive game information from the Epic Games Store catalog.
@@ -476,28 +478,28 @@ extension Legendary {
         /// Human-readable application title
         let appTitle: String
         /// Platform-specific asset information
-        let assetInfos: [String: Asset]
+        let assetInfos: AssetInfos
         /// Download base URLs for game files
-        let baseUrls: [String]
+        let baseURLs: [String]
         /// Detailed Epic Games Store metadata
-        let metadata: GameMetadataDetails
+        let storeMetadata: GameMetadataDetails
 
         enum CodingKeys: String, CodingKey {
             case appName = "app_name"
             case appTitle = "app_title"
             case assetInfos = "asset_infos"
-            case baseUrls = "base_urls"
-            case metadata
+            case baseURLs = "base_urls"
+            case storeMetadata = "metadata"
         }
     }
 
     /// Detailed game metadata from Epic Games Store catalog.
     /// **File:** `metadata/{app_name}.json`
-    struct GameMetadataDetails: Codable {
+    struct GameMetadataDetails: Codable, Identifiable {
         /// Age rating information for different rating systems
         let ageGatings: [String: AgeGating]?
         /// OAuth application ID (if the game has online features)
-        let applicationId: String?
+        let applicationID: String?
         /// Epic Games Store category paths
         let categories: [Category]
         /// Item creation timestamp (ISO 8601)
@@ -509,7 +511,7 @@ extension Legendary {
         /// Developer or publisher name
         let developer: String
         /// Developer organization identifier
-        let developerId: String
+        let developerID: String
         /// List of DLC and addon items
         let dlcItemList: [DLCItem]?
         /// Whether this game is no longer supported
@@ -519,7 +521,7 @@ extension Legendary {
         /// Entitlement type (e.g., "EXECUTABLE", "AUDIENCE", "ENTITLEMENT")
         let entitlementType: String
         /// End User License Agreement identifiers
-        let eulaIds: [String]
+        let eulaIDs: [String]
         /// Item catalog identifier
         let id: String
         /// Item type (e.g., "DURABLE", "CONSUMABLE")
@@ -537,7 +539,7 @@ extension Legendary {
         /// Epic Games Store namespace
         let namespace: String
         /// Platform-specific release information
-        let releaseInfo: [ReleaseInfo2]
+        let releaseInfo: [GameReleaseInfo]
         /// Whether a secure Epic Games account is required
         let requiresSecureAccount: Bool?
         /// Item status in the catalog (e.g., "ACTIVE")
@@ -548,6 +550,36 @@ extension Legendary {
         let title: String
         /// Whether this item is hidden from search
         let unsearchable: Bool
+        
+        enum CodingKeys: String, CodingKey {
+            case ageGatings = "age_gatings"
+            case applicationID = "application_id"
+            case categories
+            case creationDate = "creation_date"
+            case customAttributes = "custom_attributes"
+            case description
+            case developer
+            case developerID = "developer_id"
+            case dlcItemList = "dlc_item_list"
+            case endOfSupport = "end_of_support"
+            case entitlementName = "entitlement_name"
+            case entitlementType = "entitlement_type"
+            case eulaIDs = "eula_ids"
+            case id
+            case itemType = "item_type"
+            case keyImages = "key_images"
+            case lastModifiedDate = "last_modified_date"
+            case legalFooterText = "legal_footer_text"
+            case longDescription = "long_description"
+            case mainGameItemList = "main_game_item_list"
+            case namespace
+            case releaseInfo = "release_info"
+            case requiresSecureAccount = "requires_secure_account"
+            case status
+            case technicalDetails = "technical_details"
+            case title
+            case unsearchable
+        }
     }
 
     /// Age rating information for a specific rating system.
@@ -558,11 +590,11 @@ extension Legendary {
         /// Content descriptors (e.g., "Violence", "Language")
         let descriptor: String?
         /// Numeric descriptor identifiers
-        let descriptorIds: [Int]?
+        let descriptorIDs: [Int]?
         /// Interactive elements (e.g., "Users Interact", "In-Game Purchases")
         let element: String?
         /// Numeric element identifiers
-        let elementIds: [Int]?
+        let elementIDs: [Int]?
         /// Rating classification string
         let gameRating: String
         /// Whether this is an IARC (International Age Rating Coalition) rating
@@ -577,6 +609,21 @@ extension Legendary {
         let rectangularRatingImage: String?
         /// Display title for this rating
         let title: String
+        
+        enum CodingKeys: String, CodingKey {
+            case ageControl = "age_control"
+            case descriptor
+            case descriptorIDs = "descriptor_ids"
+            case element
+            case elementIDs = "element_ids"
+            case gameRating = "game_rating"
+            case isIARC = "is_iarc"
+            case isTrad = "is_trad"
+            case ratingImage = "rating_image"
+            case ratingSystem = "rating_system"
+            case rectangularRatingImage = "rectangular_rating_image"
+            case title
+        }
     }
 
     /// Epic Games Store category.
@@ -597,11 +644,11 @@ extension Legendary {
 
     /// DLC, addon, or related content item.
     /// **File:** `metadata/{app_name}.json`
-    struct DLCItem: Codable {
+    struct DLCItem: Codable, Identifiable {
         /// Age ratings for this DLC
         let ageGatings: [String: AgeGating]?
         /// OAuth application ID
-        let applicationId: String?
+        let applicationID: String?
         /// Store categories
         let categories: [Category]
         /// Creation timestamp
@@ -613,7 +660,7 @@ extension Legendary {
         /// Developer name
         let developer: String
         /// Developer organization ID
-        let developerId: String
+        let developerID: String
         /// End of support flag
         let endOfSupport: Bool
         /// Entitlement identifier
@@ -621,7 +668,7 @@ extension Legendary {
         /// Entitlement type
         let entitlementType: String
         /// EULA identifiers
-        let eulaIds: [String]
+        let eulaIDs: [String]
         /// Catalog item ID
         let id: String
         /// Item type
@@ -637,7 +684,7 @@ extension Legendary {
         /// Store namespace
         let namespace: String
         /// Platform release information
-        let releaseInfo: [ReleaseInfo2]?
+        let releaseInfo: [GameReleaseInfo]?
         /// Secure account requirement
         let requiresSecureAccount: Bool?
         /// Catalog status
@@ -648,6 +695,34 @@ extension Legendary {
         let unsearchable: Bool
         /// Use count for consumables
         let useCount: Int?
+        
+        enum CodingKeys: String, CodingKey {
+            case ageGatings = "age_gatings"
+            case applicationID = "application_id"
+            case categories
+            case creationDate = "creation_date"
+            case customAttributes = "custom_attributes"
+            case description
+            case developer
+            case developerID = "developer_id"
+            case endOfSupport = "end_of_support"
+            case entitlementName = "entitlement_name"
+            case entitlementType = "entitlement_type"
+            case eulaIDs = "eula_ids"
+            case id
+            case itemType = "item_type"
+            case keyImages = "key_images"
+            case lastModifiedDate = "last_modified_date"
+            case mainGameItem = "main_game_item"
+            case mainGameItemList = "main_game_item_list"
+            case namespace
+            case releaseInfo = "release_info"
+            case requiresSecureAccount = "requires_secure_account"
+            case status
+            case title
+            case unsearchable
+            case useCount = "use_count"
+        }
     }
 
     /// Key art or promotional image metadata.
@@ -667,11 +742,21 @@ extension Legendary {
         let url: String
         /// Image width in pixels
         let width: Int
+        
+        enum CodingKeys: String, CodingKey {
+            case height
+            case md5
+            case size
+            case type
+            case uploadedDate = "uploaded_date"
+            case url
+            case width
+        }
     }
 
     /// Reference to a main game item.
     /// **File:** `metadata/{app_name}.json`
-    struct MainGameItem: Codable {
+    struct MainGameItem: Codable, Identifiable {
         /// Catalog item identifier
         let id: String
         /// Store namespace
@@ -682,9 +767,9 @@ extension Legendary {
 
     /// Platform-specific release information.
     /// **File:** `metadata/{app_name}.json`
-    struct ReleaseInfo2: Codable {
+    struct GameReleaseInfo: Codable, Identifiable {
         /// Application identifier for this release
-        let appId: String
+        let appID: String
         /// List of compatible app IDs
         let compatibleApps: [String]?
         /// Release date (ISO 8601)
@@ -693,7 +778,23 @@ extension Legendary {
         let id: String
         /// Supported platforms (e.g., ["Windows", "Mac"])
         let platform: [String]
+        
+        enum CodingKeys: String, CodingKey {
+            case appID = "app_id"
+            case compatibleApps = "compatible_apps"
+            case dateAdded = "date_added"
+            case id
+            case platform
+        }
     }
+}
+
+extension Legendary.Asset: Identifiable {
+    var id: String { assetID }
+}
+
+extension Legendary.InstalledGame: Identifiable {
+    var id: String { appName }
 }
 
 extension Legendary {
