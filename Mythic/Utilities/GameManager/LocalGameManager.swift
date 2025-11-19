@@ -44,20 +44,17 @@ class LocalGameManager {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let launchArguments = game.launchArguments
-        let containerURL = game.containerURL
-
         defer {
             if defaults.bool(forKey: "minimiseOnGameLaunch") {
                 NSApp.windows.first?.makeKeyAndOrderFront(nil)
             }
         }
 
-        let operation: GameOperation = .init(game: game, type: .launching) { _ in
+        let operation: GameOperation = .init(game: game, type: .launch) { _ in
             switch platform {
             case .macOS:
                 let configuration: NSWorkspace.OpenConfiguration = .init()
-                configuration.arguments = launchArguments
+                configuration.arguments = game.launchArguments
 
                 if let contentType = try location.resourceValues(forKeys: [.contentTypeKey]).contentType,
                    contentType.conforms(to: .bundle) {
@@ -66,16 +63,16 @@ class LocalGameManager {
                     throw CocoaError(.serviceApplicationLaunchFailed)
                 }
             case .windows:
-                guard let containerURL = containerURL else { throw Wine.Container.DoesNotExistError() }
+                guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
                 let container = try Wine.getContainerObject(url: containerURL)
 
                 let environmentVariables: [String: String] = .init() /* FIXME: stub */ /* try Wine.assembleEnvironmentVariables(forGame: game) */
 
                 if defaults.bool(forKey: "minimiseOnGameLaunch") {
-                    await NSApp.windows.first?.miniaturize(nil)
+                    NSApp.windows.first?.miniaturize(nil)
                 }
 
-                try await Wine.execute(arguments: [location.path] + launchArguments,
+                try await Wine.execute(arguments: [location.path] + game.launchArguments,
                                            containerURL: container.url,
                                            environment: environmentVariables)
             }
@@ -101,9 +98,13 @@ class LocalGameManager {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        try files.removeItem(at: location)
+        let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
+            try files.removeItem(at: location)
 
-        // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
-        game.installationState = .uninstalled
+            // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
+            game.installationState = .uninstalled
+        }
+
+        Game.operationManager.queueOperation(operation)
     }
 }

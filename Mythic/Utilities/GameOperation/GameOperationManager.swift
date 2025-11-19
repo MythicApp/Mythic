@@ -10,8 +10,7 @@
 import Foundation
 import OSLog
 
-@Observable
-final class GameOperationManager: Sendable {
+@Observable final class GameOperationManager: Sendable {
     @MainActor static var shared: GameOperationManager = .init()
     internal static let log: Logger = .custom(category: "GameOperationManager")
 

@@ -10,6 +10,8 @@
 import Foundation
 import OSLog
 
+var placeholderGame: Game { .init(id: "test", title: "Test", installationState: .installed(location: .temporaryDirectory, platform: .macOS)) }
+
 actor GameDataStore {
     // TODO: Migrate favouriteGames
     // TODO: Migrate localGamesLibrary

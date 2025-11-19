@@ -16,14 +16,14 @@ final class GameOperation: Operation, Identifiable, @unchecked Sendable {
     let game: Game
     let type: ActiveOperationType
     private(set) var progress: Progress
-    let function: @Sendable (Progress) async throws -> Void
+    let function: (Progress) async throws -> Void
 
     var error: Error?
 
     init(game: Game,
          type: ActiveOperationType,
          progress: Progress = .init(),
-         function: @Sendable @escaping (Progress) async throws -> Void) {
+         function: @escaping (Progress) async throws -> Void) {
         self.game = game
         self.type = type
         self.progress = progress
@@ -79,12 +79,13 @@ final class GameOperation: Operation, Identifiable, @unchecked Sendable {
 
 extension GameOperation {
     enum ActiveOperationType {
-        case downloading
-        case installing
-        case updating
-        case uninstalling
-        case verifying
-        case launching
+        case download
+        case install
+        case repair
+        case update
+        case move
+        case uninstall
+        case launch
     }
 
     enum OperationType {

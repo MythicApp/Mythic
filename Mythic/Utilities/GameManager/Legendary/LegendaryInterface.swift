@@ -217,7 +217,7 @@ final class Legendary {
         }
         arguments += ["--game-folder", gameDirectoryURL.path]
 
-        let operation: GameOperation = .init(game: game, type: .updating) { [arguments] progress in
+        let operation: GameOperation = .init(game: game, type: .install) { [arguments] progress in
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
@@ -245,7 +245,7 @@ final class Legendary {
     static func update(game: EpicGamesGame, qos: QualityOfService) async throws {
         let arguments: [String] = ["-y", "install", game.id, "--update-only"]
 
-        let operation: GameOperation = .init(game: game, type: .updating) { progress in
+        let operation: GameOperation = .init(game: game, type: .update) { progress in
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
@@ -266,7 +266,7 @@ final class Legendary {
     static func repair(game: EpicGamesGame, qos: QualityOfService) async throws {
         let arguments: [String] = ["-y", "install", game.id, "--repair"]
 
-        let operation: GameOperation = .init(game: game, type: .launching) { progress in
+        let operation: GameOperation = .init(game: game, type: .repair) { progress in
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
@@ -303,10 +303,8 @@ final class Legendary {
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
                           runUninstallerIfPossible: Bool = true) async throws {
-        let gameID = game.id
-
-        let operation: GameOperation = .init(game: game, type: .launching) { _ in
-            var arguments: [String] = ["-y", "uninstall", gameID]
+        let operation: GameOperation = .init(game: game, type: .uninstall) { _ in
+            var arguments: [String] = ["-y", "uninstall", game.id]
 
             if persistFiles { arguments += ["--keep-files"] }
             if !runUninstallerIfPossible { arguments += ["--skip-uninstaller"] }
@@ -324,12 +322,10 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let gameID = game.id
-
-        let operation: GameOperation = .init(game: game, type: .launching) { _ in
+        let operation: GameOperation = .init(game: game, type: .move) { _ in
             try files.moveItem(at: currentLocation, to: newLocation)
 
-            try await Legendary.execute(arguments: ["move", gameID, newLocation.path, "--skip-move"])
+            try await Legendary.execute(arguments: ["move", game.id, newLocation.path, "--skip-move"])
         }
 
         Game.operationManager.queueOperation(operation)
@@ -359,18 +355,13 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let gameContainerURL = game.containerURL
-        let gameID = game.id
-        let gameFileVerificationRequired = game.isFileVerificationRequired
-        let gameLaunchArguments = game.launchArguments
+        let operation: GameOperation = .init(game: game, type: .launch) { progress in
+            guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
 
-        let operation: GameOperation = .init(game: game, type: .launching) { progress in
-            guard let containerURL = gameContainerURL else { throw Wine.Container.DoesNotExistError() }
-
-            var arguments: [String] = ["launch", gameID]
+            var arguments: [String] = ["launch", game.id]
             var environment: [String: String] = .init()
 
-            guard gameFileVerificationRequired != true else { throw EpicGamesGame.VerificationRequiredError() }
+            guard game.isFileVerificationRequired != true else { throw EpicGamesGame.VerificationRequiredError() }
 
             // uses legendary's native launch process
             switch platform {
@@ -384,7 +375,7 @@ final class Legendary {
                 arguments += ["--wine", Engine.wineExecutableURL.path]
             }
 
-            arguments.append(contentsOf: ["--"] + gameLaunchArguments)
+            arguments.append(contentsOf: ["--"] + game.launchArguments)
 
             try await Legendary.execute(arguments: arguments,
                                         environment: environment)
