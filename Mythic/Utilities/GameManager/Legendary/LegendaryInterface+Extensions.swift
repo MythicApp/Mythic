@@ -160,7 +160,8 @@ extension Legendary {
         /// Whether the installation needs verification
         let needsVerification: Bool
         /// Platform identifier (e.g., "Windows", "Mac")
-        let platform: Game.Platform?
+        let _platform: String
+        var platform: Game.Platform? { matchPlatformString(for: _platform) }
         /// Prerequisite installation information (DirectX, VC++ redistributables, etc.)
         let prereqInfo: PrereqInfo?
         /// Whether it requires OT (Online Token)
@@ -187,7 +188,7 @@ extension Legendary {
             case launchParameters = "launch_parameters"
             case manifestPath = "manifest_path"
             case needsVerification = "needs_verification"
-            case platform
+            case _platform = "platform"
             case prereqInfo = "prereq_info"
             case requiresOT = "requires_ot"
             case savePath = "save_path"
@@ -211,10 +212,7 @@ extension Legendary {
             launchParameters = try container.decode(String.self, forKey: .launchParameters)
             manifestPath = try container.decodeIfPresent(String.self, forKey: .manifestPath)
             needsVerification = try container.decode(Bool.self, forKey: .needsVerification)
-
-            let platformString = try container.decode(String.self, forKey: .platform)
-            platform = Legendary.matchPlatformString(for: platformString)
-
+            _platform = try container.decode(String.self, forKey: ._platform)
             prereqInfo = try container.decodeIfPresent(PrereqInfo.self, forKey: .prereqInfo)
             requiresOT = try container.decode(Bool.self, forKey: .requiresOT)
             savePath = try container.decodeIfPresent(String.self, forKey: .savePath)
@@ -238,11 +236,7 @@ extension Legendary {
             try container.encode(launchParameters, forKey: .launchParameters)
             try container.encodeIfPresent(manifestPath, forKey: .manifestPath)
             try container.encode(needsVerification, forKey: .needsVerification)
-
-            if let platform = platform {
-                try container.encode(Legendary.matchPlatform(for: platform), forKey: .platform)
-            }
-
+            try container.encode(_platform, forKey: ._platform)
             try container.encodeIfPresent(prereqInfo, forKey: .prereqInfo)
             try container.encode(requiresOT, forKey: .requiresOT)
             try container.encodeIfPresent(savePath, forKey: .savePath)
@@ -326,7 +320,9 @@ extension Legendary {
 
             let authTimeString = try container.decode(String.self, forKey: .authTime)
             guard let authTimeDate = formatter.date(from: authTimeString) else {
-                throw DecodingError.dataCorruptedError(forKey: .authTime, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .authTime,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             authTime = authTimeDate
 
@@ -337,7 +333,9 @@ extension Legendary {
 
             let expiresAtString = try container.decode(String.self, forKey: .expiresAt)
             guard let expiresAtDate = formatter.date(from: expiresAtString) else {
-                throw DecodingError.dataCorruptedError(forKey: .expiresAt, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .expiresAt,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             expiresAt = expiresAtDate
 
@@ -348,7 +346,9 @@ extension Legendary {
 
             let refreshExpiresAtString = try container.decode(String.self, forKey: .refreshExpiresAt)
             guard let refreshExpiresAtDate = formatter.date(from: refreshExpiresAtString) else {
-                throw DecodingError.dataCorruptedError(forKey: .refreshExpiresAt, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .refreshExpiresAt,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             refreshExpiresAt = refreshExpiresAtDate
 
@@ -542,7 +542,8 @@ extension Legendary {
             } else {
                 throw DecodingError.typeMismatch(
                     ReorderOptimizationValue.self,
-                    DecodingError.Context(codingPath: decoder.codingPath, debugDescription: "Expected empty dict or string array")
+                    DecodingError.Context(codingPath: decoder.codingPath,
+                                          debugDescription: "Expected empty dict or string array")
                 )
             }
         }
@@ -694,7 +695,8 @@ extension Legendary {
             } else if let value = try? container.decode([CodableValue].self) {
                 self = .array(value)
             } else {
-                throw DecodingError.dataCorruptedError(in: container, debugDescription: "Unable to decode CodableValue")
+                throw DecodingError.dataCorruptedError(in: container,
+                                                       debugDescription: "Unable to decode CodableValue")
             }
         }
 
@@ -849,7 +851,9 @@ extension Legendary {
 
             let creationDateString = try container.decode(String.self, forKey: .creationDate)
             guard let creationDateDate = formatter.date(from: creationDateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .creationDate, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .creationDate,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             creationDate = creationDateDate
 
@@ -868,7 +872,9 @@ extension Legendary {
 
             let lastModifiedDateString = try container.decode(String.self, forKey: .lastModifiedDate)
             guard let lastModifiedDateDate = formatter.date(from: lastModifiedDateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             lastModifiedDate = lastModifiedDateDate
 
@@ -1081,7 +1087,9 @@ extension Legendary {
 
             let creationDateString = try container.decode(String.self, forKey: .creationDate)
             guard let creationDateDate = formatter.date(from: creationDateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .creationDate, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .creationDate,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             creationDate = creationDateDate
 
@@ -1099,7 +1107,9 @@ extension Legendary {
 
             let lastModifiedDateString = try container.decode(String.self, forKey: .lastModifiedDate)
             guard let lastModifiedDateDate = formatter.date(from: lastModifiedDateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             lastModifiedDate = lastModifiedDateDate
 
@@ -1185,7 +1195,9 @@ extension Legendary {
 
             let uploadedDateString = try container.decode(String.self, forKey: .uploadedDate)
             guard let uploadedDateDate = formatter.date(from: uploadedDateString) else {
-                throw DecodingError.dataCorruptedError(forKey: .uploadedDate, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .uploadedDate,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             uploadedDate = uploadedDateDate
 
@@ -1236,14 +1248,15 @@ extension Legendary {
         /// Release identifier
         let id: String
         /// Supported platforms (e.g., ["Windows", "Mac"])
-        let platform: [Game.Platform]
+        let _platform: [String]
+        var platform: [Game.Platform] { _platform.compactMap({ matchPlatformString(for: $0) }) }
 
         enum CodingKeys: String, CodingKey {
             case appID = "appId"
             case compatibleApps = "compatibleApps"
             case dateAdded = "dateAdded"
             case id
-            case platform
+            case _platform = "platform"
         }
 
         init(from decoder: Decoder) throws {
@@ -1255,14 +1268,14 @@ extension Legendary {
 
             let dateAddedString = try container.decode(String.self, forKey: .dateAdded)
             guard let dateAddedDate = formatter.date(from: dateAddedString) else {
-                throw DecodingError.dataCorruptedError(forKey: .dateAdded, in: container, debugDescription: "Invalid ISO8601 date format")
+                throw DecodingError.dataCorruptedError(forKey: .dateAdded,
+                                                       in: container,
+                                                       debugDescription: "Invalid ISO8601 date format")
             }
             dateAdded = dateAddedDate
 
             id = try container.decode(String.self, forKey: .id)
-
-            let platformStrings = try container.decode([String].self, forKey: .platform)
-            platform = platformStrings.compactMap { Legendary.matchPlatformString(for: $0) }
+            _platform = try container.decode([String].self, forKey: ._platform)
         }
 
         func encode(to encoder: Encoder) throws {
@@ -1273,7 +1286,7 @@ extension Legendary {
             try container.encodeIfPresent(compatibleApps, forKey: .compatibleApps)
             try container.encode(formatter.string(from: dateAdded), forKey: .dateAdded)
             try container.encode(id, forKey: .id)
-            try container.encode(platform.map { Legendary.matchPlatform(for: $0) }, forKey: .platform)
+            try container.encode(_platform, forKey: ._platform)
         }
     }
 }
@@ -1293,17 +1306,8 @@ extension Legendary {
         case tall
     }
 
-    enum RetrievalType {
-        case platform
-        case launchArguments
-    }
-
     struct UnableToRetrieveError: LocalizedError {
         var errorDescription: String? = String(localized: "Mythic is unable to retrive the requested metadata for this game.")
-    }
-
-    struct IsNotLegendaryError: LocalizedError {
-        var errorDescription: String? = String(localized: "This is not an Epic Games game.")
     }
 
     /// Error when legendary is signed out on a command that enforces signin.
