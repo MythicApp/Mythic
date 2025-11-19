@@ -11,33 +11,6 @@ import Foundation
 import OSLog
 
 extension Process {
-    struct NonZeroExitCodeError: LocalizedError {
-        init(exitCode: Int32? = nil) {
-            self.exitCode = exitCode
-        }
-
-        var exitCode: Int32?
-        var errorDescription: String? = String(localized: "Process execution was unsuccessful. (Non-zero exit code)")
-    }
-
-    enum Stream: Sendable {
-        case standardError
-        case standardOutput
-    }
-
-    struct OutputChunk: Sendable {
-        public let stream: Stream
-        public let output: String
-    }
-
-    struct CommandResult: Sendable {
-        public let standardOutput: String
-        public let standardError: String
-        public let exitCode: Int32
-    }
-}
-
-extension Process {
     /// Synchronously executes a process, and immediately attempts to collect complete stdout/stderr.
     /// Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
     static func execute(
@@ -75,6 +48,21 @@ extension Process {
             standardOutput: stdoutOutput,
             standardError: stderrOutput,
             exitCode: process.terminationStatus
+        )
+    }
+
+    // allow the compiler to automatically choose execute overload depending on async/sync context
+    static func execute(
+        executableURL: URL,
+        arguments: [String],
+        environment: [String: String]? = nil,
+        currentDirectoryURL: URL? = nil
+    ) async throws -> CommandResult {
+        try await executeAsync(
+            executableURL: executableURL,
+            arguments: arguments,
+            environment: environment,
+            currentDirectoryURL: currentDirectoryURL
         )
     }
 
@@ -137,20 +125,6 @@ extension Process {
             standardOutput: await stdoutTask.value,
             standardError: await stderrTask.value,
             exitCode: process.terminationStatus
-        )
-    }
-
-    static func execute(
-        executableURL: URL,
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
-    ) async throws -> CommandResult {
-        try await executeAsync(
-            executableURL: executableURL,
-            arguments: arguments,
-            environment: environment,
-            currentDirectoryURL: currentDirectoryURL
         )
     }
 
@@ -267,5 +241,32 @@ extension Process {
                 continuation.finish(throwing: error)
             }
         }
+    }
+}
+
+extension Process {
+    struct NonZeroExitCodeError: LocalizedError {
+        init(exitCode: Int32? = nil) {
+            self.exitCode = exitCode
+        }
+
+        var exitCode: Int32?
+        var errorDescription: String? = String(localized: "Process execution was unsuccessful. (Non-zero exit code)")
+    }
+
+    enum Stream: Sendable {
+        case standardError
+        case standardOutput
+    }
+
+    struct OutputChunk: Sendable {
+        public let stream: Stream
+        public let output: String
+    }
+
+    struct CommandResult: Sendable {
+        public let standardOutput: String
+        public let standardError: String
+        public let exitCode: Int32
     }
 }
