@@ -75,8 +75,8 @@ class Game: Codable, Identifiable {
     }
 
     var launchArguments: [String] = []
-    var isFavourited: Bool = false
-    var lastLaunched: Date?
+    final var isFavourited: Bool = false
+    final var lastLaunched: Date?
 
     init(id: String,
          title: String,
@@ -170,5 +170,6 @@ extension Game: Hashable {
 }
 
 extension Game: CustomStringConvertible {
-    var description: String { "\(title) (\(installationState), \(id))" }
+    var description: String { "\"\(title)\"" }
+    var debugDescription: String { "\(description) (\(installationState), \(id))" }
 }
