@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
+import OSLog
 
 actor GameDataStore {
     // TODO: Migrate favouriteGames
@@ -19,11 +20,24 @@ actor GameDataStore {
 
     var games: Set<Game> {
         get { Set((try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? []) }
-        set { _ = try? defaults.encodeAndSet(newValue, forKey: "games") }
+        set {
+            do {
+                try defaults.encodeAndSet(newValue, forKey: "games")
+            } catch {
+                Logger.app.error("""
+                    Unable to encode game library.
+                    This may result in unintended functionality.
+                    \(error.localizedDescription)
+                    """)
+            }
+        }
     }
 
-    func refresh() async throws {
-
+    func refreshFromStorefronts() async throws {
+        let legendaryInstallables = try Legendary.getInstallableGames()
+        for installable in legendaryInstallables {
+            games.insert(installable)
+        }
     }
 }
 
@@ -33,22 +47,14 @@ class Game: Codable, Identifiable {
 
     let id: String
     let title: String
-    let platform: Platform
+    var installationState: InstallationState
     var storefront: Storefront? { nil } // override in subclass
 
-    /*
-     Store file location in underlying variable
-     to be exposed by inheritors.
-     i.e. `var location: URL { super._location! }`
-     */
-    // swiftlint:disable:next identifier_name
-    var _location: URL?
-
-    internal final var _verticalImageURL: URL? // for custom images
+    internal final var _verticalImageURL: URL? // underlying storage for custom images
     final var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
     internal var computedVerticalImageURL: URL? { nil } // override in subclass
 
-    internal final var _horizontalImageURL: URL? // for custom images
+    internal final var _horizontalImageURL: URL? // underlying storage for custom images
     final var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
     internal var computedHorizontalImageURL: URL? { nil } // override in subclass
 
@@ -56,8 +62,6 @@ class Game: Codable, Identifiable {
     internal final var _containerURL: URL?
     final var containerURL: URL? {
         get {
-            guard case .windows = self.platform else { return nil }
-
             if Wine.containerURLs.first(where: { $0 == _containerURL }) == nil
                 || _containerURL == nil {
                 _containerURL = Wine.containerURLs.first
@@ -74,31 +78,31 @@ class Game: Codable, Identifiable {
 
     init(id: String,
          title: String,
-         platform: Platform,
-         location: URL?,
+         installationState: InstallationState,
          containerURL: URL? = nil) {
         self.id = id
         self.title = title
-        self.platform = platform
-        self._location = location
+        self.installationState = installationState
 
         self._containerURL = containerURL ?? Wine.containerURLs.first
     }
 
-    var isInstalled: Bool { false } // override in subclass
-
     final var isFallbackImageAvailable: Bool {
+        guard case .installed(_, let platform) = installationState else {
+            return false
+        }
+
         switch platform {
-        case .macOS:
-            return false // FIXME: stub
-        case .windows:
-            return false // FIXME: stub
+        case .macOS:    return true
+        case .windows:  return false
         }
     }
 
+    var supportedPlatforms: [Game.Platform] = .init()
+
     // FIXME: better implementation, this is pulled from the old game management system
     final var isGameRunning: Bool {
-        guard let location = _location else { return false }
+        guard case .installed(let location, let platform) = installationState else { return false }
 
         switch platform {
         case .macOS:
@@ -113,14 +117,16 @@ class Game: Codable, Identifiable {
     }
 
     @MainActor final func isOperating() async -> Bool {
-        let operationQueue = Game.operationManager.queue
-        let operation = operationQueue.first(where: { $0.game == self })
-        return operation?.isExecuting == true
+        return (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
     }
 
     // MARK: Actions
     /// Launch the underlying game.
     @MainActor final func launch() async throws {
+        guard case .installed(let location, let platform) = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
         lastLaunched = .now
         try await _launch()
     }
@@ -133,8 +139,13 @@ class Game: Codable, Identifiable {
 
     /// Move the underlying game to a specified `URL`.
     @MainActor final func move(to newLocation: URL) async throws {
+        guard case .installed(let location, let platform) = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
         try await _move(to: newLocation)
-        _location = newLocation
+
+        installationState = .installed(location: newLocation, platform: platform)
     }
 
     // override in subclass
@@ -157,5 +168,5 @@ extension Game: Hashable {
 }
 
 extension Game: CustomStringConvertible {
-    var description: String { "\(title) (\(platform), \(id))" }
+    var description: String { "\(title) (\(installationState), \(id))" }
 }

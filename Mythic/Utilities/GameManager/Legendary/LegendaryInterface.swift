@@ -201,11 +201,15 @@ final class Legendary {
     }
 
     static func install(game: EpicGamesGame,
+                        forPlatform platform: Game.Platform,
                         qos: QualityOfService,
                         optionalPacks: [String] = .init(),
                         gameDirectoryURL: URL? = Bundle.appGames) async throws {
+        guard game.supportedPlatforms.contains(platform) else {
+            throw UnsupportedInstallationPlatformError()
+        }
         var arguments: [String] = ["-y", "install", game.id]
-        arguments += ["--platform", Legendary.matchPlatform(for: game.platform)]
+        arguments += ["--platform", matchPlatform(for: platform)]
 
         guard let gameDirectoryURL = gameDirectoryURL else {
             log.error("Failed to infer default base URL, installation cannot continue")
@@ -316,15 +320,14 @@ final class Legendary {
     }
 
     @MainActor static func move(game: EpicGamesGame, to newLocation: URL) async throws {
-        let gameIsInstalled = game.isInstalled
-        let currentGameLocation = game.location
+        guard case .installed(let currentLocation, _) = game.installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
         let gameID = game.id
 
         let operation: GameOperation = .init(game: game, type: .launching) { _ in
-            guard gameIsInstalled,
-                  let currentGameLocation = currentGameLocation else { throw CocoaError(.fileNoSuchFile) }
-
-            try files.moveItem(at: currentGameLocation, to: newLocation)
+            try files.moveItem(at: currentLocation, to: newLocation)
 
             try await Legendary.execute(arguments: ["move", gameID, newLocation.path, "--skip-move"])
         }
@@ -352,12 +355,13 @@ final class Legendary {
      Launches games.
      */
     @MainActor static func launch(game: EpicGamesGame) async throws {
-        guard game.isInstalled else { throw CocoaError(.fileNoSuchFile) }
+        guard case .installed(_, let platform) = game.installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
 
         let gameContainerURL = game.containerURL
         let gameID = game.id
         let gameFileVerificationRequired = game.isFileVerificationRequired
-        let gamePlatform = game.platform
         let gameLaunchArguments = game.launchArguments
 
         let operation: GameOperation = .init(game: game, type: .launching) { progress in
@@ -369,9 +373,9 @@ final class Legendary {
             guard gameFileVerificationRequired != true else { throw EpicGamesGame.VerificationRequiredError() }
 
             // uses legendary's native launch process
-            switch gamePlatform {
+            switch platform {
             case .macOS:
-                do {} //
+                do {} // no environment variable need to be assembled.
             case .windows:
                 environment = try Wine.assembleEnvironmentVariables(forContainer: containerURL)
                 // legendary requires this, since it calls wine directly.
@@ -400,7 +404,7 @@ final class Legendary {
             throw UnableToRetrieveError()
         }
 
-        return matchPlatformString(for: installedGame.platform)
+        return installedGame.platform
     }
 
     static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
@@ -412,7 +416,7 @@ final class Legendary {
 
         guard
             let installedGame = installedGames[game.id],
-            let assetInfo = metadata.assetInfos[installedGame.platform]
+            let assetInfo = metadata.assetInfos[installedGame._platform]
         else {
             throw CocoaError(.coderValueNotFound)
         }
@@ -454,14 +458,14 @@ final class Legendary {
         let installedGames = try JSONDecoder().decode(Installed.self, from: data)
 
         return installedGames.compactMap { (id, installedGame) -> EpicGamesGame? in
-            guard let platform: Game.Platform = matchPlatformString(for: installedGame.platform) else {
-                return nil
-            }
+            guard let platform: Game.Platform = installedGame.platform else { return nil }
 
-            return .init(id: id,
-                         title: installedGame.title,
-                         platform: platform,
-                         location: .init(filePath: installedGame.installPath))
+            return .init(
+                id: id,
+                title: installedGame.title,
+                installationState: .installed(location: .init(filePath: installedGame.installPath),
+                                              platform: platform)
+            )
         }
     }
 
@@ -473,7 +477,7 @@ final class Legendary {
         return installed[game.id]?.installPath
     }
 
-    static func getInstallable() throws -> [EpicGamesGame] {
+    static func getInstallableGames() throws -> [EpicGamesGame] {
         guard signedIn else { throw NotSignedInError() }
 
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
@@ -481,10 +485,18 @@ final class Legendary {
         let games = try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
             let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
             let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
-            return .init(id: metadata.appName,
-                         title: metadata.appTitle,
-                         platform: .macOS, // FIXME: stub
-                         location: nil)
+
+            var game: EpicGamesGame = .init(id: metadata.appName,
+                                            title: metadata.appTitle,
+                                            installationState: .uninstalled)
+
+            let dateFormatter: ISO8601DateFormatter = .init()
+            let latestGameRelease = metadata.storeMetadata.releaseInfo
+                .max(by: { $0.dateAdded < $1.dateAdded })
+
+            game.supportedPlatforms = latestGameRelease?.platform ?? .init()
+
+            return game
         }
 
         return games.sorted { $0.title < $1.title }
@@ -535,7 +547,7 @@ final class Legendary {
     static func getImageMetadata(for game: EpicGamesGame, type: ImageType) -> KeyImage? {
         guard let metadata = try? getGameMetadata(game: game) else { return nil }
 
-        let keyImages = metadata.metadata.keyImages
+        let keyImages = metadata.storeMetadata.keyImages
 
         let prioritisedTypes: [String] = {
             switch type {
@@ -547,6 +559,7 @@ final class Legendary {
         return keyImages.first(where: { prioritisedTypes.contains($0.type) })
     }
 
+    // TODO: CodingKeys
     static func matchPlatformString(for string: String) -> Game.Platform? {
         switch string {
         case "Windows": .windows
@@ -555,6 +568,7 @@ final class Legendary {
         }
     }
 
+    // TODO: CodingKeys
     static func matchPlatform(for platform: Game.Platform) -> String {
         switch platform {
         case .windows:  "Windows"
@@ -570,7 +584,7 @@ final class Legendary {
 
         // fallback #1 — attempt to fetch best matching image for specified image type
         guard let metadata = try? getGameMetadata(game: game) else { return nil }
-        let keyImages = metadata.metadata.keyImages
+        let keyImages = metadata.storeMetadata.keyImages
 
         if let bestImageMetadata = keyImages.first(where: {
             (type == .normal && $0.width >= $0.height) || (type == .tall && $0.height > $0.width)

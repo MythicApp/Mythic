@@ -20,11 +20,11 @@ extension LocalGameManager: GameManager {
     }
 
     @MainActor static func move(game: Game,
-                                to location: URL) async throws {
+                                to newLocation: URL) async throws {
         guard case .local = game.storefront,
               let castGame = game as? LocalGame else { return }
 
-        try await move(game: castGame, to: location)
+        try await move(game: castGame, to: newLocation)
     }
 
     @MainActor static func uninstall(game: Game,
@@ -40,8 +40,10 @@ class LocalGameManager {
     static var log: Logger { .custom(category: "LocalGameManager") }
 
     @MainActor static func launch(game: LocalGame) async throws {
-        let platform = game.platform
-        let location = game.location
+        guard case .installed(let location, let platform) = game.installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
         let launchArguments = game.launchArguments
         let containerURL = game.containerURL
 
@@ -69,32 +71,39 @@ class LocalGameManager {
 
                 let environmentVariables: [String: String] = .init() /* FIXME: stub */ /* try Wine.assembleEnvironmentVariables(forGame: game) */
 
-                // prevent blocking, but still catch errors
-                Task(priority: .userInitiated) {
-                    try await Wine.execute(arguments: [location.path] + launchArguments,
+                if defaults.bool(forKey: "minimiseOnGameLaunch") {
+                    await NSApp.windows.first?.miniaturize(nil)
+                }
+
+                try await Wine.execute(arguments: [location.path] + launchArguments,
                                            containerURL: container.url,
                                            environment: environmentVariables)
-                }
-            }
-
-            if defaults.bool(forKey: "minimiseOnGameLaunch") {
-                await NSApp.windows.first?.miniaturize(nil)
             }
         }
 
-        Task { @MainActor in
-            await Game.operationManager.queueStore.add(operation)
-        }
+        Game.operationManager.queueOperation(operation)
     }
 
     @MainActor static func move(game: LocalGame,
-                                to location: URL) async throws {
-        try files.moveItem(at: game.location, to: location)
-        game._location = location
+                                to newLocation: URL) async throws {
+        guard case .installed(let currentLocation, let platform) = game.installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        try files.moveItem(at: currentLocation, to: newLocation)
+
+        game.installationState = .installed(location: newLocation, platform: platform)
     }
 
     @MainActor static func uninstall(game: LocalGame,
                                      persistFiles: Bool) async throws {
-        try files.removeItem(at: game.location)
+        guard case .installed(let location, let platform) = game.installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        try files.removeItem(at: location)
+
+        // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
+        game.installationState = .uninstalled
     }
 }

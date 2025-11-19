@@ -35,4 +35,9 @@ extension Game {
         case playable = "The game runs well, and is mostly feature-complete."
         case excellent = "The game runs well, and is feature-complete."
     }
+
+    enum InstallationState: Codable {
+        case uninstalled
+        case installed(location: URL, platform: Platform)
+    }
 }

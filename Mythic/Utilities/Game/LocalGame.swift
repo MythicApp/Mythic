@@ -10,29 +10,27 @@
 import Foundation
 
 class LocalGame: Game {
-    // Local games MUST have .location, as marked in .init()
-    var location: URL { super._location! }
-
     override var storefront: Storefront? { .local }
 
-    init(id: String = UUID().uuidString,
-         title: String,
-         platform: Platform,
-         location: URL,
-         containerURL: URL? = nil) {
+    override init(id: String = UUID().uuidString,
+                  title: String,
+                  installationState: InstallationState,
+                  containerURL: URL? = nil) {
+        // Local games must always be installed.
+        // Otherwise, they should be removed.
+        guard case .installed = installationState else {
+            preconditionFailure("you can't have an uninstalled local game 😂😂 this is a development bug")
+        }
+
         super.init(id: id,
                    title: title,
-                   platform: platform,
-                   location: location,
+                   installationState: installationState,
                    containerURL: containerURL)
     }
-    
+
     required init(from decoder: any Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
-    
-    // Local games are always present on disk.
-    override var isInstalled: Bool { true }
 
     override func _launch() async throws {
         try await LocalGameManager.launch(game: self)

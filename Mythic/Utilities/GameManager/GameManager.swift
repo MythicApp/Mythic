@@ -15,7 +15,7 @@ protocol GameManager {
     /// Logger instance for the game manager
     static var log: Logger { get }
 
-    /// Open a game
+    /// Open a game, provided it's installed.
     @MainActor static func launch(game: Game) async throws
 
     /**
@@ -24,7 +24,7 @@ protocol GameManager {
         - game: The game to move
         - location: The target file location of the move operation.
      */
-    @MainActor static func move(game: Game, to location: URL) async throws
+    @MainActor static func move(game: Game, to newLocation: URL) async throws
 
     /**
      Uninstall a game

@@ -54,7 +54,7 @@ extension EpicGamesGameManager: StorefrontGameManager {
     }
 
     @MainActor static func move(game: Game,
-                     to location: URL) async throws {
+                                to location: URL) async throws {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
@@ -74,10 +74,12 @@ final class EpicGamesGameManager {
     static var log: Logger { .custom(category: "EpicGamesGameManager") }
 
     static func install(game: EpicGamesGame,
+                        forPlatform platform: Game.Platform,
                         qos: QualityOfService,
                         optionalPacks: [String] = .init(),
                         gameDirectoryURL: URL? = Bundle.appGames) async throws {
         try await Legendary.install(game: game,
+                                    forPlatform: platform,
                                     qos: qos,
                                     optionalPacks: optionalPacks,
                                     gameDirectoryURL: gameDirectoryURL)
@@ -104,7 +106,7 @@ final class EpicGamesGameManager {
     }
 
     @MainActor static func move(game: EpicGamesGame,
-                     to newLocation: URL) async throws {
+                                to newLocation: URL) async throws {
         try await Legendary.move(game: game, to: newLocation)
     }
 

@@ -13,15 +13,13 @@ import Foundation
 
 @available(*, deprecated, message: "Soon...")
 class SteamGame: Game {
-    required init(id: String = UUID().uuidString,
+    override init(id: String = UUID().uuidString,
                   title: String,
-                  platform: Platform,
-                  location: URL,
+                  installationState: InstallationState,
                   containerURL: URL? = nil) {
         super.init(id: id,
                    title: title,
-                   platform: platform,
-                   location: location,
+                   installationState: installationState,
                    containerURL: containerURL)
     }
     

@@ -27,7 +27,7 @@ final class GameOperationManager: Sendable {
         self._queue = queue
     }
 
-    func queueOperation(_ operation: GameOperation) {
+    @MainActor func queueOperation(_ operation: GameOperation) {
         queue.append(operation)
 
         // remove operation from `queue` on completion, mirroring `_queue`

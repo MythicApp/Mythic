@@ -10,8 +10,6 @@
 import Foundation
 
 class EpicGamesGame: Game {
-    var location: URL? { super._location }
-
     override var computedVerticalImageURL: URL? { Legendary.getImageURL(of: self, type: .tall) }
     override var computedHorizontalImageURL: URL? { Legendary.getImageURL(of: self, type: .normal) }
 
@@ -19,28 +17,18 @@ class EpicGamesGame: Game {
 
     override init(id: String,
                   title: String,
-                  platform: Game.Platform,
-                  location: URL?,
+                  installationState: InstallationState,
                   containerURL: URL? = nil) {
         super.init(id: id,
                    title: title,
-                   platform: platform,
-                   location: location,
+                   installationState: installationState,
                    containerURL: containerURL)
     }
 
     required init(from decoder: any Decoder) throws {
         fatalError("init(from:) has not been implemented")
     }
-    
-    override var isInstalled: Bool {
-        guard let installedGames = try? Legendary.getInstalledGames() else {
-            return false
-        }
 
-        return installedGames.contains(where: { $0.id == id })
-    }
-    
     var isUpdateAvailable: Bool? { try? Legendary.fetchUpdateAvailability(for: self) }
     var isFileVerificationRequired: Bool? { try? Legendary.isFileVerificationRequired(for: self) }
 
