@@ -375,7 +375,7 @@ final class Legendary {
                 arguments += ["--wine", Engine.wineExecutableURL.path]
             }
 
-            arguments.append(contentsOf: ["--"] + game.launchArguments)
+            arguments.append(contentsOf: game.launchArguments.map({ "'\($0)'" }))
 
             try await Legendary.execute(arguments: arguments,
                                         environment: environment)
