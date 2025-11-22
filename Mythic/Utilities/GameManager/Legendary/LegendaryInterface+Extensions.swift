@@ -9,6 +9,7 @@
 
 import Foundation
 
+// swiftlint:disable nesting
 extension Legendary {
     // MARK: - aliases.json
     /// A dictionary mapping game IDs to their list of aliases.
@@ -160,7 +161,7 @@ extension Legendary {
         /// Whether the installation needs verification
         let needsVerification: Bool
         /// Platform identifier (e.g., "Windows", "Mac")
-        let _platform: String
+        let _platform: String // swiftlint:disable:this identifier_name
         var platform: Game.Platform? { matchPlatformString(for: _platform) }
         /// Prerequisite installation information (DirectX, VC++ redistributables, etc.)
         let prereqInfo: PrereqInfo?
@@ -188,7 +189,7 @@ extension Legendary {
             case launchParameters = "launch_parameters"
             case manifestPath = "manifest_path"
             case needsVerification = "needs_verification"
-            case _platform = "platform"
+            case _platform = "platform" // swiftlint:disable:this identifier_name
             case prereqInfo = "prereq_info"
             case requiresOT = "requires_ot"
             case savePath = "save_path"
@@ -311,7 +312,8 @@ extension Legendary {
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             accessToken = try container.decode(String.self, forKey: .accessToken)
             accountID = try container.decode(String.self, forKey: .accountID)
@@ -319,7 +321,8 @@ extension Legendary {
             app = try container.decode(String.self, forKey: .app)
 
             let authTimeString = try container.decode(String.self, forKey: .authTime)
-            guard let authTimeDate = formatter.date(from: authTimeString) else {
+            print(authTimeString)
+            guard let authTimeDate = dateFormatter.date(from: authTimeString) else {
                 throw DecodingError.dataCorruptedError(forKey: .authTime,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -332,7 +335,7 @@ extension Legendary {
             displayName = try container.decode(String.self, forKey: .displayName)
 
             let expiresAtString = try container.decode(String.self, forKey: .expiresAt)
-            guard let expiresAtDate = formatter.date(from: expiresAtString) else {
+            guard let expiresAtDate = dateFormatter.date(from: expiresAtString) else {
                 throw DecodingError.dataCorruptedError(forKey: .expiresAt,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -345,7 +348,7 @@ extension Legendary {
             refreshExpires = try container.decode(Int.self, forKey: .refreshExpires)
 
             let refreshExpiresAtString = try container.decode(String.self, forKey: .refreshExpiresAt)
-            guard let refreshExpiresAtDate = formatter.date(from: refreshExpiresAtString) else {
+            guard let refreshExpiresAtDate = dateFormatter.date(from: refreshExpiresAtString) else {
                 throw DecodingError.dataCorruptedError(forKey: .refreshExpiresAt,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -359,23 +362,24 @@ extension Legendary {
 
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             try container.encode(accessToken, forKey: .accessToken)
             try container.encode(accountID, forKey: .accountID)
             try container.encode(acr, forKey: .acr)
             try container.encode(app, forKey: .app)
-            try container.encode(formatter.string(from: authTime), forKey: .authTime)
+            try container.encode(dateFormatter.string(from: authTime), forKey: .authTime)
             try container.encode(clientID, forKey: .clientID)
             try container.encode(clientService, forKey: .clientService)
             try container.encode(deviceID, forKey: .deviceID)
             try container.encode(displayName, forKey: .displayName)
-            try container.encode(formatter.string(from: expiresAt), forKey: .expiresAt)
+            try container.encode(dateFormatter.string(from: expiresAt), forKey: .expiresAt)
             try container.encode(expiresIn, forKey: .expiresIn)
             try container.encode(inAppID, forKey: .inAppID)
             try container.encode(internalClient, forKey: .internalClient)
             try container.encode(refreshExpires, forKey: .refreshExpires)
-            try container.encode(formatter.string(from: refreshExpiresAt), forKey: .refreshExpiresAt)
+            try container.encode(dateFormatter.string(from: refreshExpiresAt), forKey: .refreshExpiresAt)
             try container.encode(refreshToken, forKey: .refreshToken)
             try container.encode(scope, forKey: .scope)
             try container.encode(tokenType, forKey: .tokenType)
@@ -843,14 +847,15 @@ extension Legendary {
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             ageGatings = try container.decodeIfPresent([String: AgeGating].self, forKey: .ageGatings)
             applicationID = try container.decodeIfPresent(String.self, forKey: .applicationID)
             categories = try container.decode([Category].self, forKey: .categories)
 
             let creationDateString = try container.decode(String.self, forKey: .creationDate)
-            guard let creationDateDate = formatter.date(from: creationDateString) else {
+            guard let creationDateDate = dateFormatter.date(from: creationDateString) else {
                 throw DecodingError.dataCorruptedError(forKey: .creationDate,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -871,7 +876,7 @@ extension Legendary {
             keyImages = try container.decode([KeyImage].self, forKey: .keyImages)
 
             let lastModifiedDateString = try container.decode(String.self, forKey: .lastModifiedDate)
-            guard let lastModifiedDateDate = formatter.date(from: lastModifiedDateString) else {
+            guard let lastModifiedDateDate = dateFormatter.date(from: lastModifiedDateString) else {
                 throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -893,12 +898,13 @@ extension Legendary {
 
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             try container.encodeIfPresent(ageGatings, forKey: .ageGatings)
             try container.encodeIfPresent(applicationID, forKey: .applicationID)
             try container.encode(categories, forKey: .categories)
-            try container.encode(formatter.string(from: creationDate), forKey: .creationDate)
+            try container.encode(dateFormatter.string(from: creationDate), forKey: .creationDate)
             try container.encodeIfPresent(customAttributes, forKey: .customAttributes)
             try container.encode(description, forKey: .description)
             try container.encode(developer, forKey: .developer)
@@ -911,7 +917,7 @@ extension Legendary {
             try container.encode(id, forKey: .id)
             try container.encode(itemType, forKey: .itemType)
             try container.encode(keyImages, forKey: .keyImages)
-            try container.encode(formatter.string(from: lastModifiedDate), forKey: .lastModifiedDate)
+            try container.encode(dateFormatter.string(from: lastModifiedDate), forKey: .lastModifiedDate)
             try container.encodeIfPresent(legalFooterText, forKey: .legalFooterText)
             try container.encodeIfPresent(longDescription, forKey: .longDescription)
             try container.encodeIfPresent(mainGameItem, forKey: .mainGameItem)
@@ -1079,14 +1085,15 @@ extension Legendary {
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             ageGatings = try container.decodeIfPresent([String: AgeGating].self, forKey: .ageGatings)
             applicationID = try container.decodeIfPresent(String.self, forKey: .applicationID)
             categories = try container.decode([Category].self, forKey: .categories)
 
             let creationDateString = try container.decode(String.self, forKey: .creationDate)
-            guard let creationDateDate = formatter.date(from: creationDateString) else {
+            guard let creationDateDate = dateFormatter.date(from: creationDateString) else {
                 throw DecodingError.dataCorruptedError(forKey: .creationDate,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -1106,7 +1113,7 @@ extension Legendary {
             keyImages = try container.decodeIfPresent([KeyImage].self, forKey: .keyImages)
 
             let lastModifiedDateString = try container.decode(String.self, forKey: .lastModifiedDate)
-            guard let lastModifiedDateDate = formatter.date(from: lastModifiedDateString) else {
+            guard let lastModifiedDateDate = dateFormatter.date(from: lastModifiedDateString) else {
                 throw DecodingError.dataCorruptedError(forKey: .lastModifiedDate,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -1126,12 +1133,13 @@ extension Legendary {
 
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             try container.encodeIfPresent(ageGatings, forKey: .ageGatings)
             try container.encodeIfPresent(applicationID, forKey: .applicationID)
             try container.encode(categories, forKey: .categories)
-            try container.encode(formatter.string(from: creationDate), forKey: .creationDate)
+            try container.encode(dateFormatter.string(from: creationDate), forKey: .creationDate)
             try container.encodeIfPresent(customAttributes, forKey: .customAttributes)
             try container.encode(description, forKey: .description)
             try container.encode(developer, forKey: .developer)
@@ -1143,7 +1151,7 @@ extension Legendary {
             try container.encode(id, forKey: .id)
             try container.encode(itemType, forKey: .itemType)
             try container.encodeIfPresent(keyImages, forKey: .keyImages)
-            try container.encode(formatter.string(from: lastModifiedDate), forKey: .lastModifiedDate)
+            try container.encode(dateFormatter.string(from: lastModifiedDate), forKey: .lastModifiedDate)
             try container.encodeIfPresent(mainGameItem, forKey: .mainGameItem)
             try container.encodeIfPresent(mainGameItemList, forKey: .mainGameItemList)
             try container.encode(namespace, forKey: .namespace)
@@ -1179,14 +1187,15 @@ extension Legendary {
             case md5
             case size
             case type
-            case uploadedDate = "uploadedDate"
+            case uploadedDate
             case url
             case width
         }
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             height = try container.decode(Int.self, forKey: .height)
             md5 = try container.decode(String.self, forKey: .md5)
@@ -1194,7 +1203,7 @@ extension Legendary {
             type = try container.decode(String.self, forKey: .type)
 
             let uploadedDateString = try container.decode(String.self, forKey: .uploadedDate)
-            guard let uploadedDateDate = formatter.date(from: uploadedDateString) else {
+            guard let uploadedDateDate = dateFormatter.date(from: uploadedDateString) else {
                 throw DecodingError.dataCorruptedError(forKey: .uploadedDate,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -1207,13 +1216,14 @@ extension Legendary {
 
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             try container.encode(height, forKey: .height)
             try container.encode(md5, forKey: .md5)
             try container.encode(size, forKey: .size)
             try container.encode(type, forKey: .type)
-            try container.encode(formatter.string(from: uploadedDate), forKey: .uploadedDate)
+            try container.encode(dateFormatter.string(from: uploadedDate), forKey: .uploadedDate)
             try container.encode(url, forKey: .url)
             try container.encode(width, forKey: .width)
         }
@@ -1248,7 +1258,7 @@ extension Legendary {
         /// Release identifier
         let id: String
         /// Supported platforms (e.g., ["Windows", "Mac"])
-        let _platform: [String]
+        let _platform: [String] // swiftlint:disable:this identifier_name
         var platform: [Game.Platform] { _platform.compactMap({ matchPlatformString(for: $0) }) }
 
         enum CodingKeys: String, CodingKey {
@@ -1256,18 +1266,19 @@ extension Legendary {
             case compatibleApps = "compatibleApps"
             case dateAdded = "dateAdded"
             case id
-            case _platform = "platform"
+            case _platform = "platform" // swiftlint:disable:this identifier_name
         }
 
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             appID = try container.decode(String.self, forKey: .appID)
             compatibleApps = try container.decodeIfPresent([String].self, forKey: .compatibleApps)
 
             let dateAddedString = try container.decode(String.self, forKey: .dateAdded)
-            guard let dateAddedDate = formatter.date(from: dateAddedString) else {
+            guard let dateAddedDate = dateFormatter.date(from: dateAddedString) else {
                 throw DecodingError.dataCorruptedError(forKey: .dateAdded,
                                                        in: container,
                                                        debugDescription: "Invalid ISO8601 date format")
@@ -1280,16 +1291,18 @@ extension Legendary {
 
         func encode(to encoder: Encoder) throws {
             var container = encoder.container(keyedBy: CodingKeys.self)
-            let formatter = ISO8601DateFormatter()
+            let dateFormatter: ISO8601DateFormatter = .init()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
 
             try container.encode(appID, forKey: .appID)
             try container.encodeIfPresent(compatibleApps, forKey: .compatibleApps)
-            try container.encode(formatter.string(from: dateAdded), forKey: .dateAdded)
+            try container.encode(dateFormatter.string(from: dateAdded), forKey: .dateAdded)
             try container.encode(id, forKey: .id)
             try container.encode(_platform, forKey: ._platform)
         }
     }
 }
+// swiftlint:enable nesting
 
 extension Legendary.Asset: Identifiable {
     var id: String { assetID }
