@@ -298,7 +298,7 @@ extension Legendary {
             case clientID = "client_id"
             case clientService = "client_service"
             case deviceID = "device_id"
-            case displayName = "display_name"
+            case displayName
             case expiresAt = "expires_at"
             case expiresIn = "expires_in"
             case inAppID = "in_app_id"
@@ -321,7 +321,6 @@ extension Legendary {
             app = try container.decode(String.self, forKey: .app)
 
             let authTimeString = try container.decode(String.self, forKey: .authTime)
-            print(authTimeString)
             guard let authTimeDate = dateFormatter.date(from: authTimeString) else {
                 throw DecodingError.dataCorruptedError(forKey: .authTime,
                                                        in: container,
