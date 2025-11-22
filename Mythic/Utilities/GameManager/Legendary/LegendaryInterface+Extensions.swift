@@ -781,7 +781,7 @@ extension Legendary {
         /// Entitlement type (e.g., "EXECUTABLE", "AUDIENCE", "ENTITLEMENT")
         let entitlementType: String
         /// End User License Agreement identifiers
-        let eulaIDs: [String]
+        let eulaIDs: [String]?
         /// Item catalog identifier
         let id: String
         /// Item type (e.g., "DURABLE", "CONSUMABLE")
@@ -869,7 +869,7 @@ extension Legendary {
             endOfSupport = try container.decode(Bool.self, forKey: .endOfSupport)
             entitlementName = try container.decode(String.self, forKey: .entitlementName)
             entitlementType = try container.decode(String.self, forKey: .entitlementType)
-            eulaIDs = try container.decode([String].self, forKey: .eulaIDs)
+            eulaIDs = try container.decodeIfPresent([String].self, forKey: .eulaIDs)
             id = try container.decode(String.self, forKey: .id)
             itemType = try container.decode(String.self, forKey: .itemType)
             keyImages = try container.decode([KeyImage].self, forKey: .keyImages)
@@ -1026,7 +1026,7 @@ extension Legendary {
         /// Entitlement type
         let entitlementType: String
         /// EULA identifiers
-        let eulaIDs: [String]
+        let eulaIDs: [String]?
         /// Catalog item ID
         let id: String
         /// Item type
@@ -1106,7 +1106,7 @@ extension Legendary {
             endOfSupport = try container.decode(Bool.self, forKey: .endOfSupport)
             entitlementName = try container.decode(String.self, forKey: .entitlementName)
             entitlementType = try container.decode(String.self, forKey: .entitlementType)
-            eulaIDs = try container.decode([String].self, forKey: .eulaIDs)
+            eulaIDs = try container.decodeIfPresent([String].self, forKey: .eulaIDs)
             id = try container.decode(String.self, forKey: .id)
             itemType = try container.decode(String.self, forKey: .itemType)
             keyImages = try container.decodeIfPresent([KeyImage].self, forKey: .keyImages)
@@ -1146,7 +1146,7 @@ extension Legendary {
             try container.encode(endOfSupport, forKey: .endOfSupport)
             try container.encode(entitlementName, forKey: .entitlementName)
             try container.encode(entitlementType, forKey: .entitlementType)
-            try container.encode(eulaIDs, forKey: .eulaIDs)
+            try container.encodeIfPresent(eulaIDs, forKey: .eulaIDs)
             try container.encode(id, forKey: .id)
             try container.encode(itemType, forKey: .itemType)
             try container.encodeIfPresent(keyImages, forKey: .keyImages)
@@ -1253,7 +1253,7 @@ extension Legendary {
         /// List of compatible app IDs
         let compatibleApps: [String]?
         /// Release date (ISO 8601)
-        let dateAdded: Date
+        let dateAdded: Date?
         /// Release identifier
         let id: String
         /// Supported platforms (e.g., ["Windows", "Mac"])
@@ -1276,13 +1276,17 @@ extension Legendary {
             appID = try container.decode(String.self, forKey: .appID)
             compatibleApps = try container.decodeIfPresent([String].self, forKey: .compatibleApps)
 
-            let dateAddedString = try container.decode(String.self, forKey: .dateAdded)
-            guard let dateAddedDate = dateFormatter.date(from: dateAddedString) else {
-                throw DecodingError.dataCorruptedError(forKey: .dateAdded,
-                                                       in: container,
-                                                       debugDescription: "Invalid ISO8601 date format")
+            if let dateAddedString = try container.decodeIfPresent(String.self, forKey: .dateAdded) {
+                guard let dateAddedDate = dateFormatter.date(from: dateAddedString) else {
+                    throw DecodingError.dataCorruptedError(forKey: .dateAdded,
+                                                           in: container,
+                                                           debugDescription: "Invalid ISO8601 date format")
+                }
+
+                dateAdded = dateAddedDate
+            } else {
+                dateAdded = nil
             }
-            dateAdded = dateAddedDate
 
             id = try container.decode(String.self, forKey: .id)
             _platform = try container.decode([String].self, forKey: ._platform)
@@ -1295,7 +1299,9 @@ extension Legendary {
 
             try container.encode(appID, forKey: .appID)
             try container.encodeIfPresent(compatibleApps, forKey: .compatibleApps)
-            try container.encode(dateFormatter.string(from: dateAdded), forKey: .dateAdded)
+            if let dateAdded = dateAdded {
+                try container.encodeIfPresent(dateFormatter.string(from: dateAdded), forKey: .dateAdded)
+            }
             try container.encode(id, forKey: .id)
             try container.encode(_platform, forKey: ._platform)
         }
