@@ -10,25 +10,24 @@
 import Foundation
 import SwiftUI
 
-// FIXME: stub — may be unnecesary since only used once (`HomeView`)
+// May be unnecesary since used only once (`HomeView`)
 struct HeroGameCard: View {
-    @Binding var game: LegacyGame
+    @Binding var game: Game
 
     var body: some View {
-
+        EmptyView() // FIXME: stub
     }
 }
 
 extension HeroGameCard {
     struct ImageCard: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         @Binding var isImageEmpty: Bool
 
         var body: some View {
-            Group {
-                if game.wideImageURL != nil {
+                if let horizontalImageURL = game.horizontalImageURL {
                     GeometryReader { geometry in
-                        AsyncImage(url: game.wideImageURL) { phase in
+                        AsyncImage(url: horizontalImageURL) { phase in
                             switch phase {
                             case .empty:
                                 Rectangle()
@@ -66,7 +65,7 @@ extension HeroGameCard {
                                 )
                                 .frame(width: geometry.size.width,
                                        height: geometry.size.height)
-                                .background(.quinary)
+                                .backgroundStyle(.quinary)
                                 .onAppear {
                                     withAnimation { isImageEmpty = true }
                                 }
@@ -78,10 +77,17 @@ extension HeroGameCard {
                                 )
                                 .frame(width: geometry.size.width,
                                        height: geometry.size.height)
-                                .background(.quinary)
+                                .backgroundStyle(.quinary)
                                 .onAppear {
                                     withAnimation { isImageEmpty = true }
                                 }
+                            }
+                        }
+                        .customTransform { view in
+                            if #available(macOS 26.0, *) {
+                                view.backgroundExtensionEffect()
+                            } else {
+                                view
                             }
                         }
                     }
@@ -94,14 +100,6 @@ extension HeroGameCard {
                             """)
                     )
                 }
-            }
-            .customTransform { view in
-                if #available(macOS 26.0, *) {
-                    view.backgroundExtensionEffect()
-                } else {
-                    view
-                }
-            }
         }
     }
 }
@@ -109,15 +107,14 @@ extension HeroGameCard {
 #Preview {
     GeometryReader { geometry in
         VStack {
-            HeroGameCard.ImageCard(
-                game: .constant(placeholderGame(forSource: .local)),
-                isImageEmpty: .constant(false)
-            )
-            .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+            HeroGameCard.ImageCard(game: .constant(placeholderGame),
+                                   isImageEmpty: .constant(false))
+            .frame(width: geometry.size.width,
+                   height: geometry.size.height * 0.75)
 
             Divider()
 
-            Text("Content below the card")
+            Text("Content below the card🔥🔥🔥🔥🧑🏾‍🚒🧑🏾‍🚒🧑🏾‍🚒🧑🏾‍🚒🧑🏾‍🚒🚒🚒🚒🚒🚒🚒")
         }
     }
 }

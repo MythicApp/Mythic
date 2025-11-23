@@ -24,7 +24,7 @@ struct AccountsView: View {
                 AccountCard(
                     signedInUser: .constant(Legendary.user),
                     image: Image("EGFaceless"),
-                    source: .epic,
+                    storefront: .epicGames,
                     signInAction: {
                         Task { @MainActor in
                             epicWebAuthViewModel.showSignInWindow()
@@ -99,7 +99,7 @@ extension AccountsView {
         @Binding var signedInUser: String?
 
         var image: Image
-        var source: LegacyGame.Source
+        var storefront: Game.Storefront
         var signInAction: () -> Void
         var signOutAction: () -> Void
 
@@ -114,7 +114,7 @@ extension AccountsView {
                     .frame(width: 60)
 
                 VStack(alignment: .leading) {
-                    Text(source.rawValue)
+                    Text(storefront.description)
                         .font(.title.bold())
 
                     Text(signedInUser != nil ? "Signed in as \"\(signedInUser ?? "Unknown")\"" : "Not signed in")
@@ -132,7 +132,8 @@ extension AccountsView {
                                 view
                                     .foregroundStyle(.red)
                             }
-                        /* ☹️☹️ swiftui will not let me do this, stupid hierarchy stupid swiftui rules
+                        /* FIXME: ☹️☹️ swiftui will not let me do this, stupid hierarchy stupid swiftui rules
+                         FIXME: for now, it's called in AccountsView
                             .alert(
                                 "Are you sure you want to sign out of Epic Games?",
                                 isPresented: $isEpicSignOutConfirmationAlertPresented

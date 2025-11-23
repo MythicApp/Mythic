@@ -25,13 +25,17 @@ struct HomeView: View {
     
     @State private var isFavouritesSectionExpanded: Bool = true
     @State private var isContainersSectionExpanded: Bool = true
-    
-    @State private var favouritesExcludingRecent = unifiedGames.filter({ $0.isFavourited && $0 != (try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed")) })
-    
+
+    private var favouriteGamesExcludingRecent: [Game] {
+        Game.store.games
+            .filter(\.self.isFavourited)
+            .filter({ $0 != Game.store.recent })
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if let recentGame = try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed") {
+                if let recentGame = Game.store.recent {
                     ZStack(alignment: .bottomLeading) {
                         HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
@@ -77,12 +81,12 @@ struct HomeView: View {
                         width: geometry.size.width,
                         height: geometry.size.height * 0.75
                     )
-                    .background(.quinary)
+                    .backgroundStyle(.quinary)
                 }
                 
                 Form {
                     Section("Your Favourites", isExpanded: $isFavouritesSectionExpanded) {
-                        if favouritesExcludingRecent.isEmpty {
+                        if favouriteGamesExcludingRecent.isEmpty {
                             HStack(alignment: .center) {
                                 Spacer()
                                 ContentUnavailableView(
@@ -97,7 +101,7 @@ struct HomeView: View {
                             }
                         } else {
                             LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
-                                ForEach(favouritesExcludingRecent) { game in
+                                ForEach(favouriteGamesExcludingRecent) { game in
                                     GameCard(game: .constant(game))
                                 }
                             }

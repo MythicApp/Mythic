@@ -13,13 +13,12 @@ import OSLog
 
 extension GameCard {
     struct FallbackImageCard: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
         var withBlur: Bool = true
 
         var body: some View {
-            if case .local = game.source,
-               let location = game.location {
+            if case .installed(let location, _) = game.installationState {
 
                 let image = Image(nsImage: workspace.icon(forFile: location.path))
 
@@ -49,8 +48,8 @@ extension GameCard {
     }
 
     struct ImageURLModifierView: View {
-        @Binding var game: LegacyGame
-        @Binding var imageURLString: String
+        @Binding var game: Game
+        @Binding var imageURL: URL?
 
         @State private var isThumbnailFileImporterPresented: Bool = false
         @State private var isThumbnailImportErrorPresented: Bool = false
@@ -58,8 +57,14 @@ extension GameCard {
 
         var body: some View {
             VStack(alignment: .leading) {
-                TextField(text: $imageURLString, label: {
-                    Text("Enter a thumbnail URL: (optional)")
+                TextField(text: .init(
+                    get: { imageURL?.path ?? .init() },
+                    set: { imageURL = .init(string: $0) }
+                )) {
+                    Text("Thumbnail URL")
+                    Text("(optional)")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
 
                     HStack {
                         Text("Otherwise, browse for a thumbnail file: ")
@@ -78,9 +83,11 @@ extension GameCard {
                                     defer { url.stopAccessingSecurityScopedResource() }
 
                                     guard let appHome = Bundle.appHome else { return }
-                                    let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(game.source.rawValue)")
 
                                     do {
+                                        guard let storefront = game.storefront else { throw CocoaError(.coderInvalidValue) }
+                                        let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(storefront.description)")
+
                                         if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
                                             try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
                                         }
@@ -89,8 +96,7 @@ extension GameCard {
 
                                         try files.copyItem(at: url, to: newThumbnailURL)
 
-                                        // game.path is not stateful, so i'll have to update it as a string to invoke UI updates
-                                        imageURLString = newThumbnailURL.absoluteString
+                                        imageURL = newThumbnailURL
                                     } catch {
                                         Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
                                         presentThumbnailImportError(error)
@@ -116,12 +122,12 @@ extension GameCard {
                     }
 
                     Button("Reset image to default") {
-                        imageURLString = .init()
+                        imageURL = nil
                     }
-                })
+                }
                 .truncationMode(.tail)
-                .onChange(of: imageURLString) {
-                    game.imageURL = URL(string: $1)
+                .onChange(of: imageURL) {
+                    game._verticalImageURL = $1
                 }
             }
         }

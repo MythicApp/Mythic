@@ -12,39 +12,39 @@ import OSLog
 
 struct GameImportView: View {
     @Binding var isPresented: Bool
-    @ObservedObject var gameListViewModel: GameListViewModel = .shared
+    @Bindable var gameListViewModel: GameListViewModel = .shared
     
-    @State private var source: LegacyGame.Source = .epic
-    
+    @State private var source: Game.Storefront = .epicGames
+
     var body: some View {
         VStack {
             if #available(macOS 15.0, *) {
                 TabView {
-                    Tab("Epic", systemImage: "gamecontroller") {
+                    Tab("Epic", systemImage: "storefront") {
                         GameImportView.Epic(isPresented: $isPresented)
                     }
                     
-                    Tab("Steam", systemImage: "gamecontroller") {
-                        
+                    Tab("Steam", systemImage: "storefront") {
+
                     }
                     .hidden()
                     
-                    Tab("Local", systemImage: "gamecontroller") {
+                    Tab("Local", systemImage: "storefront") {
                         GameImportView.Local(isPresented: $isPresented)
                     }
                 }
                 .tabViewStyle(.sidebarAdaptable)
-                .tabViewSidebarHeader(content: { Text("Select a source:") })
+                .tabViewSidebarHeader(content: { Text("Select storefront:") })
             } else {
                 TabView {
                     GameImportView.Epic(isPresented: $isPresented)
                         .tabItem {
-                            Label("Epic", systemImage: "gamecontroller")
+                            Label("Epic", systemImage: "storefront")
                         }
                     
                     GameImportView.Local(isPresented: $isPresented)
                         .tabItem {
-                            Label("Local", systemImage: "gamecontroller")
+                            Label("Local", systemImage: "storefront")
                         }
                 }
                 .padding()

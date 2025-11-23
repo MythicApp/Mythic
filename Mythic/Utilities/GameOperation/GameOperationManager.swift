@@ -9,33 +9,62 @@
 
 import Foundation
 import OSLog
+import Observation
 
-@Observable final class GameOperationManager: Sendable {
-    @MainActor static var shared: GameOperationManager = .init()
-    internal static let log: Logger = .custom(category: "GameOperationManager")
+@Observable @MainActor final class GameOperationManager {
+    static var shared: GameOperationManager = .init()
+    private let log: Logger = .custom(category: "GameOperationManager")
 
     // ‼️ operationqueue should NOT be accessed outside, this will always be private
-    private var _queue: OperationQueue
+    // cannot name this _queue, swiftui seems to automatically insert _queue for the queue variable
+    // avoid naming 'underlyingQueue', this is already a variable
+    private var operationQueue: OperationQueue
     // necessitated by deprecation of `OperationQueue.operations`
-    internal private(set) var queue: [GameOperation] = .init()
+    internal private(set) var queue: [GameOperation] = .init() {
+        didSet {
+            queueContinuation?.yield(queue)
+        }
+    }
 
-    init() {
+    private var queueContinuation: AsyncStream<[GameOperation]>.Continuation?
+
+    var queueStream: AsyncStream<[GameOperation]> {
+        AsyncStream { continuation in
+            self.queueContinuation = continuation
+            continuation.yield(self.queue)
+        }
+    }
+
+    private init() {
         let queue: OperationQueue = .init()
         queue.name = "GameOperationManagerQueue"
         queue.maxConcurrentOperationCount = 1
         queue.qualityOfService = .utility
-        self._queue = queue
+        self.operationQueue = queue
     }
 
-    @MainActor func queueOperation(_ operation: GameOperation) {
-        // remove operation from `queue` on completion, mirroring `_queue`
-        operation.completionBlock = {
-            Task { @MainActor in
-                self.queue.removeAll(where: { $0 == operation })
-            }
+    private func removeFromOverlyingQueue(_ operation: GameOperation) {
+        queue.removeAll(where: { $0 == operation })
+    }
+
+    func queueOperation(_ operation: GameOperation) {
+        // remove operation from `queue` on operation completion,
+        // this ensures `queue` is always mirroring `operationQueue`.
+        operation.completionBlock = { [self] in
+            Task { await removeFromOverlyingQueue(operation) }
+            log.debug("Operation \(operation.description) complete.")
         }
 
-        _queue.addOperation(operation)
+        operationQueue.addOperation(operation)
         queue.append(operation)
+
+        log.debug("Queued operation \(operation.description)")
+    }
+
+    func cancelAllOperations() {
+        log.debug("Cancelling all (\(self.queue.count)) operations.")
+        operationQueue.cancelAllOperations()
+        queue.removeAll()
+        log.debug("Cancelled all operations, and cleared queues.")
     }
 }

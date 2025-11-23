@@ -13,13 +13,12 @@ import SwordRPC
 
 /// A view displaying the user's library of games.
 struct LibraryView: View {
-    @ObservedObject private var operation: LegacyGameOperation = .shared
     @ObservedObject private var variables: VariableManager = .shared
-    
+
     @State private var isGameImportSheetPresented = false
-    @ObservedObject var gameListViewModel: GameListViewModel = .shared
+    @Bindable var gameListViewModel: GameListViewModel = .shared
     @CodableAppStorage("gameListLayout") var gameListLayout: GameListViewModel.Layout = .grid
-    
+
     var body: some View {
         GameListView()
             .navigationTitle("Library")
@@ -49,48 +48,43 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .automatic) {
-                    Picker("View", systemImage: "macwindow", selection: Binding(
-                        get: { gameListLayout },
-                        set: { newValue in
-                            withAnimation {
-                                gameListLayout = newValue
-                            }
-                        }
-                    )) {
+                    Picker("View", systemImage: "macwindow", selection: $gameListLayout) {
                         Label("List", systemImage: "rectangle.grid.1x3")
                             .tag(GameListViewModel.Layout.list)
-                        
+
                         Label("Grid", systemImage: "square.grid.3x3")
                             .tag(GameListViewModel.Layout.grid)
                     }
+                    .animation(.easeInOut, value: $gameListLayout.wrappedValue)
                 }
                 
                 ToolbarItem(placement: .automatic) {
                     Menu {
-                        Toggle("Installed", systemImage: "arrow.down.app", isOn: $gameListViewModel.filterOptions.showInstalled)
-                        
-                        Picker("Platform", systemImage: "desktopcomputer.and.arrow.down", selection: $gameListViewModel.filterOptions.platform) {
-                            ForEach(LegacyGame.InclusivePlatform.allCases, id: \.self) { platform in
-                                Text(platform.rawValue)
+                        Toggle("Installed",
+                               systemImage: "arrow.down.app",
+                               isOn: $gameListViewModel.filterOptions.showInstalled)
+
+                        Picker(
+                            "Platform",
+                            systemImage: "desktopcomputer.and.arrow.down",
+                            selection: $gameListViewModel.filterOptions.platform
+                        ) {
+                            Text("All Platforms")
+                                .tag(Game.Platform?.none)
+
+                            ForEach(Game.Platform.allCases, id: \.self) { platform in
+                                Text(platform.description)
                             }
                         }
-                        
-                        Picker("Source", systemImage: "gamecontroller", selection: $gameListViewModel.filterOptions.source) {
-                            ForEach(
-                                LegacyGame.InclusiveSource.allCases,
-                                id: \.self
-                            ) { source in
-                                /*
-                                 Label(platform.rawValue, systemImage: {
-                                 switch platform {
-                                 case .all: "display"
-                                 case .macOS: "macwindow"
-                                 case .windows: "pc"
-                                 }
-                                 }())
-                                 */
-                                
-                                Text(source.rawValue)
+
+                        Picker("Storefront",
+                               systemImage: "storefront",
+                               selection: $gameListViewModel.filterOptions.storefront) {
+                            Text("All Storefronts")
+                                .tag(Game.Storefront?.none)
+
+                            ForEach(Game.Storefront.allCases, id: \.self) { storefront in
+                                Text(storefront.description)
                             }
                         }
                     } label: {

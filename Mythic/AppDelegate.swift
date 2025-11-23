@@ -33,13 +33,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         defaults.register(defaults: [
             "discordRPC": true,
             "engineAutomaticallyChecksForUpdates": true,
-            "quitOnAppClose": false
+            "quitOnAppClose": false,
+            // FIXME: dangerous but necessary force-unwrap
+            // FIXME: very rarely, some users may not have write access to appGames.
+            // FIXME: e.g. MGM cases
+            "installBaseURL": Bundle.appGames!
         ])
 
-        _ = try? defaults.encodeAndRegister(defaults: [
-            "gameContainerURLs": [LegacyGame: URL].init(),
-            "gameLaunchArguments": [LegacyGame: [String]].init()
-        ])
+        Task {
+            try? await Game.store.refreshFromStorefronts()
+        }
 
         // MARK: Run Migrations
         Migrator.migrateFromOldBottleFormatIfNecessary()
@@ -55,7 +58,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task(priority: .utility) { @MainActor in
             Legendary.updateMetadata()
 
-            Timer.scheduledTimer(withTimeInterval: 120.0, repeats: true) { _ in
+            // update metadata every 10 minutes
+            Timer.scheduledTimer(withTimeInterval: 600.0, repeats: true) { _ in
                 Task(priority: .utility) { @MainActor in
                     Legendary.updateMetadata()
                 }
@@ -185,13 +189,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         discordRPC.disconnect()
     }
 
-    @MainActor
-    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard LegacyGameOperation.shared.current != nil || !LegacyGameOperation.shared.queue.isEmpty else {
-            return .terminateNow
-        }
+    @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard !GameOperationManager.shared.queue.isEmpty else { return .terminateNow }
 
-        let alert = NSAlert()
+        let alert: NSAlert = .init()
         alert.messageText = String(localized: "Are you sure you want to quit?")
         alert.informativeText = String(localized: "Mythic is still modifying games.")
         alert.alertStyle = .warning
@@ -201,10 +202,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let window = sender.windows.first {
             alert.beginSheetModal(for: window) { response in
                 if case .alertFirstButtonReturn = response {
-                    Task { @MainActor in
-                        await Legendary.RunningCommands.shared.stopAll()
-                        sender.reply(toApplicationShouldTerminate: true)
-                    }
+                    sender.reply(toApplicationShouldTerminate: true)
                 } else {
                     sender.reply(toApplicationShouldTerminate: false)
                 }
@@ -220,11 +218,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             try? Wine.killAll()
         }
 
-        Task {
+        Task.detached(priority: .userInitiated) {
+            await GameOperationManager.shared.cancelAllOperations()
+        }
+
+        Task.detached(priority: .userInitiated) {
             await Legendary.RunningCommands.shared.stopAll()
         }
 
-        Task {
+        Task.detached(priority: .userInitiated) {
             try? await Legendary.execute(arguments: ["cleanup"])
         }
     }

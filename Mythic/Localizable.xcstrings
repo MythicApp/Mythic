@@ -191,13 +191,11 @@
         }
       }
     },
-    "\"%@\" is now ready to be played." : {
-
-    },
     "\"An open-source macOS game launcher with the ability to play Windows games through a custom implementation of Apple's Game Porting Toolkit — supporting multiple platforms.\"" : {
 
     },
     "(%@ Elapsed)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -388,6 +386,7 @@
       }
     },
     "(%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -578,6 +577,7 @@
       }
     },
     "(%lld/%lld Objects)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -773,7 +773,11 @@
         }
       }
     },
+    "(optional)" : {
+
+    },
     "(raw)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -964,6 +968,7 @@
       }
     },
     "(read)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1154,6 +1159,7 @@
       }
     },
     "(Supports selective downloads)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1347,6 +1353,7 @@
 
     },
     "(write)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1537,6 +1544,7 @@
       }
     },
     "%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -1727,6 +1735,7 @@
       }
     },
     "%@ \"%@\"..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -2144,7 +2153,14 @@
         }
       }
     },
+    "%lf%%" : {
+
+    },
+    "%lf%% complete" : {
+
+    },
     "%lld MB Downloaded" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -2335,6 +2351,7 @@
       }
     },
     "%lld MB Written" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -2525,6 +2542,7 @@
       }
     },
     "%lld MB/s" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -2715,6 +2733,7 @@
       }
     },
     "%lld%%" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -2905,6 +2924,7 @@
       }
     },
     "%lld%% • ↓ %lld MB/s • ⏲︎ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -3291,6 +3311,7 @@
       }
     },
     "%lld%% Complete" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -3891,6 +3912,15 @@
     "All downloads that may have been pending are complete.\nYou may access the downloaded games in your library." : {
 
     },
+    "All Platforms" : {
+
+    },
+    "All Storefronts" : {
+
+    },
+    "An error occurred while interfacing with Epic Games." : {
+
+    },
     "an unknown version" : {
       "comment" : "Of Mythic Engine"
     },
@@ -4474,6 +4504,7 @@
 
     },
     "Are you sure you want to stop %@ %@?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -4670,6 +4701,7 @@
       }
     },
     "Are you sure you want to uninstall \"%@\"?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -5064,9 +5096,6 @@
     "AVX2 is only supported on macOS Sequoia (15) or later." : {
 
     },
-    "Before running this game, Mythic must verify that the game's files are intact.\nThis may take a while." : {
-
-    },
     "Browse..." : {
       "localizations" : {
         "af" : {
@@ -5447,7 +5476,11 @@
         }
       }
     },
+    "Cancel operation" : {
+
+    },
     "Cannot fetch selected downloads while other items are downloading." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -6211,10 +6244,8 @@
         }
       }
     },
-    "Choose the game's install location:" : {
-
-    },
     "Choose the game's native platform:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -7768,6 +7799,7 @@
 
     },
     "Disk Speed:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8347,6 +8379,7 @@
       }
     },
     "Download Speed:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -8535,6 +8568,9 @@
           }
         }
       }
+    },
+    "Downloading" : {
+
     },
     "Downloading Mythic Engine..." : {
       "localizations" : {
@@ -9118,9 +9154,6 @@
           }
         }
       }
-    },
-    "Enter a thumbnail URL: (optional)" : {
-
     },
     "Epic" : {
       "localizations" : {
@@ -10860,16 +10893,6 @@
     "Filters" : {
 
     },
-    "Finished %@ \"%@\"." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Finished %1$@ \"%2$@\"."
-          }
-        }
-      }
-    },
     "Folder is not writable." : {
       "localizations" : {
         "af" : {
@@ -11256,7 +11279,7 @@
     "Force-refresh the displayed games' status" : {
 
     },
-    "Game Location" : {
+    "Game" : {
 
     },
     "Game Location:" : {
@@ -12062,7 +12085,11 @@
     "Image Unavailable" : {
 
     },
+    "Images with a 3:4 aspect ratio are preferred." : {
+
+    },
     "Images with a 3:4 aspect ratio fit the best." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13016,6 +13043,7 @@
 
     },
     "Initializing..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13971,6 +13999,9 @@
         }
       }
     },
+    "Installing" : {
+
+    },
     "Installing Mythic Engine..." : {
       "localizations" : {
         "af" : {
@@ -14160,9 +14191,6 @@
           }
         }
       }
-    },
-    "Insufficient Free Space" : {
-
     },
     "It'll have to be reinstalled in order to play Windows® games." : {
       "localizations" : {
@@ -15498,7 +15526,7 @@
       }
     },
     "Location" : {
-      "comment" : "game context"
+      "comment" : "Game Location"
     },
     "Manage containers for Windows® applications" : {
       "localizations" : {
@@ -16643,6 +16671,9 @@
         }
       }
     },
+    "Moving" : {
+
+    },
     "Mythic" : {
       "localizations" : {
         "af" : {
@@ -16836,9 +16867,6 @@
     "Mythic %@" : {
       "comment" : "A footer displaying the current version of Mythic.",
       "isCommentAutoGenerated" : true
-    },
-    "Mythic does not have access to this game's location." : {
-
     },
     "Mythic Engine" : {
       "localizations" : {
@@ -17639,7 +17667,7 @@
     "No new downloads! 😁" : {
 
     },
-    "No queued downloads." : {
+    "No queued game operations." : {
 
     },
     "No Release Notes Found." : {
@@ -19388,6 +19416,7 @@
 
     },
     "Progress:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -19768,6 +19797,7 @@
       }
     },
     "QUEUED %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -20167,6 +20197,7 @@
       }
     },
     "Remove from download queue" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -20357,6 +20388,7 @@
       }
     },
     "Remove game files" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -20545,6 +20577,9 @@
           }
         }
       }
+    },
+    "Repairing" : {
+
     },
     "Report an issue" : {
 
@@ -22079,6 +22114,7 @@
 
     },
     "Run specialised uninstaller (If applicable)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22275,6 +22311,7 @@
 
     },
     "Select a game:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22465,6 +22502,7 @@
       }
     },
     "Select a source:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -22653,6 +22691,9 @@
           }
         }
       }
+    },
+    "Select storefront:" : {
+
     },
     "Services" : {
 
@@ -23041,6 +23082,7 @@
       }
     },
     "Show install status" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23427,6 +23469,7 @@
 
     },
     "Source" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -23806,9 +23849,6 @@
           }
         }
       }
-    },
-    "STATUS UNKNOWN" : {
-
     },
     "Steam" : {
       "localizations" : {
@@ -24190,7 +24230,18 @@
         }
       }
     },
+    "Stop %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Stop %1$@ %2$@"
+          }
+        }
+      }
+    },
     "Stop installing" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -24570,10 +24621,10 @@
         }
       }
     },
-    "Successfully removed Mythic Engine." : {
+    "Storefront" : {
 
     },
-    "Successfully verified \"%@\"." : {
+    "Successfully removed Mythic Engine." : {
 
     },
     "Support" : {
@@ -24769,13 +24820,31 @@
     "Support the project" : {
 
     },
+    "The container URL provided is invalid.\nIf this container is not stored on an external device,\nPlease remove it from Mythic." : {
+
+    },
     "The default container is initialised." : {
 
     },
-    "The game \"%@\" doesn't exist." : {
+    "The game doesn't launch." : {
+
+    },
+    "The game launches and you are able to play, but some game features are nonfunctional." : {
+
+    },
+    "The game launches, but you are unable to play." : {
+
+    },
+    "The game runs well, and is feature-complete." : {
+
+    },
+    "The game runs well, and is mostly feature-complete." : {
 
     },
     "The latest version will be installed the next time you attempt to launch a Windows® game." : {
+
+    },
+    "The selected platform is unsupported for installation." : {
 
     },
     "The signin page did not return an authorization code.\nPlease attempt to sign in using your main web browser (e.g. Safari), Check your network settings, and try again." : {
@@ -24788,23 +24857,13 @@
     "This area is where your most recently played game will appear — try launching one now!" : {
 
     },
+    "This container (%@) exists on disk,\nbut the settings are inaccessible or corrupted.\nIf this persists, please delete this container and create a new one." : {
+
+    },
     "This game doesn't have a widescreen image that Mythic can display." : {
 
     },
-    "This game requires %@ of free space to install.\nCurrently, you only have %@ available.\nPlease create more storage space and try installing the game again." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "This game requires %1$@ of free space to install.\nCurrently, you only have %2$@ available.\nPlease create more storage space and try installing the game again."
-          }
-        }
-      }
-    },
     "This game's data integrity must be verified." : {
-
-    },
-    "This is not an Epic Games game." : {
 
     },
     "This may take a while." : {
@@ -25581,6 +25640,7 @@
       }
     },
     "Time Remaining:" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -25770,6 +25830,9 @@
         }
       }
     },
+    "Title" : {
+
+    },
     "To access containers, Mythic Engine must be installed." : {
 
     },
@@ -25792,6 +25855,9 @@
 
     },
     "Unable to load the image." : {
+
+    },
+    "Unable to locate container." : {
 
     },
     "Unable to move \"%@\"." : {
@@ -25988,6 +26054,7 @@
 
     },
     "Unable to proceed with installation." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26183,10 +26250,14 @@
     "Unable to remove Mythic Engine." : {
 
     },
+    "Unable to retrieve container settings." : {
+
+    },
     "Unable to sign in to Epic Games." : {
 
     },
     "Unable to uninstall \"%@\"." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26376,10 +26447,14 @@
         }
       }
     },
+    "Unable to verify installation." : {
+
+    },
     "Unfavourite" : {
 
     },
     "Uninstall" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26570,6 +26645,7 @@
       }
     },
     "Uninstall \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -26759,13 +26835,16 @@
         }
       }
     },
+    "Uninstalled" : {
+
+    },
+    "Uninstalling" : {
+
+    },
     "Unknown" : {
 
     },
     "Unknown Error." : {
-
-    },
-    "Up to date" : {
 
     },
     "Update" : {
@@ -27166,6 +27245,9 @@
         }
       }
     },
+    "Updating" : {
+
+    },
     "v%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -27369,7 +27451,7 @@
         }
       }
     },
-    "Verify game integrity" : {
+    "Verify game files' integrity" : {
 
     },
     "Verify the game's integrity" : {
@@ -28326,6 +28408,9 @@
         }
       }
     },
+    "View operation progress" : {
+
+    },
     "View your games" : {
       "localizations" : {
         "af" : {
@@ -28716,6 +28801,7 @@
       }
     },
     "What should we call this game?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -29096,6 +29182,7 @@
       }
     },
     "Where do you want the game's base path to be located?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

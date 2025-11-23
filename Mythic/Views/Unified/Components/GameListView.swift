@@ -11,7 +11,7 @@ import Foundation
 import SwiftUI
 
 struct GameListView: View {
-    @ObservedObject var viewModel: GameListViewModel = .shared
+    @Bindable var viewModel: GameListViewModel = .shared
 
     @CodableAppStorage("gameListLayout") var layout: GameListViewModel.Layout = .grid
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
@@ -21,7 +21,7 @@ struct GameListView: View {
     
     var body: some View {
         VStack {
-            if unifiedGames.isEmpty {
+            if Game.store.games.isEmpty {
                 ContentUnavailableView(
                     "No games found. 😢",
                     systemImage: "folder.badge.questionmark",

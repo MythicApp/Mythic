@@ -17,27 +17,67 @@ extension Game {
     }
 
     /// Enumeration containing the two different game platforms available.
-    enum Platform: String, CaseIterable, Codable, Hashable {
-        case macOS = "macOS"
-        case windows = "Windows®"
+    enum Platform: CustomStringConvertible, CaseIterable, Codable, Hashable, Equatable {
+        case macOS
+        case windows
+
+        var description: String {
+            switch self {
+            case .macOS:    "macOS"
+            case .windows:  "Windows®"
+            }
+        }
     }
 
     /// Enumeration containing all available game storefronts.
-    enum Storefront: String, CaseIterable, Codable, Hashable {
-        case epicGames = "Epic Games"
-        case local = "Local"
+    enum Storefront: CustomStringConvertible, CaseIterable, Codable, Hashable {
+        case epicGames
+        case local
+
+        var description: String {
+            switch self {
+            case .epicGames:    String(localized: "Epic Games")
+            case .local:        String(localized: "Local")
+            }
+        }
     }
 
-    enum Compatibility: String, CaseIterable {
-        case unplayable = "The game doesn't launch."
-        case launchable = "The game launches, but you are unable to play."
-        case runnable = "The game launches and you are able to play, but some game features are nonfunctional."
-        case playable = "The game runs well, and is mostly feature-complete."
-        case excellent = "The game runs well, and is feature-complete."
+    enum Compatibility: CustomStringConvertible, CaseIterable {
+        case unplayable
+        case launchable
+        case runnable
+        case playable
+        case excellent
+
+        var description: String {
+            switch self {
+            case .unplayable:   String(localized: "The game doesn't launch.")
+            case .launchable:   String(localized: "The game launches, but you are unable to play.")
+            case .runnable:     String(localized: "The game launches and you are able to play, but some game features are nonfunctional.")
+            case .playable:     String(localized: "The game runs well, and is mostly feature-complete.")
+            case .excellent:    String(localized: "The game runs well, and is feature-complete.")
+            }
+        }
     }
 
-    enum InstallationState: Codable {
+    enum InstallationState: CustomStringConvertible, Codable {
         case uninstalled
         case installed(location: URL, platform: Platform)
+
+        var description: String {
+            switch self {
+            case .uninstalled:  String(localized: "Uninstalled")
+            case .installed:    String(localized: "Installed")
+            }
+        }
+    }
+}
+
+extension Game.InstallationState: Comparable {
+    static func < (lhs: Game.InstallationState, rhs: Game.InstallationState) -> Bool {
+        switch (lhs, rhs) {
+        case (.uninstalled, .installed):    true
+        default:                            false
+        }
     }
 }

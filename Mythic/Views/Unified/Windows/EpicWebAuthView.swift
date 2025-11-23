@@ -12,7 +12,7 @@ import OSLog
 
 struct EpicWebAuthView: View {
     @ObservedObject var viewModel: EpicWebAuthViewModel
-    @ObservedObject var gameListViewModel: GameListViewModel = .shared
+    @Bindable var gameListViewModel: GameListViewModel = .shared
     @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
 
     @State private var isBlurred: Bool = false

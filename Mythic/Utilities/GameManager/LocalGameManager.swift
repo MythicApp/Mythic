@@ -78,7 +78,7 @@ class LocalGameManager {
             }
         }
 
-        Game.operationManager.queueOperation(operation)
+        await Game.operationManager.queueOperation(operation)
     }
 
     @MainActor static func move(game: LocalGame,
@@ -94,7 +94,7 @@ class LocalGameManager {
 
     @MainActor static func uninstall(game: LocalGame,
                                      persistFiles: Bool) async throws {
-        guard case .installed(let location, let platform) = game.installationState else {
+        guard case .installed(let location, _) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
@@ -105,6 +105,6 @@ class LocalGameManager {
             game.installationState = .uninstalled
         }
 
-        Game.operationManager.queueOperation(operation)
+        await Game.operationManager.queueOperation(operation)
     }
 }

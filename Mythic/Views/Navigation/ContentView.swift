@@ -18,8 +18,8 @@ struct ContentView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
     
     @ObservedObject private var updateController: SparkleUpdateController = .shared
-    @ObservedObject private var operation: LegacyGameOperation = .shared
-    
+    @Bindable private var operationManager: GameOperationManager = .shared
+
     @State private var appVersion: String = .init()
     @State private var buildNumber: Int = 0
     
@@ -68,7 +68,7 @@ struct ContentView: View {
                 }
 
                 // separate downloads view from main list because alignment doesn't work within the main list
-                if operation.current != nil || !operation.queue.isEmpty {
+                if !operationManager.queue.isEmpty {
                     List { // must wrap in a list to have the same styling as the other links
                         NavigationLink(destination: DownloadsView()) {
                             Label("Downloads", systemImage: "arrow.down.to.line")

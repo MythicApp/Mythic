@@ -19,18 +19,19 @@ extension GameImportView {
         @State private var errorDescription: String = .init()
         @State private var isErrorAlertPresented = false
 
-        @State private var installableGames: [LegacyGame] = .init()
-        @State private var supportedPlatforms: [LegacyGame.Platform]?
-        @State private var game: LegacyGame = .init(id: .init(),
+        @State private var game: Game = .init(id: .init(),
                                               title: .init(),
-                                              source: .epic,
-                                              platform: .macOS)
+                                              installationState: .uninstalled)
 
-        @State private var gamePlatform: LegacyGame.Platform = .macOS
-        @State private var gameLocation: URL? = nil
+        @State private var platform: Game.Platform = .macOS
+        @State private var location: URL = .temporaryDirectory
 
-        @State private var isFetchingInstallableGames: Bool = false
-        @State private var isFetchingGamePlatforms: Bool = false
+        private var installableGames: [Game] {
+            Game.store.games
+                .sorted(by: { $0.title < $1.title })
+                .filter({ $0.storefront == .epicGames })
+                .filter({ $0.installationState == .uninstalled })
+        }
 
         @State private var withDLCs: Bool = true
         @State private var checkIntegrity: Bool = true
@@ -41,20 +42,12 @@ extension GameImportView {
 
         @State private var isGameLocationFileImporterPresented: Bool = false
 
-        func fetchSupportedPlatforms() async {
-            // TODO: next: legendary method for get platform
-            guard let fetchedPlatforms = try? Legendary.getGameMetadata(game: game)?["asset_infos"].dictionary else { return }
-
-            supportedPlatforms = fetchedPlatforms.keys.compactMap { Legendary.matchPlatform(for: $0) }
-            gamePlatform = supportedPlatforms?.first ?? gamePlatform
-        }
-
-        func fetchSupportedGames() async {
-            let installable = try? Legendary.getInstallable()
-            let installed = try? Legendary.getInstalledGames()
-
-            installableGames = installable?.filter({ !(installed?.contains($0) ?? false) }) ?? .init()
-            game = installableGames.first ?? .init(id: "", title: "Unknown", source: .epic, platform: .macOS)
+        private let modifyingStatusLock: NSLock = .init()
+        private func updateGameInstallationState(location: URL?, platform: Game.Platform?) {
+            modifyingStatusLock.withLock {
+                game.installationState = .installed(location: location ?? self.location,
+                                                    platform: platform ?? self.platform)
+            }
         }
 
         var body: some View {
@@ -64,69 +57,58 @@ extension GameImportView {
                         .padding([.top, .leading])
 
                     Form {
-                        Picker("Select a game:", selection: $game) {
+                        Picker("Game",
+                               systemImage: "gamecontroller",
+                               selection: $game) {
                             ForEach(installableGames, id: \.self) { game in
                                 Text(game.title)
                             }
                         }
-                        .withOperationStatus(
-                            operating: $isFetchingInstallableGames,
-                            successful: .constant(nil),
-                            observing: $installableGames,
-                            action: {} // only needs to show progressview
-                        )
+                        .onAppear(perform: { game = installableGames.first ?? game })
 
-                        Picker("Choose the game's native platform:", selection: $gamePlatform) {
-                            ForEach(supportedPlatforms ?? .init(), id: \.self) { platform in
-                                Text(platform.rawValue)
+                        Picker("Platform",
+                               systemImage: "desktopcomputer.and.arrow.down",
+                               selection: $platform) {
+                            ForEach(game.supportedPlatforms, id: \.self) { platform in
+                                Text(platform.description)
                             }
                         }
-                        .withOperationStatus(
-                            operating: $isFetchingGamePlatforms,
-                            successful: .constant(nil),
-                            observing: $supportedPlatforms,
-                            action: {} // only needs to show progressview
-                        )
-                        .task({ await fetchSupportedPlatforms() })
-                        .onChange(of: game) {
-                            Task { await fetchSupportedPlatforms() }
-                        }
+                        // use onChange, because platform requires game as a dependency
+                        .onChange(of: game, { platform = $1.supportedPlatforms.first ?? platform })
 
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("Game Location")
-
-                                if let location = gameLocation {
+                                Label("Location", systemImage: "folder")
+                                if location != .temporaryDirectory {
                                     Text(location.prettyPath)
                                         .foregroundStyle(.placeholder)
                                 }
                             }
 
-                            Spacer()
-
-                            if let location = game.location,
-                               !files.isReadableFile(atPath: location.path) {
-                                Image(systemName: "questionmark.folder")
+                            if !files.isReadableFile(atPath: location.path) {
+                                Image(systemName: "exclamationmark.triangle")
                                     .symbolVariant(.fill)
-                                    .help("Mythic does not have access to this game's location.")
+                                    .help("File/Folder is not readable by Mythic.")
                             }
+
+                            Spacer()
 
                             Button("Browse...") {
                                 isGameLocationFileImporterPresented = true
                             }
                             .fileImporter(
                                 isPresented: $isGameLocationFileImporterPresented,
-                                allowedContentTypes: allowedContentTypes(for: gamePlatform)
+                                allowedContentTypes: allowedContentTypes(for: platform)
                             ) { result in
                                 if case .success(let success) = result {
-                                    gameLocation = success
+                                    location = success
                                 }
                             }
                         }
 
-                        Toggle("Import with DLCs", isOn: $withDLCs)
+                        Toggle("Import with DLCs", systemImage: "plus", isOn: $withDLCs)
 
-                        Toggle("Verify game integrity", isOn: $checkIntegrity)
+                        Toggle("Verify game files' integrity", systemImage: "checkmark.app", isOn: $checkIntegrity)
                     }
                     .formStyle(.grouped)
                 }
@@ -141,12 +123,12 @@ extension GameImportView {
                                     successful: .constant(nil),
                                     placement: .leading,
                                     action: performGameImport)
-                    .disabled(gameLocation == nil)
-                    .disabled(supportedPlatforms == nil)
+                    .disabled(location == .temporaryDirectory)
+                    .disabled(game.supportedPlatforms.isEmpty)
                     .disabled(isOperating)
                     .buttonStyle(.borderedProminent)
                 }
-                .padding()
+                .padding([.horizontal, .bottom])
             }
             .alert("Error importing game \"\(game.title)\".",
                    isPresented: $isErrorAlertPresented,
@@ -165,7 +147,7 @@ extension GameImportView {
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence = RichPresence()
-                    presence.details = "Importing & Configuring \(gamePlatform.rawValue) game \"\(game.title)\""
+                    presence.details = "Importing & Configuring \"\(game.title)\"."
                     presence.state = "Importing \(game.title)"
                     presence.timestamps.start = .now
                     presence.assets.largeImage = "macos_512x512_2x"
@@ -174,52 +156,15 @@ extension GameImportView {
             }
         }
 
-        private func allowedContentTypes(for platform: LegacyGame.Platform) -> [UTType] {
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
             switch platform {
-            case .macOS:
-                return [.application]
-            case .windows:
-                return [.folder]
+            case .macOS:    [.application]
+            case .windows:  [.exe]
             }
         }
 
         private func performGameImport() {
             withAnimation { isOperating = true }
-
-            Task { @MainActor in
-                await Legendary.executeStreamed(
-                    identifier: "epicImport",
-                    arguments: [
-                        "import",
-                        checkIntegrity ? nil : "--disable-check",
-                        withDLCs ? "--with-dlcs" : "--skip-dlcs",
-                        "--platform", {
-                            switch gamePlatform {
-                            case .macOS: "Mac"
-                            case .windows: "Windows"
-                            }
-                        }(),
-                        game.id,
-                        gameLocation?.path
-                    ].compactMap { $0 },
-                    onChunk: { chunk in
-                        Task {
-                            await MainActor.run {
-                                if case .standardError = chunk.stream,
-                                   chunk.output.contains("INFO: Game \"\(game.title)\" has been imported.") {
-                                    isPresented = false
-                                } else if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output) {
-                                    withAnimation { isOperating = false }
-                                    errorDescription = String(match[2].substring ?? "Unknown Error — perhaps the game is corrupted.")
-                                    isErrorAlertPresented = true
-                                }
-                            }
-                        }
-
-                        return nil
-                    }
-                )
-            }
         }
     }
 }

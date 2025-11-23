@@ -29,7 +29,9 @@ class LocalGame: Game {
     }
 
     required init(from decoder: any Decoder) throws {
-        fatalError("init(from:) has not been implemented")
+        // super.init(from:) handles all decoding including subclass routing
+        // say 'thank you, super.init❤️'
+        try super.init(from: decoder)
     }
 
     override func _launch() async throws {

@@ -166,3 +166,15 @@ final class Migrator {
         log.info("Migrated epic folder naming.")
     }
 }
+
+// MARK: >v0.5.0
+extension Migrator {
+    // TODO: Migrate favouriteGames
+    // TODO: Migrate localGamesLibrary
+    // TODO: Migrate (id)_containerURL
+    // TODO: Migrate (id)_launchArguments
+    // TODO: Migrate (id)_containerURL
+    // TODO: Acknowledge there is no need to migrate recentlyPlayed, due to lastLaunched
+
+    
+}

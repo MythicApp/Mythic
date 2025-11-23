@@ -9,7 +9,7 @@ import SwiftUI
 import OSLog
 
 struct InstallGameView: View {
-    @Binding var game: LegacyGame
+    @Binding var game: Game
     @Binding var isPresented: Bool
 
     @State var optionalPacks: [String: String] = .init()
@@ -19,19 +19,18 @@ struct InstallGameView: View {
     @State private var isInstallLocationFileImporterPresented: Bool = false
 
     @State var installSizeInBytes: Int64?
-
-    @State private var supportedPlatforms: [LegacyGame.Platform]?
-    @State var platform: LegacyGame.Platform = .macOS
+    @State var platform: Game.Platform = .macOS
 
     @State private var isInstallationErrorPresented: Bool = false
     @State private var installationError: Error?
 
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
-    @ObservedObject var operation: LegacyGameOperation = .shared
+    @Bindable private var operationManager: GameOperationManager = .shared
 
     @State private var isFreeSpaceAlertPresented: Bool = false
     @State private var freeSpaceInBytes: Int64?
 
+    // TODO: refactor
     private func fetchOptionalPacks() async {
         guard !fetchingOptionalPacks else { return }
         withAnimation { fetchingOptionalPacks = true }
@@ -97,6 +96,8 @@ struct InstallGameView: View {
     }
 
     var body: some View {
+        EmptyView()
+        /*
         Text("Install \"\(game.title)\"")
             .font(.title)
             .alert(isPresented: $isInstallationErrorPresented) {
@@ -300,9 +301,10 @@ struct InstallGameView: View {
             }
         }
         .padding([.horizontal, .bottom])
+         */
     }
 }
 
 #Preview {
-    InstallGameView(game: .constant(.init(title: "Fortnite (Test)", source: .epic, platform: .windows, location: .temporaryDirectory)), isPresented: .constant(true))
+    InstallGameView(game: .constant(placeholderGame), isPresented: .constant(true))
 }

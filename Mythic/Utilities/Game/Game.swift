@@ -12,52 +12,83 @@ import OSLog
 
 var placeholderGame: Game { .init(id: "test", title: "Test", installationState: .installed(location: .temporaryDirectory, platform: .macOS)) }
 
-actor GameDataStore {
-    // TODO: Migrate favouriteGames
-    // TODO: Migrate localGamesLibrary
-    // TODO: Migrate (id)_containerURL
-    // TODO: Migrate (id)_launchArguments
-    // TODO: Migrate (id)_containerURL
-    // TODO: Acknowledge there is no need to migrate recentlyPlayed, due to lastLaunched
+@Observable @MainActor final class GameDataStore {
+    static let shared: GameDataStore = .init()
 
     var games: Set<Game> {
-        get { Set((try? defaults.decodeAndGet([Game].self, forKey: "games")) ?? []) }
+        get {
+            do {
+                let anyGames = try defaults.decodeAndGet([AnyGame].self,
+                                                         forKey: "games") ?? .init()
+                return Set(anyGames.map({ $0.base }))
+            } catch {
+                Logger.app.error("""
+                    Unable to decode game library.
+                    This may result in unintended functionality.
+                    \(error)
+                    """)
+            }
+
+            return []
+        }
         set {
             do {
-                try defaults.encodeAndSet(newValue, forKey: "games")
+                try defaults.encodeAndSet(newValue.map({ AnyGame($0) }),
+                                          forKey: "games")
             } catch {
                 Logger.app.error("""
                     Unable to encode game library.
                     This may result in unintended functionality.
-                    \(error.localizedDescription)
+                    \(error)
                     """)
             }
         }
     }
 
-    func refreshFromStorefronts() async throws {
-        let legendaryInstallables = try Legendary.getInstallableGames()
-        for installable in legendaryInstallables {
-            games.insert(installable)
+    var recent: Game? {
+        guard !Game.store.games.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
+
+        return Game.store.games.max {
+            $0.lastLaunched ?? .distantPast < $1.lastLaunched ?? .distantPast
         }
     }
+
+    func refreshFromStorefronts() async throws {
+        // legendary (epic games)
+        let installables = Set(try Legendary.getInstallableGames())
+        let installed = Set(try Legendary.getInstalledGames())
+
+        // merge everything into the store
+        installables.subtracting(installed)
+            .forEach { games.update(with: $0) }
+
+        // FIXME: problematic, we do NOT want an overwrite every time, launchArguments, etc aren't persisted
+        installed.forEach { games.update(with: $0) }
+
+        // others coming soon
+    }
+
+    private init() {}
 }
 
-class Game: Codable, Identifiable {
-    static let store: GameDataStore = .init()
+@Observable class Game: Codable, Identifiable {
+    @MainActor static let store: GameDataStore = .shared
     @MainActor static let operationManager: GameOperationManager = .shared
 
     let id: String
-    let title: String
+    var title: String
     var installationState: InstallationState
-    var storefront: Storefront? { nil } // override in subclass
 
-    internal final var _verticalImageURL: URL? // underlying storage for custom images
-    final var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
+    var storefront: Storefront? { nil }
+
+    // swiftlint:disable:next identifier_name
+    internal var _verticalImageURL: URL? // underlying storage for custom images
+    var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
     internal var computedVerticalImageURL: URL? { nil } // override in subclass
 
-    internal final var _horizontalImageURL: URL? // underlying storage for custom images
-    final var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
+    // swiftlint:disable:next identifier_name
+    internal var _horizontalImageURL: URL? // underlying storage for custom images
+    var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
     internal var computedHorizontalImageURL: URL? { nil } // override in subclass
 
     // swiftlint:disable:next identifier_name
@@ -74,6 +105,8 @@ class Game: Codable, Identifiable {
         set { _containerURL = newValue }
     }
 
+    var isUpdateAvailable: Bool? { nil } // override in subclass
+
     var launchArguments: [String] = []
     final var isFavourited: Bool = false
     final var lastLaunched: Date?
@@ -87,6 +120,21 @@ class Game: Codable, Identifiable {
         self.installationState = installationState
 
         self._containerURL = containerURL ?? Wine.containerURLs.first
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(String.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.installationState = try container.decode(InstallationState.self, forKey: .installationState)
+        self._verticalImageURL = try container.decodeIfPresent(URL.self, forKey: ._verticalImageURL)
+        self._horizontalImageURL = try container.decodeIfPresent(URL.self, forKey: ._horizontalImageURL)
+        self._containerURL = try container.decodeIfPresent(URL.self, forKey: ._containerURL)
+        self.launchArguments = try container.decode([String].self, forKey: .launchArguments)
+        self.isFavourited = try container.decode(Bool.self, forKey: .isFavourited)
+        self.lastLaunched = try container.decodeIfPresent(Date.self, forKey: .lastLaunched)
+        self.supportedPlatforms = try container.decode([Game.Platform].self, forKey: .supportedPlatforms)
     }
 
     final var isFallbackImageAvailable: Bool {
@@ -106,26 +154,32 @@ class Game: Codable, Identifiable {
     final var isGameRunning: Bool {
         guard case .installed(let location, let platform) = installationState else { return false }
 
-        switch platform {
-        case .macOS:
-            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
-        case .windows:
-            // FIXME: hacky but functional
-            let result = try? Process.execute(executableURL: .init(filePath: "/bin/bash"),
-                arguments: ["-c", "ps aux | grep -i '\(location.path)' | grep -v grep"])
+        return false // FIXME: stub
 
-            return (result?.standardOutput.isEmpty == false)
-        }
+        // FIXME: not good for use as a computed property
+        // FIXME: will cause cycles and queue up a BUNCH of processes when checked heaps (e.g. GameListView)
+        /*
+         switch platform {
+         case .macOS:
+         return workspace.runningApplications.contains(where: { $0.bundleURL == location })
+         case .windows:
+         // FIXME: hacky but functional
+         let result = try? Process.execute(executableURL: .init(filePath: "/bin/bash"),
+         arguments: ["-c", "ps aux | grep -i '\(location.path)' | grep -v grep"])
+
+         return (result?.standardOutput.isEmpty == false)
+         }
+         */
     }
 
-    @MainActor final func isOperating() async -> Bool {
-        return (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
+    final func isOperating() async -> Bool {
+        return await (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
     }
 
     // MARK: Actions
     /// Launch the underlying game.
     @MainActor final func launch() async throws {
-        guard case .installed(let location, let platform) = installationState else {
+        guard case .installed = installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
@@ -139,9 +193,25 @@ class Game: Codable, Identifiable {
         fatalError("Subclasses must implement _launch()")
     }
 
+    @MainActor final func update() async throws {
+        guard case .installed = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        guard isUpdateAvailable == true else { return }
+
+        try await _update()
+    }
+
+    // override in subclass
+    @MainActor internal func _update() async throws {
+        // swiftlint:disable:previous identifier_name
+        fatalError("Subclasses must implement _update()")
+    }
+
     /// Move the underlying game to a specified `URL`.
     @MainActor final func move(to newLocation: URL) async throws {
-        guard case .installed(let location, let platform) = installationState else {
+        guard case .installed(_, let platform) = installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
@@ -154,6 +224,20 @@ class Game: Codable, Identifiable {
     @MainActor internal func _move(to newLocation: URL) async throws {
         // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _move(to:)")
+    }
+
+    final func verifyInstallation() async throws {
+        guard case .installed = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        try await _verifyInstallation()
+    }
+
+    // override in subclass
+    internal func _verifyInstallation() async throws {
+        // swiftlint:disable:previous identifier_name
+        fatalError("Subclasses must implement _verifyInstallation()")
     }
 }
 
@@ -172,4 +256,64 @@ extension Game: Hashable {
 extension Game: CustomStringConvertible {
     var description: String { "\"\(title)\"" }
     var debugDescription: String { "\(description) (\(installationState), \(id))" }
+}
+
+// MARK: - Codable Polymorphism Support
+extension Game {
+    enum CodingKeys: String, CodingKey {
+        case id,
+             title,
+             installationState
+        case storefront
+        // swiftlint:disable identifier_name
+        case _verticalImageURL,
+             _horizontalImageURL
+        case _containerURL
+        // swiftlint:enable identifier_name
+        case launchArguments,
+             isFavourited,
+             lastLaunched,
+             supportedPlatforms
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(installationState, forKey: .installationState)
+        try container.encodeIfPresent(storefront, forKey: .storefront)
+        try container.encodeIfPresent(_verticalImageURL, forKey: ._verticalImageURL)
+        try container.encodeIfPresent(_horizontalImageURL, forKey: ._horizontalImageURL)
+        try container.encodeIfPresent(_containerURL, forKey: ._containerURL)
+        try container.encode(launchArguments, forKey: .launchArguments)
+        try container.encode(isFavourited, forKey: .isFavourited)
+        try container.encodeIfPresent(lastLaunched, forKey: .lastLaunched)
+        try container.encode(supportedPlatforms, forKey: .supportedPlatforms)
+    }
+}
+
+struct AnyGame: Codable {
+    let base: Game
+
+    init(_ base: Game) {
+        self.base = base
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Game.CodingKeys.self)
+        let storefront = try container.decodeIfPresent(Game.Storefront.self, forKey: .storefront)
+
+        self.base = try {
+            switch storefront {
+            case .epicGames:    try EpicGamesGame(from: decoder)
+            case .local:        try LocalGame(from: decoder)
+            case nil:           try Game(from: decoder)
+            }
+        }()
+    }
+
+    func encode(to encoder: Encoder) throws {
+        try base.encode(to: encoder)
+    }
 }

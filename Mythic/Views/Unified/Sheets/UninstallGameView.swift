@@ -9,12 +9,12 @@ import SwiftUI
 import OSLog
 
 struct UninstallGameView: View {
-    @Binding var game: LegacyGame
+    @Binding var game: Game
     @Binding var isPresented: Bool
-    @ObservedObject var gameListViewModel: GameListViewModel = .shared
+    @Bindable var gameListViewModel: GameListViewModel = .shared
 
     @State private var deleteFiles: Bool = true
-    @State private var runUninstaller: Bool
+    @State private var runUninstaller: Bool = true // FIXME: only applies for legendary games
     @State private var isConfirmationPresented: Bool = false
     
     @State var uninstalling: Bool = false
@@ -22,13 +22,8 @@ struct UninstallGameView: View {
     @State private var isUninstallationErrorPresented: Bool = false
     @State private var uninstallationErrorReason: String?
     
-    init(game: Binding<LegacyGame>, isPresented: Binding<Bool>) {
-        self._game = game
-        self._isPresented = isPresented
-        self.runUninstaller = (game.wrappedValue.source != .local)
-    }
-    
     var body: some View {
+        /*
         VStack {
             Text("Uninstall \"\(game.title)\"")
                 .font(.title)
@@ -104,9 +99,10 @@ struct UninstallGameView: View {
             }
             .padding([.horizontal, .bottom])
         }
+        */
     }
 }
 
 #Preview {
-    UninstallGameView(game: .constant(placeholderGame(forSource: .local)), isPresented: .constant(true))
+    UninstallGameView(game: .constant(placeholderGame), isPresented: .constant(true))
 }

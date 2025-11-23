@@ -22,8 +22,10 @@ class SteamGame: Game {
                    installationState: installationState,
                    containerURL: containerURL)
     }
-    
+
     required init(from decoder: any Decoder) throws {
-        fatalError("init(from:) has not been implemented")
+        // super.init(from:) handles all decoding including subclass routing
+        // say 'thank you, super.init❤️'
+        try super.init(from: decoder)
     }
 }

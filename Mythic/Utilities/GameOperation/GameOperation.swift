@@ -9,9 +9,7 @@
 
 import Foundation
 
-import Foundation
-
-final class GameOperation: Operation, Identifiable, @unchecked Sendable {
+@Observable final class GameOperation: Operation, Identifiable, @unchecked Sendable {
     let id: UUID = .init()
     let game: Game
     let type: ActiveOperationType
@@ -92,5 +90,19 @@ extension GameOperation {
         case install
         case update
         case repair
+    }
+}
+
+extension GameOperation.ActiveOperationType: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .download:     String(localized: "Downloading")
+        case .install:      String(localized: "Installing")
+        case .repair:       String(localized: "Repairing")
+        case .update:       String(localized: "Updating")
+        case .move:         String(localized: "Moving")
+        case .uninstall:    String(localized: "Uninstalling")
+        case .launch:       String(localized: "Launching")
+        }
     }
 }

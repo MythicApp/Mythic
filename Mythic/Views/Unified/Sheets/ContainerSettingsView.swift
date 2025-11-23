@@ -198,10 +198,27 @@ struct ContainerSettingsView: View {
                 Task(priority: .userInitiated) { await fetchRetinaStatus() }
                 Task(priority: .userInitiated) { await fetchWindowsVersion() }
             }
-        } else if Wine.containerExists(at: selectedContainerURL!) {
-
+        } else if let selectedContainerURL = selectedContainerURL,
+                  Wine.containerExists(at: selectedContainerURL) {
+            ContentUnavailableView(
+                "Unable to retrieve container settings.",
+                systemImage: "folder.badge.questionmark",
+                description: Text("""
+                This container (\(selectedContainerURL.prettyPath)) exists on disk,
+                but the settings are inaccessible or corrupted.
+                If this persists, please delete this container and create a new one.
+                """)
+            )
         } else {
-
+            ContentUnavailableView(
+                "Unable to locate container.",
+                systemImage: "questionmark.folder",
+                description: Text("""
+                The container URL provided is invalid.
+                If this container is not stored on an external device,
+                Please remove it from Mythic.
+                """)
+            )
         }
     }
 }

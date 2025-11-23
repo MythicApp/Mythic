@@ -116,13 +116,18 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
 
 /// Internal observable object that monitors UserDefaults changes for Codable types.
 @MainActor
-@usableFromInline final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & Sendable & Equatable {
+@usableFromInline
+final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & Sendable & Equatable {
     @Published public private(set) var value: T
 
     private let key: String
     private let defaultValue: T
     private let store: UserDefaults
     private var cancellable: AnyCancellable?
+
+    @MainActor deinit {
+        _ = withExtendedLifetime(cancellable, { $0?.cancel() })
+    }
 
     public init(key: String, defaultValue: T, store: UserDefaults, initialValue: T) {
         self.key = key

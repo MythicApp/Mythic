@@ -14,7 +14,7 @@ import Glur
 import OSLog
 
 struct GameCard: View {
-    @Binding var game: LegacyGame
+    @Binding var game: Game
 
     @State private var isImageEmpty: Bool = true
     @State private var isImageEmptyPreMacOSTahoe: Bool = true
@@ -68,7 +68,7 @@ struct GameCard: View {
 
 extension GameCard {
     struct ImageCard: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
 
         /// Binding that updates when image is empty (default to true)
         @Binding var isImageEmpty: Bool
@@ -88,7 +88,7 @@ extension GameCard {
 
         @ViewBuilder
         private var gameImage: some View {
-            AsyncImage(url: game.imageURL) { phase in
+            AsyncImage(url: game.verticalImageURL) { phase in
                 switch phase {
                 case .empty:
                     FallbackImageCard(game: $game)
@@ -162,13 +162,12 @@ extension GameCard {
                 }
             }
             .grayscale({
-                if let location = game.location,
-                   !files.fileExists(atPath: location.path),
-                   game.isInstalled {
-                    return 1.0
+                if case .installed(let location, _) = game.installationState,
+                   !files.fileExists(atPath: location.path) {
+                    return 1
+                } else {
+                    return 0
                 }
-
-                return 0.0
             }())
         }
     }
@@ -190,6 +189,6 @@ struct FadeInModifier: ViewModifier {
 }
 
 #Preview {
-    GameCard(game: .constant(placeholderGame(forSource: .local)))
+    GameCard(game: .constant(placeholderGame))
         .environmentObject(NetworkMonitor.shared)
 }

@@ -12,50 +12,30 @@ import SwiftUI
 struct GameInstallProgressView: View {
     var withPercentage: Bool = true
 
-    @ObservedObject private var operation: LegacyGameOperation = .shared
+    @Bindable private var operationManager: GameOperationManager = .shared
+
     @State private var isInstallStatusViewPresented: Bool = false
-    @State private var paused: Bool = false // For issue: https://github.com/derrod/legendary/issues/40
+
+    @State private var isStopGameModificationAlertPresented: Bool = false
+    @State private var isHoveringOverDestructiveButton: Bool = false
 
     var body: some View {
-        if operation.current != nil {
+        if let currentOperation = operationManager.queue.first {
             HStack {
-                OperationProgressView(operation: operation, withPercentage: withPercentage)
+                OperationProgressView(operation: currentOperation, withPercentage: withPercentage)
                     .layoutPriority(1)
 
-                StatusButton()
+                Button {
+                    isInstallStatusViewPresented = true
+                } label: {
+                    Image(systemName: "info")
+                }
+                .clipShape(.capsule)
+                .help("View operation progress")
+                .sheet(isPresented: $isInstallStatusViewPresented) {
+                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                }
 
-                StopButton(operation: operation)
-            }
-        }
-    }
-}
-
-extension GameInstallProgressView {
-    struct StatusButton: View {
-        @State private var isInstallStatusViewPresented: Bool = false
-
-        var body: some View {
-            Button {
-                isInstallStatusViewPresented = true
-            } label: {
-                Image(systemName: "info.circle")
-            }
-            .clipShape(.capsule)
-            .help("Show install status")
-            .sheet(isPresented: $isInstallStatusViewPresented) {
-                InstallStatusView(isPresented: $isInstallStatusViewPresented)
-            }
-        }
-    }
-
-    struct StopButton: View {
-        @ObservedObject var operation: LegacyGameOperation
-
-        @State private var isStopGameModificationAlertPresented: Bool = false
-        @State private var isHoveringOverDestructiveButton: Bool = false
-
-        var body: some View {
-            if let currentOperation = operation.current {
                 Button {
                     isStopGameModificationAlertPresented = true
                 } label: {
@@ -65,17 +45,21 @@ extension GameInstallProgressView {
                         }
                 }
                 .clipShape(.capsule)
-                .help("Stop installing")
+                .help("Cancel operation")
                 .onHover { hovering in
-                    withAnimation(.easeInOut(duration: 0.1)) {
+                    withAnimation {
                         isHoveringOverDestructiveButton = hovering
                     }
                 }
-                .alert(isPresented: $isStopGameModificationAlertPresented) {
-                    stopLegacyGameOperationAlert(
-                        isPresented: $isStopGameModificationAlertPresented,
-                        game: currentOperation.game
-                    )
+                .alert("Stop \(currentOperation.type.description.localizedLowercase) \(currentOperation.game.description)",
+                       isPresented: $isStopGameModificationAlertPresented) {
+                    Button("Stop", role: .destructive) {
+                        
+                    }
+
+                    Button("Cancel", role: .cancel) {
+
+                    }
                 }
             }
         }
@@ -84,26 +68,20 @@ extension GameInstallProgressView {
 
 extension GameInstallProgressView {
     struct OperationProgressView: View {
-        @ObservedObject var operation: LegacyGameOperation
+        var operation: GameOperation
 
-        var withPercentage: Bool = false
+        var withPercentage: Bool = false // TODO: @AppStorage
         var showInitializer: Bool = true
 
         var body: some View {
-            if let percentage = operation.status.progress?.percentage {
-                ProgressView(value: percentage, total: 100)
-                    .progressViewStyle(.linear)
-                    .help("\(Int(percentage))% complete")
-                    .buttonStyle(.plain)
-            } else if showInitializer {
-                ProgressView()
-                    .progressViewStyle(.linear)
-                    .help("Initializing...")
-                    .buttonStyle(.plain)
-            }
+            ProgressView(value: operation.progress.fractionCompleted)
+                .progressViewStyle(.linear)
+                .help("\(operation.progress.fractionCompleted * 100)% complete")
+                .buttonStyle(.plain)
 
-            if withPercentage, let percentage = operation.status.progress?.percentage {
-                Text("\(Int(percentage))%")
+            if withPercentage {
+                Text("\(operation.progress.fractionCompleted * 100)%")
+                    .layoutPriority(1)
                     .lineLimit(1)
             }
         }

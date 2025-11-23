@@ -10,10 +10,7 @@
 import SwiftUI
 
 struct ListGameCard: View {
-    @Binding var game: LegacyGame
-    @ObservedObject private var operation: LegacyGameOperation = .shared
-
-    @State private var isHoveringOverDestructiveButton: Bool = false
+    @Binding var game: Game
 
     @State private var isImageEmpty: Bool = true
 
@@ -58,7 +55,7 @@ struct ListGameCard: View {
 
 extension ListGameCard {
     struct ImageCard: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         @Binding var isImageEmpty: Bool
 
         @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
@@ -68,7 +65,7 @@ extension ListGameCard {
                 .fill(.quinary)
                 .frame(idealHeight: 120)
                 .overlay {
-                    AsyncImage(url: URL(string: Legendary.getImageURL(of: game, type: .normal) ?? .init())) { phase in
+                    AsyncImage(url: game.horizontalImageURL) { phase in
                         switch phase {
                         case .empty:
                             EmptyView()
@@ -114,6 +111,6 @@ extension ListGameCard {
 }
 
 #Preview {
-    ListGameCard(game: .constant(placeholderGame(forSource: .local)))
+    ListGameCard(game: .constant(placeholderGame))
         .environmentObject(NetworkMonitor.shared)
 }

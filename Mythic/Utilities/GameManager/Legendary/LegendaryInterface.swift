@@ -13,12 +13,12 @@ import OSLog
 import UserNotifications
 import RegexBuilder
 
+// FIXME: this code is on its way out. legendary will no longer be a Mythic dependency
 /**
  Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities.
 
  [Legendary GitHub Repository](https://github.com/derrod/legendary)
  */
-// FIXME: this code is on its way out. legendary will no longer be a Mythic dependency
 final class Legendary {
 
     static let configurationFolder: URL = Bundle.appHome!.appending(path: "Epic")
@@ -55,16 +55,12 @@ final class Legendary {
 
     private static var legendaryExecutableURL: URL { Bundle.main.url(forResource: "legendary/cli", withExtension: nil)! }
 
-    private static func constructEnvironment(withAdditionalFlags environment: [String: String]?) -> [String: String] {
+    private static func constructEnvironment(withAdditionalFlags environment: [String: String]) -> [String: String] {
         var constructedEnvironment: [String: String] = .init()
 
         constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configurationFolder.path
 
-        if let environment = environment {
-            constructedEnvironment.merge(environment, uniquingKeysWith: { $1 })
-        }
-
-        return constructedEnvironment
+        return constructedEnvironment.merging(environment, uniquingKeysWith: { $1 })
     }
 
     @MainActor
@@ -85,6 +81,7 @@ final class Legendary {
             if case .standardError = chunk.stream,
                let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
                let errorReason = match.last?.substring {
+                // TODO: dedicated handle for 'Failed to acquire installed data lock, only one instance of Legendary may install/import/move applications at a time.'
                 throw Legendary.GenericError(reason: String(errorReason))
             }
 
@@ -99,49 +96,40 @@ final class Legendary {
         currentDirectoryURL: URL? = nil
     ) async throws -> Process.CommandResult {
         let args = await applyOfflineFlagIfNeeded(arguments)
-        return try await Process.executeAsync(
+        return try await Process.execute(
             executableURL: legendaryExecutableURL,
             arguments: args,
-            environment: constructEnvironment(withAdditionalFlags: environment),
+            environment: constructEnvironment(withAdditionalFlags: environment ?? [:]),
             currentDirectoryURL: currentDirectoryURL
         )
     }
 
-    private static func startStream(
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil,
-        onChunk: (@Sendable (Process.OutputChunk) throws -> String?)? = nil
-    ) -> AsyncThrowingStream<Process.OutputChunk, Error> {
-        let env = constructEnvironment(withAdditionalFlags: environment)
-        return Process.stream(
-            executableURL: legendaryExecutableURL,
-            arguments: arguments,
-            environment: env,
-            currentDirectoryURL: currentDirectoryURL,
-            onChunk: onChunkWithLegendaryErrorHandling(onChunk)
-        )
-    }
-
+    // FIXME: implementation sucks
     @discardableResult
     static func executeStreamed(
         identifier: String,
         arguments: [String],
         environment: [String: String]? = nil,
         currentDirectoryURL: URL? = nil,
+        throwsOnChunkError: Bool = true,
         onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?
     ) async -> Task<Void, Error> {
         let consumer = Task {
             let args = await applyOfflineFlagIfNeeded(arguments)
-            let stream = startStream(
+            let environment = constructEnvironment(withAdditionalFlags: environment ?? [:])
+
+            let stream = Process.stream(
+                executableURL: legendaryExecutableURL,
                 arguments: args,
                 environment: environment,
                 currentDirectoryURL: currentDirectoryURL,
-                onChunk: onChunk
+                throwsOnChunkError: throwsOnChunkError,
+                onChunk: onChunkWithLegendaryErrorHandling(onChunk)
             )
 
             do {
-                for try await _ in stream {
+                for try await chunk in stream {
+                    _ = chunk
                     // work handled in onChunk
                 }
             } catch is CancellationError {
@@ -152,12 +140,13 @@ final class Legendary {
                 throw error
             }
 
+            // FIXME: THIS WILL NOT FIRE. you can't have this in prod mate
             // clean up tracking after completion/cancellation/error
             await RunningCommands.shared.remove(id: identifier)
         }
 
         await RunningCommands.shared.set(id: identifier, task: consumer)
-        return consumer
+        return consumer // FIXME: try await consumer.value instead
     }
 
     /// Parse legendary's DLManager status output, and use it to update a `Progress` object.
@@ -166,10 +155,10 @@ final class Legendary {
         // these regexes are not dynamic, so there's no reason why they should fail to initialise
         // swiftlint:disable force_try
         let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
-        let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
-        let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
+        // let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
+        // let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
         let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
-        let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
+        // let diskSpeedRegex: Regex = try! .init(#"\+ Disk\s+- (?<write>[\d.]+) \w+/\w+ \(write\) / (?<read>[\d.]+) \w+/\w+ \(read\)"#)
         // swiftlint:enable force_try
 
         /*
@@ -183,7 +172,7 @@ final class Legendary {
 
         if let match = try? progressRegex.firstMatch(in: output) {
             // an assumption is made that `.completedUnitCount` is set to 100.
-            progress.completedUnitCount = Int64(match["percentage"]?.substring ?? .init()) ?? 0
+            progress.completedUnitCount = Int64(Double(match["percentage"]?.substring ?? .init())?.rounded() ?? 0)
 
             progress.estimatedTimeRemaining = TimeInterval(HH_MM_SSString: String(match["eta"]?.substring ?? .init()))
             progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
@@ -200,11 +189,74 @@ final class Legendary {
         // for download speeds, use * pow(1024, 2), to convert from MiB to B
     }
 
+    /*
+     usage: legendary install <App Name> [options]
+
+     Aliases: download, update
+
+     positional arguments:
+       <App Name>            Name of the app
+
+     optional arguments:
+       -h, --help            show this help message and exit
+       --base-path <path>    Path for game installations (defaults to ~/Games)
+       --game-folder <path>  Folder for game installation (defaults to folder specified in
+                             metadata)
+       --max-shared-memory <size>
+                             Maximum amount of shared memory to use (in MiB), default: 1 GiB
+       --max-workers <num>   Maximum amount of download workers, default: min(2 * CPUs, 16)
+       --manifest <uri>      Manifest URL or path to use instead of the CDN one (e.g. for
+                             downgrading)
+       --old-manifest <uri>  Manifest URL or path to use as the old one (e.g. for testing
+                             patching)
+       --delta-manifest <uri>
+                             Manifest URL or path to use as the delta one (e.g. for testing)
+       --base-url <url>      Base URL to download from (e.g. to test or switch to a different
+                             CDNs)
+       --force               Download all files / ignore existing (overwrite)
+       --disable-patching    Do not attempt to patch existing installation (download entire
+                             changed files)
+       --download-only, --no-install
+                             Do not install app and do not run prerequisite installers after
+                             download
+       --update-only         Only update, do not do anything if specified app is not installed
+       --dlm-debug           Set download manager and worker processes' loglevel to debug
+       --platform <Platform>
+                             Platform for install (default: installed or Windows)
+       --prefix <prefix>     Only fetch files whose path starts with <prefix> (case
+                             insensitive)
+       --exclude <prefix>    Exclude files starting with <prefix> (case insensitive)
+       --install-tag <tag>   Only download files with the specified install tag
+       --enable-reordering   Enable reordering optimization to reduce RAM requirements during
+                             download (may have adverse results for some titles)
+       --dl-timeout <sec>    Connection timeout for downloader (default: 10 seconds)
+       --save-path <path>    Set save game path to be used for sync-saves
+       --repair              Repair installed game by checking and redownloading
+                             corrupted/missing files
+       --repair-and-update   Update game to the latest version when repairing
+       --ignore-free-space   Do not abort if not enough free space is available
+       --disable-delta-manifests
+                             Do not use delta manifests when updating (may increase download
+                             size)
+       --reset-sdl           Reset selective downloading choices (requires repair to download
+                             new components)
+       --skip-sdl            Skip SDL prompt and continue with defaults (only required game
+                             data)
+       --disable-sdl         Disable selective downloading for title, reset existing
+                             configuration (if any)
+       --preferred-cdn <hostname>
+                             Set the hostname of the preferred CDN to use when available
+       --no-https            Download games via plaintext HTTP (like EGS), e.g. for use with a
+                             lan cache
+       --with-dlcs           Automatically install all DLCs with the base game
+       --skip-dlcs           Do not ask about installing DLCs.
+     */
+
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
-                        qos: QualityOfService,
+                        qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        gameDirectoryURL: URL? = Bundle.appGames) async throws {
+                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
         guard game.supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
         }
@@ -237,12 +289,15 @@ final class Legendary {
 
                 return nil
             }
+
+            try await consumer.value
         }
 
+        operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
     }
 
-    static func update(game: EpicGamesGame, qos: QualityOfService) async throws {
+    static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
         let arguments: [String] = ["-y", "install", game.id, "--update-only"]
 
         let operation: GameOperation = .init(game: game, type: .update) { progress in
@@ -258,20 +313,28 @@ final class Legendary {
 
                 return nil
             }
+
+            try await consumer.value
         }
 
+        operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
     }
 
-    static func repair(game: EpicGamesGame, qos: QualityOfService) async throws {
+    static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
         let arguments: [String] = ["-y", "install", game.id, "--repair"]
 
         let operation: GameOperation = .init(game: game, type: .repair) { progress in
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
+            // note that throwsOnChunkError is disabled, as if a file does not match hash, a `GenericError` is thrown
+            // due to the custom error handling in onChunkWithLegendaryErrorHandling.
+            // thus, chunk errors are only acknowledged but not thrown.
+            // this is bad though for obvious reasons
             let consumer = await Legendary.executeStreamed(identifier: "repair",
-                                                           arguments: arguments) { chunk in
+                                                           arguments: arguments,
+                                                           throwsOnChunkError: false) { chunk in
                 if case .standardOutput = chunk.stream {
                     // this regex is not dynamic, so there's no reason why they should fail to initialise
                     // swiftlint:disable force_try
@@ -285,7 +348,7 @@ final class Legendary {
                      */
 
                     if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
-                        progress.completedUnitCount = Int64(match["percentage"]?.substring ?? .init()) ?? 0
+                        progress.completedUnitCount = Int64(Double(match["percentage"]?.substring ?? .init())?.rounded() ?? 0)
                         progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
                         progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
 
@@ -293,21 +356,36 @@ final class Legendary {
                         progress.throughput = (Int(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0) * Int(pow(1024.0, 2.0))
                     }
                 }
+
                 return nil
             }
+
+            try await consumer.value
         }
 
+        operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
     }
 
+    /*
+     usage: legendary uninstall [-h] [--keep-files] [--skip-uninstaller] <App Name>
+
+     positional arguments:
+       <App Name>          Name of the app
+
+     optional arguments:
+       -h, --help          show this help message and exit
+       --keep-files        Keep files but remove game from Legendary database
+       --skip-uninstaller  Skip running the uninstaller
+     */
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
                           runUninstallerIfPossible: Bool = true) async throws {
         let operation: GameOperation = .init(game: game, type: .uninstall) { _ in
             var arguments: [String] = ["-y", "uninstall", game.id]
 
-            if persistFiles { arguments += ["--keep-files"] }
-            if !runUninstallerIfPossible { arguments += ["--skip-uninstaller"] }
+            if persistFiles { arguments.append("--keep-files") }
+            if !runUninstallerIfPossible { arguments.append("--skip-uninstaller") }
 
             // legendary is inconsistent with this,
             // may have to use files.removeItem(atPath:)
@@ -317,7 +395,19 @@ final class Legendary {
         await Game.operationManager.queueOperation(operation)
     }
 
-    @MainActor static func move(game: EpicGamesGame, to newLocation: URL) async throws {
+    /*
+     usage: legendary move [-h] [--skip-move] <App Name> <New Base Path>
+
+     positional arguments:
+       <App Name>       Name of the app
+       <New Base Path>  Directory to move game folder to
+
+     optional arguments:
+       -h, --help       show this help message and exit
+       --skip-move      Only change legendary database, do not move files (e.g. if
+                        already moved)
+     */
+    static func move(game: EpicGamesGame, to newLocation: URL) async throws {
         guard case .installed(let currentLocation, _) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -328,17 +418,79 @@ final class Legendary {
             try await Legendary.execute(arguments: ["move", game.id, newLocation.path, "--skip-move"])
         }
 
-        Game.operationManager.queueOperation(operation)
+        await Game.operationManager.queueOperation(operation)
+    }
+
+    /*
+     usage: legendary import [-h] [--disable-check] [--with-dlcs] [--skip-dlcs]
+                             [--platform <Platform>]
+                             <App Name> <Installation directory>
+
+     positional arguments:
+       <App Name>            Name of the app
+       <Installation directory>
+                             Path where the game is installed
+
+     optional arguments:
+       -h, --help            show this help message and exit
+       --disable-check       Disables completeness check of the to-be-imported game
+                             installation (useful if the imported game is a much older version
+                             or missing files)
+       --with-dlcs           Automatically attempt to import all DLCs with the base game
+       --skip-dlcs           Do not ask about importing DLCs.
+       --platform <Platform>
+                             Platform for import (default: Mac on macOS, otherwise Windows)
+     */
+    static func `import`(game: EpicGamesGame,
+                         repairIfNecessary: Bool = true,
+                         withDLCs: Bool,
+                         platform: Game.Platform,
+                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
+        guard game.supportedPlatforms.contains(platform) else { return } // TODO: throw error
+
+        var arguments: [String] = ["-y", "import"]
+
+        if !repairIfNecessary { arguments.append("--disable-check") }
+        if withDLCs { arguments.append("--with-dlcs") } else { arguments.append("--skip-dlcs") }
+
+        arguments += ["--platform", matchPlatform(for: platform)]
+        arguments.append(game.id) // append in order, as specified by legendary's '--help' argument
+
+        guard let gameDirectoryURL = gameDirectoryURL else {
+            log.error("Failed to infer default base URL, import cannot continue")
+            throw CocoaError(.fileReadUnknown)
+        }
+        arguments.append(gameDirectoryURL.path)
+
+        let operation: GameOperation = .init(game: game, type: .move) { _ in
+            let consumer = await Legendary.executeStreamed(identifier: "import", arguments: arguments) { _ /* chunk */ in
+                /* unnecessary completion logic
+                if case .standardError = chunk.stream,
+                   let importedRegex = try? Regex(#"INFO: Game "(.*?)" has been imported."#),
+                   chunk.output.contains(importedRegex) {
+                    // logic unneeded here.
+                }
+                 */
+
+                return nil
+            }
+
+            try await consumer.value
+        }
+
+        await Game.operationManager.queueOperation(operation)
     }
 
     @discardableResult
     static func signIn(authKey: String) async throws -> String {
         let result = try await execute(arguments: ["auth", "--code", authKey])
-        if let match = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#).firstMatch(in: result.standardError),
+        if let successRegex = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#),
+           let match = try? successRegex.firstMatch(in: result.standardError),
            let username = match["username"]?.substring {
             await GameListViewModel.shared.refresh()
             return String(username)
         }
+
         throw SignInError()
     }
 
@@ -350,12 +502,12 @@ final class Legendary {
     /**
      Launches games.
      */
-    @MainActor static func launch(game: EpicGamesGame) async throws {
+    static func launch(game: EpicGamesGame) async throws {
         guard case .installed(_, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let operation: GameOperation = .init(game: game, type: .launch) { progress in
+        let operation: GameOperation = .init(game: game, type: .launch) { _ in
             guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
 
             var arguments: [String] = ["launch", game.id]
@@ -381,7 +533,7 @@ final class Legendary {
                                         environment: environment)
         }
 
-        Game.operationManager.queueOperation(operation)
+        await Game.operationManager.queueOperation(operation)
     }
 
     // MARK: Get Game Platform Method
@@ -477,13 +629,12 @@ final class Legendary {
             let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
             let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
 
-            var game: EpicGamesGame = .init(id: metadata.appName,
+            let game: EpicGamesGame = .init(id: metadata.appName,
                                             title: metadata.appTitle,
                                             installationState: .uninstalled)
 
-            let dateFormatter: ISO8601DateFormatter = .init()
             let latestGameRelease = metadata.storeMetadata.releaseInfo
-                .max(by: { $0.dateAdded < $1.dateAdded })
+                .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })
 
             game.supportedPlatforms = latestGameRelease?.platform ?? .init()
 
@@ -523,7 +674,7 @@ final class Legendary {
     }
 
     /// Create an asynchronous task to update Legendary's stored metadata.
-    @MainActor static func updateMetadata(forced: Bool = false) {
+    @MainActor static func updateMetadata(forced: Bool = true) {
         if VariableManager.shared.getVariable("isUpdatingLibrary") != true {
             var arguments: [String] = ["list"]
             if forced { arguments.append("--force-refresh") }

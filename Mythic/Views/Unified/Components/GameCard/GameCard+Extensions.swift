@@ -10,15 +10,16 @@
 import Foundation
 import SwiftUI
 
+// TODO: architectural refactor, for new GameOperationManager
 // swiftlint:disable nesting
 extension GameCard {
     struct Buttons {
         struct Prominent {
             struct PlayButton: View {
-                @Binding var game: LegacyGame
+                @Binding var game: Game
                 var withLabel: Bool = false
 
-                @ObservedObject private var operation: LegacyGameOperation = .shared
+                @Bindable private var operationManager: GameOperationManager = .shared
 
                 @State private var isLaunchErrorAlertPresented = false
                 @State private var launchError: Error?
@@ -38,7 +39,9 @@ extension GameCard {
                             }
                         }
                     } label: {
-                        if game.isLaunching {
+                        if let operation = operationManager.queue.first,
+                           operation.game == game,
+                           case .launch = operation.type {
                             HStack {
                                 ProgressView()
                                     .controlSize(.small)
@@ -67,9 +70,8 @@ extension GameCard {
                             }
                         }
                     }
-                    .disabled(game.isLaunching)
-                    .disabled(operation.runningGameIDs.contains(game.id))
-                    .disabled(operation.current?.game == game)
+                    .disabled(operationManager.queue.first?.game == game)
+                    .disabled(game.isGameRunning)
                     .help("Play \"\(game.title)\"")
 
                     .background(.white)
@@ -107,55 +109,48 @@ extension GameCard {
             }
 
             struct InstallButton: View {
-                @Binding var game: LegacyGame
+                @Binding var game: Game
                 var withLabel: Bool = false
 
                 @EnvironmentObject var networkMonitor: NetworkMonitor
-                @ObservedObject private var operation: LegacyGameOperation = .shared
+                @Bindable private var operationManager: GameOperationManager = .shared
 
                 @State private var isInstallSheetPresented = false
 
                 var body: some View {
-                    if operation.current?.game == game {
-                        GameInstallProgressView()
-                    } else {
-                        Button {
-                            isInstallSheetPresented = true
-                        } label: {
-                            if withLabel {
-                                Label("Install", systemImage: "arrow.down.to.line")
-                            } else {
-                                Image(systemName: "arrow.down.to.line")
-                                    .padding(2)
-                            }
+                    Button {
+                        isInstallSheetPresented = true
+                    } label: {
+                        if withLabel {
+                            Label("Install", systemImage: "arrow.down.to.line")
+                        } else {
+                            Image(systemName: "arrow.down.to.line")
+                                .padding(2)
                         }
-                        .disabled(networkMonitor.epicAccessibilityState != .accessible || operation.queue.contains(where: { $0.game == game }))
-                        .help("Install \"\(game.title)\"")
+                    }
+                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                    .disabled(operationManager.queue.first?.game == game)
+                    .help("Install \"\(game.title)\"")
 
-                        .sheet(isPresented: $isInstallSheetPresented) {
-                            InstallGameView(game: $game, isPresented: $isInstallSheetPresented)
-                        }
+                    .sheet(isPresented: $isInstallSheetPresented) {
+                        InstallGameView(game: $game, isPresented: $isInstallSheetPresented)
                     }
                 }
             }
         }
 
         struct VerificationButton: View {
-            @Binding var game: LegacyGame
+            @Binding var game: Game
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
-            @ObservedObject private var operation: LegacyGameOperation = .shared
+            @Bindable private var operationManager: GameOperationManager = .shared
 
             var body: some View {
                 Button {
-                    operation.queue.append(
-                        LegacyGameOperation.InstallArguments(
-                            game: game,
-                            platform: game.platform,
-                            type: .repair
-                        )
-                    )
+                    Task { @MainActor [game] in
+                        try await game.verifyInstallation()
+                    }
                 } label: {
                     if withLabel {
                         Label("Verify", systemImage: "checkmark.circle.badge.questionmark")
@@ -169,29 +164,24 @@ extension GameCard {
             }
         }
         struct UpdateButton: View {
-            @Binding var game: LegacyGame
+            @Binding var game: Game
             var withLabel: Bool = false
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
-            @ObservedObject private var operation: LegacyGameOperation = .shared
-
+            @Bindable private var operationManager: GameOperationManager = .shared
             var body: some View {
                 Button {
-                    operation.queue.append(
-                        LegacyGameOperation.InstallArguments(
-                            game: game,
-                            platform: game.platform,
-                            type: .update
-                        )
-                    )
+                    Task(priority: .userInitiated) {
+                        try await game.update()
+                    }
                 } label: {
                     if withLabel {
-                        if game.needsUpdate {
-                            Label("Update", systemImage: "arrow.triangle.2.circlepath")
-                        } else if game.source != .local {
-                            Label("Up to date", systemImage: "checkmark")
+                        if game.isUpdateAvailable == nil {
+                            Label("Update checking unsupported",
+                                  systemImage: "checkmark.circle.dotted")
                         } else {
-                            Label("Update checking unsupported", systemImage: "checkmark.circle.dotted")
+                            Label("Update",
+                                  systemImage: "arrow.triangle.2.circlepath")
                         }
                     } else {
                         Image(systemName: "arrow.triangle.2.circlepath")
@@ -199,14 +189,15 @@ extension GameCard {
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .disabled(operation.runningGameIDs.contains(game.id))
-                .disabled(!game.needsUpdate)
+                .disabled(game.isGameRunning)
+                .disabled(operationManager.queue.first?.game == game)
+                .disabled(game.isUpdateAvailable == false)
                 .help("Update \"\(game.title)\"")
             }
         }
 
         struct SettingsButton: View {
-            @Binding var game: LegacyGame
+            @Binding var game: Game
             var withLabel: Bool = false
 
             @Binding var isGameSettingsSheetPresented: Bool
@@ -223,20 +214,20 @@ extension GameCard {
                     }
                 }
                 .help("Modify settings for \"\(game.title)\"")
-                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu`. smh so much for modularity
-                    // FIXME: you must add the sheet below to whatever view you call this button in!!
+                // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu`.
+                // FIXME: you must add the sheet below to whatever view you call this button in!!
                 /*
                  .sheet(isPresented: $isGameSettingsSheetPresented) {
-                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                         .padding()
-                         .frame(minWidth: 750)
+                 GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
+                 .padding()
+                 .frame(minWidth: 750)
                  }
                  */
             }
         }
 
         struct FavouriteButton: View {
-            @Binding var game: LegacyGame
+            @Binding var game: Game
             var withLabel: Bool = false
 
             @State private var hoveringOverFavouriteButton = false
@@ -266,18 +257,14 @@ extension GameCard {
         }
 
         struct DeleteButton: View {
-            @Binding var game: LegacyGame
+            @Binding var game: Game
             var withLabel: Bool = false
 
             @Binding var isUninstallSheetPresented: Bool
 
-            @ObservedObject private var operation: LegacyGameOperation = .shared
+            @Bindable private var operationManager: GameOperationManager = .shared
 
             @State private var hoveringOverDestructiveButton = false
-
-            var isDeleteDisabled: Bool {
-                operation.current?.game != nil || operation.runningGameIDs.contains(game.id)
-            }
 
             var body: some View {
                 Button {
@@ -290,7 +277,8 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(isDeleteDisabled)
+                .disabled(operationManager.queue.first?.game == game)
+                .disabled(game.isGameRunning)
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: 0.1)) {
@@ -298,18 +286,18 @@ extension GameCard {
                     }
                 }
                 // FIXME: unable to propagate in menuview - this view is not in the hierarchy if called by `Menu` smh so much for modularity.
-                    // FIXME: you must add the sheet below to whatever view you call this button in!!
+                // FIXME: you must add the sheet below to whatever view you call this button in!!
                 /*
-                .sheet(isPresented: $isUninstallSheetPresented) {
-                    UninstallGameView(game: $game, isPresented: $isUninstallSheetPresented)
-                }
+                 .sheet(isPresented: $isUninstallSheetPresented) {
+                 UninstallGameView(game: $game, isPresented: $isUninstallSheetPresented)
+                 }
                  */
             }
         }
     }
 
     struct MenuView: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         @State private var isGameSettingsSheetPresented: Bool = false
         @State private var isUninstallSheetPresented: Bool = false
 
@@ -339,19 +327,23 @@ extension GameCard {
                 }
             }
             .sheet(isPresented: $isUninstallSheetPresented) {
-                UninstallGameView(game: $game, isPresented: $isUninstallSheetPresented)
+                UninstallGameView(game: $game,
+                                  isPresented: $isUninstallSheetPresented)
             }
         }
     }
 
     struct ButtonsView: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         var withLabel = false
-        @ObservedObject private var operation: LegacyGameOperation = .shared
+
+        @Bindable private var operationManager: GameOperationManager = .shared
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
         var body: some View {
-            if game.isInstalled {
+            if operationManager.queue.first?.game == game {
+                GameInstallProgressView()
+            } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)
                     .layoutPriority(1)
@@ -362,26 +354,19 @@ extension GameCard {
     }
 
     struct SubscriptedInfoView: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
 
         var body: some View {
-            SubscriptedTextView({
-                if case .epic = game.source {
-                    return "Epic" // "Epic Games" is too verbose
-                }
+            SubscriptedTextView(game.storefront?.description ?? "Unknown")
 
-                return game.source.rawValue
-            }())
-
-            if let recent = try? defaults.decodeAndGet(LegacyGame.self, forKey: "recentlyPlayed"),
-               recent == game {
+            if Game.store.recent == game {
                 SubscriptedTextView("Recent")
             }
         }
     }
 
     struct TitleAndInformationView: View {
-        @Binding var game: LegacyGame
+        @Binding var game: Game
         var font: Font = .title
         var withSubscriptedInfo: Bool = true
 

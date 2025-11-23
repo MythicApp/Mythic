@@ -86,7 +86,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw Engine.NotInstalledError()
         }
 
-        return try await Process.executeAsync(
+        return try await Process.execute(
             executableURL: Engine.directory.appending(path: "wine/bin/wine64"),
             arguments: arguments,
             environment: constructEnvironment(
@@ -238,7 +238,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         }
     }
 
-    static func purgeD3DMetalShaderCache(game: LegacyGame? = nil) throws {
+    static func purgeD3DMetalShaderCache() throws {
         let output = try Process.execute(
             executableURL: .init(filePath: "/usr/bin/getconf"),
             arguments: ["DARWIN_USER_CACHE_DIR"]

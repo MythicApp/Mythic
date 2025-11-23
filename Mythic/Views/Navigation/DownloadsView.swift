@@ -11,29 +11,28 @@ import SwiftUI
 import Shimmer
 
 struct DownloadsView: View {
-    @ObservedObject private var operation: LegacyGameOperation = .shared
-    @State private var cardsUpdated: Bool = false
-    
+    @Bindable private var operationManager: GameOperationManager = .shared
+
     var body: some View {
-        if let currentGame = operation.current?.game {
+        // will also implicitly check if currentOperation is empty
+        if let currentOperation = operationManager.queue.first {
             VStack {
-                DownloadCard(game: currentGame, style: .prominent)
-                
+                DownloadCard(game: .constant(currentOperation.game))
+
                 Divider()
                 
-                if operation.queue.isEmpty {
+                if operationManager.queue.count == 1 {
                     ContentUnavailableView(
-                        "No queued downloads.",
+                        "No queued game operations.",
                         systemImage: "externaldrive.badge.checkmark",
                         description: .init("""
-                        If you attempt to download more than one game at the same time, it'll be added to this queue.
-                        """)
+                            If you attempt to download more than one game at the same time, it'll be added to this queue.
+                            """)
                     )
                 } else {
-                    ForEach(operation.queue, id: \.self) { args in
-                        DownloadCard(game: args.game, style: .normal)
+                    ForEach(operationManager.queue.dropFirst(), id: \.self) { operation in
+                        DownloadCard(game: .constant(operation.game))
                     }
-                    .animation(.easeInOut, value: cardsUpdated)
                 }
                 
                 Spacer()

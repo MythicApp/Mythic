@@ -13,108 +13,114 @@ import Shimmer
 import UniformTypeIdentifiers
 import OSLog
 
-// FIXME: refactor: warning ‼️ below code may need a cleanup
+// FIXME: unify with GameImportView.Epic
 extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
 
-        @State private var game: LegacyGame = placeholderGame(forSource: .local)
-        @State private var imageURLString: String = .init()
-        @State private var title: String = .init()
-        @State private var platform: LegacyGame.Platform = .macOS
-        @State private var location: URL?
-
+        // TODO: should be local game, for platforms' sake
+        @State private var game: Game = .init(id: .init(),
+                                              title: .init(),
+                                              installationState: .uninstalled)
+        
+        @State private var platform: Game.Platform = .macOS
+        @State private var location: URL = .temporaryDirectory
+        
         @State private var isImageEmpty: Bool = true
         @State private var imageRefreshFlag: Bool = false
-
+        
         @State private var isGameLocationFileImporterPresented: Bool = false
-
+        
         private func updateGameTitle() {
-            if let location = location, title.isEmpty {
-                switch platform {
-                case .macOS:
-                    if let bundle = Bundle(path: location.path),
-                       let bundleName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
-                        title = bundleName
-                    }
-                case .windows:
-                    title = location.lastPathComponent
-                        .replacingOccurrences(of: ".exe", with: "")
+            guard location != .temporaryDirectory, game.title.isEmpty else { return }
+            switch platform {
+            case .macOS:
+                if let bundle = Bundle(path: location.path),
+                   let bundleName = bundle.object(forInfoDictionaryKey: "CFBundleName") as? String {
+                    game.title = bundleName
                 }
+            case .windows:
+                game.title = location.lastPathComponent.replacingOccurrences(of: ".exe", with: "")
             }
         }
-
+        
+        private let modifyingStatusLock: NSLock = .init()
+        private func updateGameInstallationState(location: URL?, platform: Game.Platform?) {
+            modifyingStatusLock.withLock {
+                game.installationState = .installed(location: location ?? self.location,
+                                                    platform: platform ?? self.platform)
+            }
+        }
+        
         var body: some View {
             VStack {
                 HStack {
-                    if !imageURLString.isEmpty {
-                        VStack {
-                            GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                                .id(imageRefreshFlag)
-
-                            Label("Images with a 3:4 aspect ratio fit the best.", systemImage: "info")
-                                .symbolVariant(.circle)
-                                .font(.footnote)
-                                .foregroundStyle(.placeholder)
-                        }
-                        .padding([.leading, .top])
+                    VStack {
+                        GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                            .id(imageRefreshFlag)
+                        
+                        Label("Images with a 3:4 aspect ratio are preferred.",
+                              systemImage: "info")
+                            .symbolVariant(.circle)
+                            .foregroundStyle(.secondary)
+                            .ignoresSafeArea()
+                            .font(.footnote)
                     }
+                    .padding([.leading, .top])
 
-                    Form {
-                        TextField("What should we call this game?", text: $title)
-                            .onChange(of: title) { game.title = $1 }
+                    VStack {
+                        Form {
+                            TextField("Title", text: $game.title)
 
-                        Picker("Choose the game's native platform:", selection: $platform) {
-                            ForEach(LegacyGame.Platform.allCases, id: \.self) {
-                                Text($0.rawValue)
-                            }
-                        }
-                        .task { game.platform = platform }
-                        .onChange(of: platform) {
-                            game.platform = $1
-                            title = .init()
-                            location = nil
-                        }
-
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text("Choose the game's install location:")
-                                if let location = location {
-                                    Text(location.prettyPath)
-                                        .foregroundStyle(.placeholder)
+                            Picker("Platform", systemImage: "gamecontroller", selection: $platform) {
+                                ForEach(Game.Platform.allCases, id: \.self) {
+                                    Text($0.description)
                                 }
                             }
-
-                            if let location = location,
-                               !files.isReadableFile(atPath: location.path) {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolVariant(.fill)
-                                    .help("File/Folder is not readable by Mythic.")
+                            .onChange(of: platform) {
+                                updateGameInstallationState(location: location, platform: $1)
                             }
 
-                            Spacer()
+                            // FIXME: boilerplate, shared with GameImportView.Epic
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Label("Location", systemImage: "folder")
+                                    if location != .temporaryDirectory {
+                                        Text(location.prettyPath)
+                                            .foregroundStyle(.placeholder)
+                                    }
+                                }
 
-                            Button("Browse...") {
-                                isGameLocationFileImporterPresented = true
-                            }
-                            .fileImporter(
-                                isPresented: $isGameLocationFileImporterPresented,
-                                allowedContentTypes: allowedContentTypes(for: platform)
-                            ) { result in
-                                if case .success(let success) = result {
-                                    location = success
+                                if !files.isReadableFile(atPath: location.path) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .symbolVariant(.fill)
+                                        .help("File/Folder is not readable by Mythic.")
+                                }
+
+                                Spacer()
+
+                                Button("Browse...") {
+                                    isGameLocationFileImporterPresented = true
+                                }
+                                .fileImporter(
+                                    isPresented: $isGameLocationFileImporterPresented,
+                                    allowedContentTypes: allowedContentTypes(for: platform)
+                                ) { result in
+                                    if case .success(let success) = result {
+                                        location = success
+                                    }
                                 }
                             }
-                        }
-                        .onChange(of: location) { _, newValue in
-                            updateGameTitle()
-                            game.location = newValue
-                        }
+                            .onChange(of: location) {
+                                updateGameTitle()
+                                updateGameInstallationState(location: $1, platform: platform)
+                            }
 
-                        GameCard.ImageURLModifierView(game: $game, imageURLString: $imageURLString)
-                            .onChange(of: imageURLString, { imageRefreshFlag.toggle() })
+                            GameCard.ImageURLModifierView(game: $game,
+                                                          imageURL: $game._verticalImageURL)
+                        }
+                        .formStyle(.grouped)
                     }
-                    .formStyle(.grouped)
                 }
 
                 HStack {
@@ -125,23 +131,22 @@ extension GameImportView {
                     Spacer()
 
                     Button("Done") {
-                        LocalGames.library?.insert(game)
+                        Game.store.games.insert(game)
                         isPresented = false
                     }
-                    .disabled(location == nil)
-                    .disabled(title.isEmpty)
+                    .disabled(location == .temporaryDirectory)
+                    .disabled(game.title.isEmpty)
                     .buttonStyle(.borderedProminent)
                 }
-                    .padding()
+                .padding([.horizontal, .bottom])
             }
         }
-
-        private func allowedContentTypes(for platform: LegacyGame.Platform) -> [UTType] {
+        
+        // FIXME: boilerplate, shared with GameImportView.Epic
+        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
             switch platform {
-            case .macOS:
-                return [.application]
-            case .windows:
-                return [.exe]
+            case .macOS:    [.application]
+            case .windows:  [.exe]
             }
         }
     }

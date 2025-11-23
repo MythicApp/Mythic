@@ -42,7 +42,8 @@ struct ContainerListView: View {
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
                     .sheet(isPresented: $isContainerConfigurationViewPresented) {
-                        ContainerConfigurationView(containerURL: container.url, isPresented: $isContainerConfigurationViewPresented)
+                        ContainerConfigurationView(containerURL: .constant(container.url),
+                                                   isPresented: $isContainerConfigurationViewPresented)
                     }
 
                     Button {
@@ -79,7 +80,7 @@ struct ContainerListView: View {
 }
 
 struct ContainerConfigurationView: View {
-    var containerURL: URL
+    @Binding var containerURL: URL
     @Binding var isPresented: Bool
 
     @State private var uninstallerActive: Bool = false

@@ -15,31 +15,16 @@ import SemanticVersion
 
 /// A simpler alias of `FileManager.default`.
 nonisolated(unsafe) let files: FileManager = .default
-
 /// A simpler alias of `UserDefaults.standard`.
 nonisolated(unsafe) let defaults: UserDefaults = .standard
-
 /// A simpler alias of `NSWorkspace.shared`.
 nonisolated(unsafe) let workspace: NSWorkspace = .shared
-
 /// A simpler alias of `NSApp[lication].shared`.
 @MainActor let sharedApp: NSApplication = .shared
-
+/// A simpler alias of `UNUserNotificationCenter.current()`
 nonisolated(unsafe) let notifications: UNUserNotificationCenter = .current()
 
-let mainLock: NSRecursiveLock = .init()
-
 nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
-
-var unifiedGames: [LegacyGame] { (LocalGames.library ?? []) + ((try? Legendary.getInstallable()) ?? []) }
-
-final class SafeErrorStorage: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value: Error?
-    
-    func set(_ newValue: Error) { lock.withLock { value = newValue } }
-    func get() -> Error? { lock.withLock { value } }
-}
 
 var appVersion: SemanticVersion? {
     guard let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
@@ -47,7 +32,7 @@ var appVersion: SemanticVersion? {
           let appVersion: SemanticVersion = .init("\(shortVersion)+\(bundleVersion)") else {
         return nil
     }
-    
+
     return appVersion
 }
 

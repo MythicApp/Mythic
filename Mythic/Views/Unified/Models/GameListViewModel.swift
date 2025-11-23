@@ -12,197 +12,55 @@ import SwiftUI
 import Combine
 import OSLog
 
-@MainActor
-final class GameListViewModel: ObservableObject {
+@Observable @MainActor final class GameListViewModel {
     static let shared: GameListViewModel = .init()
 
-    struct FilterOptions: Equatable, Sendable {
-        var showInstalled: Bool = false
-        var platform: LegacyGame.InclusivePlatform = .all
-        var source: LegacyGame.InclusiveSource = .all
+    var searchString: String = .init()
+    var filterOptions: FilterOptions = .init()
+    var games: [Game] {
+        Game.store.games
+            .sorted(by: { $0.title < $1.title })
+            .sorted(by: { $0.installationState > $1.installationState })
     }
+    var refreshFlag: Bool = false
 
-    enum Layout: String, CaseIterable, Sendable, Codable {
-        case grid = "Grid"
-        case list = "List"
-    }
-
-    enum SortCriteria: CaseIterable, Sendable {
-        case favorite
-        case installed
-        case title
-    }
-
-    @Published var searchString: String = .init()
-    @Published var filterOptions: FilterOptions = .init()
-    @Published var games: [LegacyGame] = []
-    @Published var refreshFlag: Bool = false
-
-    private var cancellables: Set<AnyCancellable> = .init()
-    private let installedGamesCache: InstalledGamesCache = .init()
-    private var sortCriteria: [SortCriteria] = [.favorite, .installed, .title]
-    private let debounceInterval: TimeInterval = 0.3
+    private var sortOptions: [SortOptions] = [.favorite, .installed, .title]
     private let logger: Logger = .custom(category: "GameListViewModel")
-
-    private init() {
-        setupBindings()
-        updateGames()
-    }
 
     /// Refreshes the game list and invalidates the installed games cache
     func refresh() {
         VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
 
         Task(priority: .userInitiated) {
-            await installedGamesCache.invalidate()
-
-            withAnimation {
-                refreshFlag.toggle()
-            }
-            updateGames()
+            try? await Game.store.refreshFromStorefronts()
+            withAnimation { refreshFlag.toggle() }
 
             VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
         }
     }
 
     /// Updates the sort criteria and refreshes the game list
-    func setSortCriteria(_ criteria: [SortCriteria]) {
-        sortCriteria = criteria
-        updateGames()
+    func setSortOptions(_ options: [SortOptions]) {
+        sortOptions = options
+        // updateGames()
     }
 }
 
-private extension GameListViewModel {
-    func setupBindings() {
-        $searchString
-            .debounce(for: .seconds(debounceInterval), scheduler: DispatchQueue.main)
-            .sink { [weak self] _ in
-                self?.updateGames()
-            }
-            .store(in: &cancellables)
-
-        $filterOptions
-            .dropFirst()
-            .sink { [weak self] _ in
-                self?.updateGames()
-            }
-            .store(in: &cancellables)
+extension GameListViewModel {
+    struct FilterOptions: Equatable, Sendable {
+        var showInstalled: Bool = false
+        var platform: Game.Platform? = .none
+        var storefront: Game.Storefront? = .none
     }
 
-    func updateGames() {
-        Task(priority: .userInitiated) {
-            let filtered: [LegacyGame] = await filterGames(unifiedGames)
-            let sorted: [LegacyGame] = await sortGames(filtered)
-
-            withAnimation {
-                games = sorted
-            }
-        }
+    enum Layout: String, CaseIterable, Sendable, Codable, Equatable {
+        case grid = "Grid"
+        case list = "List"
     }
 
-    func filterGames(_ games: [LegacyGame]) async -> [LegacyGame] {
-        let searchString: String = self.searchString
-        let filterOptions: FilterOptions = self.filterOptions
-        let cache: InstalledGamesCache = self.installedGamesCache
-
-        struct IndexedGame: Sendable {
-            let index: Int
-            let game: LegacyGame
-        }
-
-        return await withTaskGroup(of: IndexedGame?.self) { group in
-            for (index, game) in games.enumerated() {
-                group.addTask {
-                    let matchesSearch: Bool = searchString.isEmpty || game.title.localizedCaseInsensitiveContains(searchString)
-
-                    let isInstalled: Bool = await cache.isInstalled(game)
-                    let matchesInstalled: Bool = !filterOptions.showInstalled || isInstalled
-
-                    let matchesPlatform: Bool = filterOptions.platform == .all || game.platform.rawValue == filterOptions.platform.rawValue
-                    let matchesSource: Bool = filterOptions.source == .all || game.source.rawValue == filterOptions.source.rawValue
-
-                    let passes: Bool = matchesSearch && matchesInstalled && matchesPlatform && matchesSource
-                    return passes ? .init(index: index, game: game) : nil
-                }
-            }
-
-            var filtered: [IndexedGame] = []
-            for await result in group {
-                if let result {
-                    filtered.append(result)
-                }
-            }
-            return filtered.sorted { $0.index < $1.index }.map(\.game)
-        }
-    }
-
-    func sortGames(_ games: [LegacyGame]) async -> [LegacyGame] {
-        let sortCriteria: [SortCriteria] = self.sortCriteria
-        let cache: InstalledGamesCache = self.installedGamesCache
-
-        struct GameMetadata: Sendable {
-            let game: LegacyGame
-            let isFavorited: Bool
-            let isInstalled: Bool
-        }
-
-        var gamesWithMetadata: [GameMetadata] = []
-
-        for game in games {
-            let isInstalled: Bool = await cache.isInstalled(game)
-            gamesWithMetadata.append(.init(game: game, isFavorited: game.isFavourited, isInstalled: isInstalled))
-        }
-
-        return gamesWithMetadata.sorted { lhs, rhs in
-            for criterion in sortCriteria {
-                let comparison: ComparisonResult
-
-                switch criterion {
-                case .favorite:
-                    if lhs.isFavorited == rhs.isFavorited {
-                        comparison = .orderedSame
-                    } else {
-                        comparison = lhs.isFavorited ? .orderedAscending : .orderedDescending
-                    }
-
-                case .installed:
-                    if lhs.isInstalled == rhs.isInstalled {
-                        comparison = .orderedSame
-                    } else {
-                        comparison = lhs.isInstalled ? .orderedAscending : .orderedDescending
-                    }
-
-                case .title:
-                    comparison = lhs.game.title.localizedStandardCompare(rhs.game.title)
-                }
-
-                if comparison != .orderedSame {
-                    return comparison == .orderedAscending
-                }
-            }
-            return false
-        }.map(\.game)
-    }
-}
-
-actor InstalledGamesCache {
-    private var cache: Set<LegacyGame>?
-
-    /// Checks if a game is installed
-    func isInstalled(_ game: LegacyGame) -> Bool {
-        if cache == nil {
-            refreshCache()
-        }
-
-        return cache?.contains(game) ?? false || (LocalGames.library?.contains(game) ?? false)
-    }
-
-    /// Invalidates the cache, forcing a refresh on next access
-    func invalidate() {
-        cache = nil
-    }
-
-    private func refreshCache() {
-        cache = (try? Legendary.getInstalledGames()).map(Set.init) ?? []
+    enum SortOptions: CaseIterable, Sendable {
+        case favorite
+        case installed
+        case title
     }
 }
