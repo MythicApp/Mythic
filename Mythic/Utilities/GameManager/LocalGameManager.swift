@@ -78,7 +78,7 @@ class LocalGameManager {
             }
         }
 
-        await Game.operationManager.queueOperation(operation)
+        Game.operationManager.queueOperation(operation)
     }
 
     @MainActor static func move(game: LocalGame,
@@ -105,6 +105,6 @@ class LocalGameManager {
             game.installationState = .uninstalled
         }
 
-        await Game.operationManager.queueOperation(operation)
+        Game.operationManager.queueOperation(operation)
     }
 }
