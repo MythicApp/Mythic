@@ -2153,10 +2153,10 @@
         }
       }
     },
-    "%lf%%" : {
+    "%@%%" : {
 
     },
-    "%lf%% complete" : {
+    "%@%% complete" : {
 
     },
     "%lld MB Downloaded" : {
@@ -11474,6 +11474,7 @@
       }
     },
     "Game verification is required for \"%@\"." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13424,6 +13425,7 @@
       }
     },
     "Install \"%@\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -13612,6 +13614,9 @@
           }
         }
       }
+    },
+    "Install %@" : {
+
     },
     "Install Mythic Engine" : {
       "localizations" : {
@@ -27454,6 +27459,9 @@
     "Verify game files' integrity" : {
 
     },
+    "Verify game files' integrity for %@." : {
+
+    },
     "Verify the game's integrity" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -27646,6 +27654,7 @@
       }
     },
     "Verify..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
