@@ -335,7 +335,12 @@ final class Legendary {
             let consumer = await Legendary.executeStreamed(identifier: "repair",
                                                            arguments: arguments,
                                                            throwsOnChunkError: false) { chunk in
-                if case .standardOutput = chunk.stream {
+                switch chunk.stream {
+                case .standardError:
+                    // if game files require redownload
+                    handleDownloadManagerOutputProgress(for: chunk.output,
+                                                        progress: progress)
+                case .standardOutput:
                     // this regex is not dynamic, so there's no reason why they should fail to initialise
                     // swiftlint:disable force_try
                     let verificationProgressRegex = try! Regex(#"Verification progress: (?<downloadedObjects>\d+)\/(?<totalObjects>\d+) \((?<percentage>[\d.]+)%\) \[(?<rawDownloadSpeed>[\d.]+) MiB\/s\]"#)
@@ -536,31 +541,11 @@ final class Legendary {
         await Game.operationManager.queueOperation(operation)
     }
 
-    // MARK: Get Game Platform Method
-
-    static func getGamePlatform(game: EpicGamesGame) throws -> EpicGamesGame.Platform? {
-        let installedData: URL = configurationFolder.appending(path: "installed.json")
-        let data: Data = try .init(contentsOf: installedData)
-        let installedGames = try JSONDecoder().decode(Installed.self, from: data)
-
-        guard let installedGame = installedGames[game.id] else {
-            throw UnableToRetrieveError()
-        }
-
-        return installedGame.platform
-    }
-
     static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
         let metadata = try Legendary.getGameMetadata(game: game)
+        let installationData = try getGameInstallationData(game: game)
 
-        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
-        let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
-        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
-
-        guard
-            let installedGame = installedGames[game.id],
-            let assetInfo = metadata.assetInfos[installedGame._platform]
-        else {
+        guard let assetInfo = metadata.assetInfos[installationData._platform] else {
             throw CocoaError(.coderValueNotFound)
         }
 
@@ -568,15 +553,12 @@ final class Legendary {
         // installedVersion, but to do that, we'd need to convert them into
         // SemanticVersion, which is problematic because we have no guarantee
         // that the game uses semantic versioning.
-        return assetInfo.buildVersion != installedGame.version
+        return assetInfo.buildVersion != installationData.version
     }
 
     static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
-        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
-        let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
-        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
-
-        return installedGames[game.id]?.needsVerification ?? false
+        let installationData = try getGameInstallationData(game: game)
+        return installationData.needsVerification
     }
 
     /// Queries for the user that is currently signed into epic games.
@@ -607,17 +589,10 @@ final class Legendary {
                 id: id,
                 title: installedGame.title,
                 installationState: .installed(location: .init(filePath: installedGame.installPath),
-                                              platform: platform)
+                                              platform: platform),
+
             )
         }
-    }
-
-    static func getGamePath(game: EpicGamesGame) throws -> String? {
-        guard signedIn else { throw NotSignedInError() }
-
-        let installedData = try Data(contentsOf: configurationFolder.appending(path: "installed.json"))
-        let installed = try JSONDecoder().decode(Installed.self, from: installedData)
-        return installed[game.id]?.installPath
     }
 
     static func getInstallableGames() throws -> [EpicGamesGame] {
@@ -625,23 +600,24 @@ final class Legendary {
 
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
-        let games = try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
-            let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
-            let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
+        return try {
+            try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
+                let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
+                let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
 
-            let game: EpicGamesGame = .init(id: metadata.appName,
-                                            title: metadata.appTitle,
-                                            installationState: .uninstalled)
+                let game: EpicGamesGame = .init(id: metadata.appName,
+                                                title: metadata.appTitle,
+                                                installationState: .uninstalled,
+                                                initialMetadata: metadata)
 
-            let latestGameRelease = metadata.storeMetadata.releaseInfo
-                .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })
+                let latestGameRelease = metadata.storeMetadata.releaseInfo
+                    .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })
 
-            game.supportedPlatforms = latestGameRelease?.platform ?? .init()
+                game.supportedPlatforms = latestGameRelease?.platform ?? .init()
 
-            return game
-        }
-
-        return games.sorted { $0.title < $1.title }
+                return game
+            }
+        }()
     }
 
     static func getGameMetadata(game: EpicGamesGame) throws -> GameMetadata {
@@ -655,7 +631,19 @@ final class Legendary {
         let data: Data = try .init(contentsOf: URL(filePath: metadataDirectory.appending(path: metadataFileName).path))
         let metadata: GameMetadata = try JSONDecoder().decode(GameMetadata.self, from: data)
 
+        game._cachedMetadata = metadata
         return metadata
+    }
+
+    static func getGameInstallationData(game: EpicGamesGame) throws -> InstalledGame {
+        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
+
+        guard let installedGame = installedGames[game.id] else { throw CocoaError(.coderValueNotFound) }
+
+        game._cachedInstallationData = installedGame
+        return installedGame
     }
 
     /**
@@ -663,14 +651,9 @@ final class Legendary {
      ** This isn't compatible with Mythic'c current launch argument implementation, and likely will remain in this unimplemented state.
      */
     static func getGameLaunchArguments(game: EpicGamesGame) throws -> [String] {
-        let installedData = try Data(contentsOf: configurationFolder.appending(path: "installed.json"))
-        let installed = try JSONDecoder().decode(Installed.self, from: installedData)
+        let installationData = try getGameInstallationData(game: game)
 
-        guard let installedGame = installed[game.id] else {
-            throw UnableToRetrieveError()
-        }
-
-        return installedGame.launchParameters.components(separatedBy: .whitespaces)
+        return installationData.launchParameters.components(separatedBy: .whitespaces)
     }
 
     /// Create an asynchronous task to update Legendary's stored metadata.
