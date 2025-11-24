@@ -71,7 +71,7 @@ extension GameCard {
                         }
                     }
                     .disabled(operationManager.queue.first?.game == game)
-                    .disabled(game.isGameRunning)
+                    // FIXME: .disabled(game.checkIfGameIsRunning())
                     .help("Play \"\(game.title)\"")
 
                     .background(.white)
@@ -189,7 +189,7 @@ extension GameCard {
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .disabled(game.isGameRunning)
+                // FIXME: .disabled(game.checkIfGameIsRunning())
                 .disabled(operationManager.queue.first?.game == game)
                 .disabled(game.isUpdateAvailable == false)
                 .help("Update \"\(game.title)\"")
@@ -278,7 +278,7 @@ extension GameCard {
                     }
                 }
                 .disabled(operationManager.queue.first?.game == game)
-                .disabled(game.isGameRunning)
+                // FIXME: .disabled(game.checkIfGameIsRunning())
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: 0.1)) {
