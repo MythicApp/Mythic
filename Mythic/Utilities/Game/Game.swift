@@ -150,33 +150,34 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 
     var supportedPlatforms: [Game.Platform] = .init()
 
-    // FIXME: better implementation, this is pulled from the old game management system
-    final var isGameRunning: Bool {
-        guard case .installed(let location, let platform) = installationState else { return false }
-
-        return false // FIXME: stub
-
-        // FIXME: not good for use as a computed property
-        // FIXME: will cause cycles and queue up a BUNCH of processes when checked heaps (e.g. GameListView)
-        /*
-         switch platform {
-         case .macOS:
-         return workspace.runningApplications.contains(where: { $0.bundleURL == location })
-         case .windows:
-         // FIXME: hacky but functional
-         let result = try? Process.execute(executableURL: .init(filePath: "/bin/bash"),
-         arguments: ["-c", "ps aux | grep -i '\(location.path)' | grep -v grep"])
-
-         return (result?.standardOutput.isEmpty == false)
-         }
-         */
-    }
-
-    final func isOperating() async -> Bool {
+    // MARK: Actions
+    final func checkIfOperating() async -> Bool {
         return await (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
     }
 
-    // MARK: Actions
+    // MARK: Overrideable Actions
+    final func checkIfGameIsRunning() -> Bool {
+        guard case .installed(let location, let platform) = installationState else { return false }
+        return _checkIfGameIsRunning(location: location, platform: platform)
+    }
+
+    // override in subclass
+    func _checkIfGameIsRunning(location: URL, platform: Platform) -> Bool {
+        // swiftlint:disable:previous identifier_name
+        Logger.app.warning("""
+            [Game] _checkIfGameIsRunning() called on \(self).
+            This means that the subclass calling this method does not have an override,
+            Or that this method was called from the `Game` base class.
+            This is not intended behaviour, and thus, a basic fallback will be used.
+            """)
+
+        if case .macOS = platform {
+            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
+        }
+
+        return false
+    }
+
     /// Launch the underlying game.
     @MainActor final func launch() async throws {
         guard case .installed = installationState else {
@@ -237,7 +238,7 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     // override in subclass
     internal func _verifyInstallation() async throws {
         // swiftlint:disable:previous identifier_name
-        fatalError("Subclasses must implement _verifyInstallation()")
+        assertionFailure("Subclasses should implement _verifyInstallation()")
     }
 }
 
