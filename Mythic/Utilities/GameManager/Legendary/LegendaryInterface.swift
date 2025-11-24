@@ -413,7 +413,7 @@ final class Legendary {
                         already moved)
      */
     static func move(game: EpicGamesGame, to newLocation: URL) async throws {
-        guard case .installed(let currentLocation, _) = game.installationState else {
+        guard case .installed(let currentLocation, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
@@ -421,6 +421,7 @@ final class Legendary {
             try files.moveItem(at: currentLocation, to: newLocation)
 
             try await Legendary.execute(arguments: ["move", game.id, newLocation.path, "--skip-move"])
+            game.installationState = .installed(location: newLocation, platform: platform)
         }
 
         await Game.operationManager.queueOperation(operation)

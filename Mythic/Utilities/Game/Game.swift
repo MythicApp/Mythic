@@ -217,8 +217,6 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
         }
 
         try await _move(to: newLocation)
-
-        installationState = .installed(location: newLocation, platform: platform)
     }
 
     // override in subclass
