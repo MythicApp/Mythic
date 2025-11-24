@@ -20,20 +20,7 @@ import Observation
     // avoid naming 'underlyingQueue', this is already a variable
     private var operationQueue: OperationQueue
     // necessitated by deprecation of `OperationQueue.operations`
-    internal private(set) var queue: [GameOperation] = .init() {
-        didSet {
-            queueContinuation?.yield(queue)
-        }
-    }
-
-    private var queueContinuation: AsyncStream<[GameOperation]>.Continuation?
-
-    var queueStream: AsyncStream<[GameOperation]> {
-        AsyncStream { continuation in
-            self.queueContinuation = continuation
-            continuation.yield(self.queue)
-        }
-    }
+    internal private(set) var queue: [GameOperation] = .init()
 
     private init() {
         let queue: OperationQueue = .init()
@@ -59,6 +46,17 @@ import Observation
         queue.append(operation)
 
         log.debug("Queued operation \(operation.description)")
+    }
+
+    // convenience overload that avoids direct `GameOperation` instantiation
+    func queueOperation(game: Game,
+                        type: GameOperation.ActiveOperationType,
+                        function: @escaping (Progress) async throws -> Void) {
+        queueOperation(
+            .init(game: game,
+                  type: type,
+                  function: function)
+        )
     }
 
     func cancelAllOperations() {
