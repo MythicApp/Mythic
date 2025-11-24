@@ -19,9 +19,6 @@ struct GameSettingsView: View {
     @State private var isMovingErrorAlertPresented: Bool = false
     @State private var isMovingFileImporterPresented: Bool = false
 
-    @State private var verificationError: Error?
-    @State private var isVerificationErrorAlertPresented: Bool = false
-
     @State private var typingArgument: String = .init()
     
     @State private var isImageEmpty: Bool = true
@@ -153,36 +150,7 @@ struct GameSettingsView: View {
 
                                 Spacer()
 
-                                Button("Verify...") {
-                                    Task {
-                                        do {
-                                            try await Task { @MainActor [game] in
-                                                try await game.verifyInstallation()
-                                            }.value
-                                        } catch {
-                                            verificationError = error
-                                            isVerificationErrorAlertPresented = true
-                                        }
-                                    }
-                                }
-                                .disabled(game.storefront == .local)
-                                .disabled(operationManager.queue.contains(where: { $0.game == game }))
-                                .disabled(operationManager.queue.first?.game == game)
-                                .alert("Unable to verify installation.",
-                                       isPresented: $isVerificationErrorAlertPresented,
-                                       presenting: verificationError) { _ in
-                                    if #available(macOS 26.0, *) {
-                                        Button(role: .close) {
-                                            isPresented = false
-                                        }
-                                    } else {
-                                        Button("OK", role: .cancel) {
-                                            isPresented = false
-                                        }
-                                    }
-                                } message: { error in
-                                    Text(error?.localizedDescription ?? "Unknown error.")
-                                }
+                                GameCard.Buttons.VerificationButton(game: $game, withLabel: true)
                             }
                         }
 

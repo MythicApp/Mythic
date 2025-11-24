@@ -13,7 +13,9 @@ import Foundation
     let id: UUID = .init()
     let game: Game
     let type: ActiveOperationType
-    private(set) var progress: Progress
+    private let _progress: Progress
+    private(set) var progressKVOBridge: ProgressKVOBridge
+
     let function: (Progress) async throws -> Void
 
     var error: Error?
@@ -24,7 +26,8 @@ import Foundation
          function: @escaping (Progress) async throws -> Void) {
         self.game = game
         self.type = type
-        self.progress = progress
+        self._progress = progress
+        self.progressKVOBridge = .init(progress: progress)
         self.function = function
 
         // initialise `Operation`
@@ -43,7 +46,7 @@ import Foundation
 
             do {
                 isExecuting = true
-                try await function(progress)
+                try await function(_progress)
             } catch {
                 self.error = error
             }
@@ -105,4 +108,78 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
         case .launch:       String(localized: "Launching")
         }
     }
+}
+
+// MARK: - ProgressKVOBridge
+@Observable final class ProgressKVOBridge: @unchecked Sendable {
+    private let progress: Progress
+
+    // Observables that mirror `Progress`
+    private(set) var fractionCompleted: Double = 0.0
+    private(set) var completedUnitCount: Int64 = 0
+    private(set) var totalUnitCount: Int64 = 0
+    private(set) var throughput: Int = 0
+    private(set) var estimatedTimeRemaining: TimeInterval?
+    private(set) var fileTotalCount: Int?
+    private(set) var fileCompletedCount: Int?
+
+    var observers: Set<NSKeyValueObservation>
+    var lock: NSRecursiveLock = .init()
+
+    // register KVOs and send to observables
+    init(progress: Progress) {
+        self.progress = progress
+        self.observers = .init()
+
+        observers.insert(self.progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, change in
+            guard let self = self, let newValue = change.newValue else { return }
+            Task { @MainActor in
+                lock.withLock({ self.fractionCompleted = newValue })
+            }
+        })
+
+        observers.insert(self.progress.observe(\.completedUnitCount, options: [.new]) { [weak self] _, change in
+            guard let self = self, let newValue = change.newValue else { return }
+            Task { @MainActor in
+                lock.withLock({ self.completedUnitCount = newValue })
+            }
+        })
+
+        observers.insert(self.progress.observe(\.totalUnitCount, options: [.new]) { [weak self] _, change in
+            guard let self = self, let newValue = change.newValue else { return }
+            Task { @MainActor in
+                lock.withLock({ self.totalUnitCount = newValue })
+            }
+        })
+
+        observers.insert(self.progress.observe(\.userInfo, options: [.new]) { [weak self] progress, _ in
+            guard let self = self else { return }
+
+            if let throughput = progress.userInfo[.throughputKey] as? Int {
+                Task { @MainActor in
+                    lock.withLock({ self.throughput = throughput })
+                }
+            }
+
+            if let estimatedTime = progress.userInfo[.estimatedTimeRemainingKey] as? TimeInterval {
+                Task { @MainActor in
+                    lock.withLock({ self.estimatedTimeRemaining = estimatedTime })
+                }
+            }
+
+            if let totalFiles = progress.userInfo[.fileTotalCountKey] as? Int {
+                Task { @MainActor in
+                    lock.withLock({ self.fileTotalCount = totalFiles })
+                }
+            }
+
+            if let completedFiles = progress.userInfo[.fileCompletedCountKey] as? Int {
+                Task { @MainActor in
+                    lock.withLock({ self.fileCompletedCount = completedFiles })
+                }
+            }
+        })
+    }
+
+    deinit { observers.forEach({ $0.invalidate() }) }
 }

@@ -74,13 +74,13 @@ extension GameInstallProgressView {
         var showInitializer: Bool = true
 
         var body: some View {
-            ProgressView(value: operation.progress.fractionCompleted)
+            ProgressView(value: operation.progressKVOBridge.fractionCompleted)
                 .progressViewStyle(.linear)
-                .help("\(operation.progress.fractionCompleted * 100)% complete")
+                .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
                 .buttonStyle(.plain)
 
             if withPercentage {
-                Text("\(operation.progress.fractionCompleted * 100)%")
+                Text("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent))")
                     .layoutPriority(1)
                     .lineLimit(1)
             }

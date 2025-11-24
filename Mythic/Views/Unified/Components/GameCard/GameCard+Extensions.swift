@@ -130,7 +130,7 @@ extension GameCard {
                     }
                     .disabled(networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(operationManager.queue.first?.game == game)
-                    .help("Install \"\(game.title)\"")
+                    .help("Install \(game.description)")
 
                     .sheet(isPresented: $isInstallSheetPresented) {
                         InstallGameView(game: $game, isPresented: $isInstallSheetPresented)
@@ -146,10 +146,20 @@ extension GameCard {
             @EnvironmentObject var networkMonitor: NetworkMonitor
             @Bindable private var operationManager: GameOperationManager = .shared
 
+            @State private var verificationError: Error?
+            @State private var isVerificationErrorAlertPresented: Bool = false
+
             var body: some View {
                 Button {
-                    Task { @MainActor [game] in
-                        try await game.verifyInstallation()
+                    Task {
+                        do {
+                            try await Task { @MainActor [game] in
+                                try await game.verifyInstallation()
+                            }.value
+                        } catch {
+                            verificationError = error
+                            isVerificationErrorAlertPresented = true
+                        }
                     }
                 } label: {
                     if withLabel {
@@ -160,7 +170,19 @@ extension GameCard {
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .help("Game verification is required for \"\(game.title)\".")
+                .disabled(operationManager.queue.first?.game == game)
+                .alert("Unable to verify installation.",
+                       isPresented: $isVerificationErrorAlertPresented,
+                       presenting: verificationError) { _ in
+                    if #available(macOS 26.0, *) {
+                        Button(role: .close, action: {})
+                    } else {
+                        Button("OK", role: .cancel, action: {})
+                    }
+                } message: { error in
+                    Text(error?.localizedDescription ?? "Unknown error.")
+                }
+                .help("Verify game files' integrity for \(game.description).")
             }
         }
         struct UpdateButton: View {

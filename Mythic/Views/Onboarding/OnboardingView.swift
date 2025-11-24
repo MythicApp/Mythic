@@ -55,7 +55,7 @@ struct OnboardingView: View {
                     }
 
                     if isHoveringOverProgressView {
-                        Text("\(Int(viewModel.proportionCompletion * 100))% complete")
+                        Text("\(viewModel.proportionCompletion.formatted(.percent)) complete")
                             .textCase(.uppercase)
                             .foregroundStyle(.placeholder)
                             .font(.footnote)

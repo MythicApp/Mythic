@@ -81,7 +81,7 @@ struct HomeView: View {
                         width: geometry.size.width,
                         height: geometry.size.height * 0.75
                     )
-                    .backgroundStyle(.quinary)
+                    .background(.quinary)
                 }
                 
                 Form {
