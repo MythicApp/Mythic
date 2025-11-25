@@ -212,15 +212,19 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 
     /// Move the underlying game to a specified `URL`.
     @MainActor final func move(to newLocation: URL) async throws {
-        guard case .installed(_, let platform) = installationState else {
+        guard case .installed(let currentLocation, let platform) = installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        try await _move(to: newLocation)
+        try await _move(from: currentLocation,
+                        to: newLocation,
+                        platform: platform)
     }
 
     // override in subclass
-    @MainActor internal func _move(to newLocation: URL) async throws {
+    @MainActor internal func _move(from currentLocation: URL,
+                                   to newLocation: URL,
+                                   platform: Platform) async throws {
         // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _move(to:)")
     }

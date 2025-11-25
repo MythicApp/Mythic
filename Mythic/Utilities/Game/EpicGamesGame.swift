@@ -96,19 +96,21 @@ class EpicGamesGame: Game {
     }
 
     override func _launch() async throws {
-        Task {
+        Task(priority: .userInitiated) {
             try await EpicGamesGameManager.launch(game: self)
         }
     }
 
     override func _update() async throws {
-        Task {
+        Task(priority: .userInitiated) {
             try await EpicGamesGameManager.update(game: self, qualityOfService: .default)
         }
     }
 
-    override func _move(to newLocation: URL) async throws {
-        Task {
+    override func _move(from currentLocation: URL,
+                        to newLocation: URL,
+                        platform: Platform) async throws {
+        Task(priority: .userInitiated) {
             try await EpicGamesGameManager.move(game: self, to: newLocation)
         }
     }
