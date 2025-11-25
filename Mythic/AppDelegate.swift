@@ -44,29 +44,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             try? await Game.store.refreshFromStorefronts()
         }
 
-        // MARK: Run Migrations
-        Migrator.migrateFromOldBottleFormatIfNecessary()
-        Migrator.migrateBottleSchemeToContainerSchemeIfNecessary()
+        Migrator.fullMigration()
 
-        Task {
-            await Migrator.updateContainerScalingIfNecessary()
-        }
-
-        Migrator.migrateEpicFolderNaming()
-
-        // MARK: Start metadata update cycle for Epic Games
-        Task(priority: .utility) { @MainActor in
-            Legendary.updateMetadata()
-
-            // update metadata every 10 minutes
-            Timer.scheduledTimer(withTimeInterval: 600.0, repeats: true) { _ in
-                Task(priority: .utility) { @MainActor in
-                    Legendary.updateMetadata()
-                }
+        // MARK: Start metadata update cycle for Legendary
+        Task(priority: .utility) {
+            while true {
+                await MainActor.run(body: { Legendary.updateMetadata() })
+                try? await Task.sleep(for: .seconds(5 * 60))
             }
         }
 
-        // MARK: Autosync Epic savegames
+        // MARK: Autosync Legendary cloud saves
         Task(priority: .utility) {
             try? await Legendary.execute(arguments: ["-y", "sync-saves"])
         }
@@ -94,13 +82,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // MARK: Notification Authorisation Request and Delegation Setting
         notifications.delegate = self
-        notifications.getNotificationSettings { settings in
+        Task {
+            let settings = await notifications.notificationSettings()
             guard settings.authorizationStatus != .authorized else { return }
 
-            notifications.requestAuthorization(options: [.alert, .sound, .badge]) { _, error in
-                if let error = error {
-                    Logger.app.error("Unable to request notification authorization: \(error.localizedDescription)")
-                }
+            do {
+                try await notifications.requestAuthorization(options: [.alert, .sound, .badge])
+            } catch {
+                Logger.app.error("Unable to request notification authorization: \(error)")
             }
         }
 
@@ -164,8 +153,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // Version-specific app launch counter
-        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           var launchCountDictionary: [String: Int] = defaults.dictionary(forKey: "launchCount") as? [String: Int] {
+        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
+            var launchCountDictionary = defaults.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
             launchCountDictionary[shortVersion, default: 0] += 1
             defaults.set(launchCountDictionary, forKey: "launchCount")
         }
