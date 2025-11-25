@@ -200,12 +200,12 @@ extension GameCard {
                     }
                 } label: {
                     if withLabel {
-                        if game.isUpdateAvailable == nil {
-                            Label("Update checking unsupported",
-                                  systemImage: "checkmark.circle.dotted")
-                        } else {
-                            Label("Update",
+                        if let isUpdateAvailable = game.isUpdateAvailable {
+                            Label(isUpdateAvailable ? "Update" : "Up to date",
                                   systemImage: "arrow.triangle.2.circlepath")
+                        } else {
+                            Label("Update checking unavailable",
+                                  systemImage: "checkmark.circle.dotted")
                         }
                     } else {
                         Image(systemName: "arrow.triangle.2.circlepath")
