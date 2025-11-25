@@ -211,8 +211,8 @@ final class Migrator {
 
             if let oldFavouriteGames: [String] = defaults.stringArray(forKey: "favouriteGames") {
                 await MainActor.run {
-                    for id in oldFavouriteGames where Game.store.games.contains(where: { $0.id == id }) {
-                        let targetGame = Game.store.games.first(where: { $0.id == id })!
+                    for id in oldFavouriteGames where Game.store.library.contains(where: { $0.id == id }) {
+                        let targetGame = Game.store.library.first(where: { $0.id == id })!
                         targetGame.isFavourited = true
                     }
                 }
@@ -253,7 +253,7 @@ final class Migrator {
                                                     platform: platform)
                     )
 
-                    Game.store.games.insert(game)
+                    Game.store.library.insert(game)
                     log.notice("Successfully migrated local game \(game.title) from local games library storage. (\(index + 1)/\(propertiesCount))")
                 }
             }
@@ -278,7 +278,7 @@ final class Migrator {
                 }
 
                 await MainActor.run {
-                    guard let targetGame = Game.store.games.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -300,7 +300,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_launchArguments", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.games.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -325,7 +325,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_imageURL", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.games.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -349,7 +349,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_wideImageURL", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.games.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }

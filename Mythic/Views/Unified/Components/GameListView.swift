@@ -21,7 +21,7 @@ struct GameListView: View {
     
     var body: some View {
         VStack {
-            if Game.store.games.isEmpty {
+            if Game.store.library.isEmpty {
                 ContentUnavailableView(
                     "No games found. 😢",
                     systemImage: "folder.badge.questionmark",

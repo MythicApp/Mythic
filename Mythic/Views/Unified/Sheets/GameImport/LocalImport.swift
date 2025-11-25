@@ -131,7 +131,7 @@ extension GameImportView {
                     Spacer()
 
                     Button("Done") {
-                        Game.store.games.insert(game)
+                        Game.store.library.insert(game)
                         isPresented = false
                     }
                     .disabled(location == .temporaryDirectory)

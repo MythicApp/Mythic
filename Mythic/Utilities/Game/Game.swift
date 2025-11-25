@@ -15,7 +15,7 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 @Observable @MainActor final class GameDataStore {
     static let shared: GameDataStore = .init()
 
-    var games: Set<Game> {
+    var library: Set<Game> {
         get {
             do {
                 let anyGames = try defaults.decodeAndGet([AnyGame].self,
@@ -46,9 +46,9 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     }
 
     var recent: Game? {
-        guard !Game.store.games.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
+        guard !Game.store.library.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
 
-        return Game.store.games.max {
+        return Game.store.library.max {
             $0.lastLaunched ?? .distantPast < $1.lastLaunched ?? .distantPast
         }
     }
@@ -60,10 +60,10 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 
         // merge everything into the store
         installables.subtracting(installed)
-            .forEach { games.update(with: $0) }
+            .forEach { library.update(with: $0) }
 
         // FIXME: problematic, we do NOT want an overwrite every time, launchArguments, etc aren't persisted
-        installed.forEach { games.update(with: $0) }
+        installed.forEach { library.update(with: $0) }
 
         // others coming soon
     }

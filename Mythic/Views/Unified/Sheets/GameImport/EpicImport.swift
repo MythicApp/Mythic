@@ -27,7 +27,7 @@ extension GameImportView {
         @State private var location: URL = .temporaryDirectory
 
         private var installableGames: [Game] {
-            Game.store.games
+            Game.store.library
                 .sorted(by: { $0.title < $1.title })
                 .filter({ $0.storefront == .epicGames })
                 .filter({ $0.installationState == .uninstalled })

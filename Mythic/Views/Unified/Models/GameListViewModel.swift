@@ -18,7 +18,7 @@ import OSLog
     var searchString: String = .init()
     var filterOptions: FilterOptions = .init()
     var games: [Game] {
-        Game.store.games
+        Game.store.library
             .sorted(by: { $0.title < $1.title })
             .sorted(by: { $0.installationState > $1.installationState })
     }
