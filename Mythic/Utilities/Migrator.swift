@@ -112,7 +112,8 @@ final class Migrator {
                         let containerURLs = bottleURLs.map { bottleURL -> URL in
                             let currentPath = bottleURL.path(percentEncoded: false)
                             if currentPath.contains(oldScheme.path(percentEncoded: false)) {
-                                let newPath = currentPath.replacingOccurrences(of: oldScheme.path(percentEncoded: false), with: newScheme.path(percentEncoded: false))
+                                let newPath = currentPath.replacingOccurrences(of: oldScheme.path(percentEncoded: false),
+                                                                               with: newScheme.path(percentEncoded: false))
                                 log.notice("Migrating bottle (modifying bottle URL from \(bottleURL) to \(newPath))...")
                                 return URL(filePath: newPath)
                             } else {
@@ -153,7 +154,7 @@ final class Migrator {
 
                     log.notice("Container renaming complete.")
                 } catch {
-                    log.error("Unable to rename Bottles to Containers: \(error.localizedDescription) -- Mythic may not function correctly.")
+                    log.error("Unable to rename Bottles to Containers: \(error.localizedDescription).")
                 }
             }
         }
