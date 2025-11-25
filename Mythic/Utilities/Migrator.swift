@@ -11,7 +11,7 @@ import Foundation
 import OSLog
 
 // ‼️ This code should be removed before v1.0.0
-// warning mediocre code lies ahead
+// warning mediocre code lies ahead the actual good code lies within the app
 // TODO: remove migration for v0.1.0 & v0.3.2
 /// Migrate redundant data structures to newer data structures.
 final class Migrator {
@@ -207,10 +207,11 @@ final class Migrator {
         // recentlyPlayed will not be migrated.
 
         static func migrateFavouriteGames() async {
-            try? await Game.store.refreshFromStorefronts()
             log.notice("Migrating favourite game storage.")
 
             if let oldFavouriteGames: [String] = defaults.stringArray(forKey: "favouriteGames") {
+                try? await Game.store.refreshFromStorefronts()
+
                 await MainActor.run {
                     for id in oldFavouriteGames where Game.store.library.contains(where: { $0.id == id }) {
                         let targetGame = Game.store.library.first(where: { $0.id == id })!
@@ -223,8 +224,6 @@ final class Migrator {
         }
 
         static func migrateLocalGamesLibrary() async {
-            try? await Game.store.refreshFromStorefronts()
-
             log.notice("Migrating local game library storage.")
 
             guard let data = defaults.data(forKey: "localGamesLibrary") else { return }
@@ -263,7 +262,10 @@ final class Migrator {
         }
 
         static func migrateContainerURLs() async {
-            try? await Game.store.refreshFromStorefronts()
+            if defaults.dictionaryRepresentation()
+                .contains(where: { $0.key.hasSuffix("_containerURL") }) {
+                try? await Game.store.refreshFromStorefronts()
+            }
 
             log.notice("Migrating game container URL storage.")
 
@@ -292,7 +294,10 @@ final class Migrator {
         }
 
         static func migrateLaunchArguments() async {
-            try? await Game.store.refreshFromStorefronts()
+            if defaults.dictionaryRepresentation()
+                .contains(where: { $0.key.hasSuffix("_launchArguments") }) {
+                try? await Game.store.refreshFromStorefronts()
+            }
 
             log.notice("Migrating game launch argument storage.")
 
@@ -317,7 +322,10 @@ final class Migrator {
         }
 
         static func migrateImageURLs() async {
-            try? await Game.store.refreshFromStorefronts()
+            if defaults.dictionaryRepresentation()
+                           .contains(where: { $0.key.hasSuffix("_imageURL") }) {
+                           try? await Game.store.refreshFromStorefronts()
+                       }
 
             log.notice("Migrating game vertical image storage.")
 
@@ -341,7 +349,10 @@ final class Migrator {
         }
 
         static func migrateWideImageURLs() async {
-            try? await Game.store.refreshFromStorefronts()
+            if defaults.dictionaryRepresentation()
+                .contains(where: { $0.key.hasSuffix("_wideImageURL") }) {
+                try? await Game.store.refreshFromStorefronts()
+            }
 
             log.notice("Migrating game horizontal image storage.")
 
