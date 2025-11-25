@@ -222,10 +222,9 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     }
 
     // override in subclass
-    @MainActor internal func _move(from currentLocation: URL,
+    @MainActor internal func _move(from currentLocation: URL, // swiftlint:disable:this identifier_name
                                    to newLocation: URL,
                                    platform: Platform) async throws {
-        // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _move(to:)")
     }
 
