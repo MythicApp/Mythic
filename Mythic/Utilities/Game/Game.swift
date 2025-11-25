@@ -84,12 +84,12 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     // swiftlint:disable:next identifier_name
     internal var _verticalImageURL: URL? // underlying storage for custom images
     var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
-    internal var computedVerticalImageURL: URL? { nil } // override in subclass
+    internal var computedVerticalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
 
     // swiftlint:disable:next identifier_name
     internal var _horizontalImageURL: URL? // underlying storage for custom images
     var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
-    internal var computedHorizontalImageURL: URL? { nil } // override in subclass
+    internal var computedHorizontalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
 
     // swiftlint:disable:next identifier_name
     internal final var _containerURL: URL?
@@ -165,7 +165,7 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     func _checkIfGameIsRunning(location: URL, platform: Platform) -> Bool {
         // swiftlint:disable:previous identifier_name
         Logger.app.warning("""
-            [Game] _checkIfGameIsRunning() called on \(self).
+            _checkIfGameIsRunning() called on \(self).
             This means that the subclass calling this method does not have an override,
             Or that this method was called from the `Game` base class.
             This is not intended behaviour, and thus, a basic fallback will be used.
