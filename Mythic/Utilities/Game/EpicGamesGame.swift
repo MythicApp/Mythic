@@ -12,18 +12,46 @@ import Foundation
 class EpicGamesGame: Game {
     override var storefront: Storefront? { .epicGames }
 
-    override var computedVerticalImageURL: URL? { Legendary.getImageURL(of: self, type: .tall) }
-    override var computedHorizontalImageURL: URL? { Legendary.getImageURL(of: self, type: .normal) }
+    override var computedVerticalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .tall) }
+    override var computedHorizontalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .normal) }
 
-    private(set) var installationDataLastRefreshed: Date?
-    // swiftlint:disable:next identifier_name
-    var _cachedInstallationData: Legendary.InstalledGame? {
-        didSet { installationDataLastRefreshed = .now }
+    private(set) var legendaryInstallationDataLastRefreshed: Date?
+    internal var _cachedLegendaryInstallationData: Legendary.InstalledGame? {
+        // swiftlint:disable:previous identifier_name
+        didSet { legendaryInstallationDataLastRefreshed = .now }
     }
-    private(set) var metadataLastRefreshed: Date?
-    // swiftlint:disable:next identifier_name
-    var _cachedMetadata: Legendary.GameMetadata? {
-        didSet { metadataLastRefreshed = .now }
+    var legendaryInstallationData: Legendary.InstalledGame? {
+        get {
+            guard case .installed = installationState else { return nil }
+            let lastRefreshed: Date = legendaryInstallationDataLastRefreshed ?? .distantPast
+            if Calendar.current.date(byAdding: .hour, value: -12, to: .now)! > lastRefreshed {
+                self._cachedLegendaryInstallationData = try? Legendary.getGameInstallationData(gameID: self.id)
+            }
+
+            return _cachedLegendaryInstallationData
+        }
+        set {
+            _cachedLegendaryInstallationData = newValue
+        }
+    }
+
+    private(set) var legendaryMetadataLastRefreshed: Date?
+    internal var _cachedLegendaryMetadata: Legendary.GameMetadata? {
+        // swiftlint:disable:previous identifier_name
+        didSet { legendaryMetadataLastRefreshed = .now }
+    }
+    var legendaryMetadata: Legendary.GameMetadata? {
+        get {
+            let lastRefreshed: Date = legendaryInstallationDataLastRefreshed ?? .distantPast
+            if Calendar.current.date(byAdding: .hour, value: -12, to: .now)! > lastRefreshed {
+                // FIXME: not ideal, will hold caller
+                self._cachedLegendaryMetadata = try? Legendary.getGameMetadata(gameID: self.id)
+            }
+            return _cachedLegendaryMetadata
+        }
+        set {
+            _cachedLegendaryMetadata = newValue
+        }
     }
 
     override init(id: String,
@@ -34,25 +62,9 @@ class EpicGamesGame: Game {
                    title: title,
                    installationState: installationState,
                    containerURL: containerURL)
-    }
 
-    init(id: String,
-         title: String,
-         installationState: InstallationState,
-         containerURL: URL? = nil,
-         initialMetadata: Legendary.GameMetadata,
-         initialInstallationData: Legendary.InstalledGame? = nil) {
-        _cachedMetadata = initialMetadata
-
-        if case .installed = installationState, initialInstallationData == nil {
-            preconditionFailure("EpicGamesGames must have initialInstallationData when initialised as .installed")
-        }
-        _cachedInstallationData = initialInstallationData
-
-        super.init(id: id,
-                   title: title,
-                   installationState: installationState,
-                   containerURL: containerURL)
+        self._cachedLegendaryInstallationData = try? Legendary.getGameInstallationData(gameID: self.id)
+        self._cachedLegendaryMetadata = try? Legendary.getGameMetadata(gameID: self.id)
     }
 
     required init(from decoder: any Decoder) throws {
@@ -61,8 +73,8 @@ class EpicGamesGame: Game {
         try super.init(from: decoder)
     }
 
-    override var isUpdateAvailable: Bool? { try? Legendary.fetchUpdateAvailability(for: self) }
-    var isFileVerificationRequired: Bool? { try? Legendary.isFileVerificationRequired(for: self) }
+    override var isUpdateAvailable: Bool? { try? Legendary.fetchUpdateAvailability(gameID: self.id) }
+    var isFileVerificationRequired: Bool? { try? Legendary.isFileVerificationRequired(gameID: self.id) }
 
     override func _checkIfGameIsRunning(location: URL, platform: Platform) -> Bool {
         switch platform {
