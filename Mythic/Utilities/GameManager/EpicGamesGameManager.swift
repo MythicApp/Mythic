@@ -94,11 +94,11 @@ final class EpicGamesGameManager {
     }
 
     static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
-        try Legendary.fetchUpdateAvailability(for: game)
+        try Legendary.fetchUpdateAvailability(gameID: game.id)
     }
 
     static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
-        try Legendary.isFileVerificationRequired(for: game)
+        try Legendary.isFileVerificationRequired(gameID: game.id)
     }
 
     static func launch(game: EpicGamesGame) async throws {
