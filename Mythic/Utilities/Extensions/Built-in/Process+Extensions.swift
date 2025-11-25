@@ -120,8 +120,7 @@ extension Process {
                           environment: environment,
                           currentDirectoryURL: currentDirectoryURL)
     }
-
-
+    
     /// Starts a process and returns an ``AsyncThrowingStream`` of incremental ``OutputChunk``s.
     /// If `onChunk` is provided, its return value (String) will be written to stdin for each chunk.
     static func stream(
