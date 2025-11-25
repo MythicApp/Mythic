@@ -130,6 +130,7 @@ extension GameCard {
                     }
                     .disabled(networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(operationManager.queue.first?.game == game)
+                    .disabled(game.storefront == .local)
                     .help("Install \(game.description)")
 
                     .sheet(isPresented: $isInstallSheetPresented) {
@@ -171,6 +172,7 @@ extension GameCard {
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 .disabled(operationManager.queue.first?.game == game)
+                .disabled(game.storefront == .local)
                 .alert("Unable to verify installation.",
                        isPresented: $isVerificationErrorAlertPresented,
                        presenting: verificationError) { _ in
@@ -213,7 +215,7 @@ extension GameCard {
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .disabled(operationManager.queue.first?.game == game)
-                .disabled(game.isUpdateAvailable == false)
+                .disabled(game.isUpdateAvailable != true)
                 .help("Update \"\(game.title)\"")
             }
         }
