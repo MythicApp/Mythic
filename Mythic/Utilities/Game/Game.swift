@@ -55,17 +55,23 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 
     func refreshFromStorefronts() async throws {
         // legendary (epic games)
-        let installables = Set(try Legendary.getInstallableGames())
-        let installed = Set(try Legendary.getInstalledGames())
+        let installables = try Legendary.getInstallableGames()
+        let installed = try Legendary.getInstalledGames()
 
-        // merge everything into the store
-        installables.subtracting(installed)
-            .forEach { library.update(with: $0) }
+        // add installables that aren't installed
+        for game in installables where !installed.contains(where: { $0 == game }) {
+            library.update(with: game)
+        }
 
-        // FIXME: problematic, we do NOT want an overwrite every time, launchArguments, etc aren't persisted
-        installed.forEach { library.update(with: $0) }
-
-        // others coming soon
+        // installed: merge instead of overwrite
+        for game in installed {
+            if let existing = library.first(where: { $0 == game }) {
+                game.merge(existing)
+                library.update(with: game)
+            } else {
+                library.update(with: game)
+            }
+        }
     }
 
     private init() {}
@@ -80,16 +86,6 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     var installationState: InstallationState
 
     var storefront: Storefront? { nil }
-
-    // swiftlint:disable:next identifier_name
-    internal var _verticalImageURL: URL? // underlying storage for custom images
-    var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
-    internal var computedVerticalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
-
-    // swiftlint:disable:next identifier_name
-    internal var _horizontalImageURL: URL? // underlying storage for custom images
-    var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
-    internal var computedHorizontalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
 
     // swiftlint:disable:next identifier_name
     internal final var _containerURL: URL?
@@ -107,9 +103,22 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
 
     var isUpdateAvailable: Bool? { nil } // override in subclass
 
+    // swiftlint:disable:next identifier_name
+    internal var _verticalImageURL: URL? // underlying storage for custom images
+    var verticalImageURL: URL? { _verticalImageURL ?? computedVerticalImageURL }
+    internal var computedVerticalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
+
+    // swiftlint:disable:next identifier_name
+    internal var _horizontalImageURL: URL? // underlying storage for custom images
+    var horizontalImageURL: URL? { _horizontalImageURL ?? computedHorizontalImageURL }
+    internal var computedHorizontalImageURL: URL? { nil } // override in subclass — Auto-synthesized (default) image URL
+
     var launchArguments: [String] = []
     final var isFavourited: Bool = false
     final var lastLaunched: Date?
+
+    // override in subclass
+    var supportedPlatforms: Set<Game.Platform>? { nil }
 
     init(id: String,
          title: String,
@@ -134,7 +143,6 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
         self.launchArguments = try container.decode([String].self, forKey: .launchArguments)
         self.isFavourited = try container.decode(Bool.self, forKey: .isFavourited)
         self.lastLaunched = try container.decodeIfPresent(Date.self, forKey: .lastLaunched)
-        self.supportedPlatforms = try container.decode([Game.Platform].self, forKey: .supportedPlatforms)
     }
 
     final var isFallbackImageAvailable: Bool {
@@ -148,18 +156,57 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
         }
     }
 
-    var supportedPlatforms: [Game.Platform] = .init()
-
     // MARK: Actions
     final func checkIfOperating() async -> Bool {
         return await (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
     }
 
-    // MARK: Overrideable Actions
     final func checkIfGameIsRunning() -> Bool {
         guard case .installed(let location, let platform) = installationState else { return false }
         return _checkIfGameIsRunning(location: location, platform: platform)
     }
+
+    /// Launch the underlying game.
+    @MainActor final func launch() async throws {
+        guard case .installed = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        lastLaunched = .now
+        try await _launch()
+    }
+
+    @MainActor final func update() async throws {
+        guard case .installed = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        guard isUpdateAvailable == true else { return }
+
+        try await _update()
+    }
+
+    /// Move the underlying game to a specified `URL`.
+    @MainActor final func move(to newLocation: URL) async throws {
+        guard case .installed(let currentLocation, let platform) = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        try await _move(from: currentLocation,
+                        to: newLocation,
+                        platform: platform)
+    }
+
+    /// Verify the file integrity of the game (if it's installed)
+    final func verifyInstallation() async throws {
+        guard case .installed = installationState else {
+            throw CocoaError(.fileNoSuchFile)
+        }
+
+        try await _verifyInstallation()
+    }
+
+    // MARK: Overrideable Actions
 
     // override in subclass
     func _checkIfGameIsRunning(location: URL, platform: Platform) -> Bool {
@@ -178,30 +225,10 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
         return false
     }
 
-    /// Launch the underlying game.
-    @MainActor final func launch() async throws {
-        guard case .installed = installationState else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        lastLaunched = .now
-        try await _launch()
-    }
-
     // override in subclass
     @MainActor internal func _launch() async throws {
         // swiftlint:disable:previous identifier_name
         fatalError("Subclasses must implement _launch()")
-    }
-
-    @MainActor final func update() async throws {
-        guard case .installed = installationState else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        guard isUpdateAvailable == true else { return }
-
-        try await _update()
     }
 
     // override in subclass
@@ -210,30 +237,11 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
         fatalError("Subclasses must implement _update()")
     }
 
-    /// Move the underlying game to a specified `URL`.
-    @MainActor final func move(to newLocation: URL) async throws {
-        guard case .installed(let currentLocation, let platform) = installationState else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        try await _move(from: currentLocation,
-                        to: newLocation,
-                        platform: platform)
-    }
-
     // override in subclass
     @MainActor internal func _move(from currentLocation: URL, // swiftlint:disable:this identifier_name
                                    to newLocation: URL,
                                    platform: Platform) async throws {
         fatalError("Subclasses must implement _move(to:)")
-    }
-
-    final func verifyInstallation() async throws {
-        guard case .installed = installationState else {
-            throw CocoaError(.fileNoSuchFile)
-        }
-
-        try await _verifyInstallation()
     }
 
     // override in subclass
@@ -274,8 +282,7 @@ extension Game {
         // swiftlint:enable identifier_name
         case launchArguments,
              isFavourited,
-             lastLaunched,
-             supportedPlatforms
+             lastLaunched
     }
 
     func encode(to encoder: Encoder) throws {
@@ -291,7 +298,21 @@ extension Game {
         try container.encode(launchArguments, forKey: .launchArguments)
         try container.encode(isFavourited, forKey: .isFavourited)
         try container.encodeIfPresent(lastLaunched, forKey: .lastLaunched)
-        try container.encode(supportedPlatforms, forKey: .supportedPlatforms)
+    }
+}
+
+extension Game: Mergeable {
+    func merge(_ other: Game) {
+        _verticalImageURL = self._verticalImageURL ?? other._verticalImageURL
+        _horizontalImageURL = self._horizontalImageURL ?? other._horizontalImageURL
+        _containerURL = self._containerURL ?? other._containerURL
+
+        launchArguments = .init(Set(self.launchArguments + other.launchArguments))
+
+        if self.lastLaunched != nil || other.lastLaunched != nil {
+            lastLaunched = max(self.lastLaunched ?? .distantPast,
+                               other.lastLaunched ?? .distantPast)
+        }
     }
 }
 

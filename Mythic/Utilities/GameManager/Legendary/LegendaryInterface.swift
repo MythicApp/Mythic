@@ -258,9 +258,11 @@ final class Legendary {
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
-        guard game.supportedPlatforms.contains(platform) else {
+        guard let supportedPlatforms = await game.supportedPlatforms,
+              supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
         }
+
         var arguments: [String] = ["-y", "install", game.id]
         arguments += ["--platform", matchPlatform(for: platform)]
 
@@ -453,7 +455,10 @@ final class Legendary {
                          withDLCs: Bool,
                          platform: Game.Platform,
                          gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
-        guard game.supportedPlatforms.contains(platform) else { return } // TODO: throw error
+        guard let supportedPlatforms = await game.supportedPlatforms,
+              supportedPlatforms.contains(platform) else {
+            throw UnsupportedInstallationPlatformError()
+        }
 
         var arguments: [String] = ["-y", "import"]
 
@@ -609,13 +614,6 @@ final class Legendary {
                 let game: EpicGamesGame = .init(id: metadata.appName,
                                                 title: metadata.appTitle,
                                                 installationState: .uninstalled)
-
-                game._cachedLegendaryMetadata = metadata
-
-                let latestGameRelease = metadata.storeMetadata.releaseInfo
-                    .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })
-
-                game.supportedPlatforms = latestGameRelease?.platform ?? .init()
 
                 return game
             }

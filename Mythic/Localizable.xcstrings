@@ -26849,6 +26849,9 @@
     "Unknown Error." : {
 
     },
+    "Up to date" : {
+
+    },
     "Update" : {
       "comment" : "Sparkle Updater"
     },
@@ -27042,7 +27045,7 @@
         }
       }
     },
-    "Update checking unsupported" : {
+    "Update checking unavailable" : {
 
     },
     "Update Error" : {

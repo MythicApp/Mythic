@@ -366,7 +366,7 @@ extension GameCard {
 
         var body: some View {
             if operationManager.queue.first?.game == game {
-                GameInstallProgressView()
+                GameInstallProgressView(withPercentage: false)
             } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)

@@ -69,12 +69,12 @@ extension GameImportView {
                         Picker("Platform",
                                systemImage: "desktopcomputer.and.arrow.down",
                                selection: $platform) {
-                            ForEach(game.supportedPlatforms, id: \.self) { platform in
+                            ForEach(Array(game.supportedPlatforms ?? .init()), id: \.self) { platform in
                                 Text(platform.description)
                             }
                         }
                         // use onChange, because platform requires game as a dependency
-                        .onChange(of: game, { platform = $1.supportedPlatforms.first ?? platform })
+                        .onChange(of: game, { platform = $1.supportedPlatforms?.first ?? platform })
 
                         HStack {
                             VStack(alignment: .leading) {
@@ -124,7 +124,7 @@ extension GameImportView {
                                     placement: .leading,
                                     action: performGameImport)
                     .disabled(location == .temporaryDirectory)
-                    .disabled(game.supportedPlatforms.isEmpty)
+                    .disabled(game.supportedPlatforms?.isEmpty == true)
                     .disabled(isOperating)
                     .buttonStyle(.borderedProminent)
                 }

@@ -15,43 +15,12 @@ class EpicGamesGame: Game {
     override var computedVerticalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .tall) }
     override var computedHorizontalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .normal) }
 
-    private(set) var legendaryInstallationDataLastRefreshed: Date?
-    internal var _cachedLegendaryInstallationData: Legendary.InstalledGame? {
-        // swiftlint:disable:previous identifier_name
-        didSet { legendaryInstallationDataLastRefreshed = .now }
-    }
-    var legendaryInstallationData: Legendary.InstalledGame? {
-        get {
-            guard case .installed = installationState else { return nil }
-            let lastRefreshed: Date = legendaryInstallationDataLastRefreshed ?? .distantPast
-            if Calendar.current.date(byAdding: .hour, value: -12, to: .now)! > lastRefreshed {
-                self._cachedLegendaryInstallationData = try? Legendary.getGameInstallationData(gameID: self.id)
-            }
+    override var supportedPlatforms: Set<Game.Platform>? {
+        let metadata = try? Legendary.getGameMetadata(gameID: self.id)
+        let latestGameRelease = metadata?.storeMetadata.releaseInfo
+            .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })
 
-            return _cachedLegendaryInstallationData
-        }
-        set {
-            _cachedLegendaryInstallationData = newValue
-        }
-    }
-
-    private(set) var legendaryMetadataLastRefreshed: Date?
-    internal var _cachedLegendaryMetadata: Legendary.GameMetadata? {
-        // swiftlint:disable:previous identifier_name
-        didSet { legendaryMetadataLastRefreshed = .now }
-    }
-    var legendaryMetadata: Legendary.GameMetadata? {
-        get {
-            let lastRefreshed: Date = legendaryInstallationDataLastRefreshed ?? .distantPast
-            if Calendar.current.date(byAdding: .hour, value: -12, to: .now)! > lastRefreshed {
-                // FIXME: not ideal, will hold caller
-                self._cachedLegendaryMetadata = try? Legendary.getGameMetadata(gameID: self.id)
-            }
-            return _cachedLegendaryMetadata
-        }
-        set {
-            _cachedLegendaryMetadata = newValue
-        }
+        return .init(latestGameRelease?.platform ?? [])
     }
 
     override init(id: String,
@@ -62,9 +31,6 @@ class EpicGamesGame: Game {
                    title: title,
                    installationState: installationState,
                    containerURL: containerURL)
-
-        self._cachedLegendaryInstallationData = try? Legendary.getGameInstallationData(gameID: self.id)
-        self._cachedLegendaryMetadata = try? Legendary.getGameMetadata(gameID: self.id)
     }
 
     required init(from decoder: any Decoder) throws {

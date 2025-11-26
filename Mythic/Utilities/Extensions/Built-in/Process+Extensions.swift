@@ -80,7 +80,7 @@ extension Process {
         let stdoutTask = Task.detached(priority: .utility) { () -> String in
             let data = stdout.fileHandleForReading.readDataToEndOfFile()
             // swiftlint:disable:next optional_data_string_conversion
-            let text = String(decoding: data, as: UTF8.self)
+            let text: String = .init(decoding: data, as: UTF8.self)
             if !text.isEmpty {
                 log.debug("[stdout] \(text, privacy: .public)")
             }
@@ -90,7 +90,7 @@ extension Process {
         let stderrTask = Task.detached(priority: .utility) { () -> String in
             let data = stderr.fileHandleForReading.readDataToEndOfFile()
             // swiftlint:disable:next optional_data_string_conversion
-            let text = String(decoding: data, as: UTF8.self)
+            let text: String = .init(decoding: data, as: UTF8.self)
             if !text.isEmpty {
                 log.debug("[stderr] \(text, privacy: .public)")
             }
@@ -164,7 +164,7 @@ extension Process {
                 let data = handle.availableData
                 guard !data.isEmpty else { return }
                 // swiftlint:disable:next optional_data_string_conversion
-                let text = String(decoding: data, as: UTF8.self)
+                let text: String = .init(decoding: data, as: UTF8.self)
                 guard !text.isEmpty else { return }
 
                 let chunk = OutputChunk(stream: .standardError, output: text)
