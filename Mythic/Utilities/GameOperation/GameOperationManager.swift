@@ -19,7 +19,8 @@ import UserNotifications
     // ‼️ operationqueue should NOT be accessed outside, this will always be private
     // cannot name this _queue, swiftui seems to automatically insert _queue for the queue variable
     // avoid naming 'underlyingQueue', this is already a variable
-    private var operationQueue: OperationQueue
+    // swiftlint:disable:next identifier_name
+    var _operationQueue: OperationQueue
     // necessitated by deprecation of `OperationQueue.operations`
     internal private(set) var queue: [GameOperation] = .init()
 
@@ -28,7 +29,7 @@ import UserNotifications
         queue.name = "GameOperationManagerQueue"
         queue.maxConcurrentOperationCount = 1
         queue.qualityOfService = .utility
-        self.operationQueue = queue
+        self._operationQueue = queue
     }
 
     private func removeFromOverlyingQueue(_ operation: GameOperation) {
@@ -64,7 +65,7 @@ import UserNotifications
             log.debug("Operation \(operation.debugDescription) complete.")
         }
 
-        operationQueue.addOperation(operation)
+        _operationQueue.addOperation(operation)
         queue.append(operation)
 
         log.debug("Queued operation \(operation.debugDescription)")
@@ -83,7 +84,7 @@ import UserNotifications
 
     func cancelAllOperations() {
         log.debug("Cancelling all (\(self.queue.count)) operations.")
-        operationQueue.cancelAllOperations()
+        _operationQueue.cancelAllOperations()
         queue.removeAll()
         log.debug("Cancelled all operations, and cleared queues.")
     }
