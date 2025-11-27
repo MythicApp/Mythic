@@ -36,13 +36,13 @@ extension Wine {
 
     // https://gitlab.winehq.org/wine/wine/-/wikis/Commands/wineboot
     internal enum BootParameter: String {
-        case endSession = "--end-session" // -e
-        case force = "--force" // -f
-        case prefixInit = "--init" // -i
-        case kill = "--kill" // -k
-        case restart = "--restart" // -r
-        case shutdown = "--shutdown" // -s
-        case update = "--update" // -u
+        case endSession = "--end-session"   // -e
+        case force = "--force"              // -f
+        case prefixInit = "--init"          // -i
+        case kill = "--kill"                // -k
+        case restart = "--restart"          // -r
+        case shutdown = "--shutdown"        // -s
+        case update = "--update"            // -u
     }
 
     struct UnableToQueryRegistryError: LocalizedError {
