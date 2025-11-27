@@ -9,6 +9,8 @@
 
 import Foundation
 
+/// Unfortunately, Mythic is in a UserDefaults conundrum.
+/// As such, this code will continute to be maintained, with deprecation MAYBE occurring before v1.0.0
 extension UserDefaults {
     @discardableResult
     func encodeAndSet<T>(_ data: T, forKey key: String) throws -> Data where T: Encodable {
