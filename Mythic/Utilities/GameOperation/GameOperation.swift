@@ -82,6 +82,11 @@ import DockProgress
     }
 }
 
+extension GameOperation {
+    override var description: String { "\(type) \(game)" }
+    override var debugDescription: String { "[\(id)] \(type) for game \(game.debugDescription)" }
+}
+
 // MARK: - Types
 
 extension GameOperation {

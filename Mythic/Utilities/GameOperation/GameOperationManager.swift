@@ -39,13 +39,13 @@ import Observation
         // this ensures `queue` is always mirroring `operationQueue`.
         operation.completionBlock = { [self] in
             Task { await removeFromOverlyingQueue(operation) }
-            log.debug("Operation \(operation.description) complete.")
+            log.debug("Operation \(operation.debugDescription) complete.")
         }
 
         operationQueue.addOperation(operation)
         queue.append(operation)
 
-        log.debug("Queued operation \(operation.description)")
+        log.debug("Queued operation \(operation.debugDescription)")
     }
 
     // convenience overload that avoids direct `GameOperation` instantiation
