@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
+import UniformTypeIdentifiers
 
 extension Game {
     enum ImageType {
@@ -25,6 +26,13 @@ extension Game {
             switch self {
             case .macOS:    "macOS"
             case .windows:  "Windows®"
+            }
+        }
+
+        var allowedExecutableContentTypes: [UTType] {
+            switch self {
+            case .macOS:    [.application]
+            case .windows:  [.exe]
             }
         }
     }

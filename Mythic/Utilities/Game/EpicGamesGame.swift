@@ -15,7 +15,7 @@ class EpicGamesGame: Game {
     override var computedVerticalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .tall) }
     override var computedHorizontalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .normal) }
 
-    override var supportedPlatforms: Set<Game.Platform>? {
+    override func getSupportedPlatforms() -> Set<Game.Platform>? {
         let metadata = try? Legendary.getGameMetadata(gameID: self.id)
         let latestGameRelease = metadata?.storeMetadata.releaseInfo
             .max(by: { $0.dateAdded ?? .distantPast < $1.dateAdded ?? .distantPast })

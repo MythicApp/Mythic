@@ -74,50 +74,49 @@ extension GameCard {
                         }
                         .fileImporter(
                             isPresented: $isThumbnailFileImporterPresented,
-                            allowedContentTypes: [
-                                .png, .jpeg, .gif, .bmp, .ico, .tiff, .heic, .webP
-                            ]) { result in
-                                switch result {
-                                case .success(let url):
-                                    guard url.startAccessingSecurityScopedResource() else { return }
-                                    defer { url.stopAccessingSecurityScopedResource() }
+                            allowedContentTypes: [.png, .jpeg, .gif, .bmp, .ico, .tiff, .heic, .webP]
+                        ) { result in
+                            switch result {
+                            case .success(let url):
+                                guard url.startAccessingSecurityScopedResource() else { return }
+                                defer { url.stopAccessingSecurityScopedResource() }
 
-                                    guard let appHome = Bundle.appHome else { return }
+                                guard let appHome = Bundle.appHome else { return }
 
-                                    do {
-                                        guard let storefront = game.storefront else { throw CocoaError(.coderInvalidValue) }
-                                        let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(storefront.description)")
+                                do {
+                                    guard let storefront = game.storefront else { throw CocoaError(.coderInvalidValue) }
+                                    let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(storefront.description)")
 
-                                        if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
-                                            try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
-                                        }
-
-                                        let newThumbnailURL = thumbnailDirectoryURL.appendingPathComponent(UUID().uuidString)
-
-                                        try files.copyItem(at: url, to: newThumbnailURL)
-
-                                        imageURL = newThumbnailURL
-                                    } catch {
-                                        Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
-                                        presentThumbnailImportError(error)
+                                    if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
+                                        try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
                                     }
-                                case .failure(let failure):
-                                    presentThumbnailImportError(failure)
-                                }
 
-                                @MainActor
-                                func presentThumbnailImportError(_ error: Error) {
-                                    thumbnailImportError = error
-                                    isThumbnailImportErrorPresented = true
+                                    let newThumbnailURL = thumbnailDirectoryURL.appendingPathComponent(UUID().uuidString)
+
+                                    try files.copyItem(at: url, to: newThumbnailURL)
+
+                                    imageURL = newThumbnailURL
+                                } catch {
+                                    Logger.app.error("Unable to import thumbnail: \(error.localizedDescription)")
+                                    presentThumbnailImportError(error)
                                 }
+                            case .failure(let failure):
+                                presentThumbnailImportError(failure)
                             }
-                            .alert(isPresented: $isThumbnailImportErrorPresented) {
-                                Alert(
-                                    title: .init("Unable to import thumbnail."),
-                                    message: .init(thumbnailImportError?.localizedDescription ?? "Unknown Error."),
-                                    dismissButton: .default(Text("OK"))
-                                )
+
+                            @MainActor
+                            func presentThumbnailImportError(_ error: Error) {
+                                thumbnailImportError = error
+                                isThumbnailImportErrorPresented = true
                             }
+                        }
+                        .alert(isPresented: $isThumbnailImportErrorPresented) {
+                            Alert(
+                                title: .init("Unable to import thumbnail."),
+                                message: .init(thumbnailImportError?.localizedDescription ?? "Unknown Error."),
+                                dismissButton: .default(Text("OK"))
+                            )
+                        }
 
                     }
 

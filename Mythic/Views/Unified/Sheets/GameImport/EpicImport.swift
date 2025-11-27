@@ -23,6 +23,8 @@ extension GameImportView {
                                               title: .init(),
                                               installationState: .uninstalled)
 
+        @State private var isRetrievingSupportedPlatforms: Bool = false
+        @State private var supportedPlatforms: [Game.Platform]?
         @State private var platform: Game.Platform = .macOS
         @State private var location: URL = .temporaryDirectory
 
@@ -69,12 +71,27 @@ extension GameImportView {
                         Picker("Platform",
                                systemImage: "desktopcomputer.and.arrow.down",
                                selection: $platform) {
-                            ForEach(Array(game.supportedPlatforms ?? .init()), id: \.self) { platform in
+                            ForEach(supportedPlatforms ?? .init(), id: \.self) { platform in
                                 Text(platform.description)
                             }
                         }
-                        // use onChange, because platform requires game as a dependency
-                        .onChange(of: game, { platform = $1.supportedPlatforms?.first ?? platform })
+                       .onChange(of: game) {
+                           isRetrievingSupportedPlatforms = true
+                           if let retrievedSupportedPlatforms = game.getSupportedPlatforms() {
+                               supportedPlatforms = Array(retrievedSupportedPlatforms)
+                           }
+                           isRetrievingSupportedPlatforms = false
+                       }
+                       .withOperationStatus(
+                            operating: $isRetrievingSupportedPlatforms,
+                            successful: .constant(nil),
+                            observing: $supportedPlatforms,
+                            action: { // update platform value so picker is never undefined
+                                // sort to prioritise macOS first
+                                let platforms = supportedPlatforms?.sorted(by: { $0 == .macOS && $1 != .macOS })
+                                platform = platforms?.first ?? platform
+                            }
+                       )
 
                         HStack {
                             VStack(alignment: .leading) {
@@ -98,7 +115,7 @@ extension GameImportView {
                             }
                             .fileImporter(
                                 isPresented: $isGameLocationFileImporterPresented,
-                                allowedContentTypes: allowedContentTypes(for: platform)
+                                allowedContentTypes: platform.allowedExecutableContentTypes
                             ) { result in
                                 if case .success(let success) = result {
                                     location = success
@@ -124,7 +141,7 @@ extension GameImportView {
                                     placement: .leading,
                                     action: performGameImport)
                     .disabled(location == .temporaryDirectory)
-                    .disabled(game.supportedPlatforms?.isEmpty == true)
+                    .disabled(supportedPlatforms?.isEmpty == true)
                     .disabled(isOperating)
                     .buttonStyle(.borderedProminent)
                 }
@@ -153,13 +170,6 @@ extension GameImportView {
                     presence.assets.largeImage = "macos_512x512_2x"
                     return presence
                 }())
-            }
-        }
-
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
-            switch platform {
-            case .macOS:    [.application]
-            case .windows:  [.exe]
             }
         }
 

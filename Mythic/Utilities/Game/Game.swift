@@ -118,7 +118,7 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     final var lastLaunched: Date?
 
     // override in subclass
-    var supportedPlatforms: Set<Game.Platform>? { nil }
+    func getSupportedPlatforms() -> Set<Game.Platform>? { return nil }
 
     init(id: String,
          title: String,
@@ -303,6 +303,11 @@ extension Game {
 
 extension Game: Mergeable {
     func merge(_ other: Game) {
+        var out = ""; dump(self, to: &out)
+        print("merging, here's current game \(out)")
+        dump(other, to: &out)
+        print("here's other: \(out)")
+
         _verticalImageURL = self._verticalImageURL ?? other._verticalImageURL
         _horizontalImageURL = self._horizontalImageURL ?? other._horizontalImageURL
         _containerURL = self._containerURL ?? other._containerURL
@@ -313,6 +318,9 @@ extension Game: Mergeable {
             lastLaunched = max(self.lastLaunched ?? .distantPast,
                                other.lastLaunched ?? .distantPast)
         }
+
+        dump(self, to: &out)
+        print("merge complete, here's new self: \(out)")
     }
 }
 

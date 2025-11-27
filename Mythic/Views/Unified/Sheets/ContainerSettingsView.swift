@@ -134,7 +134,7 @@ struct ContainerSettingsView: View {
                     successful: $dxvkSuccess,
                     observing: .constant(false),
                     placement: .leading,
-                    action: {} // handled by alert presentation
+                    action: { /* handled by alert presentation */ }
                 )
                 .alert("Quit games running in this container?",
                        isPresented: $isDXVKDisclaimerPresented) {

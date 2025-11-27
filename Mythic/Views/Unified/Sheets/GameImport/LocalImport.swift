@@ -104,7 +104,7 @@ extension GameImportView {
                                 }
                                 .fileImporter(
                                     isPresented: $isGameLocationFileImporterPresented,
-                                    allowedContentTypes: allowedContentTypes(for: platform)
+                                    allowedContentTypes: platform.allowedExecutableContentTypes
                                 ) { result in
                                     if case .success(let success) = result {
                                         location = success
@@ -139,14 +139,6 @@ extension GameImportView {
                     .buttonStyle(.borderedProminent)
                 }
                 .padding([.horizontal, .bottom])
-            }
-        }
-        
-        // FIXME: boilerplate, shared with GameImportView.Epic
-        private func allowedContentTypes(for platform: Game.Platform) -> [UTType] {
-            switch platform {
-            case .macOS:    [.application]
-            case .windows:  [.exe]
             }
         }
     }

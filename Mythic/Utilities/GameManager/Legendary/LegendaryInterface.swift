@@ -258,7 +258,7 @@ final class Legendary {
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
-        guard let supportedPlatforms = await game.supportedPlatforms,
+        guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
         }
@@ -455,7 +455,7 @@ final class Legendary {
                          withDLCs: Bool,
                          platform: Game.Platform,
                          gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
-        guard let supportedPlatforms = await game.supportedPlatforms,
+        guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
         }
