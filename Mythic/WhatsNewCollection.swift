@@ -210,51 +210,6 @@ extension MythicApp: @MainActor WhatsNewCollectionProvider {
         )
 
         WhatsNew(
-            version: "0.4.5",
-            title: "What's new in Mythic",
-            features: [
-                .init(
-                    image: .init(
-                        systemName: "ladybug",
-                        foregroundColor: .red
-                    ),
-                    title: "Bug Fixes & Performance Improvements",
-                    subtitle: "Back to just the usual. 🙏🏾"
-                ),
-                .init(
-                    image: .init(
-                        systemName: "person.badge.shield.exclamationmark",
-                        foregroundColor: .orange
-                    ),
-                    title: "Added fallback signin view support",
-                    subtitle: "Users can now sign into Epic Games accounts through third parties by using the fallback signin view."
-                ),
-                .init(
-                    image: .init(
-                        systemName: "progress.indicator",
-                        foregroundColor: .purple
-                    ),
-                    title: "Immediate game library population",
-                    subtitle: "Mythic's game library will now immediately populate upon signing in."
-                ),
-                .init(
-                    image: .init(image: {
-                        Image("HarmonyIcon")
-                            .resizable()
-                            .scaledToFit()
-                    }),
-                    title: "Stay tuned! 👀",
-                    subtitle: "Something's coming to Mythic."
-                )
-            ],
-            primaryAction: .init(),
-            secondaryAction: .init(
-                title: "Learn more",
-                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.4.5"))
-            )
-        )
-
-        WhatsNew(
             version: "0.5.0",
             title: "What's new in Mythic",
             features: [
