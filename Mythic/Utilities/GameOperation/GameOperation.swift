@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
+import DockProgress
 
 @Observable final class GameOperation: Operation, Identifiable, @unchecked Sendable {
     let id: UUID = .init()
@@ -32,6 +33,11 @@ import Foundation
 
         // initialise `Operation`
         super.init()
+
+        Task { @MainActor in
+            DockProgress.style = .pie(color: .accentColor)
+            DockProgress.progressInstance = self._progress
+        }
     }
 
     // MARK: `Operation` inheritance overrides
