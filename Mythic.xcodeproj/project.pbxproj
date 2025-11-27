@@ -96,6 +96,7 @@
 		6A8080D02EA339D400F10A00 /* HeroGameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080CF2EA339CE00F10A00 /* HeroGameCard.swift */; };
 		6A8080D32EA35FA000F10A00 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080D22EA35F9D00F10A00 /* OnboardingView.swift */; };
 		6A8080D52EA3611A00F10A00 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8080D42EA3611600F10A00 /* OnboardingViewModel.swift */; };
+		6A8592CF2ED8047C00B339D8 /* DockProgress in Frameworks */ = {isa = PBXBuildFile; productRef = 6A8592CE2ED8047C00B339D8 /* DockProgress */; };
 		6A89E5492ED2F8B600A2B47F /* Mergeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A89E5482ED2F8B200A2B47F /* Mergeable.swift */; };
 		6A93CC872DFBB7510079A0B0 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A93CC862DFBB74D0079A0B0 /* String+Extensions.swift */; };
 		6A955DEB2DF808D000BFA541 /* Mythic.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A955DEA2DF808D000BFA541 /* Mythic.icon */; };
@@ -266,6 +267,7 @@
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
 				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
+				6A8592CF2ED8047C00B339D8 /* DockProgress in Frameworks */,
 				6A12FF8E2B73AC4E00AA948C /* Glur in Frameworks */,
 				6A34366E2B8D7F1200D35BCA /* Shimmer in Frameworks */,
 				6AAD31152B08693D0035FA69 /* SemanticVersion in Frameworks */,
@@ -625,6 +627,7 @@
 				6A2961042CE1DD6200917E90 /* FirebaseCore */,
 				6A2961062CE1DD6200917E90 /* FirebaseCrashlytics */,
 				1217C8C12EADC680003EC8C9 /* MarkdownUI */,
+				6A8592CE2ED8047C00B339D8 /* DockProgress */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -665,6 +668,7 @@
 				6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */,
 				6A2961012CE1DD6200917E90 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				6A8592CD2ED8047C00B339D8 /* XCRemoteSwiftPackageReference "DockProgress" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -987,7 +991,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4061;
+				CURRENT_PROJECT_VERSION = 4062;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -1035,7 +1039,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4061;
+				CURRENT_PROJECT_VERSION = 4062;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -1136,6 +1140,14 @@
 				minimumVersion = 2.4.0;
 			};
 		};
+		6A8592CD2ED8047C00B339D8 /* XCRemoteSwiftPackageReference "DockProgress" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/DockProgress";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
+			};
+		};
 		6AA1744D2CD5CC290035B081 /* XCRemoteSwiftPackageReference "WhatsNewKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SvenTiigi/WhatsNewKit";
@@ -1213,6 +1225,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6A7A81142B77093600D19E32 /* XCRemoteSwiftPackageReference "ColorfulX" */;
 			productName = ColorfulX;
+		};
+		6A8592CE2ED8047C00B339D8 /* DockProgress */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A8592CD2ED8047C00B339D8 /* XCRemoteSwiftPackageReference "DockProgress" */;
+			productName = DockProgress;
 		};
 		6AA1744E2CD5CC290035B081 /* WhatsNewKit */ = {
 			isa = XCSwiftPackageProductDependency;

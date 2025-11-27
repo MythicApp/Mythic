@@ -46,5 +46,6 @@ Mythic uses the following Swift dependencies:
 - [WhatsNewKit](https://github.com/SvenTiigi/WhatsNewKit) — A Swift Package to easily showcase your new app features.
 - [firebase-ios-sdk](https://github.com/firebase/firebase-ios-sdk) — Firebase SDK for Apple App Development
 - [SwiftUI-Shimmer](https://github.com/markiv/SwiftUI-Shimmer) — A super-light modifier that adds a shimmering effect to any SwiftUI View.
+- [DockProgress](https://github.com/sindresorhus/DockProgress) — Show progress in your app's Dock icon
 
 <sub>Copyright © 2023-2025 vapidinfinity</sub>
