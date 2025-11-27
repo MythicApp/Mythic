@@ -25856,6 +25856,9 @@
     "To toggle DXVK, Mythic must quit all games currently running in this container.\nAdditionally, D3DMetal will be disabled.\n\nToggling DXVK may impact compatibility positively or negatively." : {
 
     },
+    "Unable to complete operation [%@]." : {
+
+    },
     "Unable to import thumbnail." : {
 
     },

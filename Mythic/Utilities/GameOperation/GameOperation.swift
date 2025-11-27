@@ -9,8 +9,11 @@
 
 import Foundation
 import DockProgress
+import OSLog
 
 @Observable final class GameOperation: Operation, Identifiable, @unchecked Sendable {
+    private var log: Logger { .custom(category: "GameOperation") }
+
     let id: UUID = .init()
     let game: Game
     let type: ActiveOperationType
@@ -33,11 +36,6 @@ import DockProgress
 
         // initialise `Operation`
         super.init()
-
-        Task { @MainActor in
-            DockProgress.style = .pie(color: .accentColor)
-            DockProgress.progressInstance = self._progress
-        }
     }
 
     // MARK: `Operation` inheritance overrides
@@ -53,6 +51,7 @@ import DockProgress
             do {
                 isExecuting = true
                 try await function(_progress)
+                log.error("Error occurred in operation \(self.debugDescription): \(self.error?.localizedDescription ?? "Unknown error").")
             } catch {
                 self.error = error
             }
@@ -123,7 +122,8 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
 
 // MARK: - ProgressKVOBridge
 @Observable final class ProgressKVOBridge: @unchecked Sendable {
-    private let progress: Progress
+    // swiftlint:disable:next identifier_name
+    let _progress: Progress
 
     // Observables that mirror `Progress`
     private(set) var fractionCompleted: Double = 0.0
@@ -139,31 +139,31 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
 
     // register KVOs and send to observables
     init(progress: Progress) {
-        self.progress = progress
+        self._progress = progress
         self.observers = .init()
 
-        observers.insert(self.progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, change in
+        observers.insert(self._progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, change in
             guard let self = self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.fractionCompleted = newValue })
             }
         })
 
-        observers.insert(self.progress.observe(\.completedUnitCount, options: [.new]) { [weak self] _, change in
+        observers.insert(self._progress.observe(\.completedUnitCount, options: [.new]) { [weak self] _, change in
             guard let self = self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.completedUnitCount = newValue })
             }
         })
 
-        observers.insert(self.progress.observe(\.totalUnitCount, options: [.new]) { [weak self] _, change in
+        observers.insert(self._progress.observe(\.totalUnitCount, options: [.new]) { [weak self] _, change in
             guard let self = self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.totalUnitCount = newValue })
             }
         })
 
-        observers.insert(self.progress.observe(\.userInfo, options: [.new]) { [weak self] progress, _ in
+        observers.insert(self._progress.observe(\.userInfo, options: [.new]) { [weak self] progress, _ in
             guard let self = self else { return }
 
             if let throughput = progress.userInfo[.throughputKey] as? Int {

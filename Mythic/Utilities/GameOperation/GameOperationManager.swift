@@ -11,6 +11,8 @@ import Foundation
 import OSLog
 import Observation
 import UserNotifications
+import AppKit
+import DockProgress
 
 @Observable @MainActor final class GameOperationManager {
     static var shared: GameOperationManager = .init()
@@ -22,7 +24,16 @@ import UserNotifications
     // swiftlint:disable:next identifier_name
     var _operationQueue: OperationQueue
     // necessitated by deprecation of `OperationQueue.operations`
-    internal private(set) var queue: [GameOperation] = .init()
+    internal private(set) var queue: [GameOperation] = .init() {
+        didSet {
+            if let currentOperation = self.queue.first {
+                Task { @MainActor in
+                    DockProgress.style = .badge(color: .accentColor, badgeValue: { self.queue.count })
+                    DockProgress.progressInstance = currentOperation.progressKVOBridge._progress
+                }
+            }
+        }
+    }
 
     private init() {
         let queue: OperationQueue = .init()
@@ -38,6 +49,21 @@ import UserNotifications
 
     func queueOperation(_ operation: GameOperation) {
         operation.completionBlock = { [self] in
+            // present any unhandled errors within the operation to the ui.
+            Task { @MainActor in
+                if let error = operation.error {
+                    let alert = NSAlert()
+                    alert.messageText = String(localized: "Unable to complete operation [\(operation.description)].")
+                    alert.informativeText = error.localizedDescription
+                    alert.alertStyle = .critical
+                    alert.addButton(withTitle: String(localized: "OK"))
+
+                    if let window = NSApp.windows.first {
+                        alert.beginSheetModal(for: window)
+                    }
+                }
+            }
+
             // remove operation from `queue` on operation completion,
             // this ensures `queue` is always mirroring `operationQueue`.
             Task { await removeFromOverlyingQueue(operation) }
