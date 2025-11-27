@@ -10,7 +10,6 @@
 import Foundation
 import SwiftUI
 import OSLog
-import UserNotifications
 import RegexBuilder
 
 // FIXME: this code is on its way out. legendary will no longer be a Mythic dependency
