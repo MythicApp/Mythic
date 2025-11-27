@@ -134,7 +134,14 @@ extension GameCard {
                     .help("Install \(game.description)")
 
                     .sheet(isPresented: $isInstallSheetPresented) {
-                        InstallGameView(game: $game, isPresented: $isInstallSheetPresented)
+                        switch game.storefront {
+                        case .epicGames:
+                            EpicGameInstallationView(game: $game, isPresented: $isInstallSheetPresented)
+                                .padding()
+                                .frame(width: 700, height: 400)
+                        case .local:    EmptyView()
+                        case .none:     EmptyView()
+                        }
                     }
                 }
             }
@@ -152,11 +159,9 @@ extension GameCard {
 
             var body: some View {
                 Button {
-                    Task {
+                    Task { [game] in
                         do {
-                            try await Task { @MainActor [game] in
-                                try await game.verifyInstallation()
-                            }.value
+                            try await game.verifyInstallation()
                         } catch {
                             verificationError = error
                             isVerificationErrorAlertPresented = true

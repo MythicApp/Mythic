@@ -1158,6 +1158,9 @@
         }
       }
     },
+    "(Selective downloads supported.)" : {
+
+    },
     "(Supports selective downloads)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -8182,6 +8185,16 @@
         }
       }
     },
+    "Do you wish to stop %@ %@?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Do you wish to stop %1$@ %2$@?"
+          }
+        }
+      }
+    },
     "Documentation" : {
 
     },
@@ -13812,6 +13825,9 @@
 
     },
     "Install/Uninstall..." : {
+
+    },
+    "Installation Directory" : {
 
     },
     "Installed" : {
@@ -24234,16 +24250,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停止"
-          }
-        }
-      }
-    },
-    "Stop %@ %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Stop %1$@ %2$@"
           }
         }
       }

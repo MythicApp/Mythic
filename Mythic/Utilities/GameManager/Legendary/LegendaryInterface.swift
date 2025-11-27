@@ -562,6 +562,75 @@ final class Legendary {
         return assetInfo.buildVersion != installationData.version
     }
 
+    static func fetchPreInstallationMetadata(
+        game: EpicGamesGame,
+        platform: Game.Platform
+    ) async -> (installSize: Int64?, optionalPacks: [String: String]?) {
+        guard case .uninstalled = game.installationState else {
+            return (nil, nil)
+        }
+
+        let args = [
+            "install", game.id,
+            "--platform", Legendary.matchPlatform(for: platform)
+        ]
+
+        @MainActor class Metadata {
+            var installSize: Int64?
+            var optionalPacks: [String: String] = [:]
+        }
+        let metadata = Metadata()
+
+        // if the data lock is present, legendary will terminate itself, so this is ok
+        // nice n safe
+        let consumer = await Legendary.executeStreamed(
+            identifier: "fetchOptionalPacks",
+            arguments: args
+        ) { chunk in
+            switch chunk.stream {
+            case .standardError:
+                Task {
+                    // legendary always returns install size in MiB
+                    if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
+                       let sizeString = match[1].substring,
+                       let sizeValue = Double(sizeString) {
+                        await MainActor.run {
+                            metadata.installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                        }
+                    }
+                }
+
+            case .standardOutput:
+                if chunk.output.contains("The following optional packs are available") {
+                    Task { @MainActor in
+                        for line in chunk.output.split(separator: .newlineSequence) {
+                            if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: String(line)),
+                               let id = match["identifier"]?.substring,
+                               let name = match["name"]?.substring {
+                                await MainActor.run {
+                                    metadata.optionalPacks[String(id)] = String(name)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // if legendary prompts an install, our work is done. stop parsing
+                if chunk.output.contains("Do you wish to install") ||
+                   chunk.output.contains("Additional packs") {
+                    Task {
+                        await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
+                    }
+                }
+            }
+
+            return nil
+        }
+
+        try? await consumer.value
+        return await (metadata.installSize, metadata.optionalPacks)
+    }
+
     static func isFileVerificationRequired(gameID: String) throws -> Bool {
         let installationData = try getGameInstallationData(gameID: gameID)
         return installationData.needsVerification

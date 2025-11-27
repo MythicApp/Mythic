@@ -59,18 +59,23 @@ extension GameImportView {
                         .padding([.top, .leading])
 
                     Form {
-                        Picker("Game",
-                               systemImage: "gamecontroller",
-                               selection: $game) {
+                        Picker(
+                            "Game",
+                            systemImage: "gamecontroller",
+                            selection: $game
+                        ) {
                             ForEach(installableGames, id: \.self) { game in
                                 Text(game.title)
                             }
                         }
                         .onAppear(perform: { game = installableGames.first ?? game })
 
-                        Picker("Platform",
-                               systemImage: "desktopcomputer.and.arrow.down",
-                               selection: $platform) {
+                        // FIXME: shared with EpicImport
+                        Picker(
+                            "Platform",
+                            systemImage: "desktopcomputer.and.arrow.down",
+                            selection: $platform
+                        ) {
                             ForEach(supportedPlatforms ?? .init(), id: \.self) { platform in
                                 Text(platform.description)
                             }
