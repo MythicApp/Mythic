@@ -33,9 +33,18 @@ struct EpicGameInstallationView: View {
     @State private var supportedPlatforms: [Game.Platform]?
 
     // epic-specific variables
-    @State var optionalPacks: [String: String] = .init()
+    @State var optionalPacks: [String: String]?
     @State var selectedOptionalPacks: Set<String> = .init()
     @State var fetchingOptionalPacks: Bool = false
+
+    private func fetchOptionalPacks() {
+        guard let game = game as? EpicGamesGame else { return }
+        Task {
+            fetchingOptionalPacks = true
+            defer { fetchingOptionalPacks = false }
+            (installSizeInBytes, optionalPacks) = await Legendary.fetchPreInstallationMetadata(game: game, platform: platform)
+        }
+    }
 
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
@@ -46,12 +55,13 @@ struct EpicGameInstallationView: View {
                     Text("Install \(game.description)")
                         .font(.title)
                         .bold()
-                    
+
                     if let storefront = game.storefront {
                         SubscriptedTextView(storefront.description)
                     }
-                    
-                    if !optionalPacks.isEmpty {
+
+                    if let optionalPacks = optionalPacks,
+                       !optionalPacks.isEmpty {
                         Text("(Selective downloads supported.)")
                             .font(.footnote)
                             .foregroundStyle(.placeholder)
@@ -121,23 +131,23 @@ struct EpicGameInstallationView: View {
                                 Text(platform.description)
                             }
                         }
-                       .task(priority: .userInitiated) {
-                           isRetrievingSupportedPlatforms = true
-                           if let retrievedSupportedPlatforms = game.getSupportedPlatforms() {
-                               supportedPlatforms = Array(retrievedSupportedPlatforms)
-                           }
-                           isRetrievingSupportedPlatforms = false
-                       }
-                       .withOperationStatus(
-                        operating: $isRetrievingSupportedPlatforms,
-                        successful: .constant(nil),
-                        observing: $supportedPlatforms,
-                        action: { // update platform value so picker is never undefined
-                            // sort to prioritise macOS first
-                            let platforms = supportedPlatforms?.sorted(by: { $0 == .macOS && $1 != .macOS })
-                            platform = platforms?.first ?? platform
+                        .task(priority: .userInitiated) {
+                            isRetrievingSupportedPlatforms = true
+                            if let retrievedSupportedPlatforms = game.getSupportedPlatforms() {
+                                supportedPlatforms = Array(retrievedSupportedPlatforms)
+                            }
+                            isRetrievingSupportedPlatforms = false
                         }
-                               )
+                        .withOperationStatus(
+                            operating: $isRetrievingSupportedPlatforms,
+                            successful: .constant(nil),
+                            observing: $supportedPlatforms,
+                            action: { // update platform value so picker is never undefined
+                                // sort to prioritise macOS first
+                                let platforms = supportedPlatforms?.sorted(by: { $0 == .macOS && $1 != .macOS })
+                                platform = platforms?.first ?? platform
+                            }
+                        )
                     }
                     .formStyle(.grouped)
                 }
@@ -171,16 +181,8 @@ struct EpicGameInstallationView: View {
                 }
                 .disabled(supportedPlatforms == nil)
                 .disabled(fetchingOptionalPacks)
-
-                // i hate repeating code so much but this is necessary
-                .task(priority: .userInitiated) {
-                    guard let game = game as? EpicGamesGame else { return }
-                    Task { await Legendary.fetchPreInstallationMetadata(game: game, platform: platform) }
-                }
-                .onChange(of: game) {
-                    guard let game = $1 as? EpicGamesGame else { return }
-                    Task { await Legendary.fetchPreInstallationMetadata(game: game, platform: platform) }
-                }
+                .onAppear(perform: { fetchOptionalPacks() })
+                .onChange(of: game, { fetchOptionalPacks() })
                 .buttonStyle(.borderedProminent)
             }
             .onChange(of: isPresented) { _, newValue in // don't use .onDisappear, it interferes with runningcommands' task handling
@@ -201,7 +203,9 @@ struct EpicGameInstallationView: View {
 
 #Preview {
     // this will crash if you don't have fortnite in your library or are signed out
-    EpicGameInstallationView(game: .constant(Game.store.library.first(where: { $0.id == "Fortnite" })!),
-                             isPresented: .constant(true))
-        .padding()
+    EpicGameInstallationView(
+        game: .constant(Game.store.library.first(where: { $0.id == "Fortnite" })!),
+        isPresented: .constant(true)
+    )
+    .padding()
 }

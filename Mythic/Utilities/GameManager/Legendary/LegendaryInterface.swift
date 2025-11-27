@@ -603,13 +603,11 @@ final class Legendary {
             case .standardOutput:
                 if chunk.output.contains("The following optional packs are available") {
                     Task { @MainActor in
-                        for line in chunk.output.split(separator: .newlineSequence) {
+                        chunk.output.enumerateLines { line, _ in
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: String(line)),
                                let id = match["identifier"]?.substring,
                                let name = match["name"]?.substring {
-                                await MainActor.run {
-                                    metadata.optionalPacks[String(id)] = String(name)
-                                }
+                                metadata.optionalPacks[String(id)] = String(name)
                             }
                         }
                     }
