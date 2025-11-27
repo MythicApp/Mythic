@@ -16,7 +16,7 @@ struct GameInstallProgressView: View {
 
     @State private var isInstallStatusViewPresented: Bool = false
 
-    @State private var isStopGameModificationAlertPresented: Bool = false
+    @State private var isStopGameOperationAlertPresented: Bool = false
     @State private var isHoveringOverDestructiveButton: Bool = false
 
     var body: some View {
@@ -37,7 +37,7 @@ struct GameInstallProgressView: View {
                 }
 
                 Button {
-                    isStopGameModificationAlertPresented = true
+                    isStopGameOperationAlertPresented = true
                 } label: {
                     Image(systemName: "xmark")
                         .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
@@ -52,7 +52,7 @@ struct GameInstallProgressView: View {
                     }
                 }
                 .alert("Do you wish to stop \(currentOperation.type.description.localizedLowercase) \(currentOperation.game.description)?",
-                       isPresented: $isStopGameModificationAlertPresented) {
+                       isPresented: $isStopGameOperationAlertPresented) {
                     Button("Stop", role: .destructive) {
                         currentOperation.cancel()
                     }
