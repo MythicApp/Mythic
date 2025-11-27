@@ -10,6 +10,7 @@
 import Foundation
 import OSLog
 import Observation
+import UserNotifications
 
 @Observable @MainActor final class GameOperationManager {
     static var shared: GameOperationManager = .init()
@@ -35,10 +36,31 @@ import Observation
     }
 
     func queueOperation(_ operation: GameOperation) {
-        // remove operation from `queue` on operation completion,
-        // this ensures `queue` is always mirroring `operationQueue`.
         operation.completionBlock = { [self] in
+            // remove operation from `queue` on operation completion,
+            // this ensures `queue` is always mirroring `operationQueue`.
             Task { await removeFromOverlyingQueue(operation) }
+
+            // display completion notification to user
+            Task {
+                let notificationContent: UNMutableNotificationContent = .init()
+                notificationContent.title = String(localized: "Operation complete.")
+                notificationContent.body = String(localized: "\(operation.game.description) is now ready.")
+                notificationContent.interruptionLevel = .active
+
+                let notificationRequest: UNNotificationRequest = .init(
+                    identifier: "\(operation.id)_operationCompletion",
+                    content: notificationContent,
+                    trigger: nil
+                )
+
+                do {
+                    try await notifications.add(notificationRequest)
+                } catch {
+                    log.error("Unable to send notification for operation completion: \(error.localizedDescription)")
+                }
+            }
+
             log.debug("Operation \(operation.debugDescription) complete.")
         }
 
