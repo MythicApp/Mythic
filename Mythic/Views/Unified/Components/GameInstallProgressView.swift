@@ -51,15 +51,13 @@ struct GameInstallProgressView: View {
                         isHoveringOverDestructiveButton = hovering
                     }
                 }
-                .alert("Stop \(currentOperation.type.description.localizedLowercase) \(currentOperation.game.description)",
+                .alert("Do you wish to stop \(currentOperation.type.description.localizedLowercase) \(currentOperation.game.description)?",
                        isPresented: $isStopGameModificationAlertPresented) {
                     Button("Stop", role: .destructive) {
-                        
+                        currentOperation.cancel()
                     }
 
-                    Button("Cancel", role: .cancel) {
-
-                    }
+                    Button("Cancel", role: .cancel, action: {})
                 }
             }
         }
