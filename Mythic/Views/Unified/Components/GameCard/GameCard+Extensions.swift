@@ -363,6 +363,7 @@ extension GameCard {
                 case let epicGame as EpicGamesGame:
                     EpicGamesGameUninstallationView(game: .init(get: { epicGame }, set: { game = $0 }),
                                                     isPresented: $isUninstallSheetPresented)
+                    .padding()
                 default: EmptyView()
                 }
             }
