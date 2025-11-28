@@ -142,7 +142,7 @@ extension GameCard {
                                 isPresented: $isInstallSheetPresented
                             )
                             .padding()
-                            .frame(width: 700, height: 400)
+                            .frame(width: 700, height: 380)
                         default: EmptyView()
                         }
                     }
@@ -364,6 +364,7 @@ extension GameCard {
                     EpicGamesGameUninstallationView(game: .init(get: { epicGame }, set: { game = $0 }),
                                                     isPresented: $isUninstallSheetPresented)
                     .padding()
+                    .frame(width: 700, height: 380)
                 default: EmptyView()
                 }
             }
