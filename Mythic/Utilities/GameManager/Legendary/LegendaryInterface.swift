@@ -630,13 +630,19 @@ final class Legendary {
                 // if legendary prompts an install, our work is done. stop parsing
                 if chunk.output.contains("Do you wish to install") ||
                    chunk.output.contains("Additional packs") {
-                    Task {
+                    Task(priority: .high) {
                         await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
                     }
                 }
             }
 
             return nil
+        }
+
+        defer {
+            Task(priority: .high) {
+                await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
+            }
         }
 
         try? await consumer.value
