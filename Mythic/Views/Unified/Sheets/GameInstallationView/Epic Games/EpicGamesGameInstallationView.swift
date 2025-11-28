@@ -225,12 +225,7 @@ struct EpicGamesGameInstallationView: View {
             .onChange(of: isPresented) { _, newValue in // don't use .onDisappear, it interferes with runningcommands' task handling
                 guard !newValue else { return }
                 Task { @MainActor in
-                    await Legendary.RunningCommands.shared.stop(id: "parseOptionalPacks")
-                }
-            }
-            .onDisappear {
-                Task {
-                    await Legendary.RunningCommands.shared.stop(id: "parseOptionalPacks")
+                    await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
                 }
             }
         }
