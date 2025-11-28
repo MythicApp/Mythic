@@ -1,5 +1,5 @@
 //
-//  EpicGameInstallationView.swift
+//  EpicGamesGameInstallationView.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 27/11/2025.
@@ -11,8 +11,8 @@ import Foundation
 import SwiftUI
 import OSLog
 
-struct EpicGameInstallationView: View {
-    @Binding var game: Game
+struct EpicGamesGameInstallationView: View {
+    @Binding var game: EpicGamesGame
     @Binding var isPresented: Bool
 
     @Bindable private var operationManager: GameOperationManager = .shared
@@ -23,9 +23,17 @@ struct EpicGameInstallationView: View {
     @State var platform: Game.Platform = .macOS
 
     @State var installSizeInBytes: Int64?
-    var freeSpaceInBytes: Int64? {
+    var availableSpaceInBytes: Int64? {
         let filesystemAttributes = try? files.attributesOfFileSystem(forPath: Bundle.appHome?.path ?? "/")
         return (filesystemAttributes?[.systemFreeSize] as? Int64)
+    }
+    private var formattedAvailableSpace: String? {
+        guard let availableSpace = availableSpaceInBytes else { return nil }
+        return ByteCountFormatter.string(fromByteCount: availableSpace, countStyle: .file)
+    }
+    private var formattedRequiredSpace: String? {
+        guard let requiredSpace = installSizeInBytes else { return nil }
+        return ByteCountFormatter.string(fromByteCount: requiredSpace, countStyle: .file)
     }
     @State private var isFreeSpaceAlertPresented: Bool = false
 
@@ -37,11 +45,12 @@ struct EpicGameInstallationView: View {
     @State var selectedOptionalPacks: Set<String> = .init()
     @State var fetchingOptionalPacks: Bool = false
 
-    private func fetchOptionalPacks() {
-        guard let game = game as? EpicGamesGame else { return }
-        Task {
-            fetchingOptionalPacks = true
-            defer { fetchingOptionalPacks = false }
+    private func spawnOptionalPacksFetchTask() {
+        Task(priority: .userInitiated) { [game] in
+            withAnimation { fetchingOptionalPacks = true }
+            defer {
+                withAnimation { fetchingOptionalPacks = false }
+            }
             (installSizeInBytes, optionalPacks) = await Legendary.fetchPreInstallationMetadata(game: game, platform: platform)
         }
     }
@@ -49,7 +58,15 @@ struct EpicGameInstallationView: View {
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
             HStack {
-                GameCard.ImageCard(game: $game, isImageEmpty: .constant(false))
+                GameCard.ImageCard(
+                    game: .init(get: { return game as Game },
+                                set: {
+                                    if let castGame = $0 as? EpicGamesGame {
+                                        game = castGame
+                                    }
+                                }),
+                    isImageEmpty: .constant(false)
+                )
 
                 VStack {
                     Text("Install \(game.description)")
@@ -160,8 +177,28 @@ struct EpicGameInstallationView: View {
 
                 Spacer()
 
-                if let byteCount = installSizeInBytes {
-                    Text(ByteCountFormatter.string(fromByteCount: byteCount, countStyle: .file))
+                if let formattedAvailableSpace = formattedAvailableSpace,
+                   let formattedRequiredSpace = formattedRequiredSpace {
+                    Text(formattedRequiredSpace)
+                        .font(.footnote)
+                        .onAppear {
+                            if let availableSpace = availableSpaceInBytes,
+                               let installSize = installSizeInBytes,
+                               availableSpace < installSize {
+                                isFreeSpaceAlertPresented = true
+                            }
+                        }
+                        .alert("Insufficient disk space.",
+                               isPresented: $isFreeSpaceAlertPresented) {
+                            Button("OK", role: .cancel, action: {})
+                        } message: {
+                            Text("""
+                                You have \(formattedAvailableSpace) available.
+                                However, \(game.description) requires \(formattedRequiredSpace).
+                                Please free disk space and try again.
+                                (You may attempt to install the game anyway, but it will likely fail.)
+                                """)
+                        }
                 }
                 OperationButton(
                     "Done",
@@ -170,21 +207,21 @@ struct EpicGameInstallationView: View {
                     placement: .leading
                 ) {
                     Task { @MainActor [game] in
-                        if let epicGamesGame = game as? EpicGamesGame {
-                            try? await EpicGamesGameManager.install(game: epicGamesGame,
-                                                                    forPlatform: platform,
-                                                                    qualityOfService: .default,
-                                                                    optionalPacks: Array(selectedOptionalPacks),
-                                                                    gameDirectoryURL: baseURL)
-                        }
+                        try? await EpicGamesGameManager.install(game: game,
+                                                                forPlatform: platform,
+                                                                qualityOfService: .default,
+                                                                optionalPacks: Array(selectedOptionalPacks),
+                                                                gameDirectoryURL: baseURL)
                     }
                 }
                 .disabled(supportedPlatforms == nil)
                 .disabled(fetchingOptionalPacks)
-                .onAppear(perform: { fetchOptionalPacks() })
-                .onChange(of: game, { fetchOptionalPacks() })
+                .onAppear(perform: { spawnOptionalPacksFetchTask() })
+                .onChange(of: game, { spawnOptionalPacksFetchTask() })
+                .onChange(of: platform, { spawnOptionalPacksFetchTask() })
                 .buttonStyle(.borderedProminent)
             }
+            .padding(.top)
             .onChange(of: isPresented) { _, newValue in // don't use .onDisappear, it interferes with runningcommands' task handling
                 guard !newValue else { return }
                 Task { @MainActor in
@@ -202,9 +239,8 @@ struct EpicGameInstallationView: View {
 }
 
 #Preview {
-    // this will crash if you don't have fortnite in your library or are signed out
-    EpicGameInstallationView(
-        game: .constant(Game.store.library.first(where: { $0.id == "Fortnite" })!),
+    EpicGamesGameInstallationView(
+        game: .constant(placeholderGame(type: EpicGamesGame.self)),
         isPresented: .constant(true)
     )
     .padding()

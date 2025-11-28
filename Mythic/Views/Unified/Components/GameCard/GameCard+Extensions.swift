@@ -134,13 +134,16 @@ extension GameCard {
                     .help("Install \(game.description)")
 
                     .sheet(isPresented: $isInstallSheetPresented) {
-                        switch game.storefront {
-                        case .epicGames:
-                            EpicGameInstallationView(game: $game, isPresented: $isInstallSheetPresented)
-                                .padding()
-                                .frame(width: 700, height: 400)
-                        case .local:    EmptyView()
-                        case .none:     EmptyView()
+                        switch game {
+                        case let epicGame as EpicGamesGame:
+                            EpicGamesGameInstallationView(
+                                game: .init(get: { epicGame },
+                                            set: { game = $0 }),
+                                isPresented: $isInstallSheetPresented
+                            )
+                            .padding()
+                            .frame(width: 700, height: 400)
+                        default: EmptyView()
                         }
                     }
                 }
@@ -356,8 +359,12 @@ extension GameCard {
                 }
             }
             .sheet(isPresented: $isUninstallSheetPresented) {
-                UninstallGameView(game: $game,
-                                  isPresented: $isUninstallSheetPresented)
+                switch game {
+                case let epicGame as EpicGamesGame:
+                    EpicGamesGameUninstallationView(game: .init(get: { epicGame }, set: { game = $0 }),
+                                                    isPresented: $isUninstallSheetPresented)
+                default: EmptyView()
+                }
             }
         }
     }

@@ -111,6 +111,6 @@ extension ListGameCard {
 }
 
 #Preview {
-    ListGameCard(game: .constant(placeholderGame))
+    ListGameCard(game: .constant(placeholderGame(type: Game.self)))
         .environmentObject(NetworkMonitor.shared)
 }

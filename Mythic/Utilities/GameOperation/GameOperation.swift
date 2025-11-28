@@ -134,8 +134,8 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
     private(set) var fileTotalCount: Int?
     private(set) var fileCompletedCount: Int?
 
-    var observers: Set<NSKeyValueObservation>
-    var lock: NSRecursiveLock = .init()
+    private var observers: Set<NSKeyValueObservation>
+    private var lock: NSRecursiveLock = .init()
 
     // register KVOs and send to observables
     init(progress: Progress) {

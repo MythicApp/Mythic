@@ -380,6 +380,6 @@ extension GameSettingsView {
 }
 
 #Preview {
-    GameSettingsView(game: .constant(placeholderGame), isPresented: .constant(true))
+    GameSettingsView(game: .constant(placeholderGame(type: Game.self)), isPresented: .constant(true))
         .environmentObject(NetworkMonitor.shared)
 }

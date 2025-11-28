@@ -20,5 +20,5 @@ struct DownloadCard: View {
 }
 
 #Preview {
-    DownloadCard(game: .constant(placeholderGame))
+    DownloadCard(game: .constant(placeholderGame(type: Game.self)))
 }

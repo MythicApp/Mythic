@@ -107,7 +107,7 @@ extension HeroGameCard {
 #Preview {
     GeometryReader { geometry in
         VStack {
-            HeroGameCard.ImageCard(game: .constant(placeholderGame),
+            HeroGameCard.ImageCard(game: .constant(placeholderGame(type: Game.self)),
                                    isImageEmpty: .constant(false))
             .frame(width: geometry.size.width,
                    height: geometry.size.height * 0.75)

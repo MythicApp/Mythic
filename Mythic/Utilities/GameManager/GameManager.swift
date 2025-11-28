@@ -16,7 +16,7 @@ protocol GameManager {
     static var log: Logger { get }
 
     /// Open a game, provided it's installed.
-    @MainActor static func launch(game: Game) async throws
+    @MainActor @discardableResult static func launch(game: Game) async throws -> GameOperation
 
     /**
      Move a game to a new location
@@ -24,7 +24,7 @@ protocol GameManager {
         - game: The game to move
         - location: The target file location of the move operation.
      */
-    @MainActor static func move(game: Game, to newLocation: URL) async throws
+    @MainActor @discardableResult static func move(game: Game, to newLocation: URL) async throws -> GameOperation
 
     /**
      Uninstall a game
@@ -32,19 +32,19 @@ protocol GameManager {
         - game: The game to uninstall.
         - persistFiles: Whether to delete the game files from disk.
      */
-    @MainActor static func uninstall(game: Game, persistFiles: Bool) async throws
+    @MainActor @discardableResult static func uninstall(game: Game, persistFiles: Bool) async throws -> GameOperation
 }
 
 /// Protocol defining additional game manager functionality for storefronts (Epic, Steam, etc.)
 protocol StorefrontGameManager: GameManager {
     /// Update the specified game, if possible.
-    static func install(game: Game, qualityOfService: QualityOfService) async throws
+    @discardableResult static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation
 
     /// Update the specified game, if possible.
-    static func update(game: Game, qualityOfService: QualityOfService) async throws
+    @discardableResult static func update(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation
 
     /// Repair the specified game, if necessary.
-    static func repair(game: Game, qualityOfService: QualityOfService) async throws
+    @discardableResult static func repair(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation
 
     /// Check if a game update is available.
     static func fetchUpdateAvailability(for game: Game) throws -> Bool

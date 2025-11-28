@@ -98,6 +98,6 @@ struct HarmonyRatingView: View {
     Color.clear
         .sheet(isPresented: .constant(true)) {
             HarmonyRatingView(isPresented: .constant(true),
-                              game: .constant(placeholderGame))
+                              game: .constant(placeholderGame(type: Game.self)))
         }
 }

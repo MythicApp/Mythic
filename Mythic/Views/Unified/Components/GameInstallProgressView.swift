@@ -34,6 +34,7 @@ struct GameInstallProgressView: View {
                 .help("View operation progress")
                 .sheet(isPresented: $isInstallStatusViewPresented) {
                     InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
                 }
 
                 Button {

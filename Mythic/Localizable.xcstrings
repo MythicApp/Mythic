@@ -576,6 +576,16 @@
         }
       }
     },
+    "(%@/%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(%1$@/%2$@)"
+          }
+        }
+      }
+    },
     "(%lld/%lld Objects)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2160,6 +2170,9 @@
           }
         }
       }
+    },
+    "%@/s" : {
+
     },
     "%lld MB Downloaded" : {
       "extractionState" : "stale",
@@ -9934,6 +9947,9 @@
         }
       }
     },
+    "Estimated Time Remaining" : {
+
+    },
     "Everything in one place" : {
       "localizations" : {
         "af" : {
@@ -10902,6 +10918,9 @@
           }
         }
       }
+    },
+    "Files" : {
+
     },
     "Filters" : {
 
@@ -14212,6 +14231,9 @@
           }
         }
       }
+    },
+    "Insufficient disk space." : {
+
     },
     "It'll have to be reinstalled in order to play Windows® games." : {
       "localizations" : {
@@ -19439,6 +19461,9 @@
     "Process execution was unsuccessful. (Non-zero exit code)" : {
 
     },
+    "Progress" : {
+
+    },
     "Progress:" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -20219,6 +20244,9 @@
           }
         }
       }
+    },
+    "Remove files from disk" : {
+
     },
     "Remove from download queue" : {
       "extractionState" : "stale",
@@ -22135,6 +22163,9 @@
       }
     },
     "Rosetta is installed." : {
+
+    },
+    "Run specialised game uninstaller" : {
 
     },
     "Run specialised uninstaller (If applicable)" : {
@@ -25463,6 +25494,9 @@
     "This will remove the current version of Mythic Engine.\nThe latest version will be installed the next time you attempt to launch a Windows® game." : {
 
     },
+    "Throughput" : {
+
+    },
     "Thumbnail URL" : {
       "localizations" : {
         "af" : {
@@ -26851,6 +26885,9 @@
           }
         }
       }
+    },
+    "Uninstall %@" : {
+
     },
     "Uninstalled" : {
 
@@ -30368,6 +30405,16 @@
     },
     "You failed to agree to the software license agreement.\nAs a result, Rosetta 2 cannot be installed.\nA list of Apple SLAs may be found here: https://www.apple.com/legal/sla/" : {
 
+    },
+    "You have %@ available.\nHowever, %@ requires %@.\nPlease free disk space and try again.\n(You may attempt to install the game anyway, but it will likely fail.)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "You have %1$@ available.\nHowever, %2$@ requires %3$@.\nPlease free disk space and try again.\n(You may attempt to install the game anyway, but it will likely fail.)"
+          }
+        }
+      }
     },
     "Your Containers" : {
 

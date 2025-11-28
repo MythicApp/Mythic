@@ -252,11 +252,12 @@ final class Legendary {
        --skip-dlcs           Do not ask about installing DLCs.
      */
 
+    @discardableResult
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
+                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -297,9 +298,11 @@ final class Legendary {
 
         operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
-    static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
+    @discardableResult
+    static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         let arguments: [String] = ["-y", "install", game.id, "--update-only"]
 
         let operation: GameOperation = .init(game: game, type: .update) { progress in
@@ -321,9 +324,11 @@ final class Legendary {
 
         operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
-    static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
+    @discardableResult
+    static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         let arguments: [String] = ["-y", "install", game.id, "--repair"]
 
         let operation: GameOperation = .init(game: game, type: .repair) { progress in
@@ -372,6 +377,7 @@ final class Legendary {
 
         operation.qualityOfService = qualityOfService
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
     /*
@@ -385,9 +391,10 @@ final class Legendary {
        --keep-files        Keep files but remove game from Legendary database
        --skip-uninstaller  Skip running the uninstaller
      */
+    @discardableResult
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
-                          runUninstallerIfPossible: Bool = true) async throws {
+                          runUninstallerIfPossible: Bool = true) async throws -> GameOperation {
         let operation: GameOperation = .init(game: game, type: .uninstall) { _ in
             var arguments: [String] = ["-y", "uninstall", game.id]
 
@@ -400,6 +407,7 @@ final class Legendary {
         }
 
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
     /*
@@ -414,7 +422,8 @@ final class Legendary {
        --skip-move      Only change legendary database, do not move files (e.g. if
                         already moved)
      */
-    static func move(game: EpicGamesGame, to newLocation: URL) async throws {
+    @discardableResult
+    static func move(game: EpicGamesGame, to newLocation: URL) async throws -> GameOperation {
         guard case .installed(let currentLocation, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -427,6 +436,7 @@ final class Legendary {
         }
 
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
     /*
@@ -449,11 +459,12 @@ final class Legendary {
        --platform <Platform>
                              Platform for import (default: Mac on macOS, otherwise Windows)
      */
+    @discardableResult
     static func `import`(game: EpicGamesGame,
                          repairIfNecessary: Bool = true,
                          withDLCs: Bool,
                          platform: Game.Platform,
-                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
+                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -490,6 +501,7 @@ final class Legendary {
         }
 
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
     @discardableResult
@@ -513,7 +525,8 @@ final class Legendary {
     /**
      Launches games.
      */
-    static func launch(game: EpicGamesGame) async throws {
+    @discardableResult
+    static func launch(game: EpicGamesGame) async throws -> GameOperation {
         guard case .installed(_, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -545,6 +558,7 @@ final class Legendary {
         }
 
         await Game.operationManager.queueOperation(operation)
+        return operation
     }
 
     static func fetchUpdateAvailability(gameID: String) throws -> Bool {

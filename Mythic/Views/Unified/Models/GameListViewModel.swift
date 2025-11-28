@@ -19,6 +19,7 @@ import OSLog
     var filterOptions: FilterOptions = .init()
     var games: [Game] {
         Game.store.library
+            .sorted(by: { a, _ in a.isOperating }) // swiftlint:disable:this identifier_name
             .sorted(by: { $0.title < $1.title })
             .sorted(by: { $0.installationState > $1.installationState })
     }

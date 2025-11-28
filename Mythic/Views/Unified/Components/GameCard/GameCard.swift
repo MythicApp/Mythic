@@ -189,6 +189,6 @@ struct FadeInModifier: ViewModifier {
 }
 
 #Preview {
-    GameCard(game: .constant(placeholderGame))
+    GameCard(game: .constant(placeholderGame(type: Game.self)))
         .environmentObject(NetworkMonitor.shared)
 }

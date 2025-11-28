@@ -11,25 +11,25 @@ import Foundation
 import OSLog
 
 extension EpicGamesGameManager: StorefrontGameManager {
-    static func install(game: Game, qualityOfService: QualityOfService) async throws {
+    static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await install(game: castGame, qualityOfService: qualityOfService)
+        return try await install(game: castGame, qualityOfService: qualityOfService)
     }
 
-    static func update(game: Game, qualityOfService: QualityOfService) async throws {
+    static func update(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await update(game: castGame, qualityOfService: qualityOfService)
+        return try await update(game: castGame, qualityOfService: qualityOfService)
     }
 
-    static func repair(game: Game, qualityOfService: QualityOfService) async throws {
+    static func repair(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await repair(game: castGame, qualityOfService: qualityOfService)
+        return try await repair(game: castGame, qualityOfService: qualityOfService)
     }
 
     static func fetchUpdateAvailability(for game: Game) throws -> Bool {
@@ -46,74 +46,80 @@ extension EpicGamesGameManager: StorefrontGameManager {
         return try isFileVerificationRequired(for: castGame)
     }
 
-    @MainActor static func launch(game: Game) async throws {
+    @MainActor static func launch(game: Game) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await Task(operation: { try await launch(game: castGame) }).value
+        return try await Task(operation: { try await launch(game: castGame) }).value
     }
 
     @MainActor static func move(game: Game,
-                                to location: URL) async throws {
+                                to location: URL) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await Task(operation: { try await move(game: castGame, to: location) }).value
+        return try await Task(operation: { try await move(game: castGame, to: location) }).value
     }
 
     @MainActor static func uninstall(game: Game,
-                                     persistFiles: Bool) async throws {
+                                     persistFiles: Bool) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await uninstall(game: castGame, persistFiles: persistFiles)
+        return try await uninstall(game: castGame, persistFiles: persistFiles)
     }
 }
 
 final class EpicGamesGameManager {
     static var log: Logger { .custom(category: "EpicGamesGameManager") }
 
+    @discardableResult
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws {
-        try await Legendary.install(game: game,
+                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
+        return try await Legendary.install(game: game,
                                     forPlatform: platform,
                                     qualityOfService: qualityOfService,
                                     optionalPacks: optionalPacks,
                                     gameDirectoryURL: gameDirectoryURL)
     }
 
-    static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
-        try await Legendary.update(game: game, qualityOfService: qualityOfService)
+    @discardableResult
+    static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
+        return try await Legendary.update(game: game, qualityOfService: qualityOfService)
     }
 
-    static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws {
-        try await Legendary.repair(game: game, qualityOfService: qualityOfService)
+    @discardableResult
+    static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
+        return try await Legendary.repair(game: game, qualityOfService: qualityOfService)
     }
 
     static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
-        try Legendary.fetchUpdateAvailability(gameID: game.id)
+        return try Legendary.fetchUpdateAvailability(gameID: game.id)
     }
 
     static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
-        try Legendary.isFileVerificationRequired(gameID: game.id)
+        return try Legendary.isFileVerificationRequired(gameID: game.id)
     }
 
-    static func launch(game: EpicGamesGame) async throws {
-        try await Legendary.launch(game: game)
+    @discardableResult
+    static func launch(game: EpicGamesGame) async throws -> GameOperation {
+        return try await Legendary.launch(game: game)
     }
 
+    @discardableResult
     static func move(game: EpicGamesGame,
-                     to newLocation: URL) async throws {
-        try await Legendary.move(game: game, to: newLocation)
+                     to newLocation: URL) async throws -> GameOperation {
+        return try await Legendary.move(game: game, to: newLocation)
     }
 
+    @discardableResult
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
-                          runUninstallerIfPossible: Bool = true) async throws {
-        try await Legendary.uninstall(game: game,
+                          runUninstallerIfPossible: Bool = true) async throws -> GameOperation {
+        return try await Legendary.uninstall(game: game,
                                       persistFiles: persistFiles,
                                       runUninstallerIfPossible: runUninstallerIfPossible)
     }

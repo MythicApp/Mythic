@@ -10,8 +10,6 @@
 import Foundation
 import OSLog
 
-var placeholderGame: Game { .init(id: "test", title: "Test", installationState: .installed(location: .temporaryDirectory, platform: .macOS)) }
-
 @Observable @MainActor final class GameDataStore {
     static let shared: GameDataStore = .init()
 
@@ -85,7 +83,10 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     var title: String
     var installationState: InstallationState
 
-    var storefront: Storefront? { nil }
+    var storefront: Storefront? {
+        assertionFailure("Storefront must always be populated by subclasses, when accessed.")
+        return nil
+    }
 
     // swiftlint:disable:next identifier_name
     internal final var _containerURL: URL?
@@ -157,8 +158,10 @@ var placeholderGame: Game { .init(id: "test", title: "Test", installationState: 
     }
 
     // MARK: Actions
-    final func checkIfOperating() async -> Bool {
-        return await (Game.operationManager.queue.first(where: { $0.game == self && $0.isExecuting }) != nil)
+    @MainActor final var isOperating: Bool {
+        Game.operationManager.queue.first(where: {
+            $0.game == self && $0.isExecuting
+        }) != nil
     }
 
     final func checkIfGameIsRunning() -> Bool {
@@ -339,4 +342,32 @@ struct AnyGame: Codable {
     func encode(to encoder: Encoder) throws {
         try base.encode(to: encoder)
     }
+}
+
+@MainActor func placeholderGame<T: Game>(type: T.Type) -> T {
+    guard T.self != Game.self else {
+        return Game(id: "n/a",
+                    title: "test game",
+                    installationState: .installed(
+                        location: .temporaryDirectory,
+                        platform: .macOS
+                    )) as! T
+        // swiftlint:disable:previous force_cast
+        // disabled force-cast because the enclosing guard statement
+        // guarantees T's type is Game
+    }
+
+    if type is EpicGamesGame.Type {
+        assert(Legendary.signedIn, """
+        You must sign in through a live instance of the app before calling placeholderGame(type:).
+        """)
+    }
+
+    guard let game = GameDataStore.shared.library.first(where: { $0 is T }) as? T else {
+        fatalError("""
+        No games are in your library of type \(T.self) to populate placeholderGame.
+        """)
+    }
+
+    return game
 }

@@ -12,34 +12,35 @@ import AppKit
 import OSLog
 
 extension LocalGameManager: GameManager {
-    @MainActor static func launch(game: Game) async throws {
+    @MainActor static func launch(game: Game) async throws -> GameOperation {
         guard case .local = game.storefront,
-              let castGame = game as? LocalGame else { return }
+              let castGame = game as? LocalGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await launch(game: castGame)
+        return try await launch(game: castGame)
     }
 
     @MainActor static func move(game: Game,
-                                to newLocation: URL) async throws {
+                                to newLocation: URL) async throws -> GameOperation {
         guard case .local = game.storefront,
-              let castGame = game as? LocalGame else { return }
+              let castGame = game as? LocalGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await move(game: castGame, to: newLocation)
+        return try await move(game: castGame, to: newLocation)
     }
 
     @MainActor static func uninstall(game: Game,
-                                     persistFiles: Bool) async throws {
+                                     persistFiles: Bool) async throws -> GameOperation {
         guard case .local = game.storefront,
-              let castGame = game as? LocalGame else { return }
+              let castGame = game as? LocalGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await uninstall(game: castGame, persistFiles: persistFiles)
+        return try await uninstall(game: castGame, persistFiles: persistFiles)
     }
 }
 
 class LocalGameManager {
     static var log: Logger { .custom(category: "LocalGameManager") }
 
-    @MainActor static func launch(game: LocalGame) async throws {
+    @discardableResult
+    @MainActor static func launch(game: LocalGame) async throws -> GameOperation {
         guard case .installed(let location, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -79,21 +80,26 @@ class LocalGameManager {
         }
 
         Game.operationManager.queueOperation(operation)
+        return operation
     }
 
+    @discardableResult
     @MainActor static func move(game: LocalGame,
-                                to newLocation: URL) async throws {
+                                to newLocation: URL) async throws -> GameOperation {
         guard case .installed(let currentLocation, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        try files.moveItem(at: currentLocation, to: newLocation)
-
-        game.installationState = .installed(location: newLocation, platform: platform)
+        let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
+            try files.moveItem(at: currentLocation, to: newLocation)
+            game.installationState = .installed(location: newLocation, platform: platform)
+        }
+        return operation
     }
 
+    @discardableResult
     @MainActor static func uninstall(game: LocalGame,
-                                     persistFiles: Bool) async throws {
+                                     persistFiles: Bool) async throws -> GameOperation {
         guard case .installed(let location, _) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -102,9 +108,11 @@ class LocalGameManager {
             try files.removeItem(at: location)
 
             // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
+            // FIXME: ideally, destroy the game object somehow
             game.installationState = .uninstalled
         }
 
         Game.operationManager.queueOperation(operation)
+        return operation
     }
 }
