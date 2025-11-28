@@ -1,5 +1,5 @@
 //
-//  TimeInterval.swift
+//  TimeInterval+Extensions.swift
 //  Mythic
 //
 //  Created by Esiayo Alegbe on 18/11/2025.
