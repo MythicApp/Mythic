@@ -48,7 +48,11 @@ import DockProgress
     }
 
     func queueOperation(_ operation: GameOperation) {
+        let originalCompletionBlock = operation.completionBlock
         operation.completionBlock = { [self] in
+            // run code that was already in the completion block
+            originalCompletionBlock?()
+
             // present any unhandled errors within the operation to the ui.
             Task { @MainActor in
                 if let error = operation.error {
