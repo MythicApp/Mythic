@@ -201,17 +201,18 @@ struct EpicGamesGameInstallationView: View {
                         }
                 }
                 OperationButton(
-                    "Done",
+                    "Install",
                     operating: $fetchingOptionalPacks,
                     successful: .constant(nil),
                     placement: .leading
                 ) {
                     Task { @MainActor [game] in
-                        try? await EpicGamesGameManager.install(game: game,
-                                                                forPlatform: platform,
-                                                                qualityOfService: .default,
-                                                                optionalPacks: Array(selectedOptionalPacks),
-                                                                gameDirectoryURL: baseURL)
+                        _ = try? await EpicGamesGameManager.install(game: game,
+                                                                    forPlatform: platform,
+                                                                    qualityOfService: .default,
+                                                                    optionalPacks: Array(selectedOptionalPacks),
+                                                                    gameDirectoryURL: baseURL)
+                        isPresented = false
                     }
                 }
                 .disabled(supportedPlatforms == nil)
