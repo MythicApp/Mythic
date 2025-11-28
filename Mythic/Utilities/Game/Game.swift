@@ -345,29 +345,17 @@ struct AnyGame: Codable {
 }
 
 @MainActor func placeholderGame<T: Game>(type: T.Type) -> T {
-    guard T.self != Game.self else {
-        return Game(id: "n/a",
-                    title: "test game",
-                    installationState: .installed(
-                        location: .temporaryDirectory,
-                        platform: .macOS
-                    )) as! T
-        // swiftlint:disable:previous force_cast
-        // disabled force-cast because the enclosing guard statement
-        // guarantees T's type is Game
-    }
-
     if type is EpicGamesGame.Type {
         assert(Legendary.signedIn, """
         You must sign in through a live instance of the app before calling placeholderGame(type:).
         """)
     }
 
-    guard let game = GameDataStore.shared.library.first(where: { $0 is T }) as? T else {
+    guard let game = GameDataStore.shared.library.first(where: { ($0 as? T) != nil }) as? T else {
         fatalError("""
         No games are in your library of type \(T.self) to populate placeholderGame.
         """)
     }
 
-    return game
+    return game as T
 }
