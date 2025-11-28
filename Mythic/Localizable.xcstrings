@@ -576,16 +576,6 @@
         }
       }
     },
-    "(%@/%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "(%1$@/%2$@)"
-          }
-        }
-      }
-    },
     "(%lld/%lld Objects)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -779,6 +769,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(%1$lld/%2$lld 物件)"
+          }
+        }
+      }
+    },
+    "(%lld/%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(%1$lld/%2$lld)"
           }
         }
       }
