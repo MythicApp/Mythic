@@ -129,13 +129,14 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
     private(set) var fractionCompleted: Double = 0.0
     private(set) var completedUnitCount: Int64 = 0
     private(set) var totalUnitCount: Int64 = 0
-    private(set) var throughput: Int = 0
+    private(set) var throughput: Int?
     private(set) var estimatedTimeRemaining: TimeInterval?
     private(set) var fileTotalCount: Int?
     private(set) var fileCompletedCount: Int?
 
     private var observers: Set<NSKeyValueObservation>
     private var lock: NSRecursiveLock = .init()
+    private var pollingTimer: Timer?
 
     // register KVOs and send to observables
     init(progress: Progress) {
@@ -163,33 +164,17 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
             }
         })
 
-        observers.insert(self._progress.observe(\.userInfo, options: [.new]) { [weak self] progress, _ in
-            guard let self = self else { return }
+        // polling task to update KVO-incompatible variables
+        Task { @MainActor [weak self] in
+            while let self = self {
+                lock.withLock({ self.throughput = self._progress.throughput })
+                lock.withLock({ self.estimatedTimeRemaining = self._progress.estimatedTimeRemaining })
+                lock.withLock({ self.fileTotalCount = self._progress.fileTotalCount })
+                lock.withLock({ self.fileCompletedCount = self._progress.fileCompletedCount })
 
-            if let throughput = progress.userInfo[.throughputKey] as? Int {
-                Task { @MainActor in
-                    lock.withLock({ self.throughput = throughput })
-                }
+                try await Task.sleep(for: .milliseconds(500))
             }
-
-            if let estimatedTime = progress.userInfo[.estimatedTimeRemainingKey] as? TimeInterval {
-                Task { @MainActor in
-                    lock.withLock({ self.estimatedTimeRemaining = estimatedTime })
-                }
-            }
-
-            if let totalFiles = progress.userInfo[.fileTotalCountKey] as? Int {
-                Task { @MainActor in
-                    lock.withLock({ self.fileTotalCount = totalFiles })
-                }
-            }
-
-            if let completedFiles = progress.userInfo[.fileCompletedCountKey] as? Int {
-                Task { @MainActor in
-                    lock.withLock({ self.fileCompletedCount = completedFiles })
-                }
-            }
-        })
+        }
     }
 
     deinit { observers.forEach({ $0.invalidate() }) }
