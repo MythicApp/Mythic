@@ -41,9 +41,9 @@ struct OperationButton<Label>: View where Label: View {
             .disabled(disablesDuringOperation && operating)
             .modifier(
                 OperationStatusViewModifier(operating: $operating,
-                                        successful: $successful,
-                                        autoReset: autoReset,
-                                        placement: placement)
+                                            successful: $successful,
+                                            autoReset: autoReset,
+                                            placement: placement)
             )
     }
 }
