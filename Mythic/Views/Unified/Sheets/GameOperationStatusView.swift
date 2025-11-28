@@ -15,6 +15,12 @@ struct InstallStatusView: View {
     @Binding var isPresented: Bool
     @Bindable private var operationManager: GameOperationManager = .shared
 
+    let estimatedTimeRemainingFormatter: DateComponentsFormatter = {
+        let formatter: DateComponentsFormatter = .init()
+        formatter.unitsStyle = .short
+        return formatter
+    }()
+
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
             if let currentOperation = operationManager.queue.first {
@@ -24,7 +30,7 @@ struct InstallStatusView: View {
 
                 Form {
                     HStack {
-                        Text("Progress")
+                        Label("Progress", systemImage: "progress.indicator")
 
                         Spacer()
 
@@ -35,30 +41,31 @@ struct InstallStatusView: View {
                     }
 
                     HStack {
-                        Text("Files")
+                        Label("Files", systemImage: "folder")
 
                         Spacer()
 
-                        Text("(\(currentOperation.progressKVOBridge.fileCompletedCount?.formatted(.percent) ?? "?")/\(currentOperation.progressKVOBridge.fileCompletedCount?.formatted(.percent) ?? "?"))")
+                        Text("(\(currentOperation.progressKVOBridge.fileCompletedCount ?? 0)/\(currentOperation.progressKVOBridge.fileTotalCount ?? 0))")
                     }
 
                     if let estimatedTimeRemaining = currentOperation.progressKVOBridge.estimatedTimeRemaining {
                         HStack {
-                            Text("Estimated Time Remaining")
+                            Label("Estimated Time Remaining", systemImage: "clock")
 
                             Spacer()
 
-                            Image(systemName: "arrow.down.to.line")
-                            Text(Date.now.addingTimeInterval(estimatedTimeRemaining), format: .dateTime)
+                            Text(estimatedTimeRemainingFormatter.string(from: estimatedTimeRemaining) ?? "Unknown")
                         }
                     }
 
-                    HStack {
-                        Text("Throughput")
+                    if let throughput = currentOperation.progressKVOBridge.throughput {
+                        HStack {
+                            Label("Throughput", systemImage: "arrow.up.arrow.down")
 
-                        Spacer()
+                            Spacer()
 
-                        Text("\(ByteCountFormatter.string(fromByteCount: Int64(currentOperation.progressKVOBridge.throughput), countStyle: .file))/s")
+                            Text("\(ByteCountFormatter.string(fromByteCount: Int64(throughput), countStyle: .file))/s")
+                        }
                     }
                 }
                 .formStyle(.grouped)
