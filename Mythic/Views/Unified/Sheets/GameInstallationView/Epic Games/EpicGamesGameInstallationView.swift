@@ -27,14 +27,6 @@ struct EpicGamesGameInstallationView: View {
         let filesystemAttributes = try? files.attributesOfFileSystem(forPath: Bundle.appHome?.path ?? "/")
         return (filesystemAttributes?[.systemFreeSize] as? Int64)
     }
-    private var formattedAvailableSpace: String? {
-        guard let availableSpace = availableSpaceInBytes else { return nil }
-        return ByteCountFormatter.string(fromByteCount: availableSpace, countStyle: .file)
-    }
-    private var formattedRequiredSpace: String? {
-        guard let requiredSpace = installSizeInBytes else { return nil }
-        return ByteCountFormatter.string(fromByteCount: requiredSpace, countStyle: .file)
-    }
     @State private var isFreeSpaceAlertPresented: Bool = false
 
     @State private var isRetrievingSupportedPlatforms: Bool = false
@@ -178,9 +170,9 @@ struct EpicGamesGameInstallationView: View {
 
                 Spacer()
 
-                if let formattedAvailableSpace = formattedAvailableSpace,
-                   let formattedRequiredSpace = formattedRequiredSpace {
-                    Text(formattedRequiredSpace)
+                if let availableSpace = availableSpaceInBytes,
+                   let installSize = installSizeInBytes {
+                    Text(ByteCountFormatter.string(fromByteCount: installSize, countStyle: .file))
                         .font(.footnote)
                         .onAppear {
                             if let availableSpace = availableSpaceInBytes,
@@ -194,8 +186,8 @@ struct EpicGamesGameInstallationView: View {
                             Button("OK", role: .cancel, action: {})
                         } message: {
                             Text("""
-                                You have \(formattedAvailableSpace) available.
-                                However, \(game.description) requires \(formattedRequiredSpace).
+                                You have \(ByteCountFormatter.string(fromByteCount: availableSpace, countStyle: .file)) available.
+                                However, \(game.description) requires \(ByteCountFormatter.string(fromByteCount: installSize, countStyle: .file)).
                                 Please free disk space and try again.
                                 (You may attempt to install the game anyway, but it will likely fail.)
                                 """)
