@@ -46,6 +46,7 @@ struct EpicGamesGameInstallationView: View {
     @State var fetchingOptionalPacks: Bool = false
 
     private func spawnOptionalPacksFetchTask() {
+        guard !fetchingOptionalPacks else { return }
         Task(priority: .userInitiated) { [game] in
             withAnimation { fetchingOptionalPacks = true }
             defer {
