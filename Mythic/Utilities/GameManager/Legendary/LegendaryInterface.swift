@@ -181,7 +181,7 @@ final class Legendary {
 
         if let match = try? downloadSpeedRegex.firstMatch(in: output) {
             // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
-            progress.throughput = (Int(match["raw"]?.substring ?? .init()) ?? 0) * Int(pow(1024.0, 2.0))
+            progress.throughput = (Int(Double(match["raw"]?.substring ?? .init()) ?? 0)) * Int(pow(1024.0, 2.0))
         }
 
         // the others aren't really necessary, or useful information for endusers
