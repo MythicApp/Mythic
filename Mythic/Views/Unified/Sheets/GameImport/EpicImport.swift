@@ -26,7 +26,7 @@ extension GameImportView {
         @State private var isRetrievingSupportedPlatforms: Bool = false
         @State private var supportedPlatforms: [Game.Platform]?
         @State private var platform: Game.Platform = .macOS
-        @State private var location: URL = .temporaryDirectory
+        @State private var location: URL?
 
         private var installableGames: [Game] {
             Game.store.library
@@ -43,14 +43,6 @@ extension GameImportView {
         @State private var isOperating: Bool = false
 
         @State private var isGameLocationFileImporterPresented: Bool = false
-
-        private let modifyingStatusLock: NSLock = .init()
-        private func updateGameInstallationState(location: URL?, platform: Game.Platform?) {
-            modifyingStatusLock.withLock {
-                game.installationState = .installed(location: location ?? self.location,
-                                                    platform: platform ?? self.platform)
-            }
-        }
 
         var body: some View {
             VStack {
@@ -99,18 +91,18 @@ extension GameImportView {
                        )
 
                         HStack {
-                            VStack(alignment: .leading) {
-                                Label("Location", systemImage: "folder")
-                                if location != .temporaryDirectory {
+                            if let location = location {
+                                VStack(alignment: .leading) {
+                                    Label("Location", systemImage: "folder")
                                     Text(location.prettyPath)
                                         .foregroundStyle(.placeholder)
                                 }
-                            }
 
-                            if !files.isReadableFile(atPath: location.path) {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .symbolVariant(.fill)
-                                    .help("File/Folder is not readable by Mythic.")
+                                if !files.isReadableFile(atPath: location.path) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .symbolVariant(.fill)
+                                        .help("File/Folder is not readable by Mythic.")
+                                }
                             }
 
                             Spacer()
