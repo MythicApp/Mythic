@@ -18,11 +18,9 @@ extension GameImportView {
     struct Local: View {
         @Binding var isPresented: Bool
 
-        // TODO: should be local game, for platforms' sake
-        @State private var game: Game = .init(id: .init(),
-                                              title: .init(),
-                                              installationState: .uninstalled)
-        
+        @State private var game: LocalGame = .init(title: .init(),
+                                                   installationState: .uninstalled)
+
         @State private var platform: Game.Platform = .macOS
         @State private var location: URL = .temporaryDirectory
         
@@ -44,21 +42,21 @@ extension GameImportView {
             }
         }
         
-        private let modifyingStatusLock: NSLock = .init()
-        private func updateGameInstallationState(location: URL?, platform: Game.Platform?) {
-            modifyingStatusLock.withLock {
-                game.installationState = .installed(location: location ?? self.location,
-                                                    platform: platform ?? self.platform)
-            }
-        }
-        
         var body: some View {
             VStack {
                 HStack {
                     VStack {
-                        GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                            .id(imageRefreshFlag)
-                        
+                        GameCard.ImageCard(
+                            game: .init(get: { return game as Game },
+                                        set: {
+                                            if let castGame = $0 as? LocalGame {
+                                                game = castGame
+                                            }
+                                        }),
+                            isImageEmpty: $isImageEmpty
+                        )
+                        .id(imageRefreshFlag)
+
                         Label("Images with a 3:4 aspect ratio are preferred.",
                               systemImage: "info")
                             .symbolVariant(.circle)
@@ -78,7 +76,7 @@ extension GameImportView {
                                 }
                             }
                             .onChange(of: platform) {
-                                updateGameInstallationState(location: location, platform: $1)
+                                game.installationState = .installed(location: location, platform: $1)
                             }
 
                             // FIXME: boilerplate, shared with GameImportView.Epic
@@ -113,11 +111,18 @@ extension GameImportView {
                             }
                             .onChange(of: location) {
                                 updateGameTitle()
-                                updateGameInstallationState(location: $1, platform: platform)
+                                game.installationState = .installed(location: $1, platform: platform)
                             }
 
-                            GameCard.ImageURLModifierView(game: $game,
-                                                          imageURL: $game._verticalImageURL)
+                            GameCard.ImageURLModifierView(
+                                game: .init(get: { return game as Game },
+                                            set: {
+                                                if let castGame = $0 as? LocalGame {
+                                                    game = castGame
+                                                }
+                                            }),
+                                imageURL: $game._verticalImageURL
+                            )
                         }
                         .formStyle(.grouped)
                     }
@@ -134,8 +139,9 @@ extension GameImportView {
                         Game.store.library.insert(game)
                         isPresented = false
                     }
-                    .disabled(location == .temporaryDirectory)
+                    .disabled(game.installationState == .uninstalled)
                     .disabled(game.title.isEmpty)
+                    .disabled(location == .temporaryDirectory)
                     .buttonStyle(.borderedProminent)
                 }
                 .padding([.horizontal, .bottom])
