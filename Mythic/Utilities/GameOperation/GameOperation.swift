@@ -51,9 +51,9 @@ import OSLog
             do {
                 isExecuting = true
                 try await function(_progress)
-                log.error("Error occurred in operation \(self.debugDescription): \(self.error?.localizedDescription ?? "Unknown error").")
             } catch {
                 self.error = error
+                log.error("Error occurred in operation \(self.debugDescription): \(error.localizedDescription).")
             }
         }
     }
