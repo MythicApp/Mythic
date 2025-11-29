@@ -10,5 +10,16 @@
 import Foundation
 
 protocol Mergeable {
-    mutating func merge(_ other: Self)
+    mutating func merge(with other: Self)
+}
+
+extension Mergeable where Self: Codable {
+    // i advise against using this, i just included it because meh
+    func merged(with other: Self) -> Self? {
+        guard let encoded = try? PropertyListEncoder().encode(self) else { return nil }
+        var copy = try? PropertyListDecoder().decode(Self.self, from: encoded)
+
+        copy?.merge(with: other)
+        return copy
+    }
 }
