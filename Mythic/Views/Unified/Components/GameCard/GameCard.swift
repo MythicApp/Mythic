@@ -24,6 +24,41 @@ struct GameCard: View {
             .overlay(alignment: .bottom) {
                 gameOverlay
             }
+            .overlay(alignment: .top) {
+                VStack {
+                    if game.isUpdateAvailable == true {
+                        VStack {
+                            Label("Update available.", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                                .help("Update through the game options menu.")
+                        }
+                        .font(.footnote)
+                        .padding(4)
+                        .customTransform { view in
+                            if #available(macOS 26.0, *) {
+                                view.glassEffect(in: .capsule)
+                            } else {
+                                view.background(in: .capsule)
+                            }
+                        }
+                    }
+
+#if DEBUG
+                    Text("(\(game.id))")
+                        .font(.system(size: 8))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .padding(4)
+                        .customTransform { view in
+                            if #available(macOS 26.0, *) {
+                                view.glassEffect(in: .capsule)
+                            } else {
+                                view.background(in: .capsule)
+                            }
+                        }
+#endif // DEBUG
+                }
+                .padding()
+            }
     }
 
     @ViewBuilder
