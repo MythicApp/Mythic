@@ -18,6 +18,8 @@ struct EpicGamesGameInstallationView: View {
     @Bindable private var operationManager: GameOperationManager = .shared
     @AppStorage("installBaseURL") private var baseURL: URL = Bundle.appGames!
 
+    @State private var isImageEmpty: Bool = true
+
     @State private var isInstallLocationFileImporterPresented: Bool = false
 
     @State var platform: Game.Platform = .macOS
@@ -58,7 +60,7 @@ struct EpicGamesGameInstallationView: View {
                                         game = castGame
                                     }
                                 }),
-                    isImageEmpty: .constant(false)
+                    isImageEmpty: $isImageEmpty
                 )
 
                 VStack {
