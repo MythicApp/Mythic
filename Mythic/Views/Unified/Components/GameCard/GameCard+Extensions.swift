@@ -129,7 +129,6 @@ extension GameCard {
                         }
                     }
                     .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                    .disabled(operationManager.queue.first?.game == game)
                     .disabled(game.storefront == .local)
                     .help("Install \(game.description)")
 
@@ -179,7 +178,6 @@ extension GameCard {
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .disabled(operationManager.queue.first?.game == game)
                 .disabled(game.storefront == .local)
                 .alert("Unable to verify installation.",
                        isPresented: $isVerificationErrorAlertPresented,
@@ -210,19 +208,18 @@ extension GameCard {
                     if withLabel {
                         if let isUpdateAvailable = game.isUpdateAvailable {
                             Label(isUpdateAvailable ? "Update" : "Up to date",
-                                  systemImage: "arrow.triangle.2.circlepath")
+                                  systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
                         } else {
                             Label("Update checking unavailable",
                                   systemImage: "checkmark.circle.dotted")
                         }
                     } else {
-                        Image(systemName: "arrow.triangle.2.circlepath")
+                        Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90")
                             .padding(2)
                     }
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
-                .disabled(operationManager.queue.first?.game == game)
                 .disabled(game.isUpdateAvailable != true)
                 .help("Update \"\(game.title)\"")
             }
@@ -309,7 +306,6 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(operationManager.queue.first?.game == game)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
