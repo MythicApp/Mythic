@@ -13,32 +13,34 @@ import OSLog
 @Observable @MainActor final class GameDataStore {
     static let shared: GameDataStore = .init()
 
-    var library: Set<Game> {
-        get {
-            do {
-                let anyGames = try defaults.decodeAndGet([AnyGame].self,
-                                                         forKey: "games") ?? .init()
-                return Set(anyGames.map({ $0.base }))
-            } catch {
-                Logger.app.error("""
-                    Unable to decode game library.
-                    This may result in unintended functionality.
-                    \(error)
-                    """)
-            }
-
-            return []
+    private init() {
+        // load library on initialisation
+        do {
+            let anyGames = try defaults.decodeAndGet([AnyGame].self, forKey: "games") ?? .init()
+            library = Set(anyGames.map({ $0.base }))
+        } catch {
+            Logger.app.error("""
+                Unable to decode game library.
+                This may result in unintended functionality.
+                \(error)
+                """)
         }
-        set {
-            do {
-                try defaults.encodeAndSet(newValue.map({ AnyGame($0) }),
-                                          forKey: "games")
-            } catch {
-                Logger.app.error("""
+    }
+
+    var library: Set<Game> = .init() {
+        didSet {
+            // re-encode game library on set
+            // FIXME: this is not ideal, as the entire library must be re-encoded on mutation
+            Task(priority: .high) {
+                do {
+                    try defaults.encodeAndSet(library.map({ AnyGame($0) }), forKey: "games")
+                } catch {
+                    Logger.app.error("""
                     Unable to encode game library.
                     This may result in unintended functionality.
                     \(error)
                     """)
+                }
             }
         }
     }
@@ -62,17 +64,18 @@ import OSLog
         }
 
         // installed: merge instead of overwrite
-        for game in installed {
-            if let existing = library.first(where: { $0 == game }) {
-                game.merge(existing)
-                library.update(with: game)
-            } else {
-                library.update(with: game)
+        for installedGame in installed {
+            if let existing = library.first(where: { $0 == installedGame }) {
+                print("""
+                    existing here: \(existing.launchArguments)
+                    installed here: \(installedGame.launchArguments)
+                    """)
+                existing.merge(installedGame)
+                print("merged here: \(existing.launchArguments)")
+                library.update(with: existing)
             }
         }
     }
-
-    private init() {}
 }
 
 @Observable class Game: Codable, Identifiable {
