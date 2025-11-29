@@ -57,7 +57,7 @@ struct OnboardingView: View {
                     if isHoveringOverProgressView {
                         Text("\(viewModel.proportionCompletion.formatted(.percent)) complete")
                             .textCase(.uppercase)
-                            .foregroundStyle(.placeholder)
+                            .foregroundStyle(.secondary)
                             .font(.footnote)
                     }
                 }
@@ -159,7 +159,7 @@ struct OnboardingView: View {
 
                     Text("(this software is currently in its alpha stage.)")
                         .font(.footnote)
-                        .foregroundStyle(.placeholder)
+                        .foregroundStyle(.secondary)
                 }
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom)

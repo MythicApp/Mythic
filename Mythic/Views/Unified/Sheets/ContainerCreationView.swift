@@ -38,7 +38,7 @@ struct ContainerCreationView: View {
                         Text("Where do you want the container's base path to be located?")
 
                         Text(containerURL.prettyPath)
-                            .foregroundStyle(.placeholder)
+                            .foregroundStyle(.secondary)
                     }
 
                     Spacer()

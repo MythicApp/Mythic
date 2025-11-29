@@ -51,7 +51,7 @@ struct GameSettingsView: View {
 #if DEBUG
                                 Text("(\(game.id))")
                                     .font(.footnote)
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundStyle(.secondary)
 #endif // DEBUG
                                 HStack {
                                     GameCard.ButtonsView(game: $game, withLabel: true)

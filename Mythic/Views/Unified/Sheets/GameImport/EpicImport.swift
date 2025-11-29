@@ -95,7 +95,7 @@ extension GameImportView {
                                 VStack(alignment: .leading) {
                                     Label("Location", systemImage: "folder")
                                     Text(location.prettyPath)
-                                        .foregroundStyle(.placeholder)
+                                        .foregroundStyle(.secondary)
                                 }
 
                                 if !files.isReadableFile(atPath: location.path) {

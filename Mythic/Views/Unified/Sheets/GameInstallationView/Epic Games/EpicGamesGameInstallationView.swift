@@ -74,7 +74,7 @@ struct EpicGamesGameInstallationView: View {
                        !optionalPacks.isEmpty {
                         Text("(Selective downloads supported.)")
                             .font(.footnote)
-                            .foregroundStyle(.placeholder)
+                            .foregroundStyle(.secondary)
 
                         Form {
                             ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { tag, name in
@@ -93,7 +93,7 @@ struct EpicGamesGameInstallationView: View {
                                     Text(name)
                                     Text(tag)
                                         .font(.footnote)
-                                        .foregroundStyle(.placeholder)
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -106,7 +106,7 @@ struct EpicGamesGameInstallationView: View {
                                 Label("Installation Directory", systemImage: "folder")
 
                                 Text(baseURL.prettyPath)
-                                    .foregroundStyle(.placeholder)
+                                    .foregroundStyle(.secondary)
                             }
 
                             Spacer()

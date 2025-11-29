@@ -160,7 +160,7 @@ extension SettingsView {
             Slider(value: $gameCardSize, in: 200...400, step: 25) {
                 Label("Gamecard Size", systemImage: "square.resize")
                 Text("Default is 1 tick.")
-                    .foregroundStyle(.placeholder)
+                    .foregroundStyle(.secondary)
             }
 
             Slider(value: $gameCardBlur, in: 0...20, step: 5) {
@@ -197,7 +197,7 @@ extension SettingsView {
                     Label("Default Install Location", systemImage: "externaldrive.fill.badge.checkmark")
                     HStack {
                         Text(installBaseURL.prettyPath)
-                            .foregroundStyle(.placeholder)
+                            .foregroundStyle(.secondary)
 
                         if !FileLocations.isWritableFolder(url: installBaseURL) {
                             Image(systemName: "exclamationmark.triangle")
@@ -447,7 +447,7 @@ extension SettingsView {
                 }
 
                 Text("Mythic Engine \(engineVersion?.prettyString ?? "(Unknown Version)")")
-                    .foregroundStyle(.placeholder)
+                    .foregroundStyle(.secondary)
                     .font(.footnote)
                     .padding()
                     .task {

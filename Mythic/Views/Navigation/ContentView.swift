@@ -96,7 +96,7 @@ struct ContentView: View {
                     engineVersion = await Engine.installedVersion
                 }
                 .font(.footnote)
-                .foregroundStyle(.placeholder)
+                .foregroundStyle(.secondary)
                 .padding(.bottom)
 #endif // DEBUG
 
@@ -132,7 +132,7 @@ struct ContentView: View {
         VStack {
             Label(title, systemImage: "info.circle")
                 .font(.footnote)
-                .foregroundStyle(.placeholder)
+                .foregroundStyle(.secondary)
 
             Button(action: action, label: {
                 Text(buttonText)

@@ -59,7 +59,7 @@ struct AboutView: View {
                                     engineVersion = await Engine.installedVersion
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.placeholder)
+                                .foregroundStyle(.secondary)
                             }
                             .blur(radius: showGradientView ? 30 : 0)
                         }

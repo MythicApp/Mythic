@@ -34,7 +34,7 @@ struct HarmonyRatingView: View {
                     .font(.title)
                 
                 Text("This will be uploaded to Harmony, Mythic's game compatibility database.")
-                    .foregroundStyle(.placeholder)
+                    .foregroundStyle(.secondary)
             }
             .padding()
             .fixedSize()

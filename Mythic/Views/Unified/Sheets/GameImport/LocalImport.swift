@@ -87,7 +87,7 @@ extension GameImportView {
                                     Label("Location", systemImage: "folder")
                                     if location != .temporaryDirectory {
                                         Text(location.prettyPath)
-                                            .foregroundStyle(.placeholder)
+                                            .foregroundStyle(.secondary)
                                     }
                                 }
 

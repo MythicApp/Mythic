@@ -50,7 +50,7 @@ struct HomeView: View {
                             
                             VStack(alignment: .leading) {
                                 Text("CONTINUE PLAYING")
-                                    .foregroundStyle(.placeholder)
+                                    .foregroundStyle(.secondary)
                                     .font(.caption)
                                 
                                 HStack {
