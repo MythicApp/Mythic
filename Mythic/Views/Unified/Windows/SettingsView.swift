@@ -357,7 +357,7 @@ extension SettingsView {
 
                 OperationButton(
                     "Manually Synchronise Cloud Saves",
-                    systemImage: "arrow.triangle.2.circlepath",
+                    systemImage: "arrow.trianglehead.2.clockwise.rotate.90",
                     operating: $isEpicCloudSynchronising,
                     successful: $isEpicCloudSyncSuccessful
                 ) {
