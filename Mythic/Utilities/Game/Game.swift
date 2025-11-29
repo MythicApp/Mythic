@@ -66,12 +66,7 @@ import OSLog
         // installed: merge instead of overwrite
         for installedGame in installed {
             if let existing = library.first(where: { $0 == installedGame }) {
-                print("""
-                    existing here: \(existing.launchArguments)
-                    installed here: \(installedGame.launchArguments)
-                    """)
                 existing.merge(installedGame)
-                print("merged here: \(existing.launchArguments)")
                 library.update(with: existing)
             }
         }
