@@ -65,10 +65,13 @@ import OSLog
 
         // installed: merge instead of overwrite
         for installedGame in installed {
+            var updatedGame: Game = installedGame
             if let existing = library.first(where: { $0 == installedGame }) {
-                existing.merge(installedGame)
-                library.update(with: existing)
+                existing.merge(with: installedGame)
+                updatedGame = existing
             }
+
+            library.update(with: updatedGame)
         }
     }
 }
@@ -303,15 +306,15 @@ extension Game {
 }
 
 extension Game: Mergeable {
-    func merge(_ other: Game) {
-        _verticalImageURL = self._verticalImageURL ?? other._verticalImageURL
-        _horizontalImageURL = self._horizontalImageURL ?? other._horizontalImageURL
-        _containerURL = self._containerURL ?? other._containerURL
+    func merge(with other: Game) {
+        self._verticalImageURL = self._verticalImageURL ?? other._verticalImageURL
+        self._horizontalImageURL = self._horizontalImageURL ?? other._horizontalImageURL
+        self._containerURL = self._containerURL ?? other._containerURL
 
-        launchArguments = .init(Set(self.launchArguments + other.launchArguments))
+        self.launchArguments = .init(Set(self.launchArguments + other.launchArguments))
 
         if self.lastLaunched != nil || other.lastLaunched != nil {
-            lastLaunched = max(self.lastLaunched ?? .distantPast,
+            self.lastLaunched = max(self.lastLaunched ?? .distantPast,
                                other.lastLaunched ?? .distantPast)
         }
     }
