@@ -12,26 +12,25 @@ import SwordRPC
 import OSLog
 import UniformTypeIdentifiers
 
-// FIXME: refactor: warning ‼️ below code may need a cleanup
 extension GameImportView {
     struct Epic: View {
         @Binding var isPresented: Bool
         @State private var errorDescription: String = .init()
         @State private var isErrorAlertPresented = false
 
-        @State private var game: Game = .init(id: .init(),
-                                              title: .init(),
-                                              installationState: .uninstalled)
+        @State private var game: EpicGamesGame = .init(id: .init(),
+                                                       title: .init(),
+                                                       installationState: .uninstalled)
 
         @State private var isRetrievingSupportedPlatforms: Bool = false
         @State private var supportedPlatforms: [Game.Platform]?
         @State private var platform: Game.Platform = .macOS
         @State private var location: URL?
 
-        private var installableGames: [Game] {
+        private var installableGames: [EpicGamesGame] {
             Game.store.library
+                .compactMap { $0 as? EpicGamesGame }
                 .sorted(by: { $0.title < $1.title })
-                .filter({ $0.storefront == .epicGames })
                 .filter({ $0.installationState == .uninstalled })
         }
 
@@ -47,8 +46,16 @@ extension GameImportView {
         var body: some View {
             VStack {
                 HStack {
-                    GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                        .padding([.top, .leading])
+                    GameCard.ImageCard(
+                        game: .init(get: { return game as Game },
+                                    set: {
+                                        if let castGame = $0 as? EpicGamesGame {
+                                            game = castGame
+                                        }
+                                    }),
+                        isImageEmpty: $isImageEmpty
+                    )
+                    .padding([.top, .leading])
 
                     Form {
                         Picker(
@@ -56,8 +63,9 @@ extension GameImportView {
                             systemImage: "gamecontroller",
                             selection: $game
                         ) {
-                            ForEach(installableGames, id: \.self) { game in
+                            ForEach(installableGames) { game in
                                 Text(game.title)
+                                    .tag(game)
                             }
                         }
                         .onAppear(perform: { game = installableGames.first ?? game })
@@ -91,13 +99,13 @@ extension GameImportView {
                        )
 
                         HStack {
-                            if let location = location {
-                                VStack(alignment: .leading) {
-                                    Label("Location", systemImage: "folder")
-                                    Text(location.prettyPath)
-                                        .foregroundStyle(.secondary)
-                                }
+                            VStack(alignment: .leading) {
+                                Label("Location", systemImage: "folder")
+                                Text(location?.prettyPath ?? "Unknown")
+                                    .foregroundStyle(.secondary)
+                            }
 
+                            if let location = location {
                                 if !files.isReadableFile(atPath: location.path) {
                                     Image(systemName: "exclamationmark.triangle")
                                         .symbolVariant(.fill)
@@ -120,7 +128,7 @@ extension GameImportView {
                             }
                         }
 
-                        Toggle("Import with DLCs", systemImage: "plus", isOn: $withDLCs)
+                        Toggle("Import with DLCs", systemImage: "puzzlepiece.extension", isOn: $withDLCs)
 
                         Toggle("Verify game files' integrity", systemImage: "checkmark.app", isOn: $checkIntegrity)
                     }
@@ -136,8 +144,8 @@ extension GameImportView {
                                     operating: $isOperating,
                                     successful: .constant(nil),
                                     placement: .leading,
-                                    action: performGameImport)
-                    .disabled(location == .temporaryDirectory)
+                                    action: spawnGameImportTask)
+                    .disabled(location == nil)
                     .disabled(supportedPlatforms?.isEmpty == true)
                     .disabled(isOperating)
                     .buttonStyle(.borderedProminent)
@@ -170,8 +178,20 @@ extension GameImportView {
             }
         }
 
-        private func performGameImport() {
-            withAnimation { isOperating = true }
+        private func spawnGameImportTask() {
+            guard !isOperating else { return }
+            Task {
+                withAnimation { isOperating = true }
+                defer {
+                    withAnimation { isOperating = false }
+                }
+
+                guard let location = location else { return }
+
+                try? await EpicGamesGameManager.importGame(game,
+                                                           platform: platform,
+                                                           at: location)
+            }
         }
     }
 }
