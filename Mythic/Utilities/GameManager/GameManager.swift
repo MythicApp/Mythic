@@ -51,4 +51,7 @@ protocol StorefrontGameManager: GameManager {
 
     /// Check if a game's files require verification.
     static func isFileVerificationRequired(for game: Game) throws -> Bool
+
+    /// Import the specified game.
+    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at: URL) async throws
 }

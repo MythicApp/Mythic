@@ -11,6 +11,13 @@ import Foundation
 import OSLog
 
 extension EpicGamesGameManager: StorefrontGameManager {
+    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at gameDirectoryURL: URL) async throws {
+        guard case .epicGames = game.storefront,
+              let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
+
+        try await importGame(castGame, platform: platform, gameDirectoryURL: gameDirectoryURL)
+    }
+    
     static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
@@ -122,5 +129,17 @@ final class EpicGamesGameManager {
         return try await Legendary.uninstall(game: game,
                                       persistFiles: persistFiles,
                                       runUninstallerIfPossible: runUninstallerIfPossible)
+    }
+    
+    @MainActor static func importGame(_ game: EpicGamesGame,
+                                      repairIfNecessary: Bool = true,
+                                      withDLCs: Bool = true,
+                                      platform: Game.Platform,
+                                      gameDirectoryURL: URL) async throws {
+        try await Legendary.importGame(game,
+                                       repairIfNecessary: repairIfNecessary,
+                                       withDLCs: withDLCs,
+                                       platform: platform,
+                                       gameDirectoryURL: gameDirectoryURL)
     }
 }

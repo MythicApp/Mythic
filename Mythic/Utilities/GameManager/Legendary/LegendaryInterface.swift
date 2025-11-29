@@ -459,12 +459,11 @@ final class Legendary {
        --platform <Platform>
                              Platform for import (default: Mac on macOS, otherwise Windows)
      */
-    @discardableResult
-    static func `import`(game: EpicGamesGame,
-                         repairIfNecessary: Bool = true,
-                         withDLCs: Bool,
-                         platform: Game.Platform,
-                         gameDirectoryURL: URL) async throws -> GameOperation {
+    @MainActor static func importGame(_ game: EpicGamesGame,
+                                      repairIfNecessary: Bool = true,
+                                      withDLCs: Bool = true,
+                                      platform: Game.Platform,
+                                      gameDirectoryURL: URL) async throws {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -481,24 +480,7 @@ final class Legendary {
 
         arguments.append(gameDirectoryURL.path)
 
-        let operation: GameOperation = .init(game: game, type: .move) { progress in
-            progress.totalUnitCount = 100
-
-            let consumer = await Legendary.executeStreamed(identifier: "import", arguments: arguments) { chunk in
-                if case .standardError = chunk.stream,
-                   let importedRegex = try? Regex(#"INFO: Game "(.*?)" has been imported."#),
-                   chunk.output.contains(importedRegex) {
-                    progress.completedUnitCount = 100
-                }
-
-                return nil
-            }
-
-            try await consumer.value
-        }
-
-        await Game.operationManager.queueOperation(operation)
-        return operation
+        try await Legendary.execute(arguments: arguments)
     }
 
     @discardableResult
