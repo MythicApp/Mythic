@@ -365,7 +365,7 @@ final class Legendary {
                         progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
 
                         // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
-                        progress.throughput = (Int(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0) * Int(pow(1024.0, 2.0))
+                        progress.throughput = (Int(Double(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0)) * Int(pow(1024.0, 2.0))
                     }
                 }
 
