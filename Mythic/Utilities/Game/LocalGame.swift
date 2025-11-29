@@ -16,12 +16,6 @@ class LocalGame: Game {
                   title: String,
                   installationState: InstallationState,
                   containerURL: URL? = nil) {
-        // Local games must always be installed.
-        // Otherwise, they should be removed.
-        guard case .installed = installationState else {
-            preconditionFailure("you can't have an uninstalled local game 😂😂 this is a development bug")
-        }
-
         super.init(id: id,
                    title: title,
                    installationState: installationState,
