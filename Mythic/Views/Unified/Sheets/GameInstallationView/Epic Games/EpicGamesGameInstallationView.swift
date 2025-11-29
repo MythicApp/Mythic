@@ -174,6 +174,7 @@ struct EpicGamesGameInstallationView: View {
                    let installSize = installSizeInBytes {
                     Text(ByteCountFormatter.string(fromByteCount: installSize, countStyle: .file))
                         .font(.footnote)
+                        .foregroundStyle(.tertiary)
                         .onAppear {
                             if let availableSpace = availableSpaceInBytes,
                                let installSize = installSizeInBytes,
@@ -204,7 +205,7 @@ struct EpicGamesGameInstallationView: View {
                                                                     forPlatform: platform,
                                                                     qualityOfService: .default,
                                                                     optionalPacks: Array(selectedOptionalPacks),
-                                                                    gameDirectoryURL: baseURL)
+                                                                    baseDirectoryURL: baseURL)
                         isPresented = false
                     }
                 }

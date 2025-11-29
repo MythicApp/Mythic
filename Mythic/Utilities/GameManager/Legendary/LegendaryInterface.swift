@@ -257,7 +257,7 @@ final class Legendary {
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
+                        baseDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -266,11 +266,11 @@ final class Legendary {
         var arguments: [String] = ["-y", "install", game.id]
         arguments += ["--platform", matchPlatform(for: platform)]
 
-        guard let gameDirectoryURL = gameDirectoryURL else {
+        guard let baseDirectoryURL = baseDirectoryURL else {
             log.error("Failed to infer default base URL, installation cannot continue")
             throw CocoaError(.fileReadUnknown)
         }
-        arguments += ["--game-folder", gameDirectoryURL.path]
+        arguments += ["--base-path", baseDirectoryURL.path]
 
         let operation: GameOperation = .init(game: game, type: .install) { [arguments] progress in
             progress.totalUnitCount = 100
@@ -464,7 +464,7 @@ final class Legendary {
                          repairIfNecessary: Bool = true,
                          withDLCs: Bool,
                          platform: Game.Platform,
-                         gameDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
+                         gameDirectoryURL: URL) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -475,24 +475,21 @@ final class Legendary {
         if !repairIfNecessary { arguments.append("--disable-check") }
         if withDLCs { arguments.append("--with-dlcs") } else { arguments.append("--skip-dlcs") }
 
+        // append arguments in order, as specified by legendary's '--help' argument
         arguments += ["--platform", matchPlatform(for: platform)]
-        arguments.append(game.id) // append in order, as specified by legendary's '--help' argument
+        arguments.append(game.id)
 
-        guard let gameDirectoryURL = gameDirectoryURL else {
-            log.error("Failed to infer default base URL, import cannot continue")
-            throw CocoaError(.fileReadUnknown)
-        }
         arguments.append(gameDirectoryURL.path)
 
-        let operation: GameOperation = .init(game: game, type: .move) { _ in
-            let consumer = await Legendary.executeStreamed(identifier: "import", arguments: arguments) { _ /* chunk */ in
-                /* unnecessary completion logic
+        let operation: GameOperation = .init(game: game, type: .move) { progress in
+            progress.totalUnitCount = 100
+
+            let consumer = await Legendary.executeStreamed(identifier: "import", arguments: arguments) { chunk in
                 if case .standardError = chunk.stream,
                    let importedRegex = try? Regex(#"INFO: Game "(.*?)" has been imported."#),
                    chunk.output.contains(importedRegex) {
-                    // logic unneeded here.
+                    progress.completedUnitCount = 100
                 }
-                 */
 
                 return nil
             }
