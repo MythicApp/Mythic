@@ -62,7 +62,7 @@
 		6A2935532BFCFAFD0035CE4B /* StoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D82BFCFAFD0035CE4B /* StoreView.swift */; };
 		6A2935542BFCFAFD0035CE4B /* SupportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934D92BFCFAFD0035CE4B /* SupportView.swift */; };
 		6A2935562BFCFAFD0035CE4B /* GameCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */; };
-		6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */; };
+		6A2935572BFCFAFD0035CE4B /* GameOperationProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934DD2BFCFAFD0035CE4B /* GameOperationProgressView.swift */; };
 		6A2935582BFCFAFD0035CE4B /* SubscriptedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934DE2BFCFAFD0035CE4B /* SubscriptedTextView.swift */; };
 		6A2935592BFCFAFD0035CE4B /* ContainerCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E02BFCFAFD0035CE4B /* ContainerCreationView.swift */; };
 		6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2934E12BFCFAFD0035CE4B /* ContainerSettingsView.swift */; };
@@ -197,7 +197,7 @@
 		6A2934D82BFCFAFD0035CE4B /* StoreView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreView.swift; sourceTree = "<group>"; };
 		6A2934D92BFCFAFD0035CE4B /* SupportView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupportView.swift; sourceTree = "<group>"; };
 		6A2934DC2BFCFAFD0035CE4B /* GameCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCard.swift; sourceTree = "<group>"; };
-		6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameInstallProgressView.swift; sourceTree = "<group>"; };
+		6A2934DD2BFCFAFD0035CE4B /* GameOperationProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOperationProgressView.swift; sourceTree = "<group>"; };
 		6A2934DE2BFCFAFD0035CE4B /* SubscriptedTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscriptedTextView.swift; sourceTree = "<group>"; };
 		6A2934E02BFCFAFD0035CE4B /* ContainerCreationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerCreationView.swift; sourceTree = "<group>"; };
 		6A2934E12BFCFAFD0035CE4B /* ContainerSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerSettingsView.swift; sourceTree = "<group>"; };
@@ -301,7 +301,7 @@
 				6A2934E92BFCFAFD0035CE4B /* GameListView.swift */,
 				6A02101A2D390370009C85F8 /* StarRatingView.swift */,
 				6A0688432C2BCE87004DF10F /* DownloadCard.swift */,
-				6A2934DD2BFCFAFD0035CE4B /* GameInstallProgressView.swift */,
+				6A2934DD2BFCFAFD0035CE4B /* GameOperationProgressView.swift */,
 				6A2934DE2BFCFAFD0035CE4B /* SubscriptedTextView.swift */,
 				1217C8B02EADC544003EC8C9 /* BundleIconView.swift */,
 				1217C8B22EADC544003EC8C9 /* RichAlertView.swift */,
@@ -798,7 +798,7 @@
 				6A29355F2BFCFAFD0035CE4B /* EpicGamesGameUninstallationView.swift in Sources */,
 				6A29355A2BFCFAFD0035CE4B /* ContainerSettingsView.swift in Sources */,
 				6A448E0E2CC4A53A001E9F47 /* ListGameCard.swift in Sources */,
-				6A2935572BFCFAFD0035CE4B /* GameInstallProgressView.swift in Sources */,
+				6A2935572BFCFAFD0035CE4B /* GameOperationProgressView.swift in Sources */,
 				6A49F9E12EC2F1DF0015B084 /* OperationStatusViewModifier.swift in Sources */,
 				6A762F7A2ED889D500D6F1A8 /* EpicGamesGameInstallationView.swift in Sources */,
 				6A29353B2BFCFAFD0035CE4B /* URL+Extensions.swift in Sources */,
@@ -1011,7 +1011,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4124;
+				CURRENT_PROJECT_VERSION = 4176;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -1059,7 +1059,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4124;
+				CURRENT_PROJECT_VERSION = 4176;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
