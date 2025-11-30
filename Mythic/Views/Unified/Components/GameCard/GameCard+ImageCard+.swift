@@ -23,11 +23,22 @@ extension GameCard {
                 let image = Image(nsImage: workspace.icon(forFile: location.path))
 
                 ZStack {
-                    if withBlur && (gameCardBlur > 0) /* dirtyfix */ {
-                        image
-                            .resizable()
-                            .clipShape(.rect(cornerRadius: 20))
-                            .blur(radius: 20.0 /* gameCardBlur */)
+                    // blurred image as background
+                    // save resources by only create this image if it'll be used for blur
+                    if withBlur && (gameCardBlur > 0) {
+                        // save resources by decreasing resolution scale of blurred image
+                        let renderer: ImageRenderer = {
+                            let renderer = ImageRenderer(content: image)
+                            renderer.scale = 0.2
+                            return renderer
+                        }()
+
+                        if let image = renderer.cgImage {
+                            Image(image, scale: 1, label: .init(""))
+                                .resizable()
+                                .clipShape(.rect(cornerRadius: 20))
+                                .blur(radius: 20.0 /* gameCardBlur */)
+                        }
                     }
 
                     image
