@@ -12,6 +12,7 @@ import OSLog
 
 @Observable @MainActor final class GameDataStore {
     static let shared: GameDataStore = .init()
+    let log: Logger = .custom(category: "GameDataStore")
 
     private init() {
         // load library on initialisation
@@ -32,6 +33,7 @@ import OSLog
             // re-encode game library on set
             // FIXME: this is not ideal, as the entire library must be re-encoded on mutation
             Task(priority: .high) {
+                log.debug("Updating library with \(self.library.count) games.")
                 do {
                     try defaults.encodeAndSet(library.map({ AnyGame($0) }), forKey: "games")
                 } catch {
@@ -54,24 +56,34 @@ import OSLog
     }
 
     func refreshFromStorefronts() async throws {
-        // legendary (epic games)
-        let installables = try Legendary.getInstallableGames()
-        let installed = try Legendary.getInstalledGames()
-
-        // add installables that aren't installed
-        for game in installables where !installed.contains(where: { $0 == game }) {
-            library.update(with: game)
+        GameListViewModel.shared.isUpdatingLibrary = true
+        defer {
+            GameListViewModel.shared.isUpdatingLibrary = false
         }
-
-        // installed: merge instead of overwrite
-        for installedGame in installed {
-            var updatedGame: Game = installedGame
-            if let existing = library.first(where: { $0 == installedGame }) {
-                existing.merge(with: installedGame)
-                updatedGame = existing
+        
+        // legendary (epic games)
+        do {
+            let installables = try Legendary.getInstallableGames()
+            let installed = try Legendary.getInstalledGames()
+            
+            // add installables that aren't installed
+            for game in installables where !installed.contains(where: { $0 == game }) {
+                library.update(with: game)
             }
-
-            library.update(with: updatedGame)
+            
+            // installed: merge instead of overwrite
+            for installedGame in installed {
+                var updatedGame: Game = installedGame
+                if let existing = library.first(where: { $0 == installedGame }) {
+                    existing.merge(with: installedGame)
+                    updatedGame = existing
+                }
+                
+                library.update(with: updatedGame)
+            }
+        } catch {
+            log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
+            throw error
         }
     }
 }
