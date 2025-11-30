@@ -489,7 +489,8 @@ final class Legendary {
         if let successRegex = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#),
            let match = try? successRegex.firstMatch(in: result.standardError),
            let username = match["username"]?.substring {
-            await GameListViewModel.shared.refresh()
+            // refresh failure should not affect signin capability
+            try? await Game.store.refreshFromStorefronts()
             return String(username)
         }
 
@@ -650,9 +651,13 @@ final class Legendary {
     static func getInstalledGames() throws -> [EpicGamesGame] {
         guard signedIn else { throw NotSignedInError() }
 
-        let installedData = configurationFolder.appending(path: "installed.json")
-        let data = try Data(contentsOf: installedData)
-        let installedGames = try JSONDecoder().decode(Installed.self, from: data)
+        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        
+        // if no games are installed, and the config folder is new, installed.json will not exist.
+        guard files.fileExists(atPath: installedJSONURL.path) else { return [] }
+        
+        let installedJSONData = try Data(contentsOf: installedJSONURL)
+        let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
 
         return installedGames.compactMap { (id, installedGame) -> EpicGamesGame? in
             guard let platform: Game.Platform = installedGame.platform else { return nil }
