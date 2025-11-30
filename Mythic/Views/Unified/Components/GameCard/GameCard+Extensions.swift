@@ -375,8 +375,9 @@ extension GameCard {
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
         var body: some View {
-            if operationManager.queue.first?.game == game {
-                GameInstallProgressView(withPercentage: false)
+            if let currentOperation = operationManager.queue.first, currentOperation.game == game {
+                InteractiveGameOperationProgressView(operation: .constant(currentOperation),
+                                                     withPercentage: false)
             } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)
@@ -423,6 +424,12 @@ extension GameCard {
                         .lineLimit(1)
                 }
             }
+
+#if DEBUG
+                                Text("(\(game.id))")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+#endif // DEBUG
         }
     }
 }
