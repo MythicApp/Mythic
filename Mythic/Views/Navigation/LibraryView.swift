@@ -25,7 +25,7 @@ struct LibraryView: View {
         
             .toolbar {
                 ToolbarItem(placement: .status) {
-                    if variables.getVariable("isUpdatingLibrary") == true {
+                    if gameListViewModel.isUpdatingLibrary {
                         ProgressView()
                             .controlSize(.small)
                             .help("Mythic is updating your library.")
@@ -43,7 +43,9 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .automatic) {
-                    Button("Force-refresh game list", systemImage: "arrow.clockwise", action: gameListViewModel.refresh)
+                    Button("Force-refresh game list", systemImage: "arrow.clockwise") {
+                        Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
+                    }
                         .help("Force-refresh the displayed games' status")
                 }
                 

@@ -28,11 +28,11 @@ struct EpicWebAuthView: View {
             .onAppear {
                 webDataStoreIdentifierString = UUID().uuidString
                 viewModel.signInSuccess = false
-                gameListViewModel.refresh()
+                Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
             }
             .onDisappear {
                 authKey = .init()
-                gameListViewModel.refresh()
+                Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
             }
             .alert(isPresented: $isSigninErrorPresented) {
                 .init(
@@ -61,8 +61,6 @@ struct EpicWebAuthView: View {
                 try await Legendary.signIn(authKey: newAuthKey)
                 viewModel.signInSuccess = true
                 viewModel.closeSignInWindow()
-
-                gameListViewModel.refresh()
             } catch {
                 signInError = error
                 isSigninErrorPresented = true
@@ -94,7 +92,6 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
                 window.contentView = NSHostingView(rootView: EpicWebAuthView(viewModel: self))
             }
             window.makeKeyAndOrderFront(nil)
-            // Update visibility status
             isEpicSignInWindowVisible = window.isVisible
             return
         }
@@ -192,23 +189,23 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                 else {
                     return
                 }
-
+                
                 if let errorCode = json["errorCode"].string,
-                          var error = json["message"].string {
+                   var error = json["message"].string {
                     self.parent.isWebAuthViewBlurred = true // no animation
-
+                    
                     if errorCode == "errors.com.epicgames.oauth.corrective_action_required" {
                         error = String(localized: """
                             Please visit https://www.epicgames.com/id/login/correction on a normal web browser,
                             and then try signing in through Mythic again.
                             """)
                     }
-
+                    
                     self.parent.viewModel.invokeSignInError(
                         errorMessage: Legendary.SignInError().localizedDescription,
                         errorDescription: error
                     )
-
+                    
                     withAnimation { self.parent.isWebAuthViewBlurred = false }
                 } else {
                     guard let code = json["authorizationCode"].string else {

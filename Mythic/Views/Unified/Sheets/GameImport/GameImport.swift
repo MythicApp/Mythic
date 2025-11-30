@@ -12,9 +12,6 @@ import OSLog
 
 struct GameImportView: View {
     @Binding var isPresented: Bool
-    @Bindable var gameListViewModel: GameListViewModel = .shared
-    
-    @State private var source: Game.Storefront = .epicGames
 
     var body: some View {
         VStack {
@@ -50,11 +47,8 @@ struct GameImportView: View {
                 .padding()
             }
         }
-        .navigationTitle("Import")
+        .navigationTitle("Import Game")
         .frame(minWidth: 750, minHeight: 300, idealHeight: 350)
-        .onChange(of: isPresented) {
-            if !$1 { gameListViewModel.refresh() }
-        }
     }
 }
 

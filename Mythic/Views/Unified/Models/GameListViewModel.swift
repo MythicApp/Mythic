@@ -23,22 +23,11 @@ import OSLog
             .sorted(by: { $0.title < $1.title })
             .sorted(by: { $0.installationState > $1.installationState })
     }
-    var refreshFlag: Bool = false
 
     private var sortOptions: [SortOptions] = [.favorite, .installed, .title]
     private let logger: Logger = .custom(category: "GameListViewModel")
-
-    /// Refreshes the game list and invalidates the installed games cache
-    func refresh() {
-        VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
-
-        Task(priority: .userInitiated) {
-            try? await Game.store.refreshFromStorefronts()
-            withAnimation { refreshFlag.toggle() }
-
-            VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
-        }
-    }
+    
+    var isUpdatingLibrary: Bool = false
 
     /// Updates the sort criteria and refreshes the game list
     func setSortOptions(_ options: [SortOptions]) {
