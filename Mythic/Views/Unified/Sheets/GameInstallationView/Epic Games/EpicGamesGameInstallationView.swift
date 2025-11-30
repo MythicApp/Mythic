@@ -213,6 +213,7 @@ struct EpicGamesGameInstallationView: View {
                 }
                 .disabled(supportedPlatforms == nil)
                 .disabled(fetchingOptionalPacks)
+                .disabled(!files.isWritableFile(atPath: baseURL.path))
                 .onAppear(perform: { spawnOptionalPacksFetchTask() })
                 .onChange(of: game, { spawnOptionalPacksFetchTask() })
                 .onChange(of: platform, { spawnOptionalPacksFetchTask() })
