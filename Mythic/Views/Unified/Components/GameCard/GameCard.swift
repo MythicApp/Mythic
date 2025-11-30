@@ -41,21 +41,6 @@ struct GameCard: View {
                             }
                         }
                     }
-
-#if DEBUG
-                    Text("(\(game.id))")
-                        .font(.system(size: 8))
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                        .padding(4)
-                        .customTransform { view in
-                            if #available(macOS 26.0, *) {
-                                view.glassEffect(in: .capsule)
-                            } else {
-                                view.background(in: .capsule)
-                            }
-                        }
-#endif // DEBUG
                 }
                 .padding()
             }
