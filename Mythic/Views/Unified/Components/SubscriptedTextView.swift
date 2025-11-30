@@ -20,10 +20,11 @@ struct SubscriptedTextView: View {
         Text(text)
             .font(.caption)
             .padding(.horizontal, 5)
-            .overlay( // based off .buttonStyle(.accessoryBarAction)
+            .background( // based on .buttonStyle(.accessoryBarAction)
                 RoundedRectangle(cornerRadius: 4)
                     .stroke(.tertiary)
             )
+            .compositingGroup()
     }
 }
 
