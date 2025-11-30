@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import SwiftUI
+import Glur
 
 struct ListGameCard: View {
     @Binding var game: Game

@@ -9,6 +9,7 @@
 
 import Foundation
 import SwiftUI
+import Glur
 
 // May be unnecesary since used only once (`HomeView`)
 struct HeroGameCard: View {
