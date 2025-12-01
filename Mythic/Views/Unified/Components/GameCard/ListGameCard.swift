@@ -20,6 +20,8 @@ struct ListGameCard: View {
     
     var body: some View {
         ListGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+        /* FIXME: view refresh with glur effect causes total image refresh, causing MenuView sheets to unpresent
+           FIXME: unrectifiable with .id, potentially a ZStack would fix it, isolating the refresh to the image, not MenuView
             .conditionalTransform(if: isCardExpanded && !isImageEmpty) { view in
                 // causes 'ghost' visual artifact, but might be a W sacrifice for readability
                 view
@@ -28,6 +30,7 @@ struct ListGameCard: View {
                           interpolation: 0.7,
                           drawingGroup: true)
             }
+         */
             .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
             .blur(radius: isCardExpanded ? 0 : 30.0)
             .overlay(alignment: isCardExpanded ? .bottom : .center) {
