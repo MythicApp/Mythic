@@ -48,11 +48,7 @@ struct GameSettingsView: View {
                                 HStack {
                                     GameCard.TitleAndInformationView(game: $game, withSubscriptedInfo: false)
                                 }
-#if DEBUG
-                                Text("(\(game.id))")
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-#endif // DEBUG
+                                
                                 HStack {
                                     GameCard.ButtonsView(game: $game, withLabel: true)
                                         .clipShape(.capsule)
