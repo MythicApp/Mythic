@@ -152,7 +152,7 @@ extension OperationCard {
 }
 
 #Preview {
-    ProminentOperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .download, function: { _ in })))
+    ProminentOperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
         .padding()
         .environmentObject(NetworkMonitor.shared)
 }

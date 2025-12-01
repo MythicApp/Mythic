@@ -105,7 +105,7 @@ extension GameOperation {
 
 extension GameOperation {
     enum ActiveOperationType {
-        case download
+        // case download
         case install
         case repair
         case update
@@ -113,18 +113,12 @@ extension GameOperation {
         case uninstall
         case launch
     }
-
-    enum OperationType {
-        case install
-        case update
-        case repair
-    }
 }
 
 extension GameOperation.ActiveOperationType: CustomStringConvertible {
     var description: String {
         switch self {
-        case .download:     String(localized: "Downloading")
+        // case .download:     String(localized: "Downloading")
         case .install:      String(localized: "Installing")
         case .repair:       String(localized: "Repairing")
         case .update:       String(localized: "Updating")
