@@ -61,36 +61,31 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .automatic) {
-                    Menu {
-                        Toggle("Installed",
-                               systemImage: "arrow.down.app",
-                               isOn: $gameListViewModel.filterOptions.showInstalled)
-
-                        Picker(
-                            "Platform",
-                            systemImage: "desktopcomputer.and.arrow.down",
-                            selection: $gameListViewModel.filterOptions.platform
-                        ) {
-                            Text("All Platforms")
-                                .tag(Game.Platform?.none)
-
+                    Menu("Filters", systemImage: "line.3.horizontal.decrease") {
+                        Section("Platform") {
                             ForEach(Game.Platform.allCases, id: \.self) { platform in
-                                Text(platform.description)
+                                Toggle(platform.description,
+                                       isOn: searchTokenBinding(for: .platform(platform)))
                             }
                         }
-
-                        Picker("Storefront",
-                               systemImage: "storefront",
-                               selection: $gameListViewModel.filterOptions.storefront) {
-                            Text("All Storefronts")
-                                .tag(Game.Storefront?.none)
-
+                        
+                        Section("Storefront") {
                             ForEach(Game.Storefront.allCases, id: \.self) { storefront in
-                                Text(storefront.description)
+                                Toggle(storefront.description,
+                                       isOn: searchTokenBinding(for: .storefront(storefront)))
                             }
                         }
-                    } label: {
-                        Button("Filters", systemImage: "line.3.horizontal.decrease", action: {  })
+                        
+                        Section("Installation") {
+                            Toggle("Installed",
+                                   isOn: searchTokenBinding(for: .installed))
+                            Toggle("Not Installed",
+                                   isOn: searchTokenBinding(for: .notInstalled))
+                        }
+                        
+                        Section {
+                            Toggle("Favourited", isOn: searchTokenBinding(for: .favourited))
+                        }
                     }
                     .menuIndicator(.hidden)
                 }
@@ -112,6 +107,19 @@ struct LibraryView: View {
                 GameImportView(isPresented: $isGameImportSheetPresented)
                     .fixedSize()
             }
+    }
+    
+    private func searchTokenBinding(for token: GameListViewModel.SearchToken) -> Binding<Bool> {
+        .init(
+            get: { gameListViewModel.searchTokens.contains(token) },
+            set: { isOn in
+                if isOn {
+                    gameListViewModel.searchTokens.append(token)
+                } else {
+                    gameListViewModel.searchTokens.removeAll { $0 == token }
+                }
+            }
+        )
     }
 }
 

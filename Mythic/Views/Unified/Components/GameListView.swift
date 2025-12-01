@@ -52,7 +52,20 @@ struct GameListView: View {
                                 }
                             }
                             .padding()
-                            .searchable(text: $viewModel.searchString, placement: .toolbar)
+                            .searchable(text: $viewModel.searchString, tokens: $viewModel.searchTokens, suggestedTokens: .constant(viewModel.suggestedTokens), placement: .toolbar) { token in
+                                switch token {
+                                case .platform(let platform):
+                                    Text(platform.description)
+                                case .storefront(let storefront):
+                                    Text(storefront.description)
+                                case .installed:
+                                    Text("Installed")
+                                case .notInstalled:
+                                    Text("Not Installed")
+                                case .favourited:
+                                    Text("Favourited")
+                                }
+                            }
                         } else {
                             LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
                                 ForEach(viewModel.library) { game in
@@ -60,7 +73,20 @@ struct GameListView: View {
                                 }
                             }
                             .padding()
-                            .searchable(text: $viewModel.searchString, placement: .toolbar)
+                            .searchable(text: $viewModel.searchString, tokens: $viewModel.searchTokens, suggestedTokens: .constant(viewModel.suggestedTokens), placement: .toolbar) { token in
+                                switch token {
+                                case .platform(let platform):
+                                    Text(platform.description)
+                                case .storefront(let storefront):
+                                    Text(storefront.description)
+                                case .installed:
+                                    Text("Installed")
+                                case .notInstalled:
+                                    Text("Not Installed")
+                                case .favourited:
+                                    Text("Favourited")
+                                }
+                            }
                         }
                     case .list:
                         LazyVStack {
@@ -69,7 +95,20 @@ struct GameListView: View {
                             }
                         }
                         .padding()
-                        .searchable(text: $viewModel.searchString, placement: .toolbar)
+                        .searchable(text: $viewModel.searchString, tokens: $viewModel.searchTokens, suggestedTokens: .constant(viewModel.suggestedTokens), placement: .toolbar) { token in
+                            switch token {
+                            case .platform(let platform):
+                                Text(platform.description)
+                            case .storefront(let storefront):
+                                Text(storefront.description)
+                            case .installed:
+                                Text("Installed")
+                            case .notInstalled:
+                                Text("Not Installed")
+                            case .favourited:
+                                Text("Favourited")
+                            }
+                        }
                     }
                 }
             }
