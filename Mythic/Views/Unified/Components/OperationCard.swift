@@ -136,6 +136,7 @@ extension OperationCard {
                     operation.cancel()
                 } label: {
                     Image(systemName: "minus")
+                        .padding(2)
                 }
                 .help("Remove operation from queue")
             } else if operation.isCancelled {
