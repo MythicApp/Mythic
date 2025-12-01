@@ -39,17 +39,19 @@ Please read and understand our [Code of Conduct](CODE_OF_CONDUCT.md) before cont
 Use the [Conventional Commits](https://conventionalcommits.org) specification:
 
 **Examples:**
-- `feat(library): add vertical grid scrolling`
+- `feat(`LibraryView`): add vertical grid scrolling`
 - `fix: prevent nil version crash`
 - `chore(ci): speed up build`
 
 **Breaking changes:** Use `!` after the scope:
 - `feat(api)!: remove deprecated endpoints`
 
+Prefer using backticks when referencing in-code values, e.g., \`ContentView\`
+
 ### Pull Request Titles
 
-Title your PR using the same convention and reference related issues:
-- `feat(library): add grid view (fixes #123, #456)`
+Title your PR using the same convention and [reference related issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword):
+- `feat(`LibraryView`): add grid view (fixes #123, #456)`
 
 ---
 
