@@ -117,8 +117,6 @@ struct HomeView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
-        
-        .navigationTitle("Home")
         .customTransform { view in
             if #available(macOS 15.0, *) {
                 view
@@ -130,6 +128,7 @@ struct HomeView: View {
             }
         }
 
+        .navigationTitle("Home")
         .task(priority: .background) {
             discordRPC.setPresence({
                 var presence: RichPresence = .init()
