@@ -70,9 +70,9 @@ struct ContentView: View {
                 // separate downloads view from main list because alignment doesn't work within the main list
                 if !operationManager.queue.isEmpty {
                     List { // must wrap in a list to have the same styling as the other links
-                        NavigationLink(destination: DownloadsView()) {
-                            Label("Downloads", systemImage: "arrow.down.to.line")
-                                .help("View all downloads")
+                        NavigationLink(destination: OperationsView()) {
+                            Label("Operations", systemImage: "progress.indicator")
+                                .help("View all active game operations")
                         }
                     }
                     .frame(maxHeight: 40)
