@@ -19,60 +19,55 @@ struct ListGameCard: View {
     static let defaultHeight: CGFloat = 120
     
     var body: some View {
-        ListGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-        /* FIXME: view refresh with glur effect causes total image refresh, causing MenuView sheets to unpresent
-           FIXME: unrectifiable with .id, potentially a ZStack would fix it, isolating the refresh to the image, not MenuView
-            .conditionalTransform(if: isCardExpanded && !isImageEmpty) { view in
-                // causes 'ghost' visual artifact, but might be a W sacrifice for readability
-                view
-                    .glur(radius: 20,
-                          offset: 0.7,
-                          interpolation: 0.7,
-                          drawingGroup: true)
-            }
-         */
-            .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
-            .blur(radius: isCardExpanded ? 0 : 30.0)
-            .overlay(alignment: isCardExpanded ? .bottom : .center) {
-                HStack {
-                    if game.isFallbackImageAvailable, isImageEmpty {
-                        GameCard.FallbackImageCard(game: $game)
-                            .frame(width: 70, height: 70)
-                            .padding()
-                    }
+        ZStack {
+            ListGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+                .blur(radius: isCardExpanded ? 0 : 30.0)
+                .glur(radius: 20,
+                      offset: 0.7,
+                      interpolation: 0.7,
+                      drawingGroup: false)
+            
+            HStack {
+                if game.isFallbackImageAvailable, isImageEmpty {
+                    GameCard.FallbackImageCard(game: $game)
+                        .frame(width: 70, height: 70)
+                        .padding()
+                }
+                
+                VStack(alignment: .leading) {
+                    Text(game.title)
+                        .font(.system(.title, weight: .bold))
                     
-                    VStack(alignment: .leading) {
-                        Text(game.title)
-                            .font(.system(.title, weight: .bold))
-                        
-                        HStack {
-                            GameCard.SubscriptedInfoView(game: $game)
+                    HStack {
+                        GameCard.SubscriptedInfoView(game: $game)
+                    }
+                }
+                .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+                
+                Spacer()
+                
+                Group {
+                    GameCard.ButtonsView(game: $game)
+                        .clipShape(.capsule)
+                        .conditionalTransform(if: isImageEmpty) { view in
+                            view
+                                .foregroundStyle(.white)
                         }
-                    }
-                    .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
-                    .padding(.horizontal)
-                    
-                    Spacer()
-                    
-                    Group {
-                        GameCard.ButtonsView(game: $game)
-                            .clipShape(.capsule)
-                            .conditionalTransform(if: isImageEmpty) { view in
-                                view
-                                    .foregroundStyle(.white)
-                            }
-                    }
-                    .padding(.trailing)
-                }
-                .padding(.vertical)
-            }
-            .clipShape(.rect(cornerRadius: 20))
-            .contentShape(.rect(cornerRadius: 20))
-            .onHover { hovering in
-                if !isImageEmpty {
-                    withAnimation { isCardExpanded = hovering }
                 }
             }
+            .padding()
+            .frame(maxWidth: .infinity,
+                   maxHeight: .infinity,
+                   alignment: isCardExpanded ? .bottom : .center)
+        }
+        .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
+        .clipShape(.rect(cornerRadius: 20))
+        .contentShape(.rect(cornerRadius: 20))
+        .onHover { hovering in
+            if !isImageEmpty {
+                withAnimation { isCardExpanded = hovering }
+            }
+        }
     }
 }
 
