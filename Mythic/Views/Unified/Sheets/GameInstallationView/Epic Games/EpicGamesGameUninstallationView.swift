@@ -75,13 +75,7 @@ struct EpicGamesGameUninstallationView: View {
                                                                                  persistFiles: !removeFromDisk,
                                                                                  runUninstallerIfPossible: runUninstaller)
 
-                        let originalCompletionBlock = operation.completionBlock
-                        operation.completionBlock = {
-                            originalCompletionBlock?()
-                            Task { @MainActor in
-                                self.isPresented = false
-                            }
-                        }
+                        self.isPresented = false
                     }
                 }
                 .buttonStyle(.borderedProminent)
