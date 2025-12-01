@@ -17,7 +17,8 @@ struct ProminentOperationCard: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .bottomLeading) {
-                ListGameCard.ImageCard(game: .constant(operation.game), isImageEmpty: $isImageEmpty)
+                HeroGameCard.ImageCard(game: .constant(operation.game), isImageEmpty: $isImageEmpty)
+                    .clipShape(.rect(cornerRadius: 20))
                     .frame(width: geometry.size.width, height: geometry.size.height)
                 
                 VStack(alignment: .leading) {
@@ -151,7 +152,7 @@ extension OperationCard {
 }
 
 #Preview {
-    OperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .download, function: { _ in })))
+    ProminentOperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .download, function: { _ in })))
         .padding()
         .environmentObject(NetworkMonitor.shared)
 }
