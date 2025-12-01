@@ -31,7 +31,6 @@ struct ListGameCard: View {
                 if game.isFallbackImageAvailable, isImageEmpty {
                     GameCard.FallbackImageCard(game: $game)
                         .frame(width: 70, height: 70)
-                        .padding()
                 }
                 
                 VStack(alignment: .leading) {
