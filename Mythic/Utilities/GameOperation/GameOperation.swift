@@ -23,6 +23,8 @@ import OSLog
     let function: (Progress) async throws -> Void
 
     var error: Error?
+    
+    private var task: Task<Void, Never>?
 
     init(game: Game,
          type: ActiveOperationType,
@@ -37,27 +39,40 @@ import OSLog
         // initialise `Operation`
         super.init()
     }
-
+    
     // MARK: `Operation` inheritance overrides
     override func start() {
-        Task(priority: .utility) {
+        guard !isCancelled else {
+            log.notice("""
+                Operation \(self.debugDescription) has been cancelled before commencing.
+                If it's part of an OperationQueue, it'll be dequeued as soon as it reaches the start.
+                """)
+            isFinished = true; return
+        }
+        
+        task = Task(priority: .utility) {
             defer {
                 isExecuting = false
                 isFinished = true
             }
-
-            guard !isCancelled else { return }
-
+            
             do {
                 isExecuting = true
                 try await function(_progress)
+            } catch is CancellationError {
+                log.notice("Operation \(self.debugDescription) was cancelled.")
             } catch {
                 self.error = error
                 log.error("Error occurred in operation \(self.debugDescription): \(error.localizedDescription).")
             }
         }
     }
-
+    
+    override func cancel() {
+        task?.cancel()
+        super.cancel()
+    }
+    
     override var isAsynchronous: Bool { true }
 
     private var _isExecuting = false
