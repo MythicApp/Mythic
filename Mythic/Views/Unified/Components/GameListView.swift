@@ -44,7 +44,7 @@ struct GameListView: View {
             } else if case .list = layout {
                 ScrollView(.vertical) {
                     LazyVStack {
-                        ForEach(viewModel.games) { game in
+                        ForEach(viewModel.library) { game in
                             ListGameCard(game: .constant(game))
                         }
                     }
@@ -55,7 +55,7 @@ struct GameListView: View {
                 if isLibraryGridScrollingVertical {
                     ScrollView(.vertical) {
                         LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
-                            ForEach(viewModel.games) { game in
+                            ForEach(viewModel.library) { game in
                                 GameCard(game: .constant(game))
                             }
                         }
@@ -65,7 +65,7 @@ struct GameListView: View {
                 } else {
                     ScrollView(.horizontal) {
                         LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
-                            ForEach(viewModel.games) { game in
+                            ForEach(viewModel.library) { game in
                                 GameCard(game: .constant(game))
                             }
                         }

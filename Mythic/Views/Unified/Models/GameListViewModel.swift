@@ -17,7 +17,7 @@ import OSLog
 
     var searchString: String = .init()
     var filterOptions: FilterOptions = .init()
-    var games: [Game] {
+    var library: [Game] {
         Game.store.library
             .sorted(by: { a, _ in a.isOperating }) // swiftlint:disable:this identifier_name
             .sorted(by: { $0.title < $1.title })
