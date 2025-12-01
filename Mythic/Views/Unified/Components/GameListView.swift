@@ -12,11 +12,11 @@ import SwiftUI
 
 struct GameListView: View {
     @Bindable var viewModel: GameListViewModel = .shared
-
+    
     @CodableAppStorage("gameListLayout") var layout: GameListViewModel.Layout = .grid
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
-
+    
     @State private var isGameImportViewPresented: Bool = false
     
     var body: some View {
@@ -30,7 +30,7 @@ struct GameListView: View {
                         If there are games in your library and they're not appearing, try restarting Mythic.
                         """)
                 )
-
+                
                 Button {
                     isGameImportViewPresented = true
                 } label: {
@@ -41,32 +41,31 @@ struct GameListView: View {
                 .sheet(isPresented: $isGameImportViewPresented) {
                     GameImportView(isPresented: $isGameImportViewPresented)
                 }
-            } else if case .list = layout {
+            } else {
                 ScrollView(.vertical) {
-                    LazyVStack {
-                        ForEach(viewModel.library) { game in
-                            ListGameCard(game: .constant(game))
-                        }
-                    }
-                    .padding()
-                    .searchable(text: $viewModel.searchString, placement: .toolbar)
-                }
-            } else if case .grid = layout {
-                if isLibraryGridScrollingVertical {
-                    ScrollView(.vertical) {
-                        LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
-                            ForEach(viewModel.library) { game in
-                                GameCard(game: .constant(game))
+                    switch layout {
+                    case .grid:
+                        if isLibraryGridScrollingVertical {
+                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                                ForEach(viewModel.library, id: \.title) { game in
+                                    GameCard(game: .constant(game))
+                                }
                             }
+                            .padding()
+                            .searchable(text: $viewModel.searchString, placement: .toolbar)
+                        } else {
+                            LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
+                                ForEach(viewModel.library) { game in
+                                    GameCard(game: .constant(game))
+                                }
+                            }
+                            .padding()
+                            .searchable(text: $viewModel.searchString, placement: .toolbar)
                         }
-                        .padding()
-                        .searchable(text: $viewModel.searchString, placement: .toolbar)
-                    }
-                } else {
-                    ScrollView(.horizontal) {
-                        LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
+                    case .list:
+                        LazyVStack {
                             ForEach(viewModel.library) { game in
-                                GameCard(game: .constant(game))
+                                ListGameCard(game: .constant(game))
                             }
                         }
                         .padding()
@@ -76,9 +75,10 @@ struct GameListView: View {
             }
         }
         .animation(.easeInOut, value: layout)
+        .animation(.default, value: viewModel.library)
     }
 }
-
+    
 #Preview {
     GameListView()
         .environmentObject(NetworkMonitor.shared)

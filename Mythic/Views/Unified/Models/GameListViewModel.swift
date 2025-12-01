@@ -16,24 +16,19 @@ import OSLog
     static let shared: GameListViewModel = .init()
 
     var searchString: String = .init()
-    var filterOptions: FilterOptions = .init()
+    
     var library: [Game] {
         Game.store.library
             .sorted(by: { a, _ in a.isOperating }) // swiftlint:disable:this identifier_name
             .sorted(by: { $0.title < $1.title })
             .sorted(by: { $0.installationState > $1.installationState })
+            .filter({ searchString.isEmpty ? true : $0.title.localizedStandardContains(searchString) })
     }
 
     private var sortOptions: [SortOptions] = [.favorite, .installed, .title]
     private let logger: Logger = .custom(category: "GameListViewModel")
     
     var isUpdatingLibrary: Bool = false
-
-    /// Updates the sort criteria and refreshes the game list
-    func setSortOptions(_ options: [SortOptions]) {
-        sortOptions = options
-        // updateGames()
-    }
 }
 
 extension GameListViewModel {
