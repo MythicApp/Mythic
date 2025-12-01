@@ -12,45 +12,64 @@ import Glur
 
 struct ListGameCard: View {
     @Binding var game: Game
-
+    
     @State private var isImageEmpty: Bool = true
-
+    @State private var isCardExpanded: Bool = false
+    
+    static let defaultHeight: CGFloat = 120
+    
     var body: some View {
-        ZStack {
-            ListGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                .ignoresSafeArea()
-
-            HStack {
-                if isImageEmpty {
-                    GameCard.FallbackImageCard(game: $game)
-                        .frame(width: 70, height: 70)
-                        .padding()
-                }
-
-                VStack(alignment: .leading) {
-                    Text(game.title)
-                        .font(.system(.title, weight: .bold))
-
-                    HStack {
-                        GameCard.SubscriptedInfoView(game: $game)
-                    }
-                }
-                .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
-                .padding(.horizontal)
-
-                Spacer()
-
-                Group {
-                    GameCard.ButtonsView(game: $game)
-                        .clipShape(.capsule)
-                        .conditionalTransform(if: isImageEmpty) { view in
-                            view
-                                .foregroundStyle(.white)
-                        }
-                }
-                .padding(.trailing)
+        ListGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
+            .conditionalTransform(if: isCardExpanded && !isImageEmpty) { view in
+                // causes 'ghost' visual artifact, but might be a W sacrifice for readability
+                view
+                    .glur(radius: 20,
+                          offset: 0.7,
+                          interpolation: 0.7,
+                          drawingGroup: true)
             }
-        }
+            .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
+            .blur(radius: isCardExpanded ? 0 : 30.0)
+            .overlay(alignment: isCardExpanded ? .bottom : .center) {
+                HStack {
+                    if game.isFallbackImageAvailable, isImageEmpty {
+                        GameCard.FallbackImageCard(game: $game)
+                            .frame(width: 70, height: 70)
+                            .padding()
+                    }
+                    
+                    VStack(alignment: .leading) {
+                        Text(game.title)
+                            .font(.system(.title, weight: .bold))
+                        
+                        HStack {
+                            GameCard.SubscriptedInfoView(game: $game)
+                        }
+                    }
+                    .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+                    .padding(.horizontal)
+                    
+                    Spacer()
+                    
+                    Group {
+                        GameCard.ButtonsView(game: $game)
+                            .clipShape(.capsule)
+                            .conditionalTransform(if: isImageEmpty) { view in
+                                view
+                                    .foregroundStyle(.white)
+                            }
+                    }
+                    .padding(.trailing)
+                }
+                .padding(.vertical)
+            }
+            .clipShape(.rect(cornerRadius: 20))
+            .contentShape(.rect(cornerRadius: 20))
+            .onHover { hovering in
+                if !isImageEmpty {
+                    withAnimation { isCardExpanded = hovering }
+                }
+            }
     }
 }
 
@@ -58,60 +77,92 @@ extension ListGameCard {
     struct ImageCard: View {
         @Binding var game: Game
         @Binding var isImageEmpty: Bool
-
+        
+        var withBlur: Bool = true
+        
         @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
-
+        
         var body: some View {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.quinary)
-                .frame(idealHeight: 120)
-                .overlay {
-                    AsyncImage(url: game.horizontalImageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            EmptyView()
-                                .onAppear {
-                                    withAnimation { isImageEmpty = true }
-                                }
-                        case .success(let image):
-                            ZStack {
-                                if gameCardBlur > 0 {
-                                    image
+            GeometryReader { geometry in
+                AsyncImage(url: game.horizontalImageURL) { phase in
+                    switch phase {
+                    case .empty:
+                        Color.clear
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
+                            .frame(width: geometry.size.width,
+                                   height: geometry.size.height)
+                            .shimmering(
+                                animation: .easeInOut(duration: 1)
+                                    .repeatForever(autoreverses: false),
+                                bandSize: 1
+                            )
+                    case .success(let image):
+                        ZStack {
+                            // blurred image as background
+                            // save resources by only create this image if it'll be used for blur
+                            if withBlur && (gameCardBlur > 0) {
+                                // save resources by decreasing resolution scale of blurred image
+                                let renderer: ImageRenderer = {
+                                    let renderer = ImageRenderer(content: image)
+                                    renderer.scale = 0.2
+                                    return renderer
+                                }()
+
+                                if let image = renderer.cgImage {
+                                    Image(image, scale: 1, label: .init(""))
                                         .resizable()
                                         .clipShape(.rect(cornerRadius: 20))
                                         .blur(radius: gameCardBlur)
                                 }
-
-                                image
-                                    .resizable()
-                                    .blur(radius: 30.0)
-                                    .clipShape(.rect(cornerRadius: 20))
-                                    .modifier(FadeInModifier())
-                                    .onAppear {
-                                        withAnimation { isImageEmpty = false }
-                                    }
-                                    .onDisappear {
-                                        withAnimation { isImageEmpty = true }
-                                    }
                             }
-                        case .failure:
-                            EmptyView()
+                            
+                            image
+                                .resizable()
+                                .modifier(FadeInModifier())
                                 .onAppear {
-                                    withAnimation { isImageEmpty = true }
-                                }
-                        @unknown default:
-                            EmptyView()
-                                .onAppear {
-                                    withAnimation { isImageEmpty = true }
+                                    withAnimation { isImageEmpty = false }
                                 }
                         }
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: geometry.size.width,
+                               height: geometry.size.height)
+                    case .failure:
+                        Color.clear
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
+                            .frame(width: geometry.size.width,
+                                   height: geometry.size.height)
+                            .shimmering(
+                                animation: .easeInOut(duration: 1)
+                                    .repeatForever(autoreverses: false),
+                                bandSize: 1
+                            )
+                    @unknown default:
+                        Color.clear
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
+                            .frame(width: geometry.size.width,
+                                   height: geometry.size.height)
+                            .shimmering(
+                                animation: .easeInOut(duration: 1)
+                                    .repeatForever(autoreverses: false),
+                                bandSize: 1
+                            )
                     }
                 }
+                .background(.quinary)
+                .clipShape(.rect(cornerRadius: 20))
+            }
         }
     }
 }
 
 #Preview {
     ListGameCard(game: .constant(placeholderGame(type: Game.self)))
+        .padding()
         .environmentObject(NetworkMonitor.shared)
 }
