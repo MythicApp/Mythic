@@ -40,7 +40,7 @@ struct SettingsView: View {
 
                     Tab("Downloads", systemImage: "arrow.down.to.line") {
                         Form {
-                            DownloadsView()
+                            OperationsView()
                         }
                         .formStyle(.grouped)
                     }
@@ -72,7 +72,7 @@ struct SettingsView: View {
                     Section("General", content: { GeneralView() })
                     Section("Views", content: { ViewSettingsView() })
                     Section("Launching", content: { LaunchingView() })
-                    Section("Downloads", content: { DownloadsView() })
+                    Section("Operations", content: { OperationsView() })
                     Section("Updates", content: { UpdatesView() })
                     Section("Services", content: { ServicesView() })
                     Section("Engine", content: { EngineView() })
@@ -187,7 +187,7 @@ extension SettingsView {
         }
     }
 
-    struct DownloadsView: View {
+    struct OperationsView: View {
         @AppStorage("installBaseURL") private var installBaseURL: URL = Bundle.appGames!
         @State private var isImporterPresented: Bool = false
 
