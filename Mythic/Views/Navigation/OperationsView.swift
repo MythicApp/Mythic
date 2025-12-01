@@ -33,6 +33,7 @@ struct OperationsView: View {
                             } else {
                                 ForEach(operationManager.queue.dropFirst(), id: \.self) { operation in
                                     OperationCard(operation: .constant(operation))
+                                        .padding(.horizontal)
                                 }
                             }
                         }
