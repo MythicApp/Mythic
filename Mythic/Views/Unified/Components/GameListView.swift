@@ -51,12 +51,14 @@ struct GameListView: View {
                                     GameCard(game: .constant(game))
                                 }
                             }
+                            .padding()
                         } else {
                             LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
                                 ForEach(viewModel.library) { game in
                                     GameCard(game: .constant(game))
                                 }
                             }
+                            .padding()
                         }
                     case .list:
                         LazyVStack {
@@ -64,9 +66,9 @@ struct GameListView: View {
                                 ListGameCard(game: .constant(game))
                             }
                         }
+                        .padding()
                     }
                 }
-                .padding()
                 .searchable(text: $viewModel.searchString,
                             tokens: $viewModel.searchTokens,
                             suggestedTokens: .constant(viewModel.suggestedTokens),
