@@ -9,6 +9,7 @@
 
 import SwiftUI
 import Glur
+import Shimmer
 
 struct ListGameCard: View {
     @Binding var game: Game

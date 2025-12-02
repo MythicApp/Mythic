@@ -8,7 +8,6 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import SwiftUI
-import Shimmer
 import SwiftyJSON
 import Glur
 import OSLog

@@ -9,6 +9,7 @@
 
 import Foundation
 import SwiftUI
+import Shimmer
 
 // TODO: use this to unify specialised imagecards for each gamecard type
 struct ImageCard: View {
