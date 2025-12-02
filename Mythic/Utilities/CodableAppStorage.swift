@@ -14,8 +14,7 @@ import OSLog
 
 /// A property wrapper type that reflects a `Codable` value from `UserDefaults` and invalidates a view on a change when said value changes.
 @MainActor
-@frozen @propertyWrapper public struct CodableAppStorage<Value>: @MainActor DynamicProperty where Value: Codable & Sendable & Equatable {
-
+@frozen @propertyWrapper public struct CodableAppStorage<Value>: @MainActor DynamicProperty where Value: Codable & Equatable {
     @StateObject private var observer: CodableUserDefaultsObserver<Value>
     @State private var transaction: Transaction = .init()
 
@@ -49,7 +48,6 @@ import OSLog
 }
 
 extension CodableAppStorage {
-
     /**
      Creates a property that can read and write to a codable user default.
 
@@ -79,12 +77,12 @@ extension CodableAppStorage {
                 initialValue: initialValue
             )
         )
+        
         self._transaction = .init(initialValue: .init())
     }
 }
 
 extension CodableAppStorage where Value: ExpressibleByNilLiteral {
-
     /**
      Creates a property that can read and write an Optional codable user
      default.
@@ -116,8 +114,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
 
 /// Internal observable object that monitors UserDefaults changes for Codable types.
 @MainActor
-@usableFromInline
-final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & Sendable & Equatable {
+@usableFromInline final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & Equatable {
     @Published public private(set) var value: T
 
     private let key: String
@@ -144,7 +141,7 @@ final class CodableUserDefaultsObserver<T>: ObservableObject where T: Codable & 
     }
 
     /// Updates the value and persists it to UserDefaults.
-    public func setValue(_ newValue: T, forKey key: String, in store: UserDefaults) {
+    public func setValue(_ newValue: T, forKey key: String, in store: UserDefaults = .standard) {
         guard newValue != value else { return }
 
         _ = try? store.encodeAndSet(newValue, forKey: key)

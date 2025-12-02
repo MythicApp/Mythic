@@ -10,84 +10,6 @@
 import Foundation
 import OSLog
 
-@Observable @MainActor final class GameDataStore {
-    static let shared: GameDataStore = .init()
-    let log: Logger = .custom(category: "GameDataStore")
-
-    private init() {
-        // load library on initialisation
-        do {
-            let anyGames = try defaults.decodeAndGet([AnyGame].self, forKey: "games") ?? .init()
-            library = Set(anyGames.map({ $0.base }))
-        } catch {
-            Logger.app.error("""
-                Unable to decode game library.
-                This may result in unintended functionality.
-                \(error)
-                """)
-        }
-    }
-
-    var library: Set<Game> = .init() {
-        didSet {
-            // re-encode game library on set
-            // FIXME: this is not ideal, as the entire library must be re-encoded on mutation
-            Task(priority: .high) {
-                log.debug("Updating library with \(self.library.count) games.")
-                do {
-                    try defaults.encodeAndSet(library.map({ AnyGame($0) }), forKey: "games")
-                } catch {
-                    Logger.app.error("""
-                    Unable to encode game library.
-                    This may result in unintended functionality.
-                    \(error)
-                    """)
-                }
-            }
-        }
-    }
-
-    var recent: Game? {
-        guard !Game.store.library.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
-
-        return Game.store.library.max {
-            $0.lastLaunched ?? .distantPast < $1.lastLaunched ?? .distantPast
-        }
-    }
-
-    func refreshFromStorefronts() async throws {
-        GameListViewModel.shared.isUpdatingLibrary = true
-        defer {
-            GameListViewModel.shared.isUpdatingLibrary = false
-        }
-        
-        // legendary (epic games)
-        do {
-            let installables = try Legendary.getInstallableGames()
-            let installed = try Legendary.getInstalledGames()
-            
-            // add installables that aren't installed
-            for game in installables where !installed.contains(where: { $0 == game }) {
-                library.update(with: game)
-            }
-            
-            // installed: merge instead of overwrite
-            for installedGame in installed {
-                var updatedGame: Game = installedGame
-                if let existing = library.first(where: { $0 == installedGame }) {
-                    existing.merge(with: installedGame)
-                    updatedGame = existing
-                }
-                
-                library.update(with: updatedGame)
-            }
-        } catch {
-            log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
-            throw error
-        }
-    }
-}
-
 @Observable class Game: Codable, Identifiable {
     @MainActor static let store: GameDataStore = .shared
     @MainActor static let operationManager: GameOperationManager = .shared
@@ -332,7 +254,7 @@ extension Game: Mergeable {
     }
 }
 
-struct AnyGame: Codable {
+struct AnyGame: Codable, Equatable {
     let base: Game
 
     init(_ base: Game) {
