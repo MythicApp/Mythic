@@ -21,6 +21,7 @@ struct ProminentOperationCard: View {
                     .aspectRatio(16/9, contentMode: .fill)
                     .frame(width: geometry.size.width,
                            height: geometry.size.height)
+                    .clipShape(.rect(cornerRadius: 20))
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading) {
@@ -157,7 +158,7 @@ extension OperationCard {
 }
 
 #Preview {
-    OperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
+    ProminentOperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
         .padding()
         .environmentObject(NetworkMonitor.shared)
 }
