@@ -65,9 +65,6 @@ struct GameImageCard: View {
                                 .onAppear {
                                     withAnimation { isImageEmpty = false }
                                 }
-                                .onDisappear {
-                                    withAnimation { isImageEmpty = true }
-                                }
                         }
                         .aspectRatio(contentMode: .fill)
                         .frame(width: geometry.size.width,

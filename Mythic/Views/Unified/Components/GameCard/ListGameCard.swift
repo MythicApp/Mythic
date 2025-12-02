@@ -26,10 +26,12 @@ struct ListGameCard: View {
             GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                 .aspectRatio(16/9, contentMode: .fill)
                 .blur(radius: isCardExpanded ? 0 : 30.0)
-                .glur(radius: 20,
-                      offset: 0.7,
-                      interpolation: 0.7,
-                      drawingGroup: false)
+                .conditionalTransform(if: isCardExpanded) { view in
+                    view.glur(radius: 20,
+                              offset: 0.7,
+                              interpolation: 0.7,
+                              drawingGroup: false)
+                }
             
             HStack {
                 if game.isFallbackImageAvailable, isImageEmpty {
@@ -59,8 +61,8 @@ struct ListGameCard: View {
                 }
             }
             .padding()
-            .frame(maxWidth: .infinity,
-                   maxHeight: .infinity,
+            // FIXME: not dynamic, but i'm tired and quite frankly it works
+            .frame(maxHeight: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight,
                    alignment: isCardExpanded ? .bottom : .center)
         }
         .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
