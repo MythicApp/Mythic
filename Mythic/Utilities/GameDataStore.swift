@@ -17,41 +17,40 @@ import OSLog
     let log: Logger = .custom(category: "GameDataStore")
     
     private let gamesObserver: CodableUserDefaultsObserver<[AnyGame]>
+    private var isUpdatingFromObserver = false
     
     var library: Set<Game> = .init() {
-        didSet {
-            gamesObserver.setValue(library.map({ AnyGame($0) }),
-                                   forKey: "games")
-        }
+        didSet { gamesObserver.setValue(library.map({ AnyGame($0) }), forKey: "games") }
     }
 
     @MainActor private init() {
-        // initialize observer with default empty array
-        let initialGames: [AnyGame] = (try? defaults.decodeAndGet([AnyGame].self, forKey: "games")) ?? []
-        
-        gamesObserver = CodableUserDefaultsObserver(
-            key: "games",
-            defaultValue: [],
-            store: .standard,
-            initialValue: initialGames
-        )
+        // initialise observer
+        gamesObserver = .init(key: "games",
+                              defaultValue: [],
+                              store: .standard)
         
         // load library on initialisation
         library = Set(gamesObserver.value.map({ $0.base }))
         
         // observe external changes
-        gamesObserver.objectWillChange.sink { [weak self] _ in
-            guard let self else { return }
-            let newLibrary = Set(self.gamesObserver.value.map({ $0.base }))
-            if newLibrary != self.library {
-                self.log.debug("Games key changed externally, reloading library")
-                self.library = newLibrary
+        gamesObserver.objectWillChange
+            .sink { [weak self] _ in
+                guard let self else { return }
+                let newLibrary = Set(self.gamesObserver.value.map({ $0.base }))
+                
+                if newLibrary != self.library {
+                    self.log.debug("Games key changed in userdefaults externally, reloading library")
+                    
+                    self.isUpdatingFromObserver = true
+                    defer { self.isUpdatingFromObserver = false }
+                    self.library = newLibrary
+                }
             }
-        }.store(in: &cancellables)
+            .store(in: &cancellables)
     }
     
     @ObservationIgnored
-    private var cancellables = Set<AnyCancellable>()
+    private var cancellables: Set<AnyCancellable> = .init()
 
     var recent: Game? {
         guard !Game.store.library.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
