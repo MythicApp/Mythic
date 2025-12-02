@@ -19270,9 +19270,6 @@
     "Please check your connection, and try again." : {
 
     },
-    "Please check your connection." : {
-
-    },
     "Please choose a rating." : {
 
     },
@@ -24923,9 +24920,6 @@
 
     },
     "This container (%@) exists on disk,\nbut the settings are inaccessible or corrupted.\nIf this persists, please delete this container and create a new one." : {
-
-    },
-    "This game doesn't have a widescreen image that Mythic can display." : {
 
     },
     "This game doesn't have an image that Mythic can display in this style." : {
