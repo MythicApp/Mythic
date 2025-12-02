@@ -42,52 +42,55 @@ struct LibraryView: View {
                     .help("Import a game")
                 }
                 
-                ToolbarItem(placement: .automatic) {
-                    Button("Force-refresh game list", systemImage: "arrow.clockwise") {
-                        Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
-                    }
+                // MARK: GameListView filter views
+                if !gameListViewModel.library.isEmpty {
+                    ToolbarItem(placement: .automatic) {
+                        Button("Force-refresh game list", systemImage: "arrow.clockwise") {
+                            Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
+                        }
                         .help("Force-refresh the displayed games' status")
-                }
-                
-                ToolbarItem(placement: .automatic) {
-                    Picker("View", systemImage: "macwindow", selection: $gameListLayout) {
-                        Label("List", systemImage: "rectangle.grid.1x3")
-                            .tag(GameListViewModel.Layout.list)
-
-                        Label("Grid", systemImage: "square.grid.3x3")
-                            .tag(GameListViewModel.Layout.grid)
                     }
-                    .animation(.easeInOut, value: $gameListLayout.wrappedValue)
-                }
-                
-                ToolbarItem(placement: .automatic) {
-                    Menu("Filters", systemImage: "line.3.horizontal.decrease") {
-                        Section("Platform") {
-                            ForEach(Game.Platform.allCases, id: \.self) { platform in
-                                Toggle(platform.description,
-                                       isOn: searchTokenBinding(for: .platform(platform)))
+                    
+                    ToolbarItem(placement: .automatic) {
+                        Picker("View", systemImage: "macwindow", selection: $gameListLayout) {
+                            Label("List", systemImage: "rectangle.grid.1x3")
+                                .tag(GameListViewModel.Layout.list)
+                            
+                            Label("Grid", systemImage: "square.grid.3x3")
+                                .tag(GameListViewModel.Layout.grid)
+                        }
+                        .animation(.easeInOut, value: $gameListLayout.wrappedValue)
+                    }
+                    
+                    ToolbarItem(placement: .automatic) {
+                        Menu("Filters", systemImage: "line.3.horizontal.decrease") {
+                            Section("Platform") {
+                                ForEach(Game.Platform.allCases, id: \.self) { platform in
+                                    Toggle(platform.description,
+                                           isOn: searchTokenBinding(for: .platform(platform)))
+                                }
+                            }
+                            
+                            Section("Storefront") {
+                                ForEach(Game.Storefront.allCases, id: \.self) { storefront in
+                                    Toggle(storefront.description,
+                                           isOn: searchTokenBinding(for: .storefront(storefront)))
+                                }
+                            }
+                            
+                            Section("Installation") {
+                                Toggle("Installed",
+                                       isOn: searchTokenBinding(for: .installed))
+                                Toggle("Not Installed",
+                                       isOn: searchTokenBinding(for: .notInstalled))
+                            }
+                            
+                            Section {
+                                Toggle("Favourited", isOn: searchTokenBinding(for: .favourited))
                             }
                         }
-                        
-                        Section("Storefront") {
-                            ForEach(Game.Storefront.allCases, id: \.self) { storefront in
-                                Toggle(storefront.description,
-                                       isOn: searchTokenBinding(for: .storefront(storefront)))
-                            }
-                        }
-                        
-                        Section("Installation") {
-                            Toggle("Installed",
-                                   isOn: searchTokenBinding(for: .installed))
-                            Toggle("Not Installed",
-                                   isOn: searchTokenBinding(for: .notInstalled))
-                        }
-                        
-                        Section {
-                            Toggle("Favourited", isOn: searchTokenBinding(for: .favourited))
-                        }
+                        .menuIndicator(.hidden)
                     }
-                    .menuIndicator(.hidden)
                 }
             }
         
