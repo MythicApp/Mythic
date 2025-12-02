@@ -25,15 +25,8 @@ struct EpicGamesGameUninstallationView: View {
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
             HStack {
-                GameCard.ImageCard(
-                    game: .init(get: { return game as Game },
-                                set: {
-                                    if let castGame = $0 as? EpicGamesGame {
-                                        game = castGame
-                                    }
-                                }),
-                    isImageEmpty: .constant(false)
-                )
+                GameImageCard(url: game.verticalImageURL, isImageEmpty: .constant(false))
+                    .aspectRatio(3/4, contentMode: .fit)
 
                 VStack {
                     Text("Uninstall \(game.description)")

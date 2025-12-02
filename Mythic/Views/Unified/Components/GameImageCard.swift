@@ -11,13 +11,18 @@ import Foundation
 import SwiftUI
 import Shimmer
 
-// TODO: use this to unify specialised imagecards for each gamecard type
-struct ImageCard: View {
+struct GameImageCard: View {
     var url: URL?
     @Binding var isImageEmpty: Bool
     
-    var withBlur: Bool = true
+    var withBlur: Bool
     @AppStorage("imageCardBlur") private var imageCardBlur: Double = 0.0
+    
+    init(url: URL?, isImageEmpty: Binding<Bool>, withBlur: Bool = true) {
+        self.url = url
+        self._isImageEmpty = isImageEmpty
+        self.withBlur = withBlur
+    }
     
     var body: some View {
         if let url = url {
@@ -25,10 +30,11 @@ struct ImageCard: View {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
-                        Color.clear
+                        Rectangle()
                             .onAppear {
                                 withAnimation { isImageEmpty = true }
                             }
+                            .foregroundStyle(.quinary)
                             .shimmering(
                                 animation: .easeInOut(duration: 1)
                                     .repeatForever(autoreverses: false),
@@ -66,26 +72,26 @@ struct ImageCard: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: geometry.size.width,
                                height: geometry.size.height)
-                    case .failure:
-                        Color.clear
-                            .onAppear {
-                                withAnimation { isImageEmpty = true }
-                            }
-                            .shimmering(
-                                animation: .easeInOut(duration: 1)
-                                    .repeatForever(autoreverses: false),
-                                bandSize: 1
-                            )
+                    case .failure(let error):
+                        ContentUnavailableView(
+                            "Unable to load the image.",
+                            systemImage: "photo.badge.exclamationmark",
+                            description: .init(error.localizedDescription)
+                        )
+                        .onAppear {
+                            withAnimation { isImageEmpty = true }
+                        }
                     @unknown default:
-                        Color.clear
-                            .onAppear {
-                                withAnimation { isImageEmpty = true }
-                            }
-                            .shimmering(
-                                animation: .easeInOut(duration: 1)
-                                    .repeatForever(autoreverses: false),
-                                bandSize: 1
-                            )
+                        ContentUnavailableView(
+                            "Unable to load the image.",
+                            systemImage: "photo.badge.exclamationmark",
+                            description: .init("""
+                                Please check your connection, and try again.
+                                """)
+                        )
+                        .onAppear {
+                            withAnimation { isImageEmpty = true }
+                        }
                     }
                 }
                 .frame(width: geometry.size.width,
@@ -101,6 +107,23 @@ struct ImageCard: View {
                     This game doesn't have an image that Mythic can display in this style.
                     """)
             )
+            .background(.quinary)
         }
     }
+}
+
+#Preview {
+    HStack {
+        GameImageCard(url: placeholderGame(type: Game.self).horizontalImageURL,
+                      isImageEmpty: .constant(false),
+                      withBlur: true)
+        .aspectRatio(16/9, contentMode: .fill)
+        
+        GameImageCard(url: placeholderGame(type: Game.self).verticalImageURL,
+                      isImageEmpty: .constant(false),
+                      withBlur: true)
+        .aspectRatio(3/4, contentMode: .fill)
+    }
+    .aspectRatio(contentMode: .fit)
+    .padding()
 }

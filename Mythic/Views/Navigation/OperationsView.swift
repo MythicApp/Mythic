@@ -23,6 +23,13 @@ struct OperationsView: View {
                             ProminentOperationCard(operation: .constant(currentOperation))
                                 .padding()
                                 .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+                                .customTransform { view in
+                                    if #available(macOS 26.0, *) {
+                                        view.backgroundExtensionEffect()
+                                    } else {
+                                        view
+                                    }
+                                }
                             
                             if operationManager.queue.count <= 1 {
                                 ContentUnavailableView(

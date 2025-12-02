@@ -37,8 +37,20 @@ struct HomeView: View {
             ScrollView {
                 if let recentGame = Game.store.recent {
                     ZStack(alignment: .bottomLeading) {
-                        HeroGameCard.ImageCard(game: .constant(recentGame), isImageEmpty: $isImageEmpty)
+                        GameImageCard(url: recentGame.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                            .aspectRatio(16/9, contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+                            .glur(radius: 20,
+                                  offset: 0.5,
+                                  interpolation: 0.7,
+                                  drawingGroup: false)
+                            .customTransform { view in
+                                if #available(macOS 26.0, *) {
+                                    view.backgroundExtensionEffect()
+                                } else {
+                                    view
+                                }
+                            }
 
                         HStack {
                             if isImageEmpty, recentGame.isFallbackImageAvailable {

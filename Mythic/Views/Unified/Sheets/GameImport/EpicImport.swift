@@ -46,16 +46,9 @@ extension GameImportView {
         var body: some View {
             VStack {
                 HStack {
-                    GameCard.ImageCard(
-                        game: .init(get: { return game as Game },
-                                    set: {
-                                        if let castGame = $0 as? EpicGamesGame {
-                                            game = castGame
-                                        }
-                                    }),
-                        isImageEmpty: $isImageEmpty
-                    )
-                    .padding([.top, .leading])
+                    GameImageCard(url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
+                        .aspectRatio(3/4, contentMode: .fit)
+                        .padding([.top, .leading])
 
                     Form {
                         Picker(

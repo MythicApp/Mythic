@@ -16,10 +16,11 @@ struct ProminentOperationCard: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ZStack(alignment: .bottomLeading) {
-                HeroGameCard.ImageCard(game: .constant(operation.game), isImageEmpty: $isImageEmpty)
-                    .clipShape(.rect(cornerRadius: 20))
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+            ZStack {
+                GameImageCard(url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                    .aspectRatio(16/9, contentMode: .fill)
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height)
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading) {
@@ -80,44 +81,48 @@ struct OperationCard: View {
     @State private var isImageEmpty: Bool = true
     
     var body: some View {
-        ListGameCard.ImageCard(game: .constant(operation.game), isImageEmpty: $isImageEmpty)
-            .frame(height: ListGameCard.defaultHeight)
-            .overlay(alignment: .leading) {
-                HStack {
-                    if operation.game.isFallbackImageAvailable, isImageEmpty {
-                        GameCard.FallbackImageCard(game: .constant(operation.game))
-                            .frame(width: 70, height: 70)
-                            .padding()
-                    }
-                    
-                    VStack(alignment: .leading) {
-                        Text(operation.game.title)
-                            .font(.system(.title, weight: .bold))
-                        
-                        HStack {
-                            GameCard.SubscriptedInfoView(game: .constant(operation.game))
-                        }
-                    }
-                    .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
-                    .padding(.horizontal)
-                    
-                    Spacer()
-                    
-                    StatusView(operation: $operation)
-                        .padding(.trailing)
+        ZStack {
+            GameImageCard(url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                .aspectRatio(16/9, contentMode: .fill)
+            
+            HStack {
+                if operation.game.isFallbackImageAvailable, isImageEmpty {
+                    GameCard.FallbackImageCard(game: .constant(operation.game))
+                        .frame(width: 70, height: 70)
+                        .padding()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .customTransform { view in
-                    if #available(macOS 26.0, *) {
-                        view
-                            .glassEffect(in: .rect(cornerRadius: 20.0))
-                            .padding()
-                    } else {
-                        view
-                            .background(in: .rect(cornerRadius: 20.0))
+                
+                VStack(alignment: .leading) {
+                    Text(operation.game.title)
+                        .font(.system(.title, weight: .bold))
+                    
+                    HStack {
+                        GameCard.SubscriptedInfoView(game: .constant(operation.game))
                     }
+                }
+                .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+                .padding(.horizontal)
+                
+                Spacer()
+                
+                StatusView(operation: $operation)
+                    .padding(.trailing)
+            }
+            .padding()
+            .customTransform { view in
+                if #available(macOS 26.0, *) {
+                    view
+                        .glassEffect(in: .rect(cornerRadius: 20.0))
+                        .padding()
+                } else {
+                    view
+                        .background(in: .rect(cornerRadius: 20.0))
                 }
             }
+        }
+        .frame(height: ListGameCard.defaultHeight)
+        .clipShape(.rect(cornerRadius: 20))
+        .contentShape(.rect(cornerRadius: 20))
     }
 }
 
@@ -152,7 +157,7 @@ extension OperationCard {
 }
 
 #Preview {
-    ProminentOperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
+    OperationCard(operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
         .padding()
         .environmentObject(NetworkMonitor.shared)
 }

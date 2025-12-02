@@ -24,8 +24,9 @@ struct BaseGameInstallationView<Content>: View where Content: View {
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
             HStack {
-                GameCard.ImageCard(game: $game,
-                                   isImageEmpty: .constant(false))
+                GameImageCard(url: game.verticalImageURL, isImageEmpty: .constant(false))
+                    .aspectRatio(3/4, contentMode: .fit)
+                
 
                 VStack {
                     titleText

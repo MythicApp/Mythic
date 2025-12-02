@@ -1,10 +1,10 @@
 // where the hell is the comment
 
-import Shimmer
 import SwiftUI
 import SwordRPC
 import OSLog
 import Darwin
+import Glur
 
 // FIXME: refactor: warning ‼️ below code may need a cleanup
 struct GameSettingsView: View {
@@ -33,9 +33,15 @@ struct GameSettingsView: View {
             ScrollView {
                 VStack {
                     ZStack(alignment: .bottomLeading) {
-                        HeroGameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                            .frame(width: geometry.size.width, height: geometry.size.height * 0.7)
-
+                        GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                            .aspectRatio(16/9, contentMode: .fill)
+                            .frame(width: geometry.size.width,
+                                   height: geometry.size.height * 0.75)
+                            .glur(radius: 20,
+                                  offset: 0.5,
+                                  interpolation: 0.7,
+                                  drawingGroup: false)
+                        
                         HStack {
                             if isImageEmpty && game.isFallbackImageAvailable {
                                 GameCard.FallbackImageCard(game: .constant(game))
@@ -355,8 +361,8 @@ extension GameSettingsView {
         
         var body: some View {
             HStack {
-                GameCard.ImageCard(game: $game, isImageEmpty: $isImageEmpty)
-                    .id(imageRefreshFlag)
+                GameImageCard(url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
+                    .aspectRatio(3/4, contentMode: .fill)
                 
                 VStack {
                     Form {

@@ -25,7 +25,6 @@ extension GameImportView {
         @State private var location: URL = .temporaryDirectory
         
         @State private var isImageEmpty: Bool = true
-        @State private var imageRefreshFlag: Bool = false
         
         @State private var isGameLocationFileImporterPresented: Bool = false
         
@@ -46,17 +45,9 @@ extension GameImportView {
             VStack {
                 HStack {
                     VStack {
-                        GameCard.ImageCard(
-                            game: .init(get: { return game as Game },
-                                        set: {
-                                            if let castGame = $0 as? LocalGame {
-                                                game = castGame
-                                            }
-                                        }),
-                            isImageEmpty: $isImageEmpty
-                        )
-                        .id(imageRefreshFlag)
-
+                        GameImageCard(url: game.verticalImageURL, isImageEmpty: .constant(false))
+                            .aspectRatio(3/4, contentMode: .fit)
+                        
                         Label("Images with a 3:4 aspect ratio are preferred.",
                               systemImage: "info")
                             .symbolVariant(.circle)
