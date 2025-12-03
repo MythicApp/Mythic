@@ -19,8 +19,6 @@ struct ListGameCard: View {
     
     static let defaultHeight: CGFloat = 120
     
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
-    
     var body: some View {
         ZStack {
             GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)

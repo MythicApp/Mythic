@@ -16,7 +16,7 @@ struct GameImageCard: View {
     @Binding var isImageEmpty: Bool
     
     var withBlur: Bool
-    @AppStorage("imageCardBlur") private var imageCardBlur: Double = 0.0
+    @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
     
     init(url: URL?, isImageEmpty: Binding<Bool>, withBlur: Bool = true) {
         self.url = url
@@ -93,7 +93,6 @@ struct GameImageCard: View {
                 }
                 .frame(width: geometry.size.width,
                        height: geometry.size.height)
-                .background(.quinary)
                 .clipShape(.rect(cornerRadius: 20))
             }
         } else {

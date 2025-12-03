@@ -15,7 +15,7 @@ import Shimmer
 extension GameCard {
     struct FallbackImageCard: View {
         @Binding var game: Game
-        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
+        @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
         var withBlur: Bool = true
 
         var body: some View {
@@ -26,7 +26,7 @@ extension GameCard {
                 ZStack {
                     // blurred image as background
                     // save resources by only create this image if it'll be used for blur
-                    if withBlur && (gameCardBlur > 0) {
+                    if withBlur && (imageCardBlur > 0) {
                         // save resources by decreasing resolution scale of blurred image
                         let renderer: ImageRenderer = {
                             let renderer = ImageRenderer(content: image)
@@ -38,7 +38,7 @@ extension GameCard {
                             Image(image, scale: 1, label: .init(""))
                                 .resizable()
                                 .clipShape(.rect(cornerRadius: 20))
-                                .blur(radius: 20.0 /* gameCardBlur */)
+                                .blur(radius: 20.0 /* imageCardBlur */)
                         }
                     }
 

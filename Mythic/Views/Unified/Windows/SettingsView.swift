@@ -152,7 +152,7 @@ extension SettingsView {
 
     struct ViewSettingsView: View {
         @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
-        @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
+        @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
 
         @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
 
@@ -163,8 +163,8 @@ extension SettingsView {
                     .foregroundStyle(.secondary)
             }
 
-            Slider(value: $gameCardBlur, in: 0...20, step: 5) {
-                Label("Gamecard Glow", systemImage: gameCardBlur <= 10 ? "sun.min" : "sun.max")
+            Slider(value: $imageCardBlur, in: 0...20, step: 5) {
+                Label("Gamecard Glow", systemImage: imageCardBlur <= 10 ? "sun.min" : "sun.max")
             }
 
             Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {

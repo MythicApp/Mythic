@@ -13,8 +13,6 @@ struct GameSettingsView: View {
 
     @Bindable private var operationManager: GameOperationManager = .shared
 
-    @AppStorage("gameCardBlur") private var gameCardBlur: Double = 0.0
-
     @State private var movingError: Error?
     @State private var isMovingErrorAlertPresented: Bool = false
     @State private var isMovingFileImporterPresented: Bool = false
