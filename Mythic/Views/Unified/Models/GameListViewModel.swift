@@ -34,11 +34,8 @@ import OSLog
         }
     }
     
-    var library: [Game] {
+    var sortedLibrary: [Game] {
         Game.store.library
-            .sorted(by: { a, _ in a.isOperating }) // swiftlint:disable:this identifier_name
-            .sorted(by: { $0.title < $1.title })
-            .sorted(by: { $0.installationState > $1.installationState })
             .filter { game in
                 let matchesText: Bool = searchString.isEmpty || game.title.localizedStandardContains(searchString)
                 let matchesTokens: Bool = searchTokens.isEmpty || searchTokens.allSatisfy { token in
@@ -59,6 +56,14 @@ import OSLog
                     }
                 }
                 return matchesText && matchesTokens
+            }
+            .sorted { a, b in // swiftlint:disable:this identifier_name
+                // currently operating games first
+                if a.isOperating != b.isOperating { return a.isOperating }
+                // installed games first
+                if a.installationState != b.installationState { return a.installationState > b.installationState }
+                // Tertiary: alphabetically by title
+                return a.title.localizedStandardCompare(b.title) == .orderedAscending
             }
     }
     

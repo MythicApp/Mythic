@@ -12,6 +12,7 @@ import SwiftUI
 
 struct GameListView: View {
     @Bindable var viewModel: GameListViewModel = .shared
+    @Bindable var gameDataStore: GameDataStore = .shared
     
     @CodableAppStorage("gameListLayout") var layout: GameListViewModel.Layout = .grid
     @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
@@ -43,27 +44,38 @@ struct GameListView: View {
                 }
             } else {
                 ScrollView(.vertical) {
+                    // FIXME: sortedLibrary should not be appended to or it'll cause overwrites.
+                    // FIXME: a dirtyfix is to directly set to the underlying library
                     switch layout {
                     case .grid:
                         if isLibraryGridScrollingVertical {
                             LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
-                                ForEach(viewModel.library, id: \.title) { game in
-                                    GameCard(game: .constant(game))
+                                ForEach(viewModel.sortedLibrary) { game in
+                                    GameCard(game: Binding(
+                                        get: { game },
+                                        set: { Game.store.library.update(with: $0) }
+                                    ))
                                 }
                             }
                             .padding()
                         } else {
                             LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
-                                ForEach(viewModel.library) { game in
-                                    GameCard(game: .constant(game))
+                                ForEach(viewModel.sortedLibrary) { game in
+                                    GameCard(game: Binding(
+                                        get: { game },
+                                        set: { Game.store.library.update(with: $0) }
+                                    ))
                                 }
                             }
                             .padding()
                         }
                     case .list:
                         LazyVStack {
-                            ForEach(viewModel.library) { game in
-                                ListGameCard(game: .constant(game))
+                            ForEach(viewModel.sortedLibrary) { game in
+                                ListGameCard(game: Binding(
+                                    get: { game },
+                                    set: { Game.store.library.update(with: $0) }
+                                ))
                             }
                         }
                         .padding()
@@ -89,7 +101,7 @@ struct GameListView: View {
             }
         }
         .animation(.easeInOut, value: layout)
-        .animation(.default, value: viewModel.library)
+        .animation(.default, value: viewModel.sortedLibrary)
     }
 }
     

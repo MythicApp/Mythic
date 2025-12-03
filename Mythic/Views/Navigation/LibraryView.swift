@@ -43,7 +43,7 @@ struct LibraryView: View {
                 }
                 
                 // MARK: GameListView filter views
-                if !gameListViewModel.library.isEmpty {
+                if !gameListViewModel.sortedLibrary.isEmpty {
                     ToolbarItem(placement: .automatic) {
                         Button("Force-refresh game list", systemImage: "arrow.clockwise") {
                             Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
