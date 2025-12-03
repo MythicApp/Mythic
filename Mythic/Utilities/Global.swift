@@ -13,7 +13,7 @@ import UserNotifications
 import SwordRPC
 import SemanticVersion
 
-nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
+nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712")
 
 var appVersion: SemanticVersion? {
     guard let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,

@@ -9,85 +9,107 @@
 
 import Foundation
 
-protocol Mergeable {
+protocol Mergeable: AnyObject {
+    associatedtype MergeKeys: CodingKey & CaseIterable & Hashable
+
     /// Properties that are intentionally not merged (e.g., id, immutable fields).
-    static var ignoredMergeKeys: Set<String> { get }
-    
-    /// Merge a **source-of-truth** `Mergeable` object with another object.
-    @discardableResult mutating func merge(with other: Self) -> MergeContext
+    static var ignoredMergeKeys: Set<MergeKeys> { get }
+
+    /// Define merge rules for each property.
+    var mergeRules: [AnyMergeRule] { get }
+}
+
+extension Mergeable {
+    /// Merges properties from `other` into `self`, using the merge rules of `self`.
+    func merge(with other: Self) {
+        let context: MergeContext<MergeKeys, Self> = . init(target: self, source: other)
+        context.apply(mergeRules)
+    }
+}
+
+/// Type-erased merge rule.
+struct AnyMergeRule {
+    fileprivate let keyPath: AnyKeyPath
+    private let applyRule: (AnyObject, AnyObject) -> Void
+
+    init<Target, Value>(
+        _ keyPath: ReferenceWritableKeyPath<Target, Value>,
+        strategy: @escaping (Value, Value) -> Value
+    ) where Target: AnyObject {
+        self.keyPath = keyPath
+        self.applyRule = { target, source in
+            guard let typedTarget: Target = target as?  Target,
+                  let typedSource: Target = source as? Target else {
+                return
+            }
+
+            let targetValue: Value = typedTarget[keyPath: keyPath]
+            let sourceValue: Value = typedSource[keyPath: keyPath]
+            typedTarget[keyPath: keyPath] = strategy(targetValue, sourceValue)
+        }
+    }
+
+    func apply<Target>(target: Target, source: Target) where Target: AnyObject {
+        applyRule(target, source)
+    }
 }
 
 /// Context for tracking which keys have been merged.
-final class MergeContext {
-    private(set) var mergedKeys: Set<String> = []
-    private var isValidated: Bool = false
-    
-    func markKeyAsMerged(_ key: String) { mergedKeys.insert(key) }
-    
-    fileprivate func markValidated() { isValidated = true }
-    
-    deinit {
-        if !isValidated {
-            assertionFailure("""
-                You must call validateMergeCompleteness() at the end of your merge implementation.
-                """)
-        }
-    }
-}
+final class MergeContext<Key, Target> where Key: CodingKey & CaseIterable & Hashable, Target: Mergeable, Target.MergeKeys == Key {
+    private var mergedKeys: Set<Key> = .init()
+    private let expectedKeys: Set<Key>
+    private let ignoredKeys: Set<Key>
 
-extension Mergeable where Self: Codable {
-    /// Helper to merge a property and track it using CodingKey.
-    mutating func mergeProperty<Value, Key>(
-        _ key: Key,
-        _ keyPath: WritableKeyPath<Self, Value>,
-        from other: Self,
-        context: inout MergeContext,
-        using strategy: (inout Value, Value) -> Void
-    ) where Key: CodingKey {
-        var current = self[keyPath: keyPath]
-        let incoming = other[keyPath: keyPath]
-        
-        strategy(&current, incoming)
-        
-        self[keyPath: keyPath] = current
-        context.markKeyAsMerged(key.stringValue)
+    private let target: Target
+    private let source: Target
+
+    /**
+     Initializes a merge context for combining a source object into a target object.
+
+     - Parameters:
+       - target: The object that will be modified by merging.
+       - source: The object whose properties will be merged into the target.
+     */
+    init(target: Target, source: Target) {
+        self.ignoredKeys = Target.ignoredMergeKeys
+        self.expectedKeys = Set(Key.allCases).subtracting(ignoredKeys)
+        self.target = target
+        self.source = source
     }
-    
-    /// Helper for optional properties (nil-coalescence merge).
-    mutating func mergeOptional<Value, Key>(
-        _ key: Key,
-        _ keyPath: WritableKeyPath<Self, Value?>,
-        from other: Self,
-        context: inout MergeContext
-    ) where Key: CodingKey {
-        mergeProperty(key, keyPath, from: other, context: &context) { current, incoming in
-            current = current ?? incoming
+
+    deinit {
+        let unmergedKeys: Set<Key> = expectedKeys.subtracting(mergedKeys)
+
+        assert(unmergedKeys.isEmpty, """
+            Merge validation failed for \(String(describing: Target.self)):
+            Unmerged keys: \(unmergedKeys.map(\.stringValue).sorted().formatted(. list(type: .and)))
+
+            All non-ignored keys must be merged using mergeProperty/mergeOptional.
+            Either merge them or add to ignoredMergeKeys. 
+
+            Expected to merge: \(expectedKeys.map(\.stringValue).sorted().formatted(.list(type: .and)))
+            Actually merged: \(mergedKeys.map(\.stringValue).sorted().formatted(.list(type: .and)))
+            Ignored: \(ignoredKeys.map(\.stringValue).sorted().formatted(.list(type: .and)))
+            """)
+    }
+
+    /// Applies merge rules to combine source properties into target.
+    func apply(_ rules: [AnyMergeRule]) {
+        for rule in rules {
+            guard let key: Key = getCodingKeyFromKeyPath(rule.keyPath) else { continue }
+            
+            rule.apply(target: target, source: source)
+            mergedKeys.insert(key)
         }
     }
-    
-    /// Validates that all CodingKeys are either merged or explicitly ignored.
-    /// Call this at the end of your merge implementation.
-    func validateMergeCompleteness<T>(
-        codingKeys: T.Type,
-        context: MergeContext
-    ) where T: CodingKey & CaseIterable {
-        let allKeys: Set<String> = .init(codingKeys.allCases.map { $0.stringValue })
-        let expectedKeysForMerge: Set<String> = allKeys.subtracting(Self.ignoredMergeKeys)
-        
-        let unmergedKeys: Set<String> = expectedKeysForMerge.subtracting(context.mergedKeys)
-        
-        context.markValidated()
-        
-        assert(unmergedKeys.isEmpty, """
-            Merge validation failed for \(Self.self):
-            Unmerged keys: \(unmergedKeys.sorted().formatted(.list(type: .and)))
-            
-            All non-ignored keys must be merged using mergeProperty/mergeOptional.
-            Either merge them or add to ignoredKeys.
-            
-            Expected to merge: \(expectedKeysForMerge.sorted().formatted(.list(type: .and)))
-            Actually merged: \(context.mergedKeys.sorted().formatted(.list(type: .and)))
-            Ignored: \(Self.ignoredMergeKeys.sorted().formatted(.list(type: .and)))
-            """)
+
+    /// Extracts the `CodingKey` from a key path.
+    private func getCodingKeyFromKeyPath(_ keyPath: AnyKeyPath) -> Key? {
+        let pathDescription: String = . init(describing: keyPath)
+        let propertyName: String?  = pathDescription
+            .components(separatedBy: ".").last?
+            .trimmingCharacters(in: .init(charactersIn: "\\"))
+
+        return Key.allCases.first { $0.stringValue == propertyName }
     }
 }

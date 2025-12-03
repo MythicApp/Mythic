@@ -241,36 +241,24 @@ extension Game {
 }
 
 extension Game: Mergeable {
-    static var ignoredMergeKeys: Set<String> {
-        ["id", "title", "installationState", "storefront"]
+    typealias MergeKeys = CodingKeys
+    
+    static var ignoredMergeKeys: Set<CodingKeys> {
+        [. id, .title, .installationState, .storefront]
     }
     
-     func merge(with other: Game) -> MergeContext {
-        var context: MergeContext = .init()
-         // required for mutating protocol extension methods, even though this is a class
-        var `self` = self
-        
-        self.mergeOptional(CodingKeys._verticalImageURL, \._verticalImageURL, from: other, context: &context)
-        self.mergeOptional(CodingKeys._horizontalImageURL, \._horizontalImageURL, from: other, context: &context)
-        self.mergeOptional(CodingKeys._containerURL, \._containerURL, from: other, context: &context)
-        
-        self.mergeProperty(CodingKeys.launchArguments, \.launchArguments, from: other, context: &context) { current, new in
-            current = .init(Set(current + new))
-        }
-        
-        self.mergeProperty(CodingKeys.isFavourited, \.isFavourited, from: other, context: &context) { current, new in
-            current = current || new
-        }
-        
-        self.mergeProperty(CodingKeys.lastLaunched, \.lastLaunched, from: other, context: &context) { current, new in
-            if current != nil || new != nil {
-                current = max(current ?? .distantPast, new ?? .distantPast)
+    var mergeRules: [AnyMergeRule] {
+        [
+            .init(\Game._verticalImageURL) { $0 ??  $1 },
+            .init(\Game._horizontalImageURL) { $0 ?? $1 },
+            .init(\Game._containerURL) { $0 ?? $1 },
+            .init(\Game.launchArguments) { .init(Set($0 + $1)) },
+            .init(\Game.isFavourited) { $0 || $1 },
+            .init(\Game.lastLaunched) { current, new in
+                guard current != nil || new != nil else { return current }
+                return max(current ?? . distantPast, new ?? . distantPast)
             }
-        }
-        
-        self.validateMergeCompleteness(codingKeys: CodingKeys.self, context: context)
-        
-        return context
+        ]
     }
 }
 
