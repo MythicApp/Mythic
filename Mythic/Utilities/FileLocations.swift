@@ -17,7 +17,7 @@ final class FileLocations {
      */
     static let globalApplications: URL? = {
         do {
-            return try files.url(
+            return try FileManager.default.url(
                 for: .applicationDirectory,
                 in: .localDomainMask,
                 appropriateFor: nil,
@@ -39,7 +39,7 @@ final class FileLocations {
         if let globalApplications = globalApplications {
             let gamesURL = globalApplications.appendingPathComponent("Games")
             do {
-                try files.createDirectory(
+                try FileManager.default.createDirectory(
                     at: gamesURL,
                     withIntermediateDirectories: true
                 )
@@ -60,7 +60,7 @@ final class FileLocations {
      */
     static let userApplicationSupport: URL? = {
         do {
-            return try files.url(
+            return try FileManager.default.url(
                 for: .applicationSupportDirectory,
                 in: .userDomainMask, // to remain individual
                 appropriateFor: nil,
@@ -73,7 +73,7 @@ final class FileLocations {
         return nil
     }()
     
-    static func isWritableFolder(url: URL) -> Bool { // does the same as files.isWritableFile, just a second option
+    static func isWritableFolder(url: URL) -> Bool { // does the same as FileManager.default.isWritableFile, just a second option
         let tempFileName = "_Mythic\(UUID().uuidString).temp"
         let tempFileURL = url.appendingPathComponent(tempFileName)
 
@@ -88,7 +88,7 @@ final class FileLocations {
 
     static let userLibrary: URL? = {
         do {
-            return try files.url(
+            return try FileManager.default.url(
                 for: .libraryDirectory,
                 in: .userDomainMask,
                 appropriateFor: nil,
@@ -109,7 +109,7 @@ final class FileLocations {
      */
     static let userContainers: URL? = {
         do {
-            return try files.url(
+            return try FileManager.default.url(
                 for: .libraryDirectory,
                 in: .userDomainMask,
                 appropriateFor: nil,

@@ -99,7 +99,7 @@ extension GameImportView {
                             }
 
                             if let location = location {
-                                if !files.isReadableFile(atPath: location.path) {
+                                if !FileManager.default.isReadableFile(atPath: location.path) {
                                     Image(systemName: "exclamationmark.triangle")
                                         .symbolVariant(.fill)
                                         .help("File/Folder is not readable by Mythic.")

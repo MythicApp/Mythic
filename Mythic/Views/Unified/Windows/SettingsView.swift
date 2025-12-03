@@ -109,15 +109,15 @@ extension SettingsView {
                 actions: {
                     Button("OK", role: .destructive) {
                         if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                            defaults.removePersistentDomain(forName: bundleIdentifier)
+                            UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
                         }
 
                         if let appHome = Bundle.appHome {
-                            try? files.removeItem(at: appHome)
+                            try? FileManager.default.removeItem(at: appHome)
                         }
 
                         if let containersDirectory = Wine.containersDirectory {
-                            try? files.removeItem(at: containersDirectory)
+                            try? FileManager.default.removeItem(at: containersDirectory)
                         }
                     }
 
@@ -137,7 +137,7 @@ extension SettingsView {
                 actions: {
                     Button("OK", role: .destructive) {
                         if let bundleIdentifier = Bundle.main.bundleIdentifier {
-                            defaults.removePersistentDomain(forName: bundleIdentifier)
+                            UserDefaults.standard.removePersistentDomain(forName: bundleIdentifier)
                         }
                     }
 

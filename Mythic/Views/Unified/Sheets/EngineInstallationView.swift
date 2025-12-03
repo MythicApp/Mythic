@@ -98,7 +98,7 @@ extension EngineInstallationView {
                 }
 
                 do {
-                    guard workspace.isARM else {
+                    guard NSWorkspace.shared.isARM else {
                         throw NSWorkspace.UnsupportedArchitectureError()
                     }
 

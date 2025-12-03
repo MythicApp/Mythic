@@ -86,7 +86,7 @@ struct StoreView: View {
             }
             ToolbarItem(placement: .confirmationAction) {
                 Button {
-                    workspace.open(url)
+                    NSWorkspace.shared.open(url)
                 } label: {
                     Image(systemName: "arrow.up.forward")
                 }

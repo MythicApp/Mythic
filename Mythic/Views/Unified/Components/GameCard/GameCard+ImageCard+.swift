@@ -21,7 +21,7 @@ extension GameCard {
         var body: some View {
             if case .installed(let location, _) = game.installationState {
 
-                let image = Image(nsImage: workspace.icon(forFile: location.path))
+                let image = Image(nsImage: NSWorkspace.shared.icon(forFile: location.path))
 
                 ZStack {
                     // blurred image as background
@@ -99,13 +99,13 @@ extension GameCard {
                                     guard let storefront = game.storefront else { throw CocoaError(.coderInvalidValue) }
                                     let thumbnailDirectoryURL: URL = appHome.appending(path: "Thumbnails/Custom/\(storefront.description)")
 
-                                    if !files.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
-                                        try files.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
+                                    if !FileManager.default.fileExists(atPath: thumbnailDirectoryURL.path(percentEncoded: false)) {
+                                        try FileManager.default.createDirectory(at: thumbnailDirectoryURL, withIntermediateDirectories: true)
                                     }
 
                                     let newThumbnailURL = thumbnailDirectoryURL.appendingPathComponent(UUID().uuidString)
 
-                                    try files.copyItem(at: url, to: newThumbnailURL)
+                                    try FileManager.default.copyItem(at: url, to: newThumbnailURL)
 
                                     imageURL = newThumbnailURL
                                 } catch {

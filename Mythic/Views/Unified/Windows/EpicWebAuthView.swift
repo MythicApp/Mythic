@@ -117,7 +117,7 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
         epicSignInWindow?.delegate = self
         isEpicSignInWindowVisible = epicSignInWindow?.isVisible ?? false
 
-        sharedApp.activate(ignoringOtherApps: true)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     @MainActor

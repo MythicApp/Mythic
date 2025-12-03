@@ -163,7 +163,7 @@ extension AboutView {
         
         var body: some View {
             Button {
-                workspace.open(URL)
+                NSWorkspace.shared.open(URL)
             } label: {
                 HStack(alignment: .center) {
                     image

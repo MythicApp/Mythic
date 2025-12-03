@@ -16,29 +16,29 @@ extension Wine {
             try Wine.killAll(containerURLs: [containerURL])
 
             // x64
-            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d10core.dll"))
-            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d11.dll"))
+            try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d10core.dll"))
+            try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d11.dll"))
 
             // x32
-            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
-            try files.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
+            try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
+            try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
 
             // x64
-            try files.forceCopyItem(
+            try FileManager.default.forceCopyItem(
                 at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
                 to: containerURL.appending(path: "drive_c/windows/system32")
             )
-            try files.forceCopyItem(
+            try FileManager.default.forceCopyItem(
                 at: Engine.directory.appending(path: "DXVK/x64/d3d11.dll"),
                 to: containerURL.appending(path: "drive_c/windows/system32")
             )
 
             // x32
-            try files.forceCopyItem(
+            try FileManager.default.forceCopyItem(
                 at: Engine.directory.appending(path: "DXVK/x32/d3d10core.dll"),
                 to: containerURL.appending(path: "drive_c/windows/syswow64")
             )
-            try files.forceCopyItem(
+            try FileManager.default.forceCopyItem(
                 at: Engine.directory.appending(path: "DXVK/x32/d3d11.dll"),
                 to: containerURL.appending(path: "drive_c/windows/syswow64")
             )

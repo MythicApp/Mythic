@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
+import AppKit
 
 class EpicGamesGame: Game {
     override var storefront: Storefront? { .epicGames }
@@ -45,7 +46,7 @@ class EpicGamesGame: Game {
     override func _checkIfGameIsRunning(location: URL, platform: Platform) -> Bool {
         switch platform {
         case .macOS:
-            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
+            return NSWorkspace.shared.runningApplications.contains(where: { $0.bundleURL == location })
         case .windows:
             return false // FIXME: stub
             /* FIXME: beefster code, tired, will refactor

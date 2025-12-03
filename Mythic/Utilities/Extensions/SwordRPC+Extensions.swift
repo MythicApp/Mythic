@@ -9,10 +9,11 @@
 
 import Foundation
 import SwordRPC
+import AppKit
 
 extension SwordRPC {
     var isDiscordInstalled: Bool {
         let discordURLScheme: URL = .init(string: "discord://")!
-        return workspace.urlForApplication(toOpen: discordURLScheme) != nil
+        return NSWorkspace.shared.urlForApplication(toOpen: discordURLScheme) != nil
     }
 }

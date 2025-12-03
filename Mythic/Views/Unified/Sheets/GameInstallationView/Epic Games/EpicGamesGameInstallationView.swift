@@ -26,7 +26,7 @@ struct EpicGamesGameInstallationView: View {
 
     @State var installSizeInBytes: Int64?
     var availableSpaceInBytes: Int64? {
-        let filesystemAttributes = try? files.attributesOfFileSystem(forPath: Bundle.appHome?.path ?? "/")
+        let filesystemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: Bundle.appHome?.path ?? "/")
         return (filesystemAttributes?[.systemFreeSize] as? Int64)
     }
     @State private var isFreeSpaceAlertPresented: Bool = false
@@ -106,7 +106,7 @@ struct EpicGamesGameInstallationView: View {
 
                             Spacer()
 
-                            if !files.isWritableFile(atPath: baseURL.path) {
+                            if !FileManager.default.isWritableFile(atPath: baseURL.path) {
                                 Image(systemName: "exclamationmark.triangle")
                                     .symbolVariant(.fill)
                                     .help("Folder is not writable.")
@@ -206,7 +206,7 @@ struct EpicGamesGameInstallationView: View {
                 }
                 .disabled(supportedPlatforms == nil)
                 .disabled(fetchingOptionalPacks)
-                .disabled(!files.isWritableFile(atPath: baseURL.path))
+                .disabled(!FileManager.default.isWritableFile(atPath: baseURL.path))
                 .onAppear(perform: { spawnOptionalPacksFetchTask() })
                 .onChange(of: game, { spawnOptionalPacksFetchTask() })
                 .onChange(of: platform, { spawnOptionalPacksFetchTask() })

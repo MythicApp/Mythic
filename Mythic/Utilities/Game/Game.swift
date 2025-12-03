@@ -9,6 +9,7 @@
 
 import Foundation
 import OSLog
+import AppKit
 
 @Observable class Game: Codable, Identifiable {
     @MainActor static let store: GameDataStore = .shared
@@ -157,7 +158,7 @@ import OSLog
             """)
 
         if case .macOS = platform {
-            return workspace.runningApplications.contains(where: { $0.bundleURL == location })
+            return NSWorkspace.shared.runningApplications.contains(where: { $0.bundleURL == location })
         }
 
         return false

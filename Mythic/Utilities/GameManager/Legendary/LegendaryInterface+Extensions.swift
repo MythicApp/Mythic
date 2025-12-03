@@ -726,7 +726,7 @@ extension Legendary {
     }
 
     // MARK: - metadata/*.json
-    /// Root structure for game metadata files.
+    /// Root structure for game metadata FileManager.default.
     /// Contains comprehensive game information from the Epic Games Store catalog.
     /// **File:** `metadata/{app_name}.json`
     struct GameMetadata: Codable {

@@ -85,7 +85,7 @@ final class EpicGamesGameManager {
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        baseDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
+                        baseDirectoryURL: URL? = UserDefaults.standard.url(forKey: "installBaseURL")) async throws -> GameOperation {
         return try await Legendary.install(game: game,
                                            forPlatform: platform,
                                            qualityOfService: qualityOfService,

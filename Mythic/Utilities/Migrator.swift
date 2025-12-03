@@ -35,7 +35,7 @@ final class Migrator {
         /// Data migration from versions v0.1.1-alpha or earlier.
         static func migrateFromAllBottlesFormat() {
             // Determines eligibility by searching for redundant UserDefaults key "allBottles".
-            guard let data = defaults.data(forKey: "allBottles"),
+            guard let data = UserDefaults.standard.data(forKey: "allBottles"),
                   let decodedData = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: [String: Any]] else {
                 return
             }
@@ -69,7 +69,7 @@ final class Migrator {
                 }
 
                 log.notice("Bottle management system migration complete.")
-                defaults.removeObject(forKey: "allBottles")
+                UserDefaults.standard.removeObject(forKey: "allBottles")
             }
         }
     }
@@ -94,21 +94,21 @@ final class Migrator {
             let newScheme = appContainer.appending(path: "Containers")
 
             // determine eligibility by checking if old scheme exists at path
-            guard files.fileExists(atPath: oldScheme.path) else { return }
+            guard FileManager.default.fileExists(atPath: oldScheme.path) else { return }
             log.notice("Commencing bottle → container scheme migration.")
 
             containerQueue.sync {
                 do {
-                    try files.moveItem(at: oldScheme, to: newScheme)
+                    try FileManager.default.moveItem(at: oldScheme, to: newScheme)
 
-                    if let contents = try? files.contentsOfDirectory(at: newScheme, includingPropertiesForKeys: nil) {
+                    if let contents = try? FileManager.default.contentsOfDirectory(at: newScheme, includingPropertiesForKeys: nil) {
                         for containerURL in contents {
                             log.notice("Migrating container object: \(String(describing: try? Wine.Container(knownURL: containerURL)))")
                         }
                     }
 
                     // Migrate bottleURLs to containerURLs
-                    if let bottleURLs = try? defaults.decodeAndGet([URL].self, forKey: "bottleURLs") {
+                    if let bottleURLs = try? UserDefaults.standard.decodeAndGet([URL].self, forKey: "bottleURLs") {
                         let containerURLs = bottleURLs.map { bottleURL -> URL in
                             let currentPath = bottleURL.path(percentEncoded: false)
                             if currentPath.contains(oldScheme.path(percentEncoded: false)) {
@@ -122,20 +122,20 @@ final class Migrator {
                         }
 
                         do {
-                            try defaults.encodeAndSet(containerURLs, forKey: "containerURLs")
-                            defaults.removeObject(forKey: "bottleURLs")
+                            try UserDefaults.standard.encodeAndSet(containerURLs, forKey: "containerURLs")
+                            UserDefaults.standard.removeObject(forKey: "bottleURLs")
                         } catch {
                             log.error("Unable to re-encode default 'bottleURLs' as 'containerURLs': \(error.localizedDescription)")
                         }
                     }
 
                     // Game-specific bottleURL migration
-                    defaults.dictionaryRepresentation() // FIXME: may update in the future with a PersistentGameData UD dictionary
+                    UserDefaults.standard.dictionaryRepresentation() // FIXME: may update in the future with a PersistentGameData UD dictionary
                         .filter { $0.key.hasSuffix("_bottleURL") }
                         .forEach { key, value in
                             guard let currentURL = value as? URL else { return }
                             let currentPath = currentURL.path(percentEncoded: false)
-                            guard files.fileExists(atPath: currentPath) else { return }
+                            guard FileManager.default.fileExists(atPath: currentPath) else { return }
 
                             let filteredURL: URL
                             if currentPath.contains(oldScheme.path(percentEncoded: false)) {
@@ -148,8 +148,8 @@ final class Migrator {
 
                             let targetGameID = key.replacingOccurrences(of: "_bottleURL", with: "")
                             log.notice("Migrating game \(targetGameID)'s container URL...")
-                            defaults.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
-                            defaults.removeObject(forKey: key)
+                            UserDefaults.standard.set(filteredURL, forKey: key.replacingOccurrences(of: "_bottleURL", with: "_containerURL"))
+                            UserDefaults.standard.removeObject(forKey: key)
                         }
 
                     log.notice("Container renaming complete.")
@@ -182,8 +182,8 @@ final class Migrator {
         static func migrateEpicFolderNaming() {
             log.info("Migrating epic folder naming")
             let legendaryOldConfig: URL = Bundle.appHome!.appending(path: "Config")
-            if files.fileExists(atPath: legendaryOldConfig.path) {
-                try? files.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
+            if FileManager.default.fileExists(atPath: legendaryOldConfig.path) {
+                try? FileManager.default.moveItem(at: legendaryOldConfig, to: Legendary.configurationFolder)
             }
             log.info("Migrated epic folder naming.")
         }
@@ -209,7 +209,7 @@ final class Migrator {
         static func migrateFavouriteGames() async {
             log.notice("Migrating favourite game storage.")
 
-            if let oldFavouriteGames: [String] = defaults.stringArray(forKey: "favouriteGames") {
+            if let oldFavouriteGames: [String] = UserDefaults.standard.stringArray(forKey: "favouriteGames") {
                 try? await Game.store.refreshFromStorefronts()
 
                 await MainActor.run {
@@ -219,14 +219,14 @@ final class Migrator {
                     }
                 }
 
-                defaults.removeObject(forKey: "favouriteGames")
+                UserDefaults.standard.removeObject(forKey: "favouriteGames")
             }
         }
 
         static func migrateLocalGamesLibrary() async {
             log.notice("Migrating local game library storage.")
 
-            guard let data = defaults.data(forKey: "localGamesLibrary") else { return }
+            guard let data = UserDefaults.standard.data(forKey: "localGamesLibrary") else { return }
             guard let underlyingPlist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [[[String: Any]]],
                   let properties = underlyingPlist.first else { return }
 
@@ -258,18 +258,18 @@ final class Migrator {
                 }
             }
 
-            defaults.removeObject(forKey: "localGamesLibrary")
+            UserDefaults.standard.removeObject(forKey: "localGamesLibrary")
         }
 
         static func migrateContainerURLs() async {
-            if defaults.dictionaryRepresentation()
+            if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_containerURL") }) {
                 try? await Game.store.refreshFromStorefronts()
             }
 
             log.notice("Migrating game container URL storage.")
 
-            for (key, url) in defaults.dictionaryRepresentation() where key.hasSuffix("_containerURL") {
+            for (key, url) in UserDefaults.standard.dictionaryRepresentation() where key.hasSuffix("_containerURL") {
                 guard let url = url as? URL else { continue }
                 let targetGameID: String = key.replacingOccurrences(of: "_containerURL", with: "")
 
@@ -289,19 +289,19 @@ final class Migrator {
                     targetGame.containerURL = url
                 }
 
-                defaults.removeObject(forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
             }
         }
 
         static func migrateLaunchArguments() async {
-            if defaults.dictionaryRepresentation()
+            if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_launchArguments") }) {
                 try? await Game.store.refreshFromStorefronts()
             }
 
             log.notice("Migrating game launch argument storage.")
 
-            for (key, arguments) in defaults.dictionaryRepresentation() where key.hasSuffix("_launchArguments") {
+            for (key, arguments) in UserDefaults.standard.dictionaryRepresentation() where key.hasSuffix("_launchArguments") {
                 guard let arguments = arguments as? [String] else { continue }
 
                 let targetGameID: String = key.replacingOccurrences(of: "_launchArguments", with: "")
@@ -317,19 +317,19 @@ final class Migrator {
                     }
                 }
 
-                defaults.removeObject(forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
             }
         }
 
         static func migrateImageURLs() async {
-            if defaults.dictionaryRepresentation()
+            if UserDefaults.standard.dictionaryRepresentation()
                            .contains(where: { $0.key.hasSuffix("_imageURL") }) {
                            try? await Game.store.refreshFromStorefronts()
                        }
 
             log.notice("Migrating game vertical image storage.")
 
-            for (key, url) in defaults.dictionaryRepresentation() where key.hasSuffix("_imageURL") {
+            for (key, url) in UserDefaults.standard.dictionaryRepresentation() where key.hasSuffix("_imageURL") {
                 guard let url = url as? URL else { continue }
 
                 let targetGameID: String = key.replacingOccurrences(of: "_imageURL", with: "")
@@ -344,19 +344,19 @@ final class Migrator {
                     targetGame._verticalImageURL = url
                 }
 
-                defaults.removeObject(forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
             }
         }
 
         static func migrateWideImageURLs() async {
-            if defaults.dictionaryRepresentation()
+            if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_wideImageURL") }) {
                 try? await Game.store.refreshFromStorefronts()
             }
 
             log.notice("Migrating game horizontal image storage.")
 
-            for (key, url) in defaults.dictionaryRepresentation() where key.hasSuffix("_wideImageURL") {
+            for (key, url) in UserDefaults.standard.dictionaryRepresentation() where key.hasSuffix("_wideImageURL") {
                 guard let url = url as? URL else { continue }
 
                 let targetGameID: String = key.replacingOccurrences(of: "_wideImageURL", with: "")
@@ -371,7 +371,7 @@ final class Migrator {
                     targetGame._horizontalImageURL = url
                 }
 
-                defaults.removeObject(forKey: key)
+                UserDefaults.standard.removeObject(forKey: key)
             }
         }
     }

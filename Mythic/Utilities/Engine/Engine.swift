@@ -20,8 +20,8 @@ final class Engine {
     // long ahh code
     static var releaseChannel: ReleaseChannel {
         get {
-            defaults.register(defaults: ["engineChannel": ReleaseChannel.stable.rawValue])
-            if let channelString = defaults.string(forKey: "engineChannel"),
+            UserDefaults.standard.register(defaults: ["engineChannel": ReleaseChannel.stable.rawValue])
+            if let channelString = UserDefaults.standard.string(forKey: "engineChannel"),
                let channel: ReleaseChannel = .init(rawValue: channelString) {
                 return channel
             }
@@ -29,7 +29,7 @@ final class Engine {
             return .stable
         }
         set {
-            defaults.set(newValue.rawValue, forKey: "engineChannel")
+            UserDefaults.standard.set(newValue.rawValue, forKey: "engineChannel")
         }
     }
 
@@ -45,7 +45,7 @@ final class Engine {
     // TODO: + add sum URL to test updatestream
 
     static var isInstalled: Bool {
-        return files.fileExists(atPath: directory.appending(path: "Properties.plist").path)
+        return FileManager.default.fileExists(atPath: directory.appending(path: "Properties.plist").path)
     }
 
     static var installedVersion: SemanticVersion? {
@@ -128,12 +128,12 @@ final class Engine {
 
                             do {
                                 // check for remnant/empty engine folder
-                                if (try? files.contentsOfDirectory(atPath: directory.path))?.isEmpty == false {
-                                    try files.removeItem(at: directory)
+                                if (try? FileManager.default.contentsOfDirectory(atPath: directory.path))?.isEmpty == false {
+                                    try FileManager.default.removeItem(at: directory)
                                 }
                                 // create engine directory if necessary
-                                if !files.fileExists(atPath: directory.path) {
-                                    try files.createDirectory(at: directory, withIntermediateDirectories: true)
+                                if !FileManager.default.fileExists(atPath: directory.path) {
+                                    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                                 }
 
                                 continuation.yield(.init(stage: .installing, progress: installationProgress))
@@ -153,7 +153,7 @@ final class Engine {
 
                                 continuation.finish()
                             } catch {
-                                try? files.removeItem(atPath: file.path)
+                                try? FileManager.default.removeItem(atPath: file.path)
                                 continuation.finish(throwing: error)
                             }
                         }
@@ -177,8 +177,8 @@ final class Engine {
     }
 
     static func remove() async throws {
-        if files.fileExists(atPath: directory.path) {
-            try files.removeItem(at: directory)
+        if FileManager.default.fileExists(atPath: directory.path) {
+            try FileManager.default.removeItem(at: directory)
         }
     }
 }

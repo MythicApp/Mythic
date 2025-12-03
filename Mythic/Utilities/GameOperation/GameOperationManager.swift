@@ -86,7 +86,7 @@ import DockProgress
                 )
 
                 do {
-                    try await notifications.add(notificationRequest)
+                    try await UNUserNotificationCenter.current().add(notificationRequest)
                 } catch {
                     log.error("Unable to send notification for operation completion: \(error.localizedDescription)")
                 }

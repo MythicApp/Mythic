@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         setenv("CX_ROOT", Bundle.main.bundlePath, 1)
 
         // MARK: Register Defaults
-        defaults.register(defaults: [
+        UserDefaults.standard.register(defaults: [
             "discordRPC": true,
             "engineAutomaticallyChecksForUpdates": true,
             "quitOnAppClose": false,
@@ -61,7 +61,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // MARK: DiscordRPC Delegate Ininitialisation & Connection
         discordRPC.delegate = self
-        if defaults.bool(forKey: "discordRPC"), discordRPC.isDiscordInstalled {
+        if UserDefaults.standard.bool(forKey: "discordRPC"), discordRPC.isDiscordInstalled {
             _ = discordRPC.connect()
         }
 
@@ -81,13 +81,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 #endif // !DEBUG
 
         // MARK: Notification Authorisation Request and Delegation Setting
-        notifications.delegate = self
+        UNUserNotificationCenter.current().delegate = self
         Task {
-            let settings = await notifications.notificationSettings()
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
             guard settings.authorizationStatus != .authorized else { return }
 
             do {
-                try await notifications.requestAuthorization(options: [.alert, .sound, .badge])
+                try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
             } catch {
                 Logger.app.error("Unable to request notification authorization: \(error)")
             }
@@ -95,7 +95,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // MARK: Engine update alert chain
         Task(priority: .background) { @MainActor in
-            guard defaults.bool(forKey: "engineAutomaticallyChecksForUpdates"),
+            guard UserDefaults.standard.bool(forKey: "engineAutomaticallyChecksForUpdates"),
                   (try? await Engine.isUpdateAvailable()) == true else { return }
 
             let latestVersion = (try? await Engine.getLatestRelease())?.version.description ?? String(localized: "Unknown")
@@ -154,19 +154,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Version-specific app launch counter
         if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
-            var launchCountDictionary = defaults.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
+            var launchCountDictionary = UserDefaults.standard.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
             launchCountDictionary[shortVersion, default: 0] += 1
-            defaults.set(launchCountDictionary, forKey: "launchCount")
+            UserDefaults.standard.set(launchCountDictionary, forKey: "launchCount")
         }
 
         // give people from <0.5.0 people a taste of vertical scroll library grid
         if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
            shortVersion == "0.5.0",
-           let launchCountDictionary = defaults.dictionary(forKey: "launchCount") as? [String: Int],
+           let launchCountDictionary = UserDefaults.standard.dictionary(forKey: "launchCount") as? [String: Int],
            launchCountDictionary[shortVersion] == 1,
-           defaults.bool(forKey: "isLibraryGridScrollingVertical") == false {
+           UserDefaults.standard.bool(forKey: "isLibraryGridScrollingVertical") == false {
             // vertical as God intended
-            defaults.set(true, forKey: "isLibraryGridScrollingVertical")
+            UserDefaults.standard.set(true, forKey: "isLibraryGridScrollingVertical")
         }
     }
 
@@ -203,7 +203,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     func applicationWillTerminate(_: Notification) {
-        if defaults.bool(forKey: "quitOnAppClose") {
+        if UserDefaults.standard.bool(forKey: "quitOnAppClose") {
             try? Wine.killAll()
         }
 

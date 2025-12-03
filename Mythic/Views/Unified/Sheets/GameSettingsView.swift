@@ -229,7 +229,7 @@ struct GameSettingsView: View {
                                     Spacer()
 
                                     Button("Show in Finder") {
-                                        workspace.activateFileViewerSelecting([location])
+                                        NSWorkspace.shared.activateFileViewerSelecting([location])
                                     }
                                 }
                             }

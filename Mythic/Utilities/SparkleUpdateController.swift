@@ -109,13 +109,13 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
         if Thread.isMainThread {
             var action: AutoUpdateAction = .off
             MainActor.assumeIsolated {
-                action = (try? defaults.decodeAndGet(AutoUpdateAction.self, forKey: "sparkleUpdateAction")) ?? .install
+                action = (try? UserDefaults.standard.decodeAndGet(AutoUpdateAction.self, forKey: "sparkleUpdateAction")) ?? .install
             }
             return action
         }
         var action: AutoUpdateAction = .off
         DispatchQueue.main.sync {
-            action = (try? defaults.decodeAndGet(AutoUpdateAction.self, forKey: "sparkleUpdateAction")) ?? .install
+            action = (try? UserDefaults.standard.decodeAndGet(AutoUpdateAction.self, forKey: "sparkleUpdateAction")) ?? .install
         }
         return action
     }
@@ -124,13 +124,13 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
         if Thread.isMainThread {
             var action: Bool = false
             MainActor.assumeIsolated {
-                action = !defaults.bool(forKey: "isOnboardingPresented")
+                action = !UserDefaults.standard.bool(forKey: "isOnboardingPresented")
             }
             return action
         }
         var action: Bool = false
         DispatchQueue.main.sync {
-            action = !defaults.bool(forKey: "isOnboardingPresented")
+            action = !UserDefaults.standard.bool(forKey: "isOnboardingPresented")
         }
         return action
     }

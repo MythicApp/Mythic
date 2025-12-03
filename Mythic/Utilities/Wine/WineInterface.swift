@@ -20,12 +20,12 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     /// The directory where all wine prefixes/containers related to Mythic are stored.
     static var containersDirectory: URL? {
         let directory = Bundle.appContainer!.appending(path: "Containers")
-        if files.fileExists(atPath: directory.path) {
+        if FileManager.default.fileExists(atPath: directory.path) {
             return directory
         } else {
             do {
                 Logger.file.info("Creating containers directory")
-                try files.createDirectory(at: directory, withIntermediateDirectories: false)
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
                 return directory
             } catch {
                 Logger.app.error("Error creating Containers directory: \(error.localizedDescription)")
@@ -37,12 +37,12 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     static var containerURLs: Set<URL> {
         get {
             // FIXME: [URL] as opposed to Set<URL> for backward compatibility, will be migrated in the future
-            return .init((try? defaults.decodeAndGet([URL].self, forKey: "containerURLs")) ?? [])
+            return .init((try? UserDefaults.standard.decodeAndGet([URL].self, forKey: "containerURLs")) ?? [])
         }
         set {
             let filteredNewValue = newValue.filter({ containerExists(at: $0) })
             do {
-                try defaults.encodeAndSet(Array(filteredNewValue), forKey: "containerURLs")
+                try UserDefaults.standard.encodeAndSet(Array(filteredNewValue), forKey: "containerURLs")
             } catch {
                 log.error("Unable to encode and/or set/update containerURLs array to UserDefaults: \(error.localizedDescription)")
             }
@@ -50,7 +50,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     static func containerExists(at url: URL) -> Bool {
-        return (try? files.contentsOfDirectory(atPath: url.path).contains("drive_c")) ?? false
+        return (try? FileManager.default.contentsOfDirectory(atPath: url.path).contains("drive_c")) ?? false
     }
 
     static func getContainerObject(url: URL) throws -> Container {
@@ -137,7 +137,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         settings: Container.Settings = .init()
     ) async throws -> Container {
         guard let baseURL = baseURL,
-              files.fileExists(atPath: baseURL.path) else {
+              FileManager.default.fileExists(atPath: baseURL.path) else {
             throw CocoaError(.fileNoSuchFile)
         }
 
@@ -146,7 +146,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
         let url = baseURL.appending(path: name)
 
-        try files.createDirectory(at: url, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
 
         defer {
             Task { @MainActor in
@@ -222,7 +222,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         log.notice("Deleting container \(containerURL.lastPathComponent) (\(containerURL))")
         guard containerExists(at: containerURL) else { throw Container.DoesNotExistError() }
 
-        try files.removeItem(at: containerURL)
+        try FileManager.default.removeItem(at: containerURL)
         containerURLs.remove(containerURL)
     }
 
@@ -250,7 +250,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let d3dmCachePath = cachePath.appending("/d3dm")
 
         // although success may be limited, this is MUCH less risky than using applescript w/ string interpolation
-        try files.removeItem(at: URL(filePath: d3dmCachePath))
+        try FileManager.default.removeItem(at: URL(filePath: d3dmCachePath))
     }
 
     private static func addRegistryKey(containerURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {

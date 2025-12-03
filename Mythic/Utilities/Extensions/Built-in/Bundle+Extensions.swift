@@ -25,9 +25,9 @@ extension Bundle {
             let homeURL = userApplicationSupport.appending(
                 path: Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "")
             
-            if !files.fileExists(atPath: homeURL.path) {
+            if !FileManager.default.fileExists(atPath: homeURL.path) {
                 do {
-                    try files.createDirectory(atPath: homeURL.path, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: homeURL.path, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating application support directory")
                 } catch {
                     Logger.app.error("Error creating application support directory: \(error.localizedDescription)")
@@ -50,9 +50,9 @@ extension Bundle {
             let containerURL = userContainers.appending(path: bundleID)
             let containerPath = containerURL.path
             
-            if !files.fileExists(atPath: containerPath) {
+            if !FileManager.default.fileExists(atPath: containerPath) {
                 do {
-                    try files.createDirectory(atPath: containerPath, withIntermediateDirectories: true, attributes: nil)
+                    try FileManager.default.createDirectory(atPath: containerPath, withIntermediateDirectories: true, attributes: nil)
                     Logger.app.info("Creating Containers directory")
                 } catch {
                     Logger.app.error("Error creating Containers directory: \(error.localizedDescription)")
@@ -73,7 +73,7 @@ extension Bundle {
         if let games = FileLocations.globalGames {
             let appGamesURL = games.appending(path: "Mythic")
             do {
-                try files.createDirectory(
+                try FileManager.default.createDirectory(
                     at: appGamesURL,
                     withIntermediateDirectories: true
                 )

@@ -46,7 +46,7 @@ struct ContainersView: View {
                 if let containersDirectory = Wine.containersDirectory {
                     ToolbarItem(placement: .confirmationAction) {
                         Button {
-                            workspace.open(containersDirectory)
+                            NSWorkspace.shared.open(containersDirectory)
                         } label: {
                             Image(systemName: "folder")
                         }

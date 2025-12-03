@@ -11,8 +11,8 @@ import Foundation
 
 extension FileManager {
     func removeItemIfExists(at url: URL) throws {
-        if files.fileExists(atPath: url.path) {
-            try files.removeItem(at: url)
+        if FileManager.default.fileExists(atPath: url.path) {
+            try FileManager.default.removeItem(at: url)
         }
     }
 

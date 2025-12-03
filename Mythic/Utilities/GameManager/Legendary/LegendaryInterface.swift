@@ -257,7 +257,7 @@ final class Legendary {
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
                         optionalPacks: [String] = .init(),
-                        baseDirectoryURL: URL? = defaults.url(forKey: "installBaseURL")) async throws -> GameOperation {
+                        baseDirectoryURL: URL? = UserDefaults.standard.url(forKey: "installBaseURL")) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -402,7 +402,7 @@ final class Legendary {
             if !runUninstallerIfPossible { arguments.append("--skip-uninstaller") }
 
             // legendary is inconsistent with this,
-            // may have to use files.removeItem(atPath:)
+            // may have to use FileManager.default.removeItem(atPath:)
             try await Legendary.execute(arguments: arguments)
         }
 
@@ -429,7 +429,7 @@ final class Legendary {
         }
 
         let operation: GameOperation = .init(game: game, type: .move) { _ in
-            try files.moveItem(at: currentLocation, to: newLocation)
+            try FileManager.default.moveItem(at: currentLocation, to: newLocation)
 
             try await Legendary.execute(arguments: ["move", game.id, newLocation.path, "--skip-move"])
             game.installationState = .installed(location: newLocation, platform: platform)
@@ -499,7 +499,7 @@ final class Legendary {
 
     static func signOut() async throws {
         _ = try await execute(arguments: ["auth", "--delete"])
-        defaults.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
+        UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
     }
 
     /**
@@ -654,7 +654,7 @@ final class Legendary {
         let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
         
         // if no games are installed, and the config folder is new, installed.json will not exist.
-        guard files.fileExists(atPath: installedJSONURL.path) else { return [] }
+        guard FileManager.default.fileExists(atPath: installedJSONURL.path) else { return [] }
         
         let installedJSONData = try Data(contentsOf: installedJSONURL)
         let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
@@ -677,7 +677,7 @@ final class Legendary {
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
         return try {
-            try files.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
+            try FileManager.default.contentsOfDirectory(atPath: metadataDirectory.path).map { fileName -> EpicGamesGame in
                 let data = try Data(contentsOf: metadataDirectory.appending(path: fileName))
                 let metadata = try JSONDecoder().decode(GameMetadata.self, from: data)
 
@@ -692,7 +692,7 @@ final class Legendary {
 
     static func getGameMetadata(gameID: String) throws -> GameMetadata {
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
-        let metadataDirectoryContents = try files.contentsOfDirectory(atPath: metadataDirectory.path)
+        let metadataDirectoryContents = try FileManager.default.contentsOfDirectory(atPath: metadataDirectory.path)
 
         guard let metadataFileName: String = metadataDirectoryContents.first(where: { $0 == gameID.appending(".json") }) else {
             throw CocoaError(.fileNoSuchFile)

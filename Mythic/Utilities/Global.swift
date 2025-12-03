@@ -13,17 +13,6 @@ import UserNotifications
 import SwordRPC
 import SemanticVersion
 
-/// A simpler alias of `FileManager.default`.
-nonisolated(unsafe) let files: FileManager = .default
-/// A simpler alias of `UserDefaults.standard`.
-nonisolated(unsafe) let defaults: UserDefaults = .standard
-/// A simpler alias of `NSWorkspace.shared`.
-nonisolated(unsafe) let workspace: NSWorkspace = .shared
-/// A simpler alias of `NSApp[lication].shared`.
-@MainActor let sharedApp: NSApplication = .shared
-/// A simpler alias of `UNUserNotificationCenter.current()`
-nonisolated(unsafe) let notifications: UNUserNotificationCenter = .current()
-
 nonisolated(unsafe) let discordRPC: SwordRPC = .init(appId: "1191343317749870712") // Mythic's discord application ID
 
 var appVersion: SemanticVersion? {

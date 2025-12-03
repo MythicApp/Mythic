@@ -46,7 +46,7 @@ class LocalGameManager {
         }
 
         defer {
-            if defaults.bool(forKey: "minimiseOnGameLaunch") {
+            if UserDefaults.standard.bool(forKey: "minimiseOnGameLaunch") {
                 NSApp.windows.first?.makeKeyAndOrderFront(nil)
             }
         }
@@ -59,7 +59,7 @@ class LocalGameManager {
 
                 if let contentType = try location.resourceValues(forKeys: [.contentTypeKey]).contentType,
                    contentType.conforms(to: .bundle) {
-                    try await workspace.open(location, configuration: configuration)
+                    try await NSWorkspace.shared.open(location, configuration: configuration)
                 } else {
                     throw CocoaError(.serviceApplicationLaunchFailed)
                 }
@@ -69,7 +69,7 @@ class LocalGameManager {
 
                 let environmentVariables: [String: String] = .init() /* FIXME: stub */ /* try Wine.assembleEnvironmentVariables(forGame: game) */
 
-                if defaults.bool(forKey: "minimiseOnGameLaunch") {
+                if UserDefaults.standard.bool(forKey: "minimiseOnGameLaunch") {
                     NSApp.windows.first?.miniaturize(nil)
                 }
 
@@ -91,7 +91,7 @@ class LocalGameManager {
         }
 
         let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
-            try files.moveItem(at: currentLocation, to: newLocation)
+            try FileManager.default.moveItem(at: currentLocation, to: newLocation)
             game.installationState = .installed(location: newLocation, platform: platform)
         }
         return operation
@@ -105,7 +105,7 @@ class LocalGameManager {
         }
 
         let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
-            try files.removeItem(at: location)
+            try FileManager.default.removeItem(at: location)
 
             // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
             // FIXME: ideally, destroy the game object somehow

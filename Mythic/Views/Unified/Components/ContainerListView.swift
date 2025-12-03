@@ -22,7 +22,7 @@ struct ContainerListView: View {
                     Text(container.name)
 
                     Button {
-                        workspace.open(container.url)
+                        NSWorkspace.shared.open(container.url)
                     } label: {
                         Text("\(container.url.prettyPath) \(Image(systemName: "link"))")
                             .font(.footnote)
