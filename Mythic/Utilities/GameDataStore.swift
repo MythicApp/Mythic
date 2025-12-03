@@ -20,31 +20,32 @@ import OSLog
     private var isUpdatingFromObserver = false
     
     var library: Set<Game> = .init() {
-        didSet { gamesObserver.setValue(library.map({ AnyGame($0) }), forKey: "games") }
+        didSet {
+            guard !isUpdatingFromObserver else { return }
+            try? defaults.encodeAndSet(library.map({ AnyGame($0) }), forKey: "games")
+        }
     }
 
     @MainActor private init() {
         // initialise observer
         gamesObserver = .init(key: "games",
-                              defaultValue: [],
-                              store: .standard)
+                              defaultValue: [])
         
         // load library on initialisation
         library = Set(gamesObserver.value.map({ $0.base }))
         
         // observe external changes
-        gamesObserver.objectWillChange
-            .sink { [weak self] _ in
+        gamesObserver.$value
+            .sink { [weak self] newGames in
                 guard let self else { return }
-                let newLibrary = Set(self.gamesObserver.value.map({ $0.base }))
+                let newLibrary = Set(newGames.map({ $0.base }))
                 
-                if newLibrary != self.library {
-                    self.log.debug("Games key changed in userdefaults externally, reloading library")
-                    
-                    self.isUpdatingFromObserver = true
-                    defer { self.isUpdatingFromObserver = false }
-                    self.library = newLibrary
-                }
+                guard newLibrary != self.library else { return }
+                self.log.debug("Games key changed in UserDefaults, updating library")
+                
+                self.isUpdatingFromObserver = true
+                defer { self.isUpdatingFromObserver = false }
+                self.library = newLibrary
             }
             .store(in: &cancellables)
     }
@@ -77,18 +78,27 @@ import OSLog
             }
             
             // installed: merge instead of overwrite
-            for installedGame in installed {
-                var updatedGame: Game = installedGame
-                if let existing = library.first(where: { $0 == installedGame }) {
-                    existing.merge(with: installedGame)
-                    updatedGame = existing
+            for fetchedGame in installed {
+                if let existing = library.first(where: { $0 == fetchedGame }) {
+                    fetchedGame.merge(with: existing)
+                    library.update(with: fetchedGame)
+                } else {
+                    library.update(with: fetchedGame)
                 }
-                
-                library.update(with: updatedGame)
             }
         } catch {
             log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
             throw error
+        }
+    }
+}
+
+import SwiftUI
+
+#Preview {
+    Button("t") {
+        Task {
+            try? await Game.store.refreshFromStorefronts()
         }
     }
 }

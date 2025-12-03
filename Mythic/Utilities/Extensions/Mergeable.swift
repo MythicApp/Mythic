@@ -10,6 +10,7 @@
 import Foundation
 
 protocol Mergeable {
+    /// Merge a **source-of-truth** `Mergable` object with another object.
     mutating func merge(with other: Self)
 }
 

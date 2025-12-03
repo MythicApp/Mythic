@@ -25,7 +25,7 @@ import OSLog
         get { observer.value }
         nonmutating set {
             withTransaction(transaction) {
-                observer.setValue(newValue, forKey: key, in: store)
+                _ = try? store.encodeAndSet(newValue, forKey: key)
             }
         }
     }
@@ -35,7 +35,7 @@ import OSLog
             get: { self.observer.value },
             set: { newValue in
                 withTransaction(self.transaction) {
-                    self.observer.setValue(newValue, forKey: self.key, in: self.store)
+                    _ = try? store.encodeAndSet(newValue, forKey: key)
                 }
             }
         )
@@ -125,11 +125,13 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
     private let store: UserDefaults
     private var cancellable: AnyCancellable?
     
+    private let log: Logger = .custom(category: "CodableUserDefaultsObserver")
+    
     @MainActor deinit {
         _ = withExtendedLifetime(cancellable, { $0?.cancel() })
     }
     
-    convenience init(key: String, defaultValue: T, store: UserDefaults) {
+    convenience init(key: String, defaultValue: T, store: UserDefaults = .standard) {
         self.init(key: key,
                   defaultValue: defaultValue,
                   store: store,
@@ -145,7 +147,7 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
         - store: The `UserDefaults` store to monitor.
         - initialValue: The initial value to use, typically loaded from `UserDefaults` before initialization.
      */
-    public init(key: String, defaultValue: T, store: UserDefaults, initialValue: T) {
+    public init(key: String, defaultValue: T, store: UserDefaults = .standard, initialValue: T) {
         self.key = key
         self.defaultValue = defaultValue
         self.store = store
@@ -157,15 +159,6 @@ extension CodableAppStorage where Value: ExpressibleByNilLiteral {
             .sink { [weak self] _ in
                 self?.updateFromDefaults()
             }
-    }
-    
-    /// Updates the value and persists it to UserDefaults.
-    public func setValue(_ newValue: T, forKey key: String, in store: UserDefaults = .standard) {
-        guard newValue != value else { return }
-        
-        _ = try? store.encodeAndSet(newValue, forKey: key)
-        // placement is important here, only set value if encoding succeeds
-        value = newValue
     }
     
     private func updateFromDefaults() {
