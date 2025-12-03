@@ -75,7 +75,6 @@ struct GameImageCard: View {
                             systemImage: "photo.badge.exclamationmark",
                             description: .init(error.localizedDescription)
                         )
-                        .background(.quinary)
                         .onAppear {
                             withAnimation { isImageEmpty = true }
                         }
@@ -87,7 +86,6 @@ struct GameImageCard: View {
                                 Please check your connection, and try again.
                                 """)
                         )
-                        .background(.quinary)
                         .onAppear {
                             withAnimation { isImageEmpty = true }
                         }
@@ -95,6 +93,7 @@ struct GameImageCard: View {
                 }
                 .frame(width: geometry.size.width,
                        height: geometry.size.height)
+                .background(.quinary)
                 .clipShape(.rect(cornerRadius: 20))
             }
         } else {
