@@ -12,7 +12,6 @@ import OSLog
 import AppKit
 
 @Observable class Game: Codable, Identifiable {
-    @MainActor static let store: GameDataStore = .shared
     @MainActor static let operationManager: GameOperationManager = .shared
 
     let id: String

@@ -13,6 +13,7 @@ import SwordRPC
 
 /// A view displaying the user's library of games.
 struct LibraryView: View {
+    @Bindable var gameDataStore: GameDataStore = .shared
     @ObservedObject private var variables: VariableManager = .shared
 
     @State private var isGameImportSheetPresented = false
@@ -46,7 +47,7 @@ struct LibraryView: View {
                 if !gameListViewModel.sortedLibrary.isEmpty {
                     ToolbarItem(placement: .automatic) {
                         Button("Force-refresh game list", systemImage: "arrow.clockwise") {
-                            Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
+                            Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
                         }
                         .help("Force-refresh the displayed games' status")
                     }

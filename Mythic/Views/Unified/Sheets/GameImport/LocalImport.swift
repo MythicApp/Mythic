@@ -16,6 +16,8 @@ import OSLog
 // FIXME: unify with GameImportView.Epic
 extension GameImportView {
     struct Local: View {
+        @Bindable var gameDataStore: GameDataStore = .shared
+        
         @Binding var isPresented: Bool
 
         @State private var game: LocalGame = .init(title: .init(),
@@ -127,7 +129,7 @@ extension GameImportView {
                     Spacer()
 
                     Button("Done") {
-                        Game.store.library.insert(game)
+                        gameDataStore.library.insert(game)
                         isPresented = false
                     }
                     .disabled(game.installationState == .uninstalled)

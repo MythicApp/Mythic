@@ -210,11 +210,11 @@ final class Migrator {
             log.notice("Migrating favourite game storage.")
 
             if let oldFavouriteGames: [String] = UserDefaults.standard.stringArray(forKey: "favouriteGames") {
-                try? await Game.store.refreshFromStorefronts()
+                try? await GameDataStore.shared.refreshFromStorefronts()
 
                 await MainActor.run {
-                    for id in oldFavouriteGames where Game.store.library.contains(where: { $0.id == id }) {
-                        let targetGame = Game.store.library.first(where: { $0.id == id })!
+                    for id in oldFavouriteGames where GameDataStore.shared.library.contains(where: { $0.id == id }) {
+                        let targetGame = GameDataStore.shared.library.first(where: { $0.id == id })!
                         targetGame.isFavourited = true
                     }
                 }
@@ -253,7 +253,7 @@ final class Migrator {
                                                     platform: platform)
                     )
 
-                    Game.store.library.insert(game)
+                    GameDataStore.shared.library.insert(game)
                     log.notice("Successfully migrated local game \(game.title) from local games library storage. (\(index + 1)/\(propertiesCount))")
                 }
             }
@@ -264,7 +264,7 @@ final class Migrator {
         static func migrateContainerURLs() async {
             if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_containerURL") }) {
-                try? await Game.store.refreshFromStorefronts()
+                try? await GameDataStore.shared.refreshFromStorefronts()
             }
 
             log.notice("Migrating game container URL storage.")
@@ -281,7 +281,7 @@ final class Migrator {
                 }
 
                 await MainActor.run {
-                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = GameDataStore.shared.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -296,7 +296,7 @@ final class Migrator {
         static func migrateLaunchArguments() async {
             if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_launchArguments") }) {
-                try? await Game.store.refreshFromStorefronts()
+                try? await GameDataStore.shared.refreshFromStorefronts()
             }
 
             log.notice("Migrating game launch argument storage.")
@@ -306,7 +306,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_launchArguments", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = GameDataStore.shared.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -324,7 +324,7 @@ final class Migrator {
         static func migrateImageURLs() async {
             if UserDefaults.standard.dictionaryRepresentation()
                            .contains(where: { $0.key.hasSuffix("_imageURL") }) {
-                           try? await Game.store.refreshFromStorefronts()
+                           try? await GameDataStore.shared.refreshFromStorefronts()
                        }
 
             log.notice("Migrating game vertical image storage.")
@@ -334,7 +334,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_imageURL", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = GameDataStore.shared.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }
@@ -351,7 +351,7 @@ final class Migrator {
         static func migrateWideImageURLs() async {
             if UserDefaults.standard.dictionaryRepresentation()
                 .contains(where: { $0.key.hasSuffix("_wideImageURL") }) {
-                try? await Game.store.refreshFromStorefronts()
+                try? await GameDataStore.shared.refreshFromStorefronts()
             }
 
             log.notice("Migrating game horizontal image storage.")
@@ -361,7 +361,7 @@ final class Migrator {
 
                 let targetGameID: String = key.replacingOccurrences(of: "_wideImageURL", with: "")
                 await MainActor.run {
-                    guard let targetGame = Game.store.library.first(where: { $0.id == targetGameID }) else {
+                    guard let targetGame = GameDataStore.shared.library.first(where: { $0.id == targetGameID }) else {
                         log.warning("Game with ID \(targetGameID) not found in store, skipping migration.")
                         return
                     }

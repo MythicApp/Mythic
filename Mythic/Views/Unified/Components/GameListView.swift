@@ -22,7 +22,7 @@ struct GameListView: View {
     
     var body: some View {
         VStack {
-            if Game.store.library.isEmpty {
+            if gameDataStore.library.isEmpty {
                 ContentUnavailableView(
                     "No games found. 😢",
                     systemImage: "folder.badge.questionmark",
@@ -53,7 +53,7 @@ struct GameListView: View {
                                 ForEach(viewModel.sortedLibrary) { game in
                                     GameCard(game: Binding(
                                         get: { game },
-                                        set: { Game.store.library.update(with: $0) }
+                                        set: { gameDataStore.library.update(with: $0) }
                                     ))
                                 }
                             }
@@ -63,7 +63,7 @@ struct GameListView: View {
                                 ForEach(viewModel.sortedLibrary) { game in
                                     GameCard(game: Binding(
                                         get: { game },
-                                        set: { Game.store.library.update(with: $0) }
+                                        set: { gameDataStore.library.update(with: $0) }
                                     ))
                                 }
                             }
@@ -74,7 +74,7 @@ struct GameListView: View {
                             ForEach(viewModel.sortedLibrary) { game in
                                 ListGameCard(game: Binding(
                                     get: { game },
-                                    set: { Game.store.library.update(with: $0) }
+                                    set: { gameDataStore.library.update(with: $0) }
                                 ))
                             }
                         }

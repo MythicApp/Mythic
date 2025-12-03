@@ -12,7 +12,10 @@ import OSLog
 
 struct EpicWebAuthView: View {
     @ObservedObject var viewModel: EpicWebAuthViewModel
+    
     @Bindable var gameListViewModel: GameListViewModel = .shared
+    @Bindable var gameDataStore: GameDataStore = .shared
+    
     @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
 
     @State private var isBlurred: Bool = false
@@ -28,11 +31,11 @@ struct EpicWebAuthView: View {
             .onAppear {
                 webDataStoreIdentifierString = UUID().uuidString
                 viewModel.signInSuccess = false
-                Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
+                Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
             }
             .onDisappear {
                 authKey = .init()
-                Task(priority: .userInitiated, operation: { try? await Game.store.refreshFromStorefronts() })
+                Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
             }
             .alert(isPresented: $isSigninErrorPresented) {
                 .init(

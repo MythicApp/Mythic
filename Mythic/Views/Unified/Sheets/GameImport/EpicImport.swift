@@ -14,6 +14,8 @@ import UniformTypeIdentifiers
 
 extension GameImportView {
     struct Epic: View {
+        @Bindable var gameDataStore: GameDataStore = .shared
+        
         @Binding var isPresented: Bool
         @State private var errorDescription: String = .init()
         @State private var isErrorAlertPresented = false
@@ -28,7 +30,7 @@ extension GameImportView {
         @State private var location: URL?
 
         private var installableGames: [EpicGamesGame] {
-            Game.store.library
+            gameDataStore.library
                 .compactMap { $0 as? EpicGamesGame }
                 .sorted(by: { $0.title < $1.title })
                 .filter({ $0.installationState == .uninstalled })

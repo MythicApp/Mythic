@@ -490,7 +490,7 @@ final class Legendary {
            let match = try? successRegex.firstMatch(in: result.standardError),
            let username = match["username"]?.substring {
             // refresh failure should not affect signin capability
-            try? await Game.store.refreshFromStorefronts()
+            try? await GameDataStore.shared.refreshFromStorefronts()
             return String(username)
         }
 

@@ -35,7 +35,7 @@ import OSLog
     }
     
     var sortedLibrary: [Game] {
-        Game.store.library
+        GameDataStore.shared.library
             .filter { game in
                 let matchesText: Bool = searchString.isEmpty || game.title.localizedStandardContains(searchString)
                 let matchesTokens: Bool = searchTokens.isEmpty || searchTokens.allSatisfy { token in

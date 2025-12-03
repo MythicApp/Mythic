@@ -54,9 +54,9 @@ import OSLog
     private var cancellables: Set<AnyCancellable> = .init()
 
     var recent: Game? {
-        guard !Game.store.library.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
+        guard !library.allSatisfy({ $0.lastLaunched == nil }) else { return nil }
 
-        return Game.store.library.max {
+        return library.max {
             $0.lastLaunched ?? .distantPast < $1.lastLaunched ?? .distantPast
         }
     }
@@ -80,7 +80,7 @@ import OSLog
             // installed: merge instead of overwrite
             for fetchedGame in installed {
                 if let existing = library.first(where: { $0 == fetchedGame }) {
-                    var mergedGame = fetchedGame as Game
+                    let mergedGame = fetchedGame as Game
                     mergedGame.merge(with: existing)
                     library.update(with: fetchedGame as EpicGamesGame)
                 } else {

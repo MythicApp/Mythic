@@ -41,7 +41,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         ])
 
         Task {
-            try? await Game.store.refreshFromStorefronts()
+            try? await GameDataStore.shared.refreshFromStorefronts()
         }
 
         Migrator.fullMigration()

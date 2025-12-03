@@ -18,6 +18,7 @@ import SwordRPC
  */
 struct HomeView: View {
     @EnvironmentObject var networkMonitor: NetworkMonitor
+    @Bindable var gameDataStore: GameDataStore = .shared
     
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
     
@@ -27,15 +28,15 @@ struct HomeView: View {
     @State private var isContainersSectionExpanded: Bool = true
 
     private var favouriteGamesExcludingRecent: [Game] {
-        Game.store.library
+        gameDataStore.library
             .filter(\.self.isFavourited)
-            .filter({ $0 != Game.store.recent })
+            .filter({ $0 != gameDataStore.recent })
     }
 
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
-                if let recentGame = Game.store.recent {
+                if let recentGame = gameDataStore.recent {
                     ZStack(alignment: .bottomLeading) {
                         GameImageCard(url: recentGame.horizontalImageURL, isImageEmpty: $isImageEmpty)
                             .aspectRatio(16/9, contentMode: .fill)

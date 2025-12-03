@@ -390,11 +390,12 @@ extension GameCard {
 
     struct SubscriptedInfoView: View {
         @Binding var game: Game
+        @Bindable var gameDataStore: GameDataStore = .shared
 
         var body: some View {
             SubscriptedTextView(game.storefront?.description ?? "Unknown")
 
-            if Game.store.recent == game {
+            if GameDataStore.shared.recent == game {
                 SubscriptedTextView("Recent")
             }
         }
