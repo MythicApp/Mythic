@@ -208,7 +208,7 @@ extension Game: CustomStringConvertible {
 
 // MARK: - Codable Polymorphism Support
 extension Game {
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
         case id,
              title,
              installationState
@@ -240,17 +240,36 @@ extension Game {
 }
 
 extension Game: Mergeable {
-    func merge(with other: Game) {
-        self._verticalImageURL = self._verticalImageURL ?? other._verticalImageURL
-        self._horizontalImageURL = self._horizontalImageURL ?? other._horizontalImageURL
-        self._containerURL = self._containerURL ?? other._containerURL
-
-        self.launchArguments = .init(Set(self.launchArguments + other.launchArguments))
-
-        if self.lastLaunched != nil || other.lastLaunched != nil {
-            self.lastLaunched = max(self.lastLaunched ?? .distantPast,
-                               other.lastLaunched ?? .distantPast)
+    static var ignoredMergeKeys: Set<String> {
+        ["id", "title", "installationState", "storefront"]
+    }
+    
+     func merge(with other: Game) -> MergeContext {
+        var context: MergeContext = .init()
+         // required for mutating protocol extension methods, even though this is a class
+        var `self` = self
+        
+        self.mergeOptional(CodingKeys._verticalImageURL, \._verticalImageURL, from: other, context: &context)
+        self.mergeOptional(CodingKeys._horizontalImageURL, \._horizontalImageURL, from: other, context: &context)
+        self.mergeOptional(CodingKeys._containerURL, \._containerURL, from: other, context: &context)
+        
+        self.mergeProperty(CodingKeys.launchArguments, \.launchArguments, from: other, context: &context) { current, new in
+            current = .init(Set(current + new))
         }
+        
+        self.mergeProperty(CodingKeys.isFavourited, \.isFavourited, from: other, context: &context) { current, new in
+            current = current || new
+        }
+        
+        self.mergeProperty(CodingKeys.lastLaunched, \.lastLaunched, from: other, context: &context) { current, new in
+            if current != nil || new != nil {
+                current = max(current ?? .distantPast, new ?? .distantPast)
+            }
+        }
+        
+        self.validateMergeCompleteness(codingKeys: CodingKeys.self, context: context)
+        
+        return context
     }
 }
 
