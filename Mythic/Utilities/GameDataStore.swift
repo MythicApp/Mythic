@@ -93,12 +93,3 @@ import OSLog
     }
 }
 
-import SwiftUI
-
-#Preview {
-    Button("t") {
-        Task {
-            try? await Game.store.refreshFromStorefronts()
-        }
-    }
-}
