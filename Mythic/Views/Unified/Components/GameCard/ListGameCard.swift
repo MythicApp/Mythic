@@ -53,11 +53,11 @@ struct ListGameCard: View {
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
                         .conditionalTransform(if: isImageEmpty) { view in
-                            view
-                                .foregroundStyle(.white)
+                            view.foregroundStyle(.white)
                         }
                 }
             }
+            .geometryGroup()
             .padding()
             // FIXME: not dynamic, but i'm tired and quite frankly it works
             .frame(maxHeight: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight,
