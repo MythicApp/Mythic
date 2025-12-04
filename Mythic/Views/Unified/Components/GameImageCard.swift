@@ -25,8 +25,8 @@ struct GameImageCard: View {
     }
     
     var body: some View {
-        if let url = url {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            if let url = url {
                 AsyncImage(url: url) { phase in
                     switch phase {
                     case .empty:
@@ -93,19 +93,20 @@ struct GameImageCard: View {
                 }
                 .frame(width: geometry.size.width,
                        height: geometry.size.height)
-                .background(.quinary)
-                .clipShape(.rect(cornerRadius: 20))
-            }
-        } else {
-            ContentUnavailableView(
-                "Image Unavailable",
-                systemImage: "photo.badge.exclamationmark",
-                description: .init("""
+            } else {
+                ContentUnavailableView(
+                    "Image Unavailable",
+                    systemImage: "photo.badge.exclamationmark",
+                    description: .init("""
                     This game doesn't have an image that Mythic can display in this style.
                     """)
-            )
-            .background(.quinary)
+                )
+                .frame(width: geometry.size.width,
+                       height: geometry.size.height)
+            }
         }
+        .background(.quinary)
+        .clipShape(.rect(cornerRadius: 20))
     }
 }
 
