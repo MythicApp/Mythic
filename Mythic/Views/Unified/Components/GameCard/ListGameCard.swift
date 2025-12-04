@@ -21,15 +21,20 @@ struct ListGameCard: View {
     
     var body: some View {
         ZStack {
-            GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
-                .aspectRatio(16/9, contentMode: .fill)
-                .blur(radius: isCardExpanded ? 0 : 30.0)
-                .conditionalTransform(if: isCardExpanded) { view in
-                    view.glur(radius: 20,
-                              offset: 0.7,
-                              interpolation: 0.7,
-                              drawingGroup: false)
-                }
+            GeometryReader { geometry in
+                GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                    .aspectRatio(16/9, contentMode: .fill)
+                    .blur(radius: isCardExpanded ? 0 : 30.0)
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height,
+                           alignment: .center)
+                    .conditionalTransform(if: isCardExpanded) { view in
+                        view.glur(radius: 20,
+                                  offset: 0.7,
+                                  interpolation: 0.7,
+                                  drawingGroup: false)
+                    }
+            }
             
             HStack {
                 if game.isFallbackImageAvailable, isImageEmpty {
