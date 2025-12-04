@@ -29,10 +29,9 @@ struct ListGameCard: View {
                            height: geometry.size.height,
                            alignment: .center)
                     .conditionalTransform(if: isCardExpanded) { view in
-                        view.glur(radius: 20,
-                                  offset: 0.7,
-                                  interpolation: 0.7,
-                                  drawingGroup: false)
+                        view.glur(radius: 18,
+                                  offset: 0.6,
+                                  interpolation: 0.6)
                     }
             }
             

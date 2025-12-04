@@ -21,7 +21,6 @@ struct ProminentOperationCard: View {
                     .aspectRatio(16/9, contentMode: .fill)
                     .frame(width: geometry.size.width,
                            height: geometry.size.height)
-                    .clipShape(.rect(cornerRadius: 20))
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading) {
@@ -70,8 +69,12 @@ struct ProminentOperationCard: View {
                 }
                 .padding()
                 .frame(width: geometry.size.width * 0.6)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                .frame(maxWidth: .infinity,
+                       maxHeight: .infinity,
+                       alignment: .bottomLeading)
             }
+            .clipShape(.rect(cornerRadius: 20))
+            .contentShape(.rect(cornerRadius: 20))
         }
     }
 }

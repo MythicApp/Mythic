@@ -35,10 +35,9 @@ struct GameSettingsView: View {
                             .aspectRatio(16/9, contentMode: .fill)
                             .frame(width: geometry.size.width,
                                    height: geometry.size.height * 0.75)
-                            .glur(radius: 20,
-                                  offset: 0.5,
-                                  interpolation: 0.7,
-                                  drawingGroup: false)
+                            .glur(radius: 18,
+                                  offset: 0.6,
+                                  interpolation: 0.6)
                         
                         HStack {
                             if isImageEmpty && game.isFallbackImageAvailable {
