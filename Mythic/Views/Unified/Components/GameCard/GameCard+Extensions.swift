@@ -376,8 +376,7 @@ extension GameCard {
 
         var body: some View {
             if let currentOperation = operationManager.queue.first, currentOperation.game == game {
-                InteractiveGameOperationProgressView(operation: .constant(currentOperation),
-                                                     withPercentage: false)
+                OperationCard.StatusView(operation: .constant(currentOperation))
             } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)
