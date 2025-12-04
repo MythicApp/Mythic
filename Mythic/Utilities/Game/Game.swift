@@ -246,19 +246,17 @@ extension Game: Mergeable {
         [. id, .title, .installationState, .storefront]
     }
     
-    var mergeRules: [AnyMergeRule] {
-        [
-            .init(\Game._verticalImageURL) { $0 ??  $1 },
-            .init(\Game._horizontalImageURL) { $0 ?? $1 },
-            .init(\Game._containerURL) { $0 ?? $1 },
-            .init(\Game.launchArguments) { .init(Set($0 + $1)) },
-            .init(\Game.isFavourited) { $0 || $1 },
-            .init(\Game.lastLaunched) { current, new in
-                guard current != nil || new != nil else { return current }
-                return max(current ?? . distantPast, new ?? . distantPast)
-            }
-        ]
-    }
+    var mergeRules: [AnyMergeRule] {[
+        .init(\Game._verticalImageURL, forCodingKey: ._verticalImageURL, strategy: { $0 ?? $1 }),
+        .init(\Game._horizontalImageURL, forCodingKey: ._horizontalImageURL, strategy: { $0 ?? $1 }),
+        .init(\Game._containerURL, forCodingKey: ._containerURL, strategy: { $0 ?? $1 }),
+        .init(\Game.launchArguments, forCodingKey: .launchArguments, strategy: { Array(Set($0 + $1)) }),
+        .init(\Game.isFavourited, forCodingKey: .isFavourited, strategy: { $0 || $1 }),
+        AnyMergeRule(\Game.lastLaunched, forCodingKey: .lastLaunched) { current, new in
+            guard current != nil || new != nil else { return current }
+            return max(current ??  . distantPast, new ?? .distantPast)
+        }
+    ]}
 }
 
 struct AnyGame: Codable, Equatable {
