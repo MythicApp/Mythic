@@ -153,8 +153,7 @@ extension SettingsView {
     struct ViewSettingsView: View {
         @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
         @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
-
-        @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
+        @CodableAppStorage("gameListLayout") var gameListLayout: GameListViewModel.Layout = .grid
 
         var body: some View {
             Slider(value: $gameCardSize, in: 200...400, step: 25) {
@@ -166,14 +165,15 @@ extension SettingsView {
             Slider(value: $imageCardBlur, in: 0...20, step: 5) {
                 Label("Gamecard Glow", systemImage: imageCardBlur <= 10 ? "sun.min" : "sun.max")
             }
-
-            Picker("Scrolling Direction", systemImage: "arrow.up.and.down.and.sparkles", selection: $isLibraryGridScrollingVertical) {
-                Text("Vertical")
-                    .tag(true)
-
-                Text("Horizontal")
-                    .tag(false)
+            
+            Picker("Game List Layout", systemImage: "macwindow", selection: $gameListLayout) {
+                Label("List", systemImage: "rectangle.grid.1x3")
+                    .tag(GameListViewModel.Layout.list)
+                
+                Label("Grid", systemImage: "square.grid.3x3")
+                    .tag(GameListViewModel.Layout.grid)
             }
+            .animation(.easeInOut, value: $gameListLayout.wrappedValue)
         }
     }
 

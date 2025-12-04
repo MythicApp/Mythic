@@ -158,16 +158,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             launchCountDictionary[shortVersion, default: 0] += 1
             UserDefaults.standard.set(launchCountDictionary, forKey: "launchCount")
         }
-
-        // give people from <0.5.0 people a taste of vertical scroll library grid
-        if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String,
-           shortVersion == "0.5.0",
-           let launchCountDictionary = UserDefaults.standard.dictionary(forKey: "launchCount") as? [String: Int],
-           launchCountDictionary[shortVersion] == 1,
-           UserDefaults.standard.bool(forKey: "isLibraryGridScrollingVertical") == false {
-            // vertical as God intended
-            UserDefaults.standard.set(true, forKey: "isLibraryGridScrollingVertical")
-        }
     }
 
     func applicationDidBecomeActive(_: Notification) {

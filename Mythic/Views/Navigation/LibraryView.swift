@@ -46,14 +46,14 @@ struct LibraryView: View {
                 // MARK: GameListView filter views
                 if !gameListViewModel.sortedLibrary.isEmpty {
                     ToolbarItem(placement: .automatic) {
-                        Button("Force-refresh game list", systemImage: "arrow.clockwise") {
+                        Button("Force-refresh", systemImage: "arrow.clockwise") {
                             Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
                         }
-                        .help("Force-refresh the displayed games' status")
+                        .help("Force a re-evaluation of your library contents.")
                     }
                     
                     ToolbarItem(placement: .automatic) {
-                        Picker("View", systemImage: "macwindow", selection: $gameListLayout) {
+                        Picker("Layout", systemImage: "macwindow", selection: $gameListLayout) {
                             Label("List", systemImage: "rectangle.grid.1x3")
                                 .tag(GameListViewModel.Layout.list)
                             

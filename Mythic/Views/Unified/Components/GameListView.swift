@@ -15,7 +15,6 @@ struct GameListView: View {
     @Bindable var gameDataStore: GameDataStore = .shared
     
     @CodableAppStorage("gameListLayout") var layout: GameListViewModel.Layout = .grid
-    @AppStorage("isLibraryGridScrollingVertical") private var isLibraryGridScrollingVertical: Bool = true
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
     
     @State private var isGameImportViewPresented: Bool = false
@@ -48,27 +47,15 @@ struct GameListView: View {
                     // FIXME: a dirtyfix is to directly set to the underlying library
                     switch layout {
                     case .grid:
-                        if isLibraryGridScrollingVertical {
-                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
-                                ForEach(viewModel.sortedLibrary) { game in
-                                    GameCard(game: Binding(
-                                        get: { game },
-                                        set: { gameDataStore.library.update(with: $0) }
-                                    ))
-                                }
+                        LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                            ForEach(viewModel.sortedLibrary) { game in
+                                GameCard(game: Binding(
+                                    get: { game },
+                                    set: { gameDataStore.library.update(with: $0) }
+                                ))
                             }
-                            .padding()
-                        } else {
-                            LazyHGrid(rows: [.init(.adaptive(minimum: gameCardSize))]) {
-                                ForEach(viewModel.sortedLibrary) { game in
-                                    GameCard(game: Binding(
-                                        get: { game },
-                                        set: { gameDataStore.library.update(with: $0) }
-                                    ))
-                                }
-                            }
-                            .padding()
                         }
+                        .padding()
                     case .list:
                         LazyVStack {
                             ForEach(viewModel.sortedLibrary) { game in
