@@ -16,10 +16,9 @@ struct LocalGameUninstallationView: View {
     @Bindable var gameListViewModel: GameListViewModel = .shared
     
     @State private var isImageEmpty: Bool = true
+    @State var isOperating: Bool = false
 
     @State private var removeFromDisk: Bool = true
-    
-    @State var isUninstallationOperating: Bool = false
     
     var body: some View {
         BaseGameInstallationView(
@@ -31,7 +30,7 @@ struct LocalGameUninstallationView: View {
                         }), isPresented: $isPresented,
             isImageEmpty: $isImageEmpty,
             type: "Uninstall",
-            operating: $isUninstallationOperating,
+            operating: $isOperating,
             action: {
                 _ = try await LocalGameManager.uninstall(game: game,
                                                           persistFiles: !removeFromDisk)

@@ -14,15 +14,10 @@ struct EpicGamesGameUninstallationView: View {
     @Bindable var gameListViewModel: GameListViewModel = .shared
     
     @State private var isImageEmpty: Bool = true
+    @State var isOperating: Bool = false
 
     @State private var removeFromDisk: Bool = true
     @State private var runUninstaller: Bool = true
-    @State private var isConfirmationPresented: Bool = false
-    
-    @State var isUninstallationOperating: Bool = false
-
-    @State private var isUninstallationErrorPresented: Bool = false
-    @State private var uninstallationErrorReason: String?
     
     var body: some View {
         BaseGameInstallationView(
@@ -34,7 +29,7 @@ struct EpicGamesGameUninstallationView: View {
                         }), isPresented: $isPresented,
             isImageEmpty: $isImageEmpty,
             type: "Uninstall",
-            operating: $isUninstallationOperating,
+            operating: $isOperating,
             action: {
                 Task(priority: .userInitiated) { @MainActor [game] in
                     _ = try await EpicGamesGameManager.uninstall(game: game,
