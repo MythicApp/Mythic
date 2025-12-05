@@ -10,16 +10,17 @@
 import Foundation
 import SwiftUI
 
-@available(*, deprecated, message: "Not for use yet ❤️")
 struct BaseGameInstallationView<Content>: View where Content: View {
-    @Binding var isPresented: Bool
     @Binding var game: Game
+    @Binding var isPresented: Bool
     @Binding var isImageEmpty: Bool
-    var titleText: Text
+    var type: String
     @Binding var operating: Bool
-    var action: () async -> Void
+    var action: () async throws -> Void
 
     @ViewBuilder var content: () -> Content
+    
+    @State private var isActionSuccessful: Bool?
 
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
@@ -29,7 +30,7 @@ struct BaseGameInstallationView<Content>: View where Content: View {
                 
 
                 VStack {
-                    titleText
+                    Text("\(type) \(game.description)")
                         .font(.title)
                         .bold()
 
@@ -48,24 +49,30 @@ struct BaseGameInstallationView<Content>: View where Content: View {
 
                 Spacer()
 
-                OperationButton("Done",
+                OperationButton(type,
                                 operating: $operating,
-                                successful: .constant(nil),
-                                action: { await action(); isPresented = false })
+                                successful: $isActionSuccessful) {
+                    do {
+                        try await action()
+                    } catch {
+                        isActionSuccessful = false
+                    }
+                    
+                    isPresented = false
+                }
                 .buttonStyle(.borderedProminent)
             }
             .padding(.top)
         }
-        .navigationTitle(titleText)
+        
     }
 }
 
 #Preview {
     BaseGameInstallationView(
-        isPresented: .constant(true),
-        game: .constant(placeholderGame(type: Game.self)),
+        game: .constant(placeholderGame(type: Game.self)), isPresented: .constant(true),
         isImageEmpty: .constant(false),
-        titleText: Text("Install (game)"),
+        type: "Install",
         operating: .constant(false),
         action: { print("action!") },
         content: {
