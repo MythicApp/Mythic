@@ -12,7 +12,7 @@ import DockProgress
 import OSLog
 
 @Observable final class GameOperation: Operation, Identifiable, @unchecked Sendable {
-    private var log: Logger { .custom(category: "GameOperation") }
+    private let log: Logger = .custom(category: "GameOperation")
 
     let id: UUID = .init()
     let game: Game
@@ -124,7 +124,7 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
         case .update:       String(localized: "Updating")
         case .move:         String(localized: "Moving")
         case .uninstall:    String(localized: "Uninstalling")
-        case .launch:       String(localized: "Launching")
+        case .launch:       String(localized: "Running")
         }
     }
 }

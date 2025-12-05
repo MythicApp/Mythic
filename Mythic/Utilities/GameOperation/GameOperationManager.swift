@@ -38,8 +38,9 @@ import DockProgress
     private init() {
         let queue: OperationQueue = .init()
         queue.name = "GameOperationManagerQueue"
-        queue.maxConcurrentOperationCount = 1
+        queue.maxConcurrentOperationCount = .max
         queue.qualityOfService = .utility
+        
         self._operationQueue = queue
     }
 
@@ -48,6 +49,19 @@ import DockProgress
     }
 
     func queueOperation(_ operation: GameOperation) {
+        // prevent concurrent operations from modifying the same game, potentially causing data races
+        for existingOperation in queue where existingOperation.game == operation.game {
+            operation.addDependency(existingOperation)
+        }
+        
+        // FIXME: Legendary has a self-managed datalock, so we'll queue those operations serially
+        if case .epicGames = operation.game.storefront,
+           ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+            for existingOperation in queue where existingOperation.game.storefront == .epicGames {
+                operation.addDependency(existingOperation)
+            }
+        }
+        
         let originalCompletionBlock = operation.completionBlock
         operation.completionBlock = { [self] in
             // run code that was already in the completion block
@@ -99,17 +113,6 @@ import DockProgress
         queue.append(operation)
 
         log.debug("Queued operation \(operation.debugDescription)")
-    }
-
-    // convenience overload that avoids direct `GameOperation` instantiation
-    func queueOperation(game: Game,
-                        type: GameOperation.ActiveOperationType,
-                        function: @escaping (Progress) async throws -> Void) {
-        queueOperation(
-            .init(game: game,
-                  type: type,
-                  function: function)
-        )
     }
 
     func cancelAllOperations() {

@@ -23,16 +23,18 @@ struct InteractiveGameOperationProgressView: View {
             OperationProgressView(operation: operation, withPercentage: withPercentage)
                 .layoutPriority(1)
 
-            Button {
-                isInstallStatusViewPresented = true
-            } label: {
-                Image(systemName: "info")
-            }
-            .clipShape(.capsule)
-            .help("View operation progress")
-            .sheet(isPresented: $isInstallStatusViewPresented) {
-                InstallStatusView(isPresented: $isInstallStatusViewPresented)
-                    .padding()
+            if ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+                Button {
+                    isInstallStatusViewPresented = true
+                } label: {
+                    Image(systemName: "info")
+                }
+                .clipShape(.capsule)
+                .help("View operation progress")
+                .sheet(isPresented: $isInstallStatusViewPresented) {
+                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                        .padding()
+                }
             }
 
             Button {
@@ -68,15 +70,20 @@ struct OperationProgressView: View {
     var withPercentage: Bool = false
 
     var body: some View {
-        ProgressView(value: operation.progressKVOBridge.fractionCompleted)
-            .progressViewStyle(.linear)
-            .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
-            .buttonStyle(.plain)
-
-        if withPercentage {
-            Text("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent))")
-                .layoutPriority(1)
-                .lineLimit(1)
+        if operation.progressKVOBridge.fractionCompleted == 0 {
+            ProgressView()
+                .controlSize(.small)
+            
+            Text(operation.type.description)
+        } else {
+            ProgressView(value: operation.progressKVOBridge.fractionCompleted)
+                .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
+            
+            if withPercentage {
+                Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent))
+                    .layoutPriority(1)
+                    .lineLimit(1)
+            }
         }
     }
 }

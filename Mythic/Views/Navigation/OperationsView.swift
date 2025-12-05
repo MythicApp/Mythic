@@ -16,7 +16,7 @@ struct OperationsView: View {
     
     var body: some View {
         Group {
-            if let currentOperation = operationManager.queue.first {
+            if let currentOperation = operationManager.queue.first { // strange syntax is for futureproofing
                 GeometryReader { geometry in
                     ScrollView {
                         VStack {
@@ -38,7 +38,7 @@ struct OperationsView: View {
                                     description: .init("If you attempt to download more than one game at the same time, it'll be added to this queue.")
                                 )
                             } else {
-                                ForEach(operationManager.queue.dropFirst(), id: \.self) { operation in
+                                ForEach(operationManager.queue.dropFirst()) { operation in
                                     OperationCard(operation: .constant(operation))
                                         .padding(.horizontal)
                                 }
