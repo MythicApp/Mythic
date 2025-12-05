@@ -361,6 +361,11 @@ extension GameCard {
                                                     isPresented: $isUninstallSheetPresented)
                     .padding()
                     .frame(width: 700, height: 380)
+                case let localGame as LocalGame:
+                    LocalGameUninstallationView(game: .init(get: { localGame }, set: { game = $0 }),
+                                                isPresented: $isUninstallSheetPresented)
+                    .padding()
+                    .frame(width: 700, height: 380)
                 default: EmptyView()
                 }
             }
