@@ -173,7 +173,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         let alert: NSAlert = .init()
         alert.messageText = String(localized: "Are you sure you want to quit?")
-        alert.informativeText = String(localized: "Mythic is still modifying games.")
+        alert.informativeText = String(localized: "Mythic is still accessing games.")
         alert.alertStyle = .warning
         alert.addButton(withTitle: String(localized: "Quit"))
         alert.addButton(withTitle: String(localized: "Cancel"))
