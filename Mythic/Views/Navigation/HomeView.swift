@@ -38,7 +38,7 @@ struct HomeView: View {
             ScrollView {
                 if let recentGame = gameDataStore.recent {
                     ZStack(alignment: .bottomLeading) {
-                        GameImageCard(url: recentGame.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                        GameImageCard(game: recentGame, url: recentGame.horizontalImageURL, isImageEmpty: $isImageEmpty)
                             .aspectRatio(16/9, contentMode: .fill)
                             .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
                             .glur(radius: 18,

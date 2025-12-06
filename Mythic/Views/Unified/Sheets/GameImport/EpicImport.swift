@@ -48,7 +48,7 @@ extension GameImportView {
         var body: some View {
             VStack {
                 HStack {
-                    GameImageCard(url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
+                    GameImageCard(game: game, url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
                         .aspectRatio(3/4, contentMode: .fit)
                         .padding([.top, .leading])
 

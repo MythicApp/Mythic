@@ -49,20 +49,24 @@ struct GameListView: View {
                     case .grid:
                         LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
                             ForEach(viewModel.sortedLibrary) { game in
-                                GameCard(game: Binding(
-                                    get: { game },
-                                    set: { gameDataStore.library.update(with: $0) }
-                                ))
+                                GameCard(game: .constant(game))
+                                // refresh view after operation completion
+                                // FIXME: dirtyfixes gamecards not being stateful for games
+                                .conditionalTransform(if: game.isOperating == false) { view in
+                                    view.id(UUID())
+                                }
                             }
                         }
                         .padding()
                     case .list:
                         LazyVStack {
                             ForEach(viewModel.sortedLibrary) { game in
-                                ListGameCard(game: Binding(
-                                    get: { game },
-                                    set: { gameDataStore.library.update(with: $0) }
-                                ))
+                                ListGameCard(game: .constant(game))
+                                // refresh view after operation completion
+                                // FIXME: dirtyfixes gamecards not being stateful for games
+                                .conditionalTransform(if: game.isOperating == false) { view in
+                                    view.id(UUID())
+                                }
                             }
                         }
                         .padding()

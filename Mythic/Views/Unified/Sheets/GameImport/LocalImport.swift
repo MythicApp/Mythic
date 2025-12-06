@@ -47,7 +47,7 @@ extension GameImportView {
             VStack {
                 HStack {
                     VStack {
-                        GameImageCard(url: game.verticalImageURL, isImageEmpty: .constant(false))
+                        GameImageCard(game: game, url: game.verticalImageURL, isImageEmpty: .constant(false))
                             .aspectRatio(3/4, contentMode: .fit)
                         
                         Label("Images with a 3:4 aspect ratio are preferred.",

@@ -17,7 +17,7 @@ struct ProminentOperationCard: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                GameImageCard(url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                GameImageCard(game: operation.game, url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                     .aspectRatio(16/9, contentMode: .fill)
                     .frame(width: geometry.size.width,
                            height: geometry.size.height)
@@ -86,7 +86,7 @@ struct OperationCard: View {
     
     var body: some View {
         ZStack {
-            GameImageCard(url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+            GameImageCard(game: operation.game, url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                 .aspectRatio(16/9, contentMode: .fill)
             
             HStack {

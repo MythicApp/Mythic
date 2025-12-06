@@ -22,7 +22,7 @@ struct ListGameCard: View {
     var body: some View {
         ZStack {
             GeometryReader { geometry in
-                GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                GameImageCard(game: game, url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                     .aspectRatio(16/9, contentMode: .fill)
                     .blur(radius: isCardExpanded ? 0 : 30.0)
                     .frame(width: geometry.size.width,
