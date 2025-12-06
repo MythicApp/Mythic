@@ -33,7 +33,7 @@ struct LocalGameUninstallationView: View {
             operating: $isOperating,
             action: {
                 _ = try await LocalGameManager.uninstall(game: game,
-                                                          persistFiles: !removeFromDisk)
+                                                         persistFiles: !removeFromDisk)
             },
             content: {
                 Form {
@@ -50,6 +50,6 @@ struct LocalGameUninstallationView: View {
 
 #Preview {
     LocalGameUninstallationView(game: .constant(placeholderGame(type: LocalGame.self)),
-                                    isPresented: .constant(true))
-        .padding()
+                                isPresented: .constant(true))
+    .padding()
 }

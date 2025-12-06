@@ -118,7 +118,9 @@ class LocalGameManager {
         }
 
         let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
-            try FileManager.default.removeItem(at: location)
+            if !persistFiles {
+                try FileManager.default.removeItem(at: location)
+            }
 
             // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
             // FIXME: ideally, destroy the game object somehow
