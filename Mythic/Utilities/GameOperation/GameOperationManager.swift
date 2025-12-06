@@ -111,8 +111,9 @@ import DockProgress
             // FIXME: since GameDataStore.refreshFromStorefronts is needed to re-sync file status
             // to fix this, legendary's JSONs must be monitored using an API like FSEvents.
             // but this is way simpler rofl
-            if case .install = operation.type {
-                Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts() })
+            if case .epicGames = operation.game.storefront,
+               ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+                Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts(.epicGames) })
             }
             
             log.debug("Operation \(operation.debugDescription) complete.")

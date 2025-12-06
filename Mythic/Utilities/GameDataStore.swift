@@ -61,36 +61,44 @@ import OSLog
         }
     }
 
-    func refreshFromStorefronts() async throws {
+    func refreshFromStorefronts(_ storefronts: Game.Storefront...) async throws {
         GameListViewModel.shared.isUpdatingLibrary = true
         defer {
             GameListViewModel.shared.isUpdatingLibrary = false
         }
         
+        // if variadics are empty, default to all cases
+        var storefronts = storefronts.isEmpty ? Game.Storefront.allCases : storefronts as [Game.Storefront]
+        
         // legendary (epic games)
-        do {
-            let installables = try Legendary.getInstallableGames()
-            let installed = try Legendary.getInstalledGames()
-            
-            // add installables that aren't installed
-            for game in installables where !installed.contains(where: { $0 == game }) {
-                library.update(with: game)
-            }
-            
-            // installed: merge instead of overwrite
-            for fetchedGame in installed {
-                if let existing = library.first(where: { $0 == fetchedGame }) {
-                    let mergedGame = fetchedGame as Game
-                    mergedGame.merge(with: existing)
-                    library.update(with: fetchedGame as EpicGamesGame)
-                } else {
-                    library.update(with: fetchedGame)
+        if storefronts.contains(.epicGames) {
+            do {
+                let installables = try Legendary.getInstallableGames()
+                let installed = try Legendary.getInstalledGames()
+                
+                // add installables that aren't installed
+                for game in installables where !installed.contains(where: { $0 == game }) {
+                    library.update(with: game)
                 }
+                
+                // installed: merge instead of overwrite
+                for fetchedGame in installed {
+                    if let existing = library.first(where: { $0 == fetchedGame }) {
+                        let mergedGame = fetchedGame as Game
+                        mergedGame.merge(with: existing)
+                        library.update(with: fetchedGame as EpicGamesGame)
+                    } else {
+                        library.update(with: fetchedGame)
+                    }
+                }
+            } catch {
+                log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
+                throw error
             }
-        } catch {
-            log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
-            throw error
         }
+        
+        // TODO: others
+        // if storefronts.contains(...) { ... }
     }
 }
 
