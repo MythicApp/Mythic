@@ -31,7 +31,7 @@ struct GameSettingsView: View {
             ScrollView {
                 VStack {
                     ZStack(alignment: .bottomLeading) {
-                        GameImageCard(game: game, url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+                        GameImageCard(url: game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                             .aspectRatio(16/9, contentMode: .fill)
                             .frame(width: geometry.size.width,
                                    height: geometry.size.height * 0.75)

@@ -86,7 +86,7 @@ struct OperationCard: View {
     
     var body: some View {
         ZStack {
-            GameImageCard(game: operation.game, url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
+            GameImageCard(url: operation.game.horizontalImageURL, isImageEmpty: $isImageEmpty)
                 .aspectRatio(16/9, contentMode: .fill)
             
             HStack {
