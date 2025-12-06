@@ -13,52 +13,6 @@ import OSLog
 import Shimmer
 
 extension GameCard {
-    struct FallbackImageCard: View {
-        @Binding var game: Game
-        @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
-        var withBlur: Bool = true
-
-        var body: some View {
-            if case .installed(let location, _) = game.installationState {
-
-                let image = Image(nsImage: NSWorkspace.shared.icon(forFile: location.path))
-
-                ZStack {
-                    // blurred image as background
-                    // save resources by only create this image if it'll be used for blur
-                    if withBlur && (imageCardBlur > 0) {
-                        // save resources by decreasing resolution scale of blurred image
-                        let renderer: ImageRenderer = {
-                            let renderer = ImageRenderer(content: image)
-                            renderer.scale = 0.2
-                            return renderer
-                        }()
-
-                        if let image = renderer.cgImage {
-                            Image(image, scale: 1, label: .init(""))
-                                .resizable()
-                                .clipShape(.rect(cornerRadius: 20))
-                                .blur(radius: 20.0 /* imageCardBlur */)
-                        }
-                    }
-
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .modifier(FadeInModifier())
-                }
-            } else {
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(.windowBackground)
-                    .shimmering(
-                        animation: .easeInOut(duration: 1)
-                            .repeatForever(autoreverses: false),
-                        bandSize: 1
-                    )
-            }
-        }
-    }
-
     struct ImageURLModifierView: View {
         @Binding var game: Game
         @Binding var imageURL: URL?

@@ -54,7 +54,7 @@ struct HomeView: View {
 
                         HStack {
                             if isImageEmpty, recentGame.isFallbackImageAvailable {
-                                GameCard.FallbackImageCard(game: .constant(recentGame))
+                                GameImageCard.FallbackGameImageCard(game: .constant(recentGame))
                                     .frame(width: 65, height: 65)
                                     .aspectRatio(contentMode: .fit)
                                     .padding(.trailing)

@@ -41,7 +41,7 @@ struct GameSettingsView: View {
                         
                         HStack {
                             if isImageEmpty && game.isFallbackImageAvailable {
-                                GameCard.FallbackImageCard(game: .constant(game))
+                                GameImageCard.FallbackGameImageCard(game: .constant(game))
                                     .frame(width: 65, height: 65)
                                     .aspectRatio(contentMode: .fit)
                                     .padding(.trailing)

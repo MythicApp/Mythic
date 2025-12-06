@@ -37,7 +37,7 @@ struct ListGameCard: View {
             
             HStack {
                 if game.isFallbackImageAvailable, isImageEmpty {
-                    GameCard.FallbackImageCard(game: $game)
+                    GameImageCard.FallbackGameImageCard(game: $game)
                         .frame(width: 70, height: 70)
                 }
                 

@@ -285,16 +285,16 @@ struct AnyGame: Codable, Equatable {
 }
 
 @MainActor func placeholderGame<T: Game>(type: T.Type) -> T {
-    if type is EpicGamesGame.Type {
-        assert(Legendary.isSignedIn, """
-        You must sign in through a live instance of the app before calling placeholderGame(type:).
-        """)
+    if type is EpicGamesGame.Type, !Legendary.isSignedIn {
+        assertionFailure("""
+            You must sign in through a live instance of the app before calling placeholderGame(type:).
+            """)
     }
 
     guard let game = GameDataStore.shared.library.first(where: { ($0 as? T) != nil }) as? T else {
         fatalError("""
-        No games are in your library of type \(T.self) to populate placeholderGame.
-        """)
+            No games are in your library of type \(T.self) to populate placeholderGame.
+            """)
     }
 
     return game as T

@@ -91,7 +91,7 @@ struct OperationCard: View {
             
             HStack {
                 if operation.game.isFallbackImageAvailable, isImageEmpty {
-                    GameCard.FallbackImageCard(game: .constant(operation.game))
+                    GameImageCard.FallbackGameImageCard(game: .constant(operation.game))
                         .frame(width: 70, height: 70)
                         .padding()
                 }

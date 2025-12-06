@@ -19,7 +19,7 @@ struct GameCard: View {
     @State private var isImageEmptyPreMacOSTahoe: Bool = true
 
     var body: some View {
-        GameImageCard(url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
+        GameImageCard(game: game, url: game.verticalImageURL, isImageEmpty: $isImageEmpty)
             .aspectRatio(3/4, contentMode: .fit)
             .overlay(alignment: .bottom) {
                 HStack {

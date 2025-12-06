@@ -12,13 +12,16 @@ import SwiftUI
 import Shimmer
 
 struct GameImageCard: View {
+    var game: Game?
     var url: URL?
     @Binding var isImageEmpty: Bool
     
     var withBlur: Bool
     @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
     
-    init(url: URL?, isImageEmpty: Binding<Bool>, withBlur: Bool = true) {
+    /// - Note: `game` must be passed as a parameter in order to include fallback image URLs.
+    init(game: Game? = nil, url: URL?, isImageEmpty: Binding<Bool>, withBlur: Bool = true) {
+        self.game = game
         self.url = url
         self._isImageEmpty = isImageEmpty
         self.withBlur = withBlur
@@ -93,6 +96,11 @@ struct GameImageCard: View {
                 }
                 .frame(width: geometry.size.width,
                        height: geometry.size.height)
+            } else if let game, game.isFallbackImageAvailable {
+                GameImageCard.FallbackGameImageCard(game: .constant(game), withBlur: withBlur)
+                    .padding()
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height)
             } else {
                 ContentUnavailableView(
                     "Image Unavailable",
@@ -110,14 +118,65 @@ struct GameImageCard: View {
     }
 }
 
+extension GameImageCard {
+    // TODO: implement for windows .exes by implementing PEFile
+    struct FallbackGameImageCard: View {
+        @Binding var game: Game
+        @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
+        var withBlur: Bool = true
+        
+        var body: some View {
+            if case .installed(let location, _) = game.installationState {
+                
+                let image = Image(nsImage: NSWorkspace.shared.icon(forFile: location.path))
+                
+                ZStack {
+                    // blurred image as background
+                    // save resources by only create this image if it'll be used for blur
+                    if withBlur && (imageCardBlur > 0) {
+                        // save resources by decreasing resolution scale of blurred image
+                        let renderer: ImageRenderer = {
+                            let renderer = ImageRenderer(content: image)
+                            renderer.scale = 0.2
+                            return renderer
+                        }()
+                        
+                        if let image = renderer.cgImage {
+                            Image(image, scale: 1, label: .init(""))
+                                .resizable()
+                                .clipShape(.rect(cornerRadius: 20))
+                                .blur(radius: imageCardBlur)
+                        }
+                    }
+                    
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .modifier(FadeInModifier())
+                }
+            } else {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.windowBackground)
+                    .shimmering(
+                        animation: .easeInOut(duration: 1)
+                            .repeatForever(autoreverses: false),
+                        bandSize: 1
+                    )
+            }
+        }
+    }
+}
+
 #Preview {
     HStack {
-        GameImageCard(url: placeholderGame(type: Game.self).horizontalImageURL,
+        GameImageCard(game: placeholderGame(type: LocalGame.self) as Game,
+                      url: placeholderGame(type: LocalGame.self).horizontalImageURL,
                       isImageEmpty: .constant(false),
                       withBlur: true)
         .aspectRatio(16/9, contentMode: .fill)
         
-        GameImageCard(url: placeholderGame(type: Game.self).verticalImageURL,
+        GameImageCard(game: placeholderGame(type: Game.self),
+                      url: placeholderGame(type: Game.self).verticalImageURL,
                       isImageEmpty: .constant(false),
                       withBlur: true)
         .aspectRatio(3/4, contentMode: .fill)
