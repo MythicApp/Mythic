@@ -81,7 +81,7 @@ struct OnboardingView: View {
                         case .greetings:
                             GreetingStage()
                                 .task { @MainActor in
-                                    if Legendary.user == nil { // TODO: add more cases as storefronts populate
+                                    if Legendary.isSignedIn { // TODO: add more cases as storefronts populate
                                         viewModel.stepStage()
                                     }
                                 }
@@ -219,7 +219,7 @@ private extension OnboardingView {
                         .fixedSize()
 
                     VStack(alignment: .leading) {
-                        if let user = Legendary.user {
+                        if let user = try? Legendary.retrieveUser() {
                             HStack {
                                 Label(user, systemImage: "chevron.right")
                                     .font(.title2.bold())

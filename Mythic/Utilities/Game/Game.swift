@@ -286,7 +286,7 @@ struct AnyGame: Codable, Equatable {
 
 @MainActor func placeholderGame<T: Game>(type: T.Type) -> T {
     if type is EpicGamesGame.Type {
-        assert(Legendary.signedIn, """
+        assert(Legendary.isSignedIn, """
         You must sign in through a live instance of the app before calling placeholderGame(type:).
         """)
     }

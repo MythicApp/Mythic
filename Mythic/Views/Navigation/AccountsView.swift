@@ -22,7 +22,7 @@ struct AccountsView: View {
         ScrollView {
             HStack {
                 AccountCard(
-                    signedInUser: .constant(Legendary.user),
+                    signedInUser: .constant(try? Legendary.retrieveUser()),
                     image: Image("EGFaceless"),
                     storefront: .epicGames,
                     signInAction: {

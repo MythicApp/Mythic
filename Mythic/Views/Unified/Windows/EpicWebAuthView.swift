@@ -99,7 +99,7 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
             return
         }
 
-        guard !Legendary.signedIn else {
+        guard !Legendary.isSignedIn else {
             Logger.app.warning("User is already signed in, skipping sign-in window")
             return
         }

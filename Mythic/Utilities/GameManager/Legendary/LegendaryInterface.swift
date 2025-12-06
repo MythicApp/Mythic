@@ -635,8 +635,9 @@ final class Legendary {
     }
 
     /// Queries for the user that is currently signed into epic games.
-    static var user: String? {
+    static func retrieveUser() throws -> String? {
         let userURL: URL = configurationFolder.appending(path: "user.json")
+        
         guard let userData = try? Data(contentsOf: userURL),
               let userObject = try? JSONDecoder().decode(User.self, from: userData) else {
             return nil
@@ -646,10 +647,10 @@ final class Legendary {
     }
 
     /// Checks account signin state.
-    static var signedIn: Bool { return user != nil }
+    static var isSignedIn: Bool { return (try? retrieveUser()) != nil }
 
     static func getInstalledGames() throws -> [EpicGamesGame] {
-        guard signedIn else { throw NotSignedInError() }
+        guard isSignedIn else { throw NotSignedInError() }
 
         let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
         
@@ -672,7 +673,7 @@ final class Legendary {
     }
 
     static func getInstallableGames() throws -> [EpicGamesGame] {
-        guard signedIn else { throw NotSignedInError() }
+        guard isSignedIn else { throw NotSignedInError() }
 
         let metadataDirectory: URL = configurationFolder.appending(path: "metadata")
 
@@ -797,7 +798,7 @@ final class Legendary {
 
     // don't use or at least refactor 💔 i could not code back in 2023
     static func isAlias(game: String) throws -> (Bool?, of: String?) {
-        guard signedIn else { throw NotSignedInError() }
+        guard isSignedIn else { throw NotSignedInError() }
 
         let aliasesFile: URL = configurationFolder.appending(path: "aliases.json")
         let aliasesData = try Data(contentsOf: aliasesFile)
