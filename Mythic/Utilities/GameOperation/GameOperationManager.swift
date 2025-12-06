@@ -105,7 +105,16 @@ import DockProgress
                     log.error("Unable to send notification for operation completion: \(error.localizedDescription)")
                 }
             }
-
+            
+            // FIXME: dirtyfix: refresh from storefronts after installation to update instances
+            // FIXME: of this operation's associated game with its new installation values,
+            // FIXME: since GameDataStore.refreshFromStorefronts is needed to re-sync file status
+            // to fix this, legendary's JSONs must be monitored using an API like FSEvents.
+            // but this is way simpler rofl
+            if case .install = operation.type {
+                Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts() })
+            }
+            
             log.debug("Operation \(operation.debugDescription) complete.")
         }
 

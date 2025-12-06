@@ -50,11 +50,6 @@ struct GameListView: View {
                         LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
                             ForEach(viewModel.sortedLibrary) { game in
                                 GameCard(game: .constant(game))
-                                // refresh view after operation completion
-                                // FIXME: dirtyfixes gamecards not being stateful for games
-                                .conditionalTransform(if: game.isOperating == false) { view in
-                                    view.id(UUID())
-                                }
                             }
                         }
                         .padding()
@@ -62,11 +57,6 @@ struct GameListView: View {
                         LazyVStack {
                             ForEach(viewModel.sortedLibrary) { game in
                                 ListGameCard(game: .constant(game))
-                                // refresh view after operation completion
-                                // FIXME: dirtyfixes gamecards not being stateful for games
-                                .conditionalTransform(if: game.isOperating == false) { view in
-                                    view.id(UUID())
-                                }
                             }
                         }
                         .padding()
