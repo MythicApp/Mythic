@@ -56,7 +56,7 @@ struct ListGameCard: View {
                 Group {
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
-                        .conditionalTransform(if: isImageEmpty) { view in
+                        .conditionalTransform(if: !isImageEmpty) { view in
                             view.foregroundStyle(.white)
                         }
                 }
