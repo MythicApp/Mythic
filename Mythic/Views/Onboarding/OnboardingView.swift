@@ -73,12 +73,18 @@ struct OnboardingView: View {
                                 .fixedSize()
                                 .onChange(of: epicWebAuthViewModel.signInSuccess) { _, success in
                                     // FIXME: since there's only epic, we can auto-skip after signin is a success
+                                    // TODO: add more cases as storefronts populate
                                     if success {
                                         viewModel.stepStage()
                                     }
                                 }
                         case .greetings:
                             GreetingStage()
+                                .task { @MainActor in
+                                    if Legendary.user == nil { // TODO: add more cases as storefronts populate
+                                        viewModel.stepStage()
+                                    }
+                                }
                         case .rosetta:
                             RosettaStage(
                                 isPresented: .init( // Handles presentation within onboarding
