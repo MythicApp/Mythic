@@ -199,6 +199,7 @@ extension GameCard {
 
             @EnvironmentObject var networkMonitor: NetworkMonitor
             @Bindable private var operationManager: GameOperationManager = .shared
+            
             var body: some View {
                 Button {
                     Task(priority: .userInitiated) {
