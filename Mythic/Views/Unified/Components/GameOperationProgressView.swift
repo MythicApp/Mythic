@@ -11,7 +11,7 @@ import SwiftUI
 
 struct InteractiveGameOperationProgressView: View {
     @Binding var operation: GameOperation
-    var withPercentage: Bool = true
+    var withLabel: Bool = true
 
     @State private var isGameOperationStatusViewPresented: Bool = false
 
@@ -20,7 +20,7 @@ struct InteractiveGameOperationProgressView: View {
 
     var body: some View {
         HStack {
-            OperationProgressView(operation: operation, withPercentage: withPercentage)
+            OperationProgressView(operation: operation, withLabel: withLabel)
                 .layoutPriority(1)
 
             if operation.type.modifiesFiles, operation.isExecuting {
@@ -67,20 +67,22 @@ struct InteractiveGameOperationProgressView: View {
 struct OperationProgressView: View {
     var operation: GameOperation
 
-    var withPercentage: Bool = false
+    var withLabel: Bool = false
 
     var body: some View {
         if operation.progressKVOBridge.fractionCompleted == 0 {
             ProgressView()
                 .controlSize(.small)
             
-            Text(operation.type.description)
-                .lineLimit(1)
+            if withLabel {
+                Text(operation.type.description)
+                    .lineLimit(1)
+            }
         } else {
             ProgressView(value: operation.progressKVOBridge.fractionCompleted)
                 .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
             
-            if withPercentage {
+            if withLabel {
                 Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent))
                     .layoutPriority(1)
                     .lineLimit(1)

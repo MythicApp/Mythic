@@ -136,10 +136,11 @@ extension OperationCard {
         @Bindable private var operationManager: GameOperationManager = .shared
         
         var hideStatusIfUnknown: Bool = false
+        var withLabel: Bool = true
         
         var body: some View {
             if operation.isExecuting {
-                InteractiveGameOperationProgressView(operation: $operation, withPercentage: true)
+                InteractiveGameOperationProgressView(operation: $operation, withLabel: withLabel)
                     .clipShape(.capsule)
             } else if operationManager.queue.contains(operation), !operation.isCancelled {
                 Button {

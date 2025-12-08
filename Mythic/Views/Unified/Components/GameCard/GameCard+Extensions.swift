@@ -382,7 +382,7 @@ extension GameCard {
 
         var body: some View {
             if let operation = operationManager.queue.first(where: { $0.isExecuting && $0.game == game }) {
-                OperationCard.StatusView(operation: .constant(operation))
+                OperationCard.StatusView(operation: .constant(operation), withLabel: withLabel)
             } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)
