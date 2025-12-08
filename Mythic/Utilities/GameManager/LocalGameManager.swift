@@ -125,6 +125,12 @@ class LocalGameManager {
             // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
             // FIXME: ideally, destroy the game object somehow
             game.installationState = .uninstalled
+            
+            // remove the game from the library if present.
+            // this is only necessary for non-storefront games.
+            if GameDataStore.shared.library.contains(game) {
+                GameDataStore.shared.library.remove(game)
+            }
         }
 
         Game.operationManager.queueOperation(operation)

@@ -129,6 +129,8 @@ extension GameImportView {
                     Spacer()
 
                     Button("Done") {
+                        // direct insertion into library is only necessary for
+                        // non-storefront games (i.e., local).
                         gameDataStore.library.insert(game)
                         isPresented = false
                     }
