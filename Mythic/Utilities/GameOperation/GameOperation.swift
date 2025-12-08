@@ -58,6 +58,7 @@ import OSLog
             
             do {
                 isExecuting = true
+                try Task.checkCancellation()
                 try await function(_progress)
             } catch is CancellationError {
                 log.notice("Operation \(self.debugDescription) was cancelled.")
