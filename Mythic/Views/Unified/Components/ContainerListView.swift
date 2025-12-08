@@ -15,6 +15,8 @@ struct ContainerListView: View {
     @State private var isContainerConfigurationViewPresented = false
     @State private var isDeletionAlertPresented = false
     
+    @State private var isContainerCreationViewPresented = false
+    
     var body: some View {
         if Engine.isInstalled {
             ForEach(Wine.containerObjects) { container in
@@ -71,6 +73,26 @@ struct ContainerListView: View {
                         )
                     }
                 }
+            }
+        } else if Wine.containerURLs.isEmpty {
+            ContentUnavailableView(
+                "No containers are initialised. 😢",
+                systemImage: "cube.transparent",
+                description: Text("""
+                    Containers will appear here.
+                    You must create a container in order to launch a Windows® game.
+                    """)
+            )
+            
+            Button {
+                isContainerCreationViewPresented = true
+            } label: {
+                Label("Create Container", systemImage: "plus")
+                    .padding(5)
+            }
+            .buttonStyle(.borderedProminent)
+            .sheet(isPresented: $isContainerCreationViewPresented) {
+                ContainerCreationView(isPresented: $isContainerCreationViewPresented)
             }
         } else {
             Engine.NotInstalledView()
