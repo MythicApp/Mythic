@@ -1,5 +1,5 @@
 //
-//  ImportGameView.swift
+//  GameImportView.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 29/9/2023.
@@ -18,7 +18,7 @@ struct GameImportView: View {
             if #available(macOS 15.0, *) {
                 TabView {
                     Tab("Epic", systemImage: "storefront") {
-                        GameImportView.Epic(isPresented: $isPresented)
+                        EpicGamesGameImportView(isPresented: $isPresented)
                     }
                     
                     Tab("Steam", systemImage: "storefront") {
@@ -27,19 +27,19 @@ struct GameImportView: View {
                     .hidden()
                     
                     Tab("Local", systemImage: "storefront") {
-                        GameImportView.Local(isPresented: $isPresented)
+                        LocalGameImportView(isPresented: $isPresented)
                     }
                 }
                 .tabViewStyle(.sidebarAdaptable)
                 .tabViewSidebarHeader(content: { Text("Select storefront:") })
             } else {
                 TabView {
-                    GameImportView.Epic(isPresented: $isPresented)
+                    EpicGamesGameImportView(isPresented: $isPresented)
                         .tabItem {
                             Label("Epic", systemImage: "storefront")
                         }
                     
-                    GameImportView.Local(isPresented: $isPresented)
+                    LocalGameImportView(isPresented: $isPresented)
                         .tabItem {
                             Label("Local", systemImage: "storefront")
                         }
