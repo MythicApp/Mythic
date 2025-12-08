@@ -302,23 +302,25 @@ private extension OnboardingView {
                         }
                     }
                 } else {
-                    Text("Setting up default container...")
-                        .font(.largeTitle.bold())
-
-                    ProgressView()
-                        .task {
-                            do {
-                                _ = try await Wine.createContainer(name: "Default")
-                                propagateBootSuccess()
-                            } catch {
-                                if error is Wine.Container.AlreadyExistsError {
-                                    propagateBootSuccess(); return
+                    HStack {
+                        Text("Setting up default container...")
+                            .font(.largeTitle)
+                            .bold()
+                        
+                        ProgressView()
+                            .controlSize(.small)
+                            .task {
+                                do {
+                                    _ = try await Wine.createContainer(name: "Default")
+                                    propagateBootSuccess()
+                                } catch is Wine.Container.AlreadyExistsError {
+                                    propagateBootSuccess()
+                                } catch {
+                                    bootError = error
+                                    isBootErrorAlertPresented = true
                                 }
-
-                                bootError = error
-                                isBootErrorAlertPresented = true
                             }
-                        }
+                    }
                 }
             }
             .task(priority: .high) { @MainActor in
