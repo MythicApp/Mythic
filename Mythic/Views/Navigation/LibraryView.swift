@@ -43,15 +43,15 @@ struct LibraryView: View {
                     .help("Import a game")
                 }
                 
+                ToolbarItem(placement: .automatic) {
+                    Button("Force-refresh", systemImage: "arrow.clockwise") {
+                        Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
+                    }
+                    .help("Force a re-evaluation of your library contents.")
+                }
+                
                 // MARK: GameListView filter views
                 if !gameListViewModel.sortedLibrary.isEmpty {
-                    ToolbarItem(placement: .automatic) {
-                        Button("Force-refresh", systemImage: "arrow.clockwise") {
-                            Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
-                        }
-                        .help("Force a re-evaluation of your library contents.")
-                    }
-                    
                     ToolbarItem(placement: .automatic) {
                         Picker("Layout", systemImage: "macwindow", selection: $gameListLayout) {
                             Label("List", systemImage: "rectangle.grid.1x3")
