@@ -38,7 +38,7 @@ struct LibraryView: View {
                     Button {
                         isGameImportSheetPresented = true
                     } label: {
-                        Label("Import", systemImage: "plus.app")
+                        Label("Import Game", systemImage: "plus.app")
                     }
                     .help("Import a game")
                 }

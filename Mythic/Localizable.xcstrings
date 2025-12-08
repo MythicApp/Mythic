@@ -12314,6 +12314,7 @@
       }
     },
     "Import" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {
@@ -12694,6 +12695,7 @@
       }
     },
     "Import game" : {
+      "extractionState" : "stale",
       "localizations" : {
         "af" : {
           "stringUnit" : {

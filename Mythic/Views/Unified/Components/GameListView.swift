@@ -34,7 +34,7 @@ struct GameListView: View {
                 Button {
                     isGameImportViewPresented = true
                 } label: {
-                    Label("Import game", systemImage: "plus.app")
+                    Label("Import Game", systemImage: "plus.app")
                         .padding(5)
                 }
                 .buttonStyle(.borderedProminent)
