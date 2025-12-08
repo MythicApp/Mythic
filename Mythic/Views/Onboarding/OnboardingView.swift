@@ -81,7 +81,7 @@ struct OnboardingView: View {
                         case .greetings:
                             GreetingStage()
                                 .task { @MainActor in
-                                    if Legendary.isSignedIn { // TODO: add more cases as storefronts populate
+                                    if !Legendary.isSignedIn { // TODO: add more cases as storefronts populate
                                         viewModel.stepStage()
                                     }
                                 }
