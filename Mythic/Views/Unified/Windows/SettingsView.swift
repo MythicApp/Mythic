@@ -455,6 +455,7 @@ extension SettingsView {
                     }
             } else {
                 Engine.NotInstalledView()
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
             }
         }
