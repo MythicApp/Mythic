@@ -55,7 +55,7 @@ struct OnboardingView: View {
                     }
 
                     if isHoveringOverProgressView {
-                        Text("\(viewModel.proportionCompletion.formatted(.percent)) complete")
+                        Text("\(viewModel.fractionCompleted.formatted(.percent)) complete")
                             .textCase(.uppercase)
                             .foregroundStyle(.secondary)
                             .font(.footnote)
@@ -129,7 +129,7 @@ struct OnboardingView: View {
                         // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                         HStack {
                             if onboardingError != nil {
-                                Button(String(describing: "Restart"), systemImage: "arrow.trianglehead.clockwise", action: viewModel.reset)
+                                Button(String(describing: "Restart"), systemImage: "arrow.trianglehead.clockwise", action: { viewModel.reset() })
                                     .clipShape(.capsule)
                             } else {
                                 Button("Next", systemImage: "arrow.right") {
@@ -146,7 +146,9 @@ struct OnboardingView: View {
                         }
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                .frame(maxWidth: .infinity,
+                       maxHeight: .infinity,
+                       alignment: .center)
                 
                 VStack {
 #if DEBUG
@@ -158,7 +160,7 @@ struct OnboardingView: View {
                         Button(String(describing: "Exit (DEBUG)"), systemImage: "xmark", action: { isOnboardingPresented = false })
                             .clipShape(.capsule)
 
-                        Button(String(describing: "Restart (DEBUG)"), systemImage: "arrow.trianglehead.clockwise", action: viewModel.reset)
+                        Button(String(describing: "Restart (DEBUG)"), systemImage: "arrow.trianglehead.clockwise", action: { viewModel.reset() })
                             .clipShape(.capsule)
                     }
 #endif // DEBUG

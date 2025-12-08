@@ -36,25 +36,6 @@ extension OnboardingView {
         }
 
         var currentStage: Stage
-        var proportionCompletion: Double {
-            guard !stages.isEmpty else { return 0 }
-            return Double(currentStageIndex + 1) / Double(stages.count)
-        }
-        var currentStageIndex: Int { stages.firstIndex(of: currentStage) ?? 0 }
-
-        func stepStage(by delta: Int = 1) {
-            let newIndex = currentStageIndex + delta
-            guard stages.indices.contains(newIndex) else { return }
-            withAnimation(.bouncy) {
-                currentStage = stages[newIndex]
-            }
-        }
-
-        func reset() {
-            withAnimation(.bouncy) {
-                currentStage = stages.first ?? .welcome
-            }
-        }
     }
 }
 

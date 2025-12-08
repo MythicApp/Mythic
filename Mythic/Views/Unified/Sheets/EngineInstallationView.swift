@@ -177,15 +177,6 @@ extension EngineInstallationView {
         }
         
         var currentStage: Stage
-        var currentStageIndex: Int { stages.firstIndex(of: currentStage) ?? 0 }
-        
-        func stepStage(by delta: Int = 1) {
-            let newIndex = currentStageIndex + delta
-            guard stages.indices.contains(newIndex) else { return }
-            withAnimation(.bouncy) {
-                currentStage = stages[newIndex]
-            }
-        }
     }
 }
 
