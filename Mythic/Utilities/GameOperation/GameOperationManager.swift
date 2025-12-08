@@ -26,9 +26,9 @@ import DockProgress
     // necessitated by deprecation of `OperationQueue.operations`
     internal private(set) var queue: [GameOperation] = .init() {
         didSet {
-            if let currentOperation = self.queue.first {
+            if let currentOperation = self.queue.first(where: { $0.type.modifiesFiles && $0.isExecuting }) {
                 Task { @MainActor in
-                    DockProgress.style = .badge(color: .accentColor, badgeValue: { self.queue.count })
+                    DockProgress.style = .badge(color: .accentColor, badgeValue: { self.queue.filter({ $0.type.modifiesFiles }).count })
                     DockProgress.progressInstance = currentOperation.progressKVOBridge._progress
                 }
             }
@@ -54,9 +54,8 @@ import DockProgress
             operation.addDependency(existingOperation)
         }
         
-        // FIXME: Legendary has a self-managed datalock, so we'll queue those operations serially
-        if case .epicGames = operation.game.storefront,
-           ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+        // FIXME: Legendary has a self-managed datalock, so we must queue those operations serially
+        if case .epicGames = operation.game.storefront, operation.type.modifiesFiles {
             for existingOperation in queue where existingOperation.game.storefront == .epicGames {
                 operation.addDependency(existingOperation)
             }
@@ -111,8 +110,7 @@ import DockProgress
             // FIXME: since GameDataStore.refreshFromStorefronts is needed to re-sync file status
             // to fix this, legendary's JSONs must be monitored using an API like FSEvents.
             // but this is way simpler rofl
-            if case .epicGames = operation.game.storefront,
-               ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+            if case .epicGames = operation.game.storefront, operation.type.modifiesFiles {
                 Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts(.epicGames) })
             }
             

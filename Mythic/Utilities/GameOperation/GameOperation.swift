@@ -8,7 +8,6 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
-import DockProgress
 import OSLog
 
 @Observable final class GameOperation: Operation, Identifiable, @unchecked Sendable {
@@ -113,6 +112,13 @@ extension GameOperation {
         case move
         case uninstall
         case launch
+        
+        var modifiesFiles: Bool {
+            switch self {
+            case .install:  false
+            default:        true
+            }
+        }
     }
 }
 

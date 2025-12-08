@@ -1,5 +1,5 @@
 //
-//  InstallStatus.swift
+//  GameOperationStatusView.swift
 //  Mythic
 //
 //  Created by vapidinfinity (esi) on 3/12/2023.
@@ -11,8 +11,9 @@ import SwiftUI
 import Foundation
 import Charts // TODO: TODO
 
-struct InstallStatusView: View {
+struct GameOperationStatusView: View {
     @Binding var isPresented: Bool
+    @Binding var operation: GameOperation
     @Bindable private var operationManager: GameOperationManager = .shared
 
     let estimatedTimeRemainingFormatter: DateComponentsFormatter = {
@@ -23,8 +24,8 @@ struct InstallStatusView: View {
 
     var body: some View {
         VStack { // wrap in VStack to prevent padding from callers being applied within the view
-            if let currentOperation = operationManager.queue.first {
-                Text(currentOperation.description)
+            if operation.isExecuting {
+                Text(operation.description)
                     .font(.title)
                     .bold()
 
@@ -34,21 +35,23 @@ struct InstallStatusView: View {
 
                         Spacer()
 
-                        ProgressView(value: currentOperation.progressKVOBridge.fractionCompleted)
+                        ProgressView(value: operation.progressKVOBridge.fractionCompleted)
                             .progressViewStyle(.circular)
                             .controlSize(.small)
-                        Text(currentOperation.progressKVOBridge.fractionCompleted.formatted(.percent))
+                        Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent))
                     }
 
-                    HStack {
-                        Label("Files", systemImage: "folder")
-
-                        Spacer()
-
-                        Text("(\(currentOperation.progressKVOBridge.fileCompletedCount ?? 0)/\(currentOperation.progressKVOBridge.fileTotalCount ?? 0))")
+                    if operation.type.modifiesFiles {
+                        HStack {
+                            Label("Files", systemImage: "folder")
+                            
+                            Spacer()
+                            
+                            Text("(\(operation.progressKVOBridge.fileCompletedCount ?? 0)/\(operation.progressKVOBridge.fileTotalCount ?? 0))")
+                        }
                     }
 
-                    if let estimatedTimeRemaining = currentOperation.progressKVOBridge.estimatedTimeRemaining {
+                    if let estimatedTimeRemaining = operation.progressKVOBridge.estimatedTimeRemaining {
                         HStack {
                             Label("Estimated Time Remaining", systemImage: "clock")
 
@@ -58,7 +61,7 @@ struct InstallStatusView: View {
                         }
                     }
 
-                    if let throughput = currentOperation.progressKVOBridge.throughput {
+                    if let throughput = operation.progressKVOBridge.throughput {
                         HStack {
                             Label("Throughput", systemImage: "arrow.up.arrow.down")
 
@@ -71,7 +74,7 @@ struct InstallStatusView: View {
                 .formStyle(.grouped)
             } else {
                 ContentUnavailableView(
-                    "No download is currently in progress.",
+                    "This operation isn't currently running.",
                     systemImage: "externaldrive.badge.checkmark"
                 )
             }
@@ -86,6 +89,6 @@ struct InstallStatusView: View {
 }
 
 #Preview {
-    InstallStatusView(isPresented: .constant(true))
+    GameOperationStatusView(isPresented: .constant(true), operation: .constant(.init(game: placeholderGame(type: Game.self), type: .install, function: { _ in })))
         .padding()
 }

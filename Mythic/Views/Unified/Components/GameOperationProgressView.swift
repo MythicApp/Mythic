@@ -13,7 +13,7 @@ struct InteractiveGameOperationProgressView: View {
     @Binding var operation: GameOperation
     var withPercentage: Bool = true
 
-    @State private var isInstallStatusViewPresented: Bool = false
+    @State private var isGameOperationStatusViewPresented: Bool = false
 
     @State private var isStopGameOperationAlertPresented: Bool = false
     @State private var isHoveringOverDestructiveButton: Bool = false
@@ -23,16 +23,16 @@ struct InteractiveGameOperationProgressView: View {
             OperationProgressView(operation: operation, withPercentage: withPercentage)
                 .layoutPriority(1)
 
-            if ![.launch].contains(operation.type) { // strange syntax is for futureproofing
+            if operation.type.modifiesFiles, operation.isExecuting {
                 Button {
-                    isInstallStatusViewPresented = true
+                    isGameOperationStatusViewPresented = true
                 } label: {
                     Image(systemName: "info")
                 }
                 .clipShape(.capsule)
                 .help("View operation progress")
-                .sheet(isPresented: $isInstallStatusViewPresented) {
-                    InstallStatusView(isPresented: $isInstallStatusViewPresented)
+                .sheet(isPresented: $isGameOperationStatusViewPresented) {
+                    GameOperationStatusView(isPresented: $isGameOperationStatusViewPresented, operation: $operation)
                         .padding()
                 }
             }

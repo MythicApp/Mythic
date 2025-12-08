@@ -444,11 +444,11 @@
 			children = (
 				6A762F762ED8899300D6F1A8 /* GameInstallationView */,
 				6A18E6722EE6748400AA3B15 /* GameImportView */,
+				6A2934E42BFCFAFD0035CE4B /* GameOperationStatusView.swift */,
 				6A0210152D390016009C85F8 /* HarmonyRatingView.swift */,
 				6A2934E02BFCFAFD0035CE4B /* ContainerCreationView.swift */,
 				6A2934E12BFCFAFD0035CE4B /* ContainerSettingsView.swift */,
 				6A2934E22BFCFAFD0035CE4B /* GameSettingsView.swift */,
-				6A2934E42BFCFAFD0035CE4B /* GameOperationStatusView.swift */,
 				6AC2847B2EA523440008091F /* EngineInstallationView.swift */,
 				6AC284792EA45ED00008091F /* RosettaInstallationView.swift */,
 			);
@@ -1031,7 +1031,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4301;
+				CURRENT_PROJECT_VERSION = 4302;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";
@@ -1079,7 +1079,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4301;
+				CURRENT_PROJECT_VERSION = 4302;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mythic/Preview Content\"";

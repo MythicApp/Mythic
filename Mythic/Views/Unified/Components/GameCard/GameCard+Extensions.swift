@@ -381,8 +381,8 @@ extension GameCard {
         @EnvironmentObject var networkMonitor: NetworkMonitor
 
         var body: some View {
-            if let currentOperation = operationManager.queue.first, currentOperation.game == game {
-                OperationCard.StatusView(operation: .constant(currentOperation))
+            if let operation = operationManager.queue.first(where: { $0.isExecuting && $0.game == game }) {
+                OperationCard.StatusView(operation: .constant(operation))
             } else if case .installed = game.installationState {
                 Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
                 MenuView(game: $game)

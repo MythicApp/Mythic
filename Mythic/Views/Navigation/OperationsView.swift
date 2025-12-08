@@ -16,7 +16,7 @@ struct OperationsView: View {
     
     var body: some View {
         Group {
-            if let currentOperation = operationManager.queue.first { // strange syntax is for futureproofing
+            if let currentOperation = operationManager.queue.first {
                 GeometryReader { geometry in
                     ScrollView {
                         VStack {
