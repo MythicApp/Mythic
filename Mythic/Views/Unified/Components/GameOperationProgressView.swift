@@ -75,6 +75,7 @@ struct OperationProgressView: View {
                 .controlSize(.small)
             
             Text(operation.type.description)
+                .lineLimit(1)
         } else {
             ProgressView(value: operation.progressKVOBridge.fractionCompleted)
                 .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
