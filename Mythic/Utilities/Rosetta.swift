@@ -11,10 +11,11 @@ import Foundation
 
 final class Rosetta {
     static var exists: Bool { // thread-blocking, but ~0.04 sec cpu time
-        let result = try? Process.execute(
-            executableURL: URL(filePath: "/usr/bin/pgrep"),
-            arguments: ["oahd"]
-        )
+        let process: Process = .init()
+        process.executableURL = .init(filePath: "/usr/bin/pgrep")
+        process.arguments = ["oahd"]
+
+        let result = try? process.runWrapped()
 
         return result?.standardOutput.isEmpty == false
     }
@@ -33,8 +34,11 @@ final class Rosetta {
     ) async throws {
         guard agreeToSLA else { throw AgreementFailure() }
 
-        let stream = Process.stream(executableURL: .init(filePath: "/usr/sbin/softwareupdate"),
-                       arguments: ["--install-rosetta", "--agree-to-license"])
+        let process: Process = .init()
+        process.executableURL = .init(filePath: "/usr/sbin/softwareupdate")
+        process.arguments = ["--install-rosetta", "--agree-to-license"]
+
+        let stream = process.runStreamed()
 
         for try await chunk in stream {
             guard case .standardOutput = chunk.stream else { continue }

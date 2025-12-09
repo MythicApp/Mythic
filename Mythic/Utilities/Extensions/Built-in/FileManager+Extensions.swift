@@ -17,14 +17,15 @@ extension FileManager {
     }
 
     func forceCopyItem(at sourceURL: URL, to destinationURL: URL) throws {
-        let result = try Process.execute(
-            executableURL: .init(filePath: "/bin/cp"),
-            arguments: [
-                "-f",
-                sourceURL.path(percentEncoded: false),
-                destinationURL.path(percentEncoded: false)
-            ]
-        )
+        let process: Process = .init()
+        process.executableURL = .init(filePath: "/bin/cp")
+        process.arguments = [
+            "-f",
+            sourceURL.path(percentEncoded: false),
+            destinationURL.path(percentEncoded: false)
+        ]
+
+        let result = try process.runWrapped()
 
         if !result.standardError.isEmpty {
             throw ForceCopyFailedError()

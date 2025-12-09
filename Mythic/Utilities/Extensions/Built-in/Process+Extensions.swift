@@ -13,33 +13,18 @@ import OSLog
 extension Process {
     /// Synchronously executes a process, and immediately attempts to collect complete stdout/stderr.
     /// Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
-    static func execute(
-        executableURL: URL,
-        arguments: [String] = [],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
-    ) throws -> CommandResult {
-        let process = Process()
+    func runWrapped() throws -> CommandResult {
+        let stderr: Pipe = .init(); self.standardError = stderr
+        let stdout: Pipe = .init(); self.standardOutput = stdout
 
-        process.executableURL = executableURL
-        process.arguments = arguments
+        let log: Logger = .custom(category: "Process.execute@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
 
-        if let environment { // if there are unseen env vars, don't remove them
-            process.environment = environment
-        }
-        process.currentDirectoryURL = currentDirectoryURL
-
-        let stderr: Pipe = .init(); process.standardError = stderr
-        let stdout: Pipe = .init(); process.standardOutput = stdout
-
-        let log: Logger = .custom(category: "Process.execute@\(executableURL)")
-
-        try process.run()
+        try self.run()
 
         let stdoutData = try stdout.fileHandleForReading.readToEnd()
         let stderrData = try stderr.fileHandleForReading.readToEnd()
 
-        process.waitUntilExit()
+        self.waitUntilExit()
 
         // swiftlint:disable optional_data_string_conversion
         let stdoutOutput = String(decoding: stdoutData ?? .init(), as: UTF8.self)
@@ -48,33 +33,18 @@ extension Process {
 
         return .init(standardOutput: stdoutOutput,
                      standardError: stderrOutput,
-                     exitCode: process.terminationStatus)
+                     exitCode: self.terminationStatus)
     }
 
     // allow the compiler to automatically choose execute overload depending on async/sync context
     /// Asynchronously executes a process, and concurrently collects stdout and stderr.
-    static func execute(
-        executableURL: URL,
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
-    ) async throws -> CommandResult {
-        let process: Process = .init()
+    func runWrapped() async throws -> CommandResult {
+        let stderr: Pipe = .init(); self.standardError = stderr
+        let stdout: Pipe = .init(); self.standardOutput = stdout
 
-        process.executableURL = executableURL
-        process.arguments = arguments
+        let log: Logger = .custom(category: "Process.execute(async)@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
 
-        if let environment { // if there are unseen env vars, don't remove them
-            process.environment = environment
-        }
-        process.currentDirectoryURL = currentDirectoryURL
-
-        let stderr: Pipe = .init(); process.standardError = stderr
-        let stdout: Pipe = .init(); process.standardOutput = stdout
-
-        let log: Logger = .custom(category: "Process.execute(async)@\(executableURL)")
-
-        try process.run()
+        try self.run()
 
         // accumulate piped data asynchronously
         let stdoutTask = Task.detached(priority: .utility) { () -> String in
@@ -99,54 +69,32 @@ extension Process {
 
         // wait for termination w/o blocking, concurrency genius!!!!!
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            process.terminationHandler = { _ in
+            self.terminationHandler = { _ in
                 continuation.resume()
             }
         }
 
         return .init(standardOutput: await stdoutTask.value,
                      standardError: await stderrTask.value,
-                     exitCode: process.terminationStatus)
+                     exitCode: self.terminationStatus)
     }
 
-    static func executeAsync(
-        executableURL: URL,
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
-    ) async throws -> CommandResult {
-        try await execute(executableURL: executableURL,
-                          arguments: arguments,
-                          environment: environment,
-                          currentDirectoryURL: currentDirectoryURL)
+    func runWrappedAsync() async throws -> CommandResult {
+        try await runWrapped()
     }
     
     /// Starts a process and returns an ``AsyncThrowingStream`` of incremental ``OutputChunk``s.
     /// If `onChunk` is provided, its return value (String) will be written to stdin for each chunk.
-    static func stream(
-        executableURL: URL,
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil,
+    func runStreamed(
         throwsOnChunkError: Bool = true,
         onChunk: (@Sendable (OutputChunk) throws -> String?)? = nil
     ) -> AsyncThrowingStream<OutputChunk, Error> {
         AsyncThrowingStream { continuation in
-            let process: Process = .init()
+            let stdin: Pipe = .init(); self.standardInput = stdin
+            let stderr: Pipe = .init(); self.standardError = stderr
+            let stdout: Pipe = .init(); self.standardOutput = stdout
 
-            process.executableURL = executableURL
-            process.arguments = arguments
-
-            if let environment { // if there are unseen env vars, don't remove them
-                process.environment = environment
-            }
-            process.currentDirectoryURL = currentDirectoryURL
-
-            let stdin: Pipe = .init(); process.standardInput = stdin
-            let stderr: Pipe = .init(); process.standardError = stderr
-            let stdout: Pipe = .init(); process.standardOutput = stdout
-
-            let log: Logger = .custom(category: "Process.stream@\(executableURL)")
+            let log: Logger = .custom(category: "Process.runStreamed@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
 
             // safety first!! (keep swift 6 happy)
             actor StdinWriter {
@@ -216,23 +164,23 @@ extension Process {
             // cancel/finish handling: if the consumer cancels, terminate the child gracefully.
             continuation.onTermination = { @Sendable _ in
                 Task.detached {
-                    if process.isRunning { process.interrupt() } // try sigint
+                    if self.isRunning { self.interrupt() } // try sigint
                     try? await Task.sleep(for: .seconds(6))
-                    if process.isRunning { process.terminate() } // try sigterm
+                    if self.isRunning { self.terminate() } // try sigterm
                     try? await Task.sleep(for: .seconds(2))
-                    if process.isRunning { kill(process.processIdentifier, SIGKILL) } // sigkill, BEGONE
+                    if self.isRunning { kill(self.processIdentifier, SIGKILL) } // sigkill, BEGONE
 
                     safeClose()
                 }
             }
 
-            process.terminationHandler = { _ in
+            self.terminationHandler = { _ in
                 safeClose()
                 continuation.finish()
             }
 
             do {
-                try process.run()
+                try self.run()
             } catch {
                 safeClose()
                 continuation.finish(throwing: error)

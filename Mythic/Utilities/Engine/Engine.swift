@@ -137,13 +137,17 @@ final class Engine {
                                 }
 
                                 continuation.yield(.init(stage: .installing, progress: installationProgress))
-                                let process = try await Process.execute(
-                                    executableURL: .init(filePath: "/usr/bin/tar"),
-                                    arguments: ["-xJf", file.path, "-C", directory.path]
-                                )
+                                
+                                let process: Process = .init()
+                                process.executableURL = .init(filePath: "/usr/bin/tar")
+                                process.arguments = ["-xJf", file.path, "-C", directory.path]
+                                
+                                // FIXME: swift compiler bug? 'type of expression is ambiguous without a type annotation on line 110?
+                                // FIXME: this is not good, tar errors won't propagate
+                                let processResult = try? await process.runWrapped()
 
                                 // `man tar` (bsdtar) — The tar utility exits 0 on success, and >0 if an error occurs.
-                                guard process.exitCode == 0 else {
+                                guard processResult?.exitCode == 0 else {
                                     log.error("unable to install engine, tar stderr: \(process.standardError)")
                                     continuation.finish(throwing: CocoaError(.fileWriteUnknown)); return
                                 }
@@ -161,11 +165,11 @@ final class Engine {
 
                     Task(priority: .utility) {
                         while case .running = task.state {
-                            continuation.yield(.init(stage: .downloading, progress: task.progress))
+                            continuation.yield(InstallProgress(stage: .downloading, progress: task.progress))
                             try? await Task.sleep(for: .milliseconds(100))
                         }
                         // finally yield upon completion
-                        continuation.yield(.init(stage: .downloading, progress: task.progress))
+                        continuation.yield(InstallProgress(stage: .downloading, progress: task.progress))
                     }
 
                     task.resume()
@@ -182,3 +186,4 @@ final class Engine {
         }
     }
 }
+

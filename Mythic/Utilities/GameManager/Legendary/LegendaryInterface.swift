@@ -26,7 +26,7 @@ final class Legendary {
     /// Logger instance for legendary.
     static let log: Logger = .custom(category: "LegendaryInterface")
 
-    // Minimal registry for running consumer tasks (cancel stops process via Process.stream cancellation)
+    // Minimal registry for running consumer tasks (cancel stops process via Process.runStreamed cancellation)
     actor RunningCommands {
         static let shared: RunningCommands = .init()
 
@@ -96,12 +96,13 @@ final class Legendary {
         currentDirectoryURL: URL? = nil
     ) async throws -> Process.CommandResult {
         let args = await applyOfflineFlagIfNeeded(arguments)
-        return try await Process.execute(
-            executableURL: legendaryExecutableURL,
-            arguments: args,
-            environment: constructEnvironment(withAdditionalFlags: environment ?? [:]),
-            currentDirectoryURL: currentDirectoryURL
-        )
+        let process: Process = .init()
+        process.executableURL = legendaryExecutableURL
+        process.arguments = args
+        process.environment = constructEnvironment(withAdditionalFlags: environment ?? [:])
+        process.currentDirectoryURL = currentDirectoryURL
+
+        return try await process.runWrapped()
     }
 
     // FIXME: implementation sucks
@@ -118,11 +119,13 @@ final class Legendary {
             let args = await applyOfflineFlagIfNeeded(arguments)
             let environment = constructEnvironment(withAdditionalFlags: environment ?? [:])
 
-            let stream = Process.stream(
-                executableURL: legendaryExecutableURL,
-                arguments: args,
-                environment: environment,
-                currentDirectoryURL: currentDirectoryURL,
+            let process: Process = .init()
+            process.executableURL = legendaryExecutableURL
+            process.arguments = args
+            process.environment = environment
+            process.currentDirectoryURL = currentDirectoryURL
+
+            let stream = process.runStreamed(
                 throwsOnChunkError: throwsOnChunkError,
                 onChunk: onChunkWithLegendaryErrorHandling(onChunk)
             )

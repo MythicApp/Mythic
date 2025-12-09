@@ -86,15 +86,16 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw Engine.NotInstalledError()
         }
 
-        return try await Process.execute(
-            executableURL: Engine.directory.appending(path: "wine/bin/wine64"),
-            arguments: arguments,
-            environment: constructEnvironment(
-                containerURL: containerURL,
-                withAdditionalFlags: environment
-            ),
-            currentDirectoryURL: currentDirectoryURL
+        let process: Process = .init()
+        process.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
+        process.arguments = arguments
+        process.environment = constructEnvironment(
+            containerURL: containerURL,
+            withAdditionalFlags: environment
         )
+        process.currentDirectoryURL = currentDirectoryURL
+
+        return try await process.runWrapped()
     }
 
     static func tasklist(containerURL url: URL) async throws -> [Container.Process] {
@@ -241,10 +242,11 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
 
     static func purgeD3DMetalShaderCache() throws {
-        let output = try Process.execute(
-            executableURL: .init(filePath: "/usr/bin/getconf"),
-            arguments: ["DARWIN_USER_CACHE_DIR"]
-        )
+        let process: Process = .init()
+        process.executableURL = .init(filePath: "/usr/bin/getconf")
+        process.arguments = ["DARWIN_USER_CACHE_DIR"]
+
+        let output = try process.runWrapped()
         
         let cachePath = output.standardOutput.trimmingCharacters(in: .whitespacesAndNewlines)
         let d3dmCachePath = cachePath.appending("/d3dm")
