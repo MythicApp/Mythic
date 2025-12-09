@@ -17,10 +17,10 @@ extension SparkleUpdater {
         let appcast: SUAppcastItem
         let choice: (SparkleUpdateController.UpdateChoice) -> Void
 
-        @State private var colorfulAnimationColors: [Color] = [
-            .init(hex: "#5412F6"),
-            .init(hex: "#7E1ED8"),
-            .init(hex: "#2C2C2C")
+        @State private var colorfulViewColors: [Color] = [
+            .init(hex: "#7541FF"),
+            .init(hex: "#5412FF"),
+            Color(nsColor: .windowBackgroundColor)
         ]
         @State private var colorfulAnimationSpeed: Double = 1
         @State private var colorfulAnimationNoise: Double = 0
@@ -79,11 +79,9 @@ extension SparkleUpdater {
                 .padding()
                 .frame(maxHeight: .infinity)
                 .background(
-                    ColorfulView(
-                        color: $colorfulAnimationColors,
-                        speed: $colorfulAnimationSpeed,
-                        noise: $colorfulAnimationNoise
-                    )
+                    ColorfulView(color: $colorfulViewColors,
+                                 speed: $colorfulAnimationSpeed,
+                                 noise: $colorfulAnimationNoise)
                 )
                 .foregroundStyle(.white)
                 

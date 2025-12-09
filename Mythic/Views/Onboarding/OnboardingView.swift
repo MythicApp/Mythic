@@ -21,9 +21,9 @@ struct OnboardingView: View {
     @ObservedObject var epicWebAuthViewModel: EpicWebAuthViewModel = .shared
 
     @State private var colorfulViewColors: [Color] = [
-        .init(hex: "#5412F6"),
-        .init(hex: "#7E1ED8"),
-        .init(hex: "#2C2C2C")
+        .init(hex: "#7541FF"),
+        .init(hex: "#5412FF"),
+        Color(nsColor: .windowBackgroundColor)
     ]
     @State private var onboardingError: Error?
 
