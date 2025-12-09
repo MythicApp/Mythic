@@ -12,7 +12,8 @@ import OSLog
 
 extension Process {
     /// Synchronously executes a process, and immediately attempts to collect complete stdout/stderr.
-    /// Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
+    /// - Note: Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
+    /// - Note: If you don't require output, use `.run()` instead.
     func runWrapped() throws -> CommandResult {
         let stderr: Pipe = .init(); self.standardError = stderr
         let stdout: Pipe = .init(); self.standardOutput = stdout
@@ -38,6 +39,7 @@ extension Process {
 
     // allow the compiler to automatically choose execute overload depending on async/sync context
     /// Asynchronously executes a process, and concurrently collects stdout and stderr.
+    /// - Note: If you don't require output, use `.run()` instead.
     func runWrapped() async throws -> CommandResult {
         let stderr: Pipe = .init(); self.standardError = stderr
         let stdout: Pipe = .init(); self.standardOutput = stdout

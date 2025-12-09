@@ -84,12 +84,12 @@ final class EpicGamesGameManager {
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
-                        optionalPacks: [String] = .init(),
+                        optionalPackIDs: [String] = .init(),
                         baseDirectoryURL: URL? = UserDefaults.standard.url(forKey: "installBaseURL")) async throws -> GameOperation {
         return try await Legendary.install(game: game,
                                            forPlatform: platform,
                                            qualityOfService: qualityOfService,
-                                           optionalPacks: optionalPacks,
+                                           optionalPackIDs: optionalPackIDs,
                                            baseDirectoryURL: baseDirectoryURL)
     }
 

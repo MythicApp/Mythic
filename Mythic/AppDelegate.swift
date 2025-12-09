@@ -56,7 +56,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         // MARK: Autosync Legendary cloud saves
         Task(priority: .utility) {
-            try? await Legendary.execute(arguments: ["-y", "sync-saves"])
+            let process: Process = .init()
+            process.arguments = ["-y", "sync-saves"]
+            await Legendary.transformProcess(process)
+            try process.run()
         }
 
         // MARK: DiscordRPC Delegate Ininitialisation & Connection
@@ -202,11 +205,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         Task.detached(priority: .userInitiated) {
-            await Legendary.RunningCommands.shared.stopAll()
-        }
-
-        Task.detached(priority: .userInitiated) {
-            try? await Legendary.execute(arguments: ["cleanup"])
+            let process: Process = .init()
+            process.arguments = ["cleanup"]
+            await Legendary.transformProcess(process)
+            try process.run()
         }
     }
 }

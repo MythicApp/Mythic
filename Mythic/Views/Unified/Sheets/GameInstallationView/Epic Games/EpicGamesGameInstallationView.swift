@@ -35,8 +35,8 @@ struct EpicGamesGameInstallationView: View {
     @State private var supportedPlatforms: [Game.Platform]?
 
     // epic-specific variables
-    @State var optionalPacks: [String: String]?
-    @State var selectedOptionalPacks: Set<String> = .init()
+    @State var optionalPacks: [String: String] = .init()
+    @State var selectedOptionalPackIDs: Set<String> = .init()
     @State var fetchingOptionalPacks: Bool = false
 
     private func spawnOptionalPacksFetchTask() {
@@ -46,7 +46,7 @@ struct EpicGamesGameInstallationView: View {
             defer {
                 withAnimation { fetchingOptionalPacks = false }
             }
-            (installSizeInBytes, optionalPacks) = await Legendary.fetchPreInstallationMetadata(game: game, platform: platform)
+            (installSizeInBytes, optionalPacks) = (try? await Legendary.fetchPreInstallationMetadata(game: game, platform: platform)) ?? (nil, .init())
         }
     }
 
@@ -65,8 +65,7 @@ struct EpicGamesGameInstallationView: View {
                         SubscriptedTextView(storefront.description)
                     }
 
-                    if let optionalPacks = optionalPacks,
-                       !optionalPacks.isEmpty {
+                    if !optionalPacks.isEmpty {
                         Text("(Selective downloads supported.)")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -75,12 +74,12 @@ struct EpicGamesGameInstallationView: View {
                             ForEach(optionalPacks.sorted(by: { $0.key < $1.key }), id: \.key) { tag, name in
                                 Toggle(
                                     isOn: Binding(
-                                        get: { selectedOptionalPacks.contains(tag) },
+                                        get: { selectedOptionalPackIDs.contains(tag) },
                                         set: { newValue in
                                             if newValue {
-                                                selectedOptionalPacks.insert(tag)
+                                                selectedOptionalPackIDs.insert(tag)
                                             } else {
-                                                selectedOptionalPacks.remove(tag)
+                                                selectedOptionalPackIDs.remove(tag)
                                             }
                                         }
                                     )
@@ -199,7 +198,7 @@ struct EpicGamesGameInstallationView: View {
                         _ = try? await EpicGamesGameManager.install(game: game,
                                                                     forPlatform: platform,
                                                                     qualityOfService: .default,
-                                                                    optionalPacks: Array(selectedOptionalPacks),
+                                                                    optionalPackIDs: Array(selectedOptionalPackIDs),
                                                                     baseDirectoryURL: baseURL)
                         isPresented = false
                     }
@@ -213,12 +212,6 @@ struct EpicGamesGameInstallationView: View {
                 .buttonStyle(.borderedProminent)
             }
             .padding(.top)
-            .onChange(of: isPresented) { _, newValue in // don't use .onDisappear, it interferes with runningcommands' task handling
-                guard !newValue else { return }
-                Task { @MainActor in
-                    await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
-                }
-            }
         }
         .navigationTitle("Install \(game.description)")
     }

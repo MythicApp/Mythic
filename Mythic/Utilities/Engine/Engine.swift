@@ -142,13 +142,11 @@ final class Engine {
                                 process.executableURL = .init(filePath: "/usr/bin/tar")
                                 process.arguments = ["-xJf", file.path, "-C", directory.path]
                                 
-                                // FIXME: swift compiler bug? 'type of expression is ambiguous without a type annotation on line 110?
-                                // FIXME: this is not good, tar errors won't propagate
-                                let processResult = try? await process.runWrapped()
+                                let tarResult = try await process.runWrapped()
 
                                 // `man tar` (bsdtar) — The tar utility exits 0 on success, and >0 if an error occurs.
-                                guard processResult?.exitCode == 0 else {
-                                    log.error("unable to install engine, tar stderr: \(process.standardError)")
+                                guard tarResult.exitCode == 0 else {
+                                    log.error("unable to install engine, tar stderr: \(tarResult.standardError)")
                                     continuation.finish(throwing: CocoaError(.fileWriteUnknown)); return
                                 }
 

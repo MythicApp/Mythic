@@ -351,8 +351,12 @@ extension SettingsView {
                     operating: $isCleaning,
                     successful: $isCleanupSuccessful
                 ) {
-                    let commandResult = try? await Legendary.execute(arguments: ["cleanup"])
-                    isCleanupSuccessful = commandResult?.standardError.contains("Cleanup complete")
+                    // TODO: make function in LegendaryInterface
+                    let process: Process = .init()
+                    process.arguments = ["cleanup"]
+                    await Legendary.transformProcess(process)
+                    let result = try? await process.runWrapped()
+                    isCleanupSuccessful = result?.standardError.contains("Cleanup complete")
                 }
 
                 OperationButton(
@@ -361,9 +365,13 @@ extension SettingsView {
                     operating: $isEpicCloudSynchronising,
                     successful: $isEpicCloudSyncSuccessful
                 ) {
+                    // TODO: make function in LegendaryInterface
                     let regex = try! Regex(#"Got [0-9]+ remote save game"#) // swiftlint:disable:this force_try
-                    let commandResult = try? await Legendary.execute(arguments: ["-y", "sync-saves"])
-                    isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: commandResult?.standardError ?? "") != nil)
+                    let process: Process = .init()
+                    process.arguments = ["-y", "sync-saves"]
+                    await Legendary.transformProcess(process)
+                    let result = try? await process.runWrapped()
+                    isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: result?.standardError ?? "") != nil)
                 }
 
                 // TODO: potenially add manual cloud save deletion

@@ -26,33 +26,6 @@ final class Legendary {
     /// Logger instance for legendary.
     static let log: Logger = .custom(category: "LegendaryInterface")
 
-    // Minimal registry for running consumer tasks (cancel stops process via Process.runStreamed cancellation)
-    actor RunningCommands {
-        static let shared: RunningCommands = .init()
-
-        private var tasks: [String: Task<Void, Error>] = [:]
-
-        func set(id: String, task: Task<Void, Error>) {
-            tasks[id] = task
-        }
-
-        fileprivate func remove(id: String) {
-            tasks.removeValue(forKey: id)
-        }
-
-        func stop(id: String) {
-            if let task = tasks[id] {
-                task.cancel()
-                remove(id: id)
-            }
-        }
-
-        func stopAll() {
-            tasks.values.forEach { $0.cancel() }
-            tasks.removeAll()
-        }
-    }
-
     private static var legendaryExecutableURL: URL { Bundle.main.url(forResource: "legendary/cli", withExtension: nil)! }
 
     private static func constructEnvironment(withAdditionalFlags environment: [String: String]) -> [String: String] {
@@ -89,67 +62,29 @@ final class Legendary {
         }
     }
 
-    @discardableResult
-    static func execute(
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil
-    ) async throws -> Process.CommandResult {
-        let args = await applyOfflineFlagIfNeeded(arguments)
-        let process: Process = .init()
+    /// Modify a process' properties to call `legendary`.
+    /// This will modify `executableURL`, `arguments`, and `environment`, and passthrough existing values.
+    static func transformProcess(_ process: Process) async {
         process.executableURL = legendaryExecutableURL
-        process.arguments = args
-        process.environment = constructEnvironment(withAdditionalFlags: environment ?? [:])
-        process.currentDirectoryURL = currentDirectoryURL
-
-        return try await process.runWrapped()
+        
+        let capturedArguments = process.arguments
+        let arguments = await applyOfflineFlagIfNeeded(capturedArguments ?? [])
+        process.arguments = arguments
+        
+        let capturedEnvironment = process.environment
+        process.environment = constructEnvironment(withAdditionalFlags: capturedEnvironment ?? [:])
     }
-
-    // FIXME: implementation sucks
-    @discardableResult
-    static func executeStreamed(
-        identifier: String,
-        arguments: [String],
-        environment: [String: String]? = nil,
-        currentDirectoryURL: URL? = nil,
-        throwsOnChunkError: Bool = true,
-        onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?
-    ) async -> Task<Void, Error> {
-        let consumer = Task {
-            let args = await applyOfflineFlagIfNeeded(arguments)
-            let environment = constructEnvironment(withAdditionalFlags: environment ?? [:])
-
-            let process: Process = .init()
-            process.executableURL = legendaryExecutableURL
-            process.arguments = args
-            process.environment = environment
-            process.currentDirectoryURL = currentDirectoryURL
-
-            let stream = process.runStreamed(
-                throwsOnChunkError: throwsOnChunkError,
-                onChunk: onChunkWithLegendaryErrorHandling(onChunk)
-            )
-
-            do {
-                for try await chunk in stream {
-                    _ = chunk
-                    // work handled in onChunk
-                }
-            } catch is CancellationError {
-                // expected when cancelled via RunningCommands.stop(id:)
-                // since it relies on `Task` cancellation
-                do {}
-            } catch {
-                throw error
-            }
-
-            // FIXME: THIS WILL NOT FIRE. you can't have this in prod mate
-            // clean up tracking after completion/cancellation/error
-            await RunningCommands.shared.remove(id: identifier)
-        }
-
-        await RunningCommands.shared.set(id: identifier, task: consumer)
-        return consumer // FIXME: try await consumer.value instead
+    
+    /// Execute a `Process` using `.runStreamed`.
+    /// - Note: This is the recommended way to stream `legendary` output, as it automatically handles generic legendary errors.
+    static func executeStreamed(_ process: Process,
+                                throwsOnChunkError: Bool = true,
+                                onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?) async {
+        await transformProcess(process)
+        _ = process.runStreamed(
+            throwsOnChunkError: throwsOnChunkError,
+            onChunk: onChunkWithLegendaryErrorHandling(onChunk)
+        )
     }
 
     /// Parse legendary's DLManager status output, and use it to update a `Progress` object.
@@ -259,7 +194,7 @@ final class Legendary {
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
-                        optionalPacks: [String] = .init(),
+                        optionalPackIDs: [String] = .init(),
                         baseDirectoryURL: URL? = UserDefaults.standard.url(forKey: "installBaseURL")) async throws -> GameOperation {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
@@ -279,12 +214,13 @@ final class Legendary {
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
-            let consumer = await Legendary.executeStreamed(identifier: "install",
-                                                           arguments: arguments) { chunk in
+            let process: Process = .init()
+            process.arguments = arguments
+            await Legendary.executeStreamed(process) { chunk in
                 // append optional packs to legendary's stdin when it requests for them
                 if case .standardOutput = chunk.stream {
-                    if chunk.output.contains("Additional packs"), !optionalPacks.isEmpty {
-                        return optionalPacks.joined(separator: ", ") + "\n" // use \n as return key
+                    if chunk.output.contains("Additional packs"), !optionalPackIDs.isEmpty {
+                        return optionalPackIDs.joined(separator: ", ") + "\n" // use \n as return key
                     }
                 }
 
@@ -295,8 +231,6 @@ final class Legendary {
 
                 return nil
             }
-
-            try await consumer.value
         }
 
         operation.qualityOfService = qualityOfService
@@ -312,8 +246,9 @@ final class Legendary {
             progress.totalUnitCount = 100
             progress.fileOperationKind = .downloading
 
-            let consumer = await Legendary.executeStreamed(identifier: "update",
-                                                           arguments: arguments) { chunk in
+            let process: Process = .init()
+            process.arguments = arguments
+            await Legendary.executeStreamed(process) { chunk in
                 if case .standardError = chunk.stream {
                     handleDownloadManagerOutputProgress(for: chunk.output,
                                                         progress: progress)
@@ -321,8 +256,6 @@ final class Legendary {
 
                 return nil
             }
-
-            try await consumer.value
         }
 
         operation.qualityOfService = qualityOfService
@@ -342,9 +275,9 @@ final class Legendary {
             // due to the custom error handling in onChunkWithLegendaryErrorHandling.
             // thus, chunk errors are only acknowledged but not thrown.
             // this is bad though for obvious reasons
-            let consumer = await Legendary.executeStreamed(identifier: "repair",
-                                                           arguments: arguments,
-                                                           throwsOnChunkError: false) { chunk in
+            let process: Process = .init()
+            process.arguments = arguments
+            await Legendary.executeStreamed(process, throwsOnChunkError: false) { chunk in
                 switch chunk.stream {
                 case .standardError:
                     // if game files require redownload
@@ -374,8 +307,6 @@ final class Legendary {
 
                 return nil
             }
-
-            try await consumer.value
         }
 
         operation.qualityOfService = qualityOfService
@@ -406,7 +337,10 @@ final class Legendary {
 
             // legendary is inconsistent with this,
             // may have to use FileManager.default.removeItem(atPath:)
-            try await Legendary.execute(arguments: arguments)
+            let process: Process = .init()
+            process.arguments = arguments
+            await transformProcess(process)
+            try process.run()
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -434,7 +368,11 @@ final class Legendary {
         let operation: GameOperation = .init(game: game, type: .move) { _ in
             try FileManager.default.moveItem(at: currentLocation, to: newLocation)
 
-            try await Legendary.execute(arguments: ["move", game.id, newLocation.path, "--skip-move"])
+            let process: Process = .init()
+            process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
+            await transformProcess(process)
+            try process.run()
+            
             game.installationState = .installed(location: newLocation, platform: platform)
         }
 
@@ -482,13 +420,19 @@ final class Legendary {
         arguments.append(game.id)
 
         arguments.append(gameDirectoryURL.path)
-
-        try await Legendary.execute(arguments: arguments)
+        
+        let process: Process = .init()
+        process.arguments = arguments
+        await transformProcess(process)
+        try process.run()
     }
 
     @discardableResult
     static func signIn(authKey: String) async throws -> String {
-        let result = try await execute(arguments: ["auth", "--code", authKey])
+        let process: Process = .init()
+        process.arguments = ["auth", "--code", authKey]
+        await transformProcess(process)
+        let result = try await process.runWrapped()
         if let successRegex = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#),
            let match = try? successRegex.firstMatch(in: result.standardError),
            let username = match["username"]?.substring {
@@ -501,7 +445,11 @@ final class Legendary {
     }
 
     static func signOut() async throws {
-        _ = try await execute(arguments: ["auth", "--delete"])
+        let process: Process = .init()
+        process.arguments = ["auth", "--delete"]
+        await transformProcess(process)
+        try process.run()
+        
         UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
     }
 
@@ -536,8 +484,11 @@ final class Legendary {
 
             arguments.append(contentsOf: game.launchArguments.map({ "'\($0)'" }))
 
-            try await Legendary.execute(arguments: arguments,
-                                        environment: environment)
+            let process: Process = .init()
+            process.arguments = arguments
+            process.environment = environment
+            await transformProcess(process)
+            try process.run()
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -562,28 +513,21 @@ final class Legendary {
     static func fetchPreInstallationMetadata(
         game: EpicGamesGame,
         platform: Game.Platform
-    ) async -> (installSize: Int64?, optionalPacks: [String: String]?) {
+    ) async throws -> (installSize: Int64?, optionalPacks: [String: String]) {
         guard case .uninstalled = game.installationState else {
-            return (nil, nil)
+            throw CocoaError(.fileNoSuchFile)
         }
 
-        let args = [
-            "install", game.id,
-            "--platform", Legendary.matchPlatform(for: platform)
-        ]
-
-        @MainActor class Metadata {
-            var installSize: Int64?
-            var optionalPacks: [String: String] = [:]
-        }
-        let metadata = Metadata()
+        let arguments: [String] = ["install", game.id, "--platform", Legendary.matchPlatform(for: platform)]
+        
+        var installSize: Int64?
+        var optionalPacks: [String: String] = .init()
 
         // if the data lock is present, legendary will terminate itself, so this is ok
         // nice n safe
-        let consumer = await Legendary.executeStreamed(
-            identifier: "fetchOptionalPacks",
-            arguments: args
-        ) { chunk in
+        let process: Process = .init()
+        process.arguments = arguments
+        await executeStreamed(process) { chunk in
             switch chunk.stream {
             case .standardError:
                 Task {
@@ -592,7 +536,7 @@ final class Legendary {
                        let sizeString = match[1].substring,
                        let sizeValue = Double(sizeString) {
                         await MainActor.run {
-                            metadata.installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                            installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
                         }
                     }
                 }
@@ -604,7 +548,7 @@ final class Legendary {
                             if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: String(line)),
                                let id = match["identifier"]?.substring,
                                let name = match["name"]?.substring {
-                                metadata.optionalPacks[String(id)] = String(name)
+                                optionalPacks[String(id)] = String(name)
                             }
                         }
                     }
@@ -613,9 +557,7 @@ final class Legendary {
                 // if legendary prompts an install, our work is done. stop parsing
                 if chunk.output.contains("Do you wish to install") ||
                    chunk.output.contains("Additional packs") {
-                    Task(priority: .high) {
-                        await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
-                    }
+                    process.terminate()
                 }
             }
 
@@ -623,13 +565,10 @@ final class Legendary {
         }
 
         defer {
-            Task(priority: .high) {
-                await Legendary.RunningCommands.shared.stop(id: "fetchOptionalPacks")
-            }
+            process.terminate()
         }
-
-        try? await consumer.value
-        return await (metadata.installSize, metadata.optionalPacks)
+        
+        return (installSize, optionalPacks)
     }
 
     static func isFileVerificationRequired(gameID: String) throws -> Bool {
@@ -736,7 +675,10 @@ final class Legendary {
             if forced { arguments.append("--force-refresh") }
             Task(priority: .utility) { @MainActor in
                 VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
-                _ = try? await execute(arguments: arguments)
+                let process: Process = .init()
+                process.arguments = arguments
+                await transformProcess(process)
+                try process.run()
                 VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
             }
         }
