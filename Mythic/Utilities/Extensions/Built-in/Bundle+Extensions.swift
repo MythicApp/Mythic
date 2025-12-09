@@ -10,6 +10,7 @@
 import Foundation
 import OSLog
 
+// FIXME: this code is literally from mythic day 1 and sucks
 /**
  Add some much-needed extensions to Bundle,
  including references to a dedicated application support folder for Mythic.
@@ -20,7 +21,7 @@ extension Bundle {
      Dedicated 'Mythic' Application Support Folder.
      (Force-unwrappable)
      */
-    static let appHome: URL? = {
+    static var appHome: URL? {
         if let userApplicationSupport = FileLocations.userApplicationSupport {
             let homeURL = userApplicationSupport.appending(
                 path: Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String ?? "")
@@ -38,13 +39,13 @@ extension Bundle {
         }
         
         return nil
-    }()
+    }
     
     /**
      Dedicated 'Mythic' Container Folder.
      (Force-unwrappable)
      */
-    static let appContainer: URL? = {
+    static var appContainer: URL? {
         if let userContainers = FileLocations.userContainers,
            let bundleID = Bundle.main.bundleIdentifier {
             let containerURL = userContainers.appending(path: bundleID)
@@ -63,13 +64,13 @@ extension Bundle {
         }
         
         return nil
-    }()
+    }
     
     /**
      A directory within games where Mythic will download to by default.
      (Force-unwrappable)
      */
-    static let appGames: URL? = {
+    static var appGames: URL? {
         if let games = FileLocations.globalGames {
             let appGamesURL = games.appending(path: "Mythic")
             do {
@@ -84,5 +85,5 @@ extension Bundle {
         }
         
         return nil
-    }()
+    }
 }

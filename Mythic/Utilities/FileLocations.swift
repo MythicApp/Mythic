@@ -10,12 +10,13 @@
 import Foundation
 import OSLog
 
+// FIXME: this code is really old and sucks
 final class FileLocations {
     /** The global Applications directory.
      
      - Returns: An optional URL representing the global Applications directory.
      */
-    static let globalApplications: URL? = {
+    static var globalApplications: URL? {
         do {
             return try FileManager.default.url(
                 for: .applicationDirectory,
@@ -28,14 +29,14 @@ final class FileLocations {
         }
         
         return nil
-    }()
+    }
 
     /** A directory in global applications where games should be located.
      (Force-unwrappable)
      
      - Returns: An optional URL representing the global Games directory.
      */
-    static let globalGames: URL? = {
+    static var globalGames: URL? {
         if let globalApplications = globalApplications {
             let gamesURL = globalApplications.appendingPathComponent("Games")
             do {
@@ -50,7 +51,7 @@ final class FileLocations {
         } // no else block, error is handled already
         
         return nil
-    }()
+    }
 
     /** The current user's Application Support directory.
      
@@ -58,7 +59,7 @@ final class FileLocations {
      
      - Returns: An optional URL representing the current user's Application Support directory.
      */
-    static let userApplicationSupport: URL? = {
+    static var userApplicationSupport: URL? {
         do {
             return try FileManager.default.url(
                 for: .applicationSupportDirectory,
@@ -71,7 +72,7 @@ final class FileLocations {
         }
         
         return nil
-    }()
+    }
     
     static func isWritableFolder(url: URL) -> Bool { // does the same as FileManager.default.isWritableFile, just a second option
         let tempFileName = "_Mythic\(UUID().uuidString).temp"
@@ -86,7 +87,7 @@ final class FileLocations {
         }
     }
 
-    static let userLibrary: URL? = {
+    static var userLibrary: URL? {
         do {
             return try FileManager.default.url(
                 for: .libraryDirectory,
@@ -99,7 +100,7 @@ final class FileLocations {
         }
 
         return nil
-    }()
+    }
     
     /** The current user's Containers directory.
      
@@ -107,7 +108,7 @@ final class FileLocations {
      
      - Returns: An optional URL representing the current user's Containers directory.
      */
-    static let userContainers: URL? = {
+    static var userContainers: URL? {
         do {
             return try FileManager.default.url(
                 for: .libraryDirectory,
@@ -121,5 +122,5 @@ final class FileLocations {
         }
         
         return nil
-    }()
+    }
 }
