@@ -80,11 +80,11 @@ final class Legendary {
     /// - Note: This is the recommended way to stream `legendary` output, as it automatically handles generic legendary errors.
     static func executeStreamed(_ process: Process,
                                 throwsOnChunkError: Bool = true,
-                                onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?) async throws {
+                                chunkHandler: @Sendable @escaping (Process.OutputChunk) throws -> String?) async throws {
         await transformProcess(process)
         try await process.runStreamed(
             throwsOnChunkError: throwsOnChunkError,
-            chunkHandler: throwingChunkHandler(onChunk)
+            chunkHandler: throwingChunkHandler(chunkHandler)
         )
     }
 
