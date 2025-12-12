@@ -155,7 +155,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         }
 
-        // Version-specific app launch counter
+        // MARK: Version-specific app launch counter
         if let shortVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String {
             var launchCountDictionary = UserDefaults.standard.dictionary(forKey: "launchCount") as? [String: Int] ?? .init()
             launchCountDictionary[shortVersion, default: 0] += 1
