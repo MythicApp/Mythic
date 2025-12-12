@@ -2,7 +2,7 @@
 //  LocalGameUninstallationView.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 5/12/2025.
+//  Created by vapidinfinity (esi) on 5/12/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity

@@ -2,7 +2,7 @@
 //  GameCard+ImageCard+.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 8/11/2025.
+//  Created by vapidinfinity (esi) on 8/11/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity

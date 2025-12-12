@@ -2,7 +2,7 @@
 //  GameDataStore.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 2/12/2025.
+//  Created by vapidinfinity (esi) on 2/12/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity

@@ -2,7 +2,7 @@
 //  OperationStatusViewModifier.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 10/11/2025.
+//  Created by vapidinfinity (esi) on 10/11/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity

@@ -2,7 +2,7 @@
 //  GameOperationManager.swift
 //  Mythic
 //
-//  Created by Esiayo Alegbe on 16/11/2025.
+//  Created by vapidinfinity (esi) on 16/11/2025.
 //
 
 // Copyright © 2023-2025 vapidinfinity
