@@ -127,10 +127,10 @@ extension Process {
         let writer: StandardInputWriter = .init(handle: stdin.fileHandleForWriting)
         
         func attachReadabilityStream(to handle: FileHandle, for stream: Process.Stream) async throws {
-            for await handle in handle.readabilityStream {
+            for await data in handle.readabilityDataStream {
                 guard !Task.isCancelled else { break }
                 
-                guard let text: String = . init(data: handle.availableData, encoding: .utf8) else { continue }
+                guard let text: String = . init(data: data, encoding: .utf8) else { continue }
                 
                 for line in text.split(whereSeparator: \.isNewline) {
                     let chunk: OutputChunk = .init(stream: stream, output: String(line))

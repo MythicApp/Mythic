@@ -10,16 +10,21 @@
 import Foundation
 
 extension FileHandle {
-    /// A bridge for `readabilityHandler` callbacks, using AsyncStream.
+    /// A bridge for `readabilityHandler` callbacks, using AsyncStream, fetching `availableData`.
     /// - Note: This stream automatically handles empty handle data.
-    var readabilityStream: AsyncStream<FileHandle> {
+    var readabilityDataStream: AsyncStream<Data> {
         AsyncStream { continuation in
-            self.readabilityHandler = { handle in
-                // empty data means the handle's reached EOF
-                // FIXME: is this the case all the time?
-                guard !handle.availableData.isEmpty else { continuation.finish(); return }
+            self.readabilityHandler = { [weak self] handle in
+                let data = handle.availableData
                 
-                continuation.yield(handle)
+                // empty data means the handle's reached EOF
+                guard !data.isEmpty else {
+                    continuation.finish()
+                    self?.readabilityHandler = nil
+                    return
+                }
+                
+                continuation.yield(data)
             }
             
             continuation.onTermination = { [weak self] _ in
@@ -28,3 +33,4 @@ extension FileHandle {
         }
     }
 }
+
