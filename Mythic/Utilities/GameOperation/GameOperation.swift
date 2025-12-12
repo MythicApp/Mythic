@@ -119,7 +119,7 @@ extension GameOperation {
         
         var modifiesFiles: Bool {
             switch self {
-            case .install:  false
+            case .launch:  false
             default:        true
             }
         }
