@@ -87,23 +87,11 @@ extension Process {
     
     func runStreamed(throwsOnChunkError: Bool = true) -> AsyncThrowingStream<OutputChunk, Error> {
         AsyncThrowingStream { continuation in
-            // if the consumer cancels, terminate the child gracefully.
-            continuation.onTermination = { @Sendable termination in
-                guard case .cancelled = termination else { return }
-                Task.detached {
-                    if self.isRunning { self.interrupt() } // try sigint
-                    try? await Task.sleep(for: .seconds(6))
-                    if self.isRunning { self.terminate() } // try sigterm
-                    try? await Task.sleep(for: .seconds(2))
-                    if self.isRunning { kill(self.processIdentifier, SIGKILL) } // sigkill, BEGONE
-                }
-            }
-            
             Task {
                 do {
                     try await self.runStreamed(throwsOnChunkError: throwsOnChunkError) { chunk in
                         continuation.yield(chunk)
-                        return nil // AsyncThrowingStream can't return replies
+                        return nil // `AsyncThrowingStream` can't return replies
                     }
                 } catch {
                     continuation.finish(throwing: error)
@@ -132,34 +120,34 @@ extension Process {
                 handle.write(data)
             }
         }
-
         let writer: StdinWriter = .init(stdin.fileHandleForWriting)
+        
+        func attachReadabilityHandler(to handle: FileHandle, for stream: Stream) {
+            handle.readabilityHandler = { handle in
+                let data = handle.availableData
+                guard !data.isEmpty else { return }
+                
+                guard let text = String(data: data, encoding: .utf8) else { return }
+                
+                for line in text.split(whereSeparator: \.isNewline) {
+                    let chunk: OutputChunk = .init(stream: stream, output: String(line))
 
-        func createReadabilityTask(for stream: Stream,
-                                   readingHandle handle: FileHandle) -> Task<Void, Error> {
-            Task {
-                do {
-                    for try await text in handle.bytes.lines where !text.isEmpty {
-                        let chunk: OutputChunk = .init(stream: stream, output: text)
-                        
-                        if let handler = chunkHandler, let reply = try handler(chunk) {
-                            await writer.write(reply)
+                    do {
+                        if let chunkHandler, let reply = try chunkHandler(chunk) {
+                            Task(operation: { await writer.write(reply) })
                         }
-                        
-                        log.debug("[\(stream.rawValue)] \(text, privacy: .public)")
+                    } catch {
+                        log.error("[\(stream.rawValue)] caller threw an error: \(error)")
+                        // FIXME: how to throw from here??
                     }
-                } catch {
-                    // NSPOSIXErrorDomain code 9 indicates a bad FD.
-                    // FIXME: dirtyfix bad FD error caused by handle closure preventing further access to its FD
-                    guard error as NSError != NSError(domain: NSPOSIXErrorDomain, code: 9) else { return }
-                    
-                    throw error
+
+                    log.debug("[\(stream.rawValue)] \(line, privacy: .public)")
                 }
             }
         }
 
-        let stderrReadabilityTask: Task<Void, Error> = createReadabilityTask(for: .standardError, readingHandle: stderr.fileHandleForReading)
-        let stdoutReadabilityTask: Task<Void, Error> = createReadabilityTask(for: .standardOutput, readingHandle: stdout.fileHandleForReading)
+        attachReadabilityHandler(to: stderr.fileHandleForReading, for: .standardError)
+        attachReadabilityHandler(to: stdout.fileHandleForReading, for: .standardOutput)
 
         @Sendable func closeFileHandlesForReading() {
             try? stderr.fileHandleForReading.close()
@@ -170,13 +158,10 @@ extension Process {
         self.terminationHandler = { _ in closeFileHandlesForReading() }
 
         do {
-            try self.run()
+            try self.run(); self.waitUntilExit()
         } catch {
             closeFileHandlesForReading(); throw error
         }
-
-        try await stderrReadabilityTask.value
-        try await stdoutReadabilityTask.value
     }
 }
 
