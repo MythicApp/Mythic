@@ -104,63 +104,81 @@ extension Process {
     /// With support for responding to input by returning a value to the callback.
     func runStreamed(throwsOnChunkError: Bool = true,
                      chunkHandler: (@Sendable (OutputChunk) throws -> String?)? = nil) async throws {
-        let stderr: Pipe = .init(); self.standardError = stderr
-        let stdout: Pipe = .init(); self.standardOutput = stdout
+        let stderr:  Pipe = .init(); self.standardError = stderr
+        let stdout:  Pipe = .init(); self.standardOutput = stdout
         let stdin: Pipe = .init(); self.standardInput = stdin
-
+        
         let log = Logger.custom(
             category: "Process[\(self.processIdentifier)] (streamed) @ \(self.executableURL?.pathComponents.suffix(3).joined(separator: "/") ?? "")"
         )
-
-        actor StdinWriter {
+        
+        actor StandardInputWriter {
             let handle: FileHandle
-            init(_ handle: FileHandle) { self.handle = handle }
-            func write(_ str: String) async {
-                guard let data = str.data(using: .utf8) else { return }
+            
+            init(handle: FileHandle) {
+                self.handle = handle
+            }
+            
+            func write(_ string: String) async {
+                guard let data = string.data(using: .utf8) else { return }
                 handle.write(data)
             }
         }
-        let writer: StdinWriter = .init(stdin.fileHandleForWriting)
+        let writer: StandardInputWriter = .init(handle: stdin.fileHandleForWriting)
         
-        func attachReadabilityHandler(to handle: FileHandle, for stream: Stream) {
-            handle.readabilityHandler = { handle in
-                let data = handle.availableData
-                guard !data.isEmpty else { return }
-                
-                guard let text = String(data: data, encoding: .utf8) else { return }
+        func attachReadabilityStream(to handle: FileHandle, for stream: Process.Stream) async throws {
+            for await handle in handle.readabilityStream {
+                guard let text: String = . init(data: handle.availableData, encoding: .utf8) else { continue }
                 
                 for line in text.split(whereSeparator: \.isNewline) {
                     let chunk: OutputChunk = .init(stream: stream, output: String(line))
-
+                    
                     do {
                         if let chunkHandler, let reply = try chunkHandler(chunk) {
-                            Task(operation: { await writer.write(reply) })
+                            await writer.write(reply)
                         }
                     } catch {
                         log.error("[\(stream.rawValue)] caller threw an error: \(error)")
-                        // FIXME: how to throw from here??
+                        if throwsOnChunkError { throw error }
                     }
-
+                    
                     log.debug("[\(stream.rawValue)] \(line, privacy: .public)")
                 }
             }
         }
-
-        attachReadabilityHandler(to: stderr.fileHandleForReading, for: .standardError)
-        attachReadabilityHandler(to: stdout.fileHandleForReading, for: .standardOutput)
-
+        
         @Sendable func closeFileHandlesForReading() {
             try? stderr.fileHandleForReading.close()
             try? stdout.fileHandleForReading.close()
             try? stdin.fileHandleForWriting.close()
         }
-
+        
         self.terminationHandler = { _ in closeFileHandlesForReading() }
-
-        do {
-            try self.run(); self.waitUntilExit()
-        } catch {
-            closeFileHandlesForReading(); throw error
+        defer { closeFileHandlesForReading() }
+        
+        try self.run()
+        
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask(priority: .utility) {
+                try await attachReadabilityStream(to: stderr.fileHandleForReading,
+                                                  for: .standardError)
+            }
+            
+            group.addTask(priority: .utility) {
+                try await attachReadabilityStream(to: stdout.fileHandleForReading,
+                                                  for: .standardOutput)
+            }
+            
+            await withCheckedContinuation { continuation in
+                self.waitUntilExit()
+                continuation.resume()
+            }
+            
+            // cancel the readability tasks since task has exited
+            group.cancelAll()
+            
+            // throw errors collected by the tasks
+            try await group.waitForAll()
         }
     }
 }
