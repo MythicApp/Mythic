@@ -80,9 +80,9 @@ final class Legendary {
     /// - Note: This is the recommended way to stream `legendary` output, as it automatically handles generic legendary errors.
     static func executeStreamed(_ process: Process,
                                 throwsOnChunkError: Bool = true,
-                                onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?) async {
+                                onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?) async throws {
         await transformProcess(process)
-        try? await process.runStreamed(
+        try await process.runStreamed(
             throwsOnChunkError: throwsOnChunkError,
             chunkHandler: throwingChunkHandler(onChunk)
         )
@@ -217,20 +217,25 @@ final class Legendary {
 
             let process: Process = .init()
             process.arguments = arguments
-            await executeStreamed(process) { chunk in
-                // append optional packs to legendary's stdin when it requests for them
-                if case .standardOutput = chunk.stream {
-                    if chunk.output.contains("Additional packs"), !optionalPackIDs.isEmpty {
-                        return optionalPackIDs.joined(separator: ", ") + "\n" // use \n as return key
+            
+            try await withTaskCancellationHandler {
+                try await executeStreamed(process) { chunk in
+                    // append optional packs to legendary's stdin when it requests for them
+                    if case .standardOutput = chunk.stream {
+                        if chunk.output.contains("Additional packs"), !optionalPackIDs.isEmpty {
+                            return optionalPackIDs.joined(separator: ", ") + "\n" // use \n as return key
+                        }
                     }
+                    
+                    if case .standardError = chunk.stream {
+                        handleDownloadManagerOutputProgress(for: chunk.output,
+                                                            progress: progress)
+                    }
+                    
+                    return nil
                 }
-
-                if case .standardError = chunk.stream {
-                    handleDownloadManagerOutputProgress(for: chunk.output,
-                                                        progress: progress)
-                }
-
-                return nil
+            } onCancel: {
+                process.interrupt()
             }
         }
 
@@ -249,13 +254,18 @@ final class Legendary {
 
             let process: Process = .init()
             process.arguments = arguments
-            await executeStreamed(process) { chunk in
-                if case .standardError = chunk.stream {
-                    handleDownloadManagerOutputProgress(for: chunk.output,
-                                                        progress: progress)
+            
+            try await withTaskCancellationHandler {
+                try await executeStreamed(process) { chunk in
+                    if case .standardError = chunk.stream {
+                        handleDownloadManagerOutputProgress(for: chunk.output,
+                                                            progress: progress)
+                    }
+                    
+                    return nil
                 }
-
-                return nil
+            } onCancel: {
+                process.interrupt()
             }
         }
 
@@ -278,35 +288,40 @@ final class Legendary {
             // this is bad though for obvious reasons
             let process: Process = .init()
             process.arguments = arguments
-            await executeStreamed(process, throwsOnChunkError: false) { chunk in
-                switch chunk.stream {
-                case .standardError:
-                    // if game files require redownload
-                    handleDownloadManagerOutputProgress(for: chunk.output,
-                                                        progress: progress)
-                case .standardOutput:
-                    // this regex is not dynamic, so there's no reason why they should fail to initialise
-                    // swiftlint:disable force_try
-                    let verificationProgressRegex = try! Regex(#"Verification progress: (?<downloadedObjects>\d+)\/(?<totalObjects>\d+) \((?<percentage>[\d.]+)%\) \[(?<rawDownloadSpeed>[\d.]+) MiB\/s\]"#)
-                    // swiftlint:enable force_try
-
-                    /*
-                     SAMPLE LEGENDARY OUTPUT
-                     Verification progress: 18053/18780 (98.7%) [1020.6 MiB/s] // main progress
-                     => Verifying large file "TAGame/CookedPCConsole/Textures3.tfc": 45% (1151.0/2576.2 MiB) [1186.8 MiB/s] // progress for large files (unhandled)
-                     */
-
-                    if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
-                        progress.completedUnitCount = Int64(Double(match["percentage"]?.substring ?? .init())?.rounded() ?? 0)
-                        progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
-                        progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
-
-                        // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
-                        progress.throughput = (Int(Double(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0)) * Int(pow(1024.0, 2.0))
+            
+            try await withTaskCancellationHandler {
+                try await executeStreamed(process, throwsOnChunkError: false) { chunk in
+                    switch chunk.stream {
+                    case .standardError:
+                        // if game files require redownload
+                        handleDownloadManagerOutputProgress(for: chunk.output,
+                                                            progress: progress)
+                    case .standardOutput:
+                        // this regex is not dynamic, so there's no reason why they should fail to initialise
+                        // swiftlint:disable force_try
+                        let verificationProgressRegex = try! Regex(#"Verification progress: (?<downloadedObjects>\d+)\/(?<totalObjects>\d+) \((?<percentage>[\d.]+)%\) \[(?<rawDownloadSpeed>[\d.]+) MiB\/s\]"#)
+                        // swiftlint:enable force_try
+                        
+                        /*
+                         SAMPLE LEGENDARY OUTPUT
+                         Verification progress: 18053/18780 (98.7%) [1020.6 MiB/s] // main progress
+                         => Verifying large file "TAGame/CookedPCConsole/Textures3.tfc": 45% (1151.0/2576.2 MiB) [1186.8 MiB/s] // progress for large files (unhandled)
+                         */
+                        
+                        if let match = try? verificationProgressRegex.firstMatch(in: chunk.output) {
+                            progress.completedUnitCount = Int64(Double(match["percentage"]?.substring ?? .init())?.rounded() ?? 0)
+                            progress.fileCompletedCount = Int(match["downloadedObjects"]?.substring ?? .init()) ?? 0
+                            progress.fileTotalCount = Int(match["totalObjects"]?.substring ?? .init()) ?? 0
+                            
+                            // convert raw download speed from MiB/s to B/s by multiplying by 1024^2
+                            progress.throughput = (Int(Double(match["rawDownloadSpeed"]?.substring ?? .init()) ?? 0)) * Int(pow(1024.0, 2.0))
+                        }
                     }
+                    
+                    return nil
                 }
-
-                return nil
+            } onCancel: {
+                process.interrupt()
             }
         }
 
@@ -493,8 +508,13 @@ final class Legendary {
             process.arguments = arguments
             process.environment = environment
             await transformProcess(process)
-            try process.run()
-            process.waitUntilExit()
+            
+            try await withTaskCancellationHandler {
+                try process.run()
+                process.waitUntilExit()
+            } onCancel: {
+                process.interrupt()
+            }
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -535,50 +555,54 @@ final class Legendary {
         process.arguments = arguments
         
         // note that install size and optional packs are mutually exclusive in this context.
-        await executeStreamed(process) { chunk in
-            switch chunk.stream {
-            case .standardError:
-                // Handle install size
-                Task {
-                    // legendary always returns install size in MiB
-                    if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
-                       let sizeString = match[1].substring,
-                       let sizeValue = Double(sizeString) {
-                        await MainActor.run {
-                            installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
-                            
-                            process.terminate()
+        try await withTaskCancellationHandler {
+            try await executeStreamed(process) { chunk in
+                switch chunk.stream {
+                case .standardError:
+                    // Handle install size
+                    Task {
+                        // legendary always returns install size in MiB
+                        if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
+                           let sizeString = match[1].substring,
+                           let sizeValue = Double(sizeString) {
+                            await MainActor.run {
+                                installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                                
+                                process.terminate()
+                            }
                         }
                     }
-                }
-                
-            case .standardOutput:
-                // Handle optional packs
-                Task { @MainActor in
-                    if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
-                       let id = match["identifier"]?.substring,
-                       let name = match["name"]?.substring {
-                        optionalPacks[String(id)] = String(name)
+                    
+                case .standardOutput:
+                    // Handle optional packs
+                    Task { @MainActor in
+                        if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
+                           let id = match["identifier"]?.substring,
+                           let name = match["name"]?.substring {
+                            optionalPacks[String(id)] = String(name)
+                        }
                     }
-                }
-                
-                if chunk.output.contains("Please enter tags of pack(s) to install") {
-                    process.terminate()
-                }
-                
-                // Handle installation requirements check results
-                /* TODO: not implemented, may be unnecessary
-                if chunk.output.contains(" - Warning:") {
                     
+                    if chunk.output.contains("Please enter tags of pack(s) to install") {
+                        process.terminate()
+                    }
+                    
+                    // Handle installation requirements check results
+                    /* TODO: not implemented, may be unnecessary
+                     if chunk.output.contains(" - Warning:") {
+                     
+                     }
+                     
+                     if chunk.output.contains(" ! Failure:") {
+                     
+                     }
+                     */
                 }
                 
-                if chunk.output.contains(" ! Failure:") {
-                    
-                }
-                 */
+                return nil
             }
-
-            return nil
+        } onCancel: {
+            process.interrupt()
         }
         
         return (installSize, optionalPacks)

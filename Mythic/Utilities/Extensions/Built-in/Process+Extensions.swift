@@ -114,10 +114,8 @@ extension Process {
     
     /// Starts a process and issues a `chunkHandler` callback of incremental ``OutputChunk``s,
     /// With support for responding to input by returning a value to the callback.
-    func runStreamed(
-        throwsOnChunkError: Bool = true,
-        chunkHandler: (@Sendable (OutputChunk) throws -> String?)? = nil
-    ) async throws {
+    func runStreamed(throwsOnChunkError: Bool = true,
+                     chunkHandler: (@Sendable (OutputChunk) throws -> String?)? = nil) async throws {
         let stderr: Pipe = .init(); self.standardError = stderr
         let stdout: Pipe = .init(); self.standardOutput = stdout
         let stdin: Pipe = .init(); self.standardInput = stdin
@@ -137,24 +135,25 @@ extension Process {
 
         let writer: StdinWriter = .init(stdin.fileHandleForWriting)
 
-        func createReadabilityTask(
-            for stream: Stream,
-            readingHandle handle: FileHandle
-        ) -> Task<Void, Error> {
+        func createReadabilityTask(for stream: Stream,
+                                   readingHandle handle: FileHandle) -> Task<Void, Error> {
             Task {
-                for try await text in handle.bytes.lines where !text.isEmpty {
-                    let chunk = OutputChunk(stream: stream, output: text)
-
-                    do {
-                        if let handler = chunkHandler,
-                           let reply = try handler(chunk) {
+                do {
+                    for try await text in handle.bytes.lines where !text.isEmpty {
+                        let chunk: OutputChunk = .init(stream: stream, output: text)
+                        
+                        if let handler = chunkHandler, let reply = try handler(chunk) {
                             await writer.write(reply)
                         }
+                        
                         log.debug("[\(stream.rawValue)] \(text, privacy: .public)")
-                    } catch {
-                        log.warning("[\(stream.rawValue)] handler threw: \(error)")
-                        throw error
                     }
+                } catch {
+                    // NSPOSIXErrorDomain code 9 indicates a bad FD.
+                    // FIXME: dirtyfix bad FD error caused by handle closure preventing further access to its FD
+                    guard error as NSError != NSError(domain: NSPOSIXErrorDomain, code: 9) else { return }
+                    
+                    throw error
                 }
             }
         }
