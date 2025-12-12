@@ -568,7 +568,7 @@ final class Legendary {
                             await MainActor.run {
                                 installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
                                 
-                                process.terminate()
+                                process.interrupt()
                             }
                         }
                     }
@@ -584,7 +584,7 @@ final class Legendary {
                     }
                     
                     if chunk.output.contains("Please enter tags of pack(s) to install") {
-                        process.terminate()
+                        process.interrupt()
                     }
                     
                     // Handle installation requirements check results
