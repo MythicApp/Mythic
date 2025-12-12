@@ -101,4 +101,3 @@ import OSLog
         // if storefronts.contains(...) { ... }
     }
 }
-

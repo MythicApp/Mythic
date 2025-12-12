@@ -28,7 +28,6 @@ struct BaseGameInstallationView<Content>: View where Content: View {
                 GameImageCard(game: game, url: game.verticalImageURL, isImageEmpty: .constant(false))
                     .aspectRatio(3/4, contentMode: .fit)
                 
-
                 VStack {
                     Text("\(type) \(game.description)")
                         .font(.title)
