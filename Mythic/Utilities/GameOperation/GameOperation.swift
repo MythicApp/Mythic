@@ -19,6 +19,10 @@ import OSLog
     private let _progress: Progress
     private(set) var progressKVOBridge: ProgressKVOBridge
 
+    /// The underlying code that is run when the operation's conditions to run are met.
+    /// - Parameter #1: the mutable `Progress` instance, which should be updated as the operation's function progresses in — well — progress.
+    /// - Note: This function is called within a `Task`, which is cancellable by the user.
+    /// - Note: To best handle task cancellation, use `withTaskCancellationHandler` within the closure.
     let function: (Progress) async throws -> Void
 
     var error: Error?
