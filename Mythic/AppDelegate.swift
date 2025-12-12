@@ -172,12 +172,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @MainActor func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-        guard !GameOperationManager.shared.queue.isEmpty else { return .terminateNow }
+        guard GameOperationManager.shared.queue.contains(where: { $0.type.modifiesFiles }) else { return .terminateNow }
 
         let alert: NSAlert = .init()
+        
         alert.messageText = String(localized: "Are you sure you want to quit?")
-        alert.informativeText = String(localized: "Mythic is still accessing games.")
+        alert.informativeText = String(localized: "Mythic is still operating on games.")
         alert.alertStyle = .warning
+        
         alert.addButton(withTitle: String(localized: "Quit"))
         alert.addButton(withTitle: String(localized: "Cancel"))
 

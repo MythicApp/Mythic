@@ -65,35 +65,38 @@ import DockProgress
         operation.completionBlock = { [self] in
             // run code that was already in the completion block
             originalCompletionBlock?()
-
-            // present any unhandled errors within the operation to the ui.
-            Task { @MainActor in
-                if let error = operation.error {
-                    let alert = NSAlert()
-                    alert.messageText = String(localized: "Unable to complete operation [\(operation.description)].")
-                    alert.informativeText = error.localizedDescription
-                    alert.alertStyle = .critical
-                    alert.addButton(withTitle: String(localized: "OK"))
-
-                    if let window = NSApp.windows.first {
-                        alert.beginSheetModal(for: window)
-                    }
-                }
-            }
-
+            
             // remove operation from `queue` on operation completion,
             // this ensures `queue` is always mirroring `operationQueue`.
             Task { await removeFromOverlyingQueue(operation) }
 
+            // present any unhandled errors within the operation to the ui.
+            Task { @MainActor in
+                guard let error = operation.error else { return }
+                
+                let alert = NSAlert()
+                alert.messageText = String(localized: "Unable to complete operation [\(operation.description)].")
+                alert.informativeText = error.localizedDescription
+                alert.alertStyle = .critical
+                alert.addButton(withTitle: String(localized: "OK"))
+                
+                if let window = NSApp.windows.first {
+                    alert.beginSheetModal(for: window)
+                }
+            }
+
             // display completion notification to user
             Task {
+                // ensure operation actually completed
+                guard !operation.isCancelled else { return }
+                
                 let notificationContent: UNMutableNotificationContent = .init()
                 notificationContent.title = String(localized: "Operation complete.")
                 notificationContent.body = String(localized: "\(operation.game.description) is now ready.")
                 notificationContent.interruptionLevel = .active
 
                 let notificationRequest: UNNotificationRequest = .init(
-                    identifier: "\(operation.id)_operationCompletion",
+                    identifier: "GameOperationCompletion_\(operation.id)",
                     content: notificationContent,
                     trigger: nil
                 )
