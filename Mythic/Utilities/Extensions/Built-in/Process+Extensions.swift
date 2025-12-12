@@ -104,8 +104,8 @@ extension Process {
     /// With support for responding to input by returning a value to the callback.
     func runStreamed(throwsOnChunkError: Bool = true,
                      chunkHandler: (@Sendable (OutputChunk) throws -> String?)? = nil) async throws {
-        let stderr:  Pipe = .init(); self.standardError = stderr
-        let stdout:  Pipe = .init(); self.standardOutput = stdout
+        let stderr: Pipe = .init(); self.standardError = stderr
+        let stdout: Pipe = .init(); self.standardOutput = stdout
         let stdin: Pipe = .init(); self.standardInput = stdin
         
         let log = Logger.custom(
@@ -128,6 +128,8 @@ extension Process {
         
         func attachReadabilityStream(to handle: FileHandle, for stream: Process.Stream) async throws {
             for await handle in handle.readabilityStream {
+                guard !Task.isCancelled else { break }
+                
                 guard let text: String = . init(data: handle.availableData, encoding: .utf8) else { continue }
                 
                 for line in text.split(whereSeparator: \.isNewline) {
