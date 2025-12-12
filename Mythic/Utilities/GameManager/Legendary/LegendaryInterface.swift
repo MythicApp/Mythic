@@ -705,23 +705,24 @@ final class Legendary {
         return installationData.launchParameters.components(separatedBy: .whitespaces)
     }
 
+    // TODO: refactor
     /// Create an asynchronous task to update Legendary's stored metadata.
-    @MainActor static func updateMetadata(forced: Bool = true) {
-        if VariableManager.shared.getVariable("isUpdatingLibrary") != true {
-            var arguments: [String] = ["list"]
-            if forced { arguments.append("--force-refresh") }
-            Task(priority: .utility) { @MainActor in
-                VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
-                let process: Process = .init()
-                process.arguments = arguments
-                await transformProcess(process)
-                try process.run()
-                process.waitUntilExit()
-                VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
-            }
+    static func updateMetadata(forced: Bool = true) {
+        var arguments: [String] = ["list"]
+        if forced { arguments.append("--force-refresh") }
+        Task(priority: .utility) {
+            guard await VariableManager.shared.getVariable("isUpdatingLibrary") != true else { return }
+            
+            await VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
+            let process: Process = .init()
+            process.arguments = arguments
+            await transformProcess(process)
+            try process.run()
+            process.waitUntilExit()
+            await VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
         }
     }
-
+    
     static func getImageMetadata(gameID: String, type: ImageType) -> KeyImage? {
         guard let metadata = try? getGameMetadata(gameID: gameID) else { return nil }
 
