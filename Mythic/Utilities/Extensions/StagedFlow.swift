@@ -20,7 +20,7 @@ import SwiftUI
 extension StagedFlow {
     var fractionCompleted: Double {
         precondition(!stages.isEmpty, "Stages cannot be empty in a StagedFlow viewmodel.")
-        return .init((stages.firstIndex(of: currentStage) ?? 0) + 1 / stages.count)
+        return Double((stages.firstIndex(of: currentStage) ?? 0) + 1) / Double(stages.count)
     }
     
     /**
