@@ -45,20 +45,21 @@ final class Legendary {
         return modifiedArguments
     }
 
-    private static func onChunkWithLegendaryErrorHandling(
-        _ onChunk: (@Sendable (Process.OutputChunk) throws -> String?)?
+    ///
+    private static func throwingChunkHandler(
+        _ chunkHandler: (@Sendable (Process.OutputChunk) throws -> String?)?
     ) -> (@Sendable (Process.OutputChunk) throws -> String?)? {
-        guard let onChunk = onChunk else { return nil }
+        guard let chunkHandler else { return nil }
         return { chunk in
             // handle and throw generic Legendary errors
             if case .standardError = chunk.stream,
                let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
                let errorReason = match.last?.substring {
                 // TODO: dedicated handle for 'Failed to acquire installed data lock, only one instance of Legendary may install/import/move applications at a time.'
-                throw Legendary.GenericError(reason: String(errorReason))
+                throw GenericError(reason: String(errorReason))
             }
 
-            return try onChunk(chunk)
+            return try chunkHandler(chunk)
         }
     }
 
@@ -81,9 +82,9 @@ final class Legendary {
                                 throwsOnChunkError: Bool = true,
                                 onChunk: @Sendable @escaping (Process.OutputChunk) throws -> String?) async {
         await transformProcess(process)
-        _ = process.runStreamed(
+        try? await process.runStreamed(
             throwsOnChunkError: throwsOnChunkError,
-            onChunk: onChunkWithLegendaryErrorHandling(onChunk)
+            chunkHandler: throwingChunkHandler(onChunk)
         )
     }
 
@@ -216,7 +217,7 @@ final class Legendary {
 
             let process: Process = .init()
             process.arguments = arguments
-            await Legendary.executeStreamed(process) { chunk in
+            await executeStreamed(process) { chunk in
                 // append optional packs to legendary's stdin when it requests for them
                 if case .standardOutput = chunk.stream {
                     if chunk.output.contains("Additional packs"), !optionalPackIDs.isEmpty {
@@ -248,7 +249,7 @@ final class Legendary {
 
             let process: Process = .init()
             process.arguments = arguments
-            await Legendary.executeStreamed(process) { chunk in
+            await executeStreamed(process) { chunk in
                 if case .standardError = chunk.stream {
                     handleDownloadManagerOutputProgress(for: chunk.output,
                                                         progress: progress)
@@ -277,7 +278,7 @@ final class Legendary {
             // this is bad though for obvious reasons
             let process: Process = .init()
             process.arguments = arguments
-            await Legendary.executeStreamed(process, throwsOnChunkError: false) { chunk in
+            await executeStreamed(process, throwsOnChunkError: false) { chunk in
                 switch chunk.stream {
                 case .standardError:
                     // if game files require redownload
@@ -341,6 +342,7 @@ final class Legendary {
             process.arguments = arguments
             await transformProcess(process)
             try process.run()
+            process.waitUntilExit()
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -372,6 +374,7 @@ final class Legendary {
             process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
             await transformProcess(process)
             try process.run()
+            process.waitUntilExit()
             
             game.installationState = .installed(location: newLocation, platform: platform)
         }
@@ -425,6 +428,7 @@ final class Legendary {
         process.arguments = arguments
         await transformProcess(process)
         try process.run()
+        process.waitUntilExit()
     }
 
     @discardableResult
@@ -449,6 +453,7 @@ final class Legendary {
         process.arguments = ["auth", "--delete"]
         await transformProcess(process)
         try process.run()
+        process.waitUntilExit()
         
         UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
     }
@@ -489,6 +494,7 @@ final class Legendary {
             process.environment = environment
             await transformProcess(process)
             try process.run()
+            process.waitUntilExit()
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -518,7 +524,7 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let arguments: [String] = ["install", game.id, "--platform", Legendary.matchPlatform(for: platform)]
+        let arguments: [String] = ["install", game.id, "--platform", matchPlatform(for: platform)]
         
         var installSize: Int64?
         var optionalPacks: [String: String] = .init()
@@ -527,9 +533,12 @@ final class Legendary {
         // nice n safe
         let process: Process = .init()
         process.arguments = arguments
+        
+        // note that install size and optional packs are mutually exclusive in this context.
         await executeStreamed(process) { chunk in
             switch chunk.stream {
             case .standardError:
+                // Handle install size
                 Task {
                     // legendary always returns install size in MiB
                     if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
@@ -537,35 +546,39 @@ final class Legendary {
                        let sizeValue = Double(sizeString) {
                         await MainActor.run {
                             installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                            
+                            process.terminate()
                         }
                     }
                 }
-
+                
             case .standardOutput:
-                if chunk.output.contains("The following optional packs are available") {
-                    Task { @MainActor in
-                        chunk.output.enumerateLines { line, _ in
-                            if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: String(line)),
-                               let id = match["identifier"]?.substring,
-                               let name = match["name"]?.substring {
-                                optionalPacks[String(id)] = String(name)
-                            }
-                        }
+                // Handle optional packs
+                Task { @MainActor in
+                    if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
+                       let id = match["identifier"]?.substring,
+                       let name = match["name"]?.substring {
+                        optionalPacks[String(id)] = String(name)
                     }
                 }
-
-                // if legendary prompts an install, our work is done. stop parsing
-                if chunk.output.contains("Do you wish to install") ||
-                   chunk.output.contains("Additional packs") {
+                
+                if chunk.output.contains("Please enter tags of pack(s) to install") {
                     process.terminate()
                 }
+                
+                // Handle installation requirements check results
+                /* TODO: not implemented, may be unnecessary
+                if chunk.output.contains(" - Warning:") {
+                    
+                }
+                
+                if chunk.output.contains(" ! Failure:") {
+                    
+                }
+                 */
             }
 
             return nil
-        }
-
-        defer {
-            process.terminate()
         }
         
         return (installSize, optionalPacks)
@@ -594,7 +607,7 @@ final class Legendary {
     static func getInstalledGames() throws -> [EpicGamesGame] {
         guard isSignedIn else { throw NotSignedInError() }
 
-        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        let installedJSONURL: URL = configurationFolder.appending(path: "installed.json")
         
         // if no games are installed, and the config folder is new, installed.json will not exist.
         guard FileManager.default.fileExists(atPath: installedJSONURL.path) else { return [] }
@@ -648,7 +661,7 @@ final class Legendary {
     }
 
     static func getGameInstallationData(gameID: String) throws -> InstalledGame {
-        let installedJSONURL: URL = Legendary.configurationFolder.appending(path: "installed.json")
+        let installedJSONURL: URL = configurationFolder.appending(path: "installed.json")
         let installedJSONData: Data = try .init(contentsOf: installedJSONURL)
         let installedGames = try JSONDecoder().decode(Installed.self, from: installedJSONData)
 
@@ -679,6 +692,7 @@ final class Legendary {
                 process.arguments = arguments
                 await transformProcess(process)
                 try process.run()
+                process.waitUntilExit()
                 VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
             }
         }

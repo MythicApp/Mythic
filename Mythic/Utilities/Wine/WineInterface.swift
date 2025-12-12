@@ -100,20 +100,18 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
     static func tasklist(containerURL url: URL) async throws -> [Container.Process] {
         var list: [Container.Process] = .init()
-
+        
         // Collect output and parse after the process exits
         let result = try await execute(arguments: ["tasklist"], containerURL: url)
-        result.standardOutput.enumerateLines { line, _ in
-            // TODO: tasklist regex for wine 9.0
-            // try! Regex (#"^\s*(?<ImageName>.+?)\s+(?<PID>\d+)\s+(?<SessionName>\S+)\s+(?<SessionNum>\d+)\s+(?<MemUsage>[\d,]+ K)$"#)
-            if let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: line) {
-                var process: Container.Process = .init()
-                process.name = String(match["name"]?.substring ?? "Unknown")
-                process.pid = Int(match["pid"]?.substring ?? "0") ?? 0
-                list.append(process)
-            }
+        // TODO: tasklist regex for wine 9.0
+        // try! Regex (#"^\s*(?<ImageName>.+?)\s+(?<PID>\d+)\s+(?<SessionName>\S+)\s+(?<SessionNum>\d+)\s+(?<MemUsage>[\d,]+ K)$"#)
+        if let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: result.standardOutput) {
+            var process: Container.Process = .init()
+            process.name = String(match["name"]?.substring ?? "Unknown")
+            process.pid = Int(match["pid"]?.substring ?? "0") ?? 0
+            list.append(process)
         }
-
+        
         return list
     }
     

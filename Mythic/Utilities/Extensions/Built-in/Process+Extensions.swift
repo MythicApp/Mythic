@@ -17,37 +17,37 @@ extension Process {
     func runWrapped() throws -> CommandResult {
         let stderr: Pipe = .init(); self.standardError = stderr
         let stdout: Pipe = .init(); self.standardOutput = stdout
-
-        let log: Logger = .custom(category: "Process.execute@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
-
+        
+        let log: Logger = .custom(category: "Process[\(self.processIdentifier)] (wrapped) @ \(self.executableURL?.pathComponents.suffix(3).joined(separator: "/") ?? .init())")
+        
         try self.run()
-
+        
         let stdoutData = try stdout.fileHandleForReading.readToEnd()
         let stderrData = try stderr.fileHandleForReading.readToEnd()
-
+        
         self.waitUntilExit()
-
+        
         // swiftlint:disable optional_data_string_conversion
         let stdoutOutput = String(decoding: stdoutData ?? .init(), as: UTF8.self)
         let stderrOutput = String(decoding: stderrData ?? .init(), as: UTF8.self)
         // swiftlint:enable optional_data_string_conversion
-
+        
         return .init(standardOutput: stdoutOutput,
                      standardError: stderrOutput,
                      exitCode: self.terminationStatus)
     }
-
+    
     // allow the compiler to automatically choose execute overload depending on async/sync context
     /// Asynchronously executes a process, and concurrently collects stdout and stderr.
     /// - Note: If you don't require output, use `.run()` instead.
     func runWrapped() async throws -> CommandResult {
         let stderr: Pipe = .init(); self.standardError = stderr
         let stdout: Pipe = .init(); self.standardOutput = stdout
-
-        let log: Logger = .custom(category: "Process.execute(async)@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
-
+        
+        let log: Logger = .custom(category: "Process[\(self.processIdentifier)] (wrapped, async) @ \(self.executableURL?.pathComponents.suffix(3).joined(separator: "/") ?? .init())")
+        
         try self.run()
-
+        
         // accumulate piped data asynchronously
         let stdoutTask = Task.detached(priority: .utility) { () -> String in
             let data = stdout.fileHandleForReading.readDataToEndOfFile()
@@ -58,7 +58,7 @@ extension Process {
             }
             return text
         }
-
+        
         let stderrTask = Task.detached(priority: .utility) { () -> String in
             let data = stderr.fileHandleForReading.readDataToEndOfFile()
             // swiftlint:disable:next optional_data_string_conversion
@@ -68,126 +68,116 @@ extension Process {
             }
             return text
         }
-
+        
         // wait for termination w/o blocking, concurrency genius!!!!!
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             self.terminationHandler = { _ in
                 continuation.resume()
             }
         }
-
+        
         return .init(standardOutput: await stdoutTask.value,
                      standardError: await stderrTask.value,
                      exitCode: self.terminationStatus)
     }
-
+    
     func runWrappedAsync() async throws -> CommandResult {
         try await runWrapped()
     }
     
-    /// Starts a process and returns an ``AsyncThrowingStream`` of incremental ``OutputChunk``s.
-    /// If `onChunk` is provided, its return value (String) will be written to stdin for each chunk.
-    func runStreamed(
-        throwsOnChunkError: Bool = true,
-        onChunk: (@Sendable (OutputChunk) throws -> String?)? = nil
-    ) -> AsyncThrowingStream<OutputChunk, Error> {
+    func runStreamed(throwsOnChunkError: Bool = true) -> AsyncThrowingStream<OutputChunk, Error> {
         AsyncThrowingStream { continuation in
-            let stdin: Pipe = .init(); self.standardInput = stdin
-            let stderr: Pipe = .init(); self.standardError = stderr
-            let stdout: Pipe = .init(); self.standardOutput = stdout
-
-            let log: Logger = .custom(category: "Process.runStreamed@\(self.executableURL?.path ?? "Unknown\(UUID().uuidString)")")
-
-            // safety first!! (keep swift 6 happy)
-            actor StdinWriter {
-                private let handle: FileHandle
-                init(handle: FileHandle) { self.handle = handle }
-                func write(_ string: String) {
-                    if let data = string.data(using: .utf8) {
-                        handle.write(data)
-                    }
-                }
-            }
-            let writer = StdinWriter(handle: stdin.fileHandleForWriting)
-
-            stderr.fileHandleForReading.readabilityHandler = { handle in
-                let data = handle.availableData
-                guard !data.isEmpty else { return }
-                // swiftlint:disable:next optional_data_string_conversion
-                let text: String = .init(decoding: data, as: UTF8.self)
-                guard !text.isEmpty else { return }
-
-                let chunk = OutputChunk(stream: .standardError, output: text)
-
-                do {
-                    if let onChunk, let reply = try onChunk(chunk) {
-                        Task { await writer.write(reply) }
-                    }
-                    continuation.yield(chunk)
-                    log.debug("[stderr] \(text, privacy: .public)")
-                } catch {
-                    log.warning("[stderr] caller threw an error while processing stream output: \(error)")
-                    if throwsOnChunkError {
-                        continuation.finish(throwing: error)
-                    }
-                }
-            }
-
-            stdout.fileHandleForReading.readabilityHandler = { handle in
-                let data = handle.availableData
-                guard !data.isEmpty else { return }
-                // swiftlint:disable:next optional_data_string_conversion
-                let text: String = .init(decoding: data, as: UTF8.self)
-                guard !text.isEmpty else { return }
-
-                let chunk: OutputChunk = .init(stream: .standardOutput, output: text)
-                do {
-                    if let onChunk, let reply = try onChunk(chunk) {
-                        Task { await writer.write(reply) }
-                    }
-                    continuation.yield(chunk)
-                    log.debug("[stdout] \(text, privacy: .public)")
-                } catch {
-                    log.warning("[stdout] caller threw an error while processing stream output: \(error)")
-                    if throwsOnChunkError {
-                        continuation.finish(throwing: error)
-                    }
-                }
-            }
-
-            @Sendable func safeClose() {
-                stderr.fileHandleForReading.readabilityHandler = nil
-                stdout.fileHandleForReading.readabilityHandler = nil
-                try? stderr.fileHandleForReading.close()
-                try? stdout.fileHandleForReading.close()
-                try? stdin.fileHandleForWriting.close()
-            }
-
-            // cancel/finish handling: if the consumer cancels, terminate the child gracefully.
-            continuation.onTermination = { @Sendable _ in
+            // if the consumer cancels, terminate the child gracefully.
+            continuation.onTermination = { @Sendable termination in
+                guard case .cancelled = termination else { return }
                 Task.detached {
                     if self.isRunning { self.interrupt() } // try sigint
                     try? await Task.sleep(for: .seconds(6))
                     if self.isRunning { self.terminate() } // try sigterm
                     try? await Task.sleep(for: .seconds(2))
                     if self.isRunning { kill(self.processIdentifier, SIGKILL) } // sigkill, BEGONE
-
-                    safeClose()
                 }
             }
-
-            self.terminationHandler = { _ in
-                safeClose()
-                continuation.finish()
-            }
-
-            do {
-                try self.run()
-            } catch {
-                safeClose()
-                continuation.finish(throwing: error)
+            
+            Task {
+                do {
+                    try await self.runStreamed(throwsOnChunkError: throwsOnChunkError) { chunk in
+                        continuation.yield(chunk)
+                        return nil // AsyncThrowingStream can't return replies
+                    }
+                } catch {
+                    continuation.finish(throwing: error)
+                }
             }
         }
+    }
+    
+    /// Starts a process and issues a `chunkHandler` callback of incremental ``OutputChunk``s,
+    /// With support for responding to input by returning a value to the callback.
+    func runStreamed(
+        throwsOnChunkError: Bool = true,
+        chunkHandler: (@Sendable (OutputChunk) throws -> String?)? = nil
+    ) async throws {
+        let stderr: Pipe = .init(); self.standardError = stderr
+        let stdout: Pipe = .init(); self.standardOutput = stdout
+        let stdin: Pipe = .init(); self.standardInput = stdin
+
+        let log = Logger.custom(
+            category: "Process[\(self.processIdentifier)] (streamed) @ \(self.executableURL?.pathComponents.suffix(3).joined(separator: "/") ?? "")"
+        )
+
+        actor StdinWriter {
+            let handle: FileHandle
+            init(_ handle: FileHandle) { self.handle = handle }
+            func write(_ str: String) async {
+                guard let data = str.data(using: .utf8) else { return }
+                handle.write(data)
+            }
+        }
+
+        let writer: StdinWriter = .init(stdin.fileHandleForWriting)
+
+        func createReadabilityTask(
+            for stream: Stream,
+            readingHandle handle: FileHandle
+        ) -> Task<Void, Error> {
+            Task {
+                for try await text in handle.bytes.lines where !text.isEmpty {
+                    let chunk = OutputChunk(stream: stream, output: text)
+
+                    do {
+                        if let handler = chunkHandler,
+                           let reply = try handler(chunk) {
+                            await writer.write(reply)
+                        }
+                        log.debug("[\(stream.rawValue)] \(text, privacy: .public)")
+                    } catch {
+                        log.warning("[\(stream.rawValue)] handler threw: \(error)")
+                        throw error
+                    }
+                }
+            }
+        }
+
+        let stderrReadabilityTask: Task<Void, Error> = createReadabilityTask(for: .standardError, readingHandle: stderr.fileHandleForReading)
+        let stdoutReadabilityTask: Task<Void, Error> = createReadabilityTask(for: .standardOutput, readingHandle: stdout.fileHandleForReading)
+
+        @Sendable func closeFileHandlesForReading() {
+            try? stderr.fileHandleForReading.close()
+            try? stdout.fileHandleForReading.close()
+            try? stdin.fileHandleForWriting.close()
+        }
+
+        self.terminationHandler = { _ in closeFileHandlesForReading() }
+
+        do {
+            try self.run()
+        } catch {
+            closeFileHandlesForReading(); throw error
+        }
+
+        try await stderrReadabilityTask.value
+        try await stdoutReadabilityTask.value
     }
 }
 
@@ -196,21 +186,21 @@ extension Process {
         init(exitCode: Int32? = nil) {
             self.exitCode = exitCode
         }
-
+        
         var exitCode: Int32?
         var errorDescription: String? = String(localized: "Process execution was unsuccessful. (Non-zero exit code)")
     }
-
-    enum Stream: Sendable {
-        case standardError
-        case standardOutput
+    
+    enum Stream: String, Sendable {
+        case standardError = "stderr"
+        case standardOutput = "stdout"
     }
-
+    
     struct OutputChunk: Sendable {
         public let stream: Stream
         public let output: String
     }
-
+    
     struct CommandResult: Sendable {
         public let standardOutput: String
         public let standardError: String

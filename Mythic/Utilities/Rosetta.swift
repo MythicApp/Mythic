@@ -38,9 +38,7 @@ final class Rosetta {
         process.executableURL = .init(filePath: "/usr/sbin/softwareupdate")
         process.arguments = ["--install-rosetta", "--agree-to-license"]
 
-        let stream = process.runStreamed()
-
-        for try await chunk in stream {
+        for try await chunk in process.runStreamed() {
             guard case .standardOutput = chunk.stream else { continue }
 
             if let match = try? Regex(#"Installing: (\d+(?:\.\d+)?)%"#).firstMatch(in: chunk.output) {
