@@ -730,19 +730,32 @@ final class Legendary {
 
     // TODO: refactor
     /// Create an asynchronous task to update Legendary's stored metadata.
-    static func updateMetadata(forced: Bool = true) {
+    static func updateMetadata(forced: Bool = true) async {
+        guard await !GameListViewModel.shared.isUpdatingLibrary else { return }
         var arguments: [String] = ["list"]
         if forced { arguments.append("--force-refresh") }
-        Task(priority: .utility) {
-            guard await VariableManager.shared.getVariable("isUpdatingLibrary") != true else { return }
+        
+        Task {
+            await MainActor.run {
+                GameListViewModel.shared.isUpdatingLibrary = true
+            }
             
-            await VariableManager.shared.setVariable("isUpdatingLibrary", value: true)
+            defer {
+                Task { @MainActor in
+                    GameListViewModel.shared.isUpdatingLibrary = false
+                }
+            }
+            
             let process: Process = .init()
             process.arguments = arguments
             await transformProcess(process)
+            
             try process.run()
-            process.waitUntilExit()
-            await VariableManager.shared.setVariable("isUpdatingLibrary", value: false)
+            
+            await withCheckedContinuation { continuation in
+                process.waitUntilExit()
+                continuation.resume()
+            }
         }
     }
     

@@ -49,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // MARK: Start metadata update cycle for Legendary
         Task(priority: .utility) {
             while true {
-                await MainActor.run(body: { Legendary.updateMetadata() })
+                await Legendary.updateMetadata()
                 try? await Task.sleep(for: .seconds(5 * 60))
             }
         }
