@@ -86,11 +86,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let process: Process = .init()
         process.arguments = ["tasklist"]
         transformProcess(process, containerURL: containerURL)
+        
         let commandResult = try await process.runWrapped()
         
         // TODO: tasklist regex for wine 9.0
         // try! Regex (#"^\s*(?<ImageName>.+?)\s+(?<PID>\d+)\s+(?<SessionName>\S+)\s+(?<SessionNum>\d+)\s+(?<MemUsage>[\d,]+ K)$"#)
-        if let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: commandResult.standardOutput) {
+        if let standardOutput = commandResult.standardOutput,
+           let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: standardOutput) {
             var process: Container.Process = .init()
             process.name = String(match["name"]?.substring ?? "Unknown")
             process.pid = Int(match["pid"]?.substring ?? "0") ?? 0
@@ -161,7 +163,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             let result = try await boot(at: url, parameters: [.prefixInit])
 
             // swiftlint:disable:next force_try
-            guard result.standardError.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) else {
+            guard result.standardError?.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) == true else {
                 throw Container.UnableToBootError()
             }
 
@@ -213,17 +215,20 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         containerURLs.remove(containerURL)
     }
 
-    static func killAll(containerURLs urls: [URL] = .init()) throws {
-        let task = Process()
-        task.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
-        task.arguments = ["-k"]
+    static func killAll(at urls: URL...) throws {
+        let process: Process = .init()
+        process.executableURL = Engine.directory.appending(path: "wine/bin/wineserver")
+        process.arguments = ["-k"]
 
         let urls: [URL] = urls.isEmpty ? .init(containerURLs) : urls
-
+        
         for url in urls {
-            task.environment = ["WINEPREFIX": url.path(percentEncoded: false)]
-            task.qualityOfService = .utility
-            try task.run()
+            Task {
+                process.environment = ["WINEPREFIX": url.path]
+                process.qualityOfService = .utility
+                
+                try process.run()
+            }
         }
     }
 
@@ -234,11 +239,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
         let output = try process.runWrapped()
         
-        let cachePath = output.standardOutput.trimmingCharacters(in: .whitespacesAndNewlines)
-        let d3dmCachePath = cachePath.appending("/d3dm")
+        guard let cachePath = output.standardOutput?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            throw CocoaError(.coderValueNotFound)
+        }
+        let d3dMetalCacheURL: URL = URL(filePath: cachePath).appendingPathComponent("d3dm")
 
         // although success may be limited, this is MUCH less risky than using applescript w/ string interpolation
-        try FileManager.default.removeItem(at: URL(filePath: d3dmCachePath))
+        try FileManager.default.removeItem(at: d3dMetalCacheURL)
     }
 
     private static func addRegistryKey(containerURL: URL, key: String, name: String, data: String, type: RegistryType) async throws {
@@ -247,6 +254,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let process: Process = .init()
         process.arguments = ["reg", "add", key, "-v", name, "-t", type.rawValue, "-d", data, "-f"]
         transformProcess(process, containerURL: containerURL)
+        
         try process.run()
         
         await withCheckedContinuation { continuation in
@@ -263,17 +271,18 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         let process: Process = .init()
         process.arguments = ["reg", "query", key, "-v", name]
         transformProcess(process, containerURL: containerURL)
+        
         let commandResult = try await process.runWrapped()
 
         try process.checkTerminationStatus()
 
         // Gather non-empty, trimmed lines; return the last occurrence
-        let lines = commandResult.standardOutput
+        let lines = commandResult.standardOutput?
             .split(separator: "\n", omittingEmptySubsequences: true)
             .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
 
-        if let last = lines.last {
+        if let last = lines?.last {
             return last
         } else {
             throw UnableToQueryRegistryError()
@@ -310,9 +319,10 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             let process: Process = .init()
             process.arguments = ["winecfg", "-v"]
             transformProcess(process, containerURL: containerURL)
+            
             let commandResult = try await process.runWrapped()
             
-            let currentVersion: String = commandResult.standardOutput.trimmingCharacters(in: .whitespacesAndNewlines)
+            let currentVersion: String? = commandResult.standardOutput?.trimmingCharacters(in: .whitespacesAndNewlines)
             
             return WindowsVersion.allCases.first(where: { String(describing: $0) == currentVersion })
         } catch {
@@ -326,6 +336,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             let process: Process = .init()
             process.arguments = ["winecfg", "-v", String(describing: version)]
             transformProcess(process, containerURL: containerURL)
+            
             try process.run()
             
             await withCheckedContinuation { continuation in

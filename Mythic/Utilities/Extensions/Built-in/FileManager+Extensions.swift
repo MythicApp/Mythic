@@ -27,9 +27,7 @@ extension FileManager {
 
         let result = try process.runWrapped()
 
-        if !result.standardError.isEmpty {
-            throw ForceCopyFailedError()
-        }
+        try process.checkTerminationStatus()
     }
 
     func createUniqueTemporaryDirectory() throws -> URL {

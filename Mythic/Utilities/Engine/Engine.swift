@@ -148,7 +148,7 @@ final class Engine {
                                 guard process.terminationStatus == 0 else {
                                     log.error("""
                                         Engine installation unsuccessful, Tar exited with a nonzero termination status.
-                                        Output (stderr): \(tarResult.standardError)
+                                        Output (stderr): \(tarResult.standardError ?? "N/A")
                                         """)
                                     
                                     // filewriteunknown is more suitable than Process.NonZeroTerminationStatus.

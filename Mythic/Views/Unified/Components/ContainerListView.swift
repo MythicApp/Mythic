@@ -148,6 +148,7 @@ struct ContainerConfigurationView: View {
                                     let process: Process = .init()
                                     process.arguments = [url.path]
                                     Wine.transformProcess(process, containerURL: container.url)
+                                    
                                     try process.run()
                                     
                                     await withCheckedContinuation { continuation in

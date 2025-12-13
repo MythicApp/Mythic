@@ -355,8 +355,9 @@ extension SettingsView {
                     let process: Process = .init()
                     process.arguments = ["cleanup"]
                     await Legendary.transformProcess(process)
+                    
                     let result = try? await process.runWrapped()
-                    isCleanupSuccessful = result?.standardError.contains("Cleanup complete")
+                    isCleanupSuccessful = result?.standardError?.contains("Cleanup complete")
                 }
 
                 OperationButton(
@@ -370,6 +371,7 @@ extension SettingsView {
                     let process: Process = .init()
                     process.arguments = ["-y", "sync-saves"]
                     await Legendary.transformProcess(process)
+                    
                     let result = try? await process.runWrapped()
                     isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: result?.standardError ?? "") != nil)
                 }

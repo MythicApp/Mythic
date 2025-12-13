@@ -35,18 +35,18 @@ extension Process {
         
         try self.run()
         
-        let stdoutData = try stdout.fileHandleForReading.readToEnd()
-        let stderrData = try stderr.fileHandleForReading.readToEnd()
+        var decodedStandardOutput: String? = nil
+        if let data = try stdout.fileHandleForReading.readToEnd() {
+            decodedStandardOutput = .init(data: data, encoding: .utf8)
+        }
         
-        self.waitUntilExit()
+        var decodedStandardError: String? = nil
+        if let data = try stderr.fileHandleForReading.readToEnd() {
+            decodedStandardError = .init(data: data, encoding: .utf8)
+        }
         
-        // swiftlint:disable optional_data_string_conversion
-        let stdoutOutput = String(decoding: stdoutData ?? .init(), as: UTF8.self)
-        let stderrOutput = String(decoding: stderrData ?? .init(), as: UTF8.self)
-        // swiftlint:enable optional_data_string_conversion
-        
-        return .init(standardOutput: stdoutOutput,
-                     standardError: stderrOutput)
+        return .init(standardOutput: decodedStandardOutput,
+                     standardError: decodedStandardError)
     }
     
     // allow the compiler to automatically choose execute overload depending on async/sync context
@@ -60,36 +60,30 @@ extension Process {
         
         try self.run()
         
+        func spawnReadTask(for handle: FileHandle, for stream: Process.Stream) -> Task<String?, Error> {
+            Task.detached(priority: .utility) {
+                guard let data = try handle.readToEnd() else { return nil }
+                let text: String? = .init(data: data, encoding: .utf8)
+                
+                if let text, !text.isEmpty {
+                    log.debug("[\(stream.rawValue)] \(text, privacy: .public)")
+                }
+                
+                return text
+            }
+        }
+        
         // accumulate piped data asynchronously
-        let stdoutTask = Task.detached(priority: .utility) { () -> String in
-            let data = stdout.fileHandleForReading.readDataToEndOfFile()
-            // swiftlint:disable:next optional_data_string_conversion
-            let text: String = .init(decoding: data, as: UTF8.self)
-            if !text.isEmpty {
-                log.debug("[stdout] \(text, privacy: .public)")
-            }
-            return text
+        let standardErrorReadTask = spawnReadTask(for: stderr.fileHandleForReading, for: .standardError)
+        let standardOutputReadTask = spawnReadTask(for: stdout.fileHandleForReading, for: .standardOutput)
+        
+        await withCheckedContinuation { continuation in
+            self.waitUntilExit()
+            continuation.resume()
         }
         
-        let stderrTask = Task.detached(priority: .utility) { () -> String in
-            let data = stderr.fileHandleForReading.readDataToEndOfFile()
-            // swiftlint:disable:next optional_data_string_conversion
-            let text: String = .init(decoding: data, as: UTF8.self)
-            if !text.isEmpty {
-                log.debug("[stderr] \(text, privacy: .public)")
-            }
-            return text
-        }
-        
-        // wait for termination w/o blocking, concurrency genius!!!!!
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            self.terminationHandler = { _ in
-                continuation.resume()
-            }
-        }
-        
-        return .init(standardOutput: await stdoutTask.value,
-                     standardError: await stderrTask.value)
+        return .init(standardOutput: try await standardOutputReadTask.value,
+                     standardError: try await standardErrorReadTask.value)
     }
     
     func runWrappedAsync() async throws -> CommandResult {
@@ -217,7 +211,7 @@ extension Process {
     }
     
     struct CommandResult: Sendable {
-        public let standardOutput: String
-        public let standardError: String
+        public let standardOutput: String?
+        public let standardError: String?
     }
 }

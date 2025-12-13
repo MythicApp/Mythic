@@ -13,7 +13,7 @@ extension Wine {
     final class DXVK {
         /// Replaces the Engine’s DirectX DLLs in the specified Wine container with their DXVK equivalents.
         static func install(toContainerAtURL containerURL: URL) async throws {
-            try Wine.killAll(containerURLs: [containerURL])
+            try Wine.killAll(at: containerURL)
 
             // x64
             try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d10core.dll"))

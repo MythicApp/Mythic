@@ -17,7 +17,7 @@ final class Rosetta {
 
         let result = try? process.runWrapped()
 
-        return result?.standardOutput.isEmpty == false
+        return result?.standardOutput?.isEmpty == false
     }
 
     struct AgreementFailure: LocalizedError {

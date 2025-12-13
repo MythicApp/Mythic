@@ -82,6 +82,7 @@ final class Legendary {
                                 throwsOnChunkError: Bool = true,
                                 chunkHandler: @Sendable @escaping (Process.OutputChunk) throws -> String?) async throws {
         await transformProcess(process)
+        
         try await process.runStreamed(
             throwsOnChunkError: throwsOnChunkError,
             chunkHandler: throwingChunkHandler(chunkHandler)
@@ -356,8 +357,13 @@ final class Legendary {
             let process: Process = .init()
             process.arguments = arguments
             await transformProcess(process)
+            
             try process.run()
-            process.waitUntilExit()
+            
+            await withCheckedContinuation { continuation in
+                process.waitUntilExit()
+                continuation.resume()
+            }
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -388,8 +394,13 @@ final class Legendary {
             let process: Process = .init()
             process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
             await transformProcess(process)
+            
             try process.run()
-            process.waitUntilExit()
+            
+            await withCheckedContinuation { continuation in
+                process.waitUntilExit()
+                continuation.resume()
+            }
             
             game.installationState = .installed(location: newLocation, platform: platform)
         }
@@ -442,8 +453,13 @@ final class Legendary {
         let process: Process = .init()
         process.arguments = arguments
         await transformProcess(process)
+        
         try process.run()
-        process.waitUntilExit()
+        
+        await withCheckedContinuation { continuation in
+            process.waitUntilExit()
+            continuation.resume()
+        }
     }
 
     @discardableResult
@@ -451,9 +467,12 @@ final class Legendary {
         let process: Process = .init()
         process.arguments = ["auth", "--code", authKey]
         await transformProcess(process)
+        
         let result = try await process.runWrapped()
+        
         if let successRegex = try? Regex(#"Successfully logged in as \"(?<username>[^\"]+)\""#),
-           let match = try? successRegex.firstMatch(in: result.standardError),
+           let standardError = result.standardError,
+           let match = try? successRegex.firstMatch(in: standardError),
            let username = match["username"]?.substring {
             // refresh failure should not affect signin capability
             try? await GameDataStore.shared.refreshFromStorefronts()
@@ -467,8 +486,12 @@ final class Legendary {
         let process: Process = .init()
         process.arguments = ["auth", "--delete"]
         await transformProcess(process)
+        
         try process.run()
-        process.waitUntilExit()
+        await withCheckedContinuation { continuation in
+            process.waitUntilExit()
+            continuation.resume()
+        }
         
         UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
     }

@@ -90,6 +90,7 @@ class LocalGameManager {
                 process.arguments = [location.path] + game.launchArguments
                 process.environment = environmentVariables
                 Wine.transformProcess(process, containerURL: containerURL)
+                
                 try process.run()
                 
                 await withCheckedContinuation { continuation in
