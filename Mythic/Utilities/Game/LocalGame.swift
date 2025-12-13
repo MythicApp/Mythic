@@ -31,4 +31,17 @@ class LocalGame: Game {
     override func _launch() async throws {
         try await LocalGameManager.launch(game: self)
     }
+    
+    override func _update() async throws {
+        assertionFailure("Attempted to update a LocalGame, which is not possible.")
+    }
+    
+    override func _move(from currentLocation: URL,
+                        to newLocation: URL) async throws {
+        try await LocalGameManager.move(game: self, to: newLocation)
+    }
+    
+    override func _verifyInstallation() async throws {
+        assertionFailure("Attempted to verify the installation of a LocalGame, which is not possible.")
+    }
 }
