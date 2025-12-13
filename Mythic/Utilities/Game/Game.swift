@@ -237,14 +237,16 @@ extension Game {
     }
 }
 
+// note that merges should only be performed with the `identicalIgnoredKeys` requirement enforced.
 extension Game: Mergeable {
     typealias MergeKeys = CodingKeys
     
     static var ignoredMergeKeys: Set<CodingKeys> {
-        [. id, .title, .installationState, .storefront]
+        [.id, .title, .storefront]
     }
     
     var mergeRules: [AnyMergeRule] {[
+        .init(\Game.installationState, forCodingKey: .installationState, strategy: { max($0, $1) }),
         .init(\Game._verticalImageURL, forCodingKey: ._verticalImageURL, strategy: { $1 ?? $0 }),
         .init(\Game._horizontalImageURL, forCodingKey: ._horizontalImageURL, strategy: { $1 ?? $0 }),
         .init(\Game._containerURL, forCodingKey: ._containerURL, strategy: { $0 ?? $1 }),

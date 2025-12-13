@@ -21,9 +21,59 @@ protocol Mergeable: AnyObject {
 
 extension Mergeable {
     /// Merges properties from `other` into `self`, using the merge rules of `self`.
-    func merge(with other: Self) {
+    func merge(with other: Self, requiring requirements: MergeRequirement...) throws {
+        // validate requirements before merging
+        for requirement in requirements {
+            try requirement.validate(target: self, source: other)
+        }
+        
         let context: MergeContext<MergeKeys, Self> = .init(target: self, source: other)
         context.apply(mergeRules)
+    }
+}
+
+/// Requirements that must be satisfied before merging can proceed.
+enum MergeRequirement {
+    /// Ensure that merged objects share the same values in their ignored keys.
+    case identicalIgnoredKeys
+    
+    func validate<Target: Mergeable>(target: Target, source: Target) throws {
+        switch self {
+        case .identicalIgnoredKeys:
+            try validateIgnoredKeys(target: target, source: source)
+        }
+    }
+    
+    private func validateIgnoredKeys<Target: Mergeable>(target: Target, source: Target) throws {
+        let targetMirror: Mirror = .init(reflecting: target)
+        let sourceMirror: Mirror = .init(reflecting: source)
+        
+        for key in (Target.ignoredMergeKeys as Set<AnyHashable>) {
+            guard let codingKey = key.base as? Target.MergeKeys else { continue }
+            
+            guard let targetChild = targetMirror.children.first(where: { $0.label == codingKey.stringValue }),
+                  let sourceChild = sourceMirror.children.first(where: { $0.label == codingKey.stringValue }) else { continue }
+            
+            let targetValue: String = .init(describing: targetChild.value)
+            let sourceValue: String = .init(describing: sourceChild.value)
+            
+            guard targetValue == sourceValue else {
+                throw MergeError.ignoredKeyMismatch(key: codingKey.stringValue,
+                                                    targetValue: targetValue,
+                                                    sourceValue: sourceValue)
+            }
+        }
+    }
+}
+
+enum MergeError: LocalizedError {
+    case ignoredKeyMismatch(key: String, targetValue: String, sourceValue: String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .ignoredKeyMismatch(let key, let target, let source):
+            return "Cannot merge: ignored key '\(key)' differs (target: \(target), source: \(source))"
+        }
     }
 }
 

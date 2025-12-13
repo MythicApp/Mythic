@@ -84,7 +84,7 @@ import OSLog
                 // installed: merge instead of overwrite
                 for fetchedGame in installed {
                     if let existing = library.first(where: { $0 == fetchedGame }) {
-                        existing.merge(with: fetchedGame)
+                        try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
                         library.update(with: existing)
                     } else {
                         library.update(with: fetchedGame)
