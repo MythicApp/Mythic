@@ -105,9 +105,9 @@ struct ContainerConfigurationView: View {
     @Binding var containerURL: URL
     @Binding var isPresented: Bool
 
-    @State private var uninstallerActive: Bool = false
-    @State private var configuratorActive: Bool = false
-    @State private var registryEditorActive: Bool = false
+    @State private var isUninstallerActive: Bool = false
+    @State private var isConfiguratorActive: Bool = false
+    @State private var isRegistryEditorActive: Bool = false
 
     @State private var isOpenFileImporterPresented: Bool = false
 
@@ -115,7 +115,7 @@ struct ContainerConfigurationView: View {
     @State private var openError: Error?
     
     var body: some View {
-        if let container = try? Wine.getContainerObject(url: self.containerURL) {
+        if let container = try? Wine.getContainerObject(at: self.containerURL) {
             VStack {
                 Text("Configure \"\(container.name)\"")
                     .font(.title)
@@ -145,12 +145,15 @@ struct ContainerConfigurationView: View {
                         case .success(let url):
                             Task(priority: .userInitiated) {
                                 do {
-                                    try await Wine.execute(
-                                        arguments: [
-                                            url.path(percentEncoded: false)
-                                        ],
-                                        containerURL: container.url
-                                    )
+                                    let process: Process = .init()
+                                    process.arguments = [url.path]
+                                    Wine.transformProcess(process, containerURL: container.url)
+                                    try process.run()
+                                    
+                                    await withCheckedContinuation { continuation in
+                                        process.waitUntilExit()
+                                        continuation.resume()
+                                    }
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true
@@ -179,43 +182,56 @@ struct ContainerConfigurationView: View {
                     .help("Winetricks GUI support is currently broken.")
 
                     Button("Install/Uninstall...") {
-                        Task { try await Wine.execute(arguments: ["uninstaller"], containerURL: container.url) }
+                        Task {
+                            let process: Process = .init()
+                            process.arguments = ["uninstaller"]
+                            Wine.transformProcess(process, containerURL: container.url)
+                            
+                            try process.run()
+                            
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "uninstaller.exe" }) {
+                                await MainActor.run { isUninstallerActive = isActive }
+                                try await Task.sleep(for: .seconds(1))
+                            }
+                        }
                     }
-                    .disabled(uninstallerActive)
+                    .disabled(isUninstallerActive)
 
                     Button("Configure Container...") {
                         let containerURL = container.url
 
                         Task {
-                            try await Wine.execute(arguments: ["winecfg"], containerURL: containerURL)
+                            let process: Process = .init()
+                            process.arguments = ["winecfg"]
+                            Wine.transformProcess(process, containerURL: container.url)
+                            
+                            try process.run()
 
-                            while true {
-                                let active = (try? await Wine.tasklist(containerURL: containerURL)
-                                    .contains(where: { $0.name == "winecfg.exe" })) ?? false
-                                await MainActor.run { configuratorActive = active }
-                                if !active { break }
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "winecfg.exe" }) {
+                                await MainActor.run { isConfiguratorActive = isActive }
                                 try await Task.sleep(for: .seconds(1))
                             }
                         }
                     }
-                    .disabled(configuratorActive)
+                    .disabled(isConfiguratorActive)
                     
                     Button("Launch Registry Editor") {
                         let containerURL = container.url
 
                         Task {
-                            try await Wine.execute(arguments: ["regedit"], containerURL: containerURL)
+                            let process: Process = .init()
+                            process.arguments = ["regedit"]
+                            Wine.transformProcess(process, containerURL: container.url)
+                            
+                            try process.run()
 
-                            while true {
-                                let active = (try? await Wine.tasklist(containerURL: containerURL)
-                                    .contains(where: { $0.name == "regedit.exe" })) ?? false
-                                await MainActor.run { registryEditorActive = active }
-                                if !active { break }
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "regedit.exe" }) {
+                                await MainActor.run { isRegistryEditorActive = isActive }
                                 try await Task.sleep(for: .seconds(1))
                             }
                         }
                     }
-                    .disabled(registryEditorActive)
+                    .disabled(isRegistryEditorActive)
                     
                     Button("Close") {
                         isPresented = false

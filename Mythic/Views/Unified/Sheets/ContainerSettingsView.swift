@@ -77,7 +77,7 @@ struct ContainerSettingsView: View {
         }
 
         if let selectedContainerURL = selectedContainerURL,
-           let container = try? Wine.getContainerObject(url: selectedContainerURL) {
+           let container = try? Wine.getContainerObject(at: selectedContainerURL) {
             Group {
                 Toggle("Performance HUD", isOn: Binding(
                     get: { container.settings.metalHUD },
@@ -145,7 +145,7 @@ struct ContainerSettingsView: View {
 
                             do {
                                 if container.settings.dxvk {
-                                    try await Wine.boot(containerURL: container.url, parameters: [.update])
+                                    try await Wine.boot(at: container.url, parameters: [.update])
                                 } else {
                                     try await Wine.DXVK.install(toContainerAtURL: container.url)
                                 }

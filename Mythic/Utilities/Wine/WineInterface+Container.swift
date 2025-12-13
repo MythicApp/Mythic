@@ -44,7 +44,7 @@ extension Wine {
                 throw Container.DoesNotExistError()
             }
 
-            let object = try getContainerObject(url: knownURL)
+            let object = try getContainerObject(at: knownURL)
 
             self.name = object.name
             self.url = knownURL

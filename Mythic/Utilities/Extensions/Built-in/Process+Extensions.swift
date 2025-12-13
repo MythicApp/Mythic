@@ -11,8 +11,21 @@ import Foundation
 import OSLog
 
 extension Process {
+    /// Verify that a process' termination status is 0, which is conventionally returned upon successful process execution.
+    /// - Throws: ``NonZeroTerminationStatusError`` if the termination status is not 0.
+    func checkTerminationStatus() throws {
+        guard !self.isRunning else {
+            Logger.app.error("Attempted to check termination status of running process [\(self.processIdentifier)].")
+            return
+        }
+        
+        if self.terminationStatus != 0 {
+            throw NonZeroTerminationStatusError(self.terminationStatus)
+        }
+    }
+    
     /// Synchronously executes a process, and immediately attempts to collect complete stdout/stderr.
-    /// - Note: Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
+    /// - Attention: Don't use this for larger outputs — instead use `execute` (async) or `stream` to avoid potential pipe back-pressure.
     /// - Note: If you don't require output, use `.run()` instead.
     func runWrapped() throws -> CommandResult {
         let stderr: Pipe = .init(); self.standardError = stderr
@@ -33,8 +46,7 @@ extension Process {
         // swiftlint:enable optional_data_string_conversion
         
         return .init(standardOutput: stdoutOutput,
-                     standardError: stderrOutput,
-                     exitCode: self.terminationStatus)
+                     standardError: stderrOutput)
     }
     
     // allow the compiler to automatically choose execute overload depending on async/sync context
@@ -77,8 +89,7 @@ extension Process {
         }
         
         return .init(standardOutput: await stdoutTask.value,
-                     standardError: await stderrTask.value,
-                     exitCode: self.terminationStatus)
+                     standardError: await stderrTask.value)
     }
     
     func runWrappedAsync() async throws -> CommandResult {
@@ -186,12 +197,12 @@ extension Process {
 }
 
 extension Process {
-    struct NonZeroExitCodeError: LocalizedError {
-        init(exitCode: Int32? = nil) {
-            self.exitCode = exitCode
+    struct NonZeroTerminationStatusError: LocalizedError {
+        init(_ terminationStatus: Int32? = nil) {
+            self.terminationStatus = terminationStatus
         }
         
-        var exitCode: Int32?
+        var terminationStatus: Int32?
         var errorDescription: String? = String(localized: "Process execution was unsuccessful. (Non-zero exit code)")
     }
     
@@ -208,6 +219,5 @@ extension Process {
     struct CommandResult: Sendable {
         public let standardOutput: String
         public let standardError: String
-        public let exitCode: Int32
     }
 }

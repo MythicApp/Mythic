@@ -54,4 +54,5 @@ protocol StorefrontGameManager: GameManager {
 
     /// Import the specified game.
     @MainActor static func importGame(_ game: Game, platform: Game.Platform, at: URL) async throws
+    // swiftlint:disable:previous identifier_name
 }

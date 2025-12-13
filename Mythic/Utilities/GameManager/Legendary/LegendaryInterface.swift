@@ -28,7 +28,7 @@ final class Legendary {
 
     private static var legendaryExecutableURL: URL { Bundle.main.url(forResource: "legendary/cli", withExtension: nil)! }
 
-    private static func constructEnvironment(withAdditionalFlags environment: [String: String]) -> [String: String] {
+    private static func constructEnvironment(withAdditionalFlags environment: [String: String] = .init()) -> [String: String] {
         var constructedEnvironment: [String: String] = .init()
 
         constructedEnvironment["LEGENDARY_CONFIG_PATH"] = configurationFolder.path
@@ -73,7 +73,7 @@ final class Legendary {
         process.arguments = arguments
         
         let capturedEnvironment = process.environment
-        process.environment = constructEnvironment(withAdditionalFlags: capturedEnvironment ?? [:])
+        process.environment = constructEnvironment(withAdditionalFlags: capturedEnvironment ?? .init())
     }
     
     /// Execute a `Process` using `.runStreamed`.
