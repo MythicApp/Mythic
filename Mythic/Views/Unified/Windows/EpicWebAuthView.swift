@@ -15,8 +15,6 @@ struct EpicWebAuthView: View {
     
     @Bindable var gameListViewModel: GameListViewModel = .shared
     @Bindable var gameDataStore: GameDataStore = .shared
-    
-    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
 
     @State private var isBlurred: Bool = false
     @State private var isWorking: Bool = false
@@ -29,7 +27,6 @@ struct EpicWebAuthView: View {
             .blur(radius: (isBlurred || isWorking) ? 30 : 0)
             .onChange(of: authKey, { handleAuthKeyChange($1) })
             .onAppear {
-                webDataStoreIdentifierString = UUID().uuidString
                 viewModel.signInSuccess = false
                 Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
             }
@@ -160,7 +157,7 @@ final class EpicWebAuthViewModel: NSObject, ObservableObject, NSWindowDelegate, 
 private struct EpicInterceptorWebView: NSViewRepresentable {
     @ObservedObject var viewModel: EpicWebAuthViewModel
     @Binding var isWebAuthViewBlurred: Bool
-    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
+    @CodableAppStorage("epicGamesWebDataStore") var epicGamesWebDataStore: UUID = .init()
 
     let completion: (String) -> Void
 
@@ -236,9 +233,7 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
     func makeNSView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
 
-        if let datastoreUUID: UUID = .init(uuidString: webDataStoreIdentifierString) {
-            config.websiteDataStore = .init(forIdentifier: datastoreUUID)
-        }
+        config.websiteDataStore = WKWebsiteDataStore(forIdentifier: epicGamesWebDataStore)
 
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator

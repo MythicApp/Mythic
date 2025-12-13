@@ -18,14 +18,12 @@ struct StoreView: View {
 
     @State private var refreshIconRotation: Angle = .degrees(0)
 
-    @AppStorage("epicGamesWebDataStoreIdentifierString") var webDataStoreIdentifierString: String = UUID().uuidString
+    @CodableAppStorage("epicGamesWebDataStore") var epicGamesWebDataStore: UUID = .init()
 
     var body: some View {
         WebView(
             url: url,
-            datastore: .init(
-                forIdentifier: (.init(uuidString: webDataStoreIdentifierString) ?? WKWebsiteDataStore.default().identifier)!
-            ),
+            datastore: .init(forIdentifier: epicGamesWebDataStore),
             error: .constant(nil),
             canGoBack: canGoBack,
             canGoForward: canGoForward

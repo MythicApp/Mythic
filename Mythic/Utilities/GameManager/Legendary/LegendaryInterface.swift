@@ -493,7 +493,7 @@ final class Legendary {
             continuation.resume()
         }
         
-        UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStoreIdentifierString")
+        UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStore")
     }
 
     /**
