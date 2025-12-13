@@ -71,8 +71,7 @@ class EpicGamesGame: Game {
     }
     
     nonisolated override func _move(from currentLocation: URL,
-                                    to newLocation: URL,
-                                    platform: Platform) async throws {
+                                    to newLocation: URL) async throws {
         try await EpicGamesGameManager.move(game: self, to: newLocation)
     }
     

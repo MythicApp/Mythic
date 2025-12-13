@@ -126,13 +126,12 @@ import AppKit
 
     /// Move the underlying game to a specified `URL`.
     @MainActor final func move(to newLocation: URL) async throws {
-        guard case .installed(let currentLocation, let platform) = installationState else {
+        guard case .installed(let currentLocation, _) = installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
 
         try await _move(from: currentLocation,
-                        to: newLocation,
-                        platform: platform)
+                        to: newLocation)
     }
 
     /// Verify the file integrity of the game (if it's installed)
@@ -177,8 +176,7 @@ import AppKit
 
     // override in subclass
     @MainActor internal func _move(from currentLocation: URL, // swiftlint:disable:this identifier_name
-                                   to newLocation: URL,
-                                   platform: Platform) async throws {
+                                   to newLocation: URL) async throws {
         fatalError("Subclasses must implement _move(to:)")
     }
 
