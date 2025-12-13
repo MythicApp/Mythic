@@ -247,14 +247,14 @@ extension Game: Mergeable {
     }
     
     var mergeRules: [AnyMergeRule] {[
-        .init(\Game._verticalImageURL, forCodingKey: ._verticalImageURL, strategy: { $0 ?? $1 }),
-        .init(\Game._horizontalImageURL, forCodingKey: ._horizontalImageURL, strategy: { $0 ?? $1 }),
+        .init(\Game._verticalImageURL, forCodingKey: ._verticalImageURL, strategy: { $1 ?? $0 }),
+        .init(\Game._horizontalImageURL, forCodingKey: ._horizontalImageURL, strategy: { $1 ?? $0 }),
         .init(\Game._containerURL, forCodingKey: ._containerURL, strategy: { $0 ?? $1 }),
         .init(\Game.launchArguments, forCodingKey: .launchArguments, strategy: { Array(Set($0 + $1)) }),
         .init(\Game.isFavourited, forCodingKey: .isFavourited, strategy: { $0 || $1 }),
         AnyMergeRule(\Game.lastLaunched, forCodingKey: .lastLaunched) { current, new in
             guard current != nil || new != nil else { return current }
-            return max(current ??  . distantPast, new ?? .distantPast)
+            return max(current ??  .distantPast, new ?? .distantPast)
         }
     ]}
 }
