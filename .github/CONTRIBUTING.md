@@ -119,7 +119,7 @@ All PRs must pass:
 - Document public types and important functions:
   - `/** ... */` for multiple lines
   - `///` for single lines
-  - See [Apple's documentation guide](https://developer.apple.com/documentation/xcode/writing-symbol-documentation-in-your-source-files)
+  - See [Apple's documentation guide](https://developer.apple.com/documentation/xcode/writing-symbol-documentation-in-your-source-files) [2](https://developer.apple.com/library/archive/documentation/Xcode/Reference/xcode_markup_formatting_ref/index.html)
 - Only comment when **clarification is necessary** — avoid obvious comments
 
 ### Code Organization
