@@ -84,9 +84,8 @@ import OSLog
                 // installed: merge instead of overwrite
                 for fetchedGame in installed {
                     if let existing = library.first(where: { $0 == fetchedGame }) {
-                        let mergedGame = fetchedGame as Game
-                        mergedGame.merge(with: existing)
-                        library.update(with: fetchedGame as EpicGamesGame)
+                        existing.merge(with: fetchedGame)
+                        library.update(with: existing)
                     } else {
                         library.update(with: fetchedGame)
                     }
