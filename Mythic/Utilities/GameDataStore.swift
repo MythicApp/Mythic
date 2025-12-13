@@ -68,7 +68,7 @@ import OSLog
         }
         
         // if variadics are empty, default to all cases
-        var storefronts = storefronts.isEmpty ? Game.Storefront.allCases : storefronts as [Game.Storefront]
+        let storefronts = storefronts.isEmpty ? Game.Storefront.allCases : storefronts as [Game.Storefront]
         
         // legendary (epic games)
         if storefronts.contains(.epicGames) {
