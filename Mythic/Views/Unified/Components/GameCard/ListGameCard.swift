@@ -49,16 +49,14 @@ struct ListGameCard: View {
                         GameCard.SubscriptedInfoView(game: $game)
                     }
                 }
-                .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+                .foregroundStyle(isImageEmpty ? .primary : Color.white)
                 
                 Spacer()
                 
                 Group {
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
-                        .conditionalTransform(if: !isImageEmpty) { view in
-                            view.foregroundStyle(.white)
-                        }
+                        .foregroundStyle(isImageEmpty ? .primary : Color.white)
                 }
             }
             .geometryGroup()
