@@ -114,16 +114,14 @@ struct EpicGamesGameImportView: View {
                         }
                         .fileImporter(
                             isPresented: $isGameLocationFileImporterPresented,
-                            allowedContentTypes: platform.allowedExecutableContentTypes
+                            allowedContentTypes: [.folder]
                         ) { result in
                             if case .success(let success) = result {
-                                // FIXME: last path component is deleted from location, since Legendary requires the game's enclosing folder URL.
-                                
-                                // this can break if custom locations store a bunch of games at root, but who does that, right?
-                                enclosingDirectory = success.deletingLastPathComponent()
+                                enclosingDirectory = success
                             }
                         }
                     }
+                    .help("Select the folder that encloses your game's files.")
                     
                     Toggle("Import with DLCs", systemImage: "puzzlepiece.extension", isOn: $withDLCs)
                     
