@@ -53,11 +53,12 @@ struct ListGameCard: View {
                 
                 Spacer()
                 
-                Group {
+                HStack {
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
                         .foregroundStyle(isImageEmpty ? .primary : Color.white)
                 }
+                .frame(maxWidth: 250, alignment: .trailing) // TODO: match operationcard in terms of progressview width limit
             }
             .geometryGroup()
             .padding()
