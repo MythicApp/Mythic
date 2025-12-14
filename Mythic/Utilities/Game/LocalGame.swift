@@ -8,6 +8,7 @@
 // Copyright © 2023-2025 vapidinfinity
 
 import Foundation
+import OSLog
 
 class LocalGame: Game {
     override var storefront: Storefront? { .local }
@@ -16,6 +17,13 @@ class LocalGame: Game {
                   title: String,
                   installationState: InstallationState,
                   containerURL: URL? = nil) {
+        if case .uninstalled = installationState {
+            Logger.app.debug("""
+                LocalGame initialised as uninstalled — this is not recommended.
+                This instance must not be persisted unless installationState is set to installed.
+                """)
+        }
+        
         super.init(id: id,
                    title: title,
                    installationState: installationState,

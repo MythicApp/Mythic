@@ -374,8 +374,6 @@ final class Legendary {
             
             try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             
-            // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
-            // FIXME: ideally, destroy the game object somehow
             game.installationState = .uninstalled
         }
 

@@ -129,9 +129,7 @@ class LocalGameManager {
             if !persistFiles {
                 try FileManager.default.removeItem(at: location)
             }
-
-            // FIXME: not ideal, initialiser states no installationstate should be .uninstalled
-            // FIXME: ideally, destroy the game object somehow
+            
             game.installationState = .uninstalled
             
             // remove the game from the library if present.
