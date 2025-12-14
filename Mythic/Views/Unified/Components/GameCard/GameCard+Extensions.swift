@@ -70,7 +70,7 @@ extension GameCard {
                             }
                         }
                     }
-                    .disabled(operationManager.queue.first?.game == game)
+                    .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type.modifiesFiles }))
                     // FIXME: .disabled(game.checkIfGameIsRunning())
                     .help("Play \"\(game.title)\"")
 
@@ -130,6 +130,7 @@ extension GameCard {
                     }
                     .disabled(networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(game.storefront == .local)
+                    .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .install }))
                     .help("Install \(game.description)")
 
                     .sheet(isPresented: $isInstallSheetPresented) {
@@ -179,6 +180,7 @@ extension GameCard {
                 }
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 .disabled(game.storefront == .local)
+                .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .repair }))
                 .alert("Unable to verify installation.",
                        isPresented: $isVerificationErrorAlertPresented,
                        presenting: verificationError) { _ in
@@ -222,6 +224,7 @@ extension GameCard {
                 .disabled(networkMonitor.epicAccessibilityState != .accessible)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .disabled(game.isUpdateAvailable != true)
+                .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .update }))
                 .help("Update \"\(game.title)\"")
             }
         }
@@ -307,6 +310,7 @@ extension GameCard {
                             .padding(2)
                     }
                 }
+                .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .uninstall }))
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
