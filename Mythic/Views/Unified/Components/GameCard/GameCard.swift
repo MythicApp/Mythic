@@ -30,6 +30,7 @@ struct GameCard: View {
                     
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
+                        .progressViewStyle(.circular)
                 }
                 .padding(.horizontal)
                 // conditionally change view foreground style for macOS <26
