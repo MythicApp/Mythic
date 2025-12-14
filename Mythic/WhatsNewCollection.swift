@@ -245,6 +245,48 @@ extension MythicApp: @MainActor WhatsNewCollectionProvider {
                 action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.5.0"))
             )
         )
+        
+        WhatsNew(
+            version: "0.6.0",
+            title: "What's new in Mythic",
+            features: [
+                .init(
+                    image: .init(systemName: "ladybug.slash"),
+                    title: "Major bug fixes and performance improvements",
+                    subtitle: """
+                        Mythic has undergone a complete logical rewrite to address long-standing critical bugs and issues.
+                        This update brings better performance, lower resource usage, and better error handling, providing the foundation for Mythic's full release.
+                        """
+                ),
+                .init(
+                    image: .init(systemName: "progress.indicator"),
+                    title: "Redesigned Downloads (now Operations) view",
+                    subtitle: "\"it looks so good i can't even lie someone hire me\" — vapidinfinity, the developer"
+                ),
+                .init(
+                    image: .init(systemName: "list.bullet.below.rectangle"),
+                    title: "Redesigned list library view",
+                    subtitle: "\"dude im on a roll this is fire\" — vapidinfinity, the developer"
+                ),
+                .init(
+                    image: .init(systemName: "app.badge.checkmark"),
+                    title: "View operation progress directly from the dock",
+                    subtitle: "Yup. View your game operation's progress, without even having to open Mythic."
+                ),
+                .init(
+                    image: .init(systemName: "questionmark"),
+                    title: "wait. i'm goated?",
+                    subtitle: "you should donate if you love Mythic. Find the donation link in \"Help\" on your Mac's menu bar."
+                )
+            ],
+            primaryAction: .init(),
+            secondaryAction: .init(
+                title: "Learn more",
+                action: .openURL(.init(string: "https://github.com/MythicApp/Mythic/releases/tag/v0.6.0"))
+            )
+        )
+        
+        // TODO: optimise release schedule + localise
     }
 }
 
