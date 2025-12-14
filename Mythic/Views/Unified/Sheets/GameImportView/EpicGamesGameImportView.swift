@@ -26,7 +26,7 @@ struct EpicGamesGameImportView: View {
     @State private var isRetrievingSupportedPlatforms: Bool = false
     @State private var supportedPlatforms: [Game.Platform]?
     @State private var platform: Game.Platform = .macOS
-    @State private var location: URL?
+    @State private var enclosingDirectory: URL?
     
     private var installableGames: [EpicGamesGame] {
         gameDataStore.library
@@ -95,12 +95,12 @@ struct EpicGamesGameImportView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Label("Location", systemImage: "folder")
-                            Text(location?.prettyPath ?? "Unknown")
+                            Text(enclosingDirectory?.prettyPath ?? "Unknown")
                                 .foregroundStyle(.secondary)
                         }
                         
-                        if let location = location {
-                            if !FileManager.default.isReadableFile(atPath: location.path) {
+                        if let enclosingDirectory {
+                            if !FileManager.default.isReadableFile(atPath: enclosingDirectory.path) {
                                 Image(systemName: "exclamationmark.triangle")
                                     .symbolVariant(.fill)
                                     .help("File/Folder is not readable by Mythic.")
@@ -117,7 +117,10 @@ struct EpicGamesGameImportView: View {
                             allowedContentTypes: platform.allowedExecutableContentTypes
                         ) { result in
                             if case .success(let success) = result {
-                                location = success
+                                // FIXME: last path component is deleted from location, since Legendary requires the game's enclosing folder URL.
+                                
+                                // this can break if custom locations store a bunch of games at root, but who does that, right?
+                                enclosingDirectory = success.deletingLastPathComponent()
                             }
                         }
                     }
@@ -134,12 +137,21 @@ struct EpicGamesGameImportView: View {
                 
                 Spacer()
                 
-                OperationButton("Done",
-                                operating: $isOperating,
-                                successful: .constant(nil),
-                                placement: .leading,
-                                action: spawnGameImportTask)
-                .disabled(location == nil)
+                OperationButton(
+                    "Done",
+                    operating: $isOperating,
+                    successful: .constant(nil),
+                    placement: .leading
+                ) {
+                    guard let enclosingDirectory else { return }
+                    
+                    try? await EpicGamesGameManager.importGame(game,
+                                                               in: enclosingDirectory,
+                                                               repairIfNecessary: checkIntegrity,
+                                                               withDLCs: withDLCs,
+                                                               platform: platform)
+                }
+                .disabled(enclosingDirectory == nil)
                 .disabled(supportedPlatforms?.isEmpty == true)
                 .disabled(isOperating)
                 .buttonStyle(.borderedProminent)
@@ -169,22 +181,6 @@ struct EpicGamesGameImportView: View {
                 presence.assets.largeImage = "macos_512x512_2x"
                 return presence
             }())
-        }
-    }
-    
-    private func spawnGameImportTask() {
-        guard !isOperating else { return }
-        Task {
-            withAnimation { isOperating = true }
-            defer {
-                withAnimation { isOperating = false }
-            }
-            
-            guard let location = location else { return }
-            
-            try? await EpicGamesGameManager.importGame(game,
-                                                       platform: platform,
-                                                       at: location)
         }
     }
 }

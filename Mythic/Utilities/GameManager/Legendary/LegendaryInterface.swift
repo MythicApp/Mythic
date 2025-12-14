@@ -430,10 +430,10 @@ final class Legendary {
                              Platform for import (default: Mac on macOS, otherwise Windows)
      */
     @MainActor static func importGame(_ game: EpicGamesGame,
+                                      in enclosingDirectory: URL,
                                       repairIfNecessary: Bool = true,
                                       withDLCs: Bool = true,
-                                      platform: Game.Platform,
-                                      gameDirectoryURL: URL) async throws {
+                                      platform: Game.Platform) async throws {
         guard let supportedPlatforms = game.getSupportedPlatforms(),
               supportedPlatforms.contains(platform) else {
             throw UnsupportedInstallationPlatformError()
@@ -448,7 +448,7 @@ final class Legendary {
         arguments += ["--platform", matchPlatform(for: platform)]
         arguments.append(game.id)
 
-        arguments.append(gameDirectoryURL.path)
+        arguments.append(enclosingDirectory.path)
         
         let process: Process = .init()
         process.arguments = arguments

@@ -11,11 +11,12 @@ import Foundation
 import OSLog
 
 extension EpicGamesGameManager: StorefrontGameManager {
-    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at gameDirectoryURL: URL) async throws {
+    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at location: URL) async throws {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        try await importGame(castGame, platform: platform, gameDirectoryURL: gameDirectoryURL)
+        // FIXME: last path component is deleted from location, since Legendary requires the game's enclosing folder URL.
+        try await importGame(castGame, in: location.deletingLastPathComponent(), platform: platform)
     }
     
     static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
@@ -132,14 +133,14 @@ final class EpicGamesGameManager {
     }
     
     @MainActor static func importGame(_ game: EpicGamesGame,
+                                      in enclosingDirectory: URL,
                                       repairIfNecessary: Bool = true,
                                       withDLCs: Bool = true,
-                                      platform: Game.Platform,
-                                      gameDirectoryURL: URL) async throws {
+                                      platform: Game.Platform) async throws {
         try await Legendary.importGame(game,
+                                       in: enclosingDirectory,
                                        repairIfNecessary: repairIfNecessary,
                                        withDLCs: withDLCs,
-                                       platform: platform,
-                                       gameDirectoryURL: gameDirectoryURL)
+                                       platform: platform)
     }
 }

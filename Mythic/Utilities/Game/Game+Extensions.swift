@@ -31,7 +31,7 @@ extension Game {
 
         var allowedExecutableContentTypes: [UTType] {
             switch self {
-            case .macOS:    [.application]
+            case .macOS:    [.application] // technically a bundle but if you came into the codebase to say that then you're a nerd
             case .windows:  [.exe]
             }
         }
