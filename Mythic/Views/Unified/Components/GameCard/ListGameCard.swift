@@ -61,9 +61,7 @@ struct ListGameCard: View {
             }
             .geometryGroup()
             .padding()
-            // FIXME: not dynamic, but i'm tired and quite frankly it works
-            .frame(maxHeight: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight,
-                   alignment: isCardExpanded ? .bottom : .center)
+            .frame(maxHeight: .infinity, alignment: isCardExpanded ? .bottom : .center)
         }
         .frame(height: isCardExpanded ? ListGameCard.defaultHeight * 2 : ListGameCard.defaultHeight)
         .clipShape(.rect(cornerRadius: 20))
