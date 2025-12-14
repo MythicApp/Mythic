@@ -30,6 +30,9 @@ struct GameListView: View {
                         If there are games in your library and they're not appearing, try restarting Mythic.
                         """)
                 )
+                .task {
+                    try? await gameDataStore.refreshFromStorefronts()
+                }
                 
                 Button {
                     isGameImportViewPresented = true
