@@ -44,22 +44,25 @@ final class Legendary {
         }
         return modifiedArguments
     }
-
+    
     ///
-    private static func throwingChunkHandler(
-        _ chunkHandler: (@Sendable (Process.OutputChunk) throws -> String?)?
-    ) -> (@Sendable (Process.OutputChunk) throws -> String?)? {
-        guard let chunkHandler else { return nil }
-        return { chunk in
-            // handle and throw generic Legendary errors
-            if case .standardError = chunk.stream,
-               let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: chunk.output),
+    /// - Note: This function will block until EOF.
+    /// - Attention: This will only function if the process is currently executing.
+    static func handleCLIErrorOutput(fromStandardErrorPipe pipe: Pipe) throws {
+        guard let data: Data = try? pipe.fileHandleForReading.readToEnd(),
+              let output: String = .init(data: data, encoding: .utf8) else { return }
+        
+        try handleCLIErrorOutput(fromStandardErrorOutput: output)
+    }
+    
+    static func handleCLIErrorOutput(fromStandardErrorOutput output: String) throws {
+        for line in output.split(whereSeparator: \.isNewline) {
+            if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: line),
                let errorReason = match.last?.substring {
-                // TODO: dedicated handle for 'Failed to acquire installed data lock, only one instance of Legendary may install/import/move applications at a time.'
+                
+                // TODO: dedicated handling for 'Failed to acquire installed data lock, only one instance of Legendary may install/import/move applications at a time.'
                 throw GenericError(reason: String(errorReason))
             }
-
-            return try chunkHandler(chunk)
         }
     }
 
@@ -85,7 +88,13 @@ final class Legendary {
         
         try await process.runStreamed(
             throwsOnChunkError: throwsOnChunkError,
-            chunkHandler: throwingChunkHandler(chunkHandler)
+            chunkHandler: { chunk in
+                if case .standardError = chunk.stream {
+                    try handleCLIErrorOutput(fromStandardErrorOutput: chunk.output)
+                }
+                
+                return try chunkHandler(chunk)
+            }
         )
     }
 
@@ -358,12 +367,12 @@ final class Legendary {
             process.arguments = arguments
             await transformProcess(process)
             
+            let processStandardErrorPipe: Pipe = .init()
+            process.standardError = processStandardErrorPipe
+            
             try process.run()
             
-            await withCheckedContinuation { continuation in
-                process.waitUntilExit()
-                continuation.resume()
-            }
+            try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -395,12 +404,12 @@ final class Legendary {
             process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
             await transformProcess(process)
             
+            let processStandardErrorPipe: Pipe = .init()
+            process.standardError = processStandardErrorPipe
+            
             try process.run()
             
-            await withCheckedContinuation { continuation in
-                process.waitUntilExit()
-                continuation.resume()
-            }
+            try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             
             game.installationState = .installed(location: newLocation, platform: platform)
         }
@@ -454,12 +463,12 @@ final class Legendary {
         process.arguments = arguments
         await transformProcess(process)
         
+        let processStandardErrorPipe: Pipe = .init()
+        process.standardError = processStandardErrorPipe
+        
         try process.run()
         
-        await withCheckedContinuation { continuation in
-            process.waitUntilExit()
-            continuation.resume()
-        }
+        try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
     }
 
     @discardableResult
@@ -487,11 +496,12 @@ final class Legendary {
         process.arguments = ["auth", "--delete"]
         await transformProcess(process)
         
+        let processStandardErrorPipe: Pipe = .init()
+        process.standardError = processStandardErrorPipe
+        
         try process.run()
-        await withCheckedContinuation { continuation in
-            process.waitUntilExit()
-            continuation.resume()
-        }
+        
+        try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
         
         UserDefaults.standard.removeObject(forKey: "epicGamesWebDataStore")
     }
@@ -532,9 +542,13 @@ final class Legendary {
             process.environment = environment
             await transformProcess(process)
             
+            let processStandardErrorPipe: Pipe = .init()
+            process.standardError = processStandardErrorPipe
+            
             try await withTaskCancellationHandler {
                 try process.run()
-                process.waitUntilExit()
+                
+                try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             } onCancel: {
                 process.interrupt()
             }

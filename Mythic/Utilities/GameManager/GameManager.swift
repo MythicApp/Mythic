@@ -53,6 +53,6 @@ protocol StorefrontGameManager: GameManager {
     static func isFileVerificationRequired(for game: Game) throws -> Bool
 
     /// Import the specified game.
-    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at: URL) async throws
+    @MainActor static func importGame(_ game: Game, platform: Game.Platform, at location: URL) async throws
     // swiftlint:disable:previous identifier_name
 }

@@ -373,6 +373,7 @@ extension SettingsView {
                     await Legendary.transformProcess(process)
                     
                     let result = try? await process.runWrapped()
+                    
                     isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: result?.standardError ?? "") != nil)
                 }
 
