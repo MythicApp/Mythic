@@ -516,7 +516,7 @@ final class Legendary {
             // uses legendary's native launch process
             switch platform {
             case .macOS:
-                do {} // no environment variable need to be assembled.
+                do {} // no environment variables need to be assembled.
             case .windows:
                 environment = try Wine.assembleEnvironmentVariables(forContainer: containerURL)
                 // legendary requires this, since it calls wine directly.
