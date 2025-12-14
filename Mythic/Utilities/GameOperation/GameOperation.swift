@@ -46,10 +46,7 @@ import OSLog
     // MARK: `Operation` inheritance overrides
     override func start() {
         guard !isCancelled else {
-            log.notice("""
-                Operation \(self.debugDescription) has been cancelled before commencing.
-                If it's part of an OperationQueue, it'll be dequeued as soon as it reaches the start.
-                """)
+            log.notice("Operation \(self.debugDescription) has been cancelled before commencing.")
             isFinished = true; return
         }
         
