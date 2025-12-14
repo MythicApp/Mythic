@@ -77,10 +77,7 @@ extension Process {
         let standardErrorReadTask = spawnReadTask(for: stderr.fileHandleForReading, for: .standardError)
         let standardOutputReadTask = spawnReadTask(for: stdout.fileHandleForReading, for: .standardOutput)
         
-        await withCheckedContinuation { continuation in
-            self.waitUntilExit()
-            continuation.resume()
-        }
+        self.waitUntilExit()
         
         return .init(standardOutput: try await standardOutputReadTask.value,
                      standardError: try await standardErrorReadTask.value)
@@ -176,10 +173,7 @@ extension Process {
                                                   for: .standardOutput)
             }
             
-            await withCheckedContinuation { continuation in
-                self.waitUntilExit()
-                continuation.resume()
-            }
+            self.waitUntilExit()
             
             // cancel the readability tasks since task has exited
             group.cancelAll()

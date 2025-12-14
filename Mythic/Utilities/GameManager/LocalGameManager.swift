@@ -93,10 +93,7 @@ class LocalGameManager {
                 
                 try process.run()
                 
-                await withCheckedContinuation { continuation in
-                    process.waitUntilExit()
-                    continuation.resume()
-                }
+                process.waitUntilExit()
             }
         }
 

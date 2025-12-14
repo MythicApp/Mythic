@@ -257,10 +257,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         try process.run()
         
-        await withCheckedContinuation { continuation in
-            process.waitUntilExit()
-            continuation.resume()
-        }
+        process.waitUntilExit()
         
         guard process.terminationStatus == 0 else {
             throw Process.NonZeroTerminationStatusError(process.terminationStatus)
@@ -339,10 +336,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             
             try process.run()
             
-            await withCheckedContinuation { continuation in
-                process.waitUntilExit()
-                continuation.resume()
-            }
+            process.waitUntilExit()
             
             guard process.terminationStatus == 0 else {
                 throw Process.NonZeroTerminationStatusError(process.terminationStatus)

@@ -151,10 +151,7 @@ struct ContainerConfigurationView: View {
                                     
                                     try process.run()
                                     
-                                    await withCheckedContinuation { continuation in
-                                        process.waitUntilExit()
-                                        continuation.resume()
-                                    }
+                                    process.waitUntilExit()
                                 } catch {
                                     openError = error
                                     isOpenAlertPresented = true

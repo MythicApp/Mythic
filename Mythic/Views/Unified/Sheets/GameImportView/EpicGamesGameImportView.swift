@@ -148,6 +148,8 @@ struct EpicGamesGameImportView: View {
                                                                repairIfNecessary: checkIntegrity,
                                                                withDLCs: withDLCs,
                                                                platform: platform)
+                    
+                    isPresented = false
                 }
                 .disabled(enclosingDirectory == nil)
                 .disabled(supportedPlatforms?.isEmpty == true)
