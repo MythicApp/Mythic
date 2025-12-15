@@ -88,6 +88,7 @@ import DockProgress
             // display completion notification to user
             Task {
                 // ensure operation actually completed
+                guard operation.type.modifiesFiles else { return }
                 guard !operation.isCancelled else { return }
                 
                 let notificationContent: UNMutableNotificationContent = .init()
