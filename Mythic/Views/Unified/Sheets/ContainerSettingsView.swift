@@ -31,8 +31,10 @@ struct ContainerSettingsView: View {
 
     private func fetchRetinaModeStatus() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
-
-        if let fetchedRetinaMode = try? await Wine.getRetinaMode(containerURL: selectedContainerURL) {
+        
+        do {
+            let fetchedRetinaMode = try await Wine.getRetinaMode(containerURL: selectedContainerURL)
+            
             await MainActor.run(body: { retinaMode = fetchedRetinaMode })
             // intentionally separated, to prevent both variable updates from occuring during the same render cycle
             await MainActor.run {
@@ -40,20 +42,26 @@ struct ContainerSettingsView: View {
                     modifyingRetinaMode = false
                 }
             }
+        } catch {
+            retinaModeSuccess = false
         }
     }
 
     private func fetchWindowsVersion() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
 
-        if let fetchedWindowsVersion = try? await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
-            await MainActor.run(body: { windowsVersion = fetchedWindowsVersion })
-            // intentionally separated, to prevent both variable updates from occuring during the same render cycle
-            await MainActor.run {
-                withAnimation {
-                    modifyingWindowsVersion = false
+        do {
+            if let fetchedWindowsVersion = try await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
+                await MainActor.run(body: { windowsVersion = fetchedWindowsVersion })
+                // intentionally separated, to prevent both variable updates from occuring during the same render cycle
+                await MainActor.run {
+                    withAnimation {
+                        modifyingWindowsVersion = false
+                    }
                 }
             }
+        } catch {
+            windowsVersionSuccess = false
         }
     }
 
