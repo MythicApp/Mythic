@@ -145,6 +145,7 @@ final class Engine {
                                 let tarResult = try await process.runWrapped()
 
                                 // `man tar` (bsdtar) — The tar utility exits 0 on success, and >0 if an error occurs.
+                                
                                 guard process.terminationStatus == 0 else {
                                     log.error("""
                                         Engine installation unsuccessful, Tar exited with a nonzero termination status.

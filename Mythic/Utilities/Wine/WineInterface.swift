@@ -259,9 +259,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         process.waitUntilExit()
         
-        guard process.terminationStatus == 0 else {
-            throw Process.NonZeroTerminationStatusError(process.terminationStatus)
-        }
+        try process.checkTerminationStatus()
     }
 
     static func queryRegistryKey(containerURL: URL, key: String, name: String, type: RegistryType) async throws -> String {
@@ -338,9 +336,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             
             process.waitUntilExit()
             
-            guard process.terminationStatus == 0 else {
-                throw Process.NonZeroTerminationStatusError(process.terminationStatus)
-            }
+            try process.checkTerminationStatus()
         } catch {
             log.error("\(formatLog(containerURL: containerURL, description: "Unable to set windows version", error: error))")
             throw error
