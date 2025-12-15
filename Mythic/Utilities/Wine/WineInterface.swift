@@ -125,8 +125,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         name: String,
         settings: Container.Settings = .init()
     ) async throws -> Container {
-        guard let baseURL = baseURL,
-              FileManager.default.fileExists(atPath: baseURL.path) else {
+        guard let baseURL, FileManager.default.fileExists(atPath: baseURL.path) else {
             throw CocoaError(.fileNoSuchFile)
         }
 

@@ -119,7 +119,7 @@ final class Engine {
                            !(200...299).contains(httpResponse.statusCode) {
                             continuation.finish(throwing: URLError(.badServerResponse)); return
                         }
-                        guard let file = file else {
+                        guard let file else {
                             continuation.finish(throwing: CocoaError(.fileNoSuchFile)); return
                         }
 

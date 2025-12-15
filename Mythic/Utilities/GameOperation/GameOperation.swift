@@ -161,21 +161,21 @@ extension GameOperation.ActiveOperationType: CustomStringConvertible {
         self.observers = .init()
 
         observers.insert(self._progress.observe(\.fractionCompleted, options: [.new]) { [weak self] _, change in
-            guard let self = self, let newValue = change.newValue else { return }
+            guard let self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.fractionCompleted = newValue })
             }
         })
 
         observers.insert(self._progress.observe(\.completedUnitCount, options: [.new]) { [weak self] _, change in
-            guard let self = self, let newValue = change.newValue else { return }
+            guard let self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.completedUnitCount = newValue })
             }
         })
 
         observers.insert(self._progress.observe(\.totalUnitCount, options: [.new]) { [weak self] _, change in
-            guard let self = self, let newValue = change.newValue else { return }
+            guard let self, let newValue = change.newValue else { return }
             Task { @MainActor in
                 lock.withLock({ self.totalUnitCount = newValue })
             }

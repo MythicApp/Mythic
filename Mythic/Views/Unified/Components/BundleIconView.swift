@@ -13,7 +13,7 @@ public struct BundleIconView: View {
     private let bundleIconName = Bundle.main.object(forInfoDictionaryKey: "CFBundleIconName") as? String
 
     public var body: some View {
-        if let bundleIconName = bundleIconName,
+        if let bundleIconName,
             let icon = NSImage(named: bundleIconName) {
             Image(nsImage: icon)
                 .resizable()

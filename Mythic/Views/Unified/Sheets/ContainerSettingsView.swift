@@ -30,7 +30,7 @@ struct ContainerSettingsView: View {
     @State private var windowsVersionSuccess: Bool?
 
     private func fetchRetinaModeStatus() async {
-        guard let selectedContainerURL = selectedContainerURL else { return }
+        guard let selectedContainerURL else { return }
         
         do {
             let fetchedRetinaMode = try await Wine.getRetinaMode(containerURL: selectedContainerURL)
@@ -48,7 +48,7 @@ struct ContainerSettingsView: View {
     }
 
     private func fetchWindowsVersion() async {
-        guard let selectedContainerURL = selectedContainerURL else { return }
+        guard let selectedContainerURL else { return }
 
         do {
             if let fetchedWindowsVersion = try await Wine.getWindowsVersion(containerURL: selectedContainerURL) {
@@ -84,7 +84,7 @@ struct ContainerSettingsView: View {
             }
         }
 
-        if let selectedContainerURL = selectedContainerURL,
+        if let selectedContainerURL,
            let container = try? Wine.getContainerObject(at: selectedContainerURL) {
             Group {
                 Toggle("Performance HUD", isOn: Binding(
@@ -203,7 +203,7 @@ struct ContainerSettingsView: View {
             }
             .disabled(!Engine.isInstalled)
             .id(selectedContainerURL)
-        } else if let selectedContainerURL = selectedContainerURL,
+        } else if let selectedContainerURL,
                   Wine.containerExists(at: selectedContainerURL) {
             ContentUnavailableView(
                 "Unable to retrieve container settings.",

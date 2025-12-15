@@ -37,7 +37,7 @@ final class FileLocations {
      - Returns: An optional URL representing the global Games directory.
      */
     static var globalGames: URL? {
-        if let globalApplications = globalApplications {
+        if let globalApplications {
             let gamesURL = globalApplications.appendingPathComponent("Games")
             do {
                 try FileManager.default.createDirectory(

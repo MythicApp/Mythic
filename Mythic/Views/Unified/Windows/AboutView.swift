@@ -51,7 +51,7 @@ struct AboutView: View {
                                         Text(mythicVersion.prettyString)
                                     }
                                     
-                                    if let engineVersion = engineVersion {
+                                    if let engineVersion {
                                         Text("Engine \(engineVersion.prettyString)")
                                     }
                                 }

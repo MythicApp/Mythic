@@ -215,7 +215,7 @@ final class Legendary {
         var arguments: [String] = ["-y", "install", game.id]
         arguments += ["--platform", matchPlatform(for: platform)]
 
-        guard let baseDirectoryURL = baseDirectoryURL else {
+        guard let baseDirectoryURL else {
             log.error("Failed to infer default base URL, installation cannot continue")
             throw CocoaError(.fileReadUnknown)
         }

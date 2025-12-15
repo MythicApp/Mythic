@@ -88,7 +88,7 @@ struct ContentView: View {
                         Text("Mythic \(mythicVersion.prettyString)")
                     }
                     
-                    if let engineVersion = engineVersion {
+                    if let engineVersion {
                         Text("Mythic Engine \(engineVersion.prettyString)")
                     }
                 }

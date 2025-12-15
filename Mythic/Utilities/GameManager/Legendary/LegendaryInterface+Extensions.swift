@@ -1299,7 +1299,7 @@ extension Legendary {
 
             try container.encode(appID, forKey: .appID)
             try container.encodeIfPresent(compatibleApps, forKey: .compatibleApps)
-            if let dateAdded = dateAdded {
+            if let dateAdded {
                 try container.encodeIfPresent(dateFormatter.string(from: dateAdded), forKey: .dateAdded)
             }
             try container.encode(id, forKey: .id)

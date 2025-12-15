@@ -32,7 +32,7 @@ extension SparkleUpdater {
                             ProgressView(value: Double(bytesDownloaded), total: Double(bytesTotal))
                                 .progressViewStyle(.linear)
                             
-                            if let timeRemaining = timeRemaining {
+                            if let timeRemaining {
                                 Text("""
                                     \(formatBytes(downloaded)) of \(formatBytes(bytesTotal)) downloaded.
                                     About \(formatTimeRemaining(timeRemaining)) remaining.
