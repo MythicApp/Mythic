@@ -29,7 +29,7 @@ extension UserDefaults {
             encodedData = try encoder.encode([data])
         }
 
-        set(encodedData, forKey: key)
+        self.set(encodedData, forKey: key)
         return encodedData
     }
 
@@ -39,11 +39,11 @@ extension UserDefaults {
             try encodeAndSet(value, forKey: key)
         }
         
-        return dictionaryRepresentation()
+        return self.dictionaryRepresentation()
     }
     
     func decodeAndGet<T>(_ type: T.Type, forKey key: String) throws -> T? where T: Decodable {
-        guard let data = data(forKey: key) else { return nil }
+        guard let data = self.data(forKey: key) else { return nil }
         let decoder: PropertyListDecoder = .init()
 
         // Attempt to decode value using the direct value of T
