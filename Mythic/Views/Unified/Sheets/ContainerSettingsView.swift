@@ -29,7 +29,7 @@ struct ContainerSettingsView: View {
     @State private var modifyingWindowsVersion: Bool = true // keep progressview displayed until async fetching is complete
     @State private var windowsVersionSuccess: Bool?
 
-    private func fetchRetinaStatus() async {
+    private func fetchRetinaModeStatus() async {
         guard let selectedContainerURL = selectedContainerURL else { return }
 
         if let fetchedRetinaMode = try? await Wine.getRetinaMode(containerURL: selectedContainerURL) {
@@ -89,7 +89,7 @@ struct ContainerSettingsView: View {
                     .disabled(variables.getVariable("booting") == true)
                     .task(priority: .high) {
                         // asynchronously fetch retina mode status upon view presentation
-                        await fetchRetinaStatus()
+                        await fetchRetinaModeStatus()
                     }
                     .withOperationStatus(
                         operating: $modifyingRetinaMode,
@@ -194,10 +194,7 @@ struct ContainerSettingsView: View {
                 }
             }
             .disabled(!Engine.isInstalled)
-            .onChange(of: selectedContainerURL) {
-                Task(priority: .userInitiated) { await fetchRetinaStatus() }
-                Task(priority: .userInitiated) { await fetchWindowsVersion() }
-            }
+            .id(selectedContainerURL)
         } else if let selectedContainerURL = selectedContainerURL,
                   Wine.containerExists(at: selectedContainerURL) {
             ContentUnavailableView(
