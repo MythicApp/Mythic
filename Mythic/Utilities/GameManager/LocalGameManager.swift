@@ -56,23 +56,25 @@ class LocalGameManager {
             case .macOS:
                 let configuration: NSWorkspace.OpenConfiguration = .init()
                 configuration.arguments = game.launchArguments
-
+                
                 if (try? location.resourceValues(forKeys: [.contentTypeKey]).contentType)?.conforms(to: .bundle) == true {
                     let application = try await NSWorkspace.shared.openApplication(at: location, configuration: configuration)
                     
                     // await application closure
-                    /* FIXME: nonfunctional, why????
-                    await withCheckedContinuation { continuation in
-                        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didTerminateApplicationNotification,
-                                                                          object: nil,
-                                                                          queue: .main) { notification in
-                            if let terminatedApp = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
-                               terminatedApp.processIdentifier == application.processIdentifier {
-                                continuation.resume()
+                    await withTaskCancellationHandler {
+                        await withCheckedContinuation { continuation in
+                            NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didTerminateApplicationNotification,
+                                                                              object: nil,
+                                                                              queue: .main) { notification in
+                                if let observedApplication = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication,
+                                   observedApplication == application {
+                                    continuation.resume()
+                                }
                             }
                         }
+                    } onCancel: {
+                        application.terminate()
                     }
-                     */
                 } else {
                     throw CocoaError(.serviceApplicationLaunchFailed)
                 }
