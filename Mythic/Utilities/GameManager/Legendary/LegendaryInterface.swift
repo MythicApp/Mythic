@@ -552,7 +552,7 @@ final class Legendary {
                 
                 try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             } onCancel: {
-                process.interrupt()
+                process.terminate()
             }
         }
 
