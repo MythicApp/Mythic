@@ -372,7 +372,18 @@ final class Legendary {
             
             try process.run()
             
-            try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
+            do {
+                try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
+            } catch {
+                // FIXME: dirtyfix for legendary bug resulting in unsuccessful game directory removal
+                if let error = error as? GenericError,
+                   error.reason.contains("OSError(66, 'Directory not empty')"),
+                   case .installed(let location, _) = game.installationState {
+                    try FileManager.default.removeItem(at: location)
+                }
+                
+                throw error
+            }
             
             game.installationState = .uninstalled
         }
