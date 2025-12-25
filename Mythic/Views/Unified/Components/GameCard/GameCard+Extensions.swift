@@ -39,34 +39,20 @@ extension GameCard {
                             }
                         }
                     } label: {
-                        if let operation = operationManager.queue.first,
-                           operation.game == game,
-                           case .launch = operation.type {
-                            HStack {
-                                ProgressView()
-                                    .controlSize(.small)
-                                    .tint(.black)
-
-                                if withLabel {
-                                    Text("Launching")
-                                }
+                        Group {
+                            if withLabel {
+                                Label("Play", systemImage: "play")
+                            } else {
+                                Image(systemName: "play")
+                                    .padding(2)
                             }
-                        } else {
-                            Group {
-                                if withLabel {
-                                    Label("Play", systemImage: "play")
-                                } else {
-                                    Image(systemName: "play")
-                                        .padding(2)
-                                }
-                            }
-                            .symbolVariant(.fill)
-                            .customTransform { view in
-                                if #unavailable(macOS 26.0) {
-                                    view.foregroundStyle(.black)
-                                } else {
-                                    view
-                                }
+                        }
+                        .symbolVariant(.fill)
+                        .customTransform { view in
+                            if #unavailable(macOS 26.0) {
+                                view.foregroundStyle(.black)
+                            } else {
+                                view
                             }
                         }
                     }
