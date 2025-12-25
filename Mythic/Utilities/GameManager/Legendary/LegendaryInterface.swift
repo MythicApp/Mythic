@@ -563,6 +563,9 @@ final class Legendary {
                 
                 try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             } onCancel: {
+                // FIXME: legendary will spawn wine completely detached from the cli itself
+                // FIXME: because of this, terminating the process used to launch it will NOT
+                // FIXME: terminate the wine subprocess.. this is a KNOWN ISSUE
                 process.terminate()
             }
         }
