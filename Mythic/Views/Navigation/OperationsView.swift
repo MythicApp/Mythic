@@ -30,11 +30,11 @@ struct OperationsView: View {
                                             view
                                         }
                                     }
+                                
+                                Divider()
                             }
                             
                             let nonProminentOperations = operationManager.queue.filter({ $0 != operationManager.queue.first(where: { $0.isExecuting && $0.type.modifiesFiles }) })
-                            
-                            Divider()
                             
                             if nonProminentOperations.isEmpty {
                                 ContentUnavailableView(
