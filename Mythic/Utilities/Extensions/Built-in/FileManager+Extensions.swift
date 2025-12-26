@@ -25,7 +25,8 @@ extension FileManager {
             destinationURL.path(percentEncoded: false)
         ]
 
-        let result = try process.runWrapped()
+        try process.run()
+        process.waitUntilExit()
 
         try process.checkTerminationStatus()
     }
