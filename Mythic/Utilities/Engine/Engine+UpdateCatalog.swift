@@ -24,7 +24,7 @@ extension Engine {
             let name: ReleaseChannel
             let releases: [Release]
 
-            var latestRelease: Release? {
+            var latestCompatibleRelease: Release? {
                 releases
                     .filter { // exclude releases w/ unfulfilled app version requirement
                         guard let minimumAppVersion = $0.minimumAppVersion,

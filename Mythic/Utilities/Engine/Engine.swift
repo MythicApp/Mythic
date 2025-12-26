@@ -88,19 +88,19 @@ final class Engine {
         return try decoder.decode(EngineProperties.self, from: .init(contentsOf: properties))
     }
 
-    static func getLatestRelease(for channelName: ReleaseChannel = releaseChannel) async throws -> UpdateCatalog.Release {
+    static func getLatestCompatibleRelease(for channelName: ReleaseChannel = releaseChannel) async throws -> UpdateCatalog.Release {
         let catalog = try await retrieveUpdateCatalog()
 
         guard let channel = catalog.channels[channelName],
-              let latestRelease = channel.latestRelease else {
+              let latestCompatibleRelease = channel.latestCompatibleRelease else {
             throw UnableToParseChannelError()
         }
 
-        return latestRelease
+        return latestCompatibleRelease
     }
     
     static func isUpdateAvailable(for channelName: ReleaseChannel = releaseChannel) async throws -> Bool {
-        let latestRelease: UpdateCatalog.Release = try await getLatestRelease(for: channelName)
+        let latestRelease: UpdateCatalog.Release = try await getLatestCompatibleRelease(for: channelName)
         let properties = try await retrieveEngineProperties()
 
         return latestRelease.version > properties.version
@@ -111,7 +111,7 @@ final class Engine {
             Task(priority: .high) {
                 do {
                     guard !isInstalled else { continuation.finish(); return } // silent exit
-                    let release = try await getLatestRelease()
+                    let release = try await getLatestCompatibleRelease()
 
                     let task = URLSession.shared.downloadTask(with: URL(string: release.downloadURL)!) { file, response, error in
                         guard error == nil else { continuation.finish(throwing: error!); return }

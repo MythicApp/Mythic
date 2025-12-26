@@ -102,7 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             guard UserDefaults.standard.bool(forKey: "engineAutomaticallyChecksForUpdates"),
                   (try? await Engine.isUpdateAvailable()) == true else { return }
 
-            let latestVersion = (try? await Engine.getLatestRelease())?.version.description ?? String(localized: "Unknown")
+            let latestVersion = (try? await Engine.getLatestCompatibleRelease())?.version.description ?? String(localized: "Unknown")
             let currentVersion = await Engine.installedVersion?.description ?? String(localized: "an unknown version", comment: "Of Mythic Engine")
 
             let alert = NSAlert()
