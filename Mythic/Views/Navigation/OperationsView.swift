@@ -16,36 +16,41 @@ struct OperationsView: View {
     
     var body: some View {
         Group {
-            if let currentOperation = operationManager.queue.first {
+            if !operationManager.queue.isEmpty {
                 GeometryReader { geometry in
                     ScrollView {
                         VStack {
-                            ProminentOperationCard(operation: .constant(currentOperation))
-                                .padding()
-                                .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
-                                .customTransform { view in
-                                    if #available(macOS 26.0, *) {
-                                        view.backgroundExtensionEffect()
-                                    } else {
-                                        view
+                            if let prominentOperation = operationManager.queue.first(where: { $0.isExecuting && $0.type.modifiesFiles }) {
+                                ProminentOperationCard(operation: .constant(prominentOperation))
+                                    .frame(width: geometry.size.width, height: geometry.size.height * 0.75)
+                                    .customTransform { view in
+                                        if #available(macOS 26.0, *) {
+                                            view.backgroundExtensionEffect()
+                                        } else {
+                                            view
+                                        }
                                     }
-                                }
+                            }
                             
-                            if operationManager.queue.count <= 1 {
+                            let nonProminentOperations = operationManager.queue.filter({ $0 != operationManager.queue.first(where: { $0.isExecuting && $0.type.modifiesFiles }) })
+                            
+                            Divider()
+                            
+                            if nonProminentOperations.isEmpty {
                                 ContentUnavailableView(
                                     "No new game operations are queued.",
                                     systemImage: "checkmark",
                                     description: .init("If you attempt to download more than one game at the same time, it'll be added to this queue.")
                                 )
                             } else {
-                                ForEach(operationManager.queue.dropFirst()) { operation in
+                                ForEach(nonProminentOperations) { operation in
                                     OperationCard(operation: .constant(operation))
-                                        .padding(.horizontal)
                                 }
                             }
                         }
                     }
                 }
+                .padding()
             } else {
                 ContentUnavailableView(
                     "No new operations! 😁",
