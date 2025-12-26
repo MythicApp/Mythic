@@ -71,7 +71,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
 
     static func getContainerObject(at containerURL: URL) throws -> Container {
         let decoder = PropertyListDecoder()
-        return try decoder.decode(Container.self, from: .init(contentsOf: containerURL.appending(path: "properties.plist")))
+        return try decoder.decode(Container.self, from: .init(contentsOf: containerURL.appending(path: "Properties.plist")))
     }
 
     static var containerObjects: [Container] {

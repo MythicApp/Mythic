@@ -62,7 +62,7 @@ extension Wine {
         var id: UUID
         var settings: Container.Settings { didSet { saveProperties() } }
 
-        var propertiesFile: URL { url.appending(path: "properties.plist") }
+        var propertiesFile: URL { url.appending(path: "Properties.plist") }
     }
 }
 
