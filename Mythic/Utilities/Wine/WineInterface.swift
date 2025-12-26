@@ -138,7 +138,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     }
     
     @discardableResult
-    static func boot(at containerURL: URL, parameters: [BootParameter]) async throws -> Process.CommandResult {
+    static func boot(at containerURL: URL, parameters: BootParameter...) async throws -> Process.CommandResult {
         let process: Process = .init()
         process.arguments = ["wineboot"] + parameters.map(\.rawValue)
         transformProcess(process, containerURL: containerURL)
@@ -194,7 +194,7 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             }
 
             let newContainer = Container(name: name, url: url, settings: settings)
-            let result = try await boot(at: url, parameters: [.prefixInit])
+            let result = try await boot(at: url, parameters: .prefixInit)
 
             // swiftlint:disable:next force_try
             guard result.standardError?.contains(try! Regex(#"wine: configuration in (.*?) has been updated\."#)) == true else {

@@ -153,7 +153,7 @@ struct ContainerSettingsView: View {
 
                             do {
                                 if container.settings.dxvk {
-                                    try await Wine.boot(at: container.url, parameters: [.update])
+                                    try await Wine.boot(at: container.url, parameters: .update)
                                 } else {
                                     try await Wine.DXVK.install(toContainerAtURL: container.url)
                                 }
