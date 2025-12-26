@@ -56,7 +56,7 @@ import DockProgress
         
         // FIXME: Legendary has a self-managed datalock, so we must queue those operations serially
         if case .epicGames = operation.game.storefront, operation.type.modifiesFiles {
-            for existingOperation in queue where existingOperation.game.storefront == .epicGames {
+            for existingOperation in queue where existingOperation.game.storefront == .epicGames && existingOperation.type.modifiesFiles {
                 operation.addDependency(existingOperation)
             }
         }
@@ -124,7 +124,7 @@ import DockProgress
         _operationQueue.addOperation(operation)
         queue.append(operation)
 
-        log.debug("Queued operation \(operation.debugDescription)")
+        log.debug("Queued operation \(operation.debugDescription)\(operation.dependencies.isEmpty ? "." : "with dependencies \(operation.dependencies.map(\.description).formatted(.list(type: .and)))")")
     }
 
     func cancelAllOperations() {
