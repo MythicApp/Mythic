@@ -235,17 +235,12 @@ struct GameSettingsView: View {
                         }
 
                         // MARK: - Container Settings Section
-                        Section("Container Settings", isExpanded: $isContainerSectionExpanded) {
-                            ContainerSettingsView(selectedContainerURL: $game.containerURL,
-                                                  withPicker: true)
-                        }
-                        .disabled({
-                            if case .installed(_, let platform) = game.installationState {
-                                return platform != .windows
-                            } else {
-                                return true
+                        if case .installed(_, let platform) = game.installationState, case .windows = platform {
+                            Section("Container Settings", isExpanded: $isContainerSectionExpanded) {
+                                ContainerSettingsView(selectedContainerURL: $game.containerURL,
+                                                      withPicker: true)
                             }
-                        }())
+                        }
                     }
                     .formStyle(.grouped)
                 }
