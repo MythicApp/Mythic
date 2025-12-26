@@ -82,7 +82,8 @@ class LocalGameManager {
                 guard let containerURL = game.containerURL else { throw Wine.Container.DoesNotExistError() }
                 let container = try Wine.getContainerObject(at: containerURL)
 
-                let environmentVariables: [String: String] = .init() /* FIXME: stub */ /* try Wine.assembleEnvironmentVariables(forGame: game) */
+                var environment: [String: String] = .init()
+                environment = try Wine.assembleEnvironmentVariables(forContainerAtURL: container.url)
 
                 if UserDefaults.standard.bool(forKey: "minimiseOnGameLaunch") {
                     NSApp.windows.first?.miniaturize(nil)
@@ -90,7 +91,7 @@ class LocalGameManager {
                 
                 let process: Process = .init()
                 process.arguments = [location.path] + game.launchArguments
-                process.environment = environmentVariables
+                process.environment = environment
                 Wine.transformProcess(process, containerURL: containerURL)
                 
                 try process.run()

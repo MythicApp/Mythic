@@ -541,7 +541,7 @@ final class Legendary {
             case .macOS:
                 do {} // no environment variables need to be assembled.
             case .windows:
-                environment = try Wine.assembleEnvironmentVariables(forContainer: containerURL)
+                environment = try Wine.assembleEnvironmentVariables(forContainerAtURL: containerURL)
                 // legendary requires this, since it calls wine directly.
                 environment["WINEPREFIX"] = containerURL.path(percentEncoded: false)
 
