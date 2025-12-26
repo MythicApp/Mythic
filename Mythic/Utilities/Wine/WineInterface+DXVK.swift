@@ -15,6 +15,7 @@ extension Wine {
         static func install(toContainerAtURL containerURL: URL) async throws {
             try Wine.killAll(at: containerURL)
 
+            // remove existing d3d dlls
             // x64
             try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d10core.dll"))
             try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/system32/d3d11.dll"))
@@ -23,6 +24,7 @@ extension Wine {
             try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d10core.dll"))
             try FileManager.default.removeItemIfExists(at: containerURL.appending(path: "drive_c/windows/syswow64/d3d11.dll"))
 
+            // copy d3d dlls from dxvk
             // x64
             try FileManager.default.forceCopyItem(
                 at: Engine.directory.appending(path: "DXVK/x64/d3d10core.dll"),
