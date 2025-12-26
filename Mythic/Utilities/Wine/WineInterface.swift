@@ -9,11 +9,28 @@
 
 import Foundation
 import OSLog
+import SemanticVersion
 
 final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
     internal static let log = Logger(subsystem: Logger.subsystem, category: "wineInterface")
     internal static func formatLog(containerURL: URL, description: String, error: Error? = nil) -> String {
         return "(\(containerURL.prettyPath)) \(description)" + (error != nil ? ": \(error!.localizedDescription)" : (description.hasSuffix(".") ? "" : "."))
+    }
+    
+    internal static func retrieveVersion() -> SemanticVersion? {
+        let process: Process = .init()
+        process.arguments = ["--version"]
+        process.executableURL = Engine.directory.appending(path: "wine/bin/wine64")
+        
+        let result = try? process.runWrapped()
+        
+        if let standardOutput = result?.standardOutput,
+           let match = try? Regex(#"wine-(\S+)"#).firstMatch(in: standardOutput),
+           let extractedVersion = match.last?.substring {
+            return SemanticVersion(fromRelaxedString: .init(extractedVersion))
+        } else {
+            return nil
+        }
     }
 
     /// The directory where all wine prefixes/containers related to Mythic are stored.
@@ -89,14 +106,32 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         
         let commandResult = try await process.runWrapped()
         
-        // TODO: tasklist regex for wine 9.0
-        // try! Regex (#"^\s*(?<ImageName>.+?)\s+(?<PID>\d+)\s+(?<SessionName>\S+)\s+(?<SessionNum>\d+)\s+(?<MemUsage>[\d,]+ K)$"#)
-        if let standardOutput = commandResult.standardOutput,
-           let match = try? Regex(#"(?P<name>[^,]+?),(?P<pid>\d+)"#).firstMatch(in: standardOutput) {
-            var process: Container.Process = .init()
-            process.name = String(match["name"]?.substring ?? "Unknown")
-            process.pid = Int(match["pid"]?.substring ?? "0") ?? 0
-            list.append(process)
+        if let standardOutput = commandResult.standardOutput {
+            let tasklistRegex: Regex<AnyRegexOutput>?
+            // wine above major version 7 has a new tasklist format
+            // swiftlint:disable force_try
+            if self.retrieveVersion()?.major ?? 0 > 7 {
+                tasklistRegex = try! Regex(#"^\s*(?<ImageName>.+?)\s+(?<PID>\d+)\s+(?<SessionName>\S+)\s+(?<SessionNum>\d+)\s+(?<MemUsage>[\d,]+ K)$"#)
+            } else {
+                tasklistRegex = try! Regex(#"(?P<ImageName>[^,]+?),(?P<PID>\d+)"#)
+            }
+            // swiftlint:enable force_try
+            
+            for line in standardOutput.split(whereSeparator: \.isNewline) {
+                guard let match = try tasklistRegex?.wholeMatch(in: line) else { continue }
+                
+                guard let extractedImageName = match["ImageName"]?.substring,
+                      let extractedPID = match["PID"]?.substring,
+                      let castPID = Int(extractedPID) else { continue }
+                
+                list.append(
+                    .init(imageName: String(extractedImageName),
+                          pid: castPID,
+                          sessionName: match["ImageName"]?.substring.flatMap(String.init),
+                          sessionNumber: match["SessionNum"]?.substring.flatMap({ Int($0) }),
+                          memoryUsage: match["MemUsage"]?.substring.flatMap({ Int($0) }))
+                )
+            }
         }
         
         return list
@@ -316,7 +351,16 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             
             let commandResult = try await process.runWrapped()
             
-            let currentVersion: String? = commandResult.standardOutput?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let currentVersion: String?
+            // wine above major version 7 sends the windows version to stderr
+            if self.retrieveVersion()?.major ?? 0 > 7 {
+                currentVersion = commandResult.standardError?
+                    .split(whereSeparator: \.isNewline)
+                    .last.map(String.init)
+            } else {
+                currentVersion = commandResult.standardOutput?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
             
             return WindowsVersion.allCases.first(where: { String(describing: $0) == currentVersion })
         } catch {

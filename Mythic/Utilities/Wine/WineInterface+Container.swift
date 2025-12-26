@@ -89,9 +89,13 @@ extension Wine.Container: Codable {
 }
 
 extension Wine.Container {
-    struct Process {
-        var name: String = .init()
-        var pid: Int = .init()
+    struct Process: Identifiable {
+        var id: Int { pid }
+        var imageName: String
+        var pid: Int
+        var sessionName: String?
+        var sessionNumber: Int?
+        var memoryUsage: Int?
     }
 
     struct Settings: Hashable, Equatable {

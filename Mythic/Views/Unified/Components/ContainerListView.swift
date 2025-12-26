@@ -187,7 +187,7 @@ struct ContainerConfigurationView: View {
                             
                             try process.run()
                             
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "uninstaller.exe" }) {
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "uninstaller.exe" }) {
                                 try await Task.sleep(for: .seconds(2))
                                 await MainActor.run { isUninstallerActive = isActive }
                             }
@@ -205,7 +205,7 @@ struct ContainerConfigurationView: View {
                             
                             try process.run()
 
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "winecfg.exe" }) {
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "winecfg.exe" }) {
                                 try await Task.sleep(for: .seconds(2))
                                 await MainActor.run { isConfiguratorActive = isActive }
                             }
@@ -223,7 +223,7 @@ struct ContainerConfigurationView: View {
                             
                             try process.run()
 
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.name == "regedit.exe" }) {
+                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "regedit.exe" }) {
                                 try await Task.sleep(for: .seconds(2))
                                 await MainActor.run { isRegistryEditorActive = isActive }
                             }
