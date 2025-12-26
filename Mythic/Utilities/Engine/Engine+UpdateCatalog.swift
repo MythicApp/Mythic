@@ -26,7 +26,7 @@ extension Engine {
 
             var latestRelease: Release? {
                 releases
-                    .filter { // exclude releases w/ unfulilled app version requirement
+                    .filter { // exclude releases w/ unfulfilled app version requirement
                         guard let minimumAppVersion = $0.minimumAppVersion,
                               let appVersion = Mythic.appVersion
                         else { return true } // keep if appVersion unverifiable/no minimumAppVersion
