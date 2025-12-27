@@ -85,9 +85,7 @@ struct GameImageCard: View {
                         ContentUnavailableView(
                             "Unable to load the image.",
                             systemImage: "photo.badge.exclamationmark",
-                            description: .init("""
-                                Please check your connection, and try again.
-                                """)
+                            description: .init("Please check your internet connection, and try again.")
                         )
                         .onAppear {
                             withAnimation { isImageEmpty = true }

@@ -70,9 +70,13 @@ struct MythicApp: App {
             }
 
             CommandGroup(after: .appInfo) {
-                Button("Check for Updates...", action: {
-                    SparkleUpdateController.shared.checkForUpdates(userInitiated: true)
-                })
+                Button("Check for Mythic Updates...", action: { SparkleUpdateController.shared.checkForUpdates(userInitiated: true) })
+                
+                Button("Check for Mythic Engine Updates...") {
+                    Task(priority: .userInitiated) {
+                        await Engine.displayUpdateChecker(userInitiated: true)
+                    }
+                }
 
                 Button("Restart Onboarding...") {
                     withAnimation {

@@ -98,62 +98,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         // MARK: Engine update alert chain
+        // TODO: add manual engine update check button in toolbar
         Task(priority: .background) { @MainActor in
-            guard UserDefaults.standard.bool(forKey: "engineAutomaticallyChecksForUpdates"),
-                  (try? await Engine.isUpdateAvailable()) == true else { return }
+            guard UserDefaults.standard.bool(forKey: "engineAutomaticallyChecksForUpdates") else { return }
 
-            let latestVersion = (try? await Engine.getLatestCompatibleRelease())?.version.description ?? String(localized: "Unknown")
-            let currentVersion = await Engine.installedVersion?.description ?? String(localized: "an unknown version", comment: "Of Mythic Engine")
-
-            let alert = NSAlert()
-            alert.messageText = String(localized: "Mythic Engine update available.")
-            alert.informativeText = String(localized: """
-                A new version of Mythic Engine (\(latestVersion)) has released.
-                You're currently using \(currentVersion).
-                """)
-            alert.addButton(withTitle: String(localized: "Update"))
-            alert.addButton(withTitle: String(localized: "Cancel"))
-
-            guard let window = NSApp.windows.first else { return }
-
-            alert.beginSheetModal(for: window) { response in
-                guard case .alertFirstButtonReturn = response else { return }
-
-                let confirmation = NSAlert()
-                confirmation.messageText = String(localized: "Are you sure you want to update now?")
-                confirmation.informativeText = String(localized: """
-                    This will remove the current version of Mythic Engine.
-                    The latest version will be installed the next time you attempt to launch a Windows® game.
-                    """)
-                confirmation.addButton(withTitle: String(localized: "Update"))
-                confirmation.addButton(withTitle: String(localized: "Cancel"))
-
-                confirmation.beginSheetModal(for: window) { response in
-                    guard case .alertFirstButtonReturn = response else { return }
-
-                    Task(priority: .userInitiated) {
-                        do {
-                            try await Engine.remove()
-
-                            let successAlert = NSAlert()
-                            successAlert.alertStyle = .informational
-                            successAlert.messageText = String(localized: "Successfully removed Mythic Engine.")
-                            successAlert.informativeText = String(localized: "The latest version will be installed the next time you attempt to launch a Windows® game.")
-                            successAlert.addButton(withTitle: String(localized: "OK"))
-
-                            await successAlert.beginSheetModal(for: window)
-                        } catch {
-                            let errorAlert = NSAlert()
-                            errorAlert.alertStyle = .critical
-                            errorAlert.messageText = String(localized: "Unable to remove Mythic Engine.")
-                            errorAlert.informativeText = error.localizedDescription
-                            errorAlert.addButton(withTitle: String(localized: "OK"))
-
-                            await errorAlert.beginSheetModal(for: window)
-                        }
-                    }
-                }
-            }
+            await Engine.displayUpdateChecker(userInitiated: false)
         }
 
         // MARK: Version-specific app launch counter
