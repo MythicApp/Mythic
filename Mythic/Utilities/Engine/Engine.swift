@@ -93,7 +93,7 @@ final class Engine {
 
         guard let channel = catalog.channels[channelName],
               let latestCompatibleRelease = channel.latestCompatibleRelease else {
-            throw UnableToParseChannelError()
+            throw UnableToRetrieveCompatibleReleaseError()
         }
 
         return latestCompatibleRelease

@@ -31,8 +31,8 @@ extension Engine {
         var errorDescription: String? = String(localized: "Mythic Engine is not installed.")
     }
 
-    struct UnableToParseChannelError: LocalizedError {
-        var errorDescription: String? = String(localized: "Unable to parse mythic engine update channel.")
+    struct UnableToRetrieveCompatibleReleaseError: LocalizedError {
+        var errorDescription: String? = String(localized: "Unable to retrieve a compatible Mythic Engine release for this stream.")
     }
 }
 
