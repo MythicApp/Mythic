@@ -8,10 +8,35 @@
       "hidden" : false,
       "layers" : [
         {
-          "image-name" : "Mythic.svg",
-          "name" : "Mythic",
+          "image-name" : "Rectangles 1.svg",
+          "name" : "Rectangles 1",
           "position" : {
-            "scale" : 0.95,
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "glass" : true,
+          "image-name" : "Rectangles 2.svg",
+          "name" : "Rectangles 2",
+          "position" : {
+            "scale" : 1,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "glass" : true,
+          "image-name" : "Rectangles 3.svg",
+          "name" : "Rectangles 3",
+          "position" : {
+            "scale" : 1,
             "translation-in-points" : [
               0,
               0
