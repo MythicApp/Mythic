@@ -7,7 +7,8 @@
 
   Mythic
 
-  ![GitHub License](https://img.shields.io/github/license/MythicApp/Mythic) 
+All rights reserved.
+
   [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.com/invite/58NZ7fFqPy)
   [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
   [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
@@ -48,4 +49,4 @@ Mythic uses the following Swift dependencies:
 - [SwiftUI-Shimmer](https://github.com/markiv/SwiftUI-Shimmer) — A super-light modifier that adds a shimmering effect to any SwiftUI View.
 - [DockProgress](https://github.com/sindresorhus/DockProgress) — Show progress in your app's Dock icon
 
-<sub>Copyright © 2023-2025 vapidinfinity</sub>
+<sub>Copyright © 2023-2025 vapidinfinity. All rights reserved.</sub>
