@@ -80,11 +80,6 @@ All PRs must pass:
 
 #### Naming
 - Use **descriptive names** — avoid shorthand like `e`; use `example` instead
-- Only add **singleton variables** to global scope:
-  ```swift
-  nonisolated(unsafe) let workspace: NSWorkspace = .shared // ✅
-  var isInstallingGame: Bool = false // ❌
-  ```
 
 #### Declarations
 - Prefer **explicit types and referencing using `.`, e.g. `.init()`, `.shared`**:
