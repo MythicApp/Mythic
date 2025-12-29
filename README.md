@@ -7,14 +7,15 @@
 
   Mythic
 
-All rights reserved.
-
   [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.com/invite/58NZ7fFqPy)
   [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
   [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
 </h1>
 
-<h3 align="center">A unique open-source game launcher for macOS with the ability to run Windows games, and integrate with other game sources.</h3>
+<div align="center">
+  <h3>A unique open-source game launcher for macOS with the ability to run Windows games, and integrate with other game sources.</h3>
+  <!-- <em>All rights reserved.</em> -->
+</div>
 
 <br>
 
