@@ -5,7 +5,7 @@
 //  Created by vapidinfinity (esi) on 7/11/2025.
 //
 
-// Copyright © 2023-2025 vapidinfinity
+// Copyright © 2023-2026 vapidinfinity
 
 import Foundation
 import SwiftUI

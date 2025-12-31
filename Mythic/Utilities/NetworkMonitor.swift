@@ -7,7 +7,7 @@
 
 // Reference: https://arc.net/l/quote/ivjknjyv
 
-// Copyright © 2023-2025 vapidinfinity
+// Copyright © 2023-2026 vapidinfinity
 
 import Foundation
 import Network
