@@ -5,7 +5,7 @@
 //  Created by vapidinfinity (esi) on 11/10/24.
 //
 
-// Copyright © 2023-2025 vapidinfinity
+// Copyright © 2023-2026 vapidinfinity
 
 import AppKit
 

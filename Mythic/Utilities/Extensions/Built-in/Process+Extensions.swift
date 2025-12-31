@@ -5,7 +5,7 @@
 //  Created by vapidinfinity (esi) on 25/3/2024.
 //
 
-// Copyright © 2023-2025 vapidinfinity
+// Copyright © 2023-2026 vapidinfinity
 
 import Foundation
 import OSLog
