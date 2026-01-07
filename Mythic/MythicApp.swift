@@ -86,46 +86,20 @@ struct MythicApp: App {
                 .disabled(isOnboardingPresented)
             }
             
-            CommandGroup(replacing: .help){
-                Button("Website") {
-                    if let websiteURL = URL(string: "https://getmythic.app/") {
-                        NSWorkspace.shared.open(websiteURL)
-                        }
-                    }
+            CommandGroup(replacing: .help) {
+                Link("Documentation", destination: URL(string: "https://docs.getmythic.app/")!)
+                Link("Discord server", destination: URL(string: "https://discord.gg/kQKdvjTVqh")!)
+                Link("Games compability",
+                     destination: URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/")!)
 
-                Button("Documentation") {
-                    if let docUrl = URL(string: "https://docs.getmythic.app/") {
-                        NSWorkspace.shared.open(docUrl)
-                        }
-                    }
-                Button("Discord Server") {
-                    if let discordInviteUrl = URL(string: "https://discord.gg/kQKdvjTVqh") {
-                        NSWorkspace.shared.open(discordInviteUrl)
-                        }
-                    }
-                Button("GitHub Repository") {
-                    if let githubUrl = URL(string: "https://github.com/MythicApp/Mythic") {
-                        NSWorkspace.shared.open(githubUrl)
-                    }
-                }
-                Button("Compatibility List") {
-                    if let gameListURL = URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/") {
-                        NSWorkspace.shared.open(gameListURL)
-                    }
-                }
-
-                Divider()
-
-                Button("Donate to the developer", systemImage: "heart.fill") {
-                    if let donationUrl = URL(string: "https://ko-fi.com/vapidinfinity") {
-                        NSWorkspace.shared.open(donationUrl)
-                    }
+                Section("Support the project") {
+                    Link("GitHub Sponsors", destination: URL(string: "https://github.com/sponsors/MythicApp")!)
+                    Link("Ko-Fi", destination: URL(string: "https://ko-fi.com/vapidinfinity")!)
                 }
                 
-                Button("Support the project", systemImage: "heart.fill") {
-                    if let donationUrl = URL(string: "https://github.com/sponsors/MythicApp") {
-                        NSWorkspace.shared.open(donationUrl)
-                    }
+                Section("More") {
+                    Link("GitHub repository", destination: URL(string: "https://github.com/MythicApp/Mythic")!)
+                    Link("Website", destination: URL(string: "https://getmythic.app/")!)
                 }
             }
         }
