@@ -417,4 +417,105 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             throw error
         }
     }
+    
+    /// Runs a winetricks verb in the specified container.
+    /// - Parameters:
+    ///   - containerURL: The URL of the Wine container/prefix.
+    ///   - verb: The winetricks verb to execute (e.g., "corefonts", "vcrun2019", "d3dx9").
+    ///   - onOutput: Optional callback for streaming output updates.
+    /// - Note: Winetricks must be installed and available in the system PATH or bundled with the Engine.
+    static func runWinetricks(containerURL: URL, verb: String, onOutput: (@Sendable (String) -> Void)? = nil) async throws {
+        guard containerExists(at: containerURL) else { throw Container.DoesNotExistError() }
+        guard Engine.isInstalled else { throw Engine.NotInstalledError() }
+        
+        let process: Process = .init()
+        
+        // Check for bundled winetricks first, then fall back to system winetricks
+        let bundledWinetricksURL = Engine.directory.appending(path: "winetricks")
+        let winetricksURL: URL
+        
+        if FileManager.default.fileExists(atPath: bundledWinetricksURL.path) {
+            winetricksURL = bundledWinetricksURL
+        } else {
+            // Try to find winetricks in common locations
+            let possiblePaths = [
+                "/usr/local/bin/winetricks",
+                "/opt/homebrew/bin/winetricks",
+                "/usr/bin/winetricks"
+            ]
+            
+            if let foundPath = possiblePaths.first(where: { FileManager.default.fileExists(atPath: $0) }) {
+                winetricksURL = URL(filePath: foundPath)
+            } else {
+                throw WinetricksNotFoundError()
+            }
+        }
+        
+        let wineBinDirectory = Engine.directory.appending(path: "wine/bin")
+        let wineLibDirectory = Engine.directory.appending(path: "wine/lib")
+        
+        // Get user's home directory and cache directory for winetricks
+        let homeDirectory = FileManager.default.homeDirectoryForCurrentUser.path
+        let cacheDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.path ?? "\(homeDirectory)/Library/Caches"
+        
+        process.executableURL = winetricksURL
+        process.arguments = ["--force", verb]
+        process.currentDirectoryURL = containerURL
+        process.environment = [
+            "HOME": homeDirectory,
+            "USER": NSUserName(),
+            "XDG_CACHE_HOME": cacheDirectory,
+            "WINEPREFIX": containerURL.path,
+            "WINE": Engine.wineExecutableURL.path,
+            "WINE64": Engine.wineExecutableURL.path,
+            "WINESERVER": wineBinDirectory.appending(path: "wineserver").path,
+            "WINEARCH": "win64",
+            "PATH": "\(wineBinDirectory.path):/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin",
+            "DYLD_FALLBACK_LIBRARY_PATH": "\(wineLibDirectory.path):/usr/lib",
+            "WINETRICKS_WINE_IS_64BIT": "true",
+            "DISPLAY": "",  // Disable X11 display requirements
+            "TERM": "xterm-256color"
+        ]
+        
+        log.info("\(formatLog(containerURL: containerURL, description: "Running winetricks verb: \(verb)"))")
+        
+        if let onOutput {
+            // Stream output in real-time
+            try await process.runStreamed(throwsOnChunkError: false) { chunk in
+                onOutput(chunk.output)
+                return nil
+            }
+        } else {
+            // Original behavior without streaming
+            let result = try await process.runWrapped()
+            
+            // Log any output for debugging
+            if let stderr = result.standardError, !stderr.isEmpty {
+                log.warning("\(formatLog(containerURL: containerURL, description: "Winetricks stderr: \(stderr)"))")
+            }
+        }
+        
+        guard process.terminationStatus == 0 else {
+            throw WinetricksExecutionError(verb: verb, exitCode: process.terminationStatus)
+        }
+        
+        log.info("\(formatLog(containerURL: containerURL, description: "Successfully installed winetricks verb: \(verb)"))")
+    }
+    
+    /// Error thrown when winetricks is not found on the system.
+    struct WinetricksNotFoundError: LocalizedError {
+        var errorDescription: String? {
+            "Winetricks is not installed. Please install winetricks via Homebrew (brew install winetricks) or ensure it's bundled with the Engine."
+        }
+    }
+    
+    /// Error thrown when a winetricks verb execution fails.
+    struct WinetricksExecutionError: LocalizedError {
+        let verb: String
+        let exitCode: Int32
+        
+        var errorDescription: String? {
+            "Failed to install '\(verb)' via winetricks. Exit code: \(exitCode)"
+        }
+    }
 }
