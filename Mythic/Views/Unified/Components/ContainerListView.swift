@@ -44,7 +44,7 @@ struct ContainerListView: View {
                     .buttonStyle(.borderless)
                     .help("Modify default settings for \"\(container.name)\"")
                     .sheet(isPresented: $isContainerConfigurationViewPresented) {
-                        ContainerConfigurationView(containerURL: .constant(container.url),
+                        ContainerConfigurationView(containerURL: Binding.constant(container.url),
                                                    isPresented: $isContainerConfigurationViewPresented)
                     }
 

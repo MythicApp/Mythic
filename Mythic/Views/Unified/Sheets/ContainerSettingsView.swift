@@ -28,6 +28,13 @@ struct ContainerSettingsView: View {
     @State private var windowsVersion: Wine.WindowsVersion = Wine.Container.Settings().windowsVersion
     @State private var modifyingWindowsVersion: Bool = true // keep progressview displayed until async fetching is complete
     @State private var windowsVersionSuccess: Bool?
+    
+    @State private var renderer: Wine.Renderer = Wine.Container.Settings().renderer
+    @State private var modifyingRenderer: Bool = true
+    @State private var rendererSuccess: Bool?
+    @State private var isRendererChangeAlertPresented: Bool = false
+    @State private var pendingRenderer: Wine.Renderer?
+    @State private var previousRenderer: Wine.Renderer?
 
     private func fetchRetinaModeStatus() async {
         guard let selectedContainerURL else { return }
@@ -65,6 +72,21 @@ struct ContainerSettingsView: View {
         }
     }
 
+    private func fetchRenderer() async {
+        guard let selectedContainerURL else { return }
+
+        do {
+            if let container = try? Wine.getContainerObject(at: selectedContainerURL) {
+                await MainActor.run(body: { renderer = container.settings.renderer })
+                await MainActor.run {
+                    withAnimation { modifyingRenderer = false }
+                }
+            }
+        } catch {
+            rendererSuccess = false
+        }
+    }
+
     var body: some View {
         if withPicker {
             if variables.getVariable("booting") != true {
@@ -84,8 +106,8 @@ struct ContainerSettingsView: View {
             }
         }
 
-        if let selectedContainerURL,
-           let container = try? Wine.getContainerObject(at: selectedContainerURL) {
+          if let containerURL = selectedContainerURL,
+              let container = try? Wine.getContainerObject(at: containerURL) {
             Group {
                 Toggle("Performance HUD", isOn: Binding(
                     get: { container.settings.metalHUD },
@@ -180,6 +202,59 @@ struct ContainerSettingsView: View {
                     set: { container.settings.dxvkAsync = $0 }
                 ))
                 .disabled(!container.settings.dxvk || modifyingDXVK)
+
+                Picker("Renderer", selection: $renderer) {
+                    ForEach(Wine.Renderer.allCases, id: \.self) { r in
+                        Text(r.rawValue).tag(r)
+                    }
+                }
+                .onChange(of: renderer) { new in
+                    // If selecting D3DMetal while DXVK is enabled, confirm because DXVK will be disabled.
+                    if new == .d3dMetal, container.settings.dxvk {
+                        pendingRenderer = new
+                        // revert selection until confirmed
+                        renderer = previousRenderer ?? container.settings.renderer
+                        isRendererChangeAlertPresented = true
+                    } else {
+                        previousRenderer = new
+                    }
+                }
+                    .task(priority: .high) {
+                        await fetchRenderer()
+                    }
+                    .withOperationStatus(
+                        operating: $modifyingRenderer,
+                        successful: $rendererSuccess,
+                        observing: $renderer,
+                        placement: .leading
+                    ) {
+                        guard let selectedContainerURL else { throw Wine.Container.DoesNotExistError() }
+                        let container = try Wine.getContainerObject(at: selectedContainerURL)
+
+                        if renderer == .d3dMetal && container.settings.dxvk {
+                            // Ensure running games are quit before disabling DXVK, like the DXVK toggle flow.
+                            try await Wine.boot(at: container.url, parameters: .update)
+                            container.settings.dxvk = false
+                            container.settings.dxvkAsync = false
+                        }
+
+                        container.settings.renderer = renderer
+                        rendererSuccess = true
+                    }
+                    .alert("Switch renderer?", isPresented: $isRendererChangeAlertPresented) {
+                        Button("OK", role: .destructive) {
+                            if let pending = pendingRenderer {
+                                renderer = pending
+                                pendingRenderer = nil
+                            }
+                        }
+
+                        Button("Cancel", role: .cancel) {
+                            pendingRenderer = nil
+                        }
+                    } message: {
+                        Text("Selecting D3DMetal will disable DXVK for this container. This may require quitting running games. Continue?")
+                    }
 
                 Picker("Windows Version", selection: $windowsVersion) {
                     ForEach(Wine.WindowsVersion.allCases, id: \.self) { version in

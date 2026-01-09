@@ -21,6 +21,13 @@ extension Wine {
         case win98 = "98"
     }
 
+    enum Renderer: String, Codable, CaseIterable {
+        case automatic = "Automatic"
+        case d3dMetal = "D3DMetal"
+        case openGL = "OpenGL"
+        case vulkan = "Vulkan"
+    }
+
     internal enum RegistryType: String {
         case binary = "REG_BINARY"
         case dword = "REG_DWORD"

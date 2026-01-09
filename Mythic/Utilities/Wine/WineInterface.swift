@@ -84,7 +84,13 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         if let containerURL {
             constructedEnvironment["WINEPREFIX"] = containerURL.path
         }
-        
+        // Merge container-specific variables (DXVK, HUD, etc.) if available
+        if let containerURL {
+            if let containerEnv = try? assembleEnvironmentVariables(forContainerAtURL: containerURL) {
+                constructedEnvironment.merge(containerEnv) { _, new in new }
+            }
+        }
+
         return constructedEnvironment.merging(additionalVariables, uniquingKeysWith: { $1 })
     }
     
@@ -225,10 +231,20 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
         environmentVariables["WINEMSYNC"] = container.settings.msync.numericalValue.description
         environmentVariables["ROSETTA_ADVERTISE_AVX"] = container.settings.avx2.numericalValue.description
 
-        if container.settings.dxvk {
-            environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
-            environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
+        // Renderer-specific handling: if D3DMetal is selected, prefer it and disable DXVK.
+        switch container.settings.renderer {
+        case .d3dMetal:
+            environmentVariables["WINE_D3DMETAL"] = "1"
+        default:
+            if container.settings.dxvk {
+                environmentVariables["WINEDLLOVERRIDES"] = "d3d10core,d3d11=n,b"
+                environmentVariables["DXVK_ASYNC"] = container.settings.dxvkAsync.numericalValue.description
+            }
         }
+
+        // Expose renderer selection to the environment so launchers can act on it.
+        // Primary key: WINE_RENDERER contains the selected renderer name (Automatic/D3DMetal/OpenGL/Vulkan).
+        environmentVariables["WINE_RENDERER"] = container.settings.renderer.rawValue
 
         if container.settings.metalHUD {
             if container.settings.dxvk {
@@ -236,6 +252,16 @@ final class Wine { // TODO: https://forum.winehq.org/viewtopic.php?t=15416
             } else {
                 environmentVariables["MTL_HUD_ENABLED"] = "1"
             }
+        }
+
+        // Additionally expose renderer hint flags for downstream tools/scripts.
+        switch container.settings.renderer {
+        case .openGL:
+            environmentVariables["WINE_OPENGL"] = "1"
+        case .vulkan:
+            environmentVariables["WINE_VULKAN"] = "1"
+        default:
+            break
         }
 
         return environmentVariables

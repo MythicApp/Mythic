@@ -104,6 +104,7 @@ extension Wine.Container {
         var retinaMode: Bool
         var dxvk: Bool
         var dxvkAsync: Bool
+        var renderer: Wine.Renderer
         var windowsVersion: Wine.WindowsVersion
         var scaling: Int
         var avx2: Bool
@@ -113,6 +114,7 @@ extension Wine.Container {
              retinaMode: Bool = true,
              dxvk: Bool = false,
              dxvkAsync: Bool = false,
+             renderer: Wine.Renderer = .automatic,
              windowsVersion: Wine.WindowsVersion = .win11,
              scaling: Int = 192,
              avx2: Bool = true) {
@@ -121,6 +123,7 @@ extension Wine.Container {
             self.retinaMode = retinaMode
             self.dxvk = dxvk
             self.dxvkAsync = dxvkAsync
+            self.renderer = renderer
             self.windowsVersion = windowsVersion
             self.scaling = scaling
             self.avx2 = {
@@ -146,6 +149,7 @@ extension Wine.Container.Settings: Codable {
         case retinaMode
         case dxvk
         case dxvkAsync
+        case renderer
         case windowsVersion
         case scaling
         case avx2
@@ -160,6 +164,9 @@ extension Wine.Container.Settings: Codable {
         self.retinaMode = try container.decodeIfPresent(Bool.self, forKey: .retinaMode) ?? self.retinaMode
         self.dxvk = try container.decodeIfPresent(Bool.self, forKey: .dxvk) ?? self.dxvk
         self.dxvkAsync = try container.decodeIfPresent(Bool.self, forKey: .dxvkAsync) ?? self.dxvkAsync
+        if let rendered = try container.decodeIfPresent(Wine.Renderer.self, forKey: .renderer) {
+            self.renderer = rendered
+        }
         self.windowsVersion = try container.decodeIfPresent(Wine.WindowsVersion.self, forKey: .windowsVersion) ?? self.windowsVersion
         self.scaling = try container.decodeIfPresent(Int.self, forKey: .scaling) ?? self.scaling
         self.avx2 = try container.decodeIfPresent(Bool.self, forKey: .avx2) ?? self.avx2
