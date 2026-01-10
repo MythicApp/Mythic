@@ -189,6 +189,33 @@ struct WinetricksConfigurationView: View {
         let descriptionKey: String
         var id: String { name }
     }
+
+    struct SelectedVerbItem: View {
+        let verb: WinetricksVerb
+        let remove: () -> Void
+
+        @State private var isHovering: Bool = false
+
+        var body: some View {
+            HStack {
+                Text(verb.name)
+                    .monospaced()
+                    .foregroundStyle(isHovering ? .red : .secondary)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+            }
+            .background(in: .capsule)
+            .backgroundStyle(.quinary)
+            .onHover { hovering in
+                withAnimation { isHovering = hovering }
+            }
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    remove()
+                }
+            }
+        }
+    }
     
     @State private var selectedVerbs: Set<WinetricksVerb> = []
     @State private var selectedCategory: WinetricksCategory = .fonts
@@ -271,21 +298,9 @@ struct WinetricksConfigurationView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(Array(selectedVerbs).sorted(by: { $0.name < $1.name })) { verb in
-                                HStack(spacing: 4) {
-                                    Text(verb.name)
-                                        .font(.caption.monospaced())
-                                    Button {
-                                        selectedVerbs.remove(verb)
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .font(.caption)
-                                    }
-                                    .buttonStyle(.plain)
+                                SelectedVerbItem(verb: verb) {
+                                    selectedVerbs.remove(verb)
                                 }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(.secondary.opacity(0.2))
-                                .clipShape(Capsule())
                             }
                         }
                     }
