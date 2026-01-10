@@ -28,6 +28,21 @@ extension Wine {
         case vulkan = "Vulkan"
     }
 
+extension Wine.Renderer {
+    var localized: String {
+        switch self {
+        case .automatic:
+            return String(localized: "Automatic")
+        case .d3dMetal:
+            return String(localized: "D3DMetal")
+        case .openGL:
+            return String(localized: "OpenGL")
+        case .vulkan:
+            return String(localized: "Vulkan")
+        }
+    }
+}
+
     internal enum RegistryType: String {
         case binary = "REG_BINARY"
         case dword = "REG_DWORD"

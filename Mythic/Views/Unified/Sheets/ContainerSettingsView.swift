@@ -205,7 +205,7 @@ struct ContainerSettingsView: View {
 
                 Picker("Renderer", selection: $renderer) {
                     ForEach(Wine.Renderer.allCases, id: \.self) { r in
-                        Text(r.rawValue).tag(r)
+                        Text(r.localized).tag(r)
                     }
                 }
                 .onChange(of: renderer) { new in
