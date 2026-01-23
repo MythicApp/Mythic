@@ -42,12 +42,6 @@ extension SemanticVersion {
                      match.prerelease.map(String.init) ?? "",
                      match.buildmetadata.map(String.init) ?? "")
     }
-
-    public var description: String {
-        let pre = preRelease.isEmpty ? "" : "-" + preRelease
-        let bld = build.isEmpty ? "" : "+" + build
-        return "\(major).\(minor)\(pre)\(bld)"
-    }
 }
 
 nonisolated(unsafe) let relaxedSemanticVersionRegex = #/
