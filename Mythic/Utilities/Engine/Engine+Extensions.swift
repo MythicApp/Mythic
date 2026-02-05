@@ -21,8 +21,9 @@ extension Engine {
         var progress: Progress
     }
 
-    struct EngineProperties: Codable {
+    struct InstallationProperties: Codable {
         let version: SemanticVersion
+        var isD3DMetalInstalled: Bool?
     }
 }
 
@@ -49,11 +50,11 @@ extension Engine {
             VStack {
                 if !Engine.isInstalled {
                     ContentUnavailableView(
-                        "Mythic Engine is not installed.",
+                        Engine.NotInstalledError().localizedDescription,
                         systemImage: "arrow.down.circle.badge.xmark.fill",
                         description: .init("""
-                    To access containers, Mythic Engine must be installed.
-                    """)
+                            In order to access this view, Mythic Engine must be installed.
+                            """)
                     )
                     Button("Install Mythic Engine", systemImage: "arrow.down.circle.fill") {
                         isInstallationViewPresented = true
