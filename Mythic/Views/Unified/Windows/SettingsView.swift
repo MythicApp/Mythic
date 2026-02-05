@@ -393,6 +393,13 @@ extension SettingsView {
         @State private var isEngineRemovalSuccessful: Bool?
 
         @State private var isEngineRemovalAlertPresented: Bool = false
+        
+        @State private var isD3DMetalSectionExpanded: Bool = true
+        
+        @State private var isD3DMetalInstallationViewPresented: Bool = false
+        @State private var d3dMetalInstallationError: Error?
+        @State private var isD3DMetalInstallationComplete: Bool = false
+        @State private var engineInstallationProperties: Engine.InstallationProperties?
 
         @State private var isShaderCachePurging: Bool = false
         @State private var isShaderCachePurgeSuccessful: Bool?
@@ -445,7 +452,24 @@ extension SettingsView {
                         Text("It'll have to be reinstalled in order to play Windows® games.")
                     }
                 )
-
+                
+                Section("D3DMetal", isExpanded: $isD3DMetalSectionExpanded) {
+                    if engineInstallationProperties?.isD3DMetalInstalled != true {
+                        Button("Install D3DMetal", systemImage: "arrow.down.to.line") {
+                            isD3DMetalInstallationViewPresented = true
+                        }
+                        .sheet(isPresented: $isD3DMetalInstallationViewPresented) {
+                            D3DMetalInstallationView(isPresented: $isD3DMetalInstallationViewPresented,
+                                                     installationError: $d3dMetalInstallationError,
+                                                     installationComplete: $isD3DMetalInstallationComplete)
+                            .padding()
+                        }
+                    }
+                }
+                .task {
+                    engineInstallationProperties = try? Engine.retrieveInstallationProperties()
+                }
+                
                 Section("Advanced", isExpanded: $isAdvancedSectionExpanded) {
                     OperationButton(
                         "Purge D3DMetal Shader Cache",
