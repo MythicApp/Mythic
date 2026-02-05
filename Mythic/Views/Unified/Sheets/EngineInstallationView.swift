@@ -40,11 +40,11 @@ struct EngineInstallationView: View { // similar to RosettaInstallationView
                         installationComplete: $installationComplete
                     )
                 case .finished:
-                    CompletionView(isPresented: $isPresented, viewModel: viewModel)
+                    CompletionView(isPresented: $isPresented)
                 }
             }
             
-            if viewModel.currentStage != .installer && viewModel.currentStage != .finished {
+            if ![.installer, .finished].contains(viewModel.currentStage) {
                 // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                 Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
                     .clipShape(.capsule)
@@ -146,7 +146,6 @@ extension EngineInstallationView {
     
     struct CompletionView: View {
         @Binding var isPresented: Bool
-        @ObservedObject var viewModel: ViewModel
         
         var body: some View {
             ContentUnavailableView(
