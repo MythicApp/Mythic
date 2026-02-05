@@ -51,7 +51,7 @@ final class Engine {
     
     static var installedVersion: SemanticVersion? {
         get async {
-            let properties = try? await retrieveInstallationProperties()
+            let properties = try? retrieveInstallationProperties()
             return properties?.version
         }
     }
@@ -79,7 +79,7 @@ final class Engine {
         return catalog
     }
     
-    static func retrieveInstallationProperties() async throws -> InstallationProperties {
+    static func retrieveInstallationProperties() throws -> InstallationProperties {
         guard isInstalled else { throw NotInstalledError() }
         
         let propertiesFile = directory.appending(path: "Properties.plist")
@@ -99,7 +99,7 @@ final class Engine {
     
     static func checkIfUpdateAvailable(for channelName: ReleaseChannel = releaseChannel) async throws -> Bool {
         let latestRelease: UpdateCatalog.Release = try await getLatestCompatibleRelease(for: channelName)
-        let properties = try await retrieveInstallationProperties()
+        let properties = try retrieveInstallationProperties()
         
         return latestRelease.version > properties.version
     }
