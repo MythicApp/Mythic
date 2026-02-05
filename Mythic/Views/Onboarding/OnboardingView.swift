@@ -89,10 +89,8 @@ struct OnboardingView: View {
                             RosettaStage(
                                 isPresented: .init( // Handles presentation within onboarding
                                     get: { true },
-                                    set: { newValue in
-                                        if !newValue {
-                                            viewModel.stepStage()
-                                        }
+                                    set: {
+                                        if !$0 { viewModel.stepStage() }
                                     }
                                 )
                             )
@@ -100,10 +98,8 @@ struct OnboardingView: View {
                             EngineStage(
                                 isPresented: .init( // Handles presentation within onboarding
                                     get: { true },
-                                    set: { newValue in
-                                        if !newValue {
-                                            viewModel.stepStage()
-                                        }
+                                    set: {
+                                        if !$0 { viewModel.stepStage() }
                                     }
                                 )
                             )
@@ -111,10 +107,8 @@ struct OnboardingView: View {
                             DefaultContainerSetupStage(
                                 isPresented: .init( // Handles presentation within onboarding
                                     get: { true },
-                                    set: { newValue in
-                                        if !newValue {
-                                            viewModel.stepStage()
-                                        }
+                                    set: {
+                                        if !$0 { viewModel.stepStage() }
                                     }
                                 )
                             )
