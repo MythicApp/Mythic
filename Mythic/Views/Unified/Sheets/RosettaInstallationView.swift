@@ -31,7 +31,8 @@ struct RosettaInstallationView: View { // similar to EngineInstallationView
                     DisclaimerView(agreedToSLA: $agreedToSLA)
                 case .installer:
                     InstallationView(
-                        isPresented: $isPresented, viewModel: viewModel,
+                        isPresented: $isPresented,
+                        viewModel: viewModel,
                         agreedToSLA: $agreedToSLA,
                         installationError: $installationError,
                         installationComplete: $installationComplete
