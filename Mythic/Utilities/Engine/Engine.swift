@@ -51,7 +51,7 @@ final class Engine {
     
     static var installedVersion: SemanticVersion? {
         get async {
-            let properties = try? await retrieveEngineProperties()
+            let properties = try? await retrieveInstallationProperties()
             return properties?.version
         }
     }
@@ -79,14 +79,11 @@ final class Engine {
         return catalog
     }
     
-    static func retrieveEngineProperties() async throws -> EngineProperties {
+    static func retrieveInstallationProperties() async throws -> InstallationProperties {
         guard isInstalled else { throw NotInstalledError() }
         
-        let decoder: PropertyListDecoder = .init()
-        decoder.semanticVersionDecodingStrategy = .defaultCodable
-        
-        let properties = directory.appending(path: "Properties.plist")
-        return try decoder.decode(EngineProperties.self, from: .init(contentsOf: properties))
+        let propertiesFile = directory.appending(path: "Properties.plist")
+        return try PropertyListDecoder().decode(InstallationProperties.self, from: .init(contentsOf: propertiesFile))
     }
     
     static func getLatestCompatibleRelease(for channelName: ReleaseChannel = releaseChannel) async throws -> UpdateCatalog.Release {
@@ -102,7 +99,7 @@ final class Engine {
     
     static func checkIfUpdateAvailable(for channelName: ReleaseChannel = releaseChannel) async throws -> Bool {
         let latestRelease: UpdateCatalog.Release = try await getLatestCompatibleRelease(for: channelName)
-        let properties = try await retrieveEngineProperties()
+        let properties = try await retrieveInstallationProperties()
         
         return latestRelease.version > properties.version
     }
