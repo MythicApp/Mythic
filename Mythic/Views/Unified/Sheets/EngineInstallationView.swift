@@ -119,6 +119,7 @@ extension EngineInstallationView {
                 if $1 >= 1.0 {
                     Task {
                         await MainActor.run {
+                            installationComplete = true
                             viewModel.stepStage()
                         }
                     }
