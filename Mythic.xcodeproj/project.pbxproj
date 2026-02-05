@@ -17,8 +17,8 @@
 		1217C8BA2EADC544003EC8C9 /* RichAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8B22EADC544003EC8C9 /* RichAlertView.swift */; };
 		1217C8C22EADC680003EC8C9 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 1217C8C12EADC680003EC8C9 /* MarkdownUI */; };
 		1D4BF3BF2EEC595D00AD581F /* FileHandle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D4BF3BE2EEC595900AD581F /* FileHandle+Extensions.swift */; };
-		1DA969892F0307DF00D4D4FC /* Celestial in Frameworks */ = {isa = PBXBuildFile; productRef = 1DA969882F0307DF00D4D4FC /* Celestial */; };
-		1DA9698C2F03080F00D4D4FC /* Aether in Frameworks */ = {isa = PBXBuildFile; productRef = 1DA9698B2F03080F00D4D4FC /* Aether */; };
+		1D5D395D2F234C4800EBE167 /* Celestial in Frameworks */ = {isa = PBXBuildFile; productRef = 1D5D395C2F234C4800EBE167 /* Celestial */; };
+		1DF081012F05ACE000D7BB35 /* D3DMetalInstallationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DF081002F05ACD400D7BB35 /* D3DMetalInstallationView.swift */; };
 		5A62AE982C27DB1200BA31D2 /* GameListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A62AE972C27DB1200BA31D2 /* GameListViewModel.swift */; };
 		6A0210162D390022009C85F8 /* HarmonyRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0210152D390016009C85F8 /* HarmonyRatingView.swift */; };
 		6A02101B2D390377009C85F8 /* StarRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A02101A2D390370009C85F8 /* StarRatingView.swift */; };
@@ -160,6 +160,7 @@
 		1217C8B02EADC544003EC8C9 /* BundleIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleIconView.swift; sourceTree = "<group>"; };
 		1217C8B22EADC544003EC8C9 /* RichAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichAlertView.swift; sourceTree = "<group>"; };
 		1D4BF3BE2EEC595900AD581F /* FileHandle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileHandle+Extensions.swift"; sourceTree = "<group>"; };
+		1DF081002F05ACD400D7BB35 /* D3DMetalInstallationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = D3DMetalInstallationView.swift; sourceTree = "<group>"; };
 		5A62AE972C27DB1200BA31D2 /* GameListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameListViewModel.swift; sourceTree = "<group>"; };
 		6A0210152D390016009C85F8 /* HarmonyRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HarmonyRatingView.swift; sourceTree = "<group>"; };
 		6A02101A2D390370009C85F8 /* StarRatingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarRatingView.swift; sourceTree = "<group>"; };
@@ -279,8 +280,7 @@
 				6A2961052CE1DD6200917E90 /* FirebaseCore in Frameworks */,
 				1217C8C22EADC680003EC8C9 /* MarkdownUI in Frameworks */,
 				6AFC02812ABE02970004AB77 /* Sparkle in Frameworks */,
-				1DA9698C2F03080F00D4D4FC /* Aether in Frameworks */,
-				1DA969892F0307DF00D4D4FC /* Celestial in Frameworks */,
+				1D5D395D2F234C4800EBE167 /* Celestial in Frameworks */,
 				6AFC027E2ABDB5D40004AB77 /* SwiftyJSON in Frameworks */,
 				6AA1744F2CD5CC290035B081 /* WhatsNewKit in Frameworks */,
 				6A8592CF2ED8047C00B339D8 /* DockProgress in Frameworks */,
@@ -459,6 +459,7 @@
 				6A2934E12BFCFAFD0035CE4B /* ContainerSettingsView.swift */,
 				6A2934E22BFCFAFD0035CE4B /* GameSettingsView.swift */,
 				6AC2847B2EA523440008091F /* EngineInstallationView.swift */,
+				1DF081002F05ACD400D7BB35 /* D3DMetalInstallationView.swift */,
 				6AC284792EA45ED00008091F /* RosettaInstallationView.swift */,
 			);
 			path = Sheets;
@@ -674,8 +675,7 @@
 				6A2961062CE1DD6200917E90 /* FirebaseCrashlytics */,
 				1217C8C12EADC680003EC8C9 /* MarkdownUI */,
 				6A8592CE2ED8047C00B339D8 /* DockProgress */,
-				1DA969882F0307DF00D4D4FC /* Celestial */,
-				1DA9698B2F03080F00D4D4FC /* Aether */,
+				1D5D395C2F234C4800EBE167 /* Celestial */,
 			);
 			productName = Mythic;
 			productReference = 6AB474952AACBBE900AB9C63 /* Mythic.app */;
@@ -717,8 +717,8 @@
 				6A2961012CE1DD6200917E90 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				6A8592CD2ED8047C00B339D8 /* XCRemoteSwiftPackageReference "DockProgress" */,
-				1DA969872F0307DF00D4D4FC /* XCLocalSwiftPackageReference "../Celestial" */,
-				1DA9698A2F03080F00D4D4FC /* XCRemoteSwiftPackageReference "alac" */,
+				1DF081022F05B04C00D7BB35 /* XCLocalSwiftPackageReference "../Aether" */,
+				1D5D395B2F234C4800EBE167 /* XCLocalSwiftPackageReference "../Celestial" */,
 			);
 			productRefGroup = 6AB474962AACBBE900AB9C63 /* Products */;
 			projectDirPath = "";
@@ -878,6 +878,7 @@
 				1217C8A92EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift in Sources */,
 				6A11928F2ECA15C9005A3E05 /* EpicGamesGameManager.swift in Sources */,
 				1217C8AA2EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift in Sources */,
+				1DF081012F05ACE000D7BB35 /* D3DMetalInstallationView.swift in Sources */,
 				6ADD21ED2EE3361000544E86 /* LocalGameUninstallationView.swift in Sources */,
 				1217C8AB2EADC525003EC8C9 /* SparkleUpdaterFinishView.swift in Sources */,
 				1217C8AC2EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift in Sources */,
@@ -1156,9 +1157,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		1DA969872F0307DF00D4D4FC /* XCLocalSwiftPackageReference "../Celestial" */ = {
+		1D5D395B2F234C4800EBE167 /* XCLocalSwiftPackageReference "../Celestial" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../Celestial;
+		};
+		1DF081022F05B04C00D7BB35 /* XCLocalSwiftPackageReference "../Aether" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Aether;
 		};
 /* End XCLocalSwiftPackageReference section */
 
@@ -1169,14 +1174,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.4.1;
-			};
-		};
-		1DA9698A2F03080F00D4D4FC /* XCRemoteSwiftPackageReference "alac" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/macosforge/alac";
-			requirement = {
-				branch = master;
-				kind = branch;
 			};
 		};
 		6A12FF8C2B73AC4E00AA948C /* XCRemoteSwiftPackageReference "Glur" */ = {
@@ -1267,14 +1264,9 @@
 			package = 1217C8C02EADC680003EC8C9 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
 		};
-		1DA969882F0307DF00D4D4FC /* Celestial */ = {
+		1D5D395C2F234C4800EBE167 /* Celestial */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Celestial;
-		};
-		1DA9698B2F03080F00D4D4FC /* Aether */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1DA9698A2F03080F00D4D4FC /* XCRemoteSwiftPackageReference "alac" */;
-			productName = Aether;
 		};
 		6A12FF8D2B73AC4E00AA948C /* Glur */ = {
 			isa = XCSwiftPackageProductDependency;
