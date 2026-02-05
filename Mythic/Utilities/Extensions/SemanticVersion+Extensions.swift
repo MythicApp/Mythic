@@ -16,6 +16,7 @@ extension SemanticVersion {
         return .init(version.majorVersion, version.minorVersion, version.patchVersion)
     }
 
+    /// - Returns: A user-readable semantic version string.
     var prettyString: String {
         var versionString = "\(major).\(minor).\(patch)"
         if !preRelease.isEmpty {
@@ -30,8 +31,8 @@ extension SemanticVersion {
 
 extension SemanticVersion {
 
-    /// Initialize a semantic version from a relaxed version string (missing patch number, e.g. 7.7) from a string.
-    /// Returns `nil` if the string is not of a relaxed version.
+    /// Initialize a semantic version from a relaxed semantic version string (a version with a missing patch number, e.g. 7.7).
+    /// - Returns: `nil` if the string is not a relaxed semantic version, even if it's a valid semantic version.
     public init?(fromRelaxedString string: String) {
         guard let match = string.wholeMatch(of: relaxedSemanticVersionRegex) else { return nil }
         guard
@@ -41,6 +42,18 @@ extension SemanticVersion {
         self = .init(major, minor, 0,
                      match.prerelease.map(String.init) ?? "",
                      match.buildmetadata.map(String.init) ?? "")
+    }
+    
+    /// - Returns: A user-readable **relaxed** semantic version string.
+    var prettyRelaxedString: String {
+        var versionString = "\(major).\(minor)" + (patch == 0 ? "" : ".\(patch)")
+        if !preRelease.isEmpty {
+            versionString += "-\(preRelease)"
+        }
+        if !build.isEmpty {
+            versionString += " (\(build))"
+        }
+        return versionString
     }
 }
 
