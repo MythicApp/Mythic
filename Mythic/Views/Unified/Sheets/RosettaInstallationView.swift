@@ -41,7 +41,7 @@ struct RosettaInstallationView: View { // similar to EngineInstallationView
                 }
             }
 
-            if viewModel.currentStage != .installer && viewModel.currentStage != .finished {
+            if ![.installer, .finished].contains(viewModel.currentStage) {
                 // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                 Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
                     .clipShape(.capsule)
@@ -153,6 +153,7 @@ extension RosettaInstallationView {
 
     struct CompletionView: View {
         @Binding var isPresented: Bool
+        
         var body: some View {
             ContentUnavailableView(
                 "Rosetta is installed.",
