@@ -103,6 +103,15 @@ struct OnboardingView: View {
                                     }
                                 )
                             )
+                        case .gptk:
+                            GPTKStage(
+                                isPresented: .init( // Handles presentation within onboarding
+                                    get: { true },
+                                    set: {
+                                        if !$0 { viewModel.stepStage() }
+                                    }
+                                )
+                            )
                         case .defaultContainerSetup:
                             DefaultContainerSetupStage(
                                 isPresented: .init( // Handles presentation within onboarding
@@ -119,7 +128,7 @@ struct OnboardingView: View {
                     .frame(width: geometry.size.width * 0.75)
                     .padding(.horizontal)
 
-                    if !(viewModel.currentStage == .rosetta || viewModel.currentStage == .engine || viewModel.currentStage == .defaultContainerSetup) {
+                    if ![.rosetta, .engine, .gptk, .defaultContainerSetup].contains(viewModel.currentStage) {
                         // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
                         HStack {
                             if onboardingError != nil {
@@ -148,7 +157,7 @@ struct OnboardingView: View {
 #if DEBUG
                     HStack {
                         // String(describing:) used to prevent localisation
-                        Button(String(describing: "Back (DEBUG)"), systemImage: "arrow.left", action: { viewModel.stepStage(by: -1) })
+                        Button(String(describing: "Previous (DEBUG)"), systemImage: "arrow.left", action: { viewModel.stepStage(by: -1) })
                             .clipShape(.capsule)
                         
                         Button(String(describing: "Exit (DEBUG)"), systemImage: "xmark", action: { isOnboardingPresented = false })
@@ -262,8 +271,24 @@ private extension OnboardingView {
 
         @State private var installationError: Error?
         @State private var installationComplete: Bool = false
+        
         var body: some View {
             EngineInstallationView(
+                isPresented: $isPresented,
+                installationError: $installationError,
+                installationComplete: $installationComplete
+            )
+        }
+    }
+    
+    struct GPTKStage: View {
+        @Binding var isPresented: Bool
+
+        @State private var installationError: Error?
+        @State private var installationComplete: Bool = false
+        
+        var body: some View {
+            D3DMetalInstallationView(
                 isPresented: $isPresented,
                 installationError: $installationError,
                 installationComplete: $installationComplete

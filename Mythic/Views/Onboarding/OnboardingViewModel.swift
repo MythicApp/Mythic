@@ -31,6 +31,7 @@ extension OnboardingView {
             case greetings = "Greetings"
             case rosetta = "Rosetta Installation"
             case engine = "Mythic Engine Installation"
+            case gptk = "D3DMetal Installation"
             case defaultContainerSetup = "Default Container Setup"
             case finished = "Finished"
         }
