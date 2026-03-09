@@ -22,6 +22,7 @@ struct D3DMetalInstallationView: View {
 #endif
     
     @State private var isEngineRequiredErrorPresented: Bool = false
+    @State private var isCancellationAlertPresented: Bool = false
     
     var body: some View {
         VStack {
@@ -69,8 +70,29 @@ struct D3DMetalInstallationView: View {
             
             if ![.installInstructions, .finished].contains(viewModel.currentStage) {
                 // the if statement is a bit primitive, but functional.. the code at those stages are self-sufficient
-                Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
+                HStack {
+                    Button("Skip", systemImage: "xmark") {
+                        isCancellationAlertPresented = true
+                    }
                     .clipShape(.capsule)
+                    .alert("Skip D3DMetal installation?",
+                           isPresented: $isCancellationAlertPresented) {
+                        // FIXME: ambiguous?
+                        Button("Skip", role: .destructive) {
+                            isPresented = false
+                        }
+                        
+                        Button("Continue", role: .cancel, action: {})
+                    } message: {
+                        Text("""
+                        Compatibility with certain games may be impacted.
+                        You may install it later in Mythic Settings.
+                        """)
+                    }
+                    
+                    Button("Next", systemImage: "arrow.right", action: { viewModel.stepStage() })
+                        .clipShape(.capsule)
+                }
             }
         }
     }
@@ -89,7 +111,7 @@ extension D3DMetalInstallationView {
         var body: some View {
             // TODO: !! ADD VISUAL AID (diagram, GIF, video/embed)
             Text("""
-                To achieve the full functionality of Mythic Engine, D3DMetal, a component of Apple's Game Porting Toolkit development tool, must be installed.
+                To achieve the full functionality of Mythic Engine, D3DMetal, a component of Apple's Game Porting Toolkit development tool, is recommended for installation.
                 
                 Due to licensing restrictions, this installation must be completed by the user.
                 """)
@@ -108,6 +130,8 @@ extension D3DMetalInstallationView {
                 .clipShape(.capsule)
             }
             .padding(.bottom)
+            
+            Divider()
             
             Text("""
                 1. Sign into your Apple account, if necessary.
@@ -162,11 +186,8 @@ extension D3DMetalInstallationView {
         
         @State private var isInstallationErrorAlertPresented: Bool = false
         
-        @State private var isCancellationAlertPresented: Bool = false
-        
         var body: some View {
-            VStack {
-                Text("""
+            Text("""
                 4. Locate and open the downloaded file named similarly to **Game_Porting_Toolkit_x.dmg** using Finder.
                 
                 5. Within the Game Porting Toolkit disk image, locate and open the file named similarly to **Evaluation environment for Windows games x**.dmg.
@@ -177,99 +198,53 @@ extension D3DMetalInstallationView {
                 
                 8. Select the **'redist'** folder, and select [Open] in the bottom right of the Finder window.
                 """)
-                .padding(.bottom)
-                .fixedSize(horizontal: false, vertical: true)
+            .padding(.bottom)
+            .fixedSize(horizontal: false, vertical: true)
+            
+            HStack {
+                Button("Previous", systemImage: "arrow.left") {
+                    viewModel.stepStage(by: -1)
+                }
+                .clipShape(.capsule)
                 
-                HStack {
-                    Button("Previous", systemImage: "arrow.left") {
-                        viewModel.stepStage(by: -1)
-                    }
-                    .clipShape(.capsule)
-                    
-                    Button("Browse...", systemImage: "folder") {
-                        isInstallationFileImporterPresented = true
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(.capsule)
-                    .fileImporter(
-                        isPresented: $isInstallationFileImporterPresented,
-                        allowedContentTypes: [.folder]
-                    ) { result in
-                        switch result {
-                        case .success(let success):
-                            // not checking for 'redist' lastPathComponent is intentional; futureproofing's sake
-                            if FileManager.default.fileExists(atPath: success.appending(path: "lib/external").path),
-                               FileManager.default.fileExists(atPath: success.appending(path: "lib/wine").path) {
-                                let process: Process = .init()
-                                process.executableURL = .init(filePath: "usr/bin/ditto")
-                                process.arguments = [success.appendingPathComponent("lib").path, Engine.directory.appending(path: "wine/lib").path]
-                                
-                                do {
-                                    guard Engine.isInstalled else { throw Engine.NotInstalledError() }
-                                    
-                                    try process.run()
-                                    process.waitUntilExit()
-                                    
-                                    try process.checkTerminationStatus()
-                                    
-                                    let propertiesFile = Engine.directory.appending(path: "Properties.plist")
-                                    var properties = try PropertyListDecoder().decode(Engine.InstallationProperties.self, from: .init(contentsOf: propertiesFile))
-                                    
-                                    properties.isD3DMetalInstalled = true
-                                    
-                                    let encoder: PropertyListEncoder = .init()
-                                    encoder.outputFormat = .xml
-                                    try encoder.encode(properties).write(to: propertiesFile)
-                                    
-                                    installationComplete = true
-                                    viewModel.stepStage()
-                                } catch {
-                                    installationError = error
-                                    isInstallationErrorAlertPresented = true
-                                }
-                            } else {
-                                installationError = CocoaError(.fileReadCorruptFile, userInfo: [
-                                    NSLocalizedDescriptionKey: String(localized: "The supplied D3DMetal folder is incomplete or invalid.")
-                                ])
-                                isInstallationErrorAlertPresented = true
-                            }
-                        case .failure(let failure):
-                            installationError = failure
+                Button("Browse...", systemImage: "folder") {
+                    isInstallationFileImporterPresented = true
+                }
+                .buttonStyle(.borderedProminent)
+                .clipShape(.capsule)
+                .fileImporter(
+                    isPresented: $isInstallationFileImporterPresented,
+                    allowedContentTypes: [.folder]
+                ) { result in
+                    switch result {
+                    case .success(let success):
+                        do {
+                            try D3DMetal.install(from: success)
+                            viewModel.stepStage()
+                        } catch {
+                            installationError = error
                             isInstallationErrorAlertPresented = true
                         }
+                    case .failure(let failure):
+                        installationError = failure
+                        isInstallationErrorAlertPresented = true
                     }
-                    .alert("Unable to install D3DMetal.",
-                           isPresented: $isInstallationErrorAlertPresented,
-                           presenting: installationError) { _ in
-                        Button("Try Again", action: {})
-                            .keyboardShortcut(.defaultAction)
-                        
-                        Button("Cancel", role: .cancel) {
-                            isCancellationAlertPresented = true
+                }
+                .alert("Unable to install D3DMetal.",
+                       isPresented: $isInstallationErrorAlertPresented,
+                       presenting: installationError) { _ in
+                    if #available(macOS 26.0, *) {
+                        Button("OK", role: .close) {
+                            isPresented = false
                         }
-                    } message: { error in
-                        Text(error?.localizedDescription ?? "Unknown error.")
+                    } else {
+                        Button("OK", role: .cancel) {
+                            isPresented = false
+                        }
                     }
-                    
-                    Button("Skip", systemImage: "xmark") {
-                        isCancellationAlertPresented = true
-                    }
-                    .clipShape(.capsule)
+                } message: { error in
+                    Text(error?.localizedDescription ?? "Unknown error.")
                 }
-            }
-            .alert("Skip D3DMetal installation?",
-                   isPresented: $isCancellationAlertPresented) {
-                // FIXME: ambiguous?
-                Button("Skip", role: .destructive) {
-                    isPresented = false
-                }
-                
-                Button("Continue", role: .cancel, action: {})
-            } message: {
-                Text("""
-                    Compatibility with certain games may be impacted.
-                    You may install it later in Mythic Settings.
-                    """)
             }
         }
     }
