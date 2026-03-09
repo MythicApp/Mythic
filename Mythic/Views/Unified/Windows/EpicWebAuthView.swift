@@ -34,13 +34,19 @@ struct EpicWebAuthView: View {
                 authKey = .init()
                 Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
             }
-            .alert(isPresented: $isSigninErrorPresented) {
-                .init(
-                    title: Text("Unable to sign in to Epic Games."),
-                    message: Text(signInError?.localizedDescription ?? "An unknown error occurred."),
-                    primaryButton: .default(Text("OK")),
-                    secondaryButton: .cancel()
-                )
+            .alert(Legendary.SignInError().localizedDescription,
+                   isPresented: $isSigninErrorPresented) {
+                if #available(macOS 26.0, *) {
+                    Button("OK", role: .close) {
+                        isSigninErrorPresented = false
+                    }
+                } else {
+                    Button("OK", role: .cancel) {
+                        isSigninErrorPresented = false
+                    }
+                }
+            } message: {
+                Text(signInError?.localizedDescription ?? "An unknown error occurred.")
             }
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
