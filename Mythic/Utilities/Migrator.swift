@@ -236,6 +236,8 @@ final class Migrator {
                       let path = item["_path"] as? String,
                       let fetchedPlatform = item["_platform"] as? String,
                       let platform: Game.Platform = .allCases.first(where: { $0.description == fetchedPlatform }) else {
+                    
+                    // FIXME: dump must pass a string as inout, otherwise it fails for some reason
                     var itemDump: String = .init(); dump(item, to: &itemDump)
                     log.notice("""
                        Item found in local games library storage was malformed and could not be migrated.
