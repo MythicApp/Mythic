@@ -486,6 +486,9 @@ final class Legendary {
 
     @discardableResult
     static func signIn(authKey: String) async throws -> String {
+        let retrievedUser = try? retrieveUser()
+        guard retrievedUser == nil else { return retrievedUser! }
+        
         let process: Process = .init()
         process.arguments = ["auth", "--code", authKey]
         await transformProcess(process)
@@ -670,11 +673,9 @@ final class Legendary {
     static func retrieveUser() throws -> String? {
         let userURL: URL = configurationFolder.appending(path: "user.json")
         
-        guard let userData = try? Data(contentsOf: userURL),
-              let userObject = try? JSONDecoder().decode(User.self, from: userData) else {
-            return nil
-        }
-
+        let userData = try Data(contentsOf: userURL)
+        let userObject = try JSONDecoder().decode(User.self, from: userData)
+        
         return userObject.displayName
     }
 
