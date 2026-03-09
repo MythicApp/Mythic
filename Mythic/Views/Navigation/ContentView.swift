@@ -102,7 +102,7 @@ struct ContentView: View {
 
                 switch updateController.state {
                 case .updateAvailable:
-                    updateBlock("Update Available", buttonText: "Show More") {
+                    updateBlock("Update available.", buttonText: "Show More") {
                         updateController.checkForUpdates(userInitiated: true)
                     }
                 case .readyToRelaunch(let acknowledgement):
