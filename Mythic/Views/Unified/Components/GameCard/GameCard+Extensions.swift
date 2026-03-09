@@ -27,67 +27,117 @@ extension GameCard {
                 @State private var isEngineInstallationViewPresented: Bool = false
                 @State private var engineInstallationError: Error?
                 @State private var engineInstallationSuccess: Bool = false
+                
+                @State private var isD3DMetalInstallationWarningPresented: Bool = false
+                @State private var isD3DMetalInstallationViewPresented: Bool = false
+                @State private var d3dMetalInstallationError: Error?
+                @State private var d3dMetalInstallationSuccess: Bool = false
 
                 var body: some View {
-                    Button {
-                        Task(priority: .userInitiated) {
-                            do {
-                                try await game.launch()
-                            } catch {
-                                launchError = error
-                                isLaunchErrorAlertPresented = true
+                    Group { // wrap in group to allow multiple sheets & alerts due to hierarchal shift
+                        Button {
+                            Task(priority: .userInitiated) {
+                                if case .installed(_, let platform) = game.installationState, case .windows = platform,
+                                   // if isD3DMetalInstalled is nil, we can assume the user is using an older version of Mythic Engine with Mythic Engine still bundled.
+                                   // therefore, we will only check for a false value.
+                                   (try? Engine.retrieveInstallationProperties().isD3DMetalInstalled) == false,
+                                   Engine.isInstalled {
+                                    await MainActor.run {
+                                        isD3DMetalInstallationWarningPresented = true
+                                    }
+                                } else {
+                                    do {
+                                        try await game.launch()
+                                    } catch {
+                                        launchError = error
+                                        isLaunchErrorAlertPresented = true
+                                    }
+                                }
+                            }
+                        } label: {
+                            Group {
+                                if withLabel {
+                                    Label("Play", systemImage: "play")
+                                } else {
+                                    Image(systemName: "play")
+                                        .padding(2)
+                                }
+                            }
+                            .symbolVariant(.fill)
+                            .customTransform { view in
+                                if #unavailable(macOS 26.0) {
+                                    view.foregroundStyle(.black)
+                                } else {
+                                    view
+                                }
                             }
                         }
-                    } label: {
-                        Group {
-                            if withLabel {
-                                Label("Play", systemImage: "play")
-                            } else {
-                                Image(systemName: "play")
-                                    .padding(2)
-                            }
-                        }
-                        .symbolVariant(.fill)
-                        .customTransform { view in
-                            if #unavailable(macOS 26.0) {
-                                view.foregroundStyle(.black)
-                            } else {
-                                view
-                            }
-                        }
-                    }
-                    .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type.modifiesFiles }))
-                    // FIXME: .disabled(game.checkIfGameIsRunning())
-                    .help("Play \"\(game.title)\"")
-
-                    .background(.white)
-                    .foregroundStyle(.black)
-
-                    .alert(isPresented: $isLaunchErrorAlertPresented) {
-                        if launchError is Engine.NotInstalledError {
-                            return Alert(
-                                title: Text("Mythic Engine is not installed."),
-                                message: Text("""
+                        .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type.modifiesFiles }))
+                        // FIXME: .disabled(game.checkIfGameIsRunning())
+                        .help("Play \"\(game.title)\"")
+                        
+                        .background(.white)
+                        .foregroundStyle(.black)
+                        
+                        .alert(isPresented: $isLaunchErrorAlertPresented) {
+                            if launchError is Engine.NotInstalledError {
+                                return Alert(
+                                    title: Text("Mythic Engine is not installed."),
+                                    message: Text("""
                                     Mythic Engine is required to launch this game.
                                     Would you like to install it now?
                                     """),
-                                primaryButton: .default(.init("Install")) {
-                                    isEngineInstallationViewPresented = true
-                                },
-                                secondaryButton: .cancel()
+                                    primaryButton: .default(.init("Install")) {
+                                        isEngineInstallationViewPresented = true
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            } else {
+                                return Alert(
+                                    title: Text("Error launching \"\(game.title)\"."),
+                                    message: Text(launchError?.localizedDescription ?? "Unknown Error.")
+                                )
+                            }
+                        }
+                        .sheet(isPresented: $isEngineInstallationViewPresented) {
+                            EngineInstallationView(
+                                isPresented: $isEngineInstallationViewPresented,
+                                installationError: $engineInstallationError,
+                                installationComplete: $engineInstallationSuccess
                             )
-                        } else {
-                            return Alert(
-                                title: Text("Error launching \"\(game.title)\"."),
-                                message: Text(launchError?.localizedDescription ?? "Unknown Error.")
-                            )
+                            .padding()
                         }
                     }
-                    .sheet(isPresented: $isEngineInstallationViewPresented) {
-                        EngineInstallationView(
-                            isPresented: $isEngineInstallationViewPresented,
-                            installationError: $engineInstallationError,
-                            installationComplete: $engineInstallationSuccess
+                    // In complete honesty, this alert would be better called by game.launch(), however, to spawn sheets from an NSAlert, i'm forced to use verbose AppKit.
+                    // I want to stray from such verbosity, and would much rather have SwiftUI handle everything automagically
+                    .alert("D3DMetal is not installed.",
+                           isPresented: $isD3DMetalInstallationWarningPresented) {
+                        Button("Install") {
+                            isD3DMetalInstallationViewPresented = true
+                        }
+                        .keyboardShortcut(.defaultAction)
+                        
+                        Button("Launch Anyway", role: .cancel) {
+                            Task(priority: .userInitiated) {
+                                do {
+                                    try await game.launch()
+                                } catch {
+                                    launchError = error
+                                    isLaunchErrorAlertPresented = true
+                                }
+                            }
+                        }
+                    } message: {
+                        Text("""
+                            Mythic Engine is installed, however, without the optional installation of D3DMetal, its full functionality may not be achieved.
+                            You can either install D3DMetal, or acknowledge this and attempt to launch this game anyway.
+                            """)
+                    }
+                    .sheet(isPresented: $isD3DMetalInstallationViewPresented) {
+                        D3DMetalInstallationView(
+                            isPresented: $isD3DMetalInstallationViewPresented,
+                            installationError: $d3dMetalInstallationError,
+                            installationComplete: $d3dMetalInstallationSuccess
                         )
                         .padding()
                     }
