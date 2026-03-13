@@ -114,8 +114,7 @@ extension GameCard {
                                 .padding(2)
                         }
                     }
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                    .disabled(game.storefront == .local)
+                    .disabled(!game.supportsInstallation || networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .install }))
                     .help("Install \(game.description)")
 
@@ -164,8 +163,7 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
-                .disabled(game.storefront == .local)
+                .disabled(!game.supportsVerification || networkMonitor.epicAccessibilityState != .accessible)
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .repair }))
                 .alert("Unable to verify installation.",
                        isPresented: $isVerificationErrorAlertPresented,
@@ -296,7 +294,7 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .uninstall }))
+                .disabled(!game.supportsUninstallation || operationManager.queue.contains(where: { $0.game == game && $0.type == .uninstall }))
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .help("Delete \"\(game.title)\"")
                 .onHover { hovering in
@@ -326,7 +324,9 @@ extension GameCard {
                     GameCard.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
                     GameCard.Buttons.UpdateButton(game: $game, withLabel: true)
                     GameCard.Buttons.FavouriteButton(game: $game, withLabel: true)
-                    GameCard.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
+                    if game.supportsUninstallation {
+                        GameCard.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
+                    }
                 } label: {
                     Button { } label: {
                         Image(systemName: "ellipsis")
@@ -374,7 +374,10 @@ extension GameCard {
             if let operation = operationManager.queue.first(where: { $0.isExecuting && $0.game == game }) {
                 OperationCard.StatusView(operation: .constant(operation), withLabel: withLabel)
             } else if case .installed = game.installationState {
-                Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
+                if game.supportsLaunching {
+                    Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
+                }
+                
                 MenuView(game: $game)
                     .layoutPriority(1)
             } else {

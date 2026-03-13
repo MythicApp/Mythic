@@ -81,22 +81,94 @@ import OSLog
                     library.update(with: game)
                 }
                 
-                // installed: merge instead of overwrite
-                for fetchedGame in installed {
-                    if let existing = library.first(where: { $0 == fetchedGame }) {
-                        try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
-                        library.update(with: existing)
-                    } else {
-                        library.update(with: fetchedGame)
-                    }
-                }
+                try mergeInstalledGames(installed)
             } catch {
                 log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
                 throw error
             }
         }
         
-        // TODO: others
-        // if storefronts.contains(...) { ... }
+        if storefronts.contains(.steam) {
+            do {
+                let sources = steamSourcesToRefresh()
+                guard !sources.isEmpty else {
+                    log.debug("Skipping Steam refresh because no Steam library metadata is available.")
+                    return
+                }
+    
+                var installed: [SteamGame] = []
+                for source in sources {
+                    installed += try Steam.getInstalledGames(in: source.rootURL, containerURL: source.containerURL)
+                }
+    
+                try reconcileSteamInstalledGames(installed)
+            } catch let error as Steam.Error {
+                switch error {
+                case .defaultRootUnavailable, .missingLibraryFoldersFile:
+                    log.debug("Skipping Steam refresh because no Steam library metadata is available.")
+                default:
+                    log.error("Unable to refresh game data from Steam: \(error.localizedDescription)")
+                    throw error
+                }
+            } catch {
+                log.error("Unable to refresh game data from Steam: \(error.localizedDescription)")
+                throw error
+            }
+        }
     }
+    
+    private func mergeInstalledGames<S: Sequence>(_ fetchedGames: S) throws where S.Element: Game {
+        for fetchedGame in fetchedGames {
+            if let existing = library.first(where: { $0 == fetchedGame }) {
+                try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
+                library.update(with: existing)
+            } else {
+                library.update(with: fetchedGame)
+            }
+        }
+    }
+    
+    private func steamSourcesToRefresh() -> [SteamGame.InstallationSource] {
+        var sources: [SteamGame.InstallationSource] = []
+    
+        if let steamRootURL = Steam.rootURL,
+           Steam.containsLibraryMetadata(in: steamRootURL) {
+            sources.append(.init(rootURL: steamRootURL.standardizedFileURL, containerURL: nil))
+        }
+    
+        for game in library.compactMap({ $0 as? SteamGame }) {
+            guard let installationSource = game.installationSource, !sources.contains(installationSource) else { continue }
+            sources.append(installationSource)
+        }
+    
+        return sources
+    }
+    
+    private func upsertSteamGames(_ fetchedGames: [SteamGame]) throws {
+        for fetchedGame in fetchedGames {
+            if let existing = library.first(where: { $0 == fetchedGame }) as? SteamGame {
+                try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
+                existing.steamInstallationRootURL = fetchedGame.steamInstallationRootURL
+                existing._containerURL = fetchedGame._containerURL
+                library.update(with: existing)
+            } else {
+                library.update(with: fetchedGame)
+            }
+        }
+    }
+    
+    private func reconcileSteamInstalledGames(_ fetchedGames: [SteamGame]) throws {
+        try upsertSteamGames(fetchedGames)
+    
+        // Steam support currently models only discovered installed titles. After a
+        // successful manifest refresh, any Steam entry missing from the current app
+        // manifest set is stale and should be removed rather than left pretending to
+        // reflect current installation state.
+        let fetchedIDs = Set(fetchedGames.map(\.id))
+        library = Set(library.filter { game in
+            guard game is SteamGame else { return true }
+            return fetchedIDs.contains(game.id)
+        })
+    }
+
 }

@@ -321,15 +321,22 @@ extension SettingsView {
 
     struct ServicesView: View {
         @AppStorage("discordRPC") private var discordRPCEnabled: Bool = true
+        @AppStorage(Steam.rootPathUserDefaultsKey) private var steamRootPath: String = ""
+        
         @State private var isServicesDiscordSectionExpanded: Bool = true
         @State private var isServicesEpicSectionExpanded: Bool = true
-
+        @State private var isServicesSteamSectionExpanded: Bool = true
+        
         @State private var isCleaning: Bool = false
         @State private var isCleanupSuccessful: Bool?
-
+        
         @State private var isEpicCloudSynchronising: Bool = false
         @State private var isEpicCloudSyncSuccessful: Bool?
-
+        
+        @State private var isSteamRootImporterPresented: Bool = false
+        @State private var steamRefreshError: Error?
+        @State private var isSteamRefreshErrorPresented: Bool = false
+        
         var body: some View {
             Section("Discord", isExpanded: $isServicesDiscordSectionExpanded) {
                 Toggle("Display Mythic activity status on Discord", isOn: $discordRPCEnabled)
@@ -343,7 +350,7 @@ extension SettingsView {
             }
             .disabled(!discordRPC.isDiscordInstalled)
             .help(discordRPC.isDiscordInstalled ? .init() : "Discord is not installed.")
-
+            
             Section("Epic Games", isExpanded: $isServicesEpicSectionExpanded) {
                 OperationButton(
                     "Clean Up Miscellaneous Caches",
@@ -359,7 +366,7 @@ extension SettingsView {
                     let result = try? await process.runWrapped()
                     isCleanupSuccessful = result?.standardError?.contains("Cleanup complete")
                 }
-
+                
                 OperationButton(
                     "Manually Synchronise Cloud Saves",
                     systemImage: "arrow.trianglehead.2.clockwise.rotate.90",
@@ -376,12 +383,97 @@ extension SettingsView {
                     
                     isEpicCloudSyncSuccessful = (try? regex.firstMatch(in: result?.standardError ?? "") != nil)
                 }
-
+                
                 // TODO: potenially add manual cloud save deletion
             }
-
-            Section("Steam", isExpanded: .constant(false)) { }
-                .help("Coming Soon")
+            
+            Section("Steam", isExpanded: $isServicesSteamSectionExpanded) {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Label("Steam Library Root", systemImage: "shippingbox")
+                        
+                        HStack {
+                            Text(steamRootURL?.prettyPath ?? "Steam not found")
+                                .foregroundStyle(.secondary)
+                            
+                            if steamRootURL == nil {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                                    .help("Steam was not found in the default macOS location. Choose a Steam folder manually to continue.")
+                            } else if !isSteamMetadataAvailable {
+                                Image(systemName: "exclamationmark.triangle")
+                                    .symbolVariant(.fill)
+                                    .help("The selected Steam root does not contain steamapps/libraryfolders.vdf.")
+                            }
+                        }
+                        
+                        Text(Steam.isUsingCustomRootURL ? "Using custom location" : "Using default macOS location")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        
+                        Label(Steam.isClientInstalled ? "Steam client detected" : "Steam client not detected",
+                              systemImage: Steam.isClientInstalled ? "checkmark.circle.fill" : "xmark.circle.fill")
+                            .font(.caption)
+                            .foregroundStyle(Steam.isClientInstalled ? .green : .secondary)
+                        
+                        Text(isSteamMetadataAvailable
+                             ? "Installed Steam games can be refreshed from this library."
+                             : "Mythic needs steamapps/libraryfolders.vdf to discover installed Steam games.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .trailing) {
+                        Button("Browse...") {
+                            isSteamRootImporterPresented = true
+                        }
+                        .fileImporter(
+                            isPresented: $isSteamRootImporterPresented,
+                            allowedContentTypes: [.folder]
+                        ) { result in
+                            if case .success(let url) = result {
+                                steamRootPath = url.path
+                                refreshSteamLibrary()
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        Button("Reset to Default") {
+                            steamRootPath = ""
+                            refreshSteamLibrary()
+                        }
+                        .disabled(!Steam.isUsingCustomRootURL)
+                    }
+                }
+            }
+            .help("Configure where Mythic looks for Steam libraries.")
+            .alert("Unable to refresh Steam library.",
+                   isPresented: $isSteamRefreshErrorPresented,
+                   presenting: steamRefreshError) { _ in
+                if #available(macOS 26.0, *) {
+                    Button(role: .close, action: {})
+                } else {
+                    Button("OK", role: .cancel, action: {})
+                }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+        }
+        
+        private var steamRootURL: URL? { Steam.rootURL }
+        private var isSteamMetadataAvailable: Bool { Steam.containsLibraryMetadata(in: steamRootURL) }
+        
+        private func refreshSteamLibrary() {
+            Task(priority: .userInitiated) { @MainActor in
+                do {
+                    try await GameDataStore.shared.refreshFromStorefronts(.steam)
+                } catch {
+                    steamRefreshError = error
+                    isSteamRefreshErrorPresented = true
+                }
+            }
         }
     }
 

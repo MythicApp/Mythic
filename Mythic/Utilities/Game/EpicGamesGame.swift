@@ -12,7 +12,12 @@ import AppKit
 
 class EpicGamesGame: Game {
     override var storefront: Storefront? { .epicGames }
-
+    override var supportsInstallation: Bool { true }
+    override var supportsLaunching: Bool { true }
+    override var supportsMoving: Bool { true }
+    override var supportsUninstallation: Bool { true }
+    override var supportsVerification: Bool { true }
+    
     override var computedVerticalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .tall) }
     override var computedHorizontalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .normal) }
 

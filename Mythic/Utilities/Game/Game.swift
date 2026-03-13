@@ -22,6 +22,26 @@ import AppKit
         assertionFailure("Storefront must always be populated by subclasses, when accessed.")
         return nil
     }
+    
+    var supportsInstallation: Bool { false }
+    var supportsLaunching: Bool { false }
+    var supportsMoving: Bool { false }
+    var supportsUninstallation: Bool { false }
+    var supportsVerification: Bool { false }
+    
+    struct UnsupportedOperationError: LocalizedError {
+        let operation: String
+        let game: Game
+        let reason: String?
+    
+        var errorDescription: String? {
+            let storefrontDescription = game.storefront?.description ?? String(describing: type(of: game))
+            let baseMessage = "\(operation) is not supported for \(storefrontDescription) games."
+    
+            guard let reason else { return baseMessage }
+            return baseMessage + "\n" + reason
+        }
+    }
 
     // swiftlint:disable:next identifier_name
     internal final var _containerURL: URL?
@@ -185,16 +205,34 @@ import AppKit
         // swiftlint:disable:previous identifier_name
         assertionFailure("Subclasses should implement _verifyInstallation()")
     }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encode(installationState, forKey: .installationState)
+        try container.encodeIfPresent(storefront, forKey: .storefront)
+        try container.encodeIfPresent(_verticalImageURL, forKey: ._verticalImageURL)
+        try container.encodeIfPresent(_horizontalImageURL, forKey: ._horizontalImageURL)
+        try container.encodeIfPresent(_containerURL, forKey: ._containerURL)
+        try container.encode(launchArguments, forKey: .launchArguments)
+        try container.encode(isFavourited, forKey: .isFavourited)
+        try container.encodeIfPresent(lastLaunched, forKey: .lastLaunched)
+    }
+
 }
 
 extension Game: Equatable {
     public static func == (lhs: Game, rhs: Game) -> Bool {
-        return lhs.id == rhs.id
+        // Game IDs are only unique within a game source. Include the concrete type so
+        // different storefronts can safely use the same upstream identifier.
+        return type(of: lhs) == type(of: rhs) && lhs.id == rhs.id
     }
 }
 
 extension Game: Hashable {
     public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(type(of: self)))
         hasher.combine(id)
     }
 }
@@ -221,20 +259,6 @@ extension Game {
              lastLaunched
     }
 
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-
-        try container.encode(id, forKey: .id)
-        try container.encode(title, forKey: .title)
-        try container.encode(installationState, forKey: .installationState)
-        try container.encodeIfPresent(storefront, forKey: .storefront)
-        try container.encodeIfPresent(_verticalImageURL, forKey: ._verticalImageURL)
-        try container.encodeIfPresent(_horizontalImageURL, forKey: ._horizontalImageURL)
-        try container.encodeIfPresent(_containerURL, forKey: ._containerURL)
-        try container.encode(launchArguments, forKey: .launchArguments)
-        try container.encode(isFavourited, forKey: .isFavourited)
-        try container.encodeIfPresent(lastLaunched, forKey: .lastLaunched)
-    }
 }
 
 // note that merges should only be performed with the `identicalIgnoredKeys` requirement enforced.
@@ -274,6 +298,7 @@ struct AnyGame: Codable, Equatable {
             switch storefront {
             case .epicGames:    try EpicGamesGame(from: decoder)
             case .local:        try LocalGame(from: decoder)
+            case .steam:        try SteamGame(from: decoder)
             case nil:           try Game(from: decoder)
             }
         }()

@@ -12,7 +12,9 @@ import OSLog
 
 class LocalGame: Game {
     override var storefront: Storefront? { .local }
-
+    override var supportsLaunching: Bool { true }
+    override var supportsMoving: Bool { true }
+    override var supportsUninstallation: Bool { true }
     override init(id: String = UUID().uuidString,
                   title: String,
                   installationState: InstallationState,
@@ -41,7 +43,9 @@ class LocalGame: Game {
     }
     
     override func _update() async throws {
-        assertionFailure("Attempted to update a LocalGame, which is not possible.")
+        throw UnsupportedOperationError(operation: "Updating",
+                                        game: self,
+                                        reason: "Manual games do not have a storefront update pipeline.")
     }
     
     override func _move(from currentLocation: URL,
@@ -50,6 +54,8 @@ class LocalGame: Game {
     }
     
     override func _verifyInstallation() async throws {
-        assertionFailure("Attempted to verify the installation of a LocalGame, which is not possible.")
+        throw UnsupportedOperationError(operation: "Verifying file integrity",
+                                        game: self,
+                                        reason: "Manual games do not have a storefront verification pipeline.")
     }
 }

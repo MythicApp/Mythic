@@ -24,8 +24,8 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
 
     private var updateSettingsCancellables: Set<AnyCancellable> = []
     private var backgroundTask: AnyCancellable?
-    private let backgroundQueue: DispatchQueue = .init(label: "BackgroudEventService", qos: .background)
-
+    private static let backgroundCheckInterval: TimeInterval = 60 * 60 * 6
+    
     override init() {
         super.init()
 
@@ -47,20 +47,19 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
     }
 
     private func manageBackgroundTask(_ enabled: Bool) {
-        if enabled {
-            backgroundTask = AnyCancellable(
-                backgroundQueue.schedule(
-                    after: .init(.now()),
-                    interval: .seconds(60 * 60 * 6)
-                ) {
-                    Task { @MainActor in
-                        SparkleUpdateController.shared.checkForUpdates(userInitiated: false)
-                    }
-                }
-            )
-        } else {
-            backgroundTask?.cancel()
-        }
+        backgroundTask?.cancel()
+        backgroundTask = nil
+
+        guard enabled else { return }
+
+        // Sparkle state is surfaced through SwiftUI and must stay on the main actor.
+        // A main-run-loop timer avoids dispatch queue / executor mismatches at startup.
+        checkForUpdates(userInitiated: false)
+        backgroundTask = Timer.publish(every: Self.backgroundCheckInterval, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.checkForUpdates(userInitiated: false)
+            }
     }
 
     func clearState() -> Bool {
