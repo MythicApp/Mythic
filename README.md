@@ -14,7 +14,7 @@ Solvion-Launcher
 </h1>
 
 <div align="center">
-  <h3>A modified open-source game launcher for macOS with the ability to run Windows games and integrate with other game sources.</h3>
+  <h3>A modified open-source game launcher for macOS with the ability to run Windows games and integrate with other game sources. (no modification added right now)</h3>
   <em>Originally based on Mythic.</em>
 </div>
 
