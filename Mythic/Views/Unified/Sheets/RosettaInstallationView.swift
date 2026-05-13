@@ -94,7 +94,7 @@ extension RosettaInstallationView {
             ProgressView(value: percentageCompletion, total: 100.0)
                 .progressViewStyle(.linear)
                 .task {
-                    guard !Rosetta.exists else {
+                    guard !Rosetta.isInstalled else {
                         viewModel.stepStage(); return
                     }
 

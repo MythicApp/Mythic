@@ -10,14 +10,9 @@
 import Foundation
 
 final class Rosetta {
-    static var exists: Bool { // thread-blocking, but ~0.04 sec cpu time
-        let process: Process = .init()
-        process.executableURL = .init(filePath: "/usr/bin/pgrep")
-        process.arguments = ["oahd"]
-
-        let result = try? process.runWrapped()
-
-        return result?.standardOutput?.isEmpty == false
+    static var isInstalled: Bool {
+        FileManager.default.isExecutableFile(
+            atPath: "/Library/Apple/usr/libexec/oah/libRosettaRuntime")
     }
 
     struct AgreementFailure: LocalizedError {
