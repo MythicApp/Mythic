@@ -58,7 +58,7 @@ extension EpicGamesGameManager: StorefrontGameManager {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        return try await Task(operation: { try await launch(game: castGame) }).value
+        return try await launch(game: castGame)
     }
 
     @MainActor static func move(game: Game,
@@ -66,7 +66,7 @@ extension EpicGamesGameManager: StorefrontGameManager {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        return try await Task(operation: { try await move(game: castGame, to: location) }).value
+        return try await move(game: castGame, to: location)
     }
 
     @MainActor static func uninstall(game: Game,

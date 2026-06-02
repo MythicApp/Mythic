@@ -10,7 +10,7 @@
 import Foundation
 import AppKit
 
-class EpicGamesGame: Game {
+class EpicGamesGame: Game, @unchecked Sendable {
     override var storefront: Storefront? { .epicGames }
 
     override var computedVerticalImageURL: URL? { Legendary.getImageURL(gameID: self.id, type: .tall) }
