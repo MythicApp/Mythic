@@ -91,6 +91,7 @@ class LocalGameManager {
                 
                 let process: Process = .init()
                 process.arguments = [location.path] + game.launchArguments
+                process.currentDirectoryURL = location.deletingLastPathComponent()
                 process.environment = environment
                 Wine.transformProcess(process, containerURL: containerURL)
                 
@@ -111,10 +112,13 @@ class LocalGameManager {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
-            try FileManager.default.moveItem(at: currentLocation, to: newLocation)
-            game.installationState = .installed(location: newLocation, platform: platform)
+        let destinationURL = newLocation.appending(path: currentLocation.lastPathComponent)
+
+        let operation: GameOperation = .init(game: game, type: .move) {  _ in
+            try FileManager.default.moveItem(at: currentLocation, to: destinationURL)
+            game.installationState = .installed(location: destinationURL, platform: platform)
         }
+        Game.operationManager.queueOperation(operation)
         return operation
     }
 

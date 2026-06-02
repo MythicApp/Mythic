@@ -161,11 +161,22 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
 
     let completion: (String) -> Void
 
-    class Coordinator: NSObject, WKNavigationDelegate {
+    class Coordinator: NSObject, WKNavigationDelegate, WKUIDelegate {
         let parent: EpicInterceptorWebView
 
         init(parent: EpicInterceptorWebView) {
             self.parent = parent
+        }
+
+        func webView(_ webView: WKWebView,
+                     createWebViewWith configuration: WKWebViewConfiguration,
+                     for navigationAction: WKNavigationAction,
+                     windowFeatures: WKWindowFeatures) -> WKWebView? {
+            if navigationAction.targetFrame == nil {
+                webView.load(navigationAction.request)
+            }
+
+            return nil
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -237,6 +248,7 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
 
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
+        webView.uiDelegate = context.coordinator
         webView.load(URLRequest(url: URL(string: "https://legendary.gl/epiclogin")!))
         return webView
     }

@@ -27,11 +27,12 @@ struct WebView: NSViewRepresentable {
         
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator
+        webView.load(URLRequest(url: url))
         return webView
     }
     
     func updateNSView(_ nsView: WKWebView, context: Context) {
-        if nsView.url != self.url {
+        if nsView.url == nil || url.scheme == "javascript" {
             let request = URLRequest(url: self.url)
             nsView.load(request)
         }

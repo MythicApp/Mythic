@@ -56,6 +56,10 @@ final class Legendary {
     }
     
     static func handleCLIErrorOutput(fromStandardErrorOutput output: String) throws {
+        if output.contains("ValueError: No saved credentials") {
+            throw NotSignedInError()
+        }
+
         for line in output.split(whereSeparator: \.isNewline) {
             if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: line),
                let errorReason = match.last?.substring {
@@ -103,7 +107,7 @@ final class Legendary {
                                                             progress: Progress) {
         // these regexes are not dynamic, so there's no reason why they should fail to initialise
         // swiftlint:disable force_try
-        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
+        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+(?:\.\d+)?)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>(?:\d+:\d+:\d+|--:--:--|Unknown))"#)
         // let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
         // let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
         let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
@@ -410,8 +414,10 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
+        let destinationURL = newLocation.appending(path: currentLocation.lastPathComponent)
+
         let operation: GameOperation = .init(game: game, type: .move) { _ in
-            try FileManager.default.moveItem(at: currentLocation, to: newLocation)
+            try FileManager.default.moveItem(at: currentLocation, to: destinationURL)
 
             let process: Process = .init()
             process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
@@ -424,7 +430,7 @@ final class Legendary {
             
             try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             
-            game.installationState = .installed(location: newLocation, platform: platform)
+            game.installationState = .installed(location: destinationURL, platform: platform)
         }
 
         await Game.operationManager.queueOperation(operation)
