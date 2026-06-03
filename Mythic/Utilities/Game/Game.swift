@@ -11,7 +11,7 @@ import Foundation
 import OSLog
 import AppKit
 
-@Observable class Game: Codable, Identifiable {
+@Observable class Game: Codable, Identifiable, @unchecked Sendable {
     @MainActor static let operationManager: GameOperationManager = .shared
 
     let id: String
