@@ -33,7 +33,7 @@ struct SupportView: View {
                 }
                 verticalDivider(height: 30)
                 Button("FAQ"){
-                    openLink(urlString: "https://getmythic.app/faq/")
+                    openLink(urlString: "https://docs.getmythic.app/docs/faq/")
                 }
                 verticalDivider(height: 30)
                 Button("Compatibility List"){

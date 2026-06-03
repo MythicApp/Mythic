@@ -61,6 +61,19 @@ import OSLog
         }
     }
 
+    var collectionNames: [String] {
+        Array(Set(library.flatMap(\.collections))).sorted()
+    }
+
+    func persistLibrary() {
+        try? UserDefaults.standard.encodeAndSet(library.map({ AnyGame($0) }), forKey: "games")
+    }
+
+    func persist(_ game: Game) {
+        library.update(with: game)
+        persistLibrary()
+    }
+
     func refreshFromStorefronts(_ storefronts: Game.Storefront...) async throws {
         GameListViewModel.shared.isUpdatingLibrary = true
         defer {

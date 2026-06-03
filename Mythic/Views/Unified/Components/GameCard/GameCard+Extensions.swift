@@ -317,12 +317,23 @@ extension GameCard {
 
     struct MenuView: View {
         @Binding var game: Game
+        var includesPrimaryAction: Bool = false
         @State private var isGameSettingsSheetPresented: Bool = false
         @State private var isUninstallSheetPresented: Bool = false
 
         var body: some View {
             Group { // annoying, but the only way two sheets'll fit in here
                 Menu {
+                    if includesPrimaryAction {
+                        Section {
+                            if case .installed = game.installationState {
+                                GameCard.Buttons.Prominent.PlayButton(game: $game, withLabel: true)
+                            } else {
+                                GameCard.Buttons.Prominent.InstallButton(game: $game, withLabel: true)
+                            }
+                        }
+                    }
+
                     GameCard.Buttons.SettingsButton(game: $game, withLabel: true, isGameSettingsSheetPresented: $isGameSettingsSheetPresented)
                     GameCard.Buttons.UpdateButton(game: $game, withLabel: true)
                     GameCard.Buttons.FavouriteButton(game: $game, withLabel: true)
@@ -374,11 +385,22 @@ extension GameCard {
             if let operation = operationManager.queue.first(where: { $0.isExecuting && $0.game == game }) {
                 OperationCard.StatusView(operation: .constant(operation), withLabel: withLabel)
             } else if case .installed = game.installationState {
-                Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
-                MenuView(game: $game)
-                    .layoutPriority(1)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        Buttons.Prominent.PlayButton(game: $game, withLabel: withLabel)
+                        MenuView(game: $game)
+                    }
+                    .fixedSize(horizontal: true, vertical: false)
+
+                    MenuView(game: $game, includesPrimaryAction: true)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
             } else {
-                Buttons.Prominent.InstallButton(game: $game, withLabel: withLabel)
+                ViewThatFits(in: .horizontal) {
+                    Buttons.Prominent.InstallButton(game: $game, withLabel: withLabel)
+                    MenuView(game: $game, includesPrimaryAction: true)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
             }
         }
     }

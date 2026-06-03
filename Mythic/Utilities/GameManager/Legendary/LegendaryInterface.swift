@@ -56,6 +56,10 @@ final class Legendary {
     }
     
     static func handleCLIErrorOutput(fromStandardErrorOutput output: String) throws {
+        if output.contains("ValueError: No saved credentials") {
+            throw NotSignedInError()
+        }
+
         for line in output.split(whereSeparator: \.isNewline) {
             if let match = try? Regex(#"(ERROR|CRITICAL): (.*)"#).firstMatch(in: line),
                let errorReason = match.last?.substring {
@@ -103,7 +107,7 @@ final class Legendary {
                                                             progress: Progress) {
         // these regexes are not dynamic, so there's no reason why they should fail to initialise
         // swiftlint:disable force_try
-        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+\.\d+)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>\d+:\d+:\d+)"#)
+        let progressRegex: Regex = try! .init(#"Progress: (?<percentage>\d+(?:\.\d+)?)% \((?<downloadedObjects>\d+)\/(?<totalObjects>\d+)\), Running for (?<runtime>\d+:\d+:\d+), ETA: (?<eta>(?:\d+:\d+:\d+|--:--:--|Unknown))"#)
         // let downloadRegex: Regex = try! .init(#"Downloaded: (?<downloaded>\d+\.\d+) \w+, Written: (?<written>\d+\.\d+) \w+"#)
         // let cacheRegex: Regex = try! .init(#"Cache usage: (?<usage>\d+\.\d+) \w+, active tasks: (?<activeTasks>\d+)"#)
         let downloadSpeedRegex: Regex = try! .init(#"\+ Download\s+- (?<raw>[\d.]+) \w+/\w+ \(raw\) / (?<decompressed>[\d.]+) \w+/\w+ \(decompressed\)"#)
@@ -410,8 +414,10 @@ final class Legendary {
             throw CocoaError(.fileNoSuchFile)
         }
 
+        let destinationURL = newLocation.appending(path: currentLocation.lastPathComponent)
+
         let operation: GameOperation = .init(game: game, type: .move) { _ in
-            try FileManager.default.moveItem(at: currentLocation, to: newLocation)
+            try FileManager.default.moveItem(at: currentLocation, to: destinationURL)
 
             let process: Process = .init()
             process.arguments = ["move", game.id, newLocation.path, "--skip-move"]
@@ -424,7 +430,7 @@ final class Legendary {
             
             try handleCLIErrorOutput(fromStandardErrorPipe: processStandardErrorPipe)
             
-            game.installationState = .installed(location: newLocation, platform: platform)
+            game.installationState = .installed(location: destinationURL, platform: platform)
         }
 
         await Game.operationManager.queueOperation(operation)
@@ -598,7 +604,6 @@ final class Legendary {
         }
 
         let arguments: [String] = ["install", game.id, "--platform", matchPlatform(for: platform)]
-        
         var installSize: Int64?
         var optionalPacks: [String: String] = .init()
 
@@ -609,31 +614,27 @@ final class Legendary {
         
         // note that install size and optional packs are mutually exclusive in this context.
         try await withTaskCancellationHandler {
-            try await executeStreamed(process) { chunk in
+            await transformProcess(process)
+
+            for try await chunk in process.runStreamed() {
                 switch chunk.stream {
                 case .standardError:
-                    // Handle install size
-                    Task {
-                        // legendary always returns install size in MiB
-                        if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
-                           let sizeString = match[1].substring,
-                           let sizeValue = Double(sizeString) {
-                            await MainActor.run {
-                                installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
-                                
-                                process.interrupt()
-                            }
-                        }
+                    try handleCLIErrorOutput(fromStandardErrorOutput: chunk.output)
+
+                    // Handle install size. legendary always returns install size in MiB.
+                    if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
+                       let sizeString = match[1].substring,
+                       let sizeValue = Double(sizeString) {
+                        installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                        process.interrupt()
                     }
                     
                 case .standardOutput:
                     // Handle optional packs
-                    Task { @MainActor in
-                        if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
-                           let id = match["identifier"]?.substring,
-                           let name = match["name"]?.substring {
-                            optionalPacks[String(id)] = String(name)
-                        }
+                    if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
+                       let id = match["identifier"]?.substring,
+                       let name = match["name"]?.substring {
+                        optionalPacks[String(id)] = String(name)
                     }
                     
                     if chunk.output.contains("Please enter tags of pack(s) to install") {
@@ -651,8 +652,6 @@ final class Legendary {
                      }
                      */
                 }
-                
-                return nil
             }
         } onCancel: {
             process.interrupt()

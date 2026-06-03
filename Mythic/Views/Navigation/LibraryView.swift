@@ -89,6 +89,15 @@ struct LibraryView: View {
                             Section {
                                 Toggle("Favourited", isOn: searchTokenBinding(for: .favourited))
                             }
+
+                            if !gameDataStore.collectionNames.isEmpty {
+                                Section("Collections") {
+                                    ForEach(gameDataStore.collectionNames, id: \.self) { collection in
+                                        Toggle(collection,
+                                               isOn: searchTokenBinding(for: .collection(collection)))
+                                    }
+                                }
+                            }
                         }
                         .menuIndicator(.hidden)
                     }
