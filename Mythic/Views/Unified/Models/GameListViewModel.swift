@@ -21,6 +21,7 @@ import OSLog
             let platforms: [SearchToken] = searchTokens.compactMap { if case .platform = $0 { $0 } else { nil } }
             let storefronts: [SearchToken] = searchTokens.compactMap { if case .storefront = $0 { $0 } else { nil } }
             let installations: [SearchToken] = searchTokens.filter { $0 == .installed || $0 == .notInstalled }
+            let collections: [SearchToken] = searchTokens.compactMap { if case .collection = $0 { $0 } else { nil } }
             
             if platforms.count > 1, let last = platforms.last {
                 searchTokens.removeAll { if case .platform = $0 { $0 != last } else { false } }
@@ -30,6 +31,9 @@ import OSLog
             }
             if installations.count > 1, let last = installations.last {
                 searchTokens.removeAll { ($0 == .installed || $0 == .notInstalled) && $0 != last }
+            }
+            if collections.count > 1, let last = collections.last {
+                searchTokens.removeAll { if case .collection = $0 { $0 != last } else { false } }
             }
         }
     }
@@ -56,6 +60,8 @@ import OSLog
                         return false
                     case .favourited:
                         return game.isFavourited
+                    case .collection(let collection):
+                        return game.collections.contains(collection)
                     }
                 }
                 return matchesText && matchesTokens
@@ -73,6 +79,7 @@ import OSLog
         if !hasStorefront { suggestions.append(contentsOf: Game.Storefront.allCases.map { .storefront($0) }) }
         if !hasInstallation { suggestions += [.installed, .notInstalled] }
         if !searchTokens.contains(.favourited) { suggestions.append(.favourited) }
+        suggestions.append(contentsOf: GameDataStore.shared.collectionNames.map { .collection($0) }.filter { !searchTokens.contains($0) })
         
         return suggestions
     }
@@ -90,6 +97,7 @@ extension GameListViewModel {
         case installed
         case notInstalled
         case favourited
+        case collection(String)
         
         var id: String {
             switch self {
@@ -103,6 +111,8 @@ extension GameListViewModel {
                 return "notInstalled"
             case .favourited:
                 return "favourited"
+            case .collection(let collection):
+                return "collection_\(collection)"
             }
         }
     }

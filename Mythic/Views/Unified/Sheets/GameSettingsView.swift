@@ -18,6 +18,7 @@ struct GameSettingsView: View {
     @State private var isMovingFileImporterPresented: Bool = false
 
     @State private var typingArgument: String = .init()
+    @State private var typingCollection: String = .init()
     
     @State private var isImageEmpty: Bool = true
     
@@ -130,6 +131,41 @@ struct GameSettingsView: View {
                                 if !typingArgument.isEmpty {
                                     Button("", systemImage: "return") {
                                         submitLaunchArgument()
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+
+                            // MARK: Collection Modifier
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text("Collections")
+
+                                    if !game.collections.isEmpty {
+                                        ScrollView(.horizontal) {
+                                            HStack {
+                                                ForEach(game.collections.sorted(), id: \.self) { collection in
+                                                    CollectionItem(game: $game, collection: collection)
+                                                }
+
+                                                Spacer()
+                                            }
+                                        }
+                                        .scrollIndicators(.never)
+                                    } else {
+                                        Text("Add this game to a local Mythic collection.")
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+
+                                Spacer()
+
+                                TextField("Collection", text: $typingCollection)
+                                    .onSubmit(submitCollection)
+
+                                if !typingCollection.isEmpty {
+                                    Button("", systemImage: "return") {
+                                        submitCollection()
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -274,6 +310,18 @@ private extension GameSettingsView {
             typingArgument = .init()
         }
     }
+
+    func submitCollection() {
+        let cleanedCollection = typingCollection
+            .trimmingCharacters(in: .illegalCharacters)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !cleanedCollection.isEmpty else { return }
+
+        game.collections.insert(cleanedCollection)
+        GameDataStore.shared.persist(game)
+        typingCollection = .init()
+    }
 }
 
 private extension GameSettingsView {
@@ -333,6 +381,34 @@ extension GameSettingsView {
                     }
                 }
             }
+        }
+    }
+    
+    struct CollectionItem: View {
+        @Binding var game: Game
+        var collection: String
+        
+        @State var isHoveringOverCollection: Bool = false
+        
+        var body: some View {
+            HStack {
+                Text(collection)
+                    .foregroundStyle(isHoveringOverCollection ? .red : .secondary)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+            }
+            .background(in: .capsule)
+            .backgroundStyle(.quinary)
+            .onHover { hovering in
+                withAnimation { isHoveringOverCollection = hovering }
+            }
+            .onTapGesture {
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    game.collections.remove(collection)
+                    GameDataStore.shared.persist(game)
+                }
+            }
+            .help("Remove from \"\(collection)\"")
         }
     }
     
