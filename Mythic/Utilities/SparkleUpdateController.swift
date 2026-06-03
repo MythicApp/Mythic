@@ -50,7 +50,7 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
         if enabled {
             backgroundTask = AnyCancellable(
                 backgroundQueue.schedule(
-                    after: .init(.now()),
+                    after: .init(.now() + .seconds(60 * 60 * 6)),
                     interval: .seconds(60 * 60 * 6)
                 ) {
                     Task { @MainActor in
