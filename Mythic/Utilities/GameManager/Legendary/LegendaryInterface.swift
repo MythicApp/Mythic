@@ -12,6 +12,30 @@ import SwiftUI
 import OSLog
 import RegexBuilder
 
+private final class PreInstallationMetadataAccumulator: @unchecked Sendable {
+    private let lock = NSLock()
+    private var installSize: Int64?
+    private var optionalPacks: [String: String] = .init()
+
+    func setInstallSize(_ value: Int64) {
+        lock.withLock {
+            installSize = value
+        }
+    }
+
+    func setOptionalPack(id: String, name: String) {
+        lock.withLock {
+            optionalPacks[id] = name
+        }
+    }
+
+    func snapshot() -> (installSize: Int64?, optionalPacks: [String: String]) {
+        lock.withLock {
+            (installSize, optionalPacks)
+        }
+    }
+}
+
 // FIXME: this code is on its way out. legendary will no longer be a Mythic dependency
 /**
  Controls the function of the "legendary" cli, the backbone of the launcher's EGS capabilities.
@@ -604,9 +628,7 @@ final class Legendary {
         }
 
         let arguments: [String] = ["install", game.id, "--platform", matchPlatform(for: platform)]
-        
-        var installSize: Int64?
-        var optionalPacks: [String: String] = .init()
+        let accumulator = PreInstallationMetadataAccumulator()
 
         // if the data lock is present, legendary will terminate itself, so this is ok
         // nice n safe
@@ -618,28 +640,20 @@ final class Legendary {
             try await executeStreamed(process) { chunk in
                 switch chunk.stream {
                 case .standardError:
-                    // Handle install size
-                    Task {
-                        // legendary always returns install size in MiB
-                        if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
-                           let sizeString = match[1].substring,
-                           let sizeValue = Double(sizeString) {
-                            await MainActor.run {
-                                installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
-                                
-                                process.interrupt()
-                            }
-                        }
+                    // Handle install size. legendary always returns install size in MiB.
+                    if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
+                       let sizeString = match[1].substring,
+                       let sizeValue = Double(sizeString) {
+                        accumulator.setInstallSize(Int64(Int(sizeValue) * 1_048_576)) // MiB ➜ B
+                        process.interrupt()
                     }
                     
                 case .standardOutput:
                     // Handle optional packs
-                    Task { @MainActor in
-                        if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
-                           let id = match["identifier"]?.substring,
-                           let name = match["name"]?.substring {
-                            optionalPacks[String(id)] = String(name)
-                        }
+                    if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
+                       let id = match["identifier"]?.substring,
+                       let name = match["name"]?.substring {
+                        accumulator.setOptionalPack(id: String(id), name: String(name))
                     }
                     
                     if chunk.output.contains("Please enter tags of pack(s) to install") {
@@ -664,7 +678,7 @@ final class Legendary {
             process.interrupt()
         }
         
-        return (installSize, optionalPacks)
+        return accumulator.snapshot()
     }
 
     static func isFileVerificationRequired(gameID: String) throws -> Bool {
