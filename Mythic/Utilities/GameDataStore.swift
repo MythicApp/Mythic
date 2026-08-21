@@ -65,38 +65,72 @@ import OSLog
         GameListViewModel.shared.isUpdatingLibrary = true
         defer {
             GameListViewModel.shared.isUpdatingLibrary = false
+            GameListViewModel.shared.libraryUpdateProgress = nil
         }
-        
+
         // if variadics are empty, default to all cases
         let storefronts = storefronts.isEmpty ? Game.Storefront.allCases : storefronts as [Game.Storefront]
-        
-        // legendary (epic games)
+
+        // One storefront failing must not stop the others. Legendary throws NotSignedInError whenever
+        // there is no Epic account, and it used to abort the whole refresh -- so a user signed in to
+        // Steam but not Epic would never see their Steam library at all. Failures are collected and the
+        // first is rethrown once every requested storefront has had its turn.
+        var failures: [Error] = .init()
+
         if storefronts.contains(.epicGames) {
             do {
-                let installables = try Legendary.getInstallableGames()
-                let installed = try Legendary.getInstalledGames()
-                
-                // add installables that aren't installed
-                for game in installables where !installed.contains(where: { $0 == game }) {
-                    library.update(with: game)
-                }
-                
-                // installed: merge instead of overwrite
-                for fetchedGame in installed {
-                    if let existing = library.first(where: { $0 == fetchedGame }) {
-                        try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
-                        library.update(with: existing)
-                    } else {
-                        library.update(with: fetchedGame)
-                    }
-                }
+                try mergeIntoLibrary(installables: try Legendary.getInstallableGames(),
+                                     installed: try Legendary.getInstalledGames())
             } catch {
                 log.error("Unable to refresh game data from Epic Games: \(error.localizedDescription)")
-                throw error
+                failures.append(error)
             }
         }
-        
-        // TODO: others
-        // if storefronts.contains(...) { ... }
+
+        if storefronts.contains(.steam) {
+            do {
+                // The owned-library enumeration is what makes getInstallableGames() non-empty. It is
+                // rate-limited internally by a cache lifetime, so calling it on every refresh is cheap
+                // after the first, and a failure here must not cost us the installed titles below.
+                if Steam.isSignedIn {
+                    do {
+                        try await Steam.refreshOwnedGames { stage in
+                            Task { @MainActor in
+                                GameListViewModel.shared.libraryUpdateProgress = .init(for: stage)
+                            }
+                        }
+                    } catch {
+                        log.error("Unable to enumerate the Steam library: \(error.localizedDescription)")
+                    }
+                }
+
+                // Installed titles come from their on-disk manifests, so they surface even when the
+                // SteamCMD session has lapsed.
+                try mergeIntoLibrary(installables: Steam.isSignedIn ? try Steam.getInstallableGames() : [],
+                                     installed: try Steam.getInstalledGames())
+            } catch {
+                log.error("Unable to refresh game data from Steam: \(error.localizedDescription)")
+                failures.append(error)
+            }
+        }
+
+        if let firstFailure = failures.first { throw firstFailure }
+    }
+
+    /// Shared merge step: installables that aren't installed are added outright, installed titles are
+    /// merged into any existing instance rather than overwriting it.
+    private func mergeIntoLibrary(installables: [some Game], installed: [some Game]) throws {
+        for game in installables where !installed.contains(where: { $0 == game }) {
+            library.update(with: game)
+        }
+
+        for fetchedGame in installed {
+            if let existing = library.first(where: { $0 == fetchedGame }) {
+                try existing.merge(with: fetchedGame, requiring: .identicalIgnoredKeys)
+                library.update(with: existing)
+            } else {
+                library.update(with: fetchedGame)
+            }
+        }
     }
 }

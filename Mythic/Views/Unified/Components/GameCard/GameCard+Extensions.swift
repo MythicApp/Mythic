@@ -114,7 +114,8 @@ extension GameCard {
                                 .padding(2)
                         }
                     }
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                    // Epic-specific reachability must not disable buttons for other storefronts.
+                    .disabled(game.storefront == .epicGames && networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(game.storefront == .local)
                     .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .install }))
                     .help("Install \(game.description)")
@@ -124,6 +125,14 @@ extension GameCard {
                         case let epicGame as EpicGamesGame:
                             EpicGamesGameInstallationView(
                                 game: .init(get: { epicGame },
+                                            set: { game = $0 }),
+                                isPresented: $isInstallSheetPresented
+                            )
+                            .padding()
+                            .frame(width: 700, height: 380)
+                        case let steamGame as SteamGame:
+                            SteamGameInstallationView(
+                                game: .init(get: { steamGame },
                                             set: { game = $0 }),
                                 isPresented: $isInstallSheetPresented
                             )
@@ -164,7 +173,8 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                // Epic-specific reachability must not disable buttons for other storefronts.
+                    .disabled(game.storefront == .epicGames && networkMonitor.epicAccessibilityState != .accessible)
                 .disabled(game.storefront == .local)
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .repair }))
                 .alert("Unable to verify installation.",
@@ -207,7 +217,8 @@ extension GameCard {
                             .padding(2)
                     }
                 }
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                // Epic-specific reachability must not disable buttons for other storefronts.
+                    .disabled(game.storefront == .epicGames && networkMonitor.epicAccessibilityState != .accessible)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .disabled(game.isUpdateAvailable != true)
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .update }))
@@ -354,6 +365,11 @@ extension GameCard {
                     .frame(width: 700, height: 380)
                 case let localGame as LocalGame:
                     LocalGameUninstallationView(game: .init(get: { localGame }, set: { game = $0 }),
+                                                isPresented: $isUninstallSheetPresented)
+                    .padding()
+                    .frame(width: 700, height: 380)
+                case let steamGame as SteamGame:
+                    SteamGameUninstallationView(game: .init(get: { steamGame }, set: { game = $0 }),
                                                 isPresented: $isUninstallSheetPresented)
                     .padding()
                     .frame(width: 700, height: 380)

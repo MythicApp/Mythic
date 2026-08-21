@@ -27,10 +27,26 @@ struct LibraryView: View {
             .toolbar {
                 ToolbarItem(placement: .status) {
                     if gameListViewModel.isUpdatingLibrary {
-                        ProgressView()
-                            .controlSize(.small)
-                            .help("Mythic is updating your library.")
-                            .padding(10)
+                        HStack(spacing: 6) {
+                            if let fraction = gameListViewModel.libraryUpdateProgress?.fractionCompleted {
+                                ProgressView(value: fraction)
+                                    .controlSize(.small)
+                                    .frame(width: 90)
+                            } else {
+                                ProgressView()
+                                    .controlSize(.small)
+                            }
+
+                            // Named, because a bare spinner during a minute-long Steam enumeration reads
+                            // as the app having hung.
+                            if let label = gameListViewModel.libraryUpdateProgress?.label {
+                                Text(label)
+                                    .foregroundStyle(.secondary)
+                                    .font(.callout)
+                            }
+                        }
+                        .help("Mythic is updating your library.")
+                        .padding(10)
                     }
                 }
                 

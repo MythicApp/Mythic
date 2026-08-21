@@ -19,8 +19,8 @@ import AppKit
     var installationState: InstallationState
 
     var storefront: Storefront? {
-        // Not an assertion: `AnyGame` deliberately degrades an unrecognised storefront tag to a bare
-        // `Game` rather than failing the whole library decode, so instances of this class do
+        // Not an assertion any more: `AnyGame` deliberately degrades an unrecognised storefront tag to
+        // a bare `Game` rather than failing the whole library decode, so instances of this class do
         // legitimately reach here.
         Logger.app.warning("Storefront read on a base Game (\(self.id, privacy: .public)); it has no storefront.")
         return nil
@@ -271,16 +271,20 @@ struct AnyGame: Codable, Equatable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: Game.CodingKeys.self)
+
         // `try?`, not `try`: a storefront tag this build does not recognise must degrade to a plain
         // `Game`, never fail. `decodeAndGet` decodes the whole `[AnyGame]` array in one call and
-        // swallows any error into `nil`, so one unreadable row empties the entire library -- every
-        // game from every other storefront with it.
+        // swallows any error into `nil` (UserDefaults+Extensions), so one unreadable row would empty
+        // the entire library -- every Epic and Local game with it. This cannot retroactively protect
+        // already-shipped builds from `.steam`, but it caps the blast radius at this one release
+        // boundary and stops the next storefront from repeating it.
         let storefront = try? container.decodeIfPresent(Game.Storefront.self, forKey: .storefront)
 
         self.base = try {
             switch storefront {
             case .epicGames:    try EpicGamesGame(from: decoder)
             case .local:        try LocalGame(from: decoder)
+            case .steam:        try SteamGame(from: decoder)
             case nil:           try Game(from: decoder)
             }
         }()

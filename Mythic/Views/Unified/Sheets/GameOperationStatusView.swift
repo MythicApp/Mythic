@@ -41,13 +41,17 @@ struct GameOperationStatusView: View {
                         Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent))
                     }
 
-                    if operation.type.modifiesFiles {
+                    // Only shown when the backend actually counts items. Legendary reports objects here;
+                    // SteamCMD reports nothing of the kind, and the row read "(0/0)" for its downloads.
+                    if operation.type.modifiesFiles,
+                       let fileTotalCount = operation.progressKVOBridge.fileTotalCount,
+                       fileTotalCount > 0 {
                         HStack {
                             Label("Files", systemImage: "folder")
-                            
+
                             Spacer()
-                            
-                            Text("(\(operation.progressKVOBridge.fileCompletedCount ?? 0)/\(operation.progressKVOBridge.fileTotalCount ?? 0))")
+
+                            Text("(\(operation.progressKVOBridge.fileCompletedCount ?? 0)/\(fileTotalCount))")
                         }
                     }
 

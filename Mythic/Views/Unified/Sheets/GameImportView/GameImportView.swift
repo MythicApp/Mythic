@@ -17,14 +17,13 @@ struct GameImportView: View {
         VStack {
             if #available(macOS 15.0, *) {
                 TabView {
-                    Tab("Epic", systemImage: "storefront") {
+                    Tab("Epic", image: "EGFaceless") {
                         EpicGamesGameImportView(isPresented: $isPresented)
                     }
                     
-                    Tab("Steam", systemImage: "storefront") {
-
+                    Tab("Steam", image: "Steam") {
+                        SteamGameImportView(isPresented: $isPresented)
                     }
-                    .hidden()
                     
                     Tab("Local", systemImage: "storefront") {
                         LocalGameImportView(isPresented: $isPresented)
@@ -36,9 +35,14 @@ struct GameImportView: View {
                 TabView {
                     EpicGamesGameImportView(isPresented: $isPresented)
                         .tabItem {
-                            Label("Epic", systemImage: "storefront")
+                            Label { Text("Epic") } icon: { Image("EGFaceless") }
                         }
                     
+                    SteamGameImportView(isPresented: $isPresented)
+                        .tabItem {
+                            Label { Text("Steam") } icon: { Image("Steam") }
+                        }
+
                     LocalGameImportView(isPresented: $isPresented)
                         .tabItem {
                             Label("Local", systemImage: "storefront")

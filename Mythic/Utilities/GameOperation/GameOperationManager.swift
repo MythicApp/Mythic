@@ -54,9 +54,12 @@ import DockProgress
             operation.addDependency(existingOperation)
         }
         
-        // FIXME: Legendary has a self-managed datalock, so we must queue those operations serially
-        if case .epicGames = operation.game.storefront, operation.type.modifiesFiles {
-            for existingOperation in queue where existingOperation.game.storefront == .epicGames && existingOperation.type.modifiesFiles {
+        // FIXME: Legendary has a self-managed datalock, so we must queue those operations serially.
+        // SteamCMD needs the same treatment for a different reason: every invocation shares one session
+        // directory, so two concurrent runs fight over it. Local games have no such backend.
+        if let storefront = operation.game.storefront, storefront != .local, operation.type.modifiesFiles {
+            for existingOperation in queue
+            where existingOperation.game.storefront == storefront && existingOperation.type.modifiesFiles {
                 operation.addDependency(existingOperation)
             }
         }
@@ -114,8 +117,8 @@ import DockProgress
             // FIXME: since GameDataStore.refreshFromStorefronts is needed to re-sync file status
             // to fix this, legendary's JSONs must be monitored using an API like FSEvents.
             // but this is way simpler rofl
-            if case .epicGames = operation.game.storefront, operation.type.modifiesFiles {
-                Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts(.epicGames) })
+            if let storefront = operation.game.storefront, storefront != .local, operation.type.modifiesFiles {
+                Task(priority: .utility, operation: { try? await GameDataStore.shared.refreshFromStorefronts(storefront) })
             }
             
             log.debug("Operation \(operation.debugDescription) complete.")

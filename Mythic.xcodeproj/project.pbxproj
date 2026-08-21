@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A123C929896D524B94F0CE43 /* SteamGameInstallationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A144B5DBF0CCE02FAACE78D6 /* SteamGameInstallationView.swift */; };
+		E7F7826EA69425F5C3D35913 /* SteamGameUninstallationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFBF789442D61D2328DE354 /* SteamGameUninstallationView.swift */; };
+		3940F8733BCE8D51A09E1804 /* SteamSignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA1A69227E4F2F399744DBD8 /* SteamSignInView.swift */; };
+		B755E70D8ACCAF1BF10E1CDC /* SteamGameImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E3BD28D865EB6BF10CBDC /* SteamGameImportView.swift */; };
+		0450BE541B5821448371E083 /* SteamGameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DC19D5B88CA257AEEC7156F /* SteamGameManager.swift */; };
+		37334310F75E7C8572B6D9BB /* SteamInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57D1FD68F9A2231B667BFFA /* SteamInterface.swift */; };
+		5594CC6BF517506DE5DE91F2 /* SteamCMD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8745DA6B67A53FA13A15A228 /* SteamCMD.swift */; };
+		1FC34523F08207A21A47B3C4 /* ValveDataFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA8D98C5272EC81E7383FAF /* ValveDataFormat.swift */; };
+		ED47048247179B6971A267A3 /* SteamCMDOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C767C51CB9A3D208CA068D8 /* SteamCMDOutput.swift */; };
 		1217C8A92EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A22EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift */; };
 		1217C8AA2EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A72EADC525003EC8C9 /* SparkleUpdaterSheetViewModifier.swift */; };
 		1217C8AB2EADC525003EC8C9 /* SparkleUpdaterFinishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1217C8A42EADC525003EC8C9 /* SparkleUpdaterFinishView.swift */; };
@@ -149,6 +158,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A144B5DBF0CCE02FAACE78D6 /* SteamGameInstallationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamGameInstallationView.swift; sourceTree = "<group>"; };
+		9CFBF789442D61D2328DE354 /* SteamGameUninstallationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamGameUninstallationView.swift; sourceTree = "<group>"; };
+		BA1A69227E4F2F399744DBD8 /* SteamSignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamSignInView.swift; sourceTree = "<group>"; };
+		848E3BD28D865EB6BF10CBDC /* SteamGameImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamGameImportView.swift; sourceTree = "<group>"; };
+		8DC19D5B88CA257AEEC7156F /* SteamGameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamGameManager.swift; sourceTree = "<group>"; };
+		B57D1FD68F9A2231B667BFFA /* SteamInterface.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamInterface.swift; sourceTree = "<group>"; };
+		8745DA6B67A53FA13A15A228 /* SteamCMD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamCMD.swift; sourceTree = "<group>"; };
+		1CA8D98C5272EC81E7383FAF /* ValveDataFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValveDataFormat.swift; sourceTree = "<group>"; };
+		0C767C51CB9A3D208CA068D8 /* SteamCMDOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteamCMDOutput.swift; sourceTree = "<group>"; };
 		1217C8A12EADC525003EC8C9 /* SparkleUpdaterCheckingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterCheckingView.swift; sourceTree = "<group>"; };
 		1217C8A22EADC525003EC8C9 /* SparkleUpdaterDownloadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterDownloadingView.swift; sourceTree = "<group>"; };
 		1217C8A32EADC525003EC8C9 /* SparkleUpdaterExtractingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparkleUpdaterExtractingView.swift; sourceTree = "<group>"; };
@@ -291,6 +309,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A95EF4CD8B3327D907F7F8F0 /* Steam */ = {
+			isa = PBXGroup;
+			children = (
+				A144B5DBF0CCE02FAACE78D6 /* SteamGameInstallationView.swift */,
+				9CFBF789442D61D2328DE354 /* SteamGameUninstallationView.swift */,
+			);
+			path = Steam;
+			sourceTree = "<group>";
+		};
+		4E6DA85E70DDD24FBF095431 /* Steam */ = {
+			isa = PBXGroup;
+			children = (
+				B57D1FD68F9A2231B667BFFA /* SteamInterface.swift */,
+				8745DA6B67A53FA13A15A228 /* SteamCMD.swift */,
+				1CA8D98C5272EC81E7383FAF /* ValveDataFormat.swift */,
+				0C767C51CB9A3D208CA068D8 /* SteamCMDOutput.swift */,
+			);
+			path = Steam;
+			sourceTree = "<group>";
+		};
 		1217C8A82EADC525003EC8C9 /* SparkleUpdater */ = {
 			isa = PBXGroup;
 			children = (
@@ -337,6 +375,7 @@
 		6A1192832EC8D4F5005A3E05 /* GameManager */ = {
 			isa = PBXGroup;
 			children = (
+				8DC19D5B88CA257AEEC7156F /* SteamGameManager.swift */,
 				6A1192842EC8D4FB005A3E05 /* GameManager.swift */,
 				6A11928C2ECA0114005A3E05 /* LocalGameManager.swift */,
 				6A11928E2ECA15AD005A3E05 /* EpicGamesGameManager.swift */,
@@ -348,6 +387,7 @@
 		6A18E6722EE6748400AA3B15 /* GameImportView */ = {
 			isa = PBXGroup;
 			children = (
+				848E3BD28D865EB6BF10CBDC /* SteamGameImportView.swift */,
 				6A18E66F2EE6748400AA3B15 /* EpicGamesGameImportView.swift */,
 				6A18E6702EE6748400AA3B15 /* GameImportView.swift */,
 				6A18E6712EE6748400AA3B15 /* LocalGameImportView.swift */,
@@ -410,6 +450,7 @@
 		6A2934CA2BFCFAFD0035CE4B /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				4E6DA85E70DDD24FBF095431 /* Steam */,
 				6A1192782EC8C1D3005A3E05 /* Game */,
 				6AF7B5DC2ECDF30C00906632 /* GameOperation */,
 				6A1192832EC8D4F5005A3E05 /* GameManager */,
@@ -447,6 +488,7 @@
 		6A2934E72BFCFAFD0035CE4B /* Sheets */ = {
 			isa = PBXGroup;
 			children = (
+				BA1A69227E4F2F399744DBD8 /* SteamSignInView.swift */,
 				6A762F762ED8899300D6F1A8 /* GameInstallationView */,
 				6A18E6722EE6748400AA3B15 /* GameImportView */,
 				6A2934E42BFCFAFD0035CE4B /* GameOperationStatusView.swift */,
@@ -518,6 +560,7 @@
 		6A762F762ED8899300D6F1A8 /* GameInstallationView */ = {
 			isa = PBXGroup;
 			children = (
+				A95EF4CD8B3327D907F7F8F0 /* Steam */,
 				6A762F7C2ED93DE400D6F1A8 /* BaseGameInstallationView.swift */,
 				6ADD21EE2EE33C4C00544E86 /* Local */,
 				6A762F7B2ED93CEC00D6F1A8 /* Epic Games */,
@@ -790,6 +833,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A123C929896D524B94F0CE43 /* SteamGameInstallationView.swift in Sources */,
+				E7F7826EA69425F5C3D35913 /* SteamGameUninstallationView.swift in Sources */,
+				3940F8733BCE8D51A09E1804 /* SteamSignInView.swift in Sources */,
+				B755E70D8ACCAF1BF10E1CDC /* SteamGameImportView.swift in Sources */,
+				0450BE541B5821448371E083 /* SteamGameManager.swift in Sources */,
+				37334310F75E7C8572B6D9BB /* SteamInterface.swift in Sources */,
+				5594CC6BF517506DE5DE91F2 /* SteamCMD.swift in Sources */,
+				1FC34523F08207A21A47B3C4 /* ValveDataFormat.swift in Sources */,
+				ED47048247179B6971A267A3 /* SteamCMDOutput.swift in Sources */,
 				6A2935592BFCFAFD0035CE4B /* ContainerCreationView.swift in Sources */,
 				6A1192852EC8D4FD005A3E05 /* GameManager.swift in Sources */,
 				6A2960FE2CE1017900917E90 /* NSApplication+Extensions.swift in Sources */,
