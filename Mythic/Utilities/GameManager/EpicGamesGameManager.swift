@@ -23,7 +23,20 @@ extension EpicGamesGameManager: StorefrontGameManager {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
-        return try await install(game: castGame, qualityOfService: qualityOfService)
+        // The typed overload requires `forPlatform:` and offers no default for it, so
+        // `install(game: castGame, qualityOfService:)` re-selects *this* witness (EpicGamesGame is a
+        // Game) and recurses until the stack dies. Resolve a platform explicitly instead.
+        // Windows wins when both are offered: it is the superset in practice, and Mythic runs it
+        // through Wine either way.
+        let supportedPlatforms = castGame.getSupportedPlatforms() ?? .init()
+        let resolvedPlatform: Game.Platform? = supportedPlatforms.contains(.windows)
+            ? .windows
+            : supportedPlatforms.first
+        guard let resolvedPlatform else { throw CocoaError(.coderInvalidValue) }
+
+        return try await install(game: castGame,
+                                 forPlatform: resolvedPlatform,
+                                 qualityOfService: qualityOfService)
     }
 
     static func update(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
