@@ -9,6 +9,7 @@
 
 import Foundation
 import SwiftUI
+import OSLog
 import SwordRPC
 import SemanticVersion
 
@@ -330,6 +331,22 @@ extension SettingsView {
         @State private var isEpicCloudSynchronising: Bool = false
         @State private var isEpicCloudSyncSuccessful: Bool?
 
+        @State private var isServicesSteamSectionExpanded: Bool = true
+        @AppStorage("steamForcedPlatform") private var steamForcedPlatform: String = SteamCMD.ForcedPlatform.windows.rawValue
+
+        @State private var isSteamCMDInstalled: Bool = false
+        @State private var isRosettaInstalled: Bool = true
+
+        @State private var isSteamCMDInstalling: Bool = false
+        @State private var isSteamCMDInstallSuccessful: Bool?
+
+        @State private var isSteamCMDRemoving: Bool = false
+        @State private var isSteamCMDRemovalSuccessful: Bool?
+        @State private var isSteamCMDRemovalAlertPresented: Bool = false
+
+        @State private var steamInstallBaseURL: URL = Steam.installBaseURL
+        @State private var isSteamInstallDirectoryImporterPresented: Bool = false
+
         var body: some View {
             Section("Discord", isExpanded: $isServicesDiscordSectionExpanded) {
                 Toggle("Display Mythic activity status on Discord", isOn: $discordRPCEnabled)
@@ -380,8 +397,89 @@ extension SettingsView {
                 // TODO: potenially add manual cloud save deletion
             }
 
-            Section("Steam", isExpanded: .constant(false)) { }
-                .help("Coming Soon")
+            Section("Steam", isExpanded: $isServicesSteamSectionExpanded) {
+                if isSteamCMDInstalled {
+                    LabeledContent("Install games in") {
+                        HStack {
+                            Text(steamInstallBaseURL.prettyPath)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+
+                            Button("Choose…") { isSteamInstallDirectoryImporterPresented = true }
+                        }
+                    }
+                    .fileImporter(
+                        isPresented: $isSteamInstallDirectoryImporterPresented,
+                        allowedContentTypes: [.folder]
+                    ) { result in
+                        guard case .success(let directory) = result else { return }
+                        UserDefaults.standard.set(directory, forKey: "steamInstallBaseURL")
+                        steamInstallBaseURL = directory
+                    }
+                    .help("Each title gets its own folder here, named by its Steam app ID.")
+
+                    Picker("Download games built for", selection: $steamForcedPlatform) {
+                        Text("Windows®").tag(SteamCMD.ForcedPlatform.windows.rawValue)
+                        Text("macOS").tag(SteamCMD.ForcedPlatform.macos.rawValue)
+                    }
+                    .help("Windows® titles run through Mythic Engine; macOS titles run natively, but far fewer exist.")
+
+                    OperationButton(
+                        "Remove SteamCMD",
+                        systemImage: "trash",
+                        operating: $isSteamCMDRemoving,
+                        successful: $isSteamCMDRemovalSuccessful
+                    ) {
+                        isSteamCMDRemovalAlertPresented = true
+                    }
+                    .alert(
+                        "Are you sure you want to remove SteamCMD?",
+                        isPresented: $isSteamCMDRemovalAlertPresented,
+                        actions: {
+                            Button("Remove", role: .destructive) {
+                                do {
+                                    try SteamCMD.uninstall()
+                                    isSteamCMDRemovalSuccessful = true
+                                } catch {
+                                    isSteamCMDRemovalSuccessful = false
+                                }
+                                isSteamCMDInstalled = SteamCMD.isInstalled
+                            }
+
+                            Button("Cancel", role: .cancel) {  }
+                        },
+                        message: {
+                            Text("Your Steam sign-in and any games you downloaded through it will be removed too.")
+                        }
+                    )
+                } else {
+                    OperationButton(
+                        "Install SteamCMD",
+                        systemImage: "arrow.down.circle",
+                        operating: $isSteamCMDInstalling,
+                        successful: $isSteamCMDInstallSuccessful
+                    ) {
+                        do {
+                            try await SteamCMD.install()
+                            isSteamCMDInstallSuccessful = true
+                        } catch {
+                            Logger.app.error("SteamCMD installation failed: \(error.localizedDescription)")
+                            isSteamCMDInstallSuccessful = false
+                        }
+                        isSteamCMDInstalled = SteamCMD.isInstalled
+                    }
+                    // SteamCMD ships as an x86_64 Mach-O binary only.
+                    .disabled(!isRosettaInstalled)
+                    .help(isRosettaInstalled ? .init() : "SteamCMD is an Intel binary and needs Rosetta 2.")
+                }
+            }
+            .task {
+                // Both of these touch the filesystem (and Rosetta spawns `pgrep`), so they are resolved
+                // once here rather than re-evaluated on every render of `body`.
+                isSteamCMDInstalled = SteamCMD.isInstalled
+                isRosettaInstalled = Rosetta.exists
+            }
         }
     }
 

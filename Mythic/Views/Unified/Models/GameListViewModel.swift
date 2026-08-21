@@ -81,6 +81,21 @@ import OSLog
     private let logger: Logger = .custom(category: "GameListViewModel")
     
     var isUpdatingLibrary: Bool = false
+
+    /**
+     What a library update is currently doing, for the UI to show.
+
+     `isUpdatingLibrary` alone only ever produced a small toolbar spinner, which is indistinguishable
+     from nothing happening -- and enumerating a Steam library takes a minute the first time, during
+     which the library is legitimately empty.
+     */
+    var libraryUpdateProgress: LibraryUpdateProgress?
+
+    struct LibraryUpdateProgress: Equatable, Sendable {
+        var label: String
+        /// `nil` when there is no meaningful total to report against.
+        var fractionCompleted: Double?
+    }
 }
 
 extension GameListViewModel {
@@ -125,5 +140,24 @@ extension GameListViewModel {
         case favorite
         case installed
         case title
+    }
+}
+
+extension GameListViewModel.LibraryUpdateProgress {
+    /// Renders a Steam enumeration stage as something worth showing a user.
+    init(for stage: Steam.LibraryRefreshStage) {
+        switch stage {
+        case .readingLicences:
+            self.init(label: String(localized: "Reading your Steam licences…"),
+                      fractionCompleted: nil)
+
+        case .resolvingTitles(let completed, let total, let titleCount):
+            self.init(label: String(localized: "Looking up \(titleCount) Steam titles…"),
+                      fractionCompleted: total > 0 ? Double(completed) / Double(total) : nil)
+
+        case .finished(let gameCount):
+            self.init(label: String(localized: "Found \(gameCount) Steam games."),
+                      fractionCompleted: 1)
+        }
     }
 }

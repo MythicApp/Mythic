@@ -18,31 +18,95 @@ struct GameListView: View {
     @AppStorage("gameCardSize") private var gameCardSize: Double = 200.0
     
     @State private var isGameImportViewPresented: Bool = false
+    @State private var isSteamSignInViewPresented: Bool = false
     
+    private var importGameButton: some View {
+        Button {
+            isGameImportViewPresented = true
+        } label: {
+            Label("Import Game", systemImage: "plus.app")
+                .padding(5)
+        }
+    }
+
     var body: some View {
         VStack {
             if gameDataStore.library.isEmpty {
-                ContentUnavailableView(
-                    "No games found. 😢",
-                    systemImage: "folder.badge.questionmark",
-                    description: Text("""
-                        Games in your library will appear here.
-                        If there are games in your library and they're not appearing, try restarting Mythic.
-                        """)
-                )
-                .task {
-                    try? await gameDataStore.refreshFromStorefronts()
-                }
-                
-                Button {
-                    isGameImportViewPresented = true
-                } label: {
-                    Label("Import Game", systemImage: "plus.app")
-                        .padding(5)
-                }
-                .buttonStyle(.borderedProminent)
-                .sheet(isPresented: $isGameImportViewPresented) {
-                    GameImportView(isPresented: $isGameImportViewPresented)
+                if let progress = viewModel.libraryUpdateProgress {
+                    // An empty library during a first Steam enumeration is expected and takes a while, so
+                    // it gets a real progress report rather than the same "no games found" as a genuinely
+                    // empty one.
+                    VStack(spacing: 14) {
+                        Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90")
+                            .font(.system(size: 34))
+                            .foregroundStyle(.tertiary)
+
+                        Text("Loading your library…")
+                            .font(.title3.bold())
+
+                        if let fraction = progress.fractionCompleted {
+                            ProgressView(value: fraction)
+                                .frame(maxWidth: 320)
+                        } else {
+                            ProgressView()
+                                .controlSize(.small)
+                        }
+
+                        Text(progress.label)
+                            .foregroundStyle(.secondary)
+                            .font(.callout)
+                    }
+                    .padding()
+                } else {
+                    ContentUnavailableView(
+                        "No games found. 😢",
+                        systemImage: "folder.badge.questionmark",
+                        description: Text("""
+                            Games in your library will appear here.
+                            If there are games in your library and they're not appearing, try restarting Mythic.
+                            """)
+                    )
+                    .task {
+                        try? await gameDataStore.refreshFromStorefronts()
+                    }
+
+                    // The empty state used to offer only "Import Game", which is the fallback rather than
+                    // the answer: for a storefront, the library arrives by signing in. Whichever
+                    // storefronts are not connected are offered here, so the next step is on screen
+                    // instead of somewhere in Accounts.
+                    HStack {
+                        if !Steam.isSignedIn {
+                            Button {
+                                isSteamSignInViewPresented = true
+                            } label: {
+                                Label {
+                                    Text("Connect Steam")
+                                } icon: {
+                                    Image("Steam")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 16, height: 16)
+                                }
+                                .padding(5)
+                            }
+                            .buttonStyle(.borderedProminent)
+                        }
+
+                        // Importing is the fallback when a storefront is connected, and the primary
+                        // action when none is.
+                        if Steam.isSignedIn {
+                            importGameButton.buttonStyle(.borderedProminent)
+                        } else {
+                            importGameButton.buttonStyle(.bordered)
+                        }
+                    }
+                    .sheet(isPresented: $isGameImportViewPresented) {
+                        GameImportView(isPresented: $isGameImportViewPresented)
+                    }
+                    .sheet(isPresented: $isSteamSignInViewPresented) {
+                        SteamSignInView(isPresented: $isSteamSignInViewPresented)
+                            .frame(width: 460)
+                    }
                 }
             } else {
                 ScrollView(.vertical) {

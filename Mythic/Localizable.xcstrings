@@ -1,6 +1,776 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ closed immediately after starting." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fechou imediatamente depois de abrir."
+          }
+        }
+      }
+    },
+    "%@ closed immediately.\nTitles that use Steamworks need the Steam client installed in their container, and this one hasn't got it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ fechou imediatamente.\nTítulos que usam Steamworks precisam do client da Steam instalado no contêiner, e este não tem."
+          }
+        }
+      }
+    },
+    "Account name" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome da conta"
+          }
+        }
+      }
+    },
+    "Add to Library" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar à biblioteca"
+          }
+        }
+      }
+    },
+    "App ID" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ID do app"
+          }
+        }
+      }
+    },
+    "Approve this sign-in on your phone" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprove este acesso no seu celular"
+          }
+        }
+      }
+    },
+    "Are you sure you want to remove SteamCMD?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza de que quer remover o SteamCMD?"
+          }
+        }
+      }
+    },
+    "Are you sure you want to sign out of Steam?" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tem certeza de que quer encerrar a sessão da Steam?"
+          }
+        }
+      }
+    },
+    "Artwork comes from Steam's CDN, keyed on the app ID." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As imagens vêm da CDN da Steam, identificadas pelo ID do app."
+          }
+        }
+      }
+    },
+    "Asking Steam about %@…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultando a Steam sobre %@…"
+          }
+        }
+      }
+    },
+    "Available for" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disponível para"
+          }
+        }
+      }
+    },
+    "Checking download size…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificando o tamanho do download…"
+          }
+        }
+      }
+    },
+    "Choose…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher…"
+          }
+        }
+      }
+    },
+    "Connect Steam" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectar Steam"
+          }
+        }
+      }
+    },
+    "Couldn't install SteamCMD: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível instalar o SteamCMD: %@"
+          }
+        }
+      }
+    },
+    "Download" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download"
+          }
+        }
+      }
+    },
+    "Download games built for" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baixar jogos feitos para"
+          }
+        }
+      }
+    },
+    "Each title gets its own folder here, named by its Steam app ID." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada título ganha sua própria pasta aqui, nomeada pelo ID do app na Steam."
+          }
+        }
+      }
+    },
+    "Enter an app ID to look a title up." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite um ID de app para buscar um título."
+          }
+        }
+      }
+    },
+    "Find it in the store page URL: store.steampowered.com/app/**1623730**/" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Está na URL da página da loja: store.steampowered.com/app/**1623730**/"
+          }
+        }
+      }
+    },
+    "Found %lld Steam games." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontrados %lld jogos da Steam."
+          }
+        }
+      }
+    },
+    "From your authenticator app, or the email Steam just sent you." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do seu app autenticador, ou do e-mail que a Steam acabou de enviar."
+          }
+        }
+      }
+    },
+    "Games you've downloaded stay on disk." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Os jogos que você baixou continuam no disco."
+          }
+        }
+      }
+    },
+    "If your account uses the Steam Mobile Authenticator, keep your phone handy — Steam will ask you to approve this there." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se sua conta usa o Steam Mobile Authenticator, deixe o celular à mão — a Steam vai pedir sua aprovação por lá."
+          }
+        }
+      }
+    },
+    "Install SteamCMD" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar o SteamCMD"
+          }
+        }
+      }
+    },
+    "Install games in" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instalar jogos em"
+          }
+        }
+      }
+    },
+    "It's a small download (about 3 MB) from Valve. Mythic needs it to sign in and to download your games." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "É um download pequeno (cerca de 3 MB) da Valve. O Mythic precisa dele para entrar na conta e baixar seus jogos."
+          }
+        }
+      }
+    },
+    "Loading your library…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando sua biblioteca…"
+          }
+        }
+      }
+    },
+    "Look Up" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar"
+          }
+        }
+      }
+    },
+    "Looking up %lld Steam titles…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consultando %lld títulos da Steam…"
+          }
+        }
+      }
+    },
+    "Mythic signs in through SteamCMD, Valve's own command-line client." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Mythic entra na conta pelo SteamCMD, o cliente de linha de comando da própria Valve."
+          }
+        }
+      }
+    },
+    "One quick setup step first." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primeiro, um passo rápido de configuração."
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senha"
+          }
+        }
+      }
+    },
+    "Reading your Steam licences…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lendo suas licenças da Steam…"
+          }
+        }
+      }
+    },
+    "Reclaims" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libera"
+          }
+        }
+      }
+    },
+    "Remove SteamCMD" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover o SteamCMD"
+          }
+        }
+      }
+    },
+    "Set Up" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurar"
+          }
+        }
+      }
+    },
+    "Setup required" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuração necessária"
+          }
+        }
+      }
+    },
+    "Sign in to Steam" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrar na Steam"
+          }
+        }
+      }
+    },
+    "Signing in comes next." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O login vem em seguida."
+          }
+        }
+      }
+    },
+    "Signing in…" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrando…"
+          }
+        }
+      }
+    },
+    "Steam Guard code" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código do Steam Guard"
+          }
+        }
+      }
+    },
+    "Steam couldn't complete the operation for app %1$@: %2$@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam não conseguiu concluir a operação do app %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Steam didn't recognise app %@." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam não reconheceu o app %@."
+          }
+        }
+      }
+    },
+    "Steam doesn't list a way to launch %@ on this platform." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam não indica nenhuma forma de iniciar %@ nesta plataforma."
+          }
+        }
+      }
+    },
+    "Steam doesn't offer a %@ build of this title. Change the platform in Settings ▸ Services ▸ Steam." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam não oferece uma versão %@ deste título. Troque a plataforma em Ajustes ▸ Serviços ▸ Steam."
+          }
+        }
+      }
+    },
+    "Steam ended the sign-in without accepting or rejecting it. Try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam encerrou o login sem aceitar nem recusar. Tente de novo."
+          }
+        }
+      }
+    },
+    "Steam is rate-limiting sign-in attempts. Wait a few minutes and try again." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam está limitando as tentativas de login. Espere alguns minutos e tente de novo."
+          }
+        }
+      }
+    },
+    "Steam needs a Steam Guard code to continue." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam precisa de um código do Steam Guard para continuar."
+          }
+        }
+      }
+    },
+    "Steam sent a confirmation to the Steam Mobile App. Open it and tap Approve." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam enviou uma confirmação para o app Steam Mobile. Abra o app e toque em Aprovar."
+          }
+        }
+      }
+    },
+    "Steam sign-in failed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao entrar na Steam."
+          }
+        }
+      }
+    },
+    "Steam sign-in failed: %@" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falha ao entrar na Steam: %@"
+          }
+        }
+      }
+    },
+    "Steam stops waiting after about a minute." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam desiste de esperar em cerca de um minuto."
+          }
+        }
+      }
+    },
+    "Steam user" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuário da Steam"
+          }
+        }
+      }
+    },
+    "Steam was waiting for you to approve the sign-in in the Steam Mobile App, and gave up.\nTry again, and confirm the request on your phone when it appears." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Steam estava esperando você aprovar o acesso no app Steam Mobile e desistiu.\nTente de novo e confirme no celular quando o pedido aparecer."
+          }
+        }
+      }
+    },
+    "SteamCMD is an Intel binary and needs Rosetta 2 to run." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SteamCMD é um binário Intel e precisa do Rosetta 2 para rodar."
+          }
+        }
+      }
+    },
+    "SteamCMD is an Intel binary and needs Rosetta 2, which isn't installed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SteamCMD é um binário Intel e precisa do Rosetta 2, que não está instalado."
+          }
+        }
+      }
+    },
+    "SteamCMD isn't installed yet" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SteamCMD ainda não está instalado"
+          }
+        }
+      }
+    },
+    "SteamCMD isn't installed yet — set it up in Accounts." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SteamCMD ainda não está instalado — configure em Contas."
+          }
+        }
+      }
+    },
+    "SteamCMD isn't installed yet." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O SteamCMD ainda não está instalado."
+          }
+        }
+      }
+    },
+    "Step 1 of 2" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passo 1 de 2"
+          }
+        }
+      }
+    },
+    "That Steam username or password wasn't accepted." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse nome de conta ou senha da Steam não foi aceito."
+          }
+        }
+      }
+    },
+    "That game isn't installed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse jogo não está instalado."
+          }
+        }
+      }
+    },
+    "Titles that require the Steam client running won't launch — Mythic Engine can't run it." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Títulos que exigem o cliente da Steam em execução não vão abrir — o Mythic Engine não consegue rodá-lo."
+          }
+        }
+      }
+    },
+    "Unable to install SteamCMD." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível instalar o SteamCMD."
+          }
+        }
+      }
+    },
+    "Unable to look that app ID up." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível consultar esse ID de app."
+          }
+        }
+      }
+    },
+    "Unable to sign in to Steam." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível entrar na Steam."
+          }
+        }
+      }
+    },
+    "Waiting for you to approve this in the Steam Mobile App." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aguardando sua aprovação no app Steam Mobile."
+          }
+        }
+      }
+    },
+    "Windows®" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Windows®"
+          }
+        }
+      }
+    },
+    "Windows® titles run through Mythic Engine; macOS titles run natively, but far fewer exist." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Títulos Windows® rodam pelo Mythic Engine; títulos macOS rodam nativamente, mas existem muito menos."
+          }
+        }
+      }
+    },
+    "You aren't signed in to Steam." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você não está conectado à Steam."
+          }
+        }
+      }
+    },
+    "You aren't signed in to Steam. You can still add titles, but downloading needs an account." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Você não está conectado à Steam. Ainda é possível adicionar títulos, mas baixar exige uma conta."
+          }
+        }
+      }
+    },
+    "Your Steam sign-in and any games you downloaded through it will be removed too." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua sessão da Steam e os jogos baixados por ela também serão removidos."
+          }
+        }
+      }
+    },
+    "Your library loads by itself once you're signed in. Use this for anything it missed." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua biblioteca carrega sozinha depois que você entra na conta. Use isto para o que ela não pegou."
+          }
+        }
+      }
+    },
+    "Your password goes straight to SteamCMD and is never written to disk by Mythic." : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua senha vai direto para o SteamCMD e nunca é gravada em disco pelo Mythic."
+          }
+        }
+      }
+    },
+    "e.g. 1623730" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ex.: 1623730"
+          }
+        }
+      }
+    },
+    "macOS" : {
+      "localizations" : {
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS"
+          }
+        }
+      }
+    },
     "" : {
       "comment" : "An empty string entry.",
       "isCommentAutoGenerated" : true,
