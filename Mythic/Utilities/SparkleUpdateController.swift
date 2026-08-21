@@ -52,7 +52,12 @@ final class SparkleUpdateController: NSObject, SPUUserDriver, ObservableObject {
                 backgroundQueue.schedule(
                     after: .init(.now()),
                     interval: .seconds(60 * 60 * 6)
-                ) {
+                ) { @Sendable in
+                    // @Sendable is load-bearing: without it this non-Sendable closure inherits the
+                    // enclosing MainActor isolation, so Swift 6 emits an executor check at its entry.
+                    // It then runs on `backgroundQueue`, dispatch_assert_queue fails, and the app traps
+                    // on launch (EXC_BREAKPOINT on the BackgroudEventService queue). The hop to the main
+                    // actor is the Task below, which is where it belongs.
                     Task { @MainActor in
                         SparkleUpdateController.shared.checkForUpdates(userInitiated: false)
                     }
