@@ -111,10 +111,12 @@ class LocalGameManager {
             throw CocoaError(.fileNoSuchFile)
         }
 
-        let operation: GameOperation = .init(game: game, type: .uninstall) {  _ in
+        let operation: GameOperation = .init(game: game, type: .move) {  _ in
             try FileManager.default.moveItem(at: currentLocation, to: newLocation)
             game.installationState = .installed(location: newLocation, platform: platform)
         }
+
+        Game.operationManager.queueOperation(operation)
         return operation
     }
 
