@@ -2,7 +2,7 @@
 //  WebView.swift
 //  Mythic
 //
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import SwiftUI
 import WebKit

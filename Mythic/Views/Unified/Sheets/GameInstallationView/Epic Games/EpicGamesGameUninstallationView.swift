@@ -2,7 +2,7 @@
 //  EpicGamesGameUninstallationView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 6/3/2024.
+//  Created by zenfty on 6/3/2024.
 //
 
 import SwiftUI

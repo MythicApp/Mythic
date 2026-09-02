@@ -2,10 +2,10 @@
 //  NSWindow.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 11/10/24.
+//  Created by zenfty on 11/10/24.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import AppKit
 

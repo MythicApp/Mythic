@@ -2,10 +2,10 @@
 //  SwordRPC.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 13/1/2025.
+//  Created by zenfty on 13/1/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwordRPC

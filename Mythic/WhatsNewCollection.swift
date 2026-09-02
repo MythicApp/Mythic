@@ -2,10 +2,10 @@
 //  WhatsNewCollection.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 11/9/24.
+//  Created by zenfty on 11/9/24.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import WhatsNewKit
 import SwiftUI

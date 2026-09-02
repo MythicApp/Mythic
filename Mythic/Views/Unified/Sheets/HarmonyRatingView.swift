@@ -2,7 +2,7 @@
 //  HarmonyRatingView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 16/1/2025.
+//  Created by zenfty on 16/1/2025.
 //
 
 import Foundation

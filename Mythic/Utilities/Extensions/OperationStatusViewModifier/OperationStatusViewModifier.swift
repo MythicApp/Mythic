@@ -2,10 +2,10 @@
 //  OperationStatusViewModifier.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 10/11/2025.
+//  Created by zenfty on 10/11/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI

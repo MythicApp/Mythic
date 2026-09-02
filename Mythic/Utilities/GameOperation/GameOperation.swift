@@ -2,10 +2,10 @@
 //  GameOperation.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 17/11/2025.
+//  Created by zenfty on 17/11/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import OSLog

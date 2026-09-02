@@ -2,10 +2,10 @@
 //  GameManager.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 15/11/2025.
+//  Created by zenfty on 15/11/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import OSLog

@@ -2,10 +2,10 @@
 //  WindowBlurView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 9/29/24.
+//  Created by zenfty on 9/29/24.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import SwiftUI
 

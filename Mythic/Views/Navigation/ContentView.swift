@@ -2,13 +2,13 @@
 //  ContentView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 8/9/2023.
+//  Created by zenfty on 8/9/2023.
 //
 //  Reference
 //  https://github.com/1998code/SwiftUI2-MacSidebar
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI

@@ -2,10 +2,10 @@
 //  String.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 13/6/2025.
+//  Created by zenfty on 13/6/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 extension String {
     var sentenceCased: String {

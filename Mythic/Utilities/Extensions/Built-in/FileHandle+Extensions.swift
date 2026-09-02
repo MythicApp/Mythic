@@ -2,10 +2,10 @@
 //  FileHandle+Extensions.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 12/12/2025.
+//  Created by zenfty on 12/12/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 

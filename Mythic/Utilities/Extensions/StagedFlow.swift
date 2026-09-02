@@ -2,10 +2,10 @@
 //  StagedFlow.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 8/12/2025.
+//  Created by zenfty on 8/12/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI

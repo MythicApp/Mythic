@@ -2,10 +2,10 @@
 //  EngineInstallationView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 19/10/2025.
+//  Created by zenfty on 19/10/2025.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI

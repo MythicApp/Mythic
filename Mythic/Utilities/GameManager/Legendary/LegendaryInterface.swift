@@ -2,10 +2,10 @@
 //  LegendaryInterface.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 21/9/2023.
+//  Created by zenfty on 21/9/2023.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI

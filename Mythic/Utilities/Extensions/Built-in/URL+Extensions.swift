@@ -2,10 +2,10 @@
 //  URL.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 28/1/2024.
+//  Created by zenfty on 28/1/2024.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 

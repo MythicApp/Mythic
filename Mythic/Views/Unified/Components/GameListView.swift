@@ -2,10 +2,10 @@
 //  GameListView.swift
 //  Mythic
 //
-//  Created by vapidinfinity (esi) on 6/3/2024.
+//  Created by zenfty on 6/3/2024.
 //
 
-// Copyright © 2023-2026 vapidinfinity
+// Copyright © 2023-2026 zenfty
 
 import Foundation
 import SwiftUI
