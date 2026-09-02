@@ -135,7 +135,7 @@ import AppKit
     }
 
     /// Verify the file integrity of the game (if it's installed)
-    final func verifyInstallation() async throws {
+    @MainActor final func verifyInstallation() async throws {
         guard case .installed = installationState else {
             throw CocoaError(.fileNoSuchFile)
         }
@@ -181,7 +181,7 @@ import AppKit
     }
 
     // override in subclass
-    internal func _verifyInstallation() async throws {
+    @MainActor internal func _verifyInstallation() async throws {
         // swiftlint:disable:previous identifier_name
         assertionFailure("Subclasses should implement _verifyInstallation()")
     }

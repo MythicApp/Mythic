@@ -26,13 +26,14 @@ struct EpicGamesGameUninstallationView: View {
                             if let castGame = $0 as? EpicGamesGame {
                                 game = castGame
                             }
-                        }), isPresented: $isPresented,
+                        }),
+            isPresented: $isPresented,
             isImageEmpty: $isImageEmpty,
             type: "Uninstall",
             operating: $isOperating,
             action: {
                 Task(priority: .userInitiated) { @MainActor [game] in
-                    _ = try await EpicGamesGameManager.uninstall(game: game,
+                    _ = try? await EpicGamesGameManager.uninstall(game: game,
                                                                   persistFiles: !removeFromDisk,
                                                                   runUninstallerIfPossible: runUninstaller)
                 }
