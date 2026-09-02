@@ -201,7 +201,7 @@ final class Legendary {
        --skip-dlcs           Do not ask about installing DLCs.
      */
 
-    @discardableResult
+    @MainActor @discardableResult
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
@@ -254,7 +254,7 @@ final class Legendary {
         return operation
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         let arguments: [String] = ["-y", "install", game.id, "--update-only"]
 
@@ -284,7 +284,7 @@ final class Legendary {
         return operation
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         let arguments: [String] = ["-y", "install", game.id, "--repair"]
 
@@ -351,7 +351,7 @@ final class Legendary {
        --keep-files        Keep files but remove game from Legendary database
        --skip-uninstaller  Skip running the uninstaller
      */
-    @discardableResult
+    @MainActor @discardableResult
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
                           runUninstallerIfPossible: Bool = true) async throws -> GameOperation {
@@ -404,7 +404,7 @@ final class Legendary {
        --skip-move      Only change legendary database, do not move files (e.g. if
                         already moved)
      */
-    @discardableResult
+    @MainActor @discardableResult
     static func move(game: EpicGamesGame, to newLocation: URL) async throws -> GameOperation {
         guard case .installed(let currentLocation, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
@@ -525,7 +525,7 @@ final class Legendary {
     /**
      Launches games.
      */
-    @discardableResult
+    @MainActor @discardableResult
     static func launch(game: EpicGamesGame) async throws -> GameOperation {
         guard case .installed(_, let platform) = game.installationState else {
             throw CocoaError(.fileNoSuchFile)
@@ -592,6 +592,7 @@ final class Legendary {
         return assetInfo.buildVersion != installationData.version
     }
 
+    @MainActor
     static func fetchPreInstallationMetadata(
         game: EpicGamesGame,
         platform: Game.Platform
@@ -601,9 +602,43 @@ final class Legendary {
         }
 
         let arguments: [String] = ["install", game.id, "--platform", matchPlatform(for: platform)]
-        
-        var installSize: Int64?
-        var optionalPacks: [String: String] = .init()
+
+        final class MetadataAccumulator: @unchecked Sendable {
+            private let lock: NSLock = .init()
+            private var installSizeInternal: Int64?
+            private var optionalPacksInternal: [String: String] = .init()
+
+            func updateInstallSize(from output: String) -> Bool {
+                lock.lock(); defer { lock.unlock() }
+
+                // legendary always returns install size in MiB
+                if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: output),
+                   let sizeString = match[1].substring,
+                   let sizeValue = Double(sizeString) {
+                    installSizeInternal = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
+                    return true
+                }
+
+                return false
+            }
+
+            func addOptionalPack(from output: String) {
+                lock.lock(); defer { lock.unlock() }
+
+                if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: output),
+                   let id = match["identifier"]?.substring,
+                   let name = match["name"]?.substring {
+                    optionalPacksInternal[String(id)] = String(name)
+                }
+            }
+
+            var snapshot: (installSize: Int64?, optionalPacks: [String: String]) {
+                lock.lock(); defer { lock.unlock() }
+                return (installSizeInternal, optionalPacksInternal)
+            }
+        }
+
+        let metadataAccumulator = MetadataAccumulator()
 
         // if the data lock is present, legendary will terminate itself, so this is ok
         // nice n safe
@@ -615,30 +650,11 @@ final class Legendary {
             try await executeStreamed(process) { chunk in
                 switch chunk.stream {
                 case .standardError:
-                    // Handle install size
-                    Task {
-                        // legendary always returns install size in MiB
-                        if let match = try? Regex(#"Install size: (\d+(?:\.\d+)?) MiB"#).firstMatch(in: chunk.output),
-                           let sizeString = match[1].substring,
-                           let sizeValue = Double(sizeString) {
-                            await MainActor.run {
-                                installSize = Int64(Int(sizeValue) * 1_048_576) // MiB ➜ B
-                                
-                                process.interrupt()
-                            }
-                        }
+                    if metadataAccumulator.updateInstallSize(from: chunk.output) {
+                        process.interrupt()
                     }
-                    
                 case .standardOutput:
-                    // Handle optional packs
-                    Task { @MainActor in
-                        if let match = try? Regex(#"\s*\* (?<identifier>\w+) - (?<name>.+)"#).firstMatch(in: chunk.output),
-                           let id = match["identifier"]?.substring,
-                           let name = match["name"]?.substring {
-                            optionalPacks[String(id)] = String(name)
-                        }
-                    }
-                    
+                    metadataAccumulator.addOptionalPack(from: chunk.output)
                     if chunk.output.contains("Please enter tags of pack(s) to install") {
                         process.interrupt()
                     }
@@ -661,7 +677,8 @@ final class Legendary {
             process.interrupt()
         }
         
-        return (installSize, optionalPacks)
+        let result = metadataAccumulator.snapshot
+        return (result.installSize, result.optionalPacks)
     }
 
     static func isFileVerificationRequired(gameID: String) throws -> Bool {

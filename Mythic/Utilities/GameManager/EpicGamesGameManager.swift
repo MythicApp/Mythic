@@ -19,35 +19,35 @@ extension EpicGamesGameManager: StorefrontGameManager {
         try await importGame(castGame, in: location.deletingLastPathComponent(), platform: platform)
     }
     
-    static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
+    @MainActor static func install(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         return try await install(game: castGame, qualityOfService: qualityOfService)
     }
 
-    static func update(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
+    @MainActor static func update(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         return try await update(game: castGame, qualityOfService: qualityOfService)
     }
 
-    static func repair(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
+    @MainActor static func repair(game: Game, qualityOfService: QualityOfService) async throws -> GameOperation {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         return try await repair(game: castGame, qualityOfService: qualityOfService)
     }
 
-    static func fetchUpdateAvailability(for game: Game) throws -> Bool {
+    @MainActor static func fetchUpdateAvailability(for game: Game) throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
         return try fetchUpdateAvailability(for: castGame)
     }
 
-    static func isFileVerificationRequired(for game: Game) throws -> Bool {
+    @MainActor static func isFileVerificationRequired(for game: Game) throws -> Bool {
         guard case .epicGames = game.storefront,
               let castGame = game as? EpicGamesGame else { throw CocoaError(.coderInvalidValue) }
 
@@ -81,7 +81,7 @@ extension EpicGamesGameManager: StorefrontGameManager {
 final class EpicGamesGameManager {
     static var log: Logger { .custom(category: "EpicGamesGameManager") }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func install(game: EpicGamesGame,
                         forPlatform platform: Game.Platform,
                         qualityOfService: QualityOfService,
@@ -94,36 +94,36 @@ final class EpicGamesGameManager {
                                            baseDirectoryURL: baseDirectoryURL)
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func update(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         return try await Legendary.update(game: game, qualityOfService: qualityOfService)
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func repair(game: EpicGamesGame, qualityOfService: QualityOfService) async throws -> GameOperation {
         return try await Legendary.repair(game: game, qualityOfService: qualityOfService)
     }
 
-    static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
+    @MainActor static func fetchUpdateAvailability(for game: EpicGamesGame) throws -> Bool {
         return try Legendary.fetchUpdateAvailability(gameID: game.id)
     }
 
-    static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
+    @MainActor static func isFileVerificationRequired(for game: EpicGamesGame) throws -> Bool {
         return try Legendary.isFileVerificationRequired(gameID: game.id)
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func launch(game: EpicGamesGame) async throws -> GameOperation {
         return try await Legendary.launch(game: game)
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func move(game: EpicGamesGame,
                      to newLocation: URL) async throws -> GameOperation {
         return try await Legendary.move(game: game, to: newLocation)
     }
 
-    @discardableResult
+    @MainActor @discardableResult
     static func uninstall(game: EpicGamesGame,
                           persistFiles: Bool,
                           runUninstallerIfPossible: Bool = true) async throws -> GameOperation {
