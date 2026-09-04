@@ -1,6 +1,25 @@
-# Contributing to Mythic
+<h1 align="center">
+  <br>
+  <a href="https://getmythic.app">
+    <img src="https://github.com/user-attachments/assets/dd702812-0d06-47a5-bd25-3f2dcf40aeee" 
+      style="width: 20%; height: 20%;">
+  </a>
 
-Thank you for helping build a great macOS game launcher! Please read this guide before opening a PR.
+  Mythic
+
+  [![Discord](https://img.shields.io/discord/1154998702650425397?color=5865F2)](https://discord.com/invite/58NZ7fFqPy)
+  [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+  [![Crowdin](https://badges.crowdin.net/mythicapp/localized.svg)](https://crowdin.com/project/mythicapp)
+</h1>
+
+<div align="center">
+  <h3>A unique open-source game launcher for macOS with the ability to run Windows games, and integrate with other game sources.</h3>
+  <!-- <em>All rights reserved.</em> -->
+</div>
+
+---
+
+Thank you for helping build a great macOS game launcher! Please read these guidelines before opening a PR.
 
 ---
 
@@ -39,7 +58,7 @@ Please read and understand our [Code of Conduct](CODE_OF_CONDUCT.md) before cont
 Use the [Conventional Commits](https://conventionalcommits.org) specification:
 
 **Examples:**
-- `feat(`LibraryView`): add vertical grid scrolling`
+- ``feat(`LibraryView`): add vertical grid scrolling``
 - `fix: prevent nil version crash`
 - `chore(ci): speed up build`
 
@@ -51,7 +70,7 @@ Prefer using backticks when referencing in-code values, e.g., \`ContentView\`
 ### Pull Request Titles
 
 Title your PR using the same convention and [reference related issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword):
-- `feat(`LibraryView`): add grid view (fixes #123, #456)`
+- ``feat(`LibraryView`): add grid view (fixes #123, #456)``
 
 ---
 
@@ -80,6 +99,8 @@ All PRs must pass:
 
 #### Naming
 - Use **descriptive names** — avoid shorthand like `e`; use `example` instead
+- Declare methods with idiomatic signatures, e.g.
+  - `fetchDataForSavedAccount(with accountID: String)`, i.e. `fetchDataForSavedAccount(with:)`
 
 #### Declarations
 - Prefer **explicit types and referencing using `.`, e.g. `.init()`, `.shared`**:
@@ -151,7 +172,7 @@ New Swift files should include this header:
 ```swift
 <#Xcode default header#>
 
-// Copyright © 2023-<#Current year#> vapidinfinity
+// Copyright © 2023-<#Current year#> zenfty
 ```
 
 *Note: This header should be automatically generated when creating files in Xcode.*
