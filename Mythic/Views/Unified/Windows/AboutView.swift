@@ -39,7 +39,7 @@ struct AboutView: View {
                             Group {
                                 Text("Mythic")
                                     .font(.largeTitle)
-                                Text("© by vapidinfinity ✦")
+                                Text(verbatim: "© by zenfty ✦")
                                 
                                 Divider()
                                     .frame(width: 100)
@@ -124,7 +124,7 @@ struct AboutView: View {
                         AcknowledgementCard(
                             URL: .init(string: "https://github.com/MythicApp/Mythic#dependencies")!,
                             image: Image("BlankAppIcon"),
-                            title: "⭐ Others",
+                            title: "❤️ Others",
                             description: "View Mythic's other dependencies."
                         )
                     }
