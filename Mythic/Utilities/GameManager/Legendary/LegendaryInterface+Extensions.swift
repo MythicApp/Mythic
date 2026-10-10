@@ -266,8 +266,8 @@ extension Legendary {
         let clientID: String
         /// Client service name (e.g., "launcher")
         let clientService: String
-        /// Unique device identifier
-        let deviceID: String
+        /// Unique device identifier (no longer included in newer Epic tokens)
+        let deviceID: String?
         /// User's display name
         let displayName: String
         /// Access token expiration timestamp (ISO 8601 format)
@@ -330,7 +330,7 @@ extension Legendary {
 
             clientID = try container.decode(String.self, forKey: .clientID)
             clientService = try container.decode(String.self, forKey: .clientService)
-            deviceID = try container.decode(String.self, forKey: .deviceID)
+            deviceID = try container.decodeIfPresent(String.self, forKey: .deviceID)
             displayName = try container.decode(String.self, forKey: .displayName)
 
             let expiresAtString = try container.decode(String.self, forKey: .expiresAt)
@@ -371,7 +371,7 @@ extension Legendary {
             try container.encode(dateFormatter.string(from: authTime), forKey: .authTime)
             try container.encode(clientID, forKey: .clientID)
             try container.encode(clientService, forKey: .clientService)
-            try container.encode(deviceID, forKey: .deviceID)
+            try container.encodeIfPresent(deviceID, forKey: .deviceID)
             try container.encode(displayName, forKey: .displayName)
             try container.encode(dateFormatter.string(from: expiresAt), forKey: .expiresAt)
             try container.encode(expiresIn, forKey: .expiresIn)

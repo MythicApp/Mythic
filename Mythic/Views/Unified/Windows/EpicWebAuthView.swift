@@ -182,11 +182,17 @@ private struct EpicInterceptorWebView: NSViewRepresentable {
                     return
                 }
 
+                // WebKit may wrap JSON responses in its own viewer, so isolate the JSON object itself
                 guard
                     let content = result as? String,
-                    let data = content.data(using: .utf8),
+                    let start = content.firstIndex(of: "{"),
+                    let end = content.lastIndex(of: "}"),
+                    let data = String(content[start...end]).data(using: .utf8),
                     let json = try? JSON(data: data)
                 else {
+                    if let content = result as? String, content.contains("authorizationCode") {
+                        Logger.app.error("Epic sign-in page returned an authorization code, but it couldn't be parsed.")
+                    }
                     return
                 }
                 
