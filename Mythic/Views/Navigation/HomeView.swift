@@ -52,6 +52,11 @@ struct HomeView: View {
                                 }
                             }
 
+                        // white text directly atop artwork is illegible on bright images
+                        if !isImageEmpty {
+                            ReadabilityScrim(startPoint: .center, endPoint: .bottom)
+                        }
+
                         HStack {
                             if isImageEmpty, recentGame.isFallbackImageAvailable {
                                 GameImageCard.FallbackGameImageCard(game: .constant(recentGame))
@@ -61,9 +66,11 @@ struct HomeView: View {
                             }
                             
                             VStack(alignment: .leading) {
-                                Text("CONTINUE PLAYING")
+                                Text("Continue Playing")
+                                    .textCase(.uppercase)
                                     .foregroundStyle(.secondary)
                                     .font(.caption)
+                                    .accessibilityAddTraits(.isHeader)
                                 
                                 HStack {
                                     GameCard.TitleAndInformationView(game: .constant(recentGame), withSubscriptedInfo: true)
@@ -81,12 +88,14 @@ struct HomeView: View {
                         .padding([.leading, .bottom])
                     }
                     .frame(height: geometry.size.height * 0.75)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel("Continue Playing, \(GameCard.accessibilityDescription(of: recentGame))")
                 } else {
                     ContentUnavailableView(
                         "Welcome to Mythic!",
                         systemImage: "hand.wave",
                         description: .init("""
-                        This area is where your most recently played game will appear — try launching one now!
+                        Your most recently played game will appear here. Launch one from your library to get started.
                         """)
                     )
                     .frame(
@@ -97,22 +106,22 @@ struct HomeView: View {
                 }
                 
                 Form {
-                    Section("Your Favourites", isExpanded: $isFavouritesSectionExpanded) {
+                    Section("Favourites", isExpanded: $isFavouritesSectionExpanded) {
                         if favouriteGamesExcludingRecent.isEmpty {
                             HStack(alignment: .center) {
                                 Spacer()
                                 ContentUnavailableView(
                                     "No Favourites",
-                                    systemImage: "star.slash.fill",
+                                    systemImage: "star.slash",
                                     description: .init("""
                                     Games you favourite will appear here.
-                                    You can favourite a game by pressing [􀍠] → [􀋂].
+                                    To favourite a game, open its More menu and choose Add to Favourites.
                                     """)
                                 )
                                 Spacer()
                             }
                         } else {
-                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize))]) {
+                            LazyVGrid(columns: [.init(.adaptive(minimum: gameCardSize), spacing: 16)], spacing: 16) {
                                 ForEach(favouriteGamesExcludingRecent) { game in
                                     GameCard(game: .constant(game))
                                 }
@@ -120,7 +129,7 @@ struct HomeView: View {
                         }
                     }
                     
-                    Section("Your Containers", isExpanded: $isContainersSectionExpanded) {
+                    Section("Containers", isExpanded: $isContainersSectionExpanded) {
                         ContainerListView()
                     }
                     

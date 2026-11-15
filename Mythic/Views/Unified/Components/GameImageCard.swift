@@ -18,6 +18,7 @@ struct GameImageCard: View {
     
     var withBlur: Bool
     @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     
     /// - Note: `game` must be passed as a parameter in order to include fallback image URLs.
     init(game: Game? = nil, url: URL?, isImageEmpty: Binding<Bool>, withBlur: Bool = true) {
@@ -38,11 +39,14 @@ struct GameImageCard: View {
                                 withAnimation { isImageEmpty = true }
                             }
                             .foregroundStyle(.quinary)
-                            .shimmering(
-                                animation: .easeInOut(duration: 1)
-                                    .repeatForever(autoreverses: false),
-                                bandSize: 1
-                            )
+                            // a perpetually moving highlight is unnecessary motion; show a static placeholder instead
+                            .conditionalTransform(if: !reduceMotion) { view in
+                                view.shimmering(
+                                    animation: .easeInOut(duration: 1)
+                                        .repeatForever(autoreverses: false),
+                                    bandSize: 1
+                                )
+                            }
                     case .success(let image):
                         ZStack {
                             // blurred image as background
@@ -73,23 +77,18 @@ struct GameImageCard: View {
                         .frame(width: geometry.size.width,
                                height: geometry.size.height)
                     case .failure(let error):
-                        ContentUnavailableView(
-                            "Unable to load the image.",
-                            systemImage: "photo.badge.exclamationmark",
-                            description: .init(error.localizedDescription)
-                        )
-                        .onAppear {
-                            withAnimation { isImageEmpty = true }
-                        }
+                        // cards are frequently too small to fit an explanation; keep it in the tooltip
+                        UnavailableImagePlaceholder()
+                            .help(Text("Unable to load the image. \(error.localizedDescription)"))
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     @unknown default:
-                        ContentUnavailableView(
-                            "Unable to load the image.",
-                            systemImage: "photo.badge.exclamationmark",
-                            description: .init("Please check your internet connection, and try again.")
-                        )
-                        .onAppear {
-                            withAnimation { isImageEmpty = true }
-                        }
+                        UnavailableImagePlaceholder()
+                            .help(Text("Unable to load the image."))
+                            .onAppear {
+                                withAnimation { isImageEmpty = true }
+                            }
                     }
                 }
                 .frame(width: geometry.size.width,
@@ -100,19 +99,52 @@ struct GameImageCard: View {
                     .frame(width: geometry.size.width,
                            height: geometry.size.height)
             } else {
-                ContentUnavailableView(
-                    "Image Unavailable",
-                    systemImage: "photo.badge.exclamationmark",
-                    description: .init("""
-                    This game doesn't have an image that Mythic can display in this style.
-                    """)
-                )
-                .frame(width: geometry.size.width,
-                       height: geometry.size.height)
+                UnavailableImagePlaceholder()
+                    .help(Text("This game doesn't have an image that Mythic can display in this style."))
+                    .frame(width: geometry.size.width,
+                           height: geometry.size.height)
             }
         }
         .background(.quinary)
         .clipShape(.rect(cornerRadius: 20))
+        // artwork is decorative; the views that host it describe the game in text.
+        .accessibilityHidden(true)
+    }
+}
+
+extension GameImageCard {
+    /// Compact stand-in for artwork that's missing, or failed to load.
+    struct UnavailableImagePlaceholder: View {
+        var body: some View {
+            Image(systemName: "photo")
+                .font(.largeTitle)
+                .foregroundStyle(.tertiary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+}
+
+/// A gradient placed between artwork and the text drawn over it,
+/// keeping that text legible regardless of the image's contents.
+struct ReadabilityScrim: View {
+    var startPoint: UnitPoint = .top
+    var endPoint: UnitPoint = .bottom
+
+    @Environment(\.colorSchemeContrast) private var colorSchemeContrast
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    private var strength: Double {
+        (colorSchemeContrast == .increased || reduceTransparency) ? 0.85 : 0.6
+    }
+
+    var body: some View {
+        LinearGradient(
+            colors: [.black.opacity(0), .black.opacity(strength)],
+            startPoint: startPoint,
+            endPoint: endPoint
+        )
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 
@@ -122,6 +154,7 @@ extension GameImageCard {
         @Binding var game: Game
         @AppStorage("gameImageCardBlur") private var imageCardBlur: Double = 0.0
         var withBlur: Bool = true
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
         
         var body: some View {
             if case .installed(let location, _) = game.installationState {
@@ -155,11 +188,13 @@ extension GameImageCard {
             } else {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(.windowBackground)
-                    .shimmering(
-                        animation: .easeInOut(duration: 1)
-                            .repeatForever(autoreverses: false),
-                        bandSize: 1
-                    )
+                    .conditionalTransform(if: !reduceMotion) { view in
+                        view.shimmering(
+                            animation: .easeInOut(duration: 1)
+                                .repeatForever(autoreverses: false),
+                            bandSize: 1
+                        )
+                    }
             }
         }
     }

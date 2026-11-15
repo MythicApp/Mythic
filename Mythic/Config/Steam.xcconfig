@@ -1,0 +1,12 @@
+// Steam.xcconfig
+// Mythic
+//
+// Build-time Steam settings. Real values live in the repo-root `.env` (gitignored) and are pulled in below.
+// `.env` must contain ONLY `KEY=value` lines (no `#` comments, no quotes, no `//`) because xcconfig parses it.
+// See docs/steam/SETUP.md.
+
+// Defaults so the project builds without a .env (Steam library sync disabled until a key is supplied).
+STEAM_WEB_API_KEY =
+STEAM_OPENID_REALM_HOST = getmythic.app
+
+#include? "../../.env"

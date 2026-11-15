@@ -27,7 +27,9 @@ struct GameCard: View {
                         GameCard.TitleAndInformationView(game: $game, font: .title3)
                     }
                     .layoutPriority(1)
-                    
+
+                    Spacer(minLength: 0)
+
                     GameCard.ButtonsView(game: $game)
                         .clipShape(.capsule)
                         .progressViewStyle(.circular)
@@ -52,8 +54,16 @@ struct GameCard: View {
                     } else {
                         view
                             .padding(.bottom)
+                            .padding(.top, 32)
                             .menuStyle(.borderlessButton)
                             .menuIndicator(.hidden)
+                            // white text directly atop artwork is illegible on bright images
+                            .background {
+                                if !isImageEmptyPreMacOSTahoe {
+                                    ReadabilityScrim()
+                                }
+                            }
+                            .clipShape(.rect(bottomLeadingRadius: 20, bottomTrailingRadius: 20))
                     }
                 }
             }
@@ -77,19 +87,54 @@ struct GameCard: View {
                 }
                 .padding()
             }
+            // present the card to assistive technologies as one named group, containing its controls.
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(GameCard.accessibilityDescription(of: game))
+    }
+}
+
+extension GameCard {
+    /// A spoken summary of a game's title, storefront and state, for use as a card's accessibility label.
+    static func accessibilityDescription(of game: Game) -> String {
+        var components: [String] = [game.title]
+
+        if let storefront = game.storefront {
+            components.append(storefront.description)
+        }
+
+        if case .installed = game.installationState {
+            components.append(String(localized: "Installed"))
+        } else {
+            components.append(String(localized: "Not Installed"))
+        }
+
+        if game.isFavourited {
+            components.append(String(localized: "Favourite"))
+        }
+
+        if game.isUpdateAvailable == true {
+            components.append(String(localized: "Update available"))
+        }
+
+        return components.joined(separator: ", ")
     }
 }
 
 /// ViewModifier that enables views to have a fade in effect.
 struct FadeInModifier: ViewModifier {
     @State private var opacity: Double = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func body(content: Content) -> some View {
         content
             .opacity(opacity)
             .onAppear {
-                withAnimation(.easeInOut(duration: 0.5)) {
+                if reduceMotion {
                     opacity = 1
+                } else {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        opacity = 1
+                    }
                 }
             }
     }

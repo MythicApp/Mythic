@@ -323,6 +323,11 @@ extension SettingsView {
         @AppStorage("discordRPC") private var discordRPCEnabled: Bool = true
         @State private var isServicesDiscordSectionExpanded: Bool = true
         @State private var isServicesEpicSectionExpanded: Bool = true
+        @State private var isServicesSteamSectionExpanded: Bool = true
+        @State private var steamWebAPIKey = SteamConfig.userWebAPIKey ?? ""
+        @State private var steamSettingsError: Error?
+        @State private var isSteamSettingsErrorAlertPresented = false
+        @State private var isRefreshingSteamLibrary = false
 
         @State private var isCleaning: Bool = false
         @State private var isCleanupSuccessful: Bool?
@@ -380,8 +385,58 @@ extension SettingsView {
                 // TODO: potenially add manual cloud save deletion
             }
 
-            Section("Steam", isExpanded: .constant(false)) { }
-                .help("Coming Soon")
+            Section("Steam", isExpanded: $isServicesSteamSectionExpanded) {
+                SecureField(String(localized: "Personal Web API key (optional)"), text: $steamWebAPIKey)
+                    .onSubmit(saveSteamWebAPIKey)
+
+                HStack {
+                    Button(String(localized: "Save API Key"), action: saveSteamWebAPIKey)
+                    Link(
+                        String(localized: "Get a Steam Web API key"),
+                        destination: URL(string: "https://steamcommunity.com/dev/apikey")! // swiftlint:disable:this force_unwrapping
+                    )
+                }
+
+                Button {
+                    Task { @MainActor in
+                        isRefreshingSteamLibrary = true
+                        defer { isRefreshingSteamLibrary = false }
+                        do {
+                            try await GameDataStore.shared.refreshFromStorefronts(.steam)
+                        } catch {
+                            steamSettingsError = error
+                            isSteamSettingsErrorAlertPresented = true
+                        }
+                    }
+                } label: {
+                    if isRefreshingSteamLibrary {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Text(String(localized: "Refresh Steam library"))
+                    }
+                }
+                .disabled(isRefreshingSteamLibrary)
+            }
+            .alert(
+                String(localized: "Unable to update Steam settings."),
+                isPresented: $isSteamSettingsErrorAlertPresented,
+                presenting: steamSettingsError
+            ) { _ in
+                Button(String(localized: "OK"), role: .cancel) { }
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+        }
+
+        private func saveSteamWebAPIKey() {
+            do {
+                let key = steamWebAPIKey.trimmingCharacters(in: .whitespacesAndNewlines)
+                try SteamConfig.setUserWebAPIKey(key.isEmpty ? nil : key)
+            } catch {
+                steamSettingsError = error
+                isSteamSettingsErrorAlertPresented = true
+            }
         }
     }
 

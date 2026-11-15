@@ -43,7 +43,8 @@ extension GameCard {
                             if withLabel {
                                 Label("Play", systemImage: "play")
                             } else {
-                                Image(systemName: "play")
+                                Label("Play", systemImage: "play")
+                                    .labelStyle(.iconOnly)
                                     .padding(2)
                             }
                         }
@@ -59,6 +60,7 @@ extension GameCard {
                     .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type.modifiesFiles }))
                     // FIXME: .disabled(game.checkIfGameIsRunning())
                     .help("Play \"\(game.title)\"")
+                    .accessibilityLabel("Play \"\(game.title)\"")
 
                     .background(.white)
                     .foregroundStyle(.black)
@@ -102,23 +104,70 @@ extension GameCard {
                 @Bindable private var operationManager: GameOperationManager = .shared
 
                 @State private var isInstallSheetPresented = false
+                @State private var installError: Error?
+                @State private var isInstallErrorAlertPresented = false
+                @State private var isSteamClientSelectionPresented = false
+                @State private var hasNativeSteam = false
+                @State private var steamContainers: [URL] = []
 
                 var body: some View {
                     Button {
-                        isInstallSheetPresented = true
+                        if game is SteamGame {
+                            hasNativeSteam = SteamClient.isNativeClientInstalled
+                            steamContainers = SteamClient.installLocations.compactMap(\.containerURL)
+                            if hasNativeSteam || !steamContainers.isEmpty {
+                                isSteamClientSelectionPresented = true
+                            } else {
+                                installError = SteamClient.ClientNotInstalledError()
+                                isInstallErrorAlertPresented = true
+                            }
+                        } else {
+                            isInstallSheetPresented = true
+                        }
                     } label: {
                         if withLabel {
                             Label("Install", systemImage: "arrow.down.to.line")
                         } else {
-                            Image(systemName: "arrow.down.to.line")
+                            Label("Install", systemImage: "arrow.down.to.line")
+                                .labelStyle(.iconOnly)
                                 .padding(2)
                         }
                     }
-                    .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                    .disabled(game.storefront != .steam && networkMonitor.epicAccessibilityState != .accessible)
                     .disabled(game.storefront == .local)
                     .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .install }))
                     .help("Install \(game.description)")
+                    .accessibilityLabel("Install \(game.description)")
 
+                    .confirmationDialog("Choose a Steam client",
+                                        isPresented: $isSteamClientSelectionPresented) {
+                        if let steamGame = game as? SteamGame {
+                            if hasNativeSteam {
+                                Button("macOS Steam") {
+                                    installSteamGame(steamGame, platform: .macOS)
+                                }
+                            }
+                            ForEach(steamContainers, id: \.self) { containerURL in
+                                Button("Windows Steam — \(containerURL.prettyPath)") {
+                                    installSteamGame(steamGame, platform: .windows, containerURL: containerURL)
+                                }
+                            }
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("Choose where to install \(game.title). Steam will handle the installation.")
+                    }
+                    .alert("Unable to install \"\(game.title)\".",
+                           isPresented: $isInstallErrorAlertPresented,
+                           presenting: installError) { _ in
+                        if #available(macOS 26.0, *) {
+                            Button(role: .close, action: {})
+                        } else {
+                            Button("OK", role: .cancel, action: {})
+                        }
+                    } message: { error in
+                        Text(error.localizedDescription)
+                    }
                     .sheet(isPresented: $isInstallSheetPresented) {
                         switch game {
                         case let epicGame as EpicGamesGame:
@@ -130,6 +179,22 @@ extension GameCard {
                             .padding()
                             .frame(width: 700, height: 380)
                         default: EmptyView()
+                        }
+                    }
+                }
+
+                private func installSteamGame(_ steamGame: SteamGame, platform: Game.Platform, containerURL: URL? = nil) {
+                    Task {
+                        do {
+                            _ = try await SteamGameManager.install(
+                                game: steamGame,
+                                platform: platform,
+                                containerURL: containerURL,
+                                qualityOfService: .userInitiated
+                            )
+                        } catch {
+                            installError = error
+                            isInstallErrorAlertPresented = true
                         }
                     }
                 }
@@ -160,11 +225,12 @@ extension GameCard {
                     if withLabel {
                         Label("Verify", systemImage: "checkmark.circle.badge.questionmark")
                     } else {
-                        Image(systemName: "checkmark.circle.badge.questionmark")
+                        Label("Verify", systemImage: "checkmark.circle.badge.questionmark")
+                            .labelStyle(.iconOnly)
                             .padding(2)
                     }
                 }
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                .disabled(game.storefront != .steam && networkMonitor.epicAccessibilityState != .accessible)
                 .disabled(game.storefront == .local)
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .repair }))
                 .alert("Unable to verify installation.",
@@ -203,11 +269,12 @@ extension GameCard {
                                   systemImage: "checkmark.circle.dotted")
                         }
                     } else {
-                        Image(systemName: "arrow.trianglehead.2.clockwise.rotate.90")
+                        Label("Update", systemImage: "arrow.trianglehead.2.clockwise.rotate.90")
+                            .labelStyle(.iconOnly)
                             .padding(2)
                     }
                 }
-                .disabled(networkMonitor.epicAccessibilityState != .accessible)
+                .disabled(game.storefront != .steam && networkMonitor.epicAccessibilityState != .accessible)
                 // FIXME: .disabled(game.checkIfGameIsRunning())
                 .disabled(game.isUpdateAvailable != true)
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .update }))
@@ -226,9 +293,10 @@ extension GameCard {
                     isGameSettingsSheetPresented = true
                 } label: {
                     if withLabel {
-                        Label("Settings", systemImage: "gear")
+                        Label("Settings...", systemImage: "gear")
                     } else {
-                        Image(systemName: "gear")
+                        Label("Settings...", systemImage: "gear")
+                            .labelStyle(.iconOnly)
                             .padding(2)
                     }
                 }
@@ -258,18 +326,21 @@ extension GameCard {
                     withAnimation { animateFavouriteIcon = game.isFavourited }
                 } label: {
                     if withLabel {
-                        Label(game.isFavourited ? "Unfavourite" : "Favourite", systemImage: "star")
+                        Label(game.isFavourited ? "Remove from Favourites" : "Add to Favourites", systemImage: "star")
                             .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
                             .contentTransition(.symbolEffect(.replace))
                     } else {
-                        Image(systemName: "star")
+                        Label(game.isFavourited ? "Remove from Favourites" : "Add to Favourites", systemImage: "star")
+                            .labelStyle(.iconOnly)
                             .symbolVariant(animateFavouriteIcon ? (hoveringOverFavouriteButton ? .slash.fill : .fill) : .none)
                             .contentTransition(.symbolEffect(.replace))
                             .padding(2)
                     }
                 }
                 .onHover { hoveringOverFavouriteButton = $0 }
-                .help("Favourite \"\(game.title)\"")
+                .help(game.isFavourited
+                      ? Text("Remove \"\(game.title)\" from favourites")
+                      : Text("Favourite \"\(game.title)\""))
                 .task { animateFavouriteIcon = game.isFavourited }
                 .shadow(color: .secondary, radius: animateFavouriteIcon ? 20 : 0)
             }
@@ -286,19 +357,21 @@ extension GameCard {
             @State private var hoveringOverDestructiveButton = false
 
             var body: some View {
-                Button {
+                // the uninstallation sheet this presents doubles as the confirmation step for this destructive action.
+                Button(role: .destructive) {
                     isUninstallSheetPresented = true
                 } label: {
                     if withLabel {
-                        Label("Delete", systemImage: "xmark.bin")
+                        Label("Uninstall...", systemImage: "trash")
                     } else {
-                        Image(systemName: "xmark.bin")
+                        Label("Uninstall...", systemImage: "trash")
+                            .labelStyle(.iconOnly)
                             .padding(2)
                     }
                 }
                 .disabled(operationManager.queue.contains(where: { $0.game == game && $0.type == .uninstall }))
                 // FIXME: .disabled(game.checkIfGameIsRunning())
-                .help("Delete \"\(game.title)\"")
+                .help("Uninstall \"\(game.title)\"")
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: 0.1)) {
                         hoveringOverDestructiveButton = hovering
@@ -329,12 +402,15 @@ extension GameCard {
                     GameCard.Buttons.DeleteButton(game: $game, withLabel: true, isUninstallSheetPresented: $isUninstallSheetPresented)
                 } label: {
                     Button { } label: {
-                        Image(systemName: "ellipsis")
+                        Label("More", systemImage: "ellipsis")
+                            .labelStyle(.iconOnly)
                     }
                 }
+                .help("More actions")
+                .accessibilityLabel("More actions for \"\(game.title)\"")
                 .sheet(isPresented: $isGameSettingsSheetPresented) {
                     GameSettingsView(game: $game, isPresented: $isGameSettingsSheetPresented)
-                        .frame(width: 700, height: 380)
+                        .frame(width: 700, height: 520)
                 }
                 .customTransform { view in
                     if #unavailable(macOS 26.0) {
@@ -355,6 +431,13 @@ extension GameCard {
                 case let localGame as LocalGame:
                     LocalGameUninstallationView(game: .init(get: { localGame }, set: { game = $0 }),
                                                 isPresented: $isUninstallSheetPresented)
+                    .padding()
+                    .frame(width: 700, height: 380)
+                case let steamGame as SteamGame:
+                    SteamGameUninstallationView(
+                        game: .init(get: { steamGame }, set: { game = $0 }),
+                        isPresented: $isUninstallSheetPresented
+                    )
                     .padding()
                     .frame(width: 700, height: 380)
                 default: EmptyView()
@@ -407,10 +490,13 @@ extension GameCard {
                     .font(font)
                     .bold()
                     .truncationMode(.tail)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .help(game.title) // long titles may still truncate; keep the full title reachable
 
                 if game.isFavourited {
                     Image(systemName: "star.fill")
+                        .accessibilityLabel("Favourite")
                 }
             }
 

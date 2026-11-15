@@ -30,6 +30,7 @@ struct LibraryView: View {
                         ProgressView()
                             .controlSize(.small)
                             .help("Mythic is updating your library.")
+                            .accessibilityLabel("Mythic is updating your library.")
                             .padding(10)
                     }
                 }
@@ -44,10 +45,10 @@ struct LibraryView: View {
                 }
                 
                 ToolbarItem(placement: .automatic) {
-                    Button("Force-refresh", systemImage: "arrow.clockwise") {
+                    Button("Refresh Library", systemImage: "arrow.clockwise") {
                         Task(priority: .userInitiated, operation: { try? await gameDataStore.refreshFromStorefronts() })
                     }
-                    .help("Force a re-evaluation of your library contents.")
+                    .help("Refresh your library from your storefronts (⌘R)")
                 }
                 
                 // MARK: GameListView filter views
@@ -56,15 +57,18 @@ struct LibraryView: View {
                         Picker("Layout", systemImage: "macwindow", selection: $gameListLayout) {
                             Label("List", systemImage: "rectangle.grid.1x3")
                                 .tag(GameListViewModel.Layout.list)
-                            
+
                             Label("Grid", systemImage: "square.grid.3x3")
                                 .tag(GameListViewModel.Layout.grid)
                         }
-                        .animation(.easeInOut, value: $gameListLayout.wrappedValue)
+                        .help("Choose how your library is laid out")
                     }
-                    
+
                     ToolbarItem(placement: .automatic) {
-                        Menu("Filters", systemImage: "line.3.horizontal.decrease") {
+                        // the symbol fills while filters are active, so an applied filter is never invisible
+                        Menu("Filters", systemImage: gameListViewModel.searchTokens.isEmpty
+                             ? "line.3.horizontal.decrease.circle"
+                             : "line.3.horizontal.decrease.circle.fill") {
                             Section("Platform") {
                                 ForEach(Game.Platform.allCases, id: \.self) { platform in
                                     Toggle(platform.description,
@@ -89,8 +93,20 @@ struct LibraryView: View {
                             Section {
                                 Toggle("Favourited", isOn: searchTokenBinding(for: .favourited))
                             }
+
+                            if !gameListViewModel.searchTokens.isEmpty {
+                                Section {
+                                    Button("Clear Filters") {
+                                        gameListViewModel.searchTokens = []
+                                    }
+                                }
+                            }
                         }
                         .menuIndicator(.hidden)
+                        .help("Filter your library")
+                        .accessibilityValue(gameListViewModel.searchTokens.isEmpty
+                                            ? Text("No filters applied")
+                                            : Text("\(gameListViewModel.searchTokens.count) filters applied"))
                     }
                 }
             }

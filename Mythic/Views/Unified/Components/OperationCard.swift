@@ -24,7 +24,8 @@ struct ProminentOperationCard: View {
                 
                 VStack(alignment: .leading) {
                     VStack(alignment: .leading) {
-                        Label(operation.type.description.uppercased(), systemImage: "progress.indicator")
+                        Label(operation.type.description, systemImage: "progress.indicator")
+                            .textCase(.uppercase)
                             .foregroundStyle(.secondary)
                             .font(.caption)
                         
@@ -75,6 +76,8 @@ struct ProminentOperationCard: View {
             }
             .clipShape(.rect(cornerRadius: 20))
             .contentShape(.rect(cornerRadius: 20))
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("\(operation.type.description), \(operation.game.title)")
         }
     }
 }
@@ -98,13 +101,16 @@ struct OperationCard: View {
                 
                 VStack(alignment: .leading) {
                     Text(operation.game.title)
-                        .font(.system(.title, weight: .bold))
-                    
+                        .font(.title2.bold())
+                        .lineLimit(2)
+                        .help(operation.game.title)
+
                     HStack {
                         GameCard.SubscriptedInfoView(game: .constant(operation.game))
                     }
                 }
-                .foregroundStyle(isImageEmpty ? Color.primary : Color.white)
+                // this text sits on an opaque (or glass) panel rather than directly on the artwork,
+                // so it follows the system's primary colour instead of being forced to white.
                 .padding(.horizontal)
                 
                 Spacer()
@@ -127,6 +133,8 @@ struct OperationCard: View {
         .frame(height: ListGameCard.defaultHeight)
         .clipShape(.rect(cornerRadius: 20))
         .contentShape(.rect(cornerRadius: 20))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("\(operation.type.description), \(operation.game.title)")
     }
 }
 
@@ -146,15 +154,18 @@ extension OperationCard {
                 Button {
                     operation.cancel()
                 } label: {
-                    Image(systemName: "minus")
+                    Label("Remove from Queue", systemImage: "minus")
+                        .labelStyle(.iconOnly)
                         .padding(2)
                 }
                 .help("Remove operation from queue")
             } else if operation.isCancelled {
-                Image(systemName: "checkmark")
+                Label("Cancelled", systemImage: "xmark.circle")
+                    .labelStyle(.iconOnly)
                     .help("This operation has been cancelled.")
             } else if !hideStatusIfUnknown {
-                Image(systemName: "questionmark")
+                Label("Unknown Status", systemImage: "questionmark")
+                    .labelStyle(.iconOnly)
                     .help("This operation's status is unknown.")
             }
         }

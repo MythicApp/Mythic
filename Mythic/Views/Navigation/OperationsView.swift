@@ -38,9 +38,9 @@ struct OperationsView: View {
                             
                             if nonProminentOperations.isEmpty {
                                 ContentUnavailableView(
-                                    "No new game operations are queued.",
+                                    "Nothing Else Queued",
                                     systemImage: "checkmark",
-                                    description: .init("If you attempt to download more than one game at the same time, it'll be added to this queue.")
+                                    description: .init("Operations you start while another is running will wait here.")
                                 )
                             } else {
                                 ForEach(nonProminentOperations) { operation in
@@ -53,11 +53,11 @@ struct OperationsView: View {
                 .padding()
             } else {
                 ContentUnavailableView(
-                    "No new operations! 😁",
-                    systemImage: "checkmark",
+                    "No Active Operations",
+                    systemImage: "checkmark.circle",
                     description: Text("""
-                        All game operations that may have been pending are complete.
-                        You may access downloaded games in your [\(Image(systemName: "books.vertical")) Library].
+                        Installs, updates and other game operations will appear here while they're in progress.
+                        You'll find your installed games in your Library.
                         """)
                 )
             }

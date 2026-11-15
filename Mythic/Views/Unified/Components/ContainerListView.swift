@@ -12,91 +12,135 @@ import OSLog
 import SwordRPC
 
 struct ContainerListView: View {
-    @State private var isContainerConfigurationViewPresented = false
-    @State private var isDeletionAlertPresented = false
-    
     @State private var isContainerCreationViewPresented = false
-    
+
+    /// Incremented to re-evaluate the list after a deletion, as Wine's container list isn't observable.
+    @State private var refreshToken: Int = 0
+
     var body: some View {
+        let _ = refreshToken // swiftlint:disable:this redundant_discardable_let
+
         if Engine.isInstalled {
-            ForEach(Wine.containerObjects) { container in
-                HStack {
-                    Text(container.name)
+            let containers = Wine.containerObjects
 
+            if containers.isEmpty {
+                ContentUnavailableView {
+                    Label("No Containers", systemImage: "cube.transparent")
+                } description: {
+                    Text("""
+                        Containers will appear here.
+                        You must create a container in order to launch a Windows® game.
+                        """)
+                } actions: {
                     Button {
-                        NSWorkspace.shared.open(container.url)
+                        isContainerCreationViewPresented = true
                     } label: {
-                        Text("\(container.url.prettyPath) \(Image(systemName: "link"))")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .scaledToFit()
+                        Label("Create Container", systemImage: "plus")
                     }
-                    .buttonStyle(.accessoryBar)
-
-                    Spacer()
-
-                    Button {
-                        isContainerConfigurationViewPresented = true
-                    } label: {
-                        Image(systemName: "gear")
-                    }
-                    .disabled(!Engine.isInstalled)
-                    .buttonStyle(.borderless)
-                    .help("Modify default settings for \"\(container.name)\"")
-                    .sheet(isPresented: $isContainerConfigurationViewPresented) {
-                        ContainerConfigurationView(containerURL: .constant(container.url),
-                                                   isPresented: $isContainerConfigurationViewPresented)
-                    }
-
-                    Button {
-                        isDeletionAlertPresented = true
-                    } label: {
-                        Image(systemName: "xmark.bin")
-                    }
-                    .buttonStyle(.borderless)
-                    .foregroundStyle(.secondary)
-                    .alert(isPresented: $isDeletionAlertPresented) {
-                        return Alert(
-                            title: .init("Are you sure you want to delete \"\(container.name)\"?"),
-                            message: .init("This process cannot be undone."),
-                            primaryButton: .destructive(.init("Delete")) {
-                                do {
-                                    try Wine.deleteContainer(containerURL: container.url)
-                                } catch {
-                                    Logger.file.error("Unable to delete container \(container.name): \(error.localizedDescription)")
-                                    isDeletionAlertPresented = false
-                                }
-                            },
-                            secondaryButton: .cancel(.init("Cancel")) {
-                                isDeletionAlertPresented = false
-                            }
-                        )
-                    }
+                    .buttonStyle(.borderedProminent)
                 }
-            }
-        } else if Wine.containerURLs.isEmpty {
-            ContentUnavailableView(
-                "No containers are initialised. 😢",
-                systemImage: "cube.transparent",
-                description: Text("""
-                    Containers will appear here.
-                    You must create a container in order to launch a Windows® game.
-                    """)
-            )
-            
-            Button {
-                isContainerCreationViewPresented = true
-            } label: {
-                Label("Create Container", systemImage: "plus")
-                    .padding(5)
-            }
-            .buttonStyle(.borderedProminent)
-            .sheet(isPresented: $isContainerCreationViewPresented) {
-                ContainerCreationView(isPresented: $isContainerCreationViewPresented)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .sheet(isPresented: $isContainerCreationViewPresented) {
+                    ContainerCreationView(isPresented: $isContainerCreationViewPresented)
+                }
+            } else {
+                ForEach(containers) { container in
+                    ContainerRow(container: container, onDelete: { refreshToken += 1 })
+                }
             }
         } else {
             Engine.NotInstalledView()
                 .frame(maxWidth: .infinity, alignment: .center)
+        }
+    }
+}
+
+extension ContainerListView {
+    /// A single container, alongside its actions.
+    /// Presentation state lives here, per row, so that an action always targets the container it was invoked on.
+    struct ContainerRow: View {
+        let container: Wine.Container
+        let onDelete: () -> Void
+
+        @State private var isContainerConfigurationViewPresented = false
+        @State private var isDeletionAlertPresented = false
+
+        @State private var deletionError: Error?
+        @State private var isDeletionErrorAlertPresented = false
+
+        var body: some View {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(container.name)
+
+                    Text(container.url.prettyPath)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.middle)
+                        .help(container.url.prettyPath)
+                }
+
+                Spacer()
+
+                Button {
+                    NSWorkspace.shared.open(container.url)
+                } label: {
+                    Label("Show in Finder", systemImage: "folder")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.borderless)
+                .help("Show in Finder")
+
+                Button {
+                    isContainerConfigurationViewPresented = true
+                } label: {
+                    Label("Settings...", systemImage: "gear")
+                        .labelStyle(.iconOnly)
+                }
+                .disabled(!Engine.isInstalled)
+                .buttonStyle(.borderless)
+                .help("Modify default settings for \"\(container.name)\"")
+                .sheet(isPresented: $isContainerConfigurationViewPresented) {
+                    ContainerConfigurationView(containerURL: .constant(container.url),
+                                               isPresented: $isContainerConfigurationViewPresented)
+                }
+
+                Button(role: .destructive) {
+                    isDeletionAlertPresented = true
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                        .labelStyle(.iconOnly)
+                }
+                .buttonStyle(.borderless)
+                .help("Delete \"\(container.name)\"")
+                .alert("Are you sure you want to delete \"\(container.name)\"?",
+                       isPresented: $isDeletionAlertPresented) {
+                    Button("Delete", role: .destructive) {
+                        do {
+                            try Wine.deleteContainer(containerURL: container.url)
+                            onDelete()
+                        } catch {
+                            Logger.file.error("Unable to delete container \(container.name): \(error.localizedDescription)")
+                            deletionError = error
+                            isDeletionErrorAlertPresented = true
+                        }
+                    }
+
+                    Button("Cancel", role: .cancel, action: {})
+                } message: {
+                    Text("This process cannot be undone.")
+                }
+            }
+            .alert("Unable to delete \"\(container.name)\".",
+                   isPresented: $isDeletionErrorAlertPresented,
+                   presenting: deletionError) { _ in
+                Button("OK", role: .cancel, action: {})
+            } message: { error in
+                Text(error.localizedDescription)
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(container.name)
         }
     }
 }
@@ -197,23 +241,33 @@ struct WinetricksConfigurationView: View {
         @State private var isHovering: Bool = false
 
         var body: some View {
-            HStack {
-                Text(verb.name)
-                    .monospaced()
-                    .foregroundStyle(isHovering ? .red : .secondary)
-                    .padding(.horizontal, 6)
-                    .padding(.vertical, 2)
-            }
-            .background(in: .capsule)
-            .backgroundStyle(.quinary)
-            .onHover { hovering in
-                withAnimation { isHovering = hovering }
-            }
-            .onTapGesture {
+            // a real button (rather than a tap gesture), so it's reachable by keyboard and VoiceOver.
+            // the xmark states the action without relying on the hover colour.
+            Button {
                 withAnimation(.easeInOut(duration: 0.3)) {
                     remove()
                 }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(verb.name)
+                        .monospaced()
+
+                    Image(systemName: "xmark")
+                        .imageScale(.small)
+                }
+                .foregroundStyle(isHovering ? .red : .secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(in: .capsule)
+                .backgroundStyle(.quinary)
+                .contentShape(.capsule)
             }
+            .buttonStyle(.plain)
+            .onHover { hovering in
+                withAnimation { isHovering = hovering }
+            }
+            .help("Remove \(verb.name)")
+            .accessibilityLabel("Remove \(verb.name)")
         }
     }
     
@@ -256,29 +310,28 @@ struct WinetricksConfigurationView: View {
                         .padding(.horizontal)
                         .padding(.top)
                     
-                    List(selectedCategory.verbs, selection: $selectedVerbs) { verb in
-                        HStack {
+                    // checkboxes state selection explicitly, and are operable by keyboard and VoiceOver.
+                    List(selectedCategory.verbs) { verb in
+                        Toggle(isOn: Binding(
+                            get: { selectedVerbs.contains(verb) },
+                            set: { isSelected in
+                                if isSelected {
+                                    selectedVerbs.insert(verb)
+                                } else {
+                                    selectedVerbs.remove(verb)
+                                }
+                            }
+                        )) {
                             VStack(alignment: .leading) {
                                 Text(verb.name)
                                     .font(.body.monospaced())
                                 Text(verb.descriptionKey)
-                                    .font(.caption)
+                                    .font(.callout)
                                     .foregroundStyle(.secondary)
                             }
-                            Spacer()
-                            if selectedVerbs.contains(verb) {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(.accent)
-                            }
                         }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if selectedVerbs.contains(verb) {
-                                selectedVerbs.remove(verb)
-                            } else {
-                                selectedVerbs.insert(verb)
-                            }
-                        }
+                        .toggleStyle(.checkbox)
+                        .disabled(isInstalling)
                     }
                     .listStyle(.inset)
                 }
@@ -335,7 +388,8 @@ struct WinetricksConfigurationView: View {
                             NSPasteboard.general.clearContents()
                             NSPasteboard.general.setString(allOutput, forType: .string)
                         } label: {
-                            Image(systemName: "doc.on.doc")
+                            Label("Copy", systemImage: "doc.on.doc")
+                                .labelStyle(.iconOnly)
                         }
                         .buttonStyle(.borderless)
                         .disabled(consoleOutput.isEmpty)
@@ -344,7 +398,8 @@ struct WinetricksConfigurationView: View {
                         Button {
                             consoleOutput.removeAll()
                         } label: {
-                            Image(systemName: "trash")
+                            Label("Clear", systemImage: "trash")
+                                .labelStyle(.iconOnly)
                         }
                         .buttonStyle(.borderless)
                         .disabled(consoleOutput.isEmpty)
@@ -405,14 +460,16 @@ struct WinetricksConfigurationView: View {
                 Button("Cancel") {
                     isPresented = false
                 }
+                .keyboardShortcut(.cancelAction)
                 .disabled(isInstalling)
-                
+
                 Button {
                     installSelectedVerbs()
                 } label: {
                     Text("Install Selected", comment: "Button to install selected Winetricks components")
                 }
                 .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
                 .disabled(selectedVerbs.isEmpty || isInstalling)
             }
             .padding()
@@ -506,130 +563,147 @@ struct ContainerConfigurationView: View {
     
     var body: some View {
         if let container = try? Wine.getContainerObject(at: self.containerURL) {
-            VStack {
+            VStack(spacing: 0) {
                 Text("Configure \"\(container.name)\"")
-                    .font(.title)
+                    .font(.title2.bold())
                     .padding([.horizontal, .top])
 
                 Form {
-                    ContainerSettingsView(
-                        selectedContainerURL: .init(
-                            get: { containerURL },
-                            set: { _ in  }
-                        ),
-                        withPicker: false
-                    )
-                    // TODO: Add slider for scaling
-                }
-                .formStyle(.grouped)
-                
-                HStack {
-                    Button("Open...") {
-                        isOpenFileImporterPresented = true
+                    Section {
+                        ContainerSettingsView(
+                            selectedContainerURL: .init(
+                                get: { containerURL },
+                                set: { _ in  }
+                            ),
+                            withPicker: false
+                        )
+                        // TODO: Add slider for scaling
                     }
-                    .fileImporter(
-                        isPresented: $isOpenFileImporterPresented,
-                        allowedContentTypes: [.exe]
-                    ) { result in
-                        switch result {
-                        case .success(let url):
-                            Task(priority: .userInitiated) {
-                                do {
-                                    let process: Process = .init()
-                                    process.arguments = [url.path]
-                                    Wine.transformProcess(process, containerURL: container.url)
+
+                    Section("Tools") {
+                        LabeledContent("Run a Windows® executable") {
+                            Button("Open...") {
+                                isOpenFileImporterPresented = true
+                            }
+                            .fileImporter(
+                                isPresented: $isOpenFileImporterPresented,
+                                allowedContentTypes: [.exe]
+                            ) { result in
+                                switch result {
+                                case .success(let url):
+                                    Task(priority: .userInitiated) {
+                                        do {
+                                            let process: Process = .init()
+                                            process.arguments = [url.path]
+                                            Wine.transformProcess(process, containerURL: container.url)
                                     
-                                    try process.run()
+                                            try process.run()
                                     
-                                    process.waitUntilExit()
-                                } catch {
-                                    openError = error
+                                            process.waitUntilExit()
+                                        } catch {
+                                            openError = error
+                                            isOpenAlertPresented = true
+                                        }
+                                    }
+                                case .failure(let failure):
+                                    openError = failure
                                     isOpenAlertPresented = true
                                 }
                             }
-                        case .failure(let failure):
-                            openError = failure
-                            isOpenAlertPresented = true
-                        }
-                    }
-                    .alert(isPresented: $isOpenAlertPresented) {
-                        Alert(
-                            title: .init("Error opening executable."),
-                            message: .init(openError?.localizedDescription ?? "Unknown Error"),
-                            dismissButton: .default(.init("OK"))
-                        )
-                    }
-                    .onChange(of: isOpenAlertPresented) {
-                        if !$1 { openError = nil }
-                    }
-                    
-                    Button("Launch Winetricks") {
-                        isWinetricksConfigurationViewPresented = true
-                    }
-                    .sheet(isPresented: $isWinetricksConfigurationViewPresented) {
-                        WinetricksConfigurationView(isPresented: $isWinetricksConfigurationViewPresented, containerURL: container.url)
-                    }
-
-                    Button("Install/Uninstall...") {
-                        Task {
-                            let process: Process = .init()
-                            process.arguments = ["uninstaller"]
-                            Wine.transformProcess(process, containerURL: container.url)
-                            
-                            try process.run()
-                            
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "uninstaller.exe" }) {
-                                try await Task.sleep(for: .seconds(2))
-                                await MainActor.run { isUninstallerActive = isActive }
+                            .alert(isPresented: $isOpenAlertPresented) {
+                                Alert(
+                                    title: .init("Error opening executable."),
+                                    message: .init(openError?.localizedDescription ?? "Unknown Error"),
+                                    dismissButton: .default(.init("OK"))
+                                )
+                            }
+                            .onChange(of: isOpenAlertPresented) {
+                                if !$1 { openError = nil }
                             }
                         }
-                    }
-                    .disabled(isUninstallerActive)
 
-                    Button("Configure Container...") {
-                        let containerURL = container.url
-
-                        Task {
-                            let process: Process = .init()
-                            process.arguments = ["winecfg"]
-                            Wine.transformProcess(process, containerURL: container.url)
-                            
-                            try process.run()
-
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "winecfg.exe" }) {
-                                try await Task.sleep(for: .seconds(2))
-                                await MainActor.run { isConfiguratorActive = isActive }
+                        LabeledContent("Install fonts, runtimes and other components") {
+                            Button("Launch Winetricks") {
+                                isWinetricksConfigurationViewPresented = true
+                            }
+                            .sheet(isPresented: $isWinetricksConfigurationViewPresented) {
+                                WinetricksConfigurationView(isPresented: $isWinetricksConfigurationViewPresented, containerURL: container.url)
                             }
                         }
-                    }
-                    .disabled(isConfiguratorActive)
-                    
-                    Button("Launch Registry Editor") {
-                        let containerURL = container.url
 
-                        Task {
-                            let process: Process = .init()
-                            process.arguments = ["regedit"]
-                            Wine.transformProcess(process, containerURL: container.url)
+                        LabeledContent("Add or remove Windows® programs") {
+                            Button("Install/Uninstall...") {
+                                Task {
+                                    let process: Process = .init()
+                                    process.arguments = ["uninstaller"]
+                                    Wine.transformProcess(process, containerURL: container.url)
                             
-                            try process.run()
-
-                            while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "regedit.exe" }) {
-                                try await Task.sleep(for: .seconds(2))
-                                await MainActor.run { isRegistryEditorActive = isActive }
+                                    try process.run()
+                            
+                                    while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "uninstaller.exe" }) {
+                                        try await Task.sleep(for: .seconds(2))
+                                        await MainActor.run { isUninstallerActive = isActive }
+                                    }
+                                }
                             }
+                            .disabled(isUninstallerActive)
+                        }
+
+                        LabeledContent("Wine configuration") {
+                            Button("Configure Container...") {
+                                let containerURL = container.url
+
+                                Task {
+                                    let process: Process = .init()
+                                    process.arguments = ["winecfg"]
+                                    Wine.transformProcess(process, containerURL: container.url)
+                            
+                                    try process.run()
+
+                                    while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "winecfg.exe" }) {
+                                        try await Task.sleep(for: .seconds(2))
+                                        await MainActor.run { isConfiguratorActive = isActive }
+                                    }
+                                }
+                            }
+                            .disabled(isConfiguratorActive)
+                        }
+
+                        LabeledContent("Windows® registry") {
+                            Button("Launch Registry Editor") {
+                                let containerURL = container.url
+
+                                Task {
+                                    let process: Process = .init()
+                                    process.arguments = ["regedit"]
+                                    Wine.transformProcess(process, containerURL: container.url)
+                            
+                                    try process.run()
+
+                                    while let isActive = try? await Wine.tasklist(for: containerURL).contains(where: { $0.imageName == "regedit.exe" }) {
+                                        try await Task.sleep(for: .seconds(2))
+                                        await MainActor.run { isRegistryEditorActive = isActive }
+                                    }
+                                }
+                            }
+                            .disabled(isRegistryEditorActive)
                         }
                     }
-                    .disabled(isRegistryEditorActive)
-                    
+                }
+                .formStyle(.grouped)
+
+                HStack {
+                    Spacer()
+
                     Button("Close") {
                         isPresented = false
                     }
                     .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
                 }
                 .padding([.horizontal, .bottom])
-                .fixedSize()
             }
+            .frame(minWidth: 540, idealWidth: 560, minHeight: 480, idealHeight: 560)
             .task(priority: .background) {
                 discordRPC.setPresence({
                     var presence: RichPresence = .init()
@@ -642,7 +716,19 @@ struct ContainerConfigurationView: View {
                 }())
             }
         } else {
-            
+            VStack {
+                ContentUnavailableView(
+                    "Unable to locate container.",
+                    systemImage: "questionmark.folder"
+                )
+
+                Button("Close") {
+                    isPresented = false
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+            .padding()
+            .frame(minWidth: 360, minHeight: 220)
         }
     }
 }

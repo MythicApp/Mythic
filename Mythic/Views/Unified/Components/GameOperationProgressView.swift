@@ -27,7 +27,8 @@ struct InteractiveGameOperationProgressView: View {
                 Button {
                     isGameOperationStatusViewPresented = true
                 } label: {
-                    Image(systemName: "info")
+                    Label("Details", systemImage: "info")
+                        .labelStyle(.iconOnly)
                 }
                 .clipShape(.capsule)
                 .help("View operation progress")
@@ -40,7 +41,8 @@ struct InteractiveGameOperationProgressView: View {
             Button {
                 isStopGameOperationAlertPresented = true
             } label: {
-                Image(systemName: "xmark")
+                Label("Cancel Operation", systemImage: "xmark")
+                    .labelStyle(.iconOnly)
                     .conditionalTransform(if: isHoveringOverDestructiveButton) { view in
                         view.foregroundStyle(.red)
                     }
@@ -73,7 +75,8 @@ struct OperationProgressView: View {
         if operation.progressKVOBridge.fractionCompleted == 0 {
             ProgressView()
                 .controlSize(.small)
-            
+                .accessibilityLabel("\(operation.type.description), \(operation.game.title)")
+
             if withLabel {
                 Text(operation.type.description)
                     .lineLimit(1)
@@ -81,11 +84,14 @@ struct OperationProgressView: View {
         } else {
             ProgressView(value: operation.progressKVOBridge.fractionCompleted)
                 .help("\(operation.progressKVOBridge.fractionCompleted.formatted(.percent)) complete")
-            
+                .accessibilityLabel("\(operation.type.description), \(operation.game.title)")
+
             if withLabel {
-                Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent))
+                Text(operation.progressKVOBridge.fractionCompleted.formatted(.percent.precision(.fractionLength(0))))
+                    .monospacedDigit()
                     .layoutPriority(1)
                     .lineLimit(1)
+                    .accessibilityHidden(true) // already conveyed by the progress indicator's value
             }
         }
     }
