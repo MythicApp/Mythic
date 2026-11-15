@@ -90,10 +90,16 @@ import DockProgress
                 // ensure operation actually completed
                 guard operation.type.modifiesFiles else { return }
                 guard !operation.isCancelled else { return }
+                guard operation.error == nil else { return }
                 
                 let notificationContent: UNMutableNotificationContent = .init()
-                notificationContent.title = String(localized: "Operation complete.")
-                notificationContent.body = String(localized: "\(operation.game.description) is now ready.")
+                if operation.game.storefront == .steam {
+                    notificationContent.title = String(localized: "Request sent to Steam.")
+                    notificationContent.body = String(localized: "Finish the operation in Steam, then refresh your library in Mythic.")
+                } else {
+                    notificationContent.title = String(localized: "Operation complete.")
+                    notificationContent.body = String(localized: "\(operation.game.description) is now ready.")
+                }
                 notificationContent.interruptionLevel = .active
 
                 let notificationRequest: UNNotificationRequest = .init(

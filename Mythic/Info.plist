@@ -17,5 +17,9 @@
 	<string>https://dl.getmythic.app/updates/update.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>g+sJ+Hhxtb5ziscjMaoIvjMcvycB1PpZhhRJeoF+YSM=</string>
+	<key>MythicSteamWebAPIKey</key>
+	<string>$(STEAM_WEB_API_KEY)</string>
+	<key>MythicSteamOpenIDRealm</key>
+	<string>https://$(STEAM_OPENID_REALM_HOST)/</string>
 </dict>
 </plist>

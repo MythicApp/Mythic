@@ -34,21 +34,21 @@ struct ContainersView: View {
 
         .toolbar {
             if Engine.isInstalled {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         isContainerCreationViewPresented = true
                     } label: {
-                        Image(systemName: "plus")
+                        Label("Add Container", systemImage: "plus")
                     }
                     .help("Add a container")
                 }
 
                 if let containersDirectory = Wine.containersDirectory {
-                    ToolbarItem(placement: .confirmationAction) {
+                    ToolbarItem(placement: .primaryAction) {
                         Button {
                             NSWorkspace.shared.open(containersDirectory)
                         } label: {
-                            Image(systemName: "folder")
+                            Label("Open Containers Folder", systemImage: "folder")
                         }
                         .help("Open Containers directory")
                     }

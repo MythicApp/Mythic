@@ -61,6 +61,9 @@ struct MythicApp: App {
              )
         )
         .commands {
+            // navigation (⌘1–⌘6), Import Game, Refresh Library and Toggle Sidebar
+            MythicCommands()
+
             CommandGroup(replacing: .appInfo) {
                 Button {
                     openWindow(id: "about")
@@ -87,9 +90,16 @@ struct MythicApp: App {
             }
             
             CommandGroup(replacing: .help) {
+                Button("Mythic Support") {
+                    SupportWindowController.show()
+                }
+                .keyboardShortcut("?", modifiers: .command)
+
+                Divider()
+
                 Link("Documentation", destination: URL(string: "https://docs.getmythic.app/")!)
                 Link("Discord server", destination: URL(string: "https://discord.gg/kQKdvjTVqh")!)
-                Link("Games compability",
+                Link("Game compatibility",
                      destination: URL(string: "https://docs.google.com/spreadsheets/d/1W_1UexC1VOcbP2CHhoZBR5-8koH-ZPxJBDWntwH-tsc/")!)
 
                 Section("Support the project") {

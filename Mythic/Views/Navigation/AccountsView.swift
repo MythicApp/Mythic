@@ -17,6 +17,11 @@ struct AccountsView: View {
     @State private var epicSignOutError: Error?
     @State private var isEpicSignOutErrorAlertPresented: Bool = false
     @State private var isEpicAccountCardRefreshed = false
+    @State private var steamSignedInUser = SteamAuth.currentSteamID
+    @State private var isSteamSignOutConfirmationAlertPresented = false
+    @State private var isSteamAuthPresented = false
+    @State private var steamAccountError: Error?
+    @State private var isSteamAccountErrorAlertPresented = false
 
     var body: some View {
         ScrollView {
@@ -73,9 +78,78 @@ struct AccountsView: View {
                     } label: {
                         Text("Sign Out")
                     }
+
+                    Button(String(localized: "Cancel"), role: .cancel) { }
                 }
                 .id(isEpicAccountCardRefreshed)
+
+                AccountCard(
+                    signedInUser: $steamSignedInUser,
+                    image: Image("Steam"),
+                    storefront: .steam,
+                    signInAction: {
+                        isSteamAuthPresented = true
+                    },
+                    signOutAction: {
+                        isSteamSignOutConfirmationAlertPresented = true
+                    }
+                )
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.quinary)
+                )
+                .sheet(isPresented: $isSteamAuthPresented) {
+                    SteamWebAuthView(isPresented: $isSteamAuthPresented) { steamID in
+                        steamSignedInUser = steamID
+                        Task { @MainActor in
+                            if let summary = try? await SteamWebAPI.getPlayerSummary(steamID: steamID) {
+                                steamSignedInUser = SteamClient.sanitizedTitle(summary.personaname) ?? steamID
+                            }
+                            do {
+                                try await GameDataStore.shared.refreshFromStorefronts(.steam)
+                            } catch {
+                                steamAccountError = error
+                                isSteamAccountErrorAlertPresented = true
+                            }
+                        }
+                    }
+                    .frame(minWidth: 650, minHeight: 450)
+                }
+                .alert(
+                    String(localized: "Are you sure you want to sign out of Steam?"),
+                    isPresented: $isSteamSignOutConfirmationAlertPresented
+                ) {
+                    Button(role: .destructive) {
+                        SteamAuth.signOut()
+                        steamSignedInUser = nil
+                        Task { @MainActor in
+                            try? await GameDataStore.shared.refreshFromStorefronts(.steam)
+                        }
+                    } label: {
+                        Text("Sign Out")
+                    }
+                }
+                .task {
+                    guard let steamID = SteamAuth.currentSteamID else {
+                        steamSignedInUser = nil
+                        return
+                    }
+                    steamSignedInUser = steamID
+                    if let summary = try? await SteamWebAPI.getPlayerSummary(steamID: steamID) {
+                        steamSignedInUser = SteamClient.sanitizedTitle(summary.personaname) ?? steamID
+                    }
+                }
             }
+        }
+        .alert(
+            String(localized: "Unable to refresh your Steam account."),
+            isPresented: $isSteamAccountErrorAlertPresented,
+            presenting: steamAccountError
+        ) { _ in
+            Button(String(localized: "OK"), role: .cancel) { }
+        } message: { error in
+            Text(error.localizedDescription)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()

@@ -23,16 +23,31 @@ struct ContainerCreationView: View {
     
     @State private var bootErrorDescription: String = String(localized: "Unknown Error.")
     @State private var isBootFailureAlertPresented: Bool = false
-    
+
+    private var trimmedContainerName: String {
+        containerName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var isContainerNameTaken: Bool {
+        Wine.containerURLs.first(where: { $0.lastPathComponent == containerName }) != nil
+    }
+
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             Text("Create Container")
-                .font(.title)
+                .font(.title2.bold())
                 .padding([.horizontal, .top])
 
             Form {
                 TextField("Choose a name for your container:", text: $containerName)
-                
+
+                // state why creation is unavailable, rather than only disabling the button
+                if isContainerNameTaken {
+                    Label("A container with this name already exists.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+
                 HStack {
                     VStack(alignment: .leading) {
                         Text("Where do you want the container's base path to be located?")
@@ -47,6 +62,7 @@ struct ContainerCreationView: View {
                         Image(systemName: "exclamationmark.triangle")
                             .symbolVariant(.fill)
                             .help("Folder is not writable.")
+                            .accessibilityLabel("Folder is not writable.")
                     }
                     
                     Button("Browse...") {
@@ -72,6 +88,7 @@ struct ContainerCreationView: View {
                         isPresented = false
                     }
                 }
+                .keyboardShortcut(.cancelAction)
                 .alert(isPresented: $isCancellationAlertPresented) {
                     Alert(
                         title: .init("Are you sure you want to cancel container creation?"),
@@ -87,6 +104,7 @@ struct ContainerCreationView: View {
                     ProgressView()
                         .controlSize(.small)
                         .padding(0.5)
+                        .accessibilityLabel("Creating container")
                 }
 
                 Button("Done") {
@@ -104,13 +122,16 @@ struct ContainerCreationView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
                 .disabled(isBooting)
+                .disabled(trimmedContainerName.isEmpty)
                 .disabled(!FileLocations.isWritableFolder(url: containerURL))
-                .disabled((Wine.containerURLs.first(where: { $0.lastPathComponent == containerName}) != nil))
+                .disabled(isContainerNameTaken)
             }
             .padding()
         }
-        
+        .frame(minWidth: 480)
+
         .alert(isPresented: $isBootFailureAlertPresented) {
             Alert(
                 title: .init("Failed to boot \"\(containerName)\"."),

@@ -16,7 +16,8 @@ struct ListGameCard: View {
     
     @State private var isImageEmpty: Bool = true
     @State private var isCardExpanded: Bool = false
-    
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     static let defaultHeight: CGFloat = 120
     
     var body: some View {
@@ -34,7 +35,12 @@ struct ListGameCard: View {
                                   interpolation: 0.6)
                     }
             }
-            
+
+            // white text directly atop artwork is illegible on bright images
+            if !isImageEmpty {
+                ReadabilityScrim()
+            }
+
             HStack {
                 if game.isFallbackImageAvailable, isImageEmpty {
                     GameImageCard.FallbackGameImageCard(game: $game)
@@ -43,8 +49,10 @@ struct ListGameCard: View {
                 
                 VStack(alignment: .leading) {
                     Text(game.title)
-                        .font(.system(.title, weight: .bold))
-                    
+                        .font(.title2.bold())
+                        .lineLimit(2)
+                        .help(game.title)
+
                     HStack {
                         GameCard.SubscriptedInfoView(game: $game)
                     }
@@ -69,9 +77,12 @@ struct ListGameCard: View {
         .contentShape(.rect(cornerRadius: 20))
         .onHover { hovering in
             if !isImageEmpty {
-                withAnimation { isCardExpanded = hovering }
+                withAnimation(reduceMotion ? nil : .default) { isCardExpanded = hovering }
             }
         }
+        // present the card to assistive technologies as one named group, containing its controls.
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(GameCard.accessibilityDescription(of: game))
     }
 }
 

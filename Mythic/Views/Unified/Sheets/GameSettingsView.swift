@@ -263,7 +263,8 @@ private extension GameSettingsView {
         defer { wordfree(&w) }
 
         // verify success through exit code
-        guard Darwin.wordexp(cleanedArgument, &w, 0) == 0 else { return }
+        // WRDE_NOCMD: refuse `$(...)` / backtick command substitution — user input must never reach a shell.
+        guard Darwin.wordexp(cleanedArgument, &w, WRDE_NOCMD) == 0 else { return }
 
         let splitArguments: [String] = (0..<Int(w.we_wordc))
             .compactMap({ String(cString: w.we_wordv[$0]!) })
