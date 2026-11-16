@@ -83,13 +83,15 @@ All PRs must pass:
 
 **Tip:** [Install SwiftLint locally](https://github.com/realm/SwiftLint#installation) to catch issues before pushing.
 
+If the CI requirements fail because of a known issue, the PR will be manually reviewed.
+
 ---
 
 ## Code Style Guidelines
 
 ### General Principles
 
-- Follow the [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/)
+- Follow the [Swift API Design Guidelines](https://www.swift.org/documentation/api-design-guidelines/), unless explicitly subverted within this document.
 - Use **Model-View-ViewModel (MVVM)** architecture (see [example](Mythic/Views/Onboarding))
 - Write **dynamic and reusable code** that adapts to different contexts
 - **Search existing code** before creating new methods to reduce duplication
@@ -128,6 +130,30 @@ All PRs must pass:
       }
   })
   ```
+
+#### Implementation
+- Prefer not to create custom implementations of APIs that already exist within swift to fit a specific use-case. e.g.
+  ```swift
+  let dateAnHourAgo: Date = .init().addingTimeInterval(-3600)
+  
+  // ❌ custom implementation — clunky, convoluted, more susceptible to human error
+  func timeAgo(_ date: Date) -> String {
+    let seconds = Int(Date().timeIntervalSince(date))
+    if seconds < 60 { return "\(seconds)s ago" }
+    if seconds < 3600 { return "\(seconds / 60)m ago" }
+    return "\(seconds / 3600)h ago"
+  }
+
+  // ✅ built-in — smaller, more idiomatic, localised for free
+    dateAnHourAgo.formatted(.relative(presentation: .named))  // "1 hour ago"
+  ```
+  - You may extend existing swift methods for missing functionality relevant to the class.
+    ```swift
+    extension Color {
+    init(hex: String, alpha: Double =  1.0) { // ✅ Color doesn't support hex values in this manner
+        do {/* ... */}
+    }
+    ```
 
 #### Views
 - **Prefer creating new view types** over using `@ViewBuilder`.
