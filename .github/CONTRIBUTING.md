@@ -108,7 +108,26 @@ All PRs must pass:
   let example: String = .init() // ✅
   let example = String() // ❌
   ```
-- Prefer expressing generic types' protocol conformance using `where`, as opposed to direct colon usage
+- Prefer expressing generic types' protocol conformance using `where`, as opposed to direct colon usage, e.g. `func encodeAndSet<T>(_ data: T, forKey key: String) throws -> Data where T: Encodable`
+- For closure code written within a single line, prefer explicitly stating a parameter's name as opposed to using trailing closures, e.g:
+  ```swift
+  NSWorkspace.shared.runningApplications.contains(where: { $0.bundleURL == location }) // ✅
+  
+  NSWorkspace.shared.runningApplications.contains { $0.bundleURL == location } // ❌
+  
+  // if the closure spans multiple lines, trailing closures are OK:
+  .onHover { hovering in // ✅
+      withAnimation {
+          isHoveringOverDestructiveButton = hovering
+      }
+  }
+  
+  .onHover(perform: { hovering in // ❌
+      withAnimation {
+          isHoveringOverDestructiveButton = hovering
+      }
+  })
+  ```
 
 #### Views
 - **Prefer creating new view types** over using `@ViewBuilder`.
