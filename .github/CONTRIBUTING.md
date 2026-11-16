@@ -163,6 +163,13 @@ If the CI requirements fail because of a known issue, the PR will be manually re
     }
     ```
 * When extending an existing class, ensure you follow the general convention of that class' structure, in both naming and API usage.
+- Prefer not to create new variables to reference singletons; instead, use the full name of said singleton, e.g:
+  ```swift
+  let fileManager: FileManager = .default // ❌
+  let directory = fileManager.temporaryDirectory // ❌❌
+  
+  let directory = FileManager.default.temporaryDirectory // ✅
+  ```
 
     
 #### Views
