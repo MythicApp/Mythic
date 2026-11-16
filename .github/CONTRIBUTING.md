@@ -130,9 +130,17 @@ If the CI requirements fail because of a known issue, the PR will be manually re
       }
   })
   ```
-
+* For `switch` statements where every case has a single return value, prefer linearly matching indentation for return values, e.g:
+  ```swift
+  switch storefront {
+  case .epicGames:    try EpicGamesGame(from: decoder)
+  case .local:        try LocalGame(from: decoder)
+  case nil:           try Game(from: decoder)
+  }
+  //                  ↑ notice how all return values are inline
+  ```    
 #### Implementation
-- Prefer not to create custom implementations of APIs that already exist within swift to fit a specific use-case. e.g.
+* Prefer not to create custom implementations of APIs that already exist within swift to fit a specific use-case. e.g.
   ```swift
   let dateAnHourAgo: Date = .init().addingTimeInterval(-3600)
   
@@ -147,14 +155,16 @@ If the CI requirements fail because of a known issue, the PR will be manually re
   // ✅ built-in — smaller, more idiomatic, localised for free
     dateAnHourAgo.formatted(.relative(presentation: .named))  // "1 hour ago"
   ```
-  - You may extend existing swift methods for missing functionality relevant to the class.
+  * You may extend existing swift methods for missing functionality relevant to the class.
     ```swift
     extension Color {
     init(hex: String, alpha: Double =  1.0) { // ✅ Color doesn't support hex values in this manner
         do {/* ... */}
     }
     ```
+* When extending an existing class, ensure you follow the general convention of that class' structure, in both naming and API usage.
 
+    
 #### Views
 - **Prefer creating new view types** over using `@ViewBuilder`.
 - Use **SwiftUI only**
