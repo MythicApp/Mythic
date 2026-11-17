@@ -501,6 +501,8 @@ final class Legendary {
             return String(username)
         }
 
+        // surface legendary's own error (e.g. rejected/expired code) instead of a generic failure
+        try handleCLIErrorOutput(fromStandardErrorOutput: result.standardError ?? .init())
         throw SignInError()
     }
 
